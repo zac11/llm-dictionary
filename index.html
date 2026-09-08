@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LexLLM — The 3D Dictionary of LLM & Machine Learning Terms</title>
+    <meta
+      name="description"
+      content="An interactive, alphabetized dictionary of large language model and machine learning terms, rendered as 3D books with definitions and citations."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <!-- 3D canvas mounts here -->
+    <div id="scene-container"></div>
+
+    <!-- Top chrome -->
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark">L</span>
+        <div class="brand-text">
+          <h1>Lex<i>LLM</i></h1>
+          <p>The 3D dictionary of AI &amp; machine-learning terms</p>
+        </div>
+      </div>
+      <div class="searchbox">
+        <span class="searchbox-icon" aria-hidden="true">⌕</span>
+        <input
+          id="search"
+          type="search"
+          placeholder="Search a term, category or citation…"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <kbd>Esc</kbd>
+      </div>
+      <button id="help-btn" class="ghost-btn" title="How to use">?</button>
+    </header>
+
+    <!-- Helper hints -->
+    <div id="hint" class="hint">
+      <span class="hint-dot"></span>
+      Drag to rotate · Scroll to zoom · Click a book to open its words
+    </div>
+
+    <!-- Letter navigation -->
+    <nav id="letter-nav" class="letter-nav" aria-label="Alphabet navigation"></nav>
+
+    <!-- Volume (A–B etc) side panel -->
+    <aside id="volume-panel" class="volume-panel">
+      <div class="panel-inner">
+        <button class="panel-close" id="volume-close" aria-label="Close">✕</button>
+        <p class="panel-kicker" id="volume-kicker">Volume</p>
+        <h2 id="volume-title">A – B</h2>
+        <p class="panel-count" id="volume-count"></p>
+        <ul id="volume-terms" class="volume-terms"></ul>
+      </div>
+    </aside>
+
+    <!-- Dictionary entry modal -->
+    <div id="entry-modal" class="entry-modal">
+      <div class="modal-backdrop" id="modal-backdrop"></div>
+      <article class="entry-card" id="entry-card" tabindex="-1">
+        <button class="entry-close" id="entry-close" aria-label="Close entry">✕</button>
+        <header class="entry-head">
+          <div class="entry-ribbon" id="entry-letter"></div>
+          <div>
+            <p class="entry-kicker" id="entry-kicker"></p>
+            <h2 id="entry-term"></h2>
+            <p class="entry-aka" id="entry-aka"></p>
+          </div>
+        </header>
+        <section class="entry-body">
+          <p class="entry-definition" id="entry-definition"></p>
+          <p class="entry-details" id="entry-details"></p>
+          <aside class="citation">
+            <h3>📚 Citation</h3>
+            <p id="entry-citation" class="citation-text"></p>
+            <a id="entry-citation-link" class="citation-link" href="#" target="_blank" rel="noopener">
+              Read the source ↗
+            </a>
+          </aside>
+        </section>
+        <footer class="entry-foot">
+          <button class="entry-nav" id="entry-prev">← Previous</button>
+          <span id="entry-counter"></span>
+          <button class="entry-nav" id="entry-next">Next →</button>
+        </footer>
+      </article>
+    </div>
+
+    <!-- Search results drawer -->
+    <section id="results" class="results"></section>
+
+    <!-- Help modal -->
+    <div id="help-modal" class="help-modal" aria-hidden="true">
+      <div class="help-backdrop" id="help-backdrop"></div>
+      <div class="help-card">
+        <button class="entry-close" id="help-close">✕</button>
+        <h2>Using the 3D dictionary</h2>
+        <ul>
+          <li><strong>Explore</strong> — drag to rotate the shelf, scroll to zoom, right-drag to pan.</li>
+          <li><strong>Open a volume</strong> — click any 3D book (A–B, C–D, …) to list its words.</li>
+          <li><strong>Read an entry</strong> — click a word for its definition, detail and citation.</li>
+          <li><strong>Jump around</strong> — click a letter below the shelf or type in the search box.</li>
+        </ul>
+        <p class="help-foot">
+          Words live as JSON files inside the <code>dictionary/</code> folder grouped A–B, C–D, … Y–Z.
+        </p>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
