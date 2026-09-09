@@ -1,14 +1,13 @@
-import {
-  allTerms,
-  findTerm,
-  volumeByLetter,
-  rangeTerms,
-} from './terms.js';
+import { allTerms, findTerm, volumeByLetter, rangeTerms } from './terms.js';
 import { letterColor, categoryColor } from './palette.js';
 
 const $ = (id) => document.getElementById(id);
 
 const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII'];
+
+// contents spread lists this many entries per page, then paginates
+const CONTENTS_PAGE_SIZE = 10;
 
 /** Format a citation into a readable reference string. */
 export function formatCitation(c) {
@@ -27,25 +26,29 @@ export function formatCitation(c) {
 export class UI {
   constructor({ onPickVolume, onPickTerm, onVolumeClose }) {
     this.onPickVolume = onPickVolume; // (folder, letter) => void
-    this.onPickTerm = onPickTerm; // (slug) => void  (lets main focus the 3D volume)
-    this.onVolumeClose = onVolumeClose; // () => void (lets main clear 3D selection)
+    this.onPickTerm = onPickTerm; // (slug) => void  (main runs the pull-out ritual)
+    this.onVolumeClose = onVolumeClose; // () => void (main returns the book to the shelf)
 
     this._nav = $('letter-nav');
     this._search = $('search');
     this._results = $('results');
-    this._volumePanel = $('volume-panel');
-    this._volumeTerms = $('volume-terms');
-    this._volumeTitle = $('volume-title');
-    this._volumeCount = $('volume-count');
-    this._volumeKicker = $('volume-kicker');
-    this._entryModal = $('entry-modal');
-    this._entryCard = $('entry-card');
+    this._spread = $('book-spread');
+    this._spreadBook = $('spread-book');
+    this._pageLeft = $('page-left');
+    this._pageRight = $('page-right');
+    this._flipLeaf = $('page-flip');
+    this._counter = $('spread-counter');
     this._helpModal = $('help-modal');
 
-    this._activeVolume = null;
+    this._mode = 'index'; // 'index' | 'entry'
+    this._folder = null;
     this._activeTerm = null;
     this._termList = [];
     this._termIndex = -1;
+    this._indexPage = 0; // current contents page within the open volume
+    this._indexPages = 1;
+    this._flipping = false;
+    this._reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     this._buildLetterNav();
     this._bind();
@@ -56,11 +59,14 @@ export class UI {
     $('help-close').addEventListener('click', () => this._helpModal.classList.remove('open'));
     $('help-backdrop').addEventListener('click', () => this._helpModal.classList.remove('open'));
 
-    $('volume-close').addEventListener('click', () => this.closeVolume());
-    $('modal-backdrop').addEventListener('click', () => this.closeEntry());
-    $('entry-close').addEventListener('click', () => this.closeEntry());
-    $('entry-prev').addEventListener('click', () => this._stepEntry(-1));
-    $('entry-next').addEventListener('click', () => this._stepEntry(1));
+    $('spread-close').addEventListener('click', () => this.closeSpread());
+    $('spread-backdrop').addEventListener('click', () => this.closeSpread());
+    $('spread-prev').addEventListener('click', () =>
+      this._mode === 'index' ? this._stepIndex(-1) : this._stepEntry(-1)
+    );
+    $('spread-next').addEventListener('click', () =>
+      this._mode === 'index' ? this._stepIndex(1) : this._stepEntry(1)
+    );
 
     this._search.addEventListener('input', () => this._onSearch());
     this._search.addEventListener('keydown', (e) => {
@@ -75,8 +81,31 @@ export class UI {
 
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') this._onEscape();
-      if (e.key === 'ArrowLeft' && this._entryModal.classList.contains('open')) this._stepEntry(-1);
-      if (e.key === 'ArrowRight' && this._entryModal.classList.contains('open')) this._stepEntry(1);
+      if (this.isSpreadOpen()) {
+        if (this._mode === 'entry') {
+          if (e.key === 'ArrowLeft') this._stepEntry(-1);
+          if (e.key === 'ArrowRight') this._stepEntry(1);
+        } else if (this._mode === 'index') {
+          if (e.key === 'ArrowLeft') this._stepIndex(-1);
+          if (e.key === 'ArrowRight') this._stepIndex(1);
+          if (e.key === 'PageUp') {
+            e.preventDefault();
+            this._stepIndex(-1);
+          }
+          if (e.key === 'PageDown') {
+            e.preventDefault();
+            this._stepIndex(1);
+          }
+          if (e.key === 'Home') {
+            e.preventDefault();
+            this._gotoIndex(0);
+          }
+          if (e.key === 'End') {
+            e.preventDefault();
+            this._gotoIndex(this._indexPages - 1);
+          }
+        }
+      }
       if (e.key === '/' && document.activeElement !== this._search) {
         e.preventDefault();
         this._search.focus();
@@ -109,109 +138,296 @@ export class UI {
   }
 
   setActiveVolume(folder, letter) {
-    this._activeVolume = folder;
     const L = letter || (folder ? folder.split('-')[0].toUpperCase() : '');
     this._navButtons.forEach((b) => {
       b.classList.toggle('active', !!L && b.dataset.letter === L);
     });
   }
 
-  // ---------- volume panel ----------
-  openVolume(folder) {
+  // ---------- reading spread ----------
+  isSpreadOpen() {
+    return this._spread.classList.contains('open');
+  }
+
+  _openSpread() {
+    this._spread.classList.add('open');
+    this._spread.setAttribute('aria-hidden', 'false');
+  }
+
+  _setMode(mode) {
+    this._mode = mode;
+    this._spreadBook.classList.toggle('mode-index', mode === 'index');
+    this._spreadBook.classList.toggle('mode-entry', mode === 'entry');
+  }
+
+  /** Open the book on its contents spread for a volume. */
+  openSpreadIndex(folder, { flip = false } = {}) {
     const terms = rangeTerms(folder);
     if (!terms.length) return;
     const vol = volumeByLetter(terms[0].letter);
-    this._volumeTitle.textContent = vol.label;
-    this._volumeCount.textContent = `${terms.length} ${
-      terms.length === 1 ? 'entry' : 'entries'
-    } in this volume`;
-    this._volumeTerms.innerHTML = '';
-    terms.forEach((term, i) => {
+    if (this._folder !== vol.folder) this._indexPage = 0; // fresh volume starts on page 1
+    this._folder = vol.folder;
+    this._activeTerm = null;
+    this._indexPages = Math.max(1, Math.ceil(terms.length / CONTENTS_PAGE_SIZE));
+    this._indexPage = Math.min(this._indexPage, this._indexPages - 1);
+
+    const render = () => {
+      this._renderIndexPages(vol, terms);
+      this._setMode('index');
+      this._syncIndexChrome();
+    };
+    if (flip && this.isSpreadOpen()) {
+      this._flip('prev', render);
+    } else {
+      render();
+      this._openSpread();
+    }
+  }
+
+  _renderIndexPages(vol, terms) {
+    const [a, b] = vol.letters;
+    const idx = ROMAN[Math.max(0, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.indexOf(a) >> 1)];
+    this._pageLeft.innerHTML = `
+      <div class="idx-left">
+        <p class="idx-kicker">Lexicon · Dictionary</p>
+        <p class="idx-ornament">✦&nbsp;&nbsp;❦&nbsp;&nbsp;✦</p>
+        <h2 class="idx-range">${a} – ${b}</h2>
+        <p class="idx-roman">Volume ${idx}</p>
+        <div class="idx-chips">
+          <span style="--chip:${letterColor(a)}">${a}</span>
+          <span style="--chip:${letterColor(b)}">${b}</span>
+        </div>
+        <p class="idx-count">${terms.length} ${terms.length === 1 ? 'entry' : 'entries'}</p>
+        <p class="idx-note">Choose a word from the contents<br />to begin reading.</p>
+      </div>`;
+    const pageTerms = terms.slice(
+      this._indexPage * CONTENTS_PAGE_SIZE,
+      (this._indexPage + 1) * CONTENTS_PAGE_SIZE
+    );
+    this._pageRight.innerHTML = `
+      <div class="idx-right">
+        <h3 class="contents-title">Contents</h3>
+        <p class="contents-sub">${a} – ${b} · ${terms.length} ${terms.length === 1 ? 'entry' : 'entries'}${
+      this._indexPages > 1 ? ` · page ${this._indexPage + 1} of ${this._indexPages}` : ''
+    }</p>
+        <ul class="contents-list"></ul>
+      </div>`;
+    const list = this._pageRight.querySelector('.contents-list');
+    pageTerms.forEach((term) => {
       const li = document.createElement('li');
-      li.style.animationDelay = `${i * 0.03}s`;
       const btn = document.createElement('button');
-      btn.className = 'term-row';
-      const col = letterColor(term.letter);
-      btn.style.setProperty('--letter-color', col);
+      btn.className = 'contents-row';
+      btn.style.setProperty('--letter-color', letterColor(term.letter));
       btn.innerHTML = `
-        <span class="t-letter">${term.letter}</span>
-        <span class="t-main">
-          <span class="t-term">${escapeHtml(term.term)}</span><br />
-          <span class="t-cat">${escapeHtml(term.category)}</span>
-        </span>
-        <span style="margin-left:auto;color:var(--ink-faint)">›</span>`;
-      btn.addEventListener('click', () => this.openEntry(term.slug, { from: 'volume' }));
+        <span class="c-term">${escapeHtml(term.term)}</span>
+        <span class="c-dots" aria-hidden="true"></span>
+        <span class="c-cat">${escapeHtml(term.category)}</span>`;
+      btn.addEventListener('click', () => this.openEntry(term.slug, { from: 'volume', dir: 'next' }));
       li.appendChild(btn);
-      this._volumeTerms.appendChild(li);
+      list.appendChild(li);
     });
-    this._volumePanel.classList.add('open');
+
+    // A long volume's contents span several sheets — draw the folio strip
+    // (page numbers + turn arrows) on the paper so paging is obvious.
+    if (this._indexPages > 1) this._appendIndexPager();
   }
 
-  closeVolume() {
-    this._volumePanel.classList.remove('open');
-    this._activeVolume = null;
-    this.setActiveVolume(null);
-    if (this.onVolumeClose) this.onVolumeClose();
+  /** Build the "turn the page" strip printed on the contents sheet. */
+  _appendIndexPager() {
+    const pager = document.createElement('div');
+    pager.className = 'idx-pager';
+    pager.setAttribute('role', 'group');
+    pager.setAttribute('aria-label', 'Contents pages');
+
+    const mkArrow = (step, label) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'pager-arrow';
+      b.setAttribute('aria-label', label);
+      b.title = label;
+      b.textContent = step > 0 ? '›' : '‹';
+      b.disabled = this._indexPage + step < 0 || this._indexPage + step >= this._indexPages;
+      b.addEventListener('click', () => this._gotoIndex(this._indexPage + step));
+      return b;
+    };
+
+    const label = document.createElement('span');
+    label.className = 'pager-label';
+    label.textContent = 'page';
+
+    const nums = document.createElement('span');
+    nums.className = 'pager-nums';
+    for (let p = 0; p < this._indexPages; p++) {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'pager-num' + (p === this._indexPage ? ' current' : '');
+      b.textContent = p + 1;
+      b.setAttribute('aria-label', `Go to contents page ${p + 1}`);
+      if (p === this._indexPage) {
+        b.disabled = true; // the current-page chip acts as a static marker
+        b.setAttribute('aria-current', 'page');
+      }
+      b.addEventListener('click', () => this._gotoIndex(p));
+      nums.appendChild(b);
+    }
+
+    pager.append(mkArrow(-1, 'Previous contents page'), label, nums, mkArrow(1, 'Next contents page'));
+    this._pageRight.querySelector('.idx-right').appendChild(pager);
   }
 
-  isVolumeOpen() {
-    return this._volumePanel.classList.contains('open');
+  /** Turn a contents page (index mode pagination). */
+  _stepIndex(dir) {
+    if (this._mode !== 'index' || this._indexPages <= 1) return;
+    this._gotoIndex(this._indexPage + dir);
   }
 
-  // ---------- entry ----------
+  /** Jump the contents spread to an absolute page (0-based), turning the leaf. */
+  _gotoIndex(page) {
+    if (this._mode !== 'index' || !this._folder) return;
+    if (page < 0 || page >= this._indexPages || page === this._indexPage) return;
+    const dir = page > this._indexPage ? 'next' : 'prev';
+    this._indexPage = page;
+    this._flip(dir, () => {
+      const terms = rangeTerms(this._folder);
+      if (!terms.length) return;
+      const vol = volumeByLetter(terms[0].letter);
+      this._renderIndexPages(vol, terms);
+      this._syncIndexChrome();
+    });
+  }
+
+  _syncIndexChrome() {
+    this._counter.textContent =
+      this._indexPages > 1 ? `Contents · page ${this._indexPage + 1} of ${this._indexPages}` : 'Contents';
+    this._syncSpreadNav();
+  }
+
+  /** Prev/next buttons: paginate in index mode, wrap through entries in entry mode. */
+  _syncSpreadNav() {
+    const prev = $('spread-prev');
+    const next = $('spread-next');
+    const atFirst = this._mode === 'index' && this._indexPage <= 0;
+    const atLast = this._mode === 'index' && this._indexPage >= this._indexPages - 1;
+    prev.disabled = atFirst;
+    next.disabled = atLast;
+
+    // In contents mode these buttons page through the sheets; in entry mode
+    // they wrap through individual words instead.
+    const prevLabel = this._mode === 'index' ? 'Previous contents page' : 'Previous entry';
+    const nextLabel = this._mode === 'index' ? 'Next contents page' : 'Next entry';
+    prev.title = prevLabel;
+    next.title = nextLabel;
+    prev.setAttribute('aria-label', prevLabel);
+    next.setAttribute('aria-label', nextLabel);
+  }
+
+  /**
+   * Open the book on a term's entry spread.
+   * Without opts.from this only notifies main (which pulls the book out first);
+   * main then calls back with { from: 'ritual' } once the 3D book is open.
+   */
   openEntry(slug, opts = {}) {
     const term = findTerm(slug);
     if (!term) return;
+    if (!opts.from) {
+      if (this.onPickTerm) this.onPickTerm(term.slug);
+      return;
+    }
+
     this._activeTerm = term;
     const vol = volumeByLetter(term.letter);
+    this._folder = vol.folder;
     this._termList = rangeTerms(vol.folder);
     this._termIndex = this._termList.findIndex((t) => t.slug === slug);
 
-    const col = letterColor(term.letter);
-    const catCol = categoryColor(term.category);
+    const render = () => {
+      this._renderEntryPages(term, vol);
+      this._setMode('entry');
+      this._counter.textContent = `${this._termIndex + 1} of ${this._termList.length} · ${vol.label}`;
+      this._syncSpreadNav();
+    };
 
-    $('entry-letter').style.setProperty('--letter-color', col);
-    $('entry-letter').textContent = term.letter;
-    $('entry-kicker').textContent = term.category;
-    $('entry-kicker').style.color = catCol;
-    $('entry-term').textContent = term.term;
-    $('entry-aka').textContent = term.aka.length ? `also known as: ${term.aka.join(', ')}` : '';
-    $('entry-definition').textContent = term.definition;
-    $('entry-details').textContent = term.details;
-    $('entry-citation').textContent = formatCitation(term.citation);
-    const link = $('entry-citation-link');
-    if (term.citation.url) {
-      link.href = term.citation.url;
-      link.style.display = '';
-      link.setAttribute('aria-label', `Open source: ${term.citation.title}`);
+    if (!this.isSpreadOpen()) {
+      render();
+      this._openSpread();
+    } else if (this._mode === 'index') {
+      this._flip('next', render);
     } else {
-      link.style.display = 'none';
+      this._flip(opts.dir || 'next', render);
     }
-    $('entry-counter').textContent = `${this._termIndex + 1} of ${this._termList.length} · ${vol.label}`;
+  }
 
-    this._entryModal.classList.add('open');
-    this._entryCard.scrollTop = 0;
-    // re-focus to enable arrow-key nav but avoid showing focus ring
-    this._entryCard.focus({ preventScroll: true });
-
-    if (opts.from !== 'volume' && this.onPickTerm) {
-      this.onPickTerm(term.slug);
-    }
+  _renderEntryPages(term, vol) {
+    const catCol = categoryColor(term.category);
+    const citation = formatCitation(term.citation);
+    this._pageLeft.innerHTML = `
+      <div class="pg-entry">
+        <p class="pg-kicker">${escapeHtml(term.category)}</p>
+        <h2 class="pg-term">${escapeHtml(term.term)}</h2>
+        ${term.aka.length ? `<p class="pg-aka">also known as: ${escapeHtml(term.aka.join(', '))}</p>` : ''}
+        <p class="pg-rule"></p>
+        <p class="pg-def">${escapeHtml(term.definition)}</p>
+      </div>`;
+    this._pageRight.innerHTML = `
+      <div class="pg-entry">
+        <p class="pg-details">${escapeHtml(term.details)}</p>
+        ${
+          citation || term.citation.url
+            ? `<aside class="pg-citation">
+                 <h3>❦&nbsp; Citation</h3>
+                 <p class="pg-citation-text">${escapeHtml(citation)}</p>
+                 ${
+                   term.citation.url
+                     ? `<a class="pg-citation-link" href="${term.citation.url}" target="_blank" rel="noopener"
+                          aria-label="Open source: ${escapeHtml(term.citation.title)}">Read the source&nbsp;↗</a>`
+                     : ''
+                 }
+               </aside>`
+            : ''
+        }
+      </div>`;
   }
 
   _stepEntry(dir) {
-    if (this._termIndex === -1 || !this._termList.length) return;
+    if (this._mode !== 'entry' || this._termIndex === -1 || !this._termList.length) return;
     const next = (this._termIndex + dir + this._termList.length) % this._termList.length;
-    this.openEntry(this._termList[next].slug, { from: 'volume' });
+    this.openEntry(this._termList[next].slug, { from: 'volume', dir: dir > 0 ? 'next' : 'prev' });
   }
 
-  closeEntry() {
-    this._entryModal.classList.remove('open');
+  /** Paper page-turn: the leaf covers the right page, content swaps mid-flip. */
+  _flip(dir, swap) {
+    const leaf = this._flipLeaf;
+    const instant = this._reducedMotion || window.innerWidth <= 680;
+    if (instant || this._flipping) {
+      swap();
+      return;
+    }
+    this._flipping = true;
+    leaf.classList.remove('hidden');
+    leaf.style.transition = 'none';
+    leaf.style.transform = dir === 'prev' ? 'rotateY(-179deg)' : 'rotateY(0deg)';
+    leaf.getBoundingClientRect(); // force reflow so the start pose sticks
+    requestAnimationFrame(() => {
+      leaf.style.transition = '';
+      leaf.style.transform = dir === 'prev' ? 'rotateY(0deg)' : 'rotateY(-179deg)';
+      setTimeout(swap, 240);
+      setTimeout(() => {
+        leaf.classList.add('hidden');
+        leaf.style.transition = 'none';
+        leaf.style.transform = 'rotateY(0deg)';
+        this._flipping = false;
+      }, 580);
+    });
+  }
+
+  closeSpread({ silent = false } = {}) {
+    if (!this.isSpreadOpen()) return;
+    this._spread.classList.remove('open');
+    this._spread.setAttribute('aria-hidden', 'true');
     this._activeTerm = null;
-  }
-
-  isEntryOpen() {
-    return this._entryModal.classList.contains('open');
+    this._termIndex = -1;
+    this.setActiveVolume(null);
+    if (!silent && this.onVolumeClose) this.onVolumeClose();
   }
 
   // ---------- search ----------
@@ -235,7 +451,6 @@ export class UI {
   }
 
   _renderResults(results) {
-    const wasOpen = this._results.classList.contains('open');
     this._results.innerHTML = '';
     if (results.length === 0) {
       const d = document.createElement('div');
@@ -258,14 +473,12 @@ export class UI {
           </span>`;
         b.addEventListener('click', () => {
           this._closeResults();
+          this._search.blur();
           this.openEntry(term.slug);
         });
         this._results.appendChild(b);
         return b;
       });
-    }
-    if (!wasOpen && results.length === 0) {
-      // keep it visible only if there is content or a message
     }
     this._results.classList.add('open');
     this._resultCursor = -1;
@@ -281,9 +494,9 @@ export class UI {
   }
 
   _chooseCursor() {
-    if (this._resultItems && this._resultItems[this._resultCursor]) {
-      this._resultItems[this._resultCursor].click();
-    }
+    const items = this._resultItems;
+    const pick = (items && items[this._resultCursor]) || (items && items[0]);
+    if (pick) pick.click();
   }
 
   _closeResults() {
@@ -292,16 +505,21 @@ export class UI {
   }
 
   _onEscape() {
-    if (this._entryModal.classList.contains('open')) return this.closeEntry();
-    if (this._results.classList.contains('open')) return this._closeResults();
-    if (this._volumePanel.classList.contains('open')) return this.closeVolume();
     if (this._helpModal.classList.contains('open')) return this._helpModal.classList.remove('open');
+    if (this._results.classList.contains('open')) return this._closeResults();
+    if (this.isSpreadOpen()) {
+      if (this._mode === 'entry' && this._folder) {
+        // first Esc returns to the book's contents page
+        return this.openSpreadIndex(this._folder, { flip: true });
+      }
+      return this.closeSpread();
+    }
     if (this._search === document.activeElement) this._search.blur();
   }
 
   clearAll() {
     this._closeResults();
-    this.closeEntry();
+    this.closeSpread();
   }
 }
 

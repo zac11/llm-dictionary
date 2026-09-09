@@ -1,26 +1,39 @@
-# LexLLM — The 3D Dictionary of LLM & Machine-Learning Terms
+# Lexicon — The 3D Dictionary of LLM & Machine-Learning Terms
 
 > Couldn't find a dictionary for LLM terms. So I created one — in **3D**.
 
 An interactive, alphabetized dictionary of **LLM and machine-learning terms (A–Z)**.
 Every word lives as its own JSON file inside letter-range folders
-(`a-b`, `c-d`, … `y-z`), and a **Three.js** web app renders each range as a
-gilded 3D book on a shelf. Click a book → pick a word → read its definition,
-details **and citation**, then jump to the original paper or source.
+(`a-b`, `c-d`, … `y-z`), and a **Three.js** web app renders the collection as a
+cozy 3D library. Click a volume → it slides off the shelf onto the reading desk
+and its cover swings open → pick a word from the contents page → read it on a
+two-page paper spread, just like a real dictionary — then jump to the original
+paper or source.
 
 ---
 
 ## ✨ Features
 
-- **3D bookshelf (Three.js)** — 13 dictionary volumes (`A–B` … `Y–Z`) rendered
-  as tomes with canvas-texture covers, entrance animation, dust, hover
-  highlighting and camera fly-to on selection.
+- **3D library (Three.js)** — 13 dictionary volumes (`A–B` … `Y–Z`) stand on a
+  wooden bookshelf wall among filler books, with warm sconce lighting, dust
+  motes, a reading desk, hover peek-out and a cinematic intro dolly.
+- **The library ritual** — pick a volume (or search a word): the camera glides
+  over, the book slides out of the shelf, floats down onto the lectern and its
+  cover swings open with a page flutter.
+- **Read like a real dictionary** — entries open as a crisp two-page paper
+  spread (contents page, drop caps, citations) with a paper page-turn animation;
+  Esc puts the book back on the shelf.
+- **Multi-page contents** — a volume with more than 10 words turns into
+  several sheets; flip them with a printed page strip (1·2·3…) at the foot of
+  the contents page, the corner buttons, or ← / → / PageUp / PageDown.
 - **Word browser** — pick a volume in 3D, use the A–Z letter bar, or search any
   term / category / citation.
 - **Rich entries** — each term has a short definition, a longer explanation,
   "also known as", a category tag, and previous/next navigation within its volume.
 - **Citations** — every entry includes a formatted reference (authors, year,
   title, venue) with a link to the source paper or article.
+- **Deep links** — `?term=attention` opens straight to an entry, `?volume=a-b`
+  to a volume's contents.
 - **Content is just data** — drop a new JSON file into the right letter folder
   and it appears in the app automatically; no code changes needed.
 
@@ -42,10 +55,13 @@ llm-dictionary/
 ├── scripts/
 │   └── generate-terms.mjs # optional bootstrap generator (npm run terms)
 ├── src/
-│   ├── main.js            # app entry / wiring
-│   ├── bookshelf.js       # Three.js 3D shelf & books
+│   ├── main.js            # app entry / ritual orchestration
+│   ├── library.js         # Three.js library room, shelf wall, camera, picking
+│   ├── book3d.js          # the openable 3D volume (pull-out → open → return)
+│   ├── anim.js            # tiny tween runner + easings
+│   ├── textures.js        # canvas-generated spine/cover/page/wood textures
 │   ├── terms.js           # loads + indexes every dictionary/*.json
-│   ├── ui.js              # volume panel, entry modal, search, A–Z bar
+│   ├── ui.js              # reading spread, page-turns, search, A–Z bar
 │   ├── palette.js         # shared letter/category colours
 │   └── styles.css
 └── index.html
@@ -107,11 +123,17 @@ npm run preview    # preview the production build
 
 ## 🕹 Using the app
 
-- **Drag** to rotate the scene, **scroll** to zoom.
-- **Click a 3D book** to open its words, **click again** (or ✕ / Esc) to close.
-- Use the **A–Z bar** or the **search box** to jump straight to a term.
-- Every entry card shows a **📚 Citation** block with a **Read the source ↗**
+- **Drag** to look around the library, **scroll** to zoom.
+- **Click a book** on the shelf (hovered books peek out) — it slides off the
+  shelf onto the reading desk and opens to its contents page.
+- **Click a word** in the contents to turn to its entry; use **← / →** or the
+  Prev/Next buttons to flip pages within the volume.
+- Use the **A–Z bar** or the **search box** (press Enter) — the right volume is
+  pulled out and opened straight to that word.
+- Every entry page shows a **❦ Citation** block with a **Read the source ↗**
   link to the underlying paper.
+- **Esc** steps back (entry → contents → book returns to its shelf); deep-link
+  with `?term=…` / `?volume=…` to share a specific word.
 
 ---
 
