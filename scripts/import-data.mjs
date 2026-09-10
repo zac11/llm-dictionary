@@ -3,10 +3,10 @@
 //
 //  Run:  node scripts/import-data.mjs
 //
-//  Merges data/ai_ml_llm_glossary.json and data/gemini-code-*.json into
-//  /dictionary/<a-b..y-z>/*.json, deduplicating on three levels:
-//    1. between the two source files (same slug → the Gemini record wins,
-//       because those carry citations; aka lists are union-merged)
+//  Merges the source file(s) below into /dictionary/<a-b..y-z>/*.json,
+//  deduplicating on three levels:
+//    1. between the source files themselves (same slug → the earlier source
+//       wins; aka lists are union-merged)
 //    2. against the curated entries already in /dictionary (matched by term
 //       name OR any "aka" alias → skipped, curated entry kept)
 //    3. concept aliases the slug/alias pass cannot catch (explicit lists below)
@@ -22,8 +22,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 const SOURCES = [
   // earlier = preferred when both files carry the same slug
-  { file: 'data/gemini-code-1788914882357.json', tag: 'gemini' },
-  { file: 'data/ai_ml_llm_glossary.json', tag: 'glossary' },
+  { file: 'data/ai_terms_1500.json', tag: 'ai-terms' },
 ];
 
 // Slugs that name the same concept as a curated entry, without any

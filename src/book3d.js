@@ -7,11 +7,11 @@ import { easeInOutCubic, easeOutCubic, easeOutBack, lerp } from './anim.js';
 
 export const W = 1.7; // cover width (hinge → fore-edge)
 const T = 0.8; // thickness (front cover → back cover)
-// The front cover is hinged on the book's LEFT edge (the spine), so it must
-// rotate by a POSITIVE yaw to fold back-and-away from the viewer — the way a
-// real book opens on a lectern. A negative angle swings the cover toward the
-// camera and hides the pages while it sweeps past.
-const OPEN_ANGLE = (160 * Math.PI) / 180;
+// The front cover is hinged on the book's LEFT edge (the spine), so a
+// NEGATIVE yaw lifts its free edge up off the pages toward the viewer and
+// folds it back over the spine — the way a real book opens on a lectern.
+// A positive angle drives the cover through the page block instead.
+const OPEN_ANGLE = -(160 * Math.PI) / 180;
 export const SLIDE = 1.35; // how far the book slides out of the shelf
 
 export class AnimatedBook {
