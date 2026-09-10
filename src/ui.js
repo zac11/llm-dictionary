@@ -189,7 +189,7 @@ export class UI {
     const idx = ROMAN[Math.max(0, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.indexOf(a) >> 1)];
     this._pageLeft.innerHTML = `
       <div class="idx-left">
-        <p class="idx-kicker">Lexicon · Dictionary</p>
+        <p class="idx-kicker">Tokenary · AI Engineering</p>
         <p class="idx-ornament">✦&nbsp;&nbsp;❦&nbsp;&nbsp;✦</p>
         <h2 class="idx-range">${a} – ${b}</h2>
         <p class="idx-roman">Volume ${idx}</p>

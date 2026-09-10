@@ -1,6 +1,6 @@
 # 📖 The Dictionary Folder
 
-Every word in Lexicon lives here as its **own JSON file**, grouped into
+Every word in Tokenary lives here as its **own JSON file**, grouped into
 letter-range volumes:
 
 ```

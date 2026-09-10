@@ -129,10 +129,10 @@ export function makeCoverTexture({ label, letters, count, c1, c2, roman }) {
   ctx.strokeRect(44, 44, W - 88, H - 88);
 
   ctx.fillStyle = 'rgba(245,210,138,0.85)';
-  ctx.font = '600 25px Georgia, serif';
+  ctx.font = '600 23px Georgia, serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'alphabetic';
-  ctx.fillText('✦  L E X I C O N  ·  D I C T I O N A R Y  ✦', W / 2, 96);
+  ctx.fillText('✦  T O K E N A R Y  ·  D I C T I O N A R Y  ✦', W / 2, 96);
 
   // big range label — shrunk until it sits inside the gold border
   ctx.shadowColor = 'rgba(0,0,0,0.35)';
@@ -173,7 +173,7 @@ export function makeCoverTexture({ label, letters, count, c1, c2, roman }) {
   ctx.fillText(`V O L U M E  ${roman}`, W / 2, H - 118);
   ctx.font = 'italic 500 26px Georgia, serif';
   ctx.fillStyle = 'rgba(249,236,214,0.62)';
-  ctx.fillText(`${count} ${count === 1 ? 'TERM' : 'TERMS'} · LEXICON`, W / 2, H - 76);
+  ctx.fillText(`${count} ${count === 1 ? 'TERM' : 'TERMS'} · TOKENARY`, W / 2, H - 76);
 
   const tex = new THREE.CanvasTexture(c);
   tex.colorSpace = THREE.SRGBColorSpace;
@@ -227,7 +227,7 @@ export function makeSpineTexture({ label, letters, count, c1, c2, roman }) {
   ctx.rotate(Math.PI / 2);
   ctx.font = '600 34px Georgia, serif';
   ctx.fillStyle = 'rgba(249,236,214,0.85)';
-  ctx.fillText('LEXICON', 0, 12);
+  ctx.fillText('TOKENARY', 0, 12);
   ctx.restore();
 
   ctx.font = '600 30px Georgia, serif';
@@ -416,7 +416,7 @@ export function makePageTexture({ letters }) {
   // header rule + running title
   ctx.font = 'italic 500 24px Georgia, serif';
   ctx.fillStyle = 'rgba(120,95,60,0.4)';
-  ctx.fillText('Lexicon · Dictionary', W / 2, 56);
+  ctx.fillText('Tokenary · AI Engineering', W / 2, 56);
   ctx.strokeStyle = 'rgba(120,95,60,0.35)';
   ctx.beginPath();
   ctx.moveTo(56, 74);

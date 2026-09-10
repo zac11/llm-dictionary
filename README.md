@@ -1,5 +1,7 @@
-# Lexicon — The 3D Dictionary of LLM & Machine-Learning Terms
+# Tokenary — The AI Engineering Dictionary
 
+> Decode the language of LLMs, GenAI & AI Engineering.
+>
 > Couldn't find a dictionary for LLM terms. So I created one — in **3D**.
 
 An interactive, alphabetized dictionary of **LLM and machine-learning terms (A–Z)**.
