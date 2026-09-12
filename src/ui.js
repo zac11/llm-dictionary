@@ -9,6 +9,9 @@ const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI'
 // contents spread lists this many entries per page, then paginates
 const CONTENTS_PAGE_SIZE = 10;
 
+// below this width the two-page spread collapses to a single stacked page
+const STACKED_QUERY = window.matchMedia('(max-width: 860px)');
+
 /** Format a citation into a readable reference string. */
 export function formatCitation(c) {
   const bits = [];
@@ -39,6 +42,9 @@ export class UI {
     this._flipLeaf = $('page-flip');
     this._counter = $('spread-counter');
     this._helpModal = $('help-modal');
+    this._shareMenu = $('share-menu');
+    this._toastEl = $('toast');
+    this._shareAnchor = null;
 
     this._mode = 'index'; // 'index' | 'entry'
     this._folder = null;
@@ -52,6 +58,7 @@ export class UI {
 
     this._buildLetterNav();
     this._bind();
+    this._syncSearchClear();
   }
 
   _bind() {
@@ -61,6 +68,7 @@ export class UI {
 
     $('spread-close').addEventListener('click', () => this.closeSpread());
     $('spread-backdrop').addEventListener('click', () => this.closeSpread());
+    $('spread-back').addEventListener('click', () => this.backToContents());
     $('spread-prev').addEventListener('click', () =>
       this._mode === 'index' ? this._stepIndex(-1) : this._stepEntry(-1)
     );
@@ -68,7 +76,15 @@ export class UI {
       this._mode === 'index' ? this._stepIndex(1) : this._stepEntry(1)
     );
 
-    this._search.addEventListener('input', () => this._onSearch());
+    $('search-clear').addEventListener('click', () => {
+      this._clearSearch();
+      this._search.focus();
+    });
+
+    this._search.addEventListener('input', () => {
+      this._syncSearchClear();
+      this._onSearch();
+    });
     this._search.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
         e.preventDefault();
@@ -81,7 +97,7 @@ export class UI {
 
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') this._onEscape();
-      if (this.isSpreadOpen()) {
+      if (this.isSpreadOpen() && this._shareMenu.hidden) {
         if (this._mode === 'entry') {
           if (e.key === 'ArrowLeft') this._stepEntry(-1);
           if (e.key === 'ArrowRight') this._stepEntry(1);
@@ -116,7 +132,20 @@ export class UI {
       if (this._results.classList.contains('open') && !this._results.contains(e.target) && e.target !== this._search) {
         this._closeResults();
       }
+      if (
+        !this._shareMenu.hidden &&
+        !this._shareMenu.contains(e.target) &&
+        !(e.target instanceof Element && e.target.closest('.pg-share'))
+      ) {
+        this.closeShareMenu();
+      }
     });
+
+    // the menu is anchored to a button that can scroll away or move on resize
+    window.addEventListener('resize', () => this.closeShareMenu());
+    this._spread
+      .querySelector('.spread-pages')
+      ?.addEventListener('scroll', () => this.closeShareMenu(), { passive: true });
   }
 
   // ---------- letter nav ----------
@@ -152,12 +181,37 @@ export class UI {
   _openSpread() {
     this._spread.classList.add('open');
     this._spread.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('reading');
   }
 
   _setMode(mode) {
     this._mode = mode;
     this._spreadBook.classList.toggle('mode-index', mode === 'index');
     this._spreadBook.classList.toggle('mode-entry', mode === 'entry');
+    this.closeShareMenu(); // the share anchor belongs to the page being replaced
+    this._syncBackButton();
+  }
+
+  /**
+   * The "↩ Contents" control only makes sense while reading an entry: it turns
+   * the spread back to the word list of the very volume the entry belongs to.
+   */
+  _syncBackButton() {
+    const btn = $('spread-back');
+    if (!btn) return;
+    const vol = this._folder ? volumeByLetter(this._folder[0]) : null;
+    const label = vol ? vol.label : '';
+    btn.hidden = this._mode !== 'entry';
+    btn.textContent = label ? `↩ ${label} contents` : '↩ Contents';
+    const title = label ? `Back to the ${label} glossary` : 'Back to the glossary';
+    btn.title = title;
+    btn.setAttribute('aria-label', title);
+  }
+
+  /** Leave an entry and return to its volume's contents spread (with a page turn). */
+  backToContents() {
+    if (this._mode !== 'entry' || !this._folder) return;
+    this.openSpreadIndex(this._folder, { flip: true });
   }
 
   /** Open the book on its contents spread for a volume. */
@@ -362,12 +416,22 @@ export class UI {
     const citation = formatCitation(term.citation);
     this._pageLeft.innerHTML = `
       <div class="pg-entry">
-        <p class="pg-kicker">${escapeHtml(term.category)}</p>
+        <div class="pg-head">
+          <p class="pg-kicker">${escapeHtml(term.category)}</p>
+          <button class="pg-share" type="button" aria-haspopup="dialog" aria-expanded="false"
+                  title="Share “${escapeHtml(term.term)}”">
+            <span aria-hidden="true">↗</span> Share
+          </button>
+        </div>
         <h2 class="pg-term">${escapeHtml(term.term)}</h2>
         ${term.aka.length ? `<p class="pg-aka">also known as: ${escapeHtml(term.aka.join(', '))}</p>` : ''}
         <p class="pg-rule"></p>
         <p class="pg-def">${escapeHtml(term.definition)}</p>
       </div>`;
+    this._pageLeft.querySelector('.pg-share')?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.toggleShareMenu(e.currentTarget);
+    });
     this._pageRight.innerHTML = `
       <div class="pg-entry">
         <p class="pg-details">${escapeHtml(term.details)}</p>
@@ -397,7 +461,8 @@ export class UI {
   /** Paper page-turn: the leaf covers the right page, content swaps mid-flip. */
   _flip(dir, swap) {
     const leaf = this._flipLeaf;
-    const instant = this._reducedMotion || window.innerWidth <= 680;
+    // the turning leaf needs the two-page spread; stacked layouts swap instantly
+    const instant = this._reducedMotion || STACKED_QUERY.matches;
     if (instant || this._flipping) {
       swap();
       return;
@@ -422,12 +487,193 @@ export class UI {
 
   closeSpread({ silent = false } = {}) {
     if (!this.isSpreadOpen()) return;
+    this.closeShareMenu();
     this._spread.classList.remove('open');
     this._spread.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('reading');
     this._activeTerm = null;
     this._termIndex = -1;
     this.setActiveVolume(null);
     if (!silent && this.onVolumeClose) this.onVolumeClose();
+  }
+
+  // ---------- share ----------
+  /** Canonical deep link that reopens this entry. */
+  _shareUrl() {
+    const slug = this._activeTerm ? this._activeTerm.slug : null;
+    if (!slug) return location.href;
+    return `${location.origin}${location.pathname}?term=${encodeURIComponent(slug)}`;
+  }
+
+  /** A ready-to-paste blurb: term, definition, link and source. */
+  _shareBlurb() {
+    const t = this._activeTerm;
+    if (!t) return this._shareUrl();
+    const lines = [`${t.term} — ${t.definition}`, '', `Read it in Tokenary: ${this._shareUrl()}`];
+    const cite = formatCitation(t.citation);
+    if (cite) lines.push('', `Source: ${cite}`);
+    return lines.join('\n');
+  }
+
+  toggleShareMenu(anchor) {
+    if (!this._shareMenu.hidden && this._shareAnchor === anchor) return this.closeShareMenu();
+    this.openShareMenu(anchor);
+  }
+
+  openShareMenu(anchor) {
+    if (!this._activeTerm) return;
+    this._shareAnchor = anchor;
+    this._buildShareMenu();
+    this._shareMenu.hidden = false;
+    anchor.setAttribute('aria-expanded', 'true');
+    this._positionShareMenu(anchor);
+    this._shareMenu.querySelector('.share-item')?.focus({ preventScroll: true });
+  }
+
+  closeShareMenu({ restoreFocus = false } = {}) {
+    if (this._shareMenu.hidden) return;
+    this._shareMenu.hidden = true;
+    this._shareMenu.innerHTML = '';
+    const anchor = this._shareAnchor;
+    this._shareAnchor = null;
+    if (anchor) {
+      anchor.setAttribute('aria-expanded', 'false');
+      if (restoreFocus && document.contains(anchor)) anchor.focus({ preventScroll: true });
+    }
+  }
+
+  _positionShareMenu(anchor) {
+    const menu = this._shareMenu;
+    const a = anchor.getBoundingClientRect();
+    const mw = menu.offsetWidth;
+    const mh = menu.offsetHeight;
+    const pad = 10;
+    // right-align under the button, then keep it inside the viewport
+    const left = Math.min(Math.max(pad, a.right - mw), window.innerWidth - mw - pad);
+    let top = a.bottom + 8;
+    if (top + mh > window.innerHeight - pad) top = Math.max(pad, a.top - mh - 8);
+    menu.style.left = `${Math.round(left)}px`;
+    menu.style.top = `${Math.round(top)}px`;
+  }
+
+  _buildShareMenu() {
+    const menu = this._shareMenu;
+    const t = this._activeTerm;
+    menu.innerHTML = '';
+    if (!t) return;
+
+    const url = this._shareUrl();
+    const title = `${t.term} — The AI Engineering Dictionary`;
+    const blurb = this._shareBlurb();
+
+    const heading = document.createElement('p');
+    heading.className = 'share-menu-title';
+    heading.textContent = `Share “${t.term}”`;
+    menu.appendChild(heading);
+
+    const addItem = (icon, label, sub, onClick) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'share-item';
+      b.setAttribute('role', 'menuitem');
+      b.innerHTML = `<span class="si-icon" aria-hidden="true">${icon}</span>
+        <span><span class="si-label">${escapeHtml(label)}</span>${
+          sub ? `<span class="si-sub">${escapeHtml(sub)}</span>` : ''
+        }</span>`;
+      b.addEventListener('click', onClick);
+      menu.appendChild(b);
+      return b;
+    };
+
+    // Native share sheet first where the platform supports it (mostly mobile).
+    if (navigator.share) {
+      addItem('⤴', 'Share…', "Use your device's share sheet", async () => {
+        this.closeShareMenu();
+        try {
+          await navigator.share({ title, text: `${t.term} — ${t.definition}`, url });
+        } catch {
+          /* the user dismissed the sheet */
+        }
+      });
+    }
+
+    addItem('⧉', 'Copy link', 'Paste it anywhere', async (e) => {
+      const btn = e.currentTarget;
+      if (!(await this._copyText(url))) {
+        this._toast('Copying was blocked — use the address bar to copy the link');
+        return;
+      }
+      btn.classList.add('copied');
+      btn.querySelector('.si-label').textContent = 'Link copied';
+      btn.querySelector('.si-sub').textContent = 'Ready to paste';
+      setTimeout(() => this.closeShareMenu(), 900);
+    });
+
+    addItem('in', 'LinkedIn', 'Share as a post', () => {
+      this.closeShareMenu();
+      this._openWindow(
+        `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`
+      );
+    });
+
+    addItem('X', 'X', 'Post to X', () => {
+      this.closeShareMenu();
+      this._openWindow(
+        `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`
+      );
+    });
+
+    addItem('M', 'Medium', 'Copies the entry & opens the editor', async () => {
+      await this._copyText(blurb);
+      this.closeShareMenu();
+      this._toast('Entry copied — paste it into your Medium story');
+      this._openWindow('https://medium.com/new-story');
+    });
+
+    addItem('✉', 'Email', 'Send the entry to someone', () => {
+      this.closeShareMenu();
+      location.href = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(blurb)}`;
+    });
+  }
+
+  async _copyText(text) {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+    } catch {
+      /* fall through to the legacy path */
+    }
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.top = '-1000px';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      const ok = document.execCommand('copy');
+      ta.remove();
+      return ok;
+    } catch {
+      return false;
+    }
+  }
+
+  _openWindow(url) {
+    const w = window.open(url, '_blank', 'noopener,noreferrer');
+    if (w) w.opener = null;
+  }
+
+  _toast(message) {
+    const el = this._toastEl;
+    if (!el) return;
+    el.textContent = message;
+    el.classList.add('show');
+    clearTimeout(this._toastTimer);
+    this._toastTimer = setTimeout(() => el.classList.remove('show'), 2800);
   }
 
   // ---------- search ----------
@@ -504,13 +750,30 @@ export class UI {
     this._resultItems = [];
   }
 
+  /** Show the ✕ only when there is something to clear (never overlaps a hint). */
+  _syncSearchClear() {
+    const btn = $('search-clear');
+    if (btn) btn.hidden = this._search.value.length === 0;
+  }
+
+  _clearSearch() {
+    this._search.value = '';
+    this._syncSearchClear();
+    this._closeResults();
+  }
+
   _onEscape() {
+    if (!this._shareMenu.hidden) return this.closeShareMenu({ restoreFocus: true });
     if (this._helpModal.classList.contains('open')) return this._helpModal.classList.remove('open');
+    // Esc inside a filled search box clears it first
+    if (this._search === document.activeElement && this._search.value) {
+      return this._clearSearch();
+    }
     if (this._results.classList.contains('open')) return this._closeResults();
     if (this.isSpreadOpen()) {
       if (this._mode === 'entry' && this._folder) {
         // first Esc returns to the book's contents page
-        return this.openSpreadIndex(this._folder, { flip: true });
+        return this.backToContents();
       }
       return this.closeSpread();
     }
