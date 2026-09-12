@@ -21,6 +21,8 @@
   --sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --radius: 14px;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  /* height of the fixed top chrome; the results drawer hangs below it */
+  --topbar-h: 78px;
 }
 
 * {
@@ -39,6 +41,7 @@ body {
   color: var(--ink);
   background: radial-gradient(1200px 800px at 50% -10%, #241608 0%, var(--bg) 55%) fixed;
   -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
 }
 
 #scene-container {
@@ -113,13 +116,14 @@ canvas {
 .searchbox {
   position: relative;
   flex: 1;
+  min-width: 0;
   max-width: 520px;
   margin: 0 auto;
 }
 
 .searchbox input {
   width: 100%;
-  padding: 12px 40px 12px 40px;
+  padding: 12px 46px 12px 40px;
   border-radius: 999px;
   border: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.06);
@@ -128,6 +132,17 @@ canvas {
   font: 500 14px/1 var(--sans);
   outline: none;
   transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  appearance: none;
+}
+
+/* the native WebKit clear button would collide with our own ✕ control */
+.searchbox input::-webkit-search-decoration,
+.searchbox input::-webkit-search-cancel-button,
+.searchbox input::-webkit-search-results-button,
+.searchbox input::-webkit-search-results-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
 }
 
 .searchbox input::placeholder {
@@ -149,17 +164,35 @@ canvas {
   color: var(--ink-faint);
 }
 
-.searchbox kbd {
+.search-clear {
   position: absolute;
-  right: 12px;
+  right: 9px;
   top: 50%;
   transform: translateY(-50%);
-  font: 600 10px var(--sans);
-  color: var(--ink-faint);
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  padding: 4px 7px;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.09);
+  color: var(--ink-dim);
+  font: 600 13px var(--sans);
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.search-clear:hover,
+.search-clear:focus-visible {
+  background: rgba(255, 255, 255, 0.18);
+  color: var(--ink);
+}
+
+.search-clear[hidden] {
+  display: none;
 }
 
 .ghost-btn {
@@ -197,6 +230,13 @@ canvas {
   border: 1px solid var(--line);
   backdrop-filter: blur(6px);
   white-space: nowrap;
+  transition: opacity 0.3s ease;
+}
+
+/* the hint is about the shelf, not the book — fade it while reading */
+body.reading .hint {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .hint-dot {
@@ -408,6 +448,30 @@ canvas {
   gap: 12px;
   margin-top: 16px;
   padding: 0 6px;
+}
+
+.spread-foot-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+/* "↩ A – B contents" — only rendered while reading an entry */
+.spread-back {
+  border-color: rgba(230, 180, 92, 0.45);
+  color: var(--gold-2);
+  white-space: nowrap;
+}
+
+.spread-back:hover {
+  border-color: var(--gold);
+  background: rgba(230, 180, 92, 0.14);
+  color: var(--gold-2);
+}
+
+.spread-back[hidden] {
+  display: none;
 }
 
 .spread-nav {
@@ -708,6 +772,47 @@ canvas {
 }
 
 /* ---------- Entry pages ---------- */
+.pg-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 28px;
+}
+
+.pg-head .pg-kicker {
+  margin: 0;
+}
+
+.pg-share {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(120, 95, 60, 0.45);
+  background: rgba(120, 95, 60, 0.08);
+  color: var(--paper-gold);
+  font: 600 10.5px var(--sans);
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, transform 0.12s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pg-share:hover,
+.pg-share:focus-visible {
+  background: rgba(120, 95, 60, 0.17);
+  border-color: rgba(120, 95, 60, 0.72);
+  outline: none;
+}
+
+.pg-share:active {
+  transform: scale(0.96);
+}
+
 .pg-kicker {
   margin: 0 0 6px;
   text-transform: uppercase;
@@ -808,7 +913,7 @@ canvas {
 /* ---------- Search results ---------- */
 .results {
   position: fixed;
-  top: 74px;
+  top: calc(var(--topbar-h) + 6px);
   left: 50%;
   transform: translateX(-50%);
   width: min(560px, calc(100vw - 40px));
@@ -880,6 +985,131 @@ canvas {
   text-align: center;
   color: var(--ink-dim);
   font-size: 13.5px;
+}
+
+/* ---------- Share menu ---------- */
+.share-menu {
+  position: fixed;
+  z-index: 60;
+  min-width: 236px;
+  max-width: calc(100vw - 20px);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border-radius: 14px;
+  background: var(--panel-solid);
+  border: 1px solid var(--line);
+  box-shadow: 0 26px 52px rgba(0, 0, 0, 0.58);
+  animation: share-in 0.16s var(--ease);
+}
+
+.share-menu[hidden] {
+  display: none;
+}
+
+@keyframes share-in {
+  from {
+    opacity: 0;
+    transform: translateY(-5px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.share-menu-title {
+  margin: 3px 8px 7px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.share-item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  padding: 9px 10px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ink);
+  font: 500 13.5px var(--sans);
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.14s, color 0.14s;
+}
+
+.share-item:hover,
+.share-item:focus-visible {
+  background: rgba(255, 255, 255, 0.09);
+  outline: none;
+}
+
+.share-item .si-icon {
+  width: 27px;
+  height: 27px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--gold-2);
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.share-item .si-label {
+  display: block;
+  font-weight: 600;
+}
+
+.share-item .si-sub {
+  display: block;
+  margin-top: 1px;
+  font-size: 11px;
+  color: var(--ink-faint);
+}
+
+.share-item.copied {
+  background: rgba(99, 211, 160, 0.14);
+  color: var(--good);
+}
+
+.share-item.copied .si-icon {
+  color: var(--good);
+  background: rgba(99, 211, 160, 0.16);
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 98px;
+  z-index: 70;
+  max-width: min(440px, calc(100vw - 32px));
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: rgba(26, 19, 12, 0.96);
+  border: 1px solid var(--line);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  color: var(--ink);
+  font-size: 13px;
+  text-align: center;
+  opacity: 0;
+  transform: translateX(-50%) translateY(8px);
+  pointer-events: none;
+  transition: opacity 0.22s ease, transform 0.22s var(--ease);
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
 /* ---------- Help ---------- */
@@ -981,28 +1211,100 @@ canvas {
 }
 
 /* ---------- Responsive & reduced motion ---------- */
-@media (max-width: 680px) {
+
+/* Tablets & small laptops: keep the two-page spread but give the paper more room. */
+@media (max-width: 1080px) {
+  .brand {
+    min-width: 0;
+  }
+  .page {
+    padding: 32px 28px 26px;
+  }
+  .pg-term {
+    font-size: clamp(26px, 3.6vw, 36px);
+  }
+  .pg-def {
+    font-size: 17px;
+  }
+  .idx-range {
+    font-size: clamp(44px, 7vw, 68px);
+  }
+}
+
+/* Phones & portrait tablets: one page at a time, search on its own row. */
+@media (max-width: 860px) {
+  :root {
+    --topbar-h: 128px;
+  }
+
+  .topbar {
+    flex-wrap: wrap;
+    gap: 10px 12px;
+    padding: 12px 16px 14px;
+  }
+  .brand {
+    flex: 1 1 auto;
+    gap: 11px;
+  }
   .brand-text p {
     display: none;
   }
   .brand-text h1 {
+    font-size: 21px;
+  }
+  .brand-mark {
+    width: 40px;
+    height: 40px;
+    border-radius: 11px;
     font-size: 22px;
   }
+  .ghost-btn {
+    flex: 0 0 auto;
+    margin-left: auto;
+  }
   .searchbox {
+    order: 3;
+    flex: 1 1 100%;
+    max-width: none;
     margin: 0;
   }
+  .results {
+    max-height: 52vh;
+  }
+
+  /* Flatten the 3D spread: the turning leaf is off, so drop the perspective
+     and let only the pages scroll while ✕ and the footer stay put. */
+  .book-spread {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* asymmetric padding keeps the book clear of the topbar and alphabet rail */
+    padding: calc(var(--topbar-h) + 6px) 12px 58px;
+    overflow: hidden;
+    perspective: none;
+  }
   .spread-book {
-    max-height: 86vh;
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-height: 100%;
+    min-height: 0;
+    transform-style: flat;
   }
   .spread-pages {
     grid-template-columns: 1fr;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    background: #f7efdc;
   }
   .page {
     min-height: 0;
     max-height: none;
     overflow: visible;
-    padding: 30px 26px 26px;
+    padding: 28px 22px 24px;
   }
   .page-left {
     border-radius: 12px 12px 3px 3px;
@@ -1031,6 +1333,24 @@ canvas {
   .spread-book.mode-index .contents-list {
     overflow-y: visible;
   }
+  .spread-close {
+    top: 8px;
+    right: 8px;
+  }
+  .spread-foot {
+    flex: 0 0 auto;
+    flex-wrap: wrap;
+    row-gap: 8px;
+    margin-top: 12px;
+  }
+  .spread-foot-group {
+    flex: 1 1 auto;
+  }
+  #spread-counter {
+    order: 3;
+    flex: 1 1 100%;
+    text-align: center;
+  }
   .idx-pager {
     margin-right: -14px;
     margin-left: -14px;
@@ -1044,13 +1364,69 @@ canvas {
     width: 28px;
     height: 28px;
   }
-  .spread-close {
-    top: 6px;
-    right: 6px;
+  .hint {
+    bottom: 68px;
+    font-size: 11px;
+  }
+}
+
+/* Phones: lighter chrome, tighter type, a slimmer alphabet rail. */
+@media (max-width: 520px) {
+  .topbar {
+    padding: 10px 12px 12px;
+  }
+  .brand-text h1 {
+    font-size: 19px;
+  }
+  .brand-mark {
+    width: 36px;
+    height: 36px;
+    font-size: 20px;
+  }
+  .brand-text p {
+    display: none;
+  }
+  .page {
+    padding: 24px 18px 22px;
+  }
+  .pg-term {
+    font-size: 26px;
+  }
+  .pg-def {
+    font-size: 16.5px;
+  }
+  .contents-title {
+    font-size: 23px;
+  }
+  .spread-nav {
+    padding: 8px 14px;
+    font-size: 12px;
+  }
+  .letter-nav {
+    gap: 3px;
+    padding: 6px 8px;
+    bottom: 10px;
+    scrollbar-width: none;
+  }
+  .letter-nav::-webkit-scrollbar {
+    display: none;
+  }
+  .letter-nav button {
+    width: 24px;
+    height: 24px;
+    border-radius: 7px;
+    font-size: 11px;
   }
   .hint {
-    bottom: 66px;
-    font-size: 11px;
+    left: 12px;
+    right: 12px;
+    bottom: 62px;
+    transform: none;
+    padding: 7px 12px;
+    font-size: 10.5px;
+    text-align: center;
+    justify-content: center;
+    white-space: normal;
   }
 }
 

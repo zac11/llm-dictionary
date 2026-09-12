@@ -555,11 +555,26 @@ export class Library {
   }
 
   // ---------------- camera ----------------
+  /**
+   * Pull a pose back on narrow / portrait screens so the whole shelf wall still
+   * reads instead of being cropped at the sides.
+   */
+  _poseFor(pose) {
+    const aspect = this._camera.aspect || 1.6;
+    const k = aspect >= 1.5 ? 1 : Math.min(1.7, 1.5 / aspect);
+    if (k === 1) return pose;
+    const pos = new THREE.Vector3(...pose.pos);
+    const target = new THREE.Vector3(...pose.target);
+    pos.sub(target).multiplyScalar(k).add(target);
+    return { pos: pos.toArray(), target: pose.target };
+  }
+
   _camTo(pose, dur) {
+    const framed = this._poseFor(pose);
     const pos0 = this._camera.position.clone();
     const tgt0 = this.controls.target.clone();
-    const pos1 = new THREE.Vector3(...pose.pos);
-    const tgt1 = new THREE.Vector3(...pose.target);
+    const pos1 = new THREE.Vector3(...framed.pos);
+    const tgt1 = new THREE.Vector3(...framed.target);
     this.controls.enabled = false;
     return this.anim
       .add(dur, (k) => {
@@ -691,9 +706,24 @@ export class Library {
     const w = this.container.clientWidth;
     const h = this.container.clientHeight;
     if (!w || !h) return;
-    this._camera.aspect = w / h;
+    const aspect = w / h;
+    this._camera.aspect = aspect;
+
+    // On narrow (portrait / phone) screens widen the vertical FOV so the shelf
+    // is not clipped at the sides.
+    const BASE_ASPECT = 1.6;
+    const BASE_FOV = 45;
+    let fov = BASE_FOV;
+    if (aspect < BASE_ASPECT) {
+      const vHalf = Math.atan(Math.tan((BASE_FOV * Math.PI) / 360) * (BASE_ASPECT / aspect));
+      fov = Math.min(68, (vHalf * 360) / Math.PI);
+    }
+    this._camera.fov = fov;
     this._camera.updateProjectionMatrix();
     this._renderer.setSize(w, h);
+
+    // give the portrait pull-back enough room to zoom out again if needed
+    if (this.controls) this.controls.maxDistance = aspect < 1.25 ? 34 : 19;
   }
 
   // ---------------- loop ----------------

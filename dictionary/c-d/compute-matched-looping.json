@@ -1,0 +1,29 @@
+{
+  "term": "Compute-Matched Looping",
+  "letter": "C",
+  "category": "Model Optimization",
+  "aka": [
+    "Compute-matched evaluation",
+    "Equal-FLOPs looping"
+  ],
+  "definition": "Comparing looped (recursive) transformer designs against unlooped baselines under the same compute budget — rather than the same parameter count — so any gain is credited to depth reuse and not to extra FLOPs.",
+  "details": "Looping a shared block increases effective depth without adding parameters, but the extra passes also add per-token work, so a naive comparison at fixed model size conflates architectural benefit with simply spending more compute. A compute-matched protocol therefore fixes per-token FLOPs, total non-embedding parameters and KV-cache budget across variants. Under that accounting, looping the middle half of a mixture-of-experts transformer's layers twice has been shown to lower loss faster with compute and to save roughly 7–18% of training FLOPs on the compute-optimal frontier. The idea generalizes the equal-FLOPs discipline used to re-evaluate ensemble, tool-use and self-consistency methods, where reported gains can otherwise come from a larger hidden budget.",
+  "citation": {
+    "title": "SMELT: Scaling Laws for Compute-Matched MoE Looped Transformers",
+    "authors": [
+      "Wang, S.",
+      "Zhang, G.",
+      "Luo, K.",
+      "Wu, Y.",
+      "Liu, S.",
+      "Liu, J.",
+      "Huang, W.",
+      "Yan, S.",
+      "Li, J."
+    ],
+    "year": 2026,
+    "venue": "arXiv preprint",
+    "url": "https://arxiv.org/abs/2609.01343"
+  },
+  "slug": "compute-matched-looping"
+}
