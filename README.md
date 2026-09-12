@@ -28,7 +28,9 @@ llm-dictionary/
 │   ├── …                  #    o-p, q-r, s-t, u-v, w-x, y-z
 │   └── README.md          #    schema + how to add terms
 ├── scripts/
-│   └── generate-terms.mjs # optional bootstrap generator (npm run terms)
+│   ├── generate-terms.mjs # optional bootstrap generator (npm run terms)
+│   ├── generate-og.mjs    # writes public/og.png (1200×630 preview card)
+│   └── prerender-share.mjs# post-build: per-term /term/<slug>/ share pages
 ├── src/
 │   ├── main.js            # app entry / ritual orchestration
 │   ├── library.js         # Three.js library room, shelf wall, camera, picking
@@ -39,6 +41,8 @@ llm-dictionary/
 │   ├── ui.js              # reading spread, page-turns, search, A–Z bar
 │   ├── palette.js         # shared letter/category colours
 │   └── styles.css
+├── public/
+│   └── og.png             # generated social preview card (npm run og)
 └── index.html
 ```
 
@@ -55,6 +59,27 @@ Build for production:
 
 ```bash
 npm run build      # outputs to dist/
+
+`npm run build` runs three steps: it draws the social preview card
+(`scripts/generate-og.mjs` → `public/og.png`), runs Vite, then prerenders one
+HTML page per word at `dist/term/<slug>/index.html`
+(`scripts/prerender-share.mjs`). Those pages carry the term's own `<title>`,
+description and Open Graph tags, which is what makes a shared link show a real
+preview on LinkedIn, X or Medium — crawlers don't run JavaScript, so the
+single-page app alone can't describe an individual word.
+
+Set `SITE_URL` when building somewhere other than Netlify (Netlify supplies
+`URL` automatically) so `og:image` and `og:url` come out absolute:
+
+```bash
+SITE_URL=https://your-site.example npm run build
+```
+
+> **Sharing links:** each entry has a `↗ Share` button producing
+> `https://your-site/term/<slug>/`. Localhost links can't be fetched by
+> LinkedIn, so previews stay blank until the site is deployed. LinkedIn also
+> caches previews — after deploying, run the URL through the
+> [Post Inspector](https://www.linkedin.com/post-inspector/) once to refresh it.
 npm run preview    # preview the production build
 ```
 

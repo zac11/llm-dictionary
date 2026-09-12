@@ -70,10 +70,13 @@ async function openTermRitual(slug) {
 // Report how many terms were found (helpful when authoring content).
 console.info(`📚 ${summary()} — ${volumes.length} volumes on the shelf.`);
 
-// Deep links: ?term=attention opens straight to an entry, ?volume=a-b to a contents spread.
+// Deep links: /term/attention (the share-link form, also prerendered for
+// crawlers) and ?term=attention open straight to an entry; ?volume=a-b opens a
+// contents spread.
 {
   const params = new URLSearchParams(location.search);
-  const term = params.get('term');
+  const pathTerm = location.pathname.match(/\/term\/([^/]+)\/?$/i);
+  const term = params.get('term') || (pathTerm ? decodeURIComponent(pathTerm[1]) : null);
   const vol = params.get('volume');
   if (term) openTermRitual(term);
   else if (vol) openVolumeRitual(vol);
