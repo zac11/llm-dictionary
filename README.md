@@ -14,33 +14,6 @@ paper or source.
 
 ---
 
-## ✨ Features
-
-- **3D library (Three.js)** — 13 dictionary volumes (`A–B` … `Y–Z`) stand on a
-  wooden bookshelf wall among filler books, with warm sconce lighting, dust
-  motes, a reading desk, hover peek-out and a cinematic intro dolly.
-- **The library ritual** — pick a volume (or search a word): the camera glides
-  over, the book slides out of the shelf, floats down onto the lectern and its
-  cover swings open with a page flutter.
-- **Read like a real dictionary** — entries open as a crisp two-page paper
-  spread (contents page, drop caps, citations) with a paper page-turn animation;
-  Esc puts the book back on the shelf.
-- **Multi-page contents** — a volume with more than 10 words turns into
-  several sheets; flip them with a printed page strip (1·2·3…) at the foot of
-  the contents page, the corner buttons, or ← / → / PageUp / PageDown.
-- **Word browser** — pick a volume in 3D, use the A–Z letter bar, or search any
-  term / category / citation.
-- **Rich entries** — each term has a short definition, a longer explanation,
-  "also known as", a category tag, and previous/next navigation within its volume.
-- **Citations** — every entry includes a formatted reference (authors, year,
-  title, venue) with a link to the source paper or article.
-- **Deep links** — `?term=attention` opens straight to an entry, `?volume=a-b`
-  to a volume's contents.
-- **Content is just data** — drop a new JSON file into the right letter folder
-  and it appears in the app automatically; no code changes needed.
-
----
-
 ## 🗂 Project structure
 
 ```
@@ -141,10 +114,10 @@ npm run preview    # preview the production build
 
 ## 📚 The seed content
 
-The repo ships with **54 curated terms** covering every letter A–Z, each with a
+The repo ships with **1,502 terms** covering every letter A–Z, each with a
 real citation (attention, BERT, GPT, chain-of-thought, RAG, RLHF, LoRA,
 quantization, diffusion models, transformers, and more). Citations point to the
-original papers (arXiv, NeurIPS, Nature, journals, etc.).
+original papers (arXiv, NeurIPS, Nature, journals, etc.) or Wikipedia.
 
 ---
 
