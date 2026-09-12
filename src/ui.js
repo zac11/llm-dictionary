@@ -498,11 +498,33 @@ export class UI {
   }
 
   // ---------- share ----------
-  /** Canonical deep link that reopens this entry. */
+  /**
+   * Canonical share link for the current entry. The /term/<slug> form has a
+   * prerendered page carrying its own Open Graph tags — that is what makes
+   * link previews (LinkedIn, X, Medium) show the term instead of a bare site.
+   */
   _shareUrl() {
     const slug = this._activeTerm ? this._activeTerm.slug : null;
     if (!slug) return location.href;
-    return `${location.origin}${location.pathname}?term=${encodeURIComponent(slug)}`;
+    if (location.protocol === 'file:') {
+      return `${location.href.split(/[?#]/)[0]}?term=${encodeURIComponent(slug)}`;
+    }
+    return `${location.origin}/term/${encodeURIComponent(slug)}/`;
+  }
+
+  /** True when the page is served from a host social crawlers cannot reach. */
+  _isLocalPreview() {
+    if (location.protocol === 'file:') return true;
+    const host = location.hostname;
+    return (
+      host === 'localhost' ||
+      host === '127.0.0.1' ||
+      host === '0.0.0.0' ||
+      host.endsWith('.local') ||
+      /^10\./.test(host) ||
+      /^192\.168\./.test(host) ||
+      /^172\.(1[6-9]|2\d|3[01])\./.test(host)
+    );
   }
 
   /** A ready-to-paste blurb: term, definition, link and source. */
@@ -570,6 +592,15 @@ export class UI {
     heading.className = 'share-menu-title';
     heading.textContent = `Share “${t.term}”`;
     menu.appendChild(heading);
+
+    // Sharing a dev/preview URL silently produces empty previews — say so.
+    if (this._isLocalPreview()) {
+      const note = document.createElement('p');
+      note.className = 'share-note';
+      note.innerHTML =
+        '<strong>Local link.</strong> LinkedIn, X and Medium can’t fetch localhost, so previews stay blank until the site is deployed.';
+      menu.appendChild(note);
+    }
 
     const addItem = (icon, label, sub, onClick) => {
       const b = document.createElement('button');
