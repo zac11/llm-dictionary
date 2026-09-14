@@ -7,6 +7,13 @@
   ],
   "definition": "Storing the key and value vectors of past tokens so autoregressive generation need not recompute them each step.",
   "details": "When a decoder generates token by token, earlier tokens’ attention keys and values do not change, so caching them turns each new step into an O(sequence) operation instead of recomputing the whole history. The cache grows with context length and can dominate memory, motivating techniques such as paged attention, which manages cache blocks like memory pages for higher utilization.",
+  "story": "Picture a novelist who has read so much that, given a first line, they cannot help but write the next one. Here is the short version: Storing the key and value vectors of past tokens so autoregressive generation need not recompute them each step. The part that makes it sing: When a decoder generates token by token, earlier tokens’ attention keys and values do not change, so caching them turns each new step into an O(sequence) operation instead of recomputing the whole history. It is prediction pushed forward — each next word, or pixel, guessed from everything that came before it. And that is KV Cache — making something new out of everything it has ever seen.",
+  "related": [
+    "beam-search",
+    "best-of-n-sampling",
+    "grammar-constrained-decoding",
+    "greedy-decoding"
+  ],
   "citation": {
     "title": "Efficient Memory Management for Large Language Model Serving with PagedAttention",
     "authors": [

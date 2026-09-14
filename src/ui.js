@@ -1,5 +1,5 @@
 import { allTerms, findTerm, volumeByLetter, rangeTerms } from './terms.js';
-import { letterColor, categoryColor } from './palette.js';
+import { letterColor } from './palette.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -51,6 +51,7 @@ export class UI {
     this._activeTerm = null;
     this._termList = [];
     this._termIndex = -1;
+    this._entryPage = 0; // 0 = entry spread, 1 = story spread
     this._indexPage = 0; // current contents page within the open volume
     this._indexPages = 1;
     this._flipping = false;
@@ -366,9 +367,19 @@ export class UI {
     next.disabled = atLast;
 
     // In contents mode these buttons page through the sheets; in entry mode
-    // they wrap through individual words instead.
-    const prevLabel = this._mode === 'index' ? 'Previous contents page' : 'Previous entry';
-    const nextLabel = this._mode === 'index' ? 'Next contents page' : 'Next entry';
+    // they walk the entry → story sequence and wrap through individual words.
+    let prevLabel;
+    let nextLabel;
+    if (this._mode === 'index') {
+      prevLabel = 'Previous contents page';
+      nextLabel = 'Next contents page';
+    } else if (this._entryPage === 1) {
+      prevLabel = 'Back to the entry';
+      nextLabel = 'Next entry';
+    } else {
+      prevLabel = 'Previous entry';
+      nextLabel = 'Read the story';
+    }
     prev.title = prevLabel;
     next.title = nextLabel;
     prev.setAttribute('aria-label', prevLabel);
@@ -379,6 +390,7 @@ export class UI {
    * Open the book on a term's entry spread.
    * Without opts.from this only notifies main (which pulls the book out first);
    * main then calls back with { from: 'ritual' } once the 3D book is open.
+   * opts.page 1 lands straight on the term's story page (used when paging back).
    */
   openEntry(slug, opts = {}) {
     const term = findTerm(slug);
@@ -393,12 +405,13 @@ export class UI {
     this._folder = vol.folder;
     this._termList = rangeTerms(vol.folder);
     this._termIndex = this._termList.findIndex((t) => t.slug === slug);
+    this._entryPage = opts.page === 1 ? 1 : 0;
 
     const render = () => {
-      this._renderEntryPages(term, vol);
+      if (this._entryPage === 1) this._renderStorySpread(term);
+      else this._renderEntrySpread(term);
       this._setMode('entry');
-      this._counter.textContent = `${this._termIndex + 1} of ${this._termList.length} · ${vol.label}`;
-      this._syncSpreadNav();
+      this._syncEntryChrome(term, vol);
     };
 
     if (!this.isSpreadOpen()) {
@@ -411,8 +424,8 @@ export class UI {
     }
   }
 
-  _renderEntryPages(term, vol) {
-    const catCol = categoryColor(term.category);
+  /** Entry spread: definition on the left, details + citation (+ story cue) on the right. */
+  _renderEntrySpread(term) {
     const citation = formatCitation(term.citation);
     this._pageLeft.innerHTML = `
       <div class="pg-entry">
@@ -449,13 +462,58 @@ export class UI {
                </aside>`
             : ''
         }
+        ${term.story ? `<p class="pg-story-cue">❧ Turn the page — there's a story about this term →</p>` : ''}
       </div>`;
+  }
+
+  /** Story spread: a decorative title card on the left, the vignette on the right. */
+  _renderStorySpread(term) {
+    this._pageLeft.innerHTML = `
+      <div class="story-left">
+        <p class="idx-kicker">Tokenary · The Story</p>
+        <p class="idx-ornament">✦&nbsp;&nbsp;❦&nbsp;&nbsp;✦</p>
+        <h2 class="story-title">In a story</h2>
+        <p class="story-subject">${escapeHtml(term.term)}</p>
+        ${term.aka.length ? `<p class="pg-aka">also known as: ${escapeHtml(term.aka.join(', '))}</p>` : ''}
+        <p class="story-pull">“Imagine…”</p>
+      </div>`;
+    this._pageRight.innerHTML = `
+      <div class="pg-entry">
+        <p class="pg-story-term">${escapeHtml(term.term)}</p>
+        <p class="pg-story-text">${escapeHtml(term.story)}</p>
+        <p class="pg-story-end" aria-hidden="true">❦</p>
+      </div>`;
+  }
+
+  /** Footer chrome for the entry mode (counter + prev/next labels). */
+  _syncEntryChrome(term, vol) {
+    this.closeShareMenu();
+    const page = this._entryPage === 1 ? ' · story' : '';
+    this._counter.textContent = `${this._termIndex + 1} of ${this._termList.length} · ${vol.label}${page}`;
+    this._syncSpreadNav();
   }
 
   _stepEntry(dir) {
     if (this._mode !== 'entry' || this._termIndex === -1 || !this._termList.length) return;
-    const next = (this._termIndex + dir + this._termList.length) % this._termList.length;
-    this.openEntry(this._termList[next].slug, { from: 'volume', dir: dir > 0 ? 'next' : 'prev' });
+    const n = this._termList.length;
+    // The volume reads as one continuous sequence: entry, story, entry, story…
+    const pos = (this._termIndex * 2 + this._entryPage + dir + n * 2) % (n * 2);
+    const nextIndex = Math.floor(pos / 2);
+    const nextPage = pos % 2;
+    const flipDir = dir > 0 ? 'next' : 'prev';
+
+    if (nextIndex === this._termIndex) {
+      // Flip between the entry spread and the story spread of the same term.
+      this._entryPage = nextPage;
+      const term = this._termList[nextIndex];
+      this._flip(flipDir, () => {
+        if (nextPage === 1) this._renderStorySpread(term);
+        else this._renderEntrySpread(term);
+        this._syncEntryChrome(term, volumeByLetter(term.letter));
+      });
+    } else {
+      this.openEntry(this._termList[nextIndex].slug, { from: 'volume', dir: flipDir, page: nextPage });
+    }
   }
 
   /** Paper page-turn: the leaf covers the right page, content swaps mid-flip. */
@@ -721,6 +779,7 @@ export class UI {
       (t) =>
         t.term.toLowerCase().includes(s) ||
         t.category.toLowerCase().includes(s) ||
+        (t.story || '').toLowerCase().includes(s) ||
         t.aka.some((a) => a.toLowerCase().includes(s)) ||
         (t.citation.title || '').toLowerCase().includes(s) ||
         t.citation.authors.some((a) => a.toLowerCase().includes(s))
