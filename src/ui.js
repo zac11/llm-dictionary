@@ -1,5 +1,5 @@
 import { allTerms, findTerm, volumeByLetter, rangeTerms } from './terms.js';
-import { letterColor, categoryColor } from './palette.js';
+import { letterColor } from './palette.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -51,6 +51,7 @@ export class UI {
     this._activeTerm = null;
     this._termList = [];
     this._termIndex = -1;
+    this._entryPage = 0; // 0 = entry spread, 1 = story spread
     this._indexPage = 0; // current contents page within the open volume
     this._indexPages = 1;
     this._flipping = false;
@@ -366,7 +367,8 @@ export class UI {
     next.disabled = atLast;
 
     // In contents mode these buttons page through the sheets; in entry mode
-    // they wrap through individual words instead.
+    // they always walk between terms — flipping to the story is done by the
+    // in-page flip buttons so the footer stays unambiguous.
     const prevLabel = this._mode === 'index' ? 'Previous contents page' : 'Previous entry';
     const nextLabel = this._mode === 'index' ? 'Next contents page' : 'Next entry';
     prev.title = prevLabel;
@@ -393,12 +395,12 @@ export class UI {
     this._folder = vol.folder;
     this._termList = rangeTerms(vol.folder);
     this._termIndex = this._termList.findIndex((t) => t.slug === slug);
+    this._entryPage = 0;
 
     const render = () => {
-      this._renderEntryPages(term, vol);
+      this._renderEntrySpread(term);
       this._setMode('entry');
-      this._counter.textContent = `${this._termIndex + 1} of ${this._termList.length} · ${vol.label}`;
-      this._syncSpreadNav();
+      this._syncEntryChrome(term, vol);
     };
 
     if (!this.isSpreadOpen()) {
@@ -411,8 +413,8 @@ export class UI {
     }
   }
 
-  _renderEntryPages(term, vol) {
-    const catCol = categoryColor(term.category);
+  /** Entry spread: definition on the left, details + citation (+ story cue) on the right. */
+  _renderEntrySpread(term) {
     const citation = formatCitation(term.citation);
     this._pageLeft.innerHTML = `
       <div class="pg-entry">
@@ -449,13 +451,109 @@ export class UI {
                </aside>`
             : ''
         }
+        ${term.story ? `<button class="pg-flip-story" type="button">❧ Flip to the story →</button>` : ''}
       </div>`;
+    this._pageRight.querySelector('.pg-flip-story')?.addEventListener('click', () => this._flipToPage(1));
+  }
+
+  /**
+   * Story spread: the opening sentence on the left ("Imagine…" no longer sits
+   * alone), the rest of the vignette plus suggested related terms on the right.
+   */
+  _renderStorySpread(term) {
+    const sentences = splitSentences(term.story);
+    const opening = sentences[0] || '';
+    const rest = sentences.slice(1);
+    const moral = rest.length ? rest.pop() : '';
+    const body = rest;
+
+    this._pageLeft.innerHTML = `
+      <div class="story-left">
+        <p class="idx-kicker">Tokenary · The Story</p>
+        <p class="idx-ornament">✦&nbsp;&nbsp;❦&nbsp;&nbsp;✦</p>
+        <h2 class="story-title">In a story</h2>
+        <p class="story-subject">${escapeHtml(term.term)}</p>
+        ${term.aka.length ? `<p class="pg-aka">also known as: ${escapeHtml(term.aka.join(', '))}</p>` : ''}
+        <p class="story-open">${highlightTerm(opening, term)}</p>
+        <button class="pg-flip-back" type="button">← Flip back to the entry</button>
+      </div>`;
+
+    const bodyHtml = body.map((s) => `<p class="story-line">${highlightTerm(s, term)}</p>`).join('');
+    const moralHtml = moral ? `<p class="story-moral">${highlightTerm(moral, term)}</p>` : '';
+
+    this._pageRight.innerHTML = `
+      <div class="pg-entry">
+        <p class="pg-story-term">${escapeHtml(term.term)}</p>
+        ${bodyHtml}
+        ${moralHtml}
+        <p class="pg-story-end" aria-hidden="true">❦</p>
+        ${this._renderSuggested(term)}
+      </div>`;
+
+    this._pageLeft.querySelector('.pg-flip-back')?.addEventListener('click', () => this._flipToPage(0));
+    this._pageRight.querySelectorAll('.suggested-row').forEach((btn) =>
+      btn.addEventListener('click', () => {
+        const slug = btn.dataset.slug;
+        if (slug) {
+          btn.blur(); // don't keep focus inside the overlay while it closes
+          this.openEntry(slug);
+        }
+      })
+    );
+  }
+
+  /** "Suggested terms" — related entries computed from shared category/words. */
+  _renderSuggested(term) {
+    const related = (term.related || [])
+      .map((slug) => findTerm(slug))
+      .filter(Boolean)
+      .slice(0, 4);
+    if (!related.length) return '';
+    return `
+      <aside class="pg-suggested">
+        <h3>❦&nbsp; Suggested terms</h3>
+        <ul class="suggested-list">
+          ${related
+            .map(
+              (r) => `
+            <li>
+              <button class="suggested-row" type="button" data-slug="${escapeHtml(r.slug)}">
+                <span class="s-term">${escapeHtml(r.term)}</span>
+                <span class="s-cat">${escapeHtml(r.category)}</span>
+              </button>
+            </li>`
+            )
+            .join('')}
+        </ul>
+      </aside>`;
+  }
+
+  /** Footer chrome for the entry mode (counter + prev/next labels). */
+  _syncEntryChrome(term, vol) {
+    this.closeShareMenu();
+    const page = this._entryPage === 1 ? ' · story' : '';
+    this._counter.textContent = `${this._termIndex + 1} of ${this._termList.length} · ${vol.label}${page}`;
+    this._syncSpreadNav();
   }
 
   _stepEntry(dir) {
     if (this._mode !== 'entry' || this._termIndex === -1 || !this._termList.length) return;
     const next = (this._termIndex + dir + this._termList.length) % this._termList.length;
     this.openEntry(this._termList[next].slug, { from: 'volume', dir: dir > 0 ? 'next' : 'prev' });
+  }
+
+  /** Flip between a term's entry spread and its story spread (in-page turn). */
+  _flipToPage(page) {
+    if (this._mode !== 'entry' || !this._activeTerm || page === this._entryPage) return;
+    const term = this._activeTerm;
+    const vol = volumeByLetter(term.letter);
+    const dir = page > this._entryPage ? 'next' : 'prev';
+    this._entryPage = page;
+    this._flip(dir, () => {
+      if (page === 1) this._renderStorySpread(term);
+      else this._renderEntrySpread(term);
+      this._syncEntryChrome(term, vol);
+    });
   }
 
   /** Paper page-turn: the leaf covers the right page, content swaps mid-flip. */
@@ -721,6 +819,7 @@ export class UI {
       (t) =>
         t.term.toLowerCase().includes(s) ||
         t.category.toLowerCase().includes(s) ||
+        (t.story || '').toLowerCase().includes(s) ||
         t.aka.some((a) => a.toLowerCase().includes(s)) ||
         (t.citation.title || '').toLowerCase().includes(s) ||
         t.citation.authors.some((a) => a.toLowerCase().includes(s))
@@ -824,4 +923,29 @@ function escapeHtml(str = '') {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
+}
+
+/** Split prose into sentences on ". ! ?" followed by a capital/quote or end. */
+function splitSentences(text) {
+  return String(text || '')
+    .split(/(?<=[.!?])\s+(?=[A-Z"'“(])/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
+const REGEX_ESCAPE = /[.*+?^${}()|[\]\\]/g;
+const escapeRegex = (s) => String(s).replace(REGEX_ESCAPE, '\\$&');
+
+/** Escape text and wrap the term and its aliases in highlighted marks. */
+function highlightTerm(text, term) {
+  const html = escapeHtml(text);
+  const names = [term.term, ...(term.aka || [])]
+    .map((n) => escapeHtml(n).trim())
+    .filter(Boolean)
+    .sort((a, b) => b.length - a.length);
+  if (!names.length) return html;
+  const pattern = names
+    .map((n) => `\\b${escapeRegex(n)}${/\w$/.test(n) ? '\\b' : ''}`)
+    .join('|');
+  return html.replace(new RegExp(pattern, 'gi'), (m) => `<mark class="story-hl">${m}</mark>`);
 }

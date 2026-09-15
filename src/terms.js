@@ -41,6 +41,8 @@ function normalize(raw, file) {
     aka: Array.isArray(raw.aka) ? raw.aka : raw.aka ? [raw.aka] : [],
     definition: raw.definition || '',
     details: raw.details || '',
+    story: raw.story || '',
+    related: Array.isArray(raw.related) ? raw.related : [],
     citation: {
       title: citation.title || '',
       authors: Array.isArray(citation.authors) ? citation.authors : [],
@@ -108,6 +110,7 @@ export function searchTerms(query) {
       ...t.aka,
       t.definition,
       t.details,
+      t.story,
       t.citation.title,
       t.citation.venue,
       ...t.citation.authors,
