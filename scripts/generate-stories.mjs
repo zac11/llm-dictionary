@@ -113,6 +113,24 @@ const BUCKETS = [
     ],
   },
   {
+    name: 'reasoning',
+    test: /reasoning|chain.?of.?thought|tree.?of.?thoughts|self.?consistency|rationale|reflection|test.?time compute|inference.?time compute|think before speaking|iterative reasoning/i,
+    scenes: [
+      'Picture solving a puzzle by talking yourself through it out loud — wrong turns, second guesses, and all — until the answer clicks.',
+      'Imagine a mathematician who writes every step on paper, reads it back, crosses out a bad line, and starts that line over.',
+      'Think of a chess player muttering through variations in their head before they touch a single piece.',
+    ],
+    analogies: [
+      'It is thinking made visible — the model shows its work, then reads its own work and improves it.',
+      'More time spent reconsidering can be worth more than a bigger model.',
+      'The first answer is a draft; the last answer is the edited version.',
+    ],
+    takeaways: [
+      'That loop of draft, check, and revise is {term}.',
+      'And that habit of thinking twice — or a hundred times — is {term}.',
+    ],
+  },
+  {
     name: 'vision',
     test: /vision|image|pixel|object detection|segmentation|cnn|convolution|face recognition|scene graph|optical/i,
     scenes: [
@@ -279,6 +297,7 @@ const ORDER = [
   'safety',
   'reinforcement',
   'agents',
+  'reasoning',
   'vision',
   'generation',
   'language',
