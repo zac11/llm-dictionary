@@ -1,5 +1,6 @@
 import { allTerms, findTerm, volumeByLetter, rangeTerms } from './terms.js';
 import { letterColor } from './palette.js';
+import { icon } from './icons.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -185,6 +186,16 @@ export class UI {
     document.body.classList.add('reading');
   }
 
+  /** Freshly rendered pages always open at the top, not where the user left off. */
+  _resetScroll() {
+    this._pageLeft.scrollTop = 0;
+    this._pageRight.scrollTop = 0;
+    const pages = this._spread.querySelector('.spread-pages');
+    if (pages) pages.scrollTop = 0;
+    const list = this._pageRight.querySelector('.contents-list');
+    if (list) list.scrollTop = 0;
+  }
+
   _setMode(mode) {
     this._mode = mode;
     this._spreadBook.classList.toggle('mode-index', mode === 'index');
@@ -203,7 +214,9 @@ export class UI {
     const vol = this._folder ? volumeByLetter(this._folder[0]) : null;
     const label = vol ? vol.label : '';
     btn.hidden = this._mode !== 'entry';
-    btn.textContent = label ? `↩ ${label} contents` : '↩ Contents';
+    btn.innerHTML = `${icon('corner-up-left')}<span>${escapeHtml(
+      label ? `${label} contents` : 'Contents'
+    )}</span>`;
     const title = label ? `Back to the ${label} glossary` : 'Back to the glossary';
     btn.title = title;
     btn.setAttribute('aria-label', title);
@@ -285,6 +298,7 @@ export class UI {
     // A long volume's contents span several sheets — draw the folio strip
     // (page numbers + turn arrows) on the paper so paging is obvious.
     if (this._indexPages > 1) this._appendIndexPager();
+    this._resetScroll();
   }
 
   /** Build the "turn the page" strip printed on the contents sheet. */
@@ -297,13 +311,13 @@ export class UI {
     // Jump + step controls around a sliding window of page numbers. Long
     // volumes would overflow if every page got its own chip, so show at most
     // WINDOW chips and offer « first / ‹ prev / next › / last » arrows.
-    const mkArrow = (page, glyph, label, disabled) => {
+    const mkArrow = (page, name, label, disabled) => {
       const b = document.createElement('button');
       b.type = 'button';
       b.className = 'pager-arrow';
       b.setAttribute('aria-label', label);
       b.title = label;
-      b.textContent = glyph;
+      b.innerHTML = icon(name);
       b.disabled = disabled;
       b.addEventListener('click', () => this._gotoIndex(page));
       return b;
@@ -336,12 +350,12 @@ export class UI {
     const atFirst = this._indexPage === 0;
     const atLast = this._indexPage === this._indexPages - 1;
     pager.append(
-      mkArrow(0, '«', 'First contents page', atFirst),
-      mkArrow(this._indexPage - 1, '‹', 'Previous contents page', atFirst),
+      mkArrow(0, 'chevrons-left', 'First contents page', atFirst),
+      mkArrow(this._indexPage - 1, 'chevron-left', 'Previous contents page', atFirst),
       label,
       nums,
-      mkArrow(this._indexPage + 1, '›', 'Next contents page', atLast),
-      mkArrow(this._indexPages - 1, '»', 'Last contents page', atLast)
+      mkArrow(this._indexPage + 1, 'chevron-right', 'Next contents page', atLast),
+      mkArrow(this._indexPages - 1, 'chevrons-right', 'Last contents page', atLast)
     );
     this._pageRight.querySelector('.idx-right').appendChild(pager);
   }
@@ -438,7 +452,7 @@ export class UI {
           <p class="pg-kicker">${escapeHtml(term.category)}</p>
           <button class="pg-share" type="button" aria-haspopup="dialog" aria-expanded="false"
                   title="Share “${escapeHtml(term.term)}”">
-            <span aria-hidden="true">↗</span> Share
+            ${icon('share-2')}<span>Share</span>
           </button>
         </div>
         <h2 class="pg-term">${escapeHtml(term.term)}</h2>
@@ -456,20 +470,21 @@ export class UI {
         ${
           citation || term.citation.url
             ? `<aside class="pg-citation">
-                 <h3>❦&nbsp; Citation</h3>
+                 <h3>${icon('quote')}&nbsp; Citation</h3>
                  <p class="pg-citation-text">${escapeHtml(citation)}</p>
                  ${
                    term.citation.url
                      ? `<a class="pg-citation-link" href="${term.citation.url}" target="_blank" rel="noopener"
-                          aria-label="Open source: ${escapeHtml(term.citation.title)}">Read the source&nbsp;↗</a>`
+                          aria-label="Open source: ${escapeHtml(term.citation.title)}">Read the source ${icon('arrow-up-right')}</a>`
                      : ''
                  }
                </aside>`
             : ''
         }
-        ${term.story ? `<button class="pg-flip-story" type="button">❧ Flip to the story →</button>` : ''}
+        ${term.story ? `<button class="pg-flip-story" type="button">${icon('book-open')}<span>Flip to the story</span>${icon('arrow-right')}</button>` : ''}
       </div>`;
     this._pageRight.querySelector('.pg-flip-story')?.addEventListener('click', () => this._flipToPage(1));
+    this._resetScroll();
   }
 
   /**
@@ -491,7 +506,7 @@ export class UI {
         <p class="story-subject">${escapeHtml(term.term)}</p>
         ${term.aka.length ? `<p class="pg-aka">also known as: ${escapeHtml(term.aka.join(', '))}</p>` : ''}
         <p class="story-open">${highlightTerm(opening, term)}</p>
-        <button class="pg-flip-back" type="button">← Flip back to the entry</button>
+        <button class="pg-flip-back" type="button">${icon('chevron-left')}<span>Flip back to the entry</span></button>
       </div>`;
 
     const bodyHtml = body.map((s) => `<p class="story-line">${highlightTerm(s, term)}</p>`).join('');
@@ -516,6 +531,7 @@ export class UI {
         }
       })
     );
+    this._resetScroll();
   }
 
   /** "Suggested terms" — related entries computed from shared category/words. */
@@ -527,7 +543,7 @@ export class UI {
     if (!related.length) return '';
     return `
       <aside class="pg-suggested">
-        <h3>❦&nbsp; Suggested terms</h3>
+        <h3>${icon('sparkles')}&nbsp; Suggested terms</h3>
         <ul class="suggested-list">
           ${related
             .map(
@@ -716,12 +732,12 @@ export class UI {
       menu.appendChild(note);
     }
 
-    const addItem = (icon, label, sub, onClick) => {
+    const addItem = (iconHtml, label, sub, onClick) => {
       const b = document.createElement('button');
       b.type = 'button';
       b.className = 'share-item';
       b.setAttribute('role', 'menuitem');
-      b.innerHTML = `<span class="si-icon" aria-hidden="true">${icon}</span>
+      b.innerHTML = `<span class="si-icon" aria-hidden="true">${iconHtml}</span>
         <span><span class="si-label">${escapeHtml(label)}</span>${
           sub ? `<span class="si-sub">${escapeHtml(sub)}</span>` : ''
         }</span>`;
@@ -732,7 +748,7 @@ export class UI {
 
     // Native share sheet first where the platform supports it (mostly mobile).
     if (navigator.share) {
-      addItem('⤴', 'Share…', "Use your device's share sheet", async () => {
+      addItem(icon('share'), 'Share…', "Use your device's share sheet", async () => {
         this.closeShareMenu();
         try {
           await navigator.share({ title, text: `${t.term} — ${t.definition}`, url });
@@ -742,7 +758,7 @@ export class UI {
       });
     }
 
-    addItem('⧉', 'Copy link', 'Paste it anywhere', async (e) => {
+    addItem(icon('copy'), 'Copy link', 'Paste it anywhere', async (e) => {
       const btn = e.currentTarget;
       if (!(await this._copyText(url))) {
         this._toast('Copying was blocked — use the address bar to copy the link');
@@ -775,7 +791,7 @@ export class UI {
       this._openWindow('https://medium.com/new-story');
     });
 
-    addItem('✉', 'Email', 'Send the entry to someone', () => {
+    addItem(icon('mail'), 'Email', 'Send the entry to someone', () => {
       this.closeShareMenu();
       location.href = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(blurb)}`;
     });
