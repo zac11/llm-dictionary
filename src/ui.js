@@ -294,15 +294,18 @@ export class UI {
     pager.setAttribute('role', 'group');
     pager.setAttribute('aria-label', 'Contents pages');
 
-    const mkArrow = (step, label) => {
+    // Jump + step controls around a sliding window of page numbers. Long
+    // volumes would overflow if every page got its own chip, so show at most
+    // WINDOW chips and offer « first / ‹ prev / next › / last » arrows.
+    const mkArrow = (page, glyph, label, disabled) => {
       const b = document.createElement('button');
       b.type = 'button';
       b.className = 'pager-arrow';
       b.setAttribute('aria-label', label);
       b.title = label;
-      b.textContent = step > 0 ? '›' : '‹';
-      b.disabled = this._indexPage + step < 0 || this._indexPage + step >= this._indexPages;
-      b.addEventListener('click', () => this._gotoIndex(this._indexPage + step));
+      b.textContent = glyph;
+      b.disabled = disabled;
+      b.addEventListener('click', () => this._gotoIndex(page));
       return b;
     };
 
@@ -312,7 +315,11 @@ export class UI {
 
     const nums = document.createElement('span');
     nums.className = 'pager-nums';
-    for (let p = 0; p < this._indexPages; p++) {
+    const WINDOW = 5;
+    let start = Math.max(0, Math.min(this._indexPage - Math.floor(WINDOW / 2), this._indexPages - WINDOW));
+    const end = Math.min(start + WINDOW, this._indexPages);
+    start = Math.max(0, end - WINDOW);
+    for (let p = start; p < end; p++) {
       const b = document.createElement('button');
       b.type = 'button';
       b.className = 'pager-num' + (p === this._indexPage ? ' current' : '');
@@ -326,7 +333,16 @@ export class UI {
       nums.appendChild(b);
     }
 
-    pager.append(mkArrow(-1, 'Previous contents page'), label, nums, mkArrow(1, 'Next contents page'));
+    const atFirst = this._indexPage === 0;
+    const atLast = this._indexPage === this._indexPages - 1;
+    pager.append(
+      mkArrow(0, '«', 'First contents page', atFirst),
+      mkArrow(this._indexPage - 1, '‹', 'Previous contents page', atFirst),
+      label,
+      nums,
+      mkArrow(this._indexPage + 1, '›', 'Next contents page', atLast),
+      mkArrow(this._indexPages - 1, '»', 'Last contents page', atLast)
+    );
     this._pageRight.querySelector('.idx-right').appendChild(pager);
   }
 
