@@ -4,13 +4,12 @@
 //  Run:  node scripts/generate-stories.mjs
 //        node scripts/generate-stories.mjs --force   (regenerate existing)
 //
-//  Each term gets a 3–5 sentence micro-story told in the second person:
-//  a concrete scene → a plain-language restatement of the definition → how the
-//  term works → a category analogy → a takeaway. The scenes, analogies and
-//  takeaways are hand-written per category bucket; the definition/details are
-//  framed with varying connective phrases so neighbouring terms don't all read
-//  identically. Selection is a deterministic hash of the slug, so re-running is
-//  stable. Terms that already carry a hand-edited "story" are left untouched
+//  Each term gets a 3–5 sentence micro-story in plain, everyday language:
+//  a concrete scene → two plain explanations of the idea → a category analogy
+//  → a takeaway that names the term. All the prose is hand-written per category
+//  bucket (no technical definition is pasted in), so a non-expert can follow
+//  every sentence. Selection is a deterministic hash of the slug, so re-running
+//  is stable. Terms that already carry a hand-edited "story" are left untouched
 //  unless --force is passed.
 // -----------------------------------------------------------------------------
 
@@ -22,6 +21,9 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const DICT = join(ROOT, 'dictionary');
 const FORCE = process.argv.includes('--force');
 
+// Slugs with hand-written stories that must survive regeneration.
+const PRESERVE = new Set(['scalable-oversight', 'transformer', 'transfer-learning']);
+
 // ------------------------------------------------------------- small helpers --
 const hash = (s) => {
   let h = 5381;
@@ -29,32 +31,73 @@ const hash = (s) => {
   return h;
 };
 const pick = (arr, seed) => arr[seed % arr.length];
-const ensurePeriod = (s) => {
-  const t = String(s || '').trim();
-  if (!t) return '';
-  return /[.!?]$/.test(t) ? t : `${t}.`;
-};
-const firstSentence = (text) => {
-  const t = String(text || '').trim();
-  if (!t) return '';
-  const m = t.match(/^.*?[.!?](?=\s+[A-Z"'“(]|\s*$)/s);
-  return m ? m[0].trim() : t;
-};
+
 
 // --------------------------------------------------------------- voice parts --
-// Connectives that frame the (already plain-language) definition and details.
-const BRIDGES = [
-  'Think of it this way: ',
-  'In plain words: ',
-  'Here is the short version: ',
-  'Boil it down and it is this: ',
-];
-const EXPLAINS = [
-  'Here is why it matters: ',
-  'And here is the clever part: ',
-  'Here is how it actually plays out: ',
-  'The part that makes it sing: ',
-];
+// Plain, everyday explanations of each concept family. These replace the raw
+// technical definition in the story, so a non-expert can follow every line.
+const EXPLANATIONS = {
+  safety: [
+    'The idea is simple: before something powerful is let loose, someone checks that it will not do real harm to real people.',
+    'It is the habit of asking, before every launch, what could go wrong — and then doing something about it.',
+    'Think of it as the quiet rule that a tool should be useful without being dangerous.',
+  ],
+  reinforcement: [
+    'The machine is not handed the answers — it tries things, earns a reward or a miss, and slowly figures out what works.',
+    'It learns the way a child learns to walk: wobble, fall, adjust, repeat.',
+    'Instead of being told the rules, it discovers them by living with the consequences.',
+  ],
+  agents: [
+    'The machine stops just answering one question and starts getting a job done, step by step, checking its work along the way.',
+    'It plans a little, acts a little, looks at the result, and then decides what to do next.',
+    'It is the difference between a search engine and a helper who actually finishes the task.',
+  ],
+  reasoning: [
+    'Instead of blurting out an answer, the machine talks its way through the problem one step at a time.',
+    'It writes its thinking down, reads it back, and fixes the parts that do not hold up.',
+    'Slowing down to think often beats answering fast.',
+  ],
+  vision: [
+    'The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces.',
+    'It turns a picture into an understanding: this is a cat, that is a stop sign.',
+    'What your eyes do without thinking, the machine does one careful layer at a time.',
+  ],
+  generation: [
+    'Given a starting line, the machine imagines what comes next — a word, a note, a patch of a picture.',
+    'It makes new things by recombining everything it has ever seen.',
+    'The result feels creative because it is memory, reshuffled at speed.',
+  ],
+  language: [
+    'The machine learns language the way you did — by hearing so much of it that the patterns sink in.',
+    'It figures out meaning by noticing which words like to travel together.',
+    'It does not memorize a rulebook; it absorbs a library.',
+  ],
+  training: [
+    'The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time.',
+    'It is the same loop you use to learn anything: try, miss, correct, try again.',
+    'Underneath all the magic is a patient process of small improvements.',
+  ],
+  evaluation: [
+    'Before trusting a machine, someone has to measure how good it really is — fairly and honestly.',
+    'It is the exam that separates “it sounds good” from “it actually is good”.',
+    'A fair scoreboard keeps everyone honest.',
+  ],
+  architecture: [
+    'At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other.',
+    'The layout decides what the machine can even attempt, before it learns a single thing.',
+    'It is the blueprint that makes everything else possible.',
+  ],
+  data: [
+    'Every machine is shaped by what it was shown, so someone has to choose that material with care.',
+    'The examples a machine reads become the world it believes in.',
+    'Better ingredients make a better meal, and the same is true here.',
+  ],
+  general: [
+    'Behind the jargon is an idea you could explain to a friend over coffee.',
+    'At its heart it is a simple notion, once you strip away the fancy name.',
+    'A small key that opens a much bigger door.',
+  ],
+};
 
 // Each bucket: keyword test + hand-written scene openers, analogies and
 // takeaways. `{term}` in takeaways is replaced with the term name.
@@ -314,16 +357,14 @@ const composeStory = (record, bucket) => {
   const term = record.term.trim();
 
   const scene = pick(bucket.scenes, seed);
-  const bridge = pick(BRIDGES, seed + 1);
-  const explainPrefix = pick(EXPLAINS, seed + 2);
+  const explains = EXPLANATIONS[bucket.name] || EXPLANATIONS.general;
+  const explain1 = pick(explains, seed + 1);
+  const explain2 = pick(explains, seed + 2);
   const analogy = pick(bucket.analogies, seed + 3);
   const takeaway = pick(bucket.takeaways, seed + 4).replaceAll('{term}', term);
 
-  const definition = ensurePeriod(firstSentence(record.definition));
-  const details = ensurePeriod(firstSentence(record.details));
-
-  const parts = [scene, `${bridge}${definition}`];
-  if (details) parts.push(`${explainPrefix}${details}`);
+  const parts = [scene, explain1];
+  if (explain2 && explain2 !== explain1) parts.push(explain2);
   parts.push(analogy, takeaway);
   return parts.join(' ');
 };
@@ -412,7 +453,12 @@ for (const { path, record } of entries) {
   const hadStory = !!(record.story && String(record.story).trim());
   const hadRelated = !!(Array.isArray(record.related) && record.related.length);
 
-  const story = !FORCE && hadStory ? record.story : composeStory(record, bucketFor(record));
+  const story =
+    PRESERVE.has(record.slug) && hadStory
+      ? record.story
+      : !FORCE && hadStory
+        ? record.story
+        : composeStory(record, bucketFor(record));
   const related = !FORCE && hadRelated ? record.related : relatedBySlug.get(record.slug) || [];
 
   // Insert `story` and `related` right after `details` so the JSON stays tidy;
