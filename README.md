@@ -30,6 +30,8 @@ llm-dictionary/
 ├── scripts/
 │   ├── generate-terms.mjs # optional bootstrap generator (npm run terms)
 │   ├── generate-og.mjs    # writes public/og.png (1200×630 preview card)
+│   ├── generate-brand.mjs # branding kit → branding/ (npm run brand)
+│   ├── lib/raster.mjs     # dependency-free PNG canvas shared by both
 │   └── prerender-share.mjs# post-build: per-term /term/<slug>/ share pages
 ├── src/
 │   ├── main.js            # app entry / ritual orchestration
@@ -143,6 +145,19 @@ The repo ships with **1,502 terms** covering every letter A–Z, each with a
 real citation (attention, BERT, GPT, chain-of-thought, RAG, RLHF, LoRA,
 quantization, diffusion models, transformers, and more). Citations point to the
 original papers (arXiv, NeurIPS, Nature, journals, etc.) or Wikipedia.
+
+---
+
+## 🎨 Branding
+
+Logos, lockups, favicons, social banners, colour swatches and design tokens are
+generated into `branding/` — see [branding/BRAND.md](./branding/BRAND.md) for the
+guidelines and [branding/brand.html](./branding/brand.html) for the visual sheet.
+Everything derives from `src/palette.js` and `src/styles.css`; regenerate with:
+
+```bash
+npm run brand
+```
 
 ---
 
