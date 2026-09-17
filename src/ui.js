@@ -257,7 +257,7 @@ export class UI {
     const idx = ROMAN[Math.max(0, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.indexOf(a) >> 1)];
     this._pageLeft.innerHTML = `
       <div class="idx-left">
-        <p class="idx-kicker">Tokenary · AI Engineering</p>
+        <p class="idx-kicker">Neuropaedia · AI Engineering</p>
         <p class="idx-ornament">✦&nbsp;&nbsp;❦&nbsp;&nbsp;✦</p>
         <h2 class="idx-range">${a} – ${b}</h2>
         <p class="idx-roman">Volume ${idx}</p>
@@ -500,7 +500,7 @@ export class UI {
 
     this._pageLeft.innerHTML = `
       <div class="story-left">
-        <p class="idx-kicker">Tokenary · The Story</p>
+        <p class="idx-kicker">Neuropaedia · The Story</p>
         <p class="idx-ornament">✦&nbsp;&nbsp;❦&nbsp;&nbsp;✦</p>
         <h2 class="story-title">In a story</h2>
         <p class="story-subject">${escapeHtml(term.term)}</p>
@@ -661,7 +661,7 @@ export class UI {
   _shareBlurb() {
     const t = this._activeTerm;
     if (!t) return this._shareUrl();
-    const lines = [`${t.term} — ${t.definition}`, '', `Read it in Tokenary: ${this._shareUrl()}`];
+    const lines = [`${t.term} — ${t.definition}`, '', `Read it in Neuropaedia: ${this._shareUrl()}`];
     const cite = formatCitation(t.citation);
     if (cite) lines.push('', `Source: ${cite}`);
     return lines.join('\n');
@@ -715,7 +715,7 @@ export class UI {
     if (!t) return;
 
     const url = this._shareUrl();
-    const title = `${t.term} — The AI Engineering Dictionary`;
+    const title = `${t.term} — The AI Encyclopaedia`;
     const blurb = this._shareBlurb();
 
     const heading = document.createElement('p');

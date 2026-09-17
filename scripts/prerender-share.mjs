@@ -24,7 +24,7 @@ const SITE_URL = (process.env.SITE_URL || process.env.URL || process.env.DEPLOY_
   .replace(/\/+$/, '');
 const abs = (path) => (SITE_URL ? SITE_URL + path : path);
 
-const SITE_TITLE = 'Tokenary — The AI Engineering Dictionary';
+const SITE_TITLE = 'Neuropaedia — The AI Encyclopaedia';
 const SITE_DESC =
   'An interactive 3D dictionary of AI and machine-learning terms, A–Z, with citations.';
 
@@ -48,7 +48,7 @@ function socialBlock({ title, description, path, type }) {
   const image = abs('/og.png');
   return `<!-- social:start -->
     <meta property="og:type" content="${type}" />
-    <meta property="og:site_name" content="Tokenary" />
+    <meta property="og:site_name" content="Neuropaedia" />
     <meta property="og:locale" content="en" />
     <meta property="og:title" content="${esc(title)}" />
     <meta property="og:description" content="${esc(description)}" />
@@ -126,7 +126,7 @@ writeFileSync(
 
 const bySlug = new Map();
 for (const term of terms) {
-  const title = `${term.term} — Tokenary`;
+  const title = `${term.term} — Neuropaedia`;
   const description = clamp(`${term.category}: ${term.definition}`, 200) || SITE_DESC;
   // trailing slash on purpose: every static host resolves /x/ to /x/index.html,
   // whereas the extensionless form relies on host-specific "pretty URL" rules

@@ -1,4 +1,4 @@
-# Tokenary — The AI Engineering Dictionary
+# Neuropaedia — The AI Encyclopaedia
 
 > Decode the language of LLMs, GenAI & AI Engineering.
 >

@@ -83,7 +83,7 @@ console.info(`📚 ${summary()} — ${volumes.length} volumes on the shelf.`);
 }
 
 // Dev/debug handle (safe to keep; exposes scene for inspection).
-window.__tokenary = {
+window.__neuropaedia = {
   library,
   scene: library.scene,
   camera: library._camera,
