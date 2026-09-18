@@ -15,6 +15,22 @@ console.log(`aliases: ${terms.reduce((sum, term) => sum + term.aka.length, 0)}`)
 const { errors } = printDiagnostics(diagnostics);
 if (errors.length) process.exit(1);
 
+const relatedIncoming = new Map();
+for (const term of terms) {
+  for (const target of term.related) relatedIncoming.set(target, (relatedIncoming.get(target) || 0) + 1);
+}
+const relatedHubs = [...relatedIncoming]
+  .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+  .slice(0, 10);
+const relatedHubThreshold = Math.ceil(terms.length * 0.05);
+const dominantRelatedHubs = relatedHubs.filter(([, count]) => count > relatedHubThreshold);
+console.log(`largest raw related hubs: ${relatedHubs.map(([slug, count]) => `${slug} (${count})`).join(', ') || 'none'}`);
+console.log(
+  dominantRelatedHubs.length
+    ? `related quality gate: REVIEW — ${dominantRelatedHubs.map(([slug]) => slug).join(', ')} exceed 5% incoming-hub threshold`
+    : 'related quality gate: no dominant incoming hub detected'
+);
+
 const started = performance.now();
 const candidates = buildCoOccurrenceCandidates(terms);
 const elapsed = performance.now() - started;

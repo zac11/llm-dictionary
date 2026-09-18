@@ -1,4 +1,5 @@
 import { buildCoOccurrenceCandidates } from './graph-analysis.mjs';
+import { normalizeGraphLabel } from '../src/term-schema.js';
 
 export const GRAPH_SCHEMA_VERSION = 1;
 export const GRAPH_GENERATOR_VERSION = 1;
@@ -9,28 +10,82 @@ const round = (value, precision = 6) => Number(value.toFixed(precision));
 const nodeId = (slug) => `term:${slug}`;
 const pairKey = (a, b) => (a < b ? `${a}\0${b}` : `${b}\0${a}`);
 
-function buildEdges(terms, { includeCoOccurs }) {
-  const relatedEdges = terms.flatMap((term) =>
-    [...term.related]
-      .sort((a, b) => a.localeCompare(b))
-      .map((target) => ({
-        source: nodeId(term.slug),
-        predicate: 'RELATED',
-        target: nodeId(target),
-        weight: RELATED_WEIGHT,
-        derived: false,
-        evidence: null,
-      }))
+const GENERIC_NAME_TOKENS = new Set([
+  'ai', 'artificial', 'intelligence', 'machine', 'learning', 'model', 'models', 'system',
+  'systems', 'data', 'language', 'computer', 'computing', 'method', 'methods', 'algorithm',
+  'algorithms', 'technology', 'technologies', 'analysis', 'application', 'applications',
+]);
+
+function significantNameTokens(term) {
+  return new Set(
+    normalizeGraphLabel(`${term.term} ${term.aka.join(' ')}`)
+      .split(' ')
+      .filter((token) => token.length > 1 && !GENERIC_NAME_TOKENS.has(token))
   );
+}
+
+function qualifyRelatedEdges(terms) {
+  const bySlug = new Map(terms.map((term) => [term.slug, term]));
+  const outgoing = new Map(terms.map((term) => [term.slug, new Set(term.related)]));
+  const tokens = new Map(terms.map((term) => [term.slug, significantNameTokens(term)]));
+  const text = new Map(
+    terms.map((term) => [term.slug, ` ${normalizeGraphLabel(`${term.definition} ${term.details}`)} `])
+  );
+  const qualified = [];
+
+  for (const source of terms) {
+    for (const targetSlug of [...source.related].sort((a, b) => a.localeCompare(b))) {
+      const target = bySlug.get(targetSlug);
+      const basis = [];
+      if (outgoing.get(targetSlug).has(source.slug)) basis.push('reciprocal');
+      const sharedTokens = [...tokens.get(source.slug)].filter((token) => tokens.get(targetSlug).has(token));
+      if (sharedTokens.length) basis.push('shared-name-token');
+      const targetLabel = normalizeGraphLabel(target.term);
+      if (targetLabel && text.get(source.slug).includes(` ${targetLabel} `)) basis.push('text-reference');
+      if (!basis.length) continue;
+      qualified.push({ source, target, basis, sharedTokens });
+    }
+  }
+
+  const incoming = new Map();
+  for (const edge of qualified) incoming.set(edge.target.slug, (incoming.get(edge.target.slug) || 0) + 1);
+  const hubThreshold = Math.ceil(terms.length * 0.05);
+  const excludedHubs = [...incoming]
+    .filter(([, count]) => count > hubThreshold)
+    .map(([slug]) => slug)
+    .sort((a, b) => a.localeCompare(b));
+  const excluded = new Set(excludedHubs);
+  const edges = qualified
+    .filter((edge) => !excluded.has(edge.target.slug))
+    .map((edge) => ({
+      source: nodeId(edge.source.slug),
+      predicate: 'RELATED',
+      target: nodeId(edge.target.slug),
+      weight: RELATED_WEIGHT,
+      derived: false,
+      evidence: {
+        basis: edge.basis,
+        sharedTokens: edge.sharedTokens,
+      },
+    }));
+  return { edges, excludedHubs, inputCount: terms.reduce((sum, term) => sum + term.related.length, 0) };
+}
+
+function buildEdges(terms, { includeCoOccurs }) {
+  const related = qualifyRelatedEdges(terms);
   if (!includeCoOccurs) {
-    return { edges: relatedEdges, excludedCoOccurrenceHubs: [], coOccurrenceCandidates: 0 };
+    return {
+      edges: related.edges,
+      relatedInputCount: related.inputCount,
+      excludedRelatedHubs: related.excludedHubs,
+      excludedCoOccurrenceHubs: [],
+      coOccurrenceCandidates: 0,
+    };
   }
 
   const candidates = buildCoOccurrenceCandidates(terms);
   const incoming = new Map();
-  for (const candidate of candidates) {
-    incoming.set(candidate.target, (incoming.get(candidate.target) || 0) + 1);
-  }
+  for (const candidate of candidates) incoming.set(candidate.target, (incoming.get(candidate.target) || 0) + 1);
   const hubThreshold = Math.ceil(terms.length * 0.05);
   const excludedCoOccurrenceHubs = [...incoming]
     .filter(([, count]) => count > hubThreshold)
@@ -58,7 +113,9 @@ function buildEdges(terms, { includeCoOccurs }) {
     }));
 
   return {
-    edges: [...relatedEdges, ...coOccurrenceEdges],
+    edges: [...related.edges, ...coOccurrenceEdges],
+    relatedInputCount: related.inputCount,
+    excludedRelatedHubs: related.excludedHubs,
     excludedCoOccurrenceHubs,
     coOccurrenceCandidates: candidates.length,
   };
@@ -82,7 +139,7 @@ function buildAdjacency(slugs, edges) {
   return adjacency;
 }
 
-function weightedPageRank(slugs, adjacency, { damping = 0.85, tolerance = 1e-10, maxIterations = 100 } = {}) {
+function weightedPageRank(slugs, adjacency, { damping = 0.85, tolerance = 1e-9, maxIterations = 200 } = {}) {
   const count = slugs.length;
   const rank = new Map(slugs.map((slug) => [slug, 1 / count]));
   const totals = new Map(slugs.map((slug) => [slug, [...adjacency.get(slug).values()].reduce((sum, weight) => sum + weight, 0)]));
@@ -158,19 +215,20 @@ function propagateLabels(slugs, adjacency, { maxIterations = 30 } = {}) {
 function defineCommunities(terms, adjacency, labels, rank) {
   const byLabel = new Map();
   for (const term of terms) {
-    const label = labels.get(term.slug);
-    if (!byLabel.has(label)) byLabel.set(label, []);
-    byLabel.get(label).push(term.slug);
+    const connected = adjacency.get(term.slug).size > 0;
+    const label = connected ? labels.get(term.slug) : `category:${normalizeGraphLabel(term.category)}`;
+    if (!byLabel.has(label)) byLabel.set(label, { members: [], fallbackCategory: connected ? null : term.category });
+    byLabel.get(label).members.push(term.slug);
   }
   const degree = new Map(
     terms.map((term) => [term.slug, [...adjacency.get(term.slug).values()].reduce((sum, weight) => sum + weight, 0)])
   );
-  const groups = [...byLabel.values()].map((members) => {
+  const groups = [...byLabel.values()].map(({ members, fallbackCategory }) => {
     members.sort((a, b) => a.localeCompare(b));
     const representative = [...members].sort(
       (a, b) => degree.get(b) - degree.get(a) || rank.get(b) - rank.get(a) || a.localeCompare(b)
     )[0];
-    return { members, representative };
+    return { members, representative, fallbackCategory };
   });
   groups.sort((a, b) => a.representative.localeCompare(b.representative));
 
@@ -181,8 +239,9 @@ function defineCommunities(terms, adjacency, labels, rank) {
     const term = terms.find((candidate) => candidate.slug === group.representative);
     communities.set(id, {
       id,
-      label: term.term,
+      label: group.fallbackCategory || term.term,
       representative: group.representative,
+      kind: group.fallbackCategory ? 'category-fallback' : 'detected',
       size: group.members.length,
       centrality: round(group.members.reduce((sum, slug) => sum + rank.get(slug), 0)),
     });
@@ -317,6 +376,12 @@ export function buildGraph(terms, { sourceHash, includeCoOccurs = false } = {}) 
         pageRankIterations: pageRank.iterations,
         pageRankConverged: pageRank.converged,
         labelPropagationIterations: propagation.iterations,
+      },
+      related: {
+        inputEdges: edgeResult.relatedInputCount,
+        acceptedEdges: edgeResult.edges.length - coOccurrenceEdges,
+        excludedHubs: edgeResult.excludedRelatedHubs,
+        qualification: ['reciprocal', 'shared-name-token', 'text-reference'],
       },
       coOccurrence: {
         enabled: includeCoOccurs,

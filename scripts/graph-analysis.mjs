@@ -97,6 +97,10 @@ function evidenceFor(source, compiledTarget) {
   return { score: Number(score.toFixed(4)), evidence };
 }
 
+export function termReferenceEvidence(source, target) {
+  return evidenceFor(source, compileTarget(target));
+}
+
 export function buildCoOccurrenceCandidates(terms, { limit = 8 } = {}) {
   const sorted = [...terms].sort((a, b) => a.slug.localeCompare(b.slug));
   const bySource = new Map(sorted.map((source) => [source.slug, []]));

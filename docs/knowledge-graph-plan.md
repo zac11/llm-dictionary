@@ -1,7 +1,7 @@
 # Neuropaedia — Knowledge Graph & Discovery Features: Revised Implementation Plan
 
 **Repository:** `llm-dictionary` (Neuropaedia — The AI Encyclopaedia)  
-**Status:** Phase A0 implemented; co-occurrence quality review required before Phase A1  
+**Status:** Phases A0, A1, A2, and the Phase B Map MVP are implemented
 **Date:** 2026-09-18  
 **Scope:** Shared term normalization, graph validation and generation, Map view, concept trails, offline retrieval, and optional grounded Ask chat
 
@@ -58,7 +58,47 @@ The first full audit found:
 - dominant incoming hubs for `artificial-intelligence`, `machine-learning`, `natural-language`, and `natural-language-processing`;
 - approximately 19 seconds of candidate-generation time on the development machine after matcher optimization.
 
-The 50-edge deterministic sample was broadly plausible, but the dominant generic hubs mean `CO_OCCURS` is not yet approved for Phase A1 output. Before enabling it, Phase A1 must add generic-hub down-weighting or exclusion, establish a minimum useful score, and avoid running the full analysis on every ordinary Vite startup unless generation is cached by source hash.
+The 50-edge deterministic sample was broadly plausible, but the raw candidate set was not approved directly. Phase A1 addressed this by requiring a canonical-name match, applying a minimum score of 5, excluding targets above the 5% incoming-hub threshold, and caching completed generation by source and generator hashes.
+
+### Phase A1 implementation result
+
+Phase A1 was implemented on 2026-09-18:
+
+- `scripts/graph-source.mjs` centralizes deterministic dictionary loading, validation diagnostics, and normalized source hashing;
+- `scripts/graph-builder.mjs` emits the v1 term-only graph, weighted undirected analytics, deterministic label-propagation communities, and precomputed packed coordinates;
+- `scripts/build-graph.mjs` writes content-hashed graph artifacts and a revalidated manifest, supports strict `--check`, and skips unchanged builds through source/generator hash caching;
+- generated artifacts are ignored under `public/generated/`, while Netlify gives the manifest a revalidation policy and graph artifacts immutable caching;
+- `npm run graph` is the write command, and `npm run graph:check` recomputes and verifies deterministic output;
+- `dev` and `build` generate or validate the graph before Vite starts.
+
+The first A1 build also revealed that the existing `related` arrays are not uniformly curated. Many imported entries received category-only, alphabetically tie-broken suggestions, causing false hubs and a 447-node false community. A1 therefore accepts an existing `RELATED` edge for graph output only when it is corroborated by reciprocity, a non-generic shared name token, or a canonical text reference. This preserves the dictionary files while preventing known generated noise from becoming graph truth.
+
+Current filtered graph measurements:
+
+- 1,527 term nodes;
+- 5,400 edges: 3,314 qualified `RELATED` and 2,086 filtered `CO_OCCURS` edges;
+- 2.18 MiB uncompressed and approximately 151 KiB gzip;
+- 212 communities, including category-fallback placement for disconnected terms;
+- 130 terms without accepted edges, grouped by category for layout rather than emitted as 130 independent visual clusters;
+- PageRank converges in 87 iterations;
+- initial generation takes approximately 21 seconds, while an unchanged cached run takes approximately 0.1 seconds.
+
+Phase A2 treats `meta.related` and `meta.coOccurrence` as quality/provenance metadata, and Map does not draw category-fallback placement as an actual graph connection.
+
+### Phase A2 and Phase B Map MVP implementation result
+
+The client graph and first Map renderer were implemented on 2026-09-18:
+
+- `src/graph.js` lazily loads and validates the manifest and graph, retries transient failures, builds undirected indexes, filters neighbors by predicate, and computes bounded weighted concept trails;
+- `src/map.js` is dynamically imported and renders all 1,527 terms on a high-DPI-capped canvas using the precomputed coordinates;
+- the Map draws connections only for the selected or hovered term, preventing a default edge hairball while honoring the selected all-terms presentation;
+- mouse and touch panning, wheel zoom, node selection, term/category search, an accessible DOM result list, related-term controls, and entry navigation are available;
+- `src/main.js` now handles Library/Map transitions, `?view=map`, `?map=<slug>`, selection URLs, and browser Back/Forward navigation;
+- `src/library.js` pauses Three.js simulation and rendering while Map is active and resumes without rebuilding the scene;
+- Map code is emitted as a separate dynamic chunk of approximately 3 KiB gzip; the initial JavaScript gzip increase remains well below the 15 KiB budget;
+- graph-loader and traversal tests bring the suite to 21 passing tests.
+
+The initial Map intentionally shows every term, as selected for this implementation. A community-first level-of-detail mode remains an optional refinement rather than the default.
 
 ---
 
@@ -182,7 +222,7 @@ Quality gate:
 - manually sample at least 50 generated edges across common and obscure terms;
 - record whether each edge is useful, merely plausible, or wrong;
 - do not ship `CO_OCCURS` by default unless at least 80% are useful or plausible and no obvious short-alias hub dominates the graph;
-- if the threshold is missed, ship Map with curated `RELATED` edges only and revisit matching later.
+- if the threshold is missed, ship Map with qualified `RELATED` edges only and revisit matching later.
 
 ---
 
@@ -234,7 +274,7 @@ Generated co-occurrence edges use `predicate: "CO_OCCURS"`, `derived: true`, the
   "communities": {},
   "meta": {
     "sourceHash": "...",
-    "generatedAt": "...",
+    "generatorHash": "...",
     "counts": {
       "terms": 0,
       "edges": 0,
@@ -256,7 +296,7 @@ Generated co-occurrence edges use `predicate: "CO_OCCURS"`, `derived: true`, the
 | `RELATED` | yes | symmetrized for Map/path traversal | 10 |
 | `CO_OCCURS` | yes | traversable in both directions with confidence cost | derived score |
 
-Retain source direction in stored edges. Build an undirected derived adjacency index at load time for Map and concept trails. PageRank must document whether it uses source direction or symmetrized adjacency; v1 should use symmetrized weighted adjacency because the current `related` arrays are recommendations rather than a reliable directed ontology.
+Retain source direction in stored edges. Because the existing arrays mix curated and category-generated suggestions, admit `RELATED` edges only when corroborated by reciprocity, a non-generic shared name token, or a canonical text reference. Build an undirected derived adjacency index for Map and concept trails. V1 PageRank uses symmetrized weighted adjacency because the source arrays are recommendations rather than a reliable directed ontology.
 
 Category and future bibliographic edges must be excluded from term centrality, communities, and trails unless a later schema explicitly changes that rule.
 
@@ -274,7 +314,7 @@ Compute deterministic `(x, y)` coordinates in the generator:
 
 1. Place communities around a stable radial arrangement sorted by community label/ID.
 2. Place terms within each community from a seeded initial arrangement.
-3. Apply a bounded layout pass using weighted springs, community attraction, and spatial bucketing or another sub-quadratic repulsion approximation.
+3. Pack community circles deterministically without overlap, then place members on a centrality-ordered golden-angle spiral. Terms with no accepted edges use explicitly marked category-fallback placement.
 4. Normalize coordinates into a documented coordinate range.
 5. Persist coordinates in nodes.
 
@@ -286,19 +326,19 @@ The browser may apply a very small optional relaxation in a Web Worker, but the 
 - Use a fixed seed.
 - Resolve all ties by stable IDs.
 - Round analytics and coordinates.
-- Compute `sourceHash` from normalized source content.
-- `generatedAt` may change, but two unchanged runs must otherwise be byte-identical. A determinism test compares output while ignoring `generatedAt`.
+- Compute `sourceHash` from normalized source content and `generatorHash` from the implementation files.
+- Keep `generatedAt` in the revalidated manifest only; the immutable graph artifact itself must be byte-identical for unchanged source and generator hashes.
 
 ### 6.6 Artifact naming and caching
 
 Preferred output:
 
 ```text
-public/generated/graph.<sourceHash>.json
+public/generated/graph.<contentHash>.json
 public/generated/manifest.json
 ```
 
-`manifest.json` contains the current graph URL, schema version, source hash, and optional retrieval-corpus version. Fetch the manifest with `Cache-Control: no-cache`; hashed artifacts may be cached immutably.
+`manifest.json` contains the current graph URL, schema version, source hash, generator hash, generation mode, and optional retrieval-corpus version. Fetch the manifest with `Cache-Control: no-cache`; content-hashed artifacts may be cached immutably.
 
 If fixed `/graph.json` is retained instead, configure it with `Cache-Control: no-cache` and validate `schemaVersion` and `sourceHash` on load.
 
@@ -317,12 +357,7 @@ Add scripts similar to:
 
 `--check` validates and verifies that generated output matches source without silently rewriting it.
 
-A pre-dev generation step alone does not observe dictionary edits. Choose one before implementation:
-
-- add a small Vite development plugin that rebuilds on dictionary JSON changes; or
-- document that dictionary edits require `npm run graph` or a Vite restart and display a source-hash mismatch warning in development.
-
-Do not introduce a complex concurrent process manager solely for this watcher.
+The implemented development policy is explicit regeneration: `npm run dev` generates once at startup, and dictionary edits during a running Vite session require `npm run graph` or a Vite restart. Source/generator hash caching makes unchanged startup checks fast without introducing a concurrent process manager. A watcher may be added later only if this authoring workflow proves inconvenient.
 
 ---
 
@@ -352,7 +387,7 @@ Loader requirements:
 Path behavior:
 
 - use weighted Dijkstra, not unweighted BFS;
-- curated `RELATED` edges should be cheaper/preferred over generated co-occurrence edges;
+- qualified `RELATED` edges should be cheaper/preferred over generated co-occurrence edges;
 - support relation filters;
 - traverse the derived undirected adjacency index;
 - use deterministic tie-breaking;
@@ -483,7 +518,7 @@ If automatically choosing a starting point, choose from a small documented set o
 
 Trail constraints:
 
-- prefer curated `RELATED` edges;
+- prefer qualified `RELATED` edges;
 - penalize generated `CO_OCCURS` edges;
 - maximum of five displayed nodes by default;
 - never repeat a node;
@@ -718,7 +753,7 @@ Avoid adding separate modules when a file would contain only trivial wrappers. T
 - Centrality mass is approximately normalized.
 - Label propagation is stable across repeated runs.
 - Every output edge endpoint exists.
-- Two unchanged runs are identical except `generatedAt`.
+- Two unchanged graph builds are byte-identical; only the revalidated manifest timestamp may change after a non-cached write.
 - Manifest points to existing artifacts.
 
 ### 13.2 Graph quality report
@@ -768,14 +803,15 @@ CI uses broad expected bounds rather than brittle exact analytics counts, while 
 
 From a clean checkout:
 
-1. `npm run graph:check` validates source data.
-2. `npm run build` generates graph/retrieval artifacts before Vite and prerender steps.
-3. `dist/generated/manifest.json` and referenced artifacts exist.
-4. Term share pages still exist under `dist/term/<slug>/index.html`.
-5. The deployed function contains the retrieval corpus.
-6. Netlify SPA fallback does not shadow real generated assets or function routes.
-7. Existing `?term`, `?volume`, and `/term/<slug>/` routes still work.
-8. New `?view=map` and `?map=<slug>` routes work through direct load and Back/Forward navigation.
+1. `npm run graph` validates source data and writes the expected artifacts.
+2. `npm run graph:check` independently recomputes and verifies those artifacts without rewriting them.
+3. `npm run build` reuses the validated graph before Vite and prerender steps.
+4. `dist/generated/manifest.json` and referenced artifacts exist.
+5. Term share pages still exist under `dist/term/<slug>/index.html`.
+6. The deployed function contains the retrieval corpus once Phase D is implemented.
+7. Netlify SPA fallback does not shadow real generated assets or function routes.
+8. Existing `?term`, `?volume`, and `/term/<slug>/` routes still work.
+9. New `?view=map` and `?map=<slug>` routes work through direct load and Back/Forward navigation.
 
 ### 13.6 Performance budgets
 
@@ -827,7 +863,7 @@ Phase D0  Retrieval corpus, ranked local Ask, offline comparisons
 Phase D1  Optional Netlify LLM synthesis
 ```
 
-Map may initially ship with curated `RELATED` edges only. `CO_OCCURS` can be enabled after its quality gate without changing the public schema.
+The A1 graph uses qualified `RELATED` edges plus filtered `CO_OCCURS` edges. Raw category-only related suggestions, alias-only co-occurrences, low-score co-occurrences, and dominant co-occurrence hubs are excluded without rewriting dictionary files.
 
 Concept trails and Map are independently revertible. Ask is independently revertible and must not be required for core dictionary navigation.
 
@@ -881,14 +917,11 @@ Concept trails and Map are independently revertible. Ask is independently revert
 
 ## 17. Open decisions before implementation
 
-1. **Co-occurrence release gate:** ship curated `RELATED` only initially, or enable `CO_OCCURS` if the Phase A0 sample passes?
-2. **Development freshness:** add a small Vite watcher plugin or require explicit graph regeneration after dictionary edits?
-3. **Map default:** community overview first or high-centrality term overview first?
-4. **Concept trail roots:** which small set of foundation terms should be curated per subject?
-5. **Ask presentation:** side panel, bottom sheet, or modal? It must coexist cleanly with the book and Map.
-6. **Rate limiting:** Netlify-native control or an application-level store/service suitable for the deployment tier?
-7. **Remote model:** which tested OpenAI-compatible provider/model and output-token limit will be the supported initial configuration?
-8. **Test tooling:** use the smallest existing-compatible setup for Node unit tests and browser checks; adding a test dependency is acceptable if it materially reduces risk and follows package-age policy.
+1. **Concept trail roots:** which small set of foundation terms should be curated per subject?
+2. **Ask presentation:** side panel, bottom sheet, or modal? It must coexist cleanly with the book and Map.
+3. **Rate limiting:** Netlify-native control or an application-level store/service suitable for the deployment tier?
+4. **Remote model:** which tested OpenAI-compatible provider/model and output-token limit will be the supported initial configuration?
+5. **Browser test tooling:** keep Node’s built-in runner for graph logic and choose the smallest suitable browser-testing tool for automated interaction checks.
 
 These decisions should be resolved at the start of their respective phases; they do not block Phase A0 normalization and validation.
 

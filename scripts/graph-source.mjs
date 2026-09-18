@@ -99,7 +99,9 @@ export function loadDictionarySource(dictionary) {
 }
 
 export function normalizedSourceHash(terms) {
-  const source = terms.map(({ _src, ...term }) => ({ ...term, aka: [...term.aka].sort(), related: [...term.related].sort() }));
+  const source = [...terms]
+    .sort((a, b) => a.slug.localeCompare(b.slug))
+    .map(({ _src, ...term }) => ({ ...term, aka: [...term.aka].sort(), related: [...term.related].sort() }));
   return createHash('sha256').update(JSON.stringify(source)).digest('hex');
 }
 
