@@ -24,6 +24,17 @@ const ui = new UI({
 
 const viewToggle = document.getElementById('view-toggle');
 const graphView = document.getElementById('graph-view');
+const graphSearch = document.getElementById('graph-search');
+
+const toastEl = document.getElementById('toast');
+let toastTimer = null;
+function showToast(message) {
+  if (!toastEl) return;
+  toastEl.textContent = message;
+  toastEl.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2800);
+}
 
 function setMapChrome(active) {
   document.body.classList.toggle('map-mode', active);
@@ -63,12 +74,20 @@ async function openMap(slug = null, { updateHistory = true } = {}) {
       });
     }
     if (!state.map.nodes) await state.map.load();
-    state.map.show(slug);
-    if (updateHistory) {
-      history.pushState({}, '', slug ? `/?map=${encodeURIComponent(slug)}` : '/?view=map');
+    const selected = state.map.show(slug);
+    if (slug && !selected) {
+      state.map.status.textContent = `"${slug}" wasn't found — explore the map or search instead.`;
     }
+    if (updateHistory) {
+      const target = slug && selected ? `/?map=${encodeURIComponent(slug)}` : '/?view=map';
+      history.pushState({}, '', target);
+    }
+    graphSearch?.focus();
   } catch (error) {
-    document.getElementById('graph-status').textContent = `Map unavailable: ${error.message}`;
+    await closeMap({ updateHistory: false });
+    showToast('Knowledge map is unavailable right now — try again.');
+    viewToggle.focus();
+    console.warn('Map open failed:', error);
   } finally {
     state.busy = false;
     viewToggle.disabled = false;
@@ -89,6 +108,18 @@ async function closeMap({ updateHistory = true } = {}) {
 viewToggle.addEventListener('click', () => {
   if (state.view === 'map') closeMap();
   else openMap();
+});
+
+// Escape inside the map first clears the selection, then returns to the library.
+document.addEventListener('keydown', (event) => {
+  if (event.key !== 'Escape' || state.view !== 'map' || !state.map) return;
+  const active = document.activeElement;
+  if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA') && active !== graphSearch) return;
+  if (state.map.selected) state.map.deselect();
+  else {
+    closeMap();
+    viewToggle.focus();
+  }
 });
 
 /** Click a shelf book / letter: pull the volume out and open its contents spread. */
@@ -168,4 +199,5 @@ window.__neuropaedia = {
   library,
   scene: library.scene,
   camera: library._camera,
+  get map() { return state.map; },
 };

@@ -342,6 +342,7 @@ export function buildGraph(terms, { sourceHash, includeCoOccurs = false } = {}) 
       label: term.term,
       letter: term.letter,
       category: term.category,
+      aka: term.aka,
       community: communityBySlug.get(term.slug),
       centrality: round(pageRank.rank.get(term.slug)),
       x: position.x,

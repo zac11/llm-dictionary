@@ -28,25 +28,33 @@ export class GraphMap {
     this.selected = null;
     this.hovered = null;
     this.drag = null;
+    this._perf = { drawCalls: 0, drawMs: 0, pickCalls: 0, pickMs: 0, frames: 0, fpsStart: 0, fps: 0, firstOpenTotalMs: 0, firstRenderMs: 0 };
     this._bind();
   }
 
   async load() {
+    const started = performance.now();
     this.status.textContent = 'Loading 1,527 terms…';
     this.index = await loadGraph();
     this.nodes = [...this.index.bySlug.values()];
+    const ready = performance.now();
     this.status.textContent = `${this.nodes.length.toLocaleString()} terms · drag to explore · scroll to zoom`;
     this._resize();
     this._renderList('');
     this.draw();
+    const done = performance.now();
+    this._perf.firstOpenTotalMs = Math.round(done - started);
+    this._perf.firstRenderMs = Math.round(done - ready);
   }
 
   show(slug) {
     this.root.classList.add('open');
     this.root.setAttribute('aria-hidden', 'false');
     this._resize();
-    if (slug) this.select(slug, { center: true, notify: false });
+    let selected = true;
+    if (slug) selected = this.select(slug, { center: true, notify: false });
     this.draw();
+    return selected;
   }
 
   hide() {
@@ -70,8 +78,19 @@ export class GraphMap {
     return true;
   }
 
+  deselect() {
+    if (!this.selected) return false;
+    this.selected = null;
+    this.hovered = null;
+    this._renderDetail(null);
+    this.draw();
+    return true;
+  }
+
   _bind() {
     this.search.addEventListener('input', () => this._renderList(this.search.value));
+    this.search.addEventListener('keydown', (event) => this._onSearchKeys(event));
+    this.list.addEventListener('keydown', (event) => this._onSearchKeys(event));
     this.canvas.addEventListener('wheel', (event) => {
       event.preventDefault();
       const rect = this.canvas.getBoundingClientRect();
@@ -123,6 +142,26 @@ export class GraphMap {
     this._resizeObserver.observe(this.root);
   }
 
+  _onSearchKeys(event) {
+    if (event.key === 'Escape') {
+      if (event.target !== this.search) return; // list rows: let the global Escape handle it
+      if (!this.search.value) return; // empty box: let the global Escape exit the map
+      event.stopPropagation();
+      this.search.value = '';
+      this._renderList('');
+      return;
+    }
+    if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
+    const rows = [...this.list.querySelectorAll('.graph-term-row')];
+    if (!rows.length) return;
+    const current = rows.indexOf(document.activeElement);
+    const index = current === -1
+      ? (event.key === 'ArrowDown' ? 0 : rows.length - 1)
+      : current + (event.key === 'ArrowDown' ? 1 : -1);
+    event.preventDefault();
+    rows[Math.max(0, Math.min(rows.length - 1, index))]?.focus();
+  }
+
   _resize() {
     const rect = this.canvas.getBoundingClientRect();
     if (!rect.width || !rect.height) return;
@@ -154,6 +193,7 @@ export class GraphMap {
 
   _pick(event) {
     if (!this.nodes) return null;
+    const started = performance.now();
     const rect = this.canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
@@ -167,11 +207,14 @@ export class GraphMap {
         best = distance;
       }
     }
+    this._perf.pickMs += performance.now() - started;
+    this._perf.pickCalls += 1;
     return picked;
   }
 
   draw() {
     if (!this.nodes || !this.width) return;
+    const started = performance.now();
     const context = this.context;
     context.clearRect(0, 0, this.width, this.height);
     const focus = this.selected || this.hovered;
@@ -211,13 +254,46 @@ export class GraphMap {
       context.fillStyle = '#f3eef7';
       context.fillText(node.label, point.x + this._radius(node) + 7, point.y + 4);
     }
+    this._recordDraw(performance.now() - started);
+  }
+
+  _recordDraw(elapsed) {
+    this._perf.drawMs += elapsed;
+    this._perf.drawCalls += 1;
+    this._perf.frames += 1;
+    const now = performance.now();
+    if (!this._perf.fpsStart) this._perf.fpsStart = now;
+    if (now - this._perf.fpsStart >= 1000) {
+      this._perf.fps = Math.round((this._perf.frames * 1000) / (now - this._perf.fpsStart));
+      this._perf.frames = 0;
+      this._perf.fpsStart = now;
+    }
+  }
+
+  stats() {
+    const avgDrawMs = this._perf.drawCalls ? this._perf.drawMs / this._perf.drawCalls : 0;
+    const avgPickMs = this._perf.pickCalls ? this._perf.pickMs / this._perf.pickCalls : 0;
+    return {
+      nodes: this.nodes?.length ?? 0,
+      firstOpenTotalMs: this._perf.firstOpenTotalMs,
+      firstRenderMs: this._perf.firstRenderMs,
+      drawCalls: this._perf.drawCalls,
+      avgDrawMs: Number(avgDrawMs.toFixed(3)),
+      pickCalls: this._perf.pickCalls,
+      avgPickMs: Number(avgPickMs.toFixed(3)),
+      fps: this._perf.fps,
+    };
   }
 
   _renderList(query) {
     if (!this.nodes) return;
     const needle = query.trim().toLowerCase();
     const matches = this.nodes
-      .filter((node) => !needle || `${node.label} ${node.category}`.toLowerCase().includes(needle))
+      .filter((node) => {
+        if (!needle) return true;
+        const hay = `${node.label} ${node.category} ${(node.aka || []).join(' ')}`.toLowerCase();
+        return hay.includes(needle);
+      })
       .sort((a, b) => b.centrality - a.centrality || a.label.localeCompare(b.label))
       .slice(0, 100);
     this.list.replaceChildren(...matches.map((node) => {
@@ -235,8 +311,15 @@ export class GraphMap {
   }
 
   _renderDetail(node) {
-    const related = neighbors(this.index, node.slug).slice(0, 6);
     this.panel.replaceChildren();
+    if (!node) {
+      const empty = document.createElement('p');
+      empty.className = 'graph-detail-empty';
+      empty.textContent = 'Select any node to see its connections.';
+      this.panel.appendChild(empty);
+      return;
+    }
+    const related = neighbors(this.index, node.slug).slice(0, 6);
     const kicker = document.createElement('p');
     kicker.className = 'graph-detail-kicker';
     kicker.textContent = node.category;
