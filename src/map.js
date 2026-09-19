@@ -34,7 +34,7 @@ export class GraphMap {
 
   async load() {
     const started = performance.now();
-    this.status.textContent = 'Loading 1,527 terms…';
+    this.status.textContent = 'Loading terms…';
     this.index = await loadGraph();
     this.nodes = [...this.index.bySlug.values()];
     const ready = performance.now();
@@ -188,7 +188,8 @@ export class GraphMap {
   }
 
   _radius(node) {
-    return clamp(2 + Math.sqrt(node.centrality * 1527) * 1.5, 2.2, 9) * clamp(Math.sqrt(this.scale), 0.8, 2);
+    const count = this.nodes?.length || 1;
+    return clamp(2 + Math.sqrt(node.centrality * count) * 1.5, 2.2, 9) * clamp(Math.sqrt(this.scale), 0.8, 2);
   }
 
   _pick(event) {

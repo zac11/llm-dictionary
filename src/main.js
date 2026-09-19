@@ -122,6 +122,55 @@ document.addEventListener('keydown', (event) => {
   }
 });
 
+// ---------- Ask ----------
+const askView = document.getElementById('ask-view');
+const askToggle = document.getElementById('ask-toggle');
+let askChat = null;
+
+async function openAsk() {
+  if (!askChat) {
+    const { AskChat } = await import('./ask.js');
+    askChat = new AskChat(askView, {
+      onOpenTerm: async (slug) => {
+        closeAsk();
+        if (state.view === 'map') await closeMap({ updateHistory: false });
+        openTermRitual(slug);
+      },
+    });
+  }
+  askView.classList.add('open');
+  askView.setAttribute('aria-hidden', 'false');
+  askToggle.setAttribute('aria-pressed', 'true');
+  askChat.open();
+}
+
+function closeAsk() {
+  askView.classList.remove('open');
+  askView.setAttribute('aria-hidden', 'true');
+  askChat?.close();
+  askToggle.setAttribute('aria-pressed', 'false');
+  askToggle.focus();
+}
+
+askToggle.addEventListener('click', () => {
+  if (askView.classList.contains('open')) closeAsk();
+  else openAsk();
+});
+document.getElementById('ask-close')?.addEventListener('click', closeAsk);
+document.getElementById('ask-backdrop')?.addEventListener('click', closeAsk);
+
+// Capture-phase Escape: the Ask overlay takes priority over book/map/help Escape.
+document.addEventListener(
+  'keydown',
+  (event) => {
+    if (event.key === 'Escape' && askView.classList.contains('open')) {
+      event.stopPropagation();
+      closeAsk();
+    }
+  },
+  true
+);
+
 /** Click a shelf book / letter: pull the volume out and open its contents spread. */
 async function openVolumeRitual(folder, { letter } = {}) {
   if (state.busy) return;

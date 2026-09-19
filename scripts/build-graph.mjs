@@ -3,7 +3,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { basename, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
-import { buildGraph, GRAPH_SCHEMA_VERSION } from './graph-builder.mjs';
+import { buildGraph, buildRetrievalCorpus, GRAPH_SCHEMA_VERSION } from './graph-builder.mjs';
 import { loadDictionarySource, normalizedSourceHash, printDiagnostics } from './graph-source.mjs';
 
 const scriptPath = fileURLToPath(import.meta.url);
@@ -42,14 +42,24 @@ if (!checkOnly && existsSync(manifestPath)) {
     const contentHash = cachedContent
       ? createHash('sha256').update(cachedContent).digest('hex').slice(0, 16)
       : '';
+    const cachedRetrievalFilename = basename(manifest.retrievalUrl || '');
+    const cachedRetrievalPath = join(outputDirectory, cachedRetrievalFilename);
+    const retrievalFilenameHash = cachedRetrievalFilename.match(/^retrieval\.([a-f0-9]{16})\.json$/)?.[1];
+    const cachedRetrievalContent = retrievalFilenameHash && existsSync(cachedRetrievalPath) ? readFileSync(cachedRetrievalPath, 'utf8') : '';
+    const retrievalContentHash = cachedRetrievalContent
+      ? createHash('sha256').update(cachedRetrievalContent).digest('hex').slice(0, 16)
+      : '';
     if (
       manifest.schemaVersion === GRAPH_SCHEMA_VERSION &&
       manifest.sourceHash === sourceHash &&
       manifest.generatorHash === generatorHash &&
       manifest.coOccurrenceEnabled === includeCoOccurs &&
-      filenameHash === contentHash
+      filenameHash === contentHash &&
+      retrievalFilenameHash === retrievalContentHash &&
+      manifest.retrievalUrl === `/generated/${cachedRetrievalFilename}`
     ) {
       console.log(`graph: ${manifest.graphUrl} (up to date)`);
+      console.log(`retrieval: ${manifest.retrievalUrl} (up to date)`);
       console.log(`source hash: ${sourceHash.slice(0, 16)}`);
       console.log(`completed in ${((performance.now() - started) / 1000).toFixed(2)}s`);
       process.exit(0);
@@ -66,10 +76,20 @@ const graphFilename = `graph.${artifactHash}.json`;
 const graphPath = join(outputDirectory, graphFilename);
 const graphUrl = `/generated/${graphFilename}`;
 
+const corpus = buildRetrievalCorpus(terms, graph);
+const corpusContent = `${JSON.stringify(corpus, null, 2)}\n`;
+const corpusHash = createHash('sha256').update(corpusContent).digest('hex').slice(0, 16);
+const retrievalFilename = `retrieval.${corpusHash}.json`;
+const retrievalPath = join(outputDirectory, retrievalFilename);
+const retrievalUrl = `/generated/${retrievalFilename}`;
+
 if (checkOnly) {
   const failures = [];
   if (!existsSync(graphPath) || readFileSync(graphPath, 'utf8') !== graphContent) {
     failures.push(`${graphFilename} is missing or stale`);
+  }
+  if (!existsSync(retrievalPath) || readFileSync(retrievalPath, 'utf8') !== corpusContent) {
+    failures.push(`${retrievalFilename} is missing or stale`);
   }
   if (!existsSync(manifestPath)) {
     failures.push('manifest.json is missing');
@@ -81,9 +101,10 @@ if (checkOnly) {
         manifest.sourceHash !== sourceHash ||
         manifest.generatorHash !== generatorHash ||
         manifest.graphUrl !== graphUrl ||
+        manifest.retrievalUrl !== retrievalUrl ||
         manifest.coOccurrenceEnabled !== includeCoOccurs
       ) {
-        failures.push('manifest.json does not point to the expected graph');
+        failures.push('manifest.json does not point to the expected artifacts');
       }
     } catch {
       failures.push('manifest.json is malformed');
@@ -98,11 +119,15 @@ if (checkOnly) {
   if (!existsSync(graphPath) || readFileSync(graphPath, 'utf8') !== graphContent) {
     writeFileSync(graphPath, graphContent);
   }
+  if (!existsSync(retrievalPath) || readFileSync(retrievalPath, 'utf8') !== corpusContent) {
+    writeFileSync(retrievalPath, corpusContent);
+  }
   const manifest = {
     schemaVersion: graph.schemaVersion,
     sourceHash,
     generatorHash,
     graphUrl,
+    retrievalUrl,
     coOccurrenceEnabled: includeCoOccurs,
     generatedAt: new Date().toISOString(),
   };
@@ -112,6 +137,8 @@ if (checkOnly) {
 const elapsed = performance.now() - started;
 const bytes = Buffer.byteLength(graphContent);
 const gzipBytes = gzipSync(graphContent).length;
+const corpusBytes = Buffer.byteLength(corpusContent);
+const corpusGzipBytes = gzipSync(corpusContent).length;
 const communitySizes = Object.values(graph.communities).sort((a, b) => b.size - a.size || a.id.localeCompare(b.id));
 const singletons = communitySizes.filter((community) => community.size === 1).length;
 const largestCommunities = communitySizes
@@ -126,4 +153,5 @@ console.log(`communities: ${graph.meta.counts.communities}; isolated terms: ${gr
 console.log(`largest communities: ${largestCommunities || 'none'}`);
 console.log(`PageRank: ${graph.meta.analytics.pageRankIterations} iterations, converged=${graph.meta.analytics.pageRankConverged}`);
 console.log(`size: ${(bytes / 1024).toFixed(1)} KiB (${(gzipBytes / 1024).toFixed(1)} KiB gzip)`);
+console.log(`retrieval corpus: ${corpus.terms.length} terms · ${(corpusBytes / 1024).toFixed(1)} KiB (${(corpusGzipBytes / 1024).toFixed(1)} KiB gzip)`);
 console.log(`completed in ${(elapsed / 1000).toFixed(2)}s`);

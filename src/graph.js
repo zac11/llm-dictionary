@@ -86,3 +86,74 @@ export function shortestConceptTrail(index, from, to, { predicates, maxNodes = 8
   while (path[0] !== from) path.unshift(previous.get(path[0]));
   return path.length <= maxNodes ? path : null;
 }
+
+// Curated starting concepts for concept trails: broad, well-known subjects the
+// dictionary covers. A trail walks from the nearest one to a given term.
+export const FOUNDATION_SLUGS = [
+  'artificial-intelligence',
+  'machine-learning',
+  'deep-learning',
+  'neural-network',
+  'natural-language-processing',
+  'computer-vision',
+  'reinforcement-learning',
+  'information-retrieval',
+  'data-mining',
+  'machine-translation',
+  'speech-recognition',
+  'speech-synthesis',
+  'supervised-learning',
+  'unsupervised-learning',
+  'generative-model',
+  'transformer',
+  'optimization',
+  'knowledge-representation',
+  'robotics',
+];
+
+/**
+ * Shortest weighted trail from any node in `fromSlugs` to `to`.
+ * Weighted Dijkstra means curated RELATED edges (weight 10) are preferred over
+ * derived CO_OCCURS edges. Returns { path, root } (root → … → to), or null when
+ * unreachable or longer than maxNodes.
+ */
+export function nearestTrail(index, fromSlugs, to, { predicates, maxNodes = 5 } = {}) {
+  if (!index.bySlug.has(to)) return null;
+  const allowed = predicates ? new Set(predicates) : null;
+  const distance = new Map();
+  const previous = new Map();
+  const queue = [];
+
+  for (const from of fromSlugs) {
+    if (!index.bySlug.has(from) || distance.has(from)) continue;
+    distance.set(from, 0);
+    queue.push({ slug: from, distance: 0 });
+  }
+  if (!distance.size) return null;
+
+  while (queue.length) {
+    queue.sort((a, b) => a.distance - b.distance || a.slug.localeCompare(b.slug));
+    const current = queue.shift();
+    if (current.distance !== distance.get(current.slug)) continue;
+    if (current.slug === to) break;
+    for (const [next, edge] of index.adjacency.get(current.slug)) {
+      if (allowed && !allowed.has(edge.predicate)) continue;
+      const candidate = current.distance + 1 / Math.max(edge.weight, 0.001);
+      if (candidate < (distance.get(next) ?? Infinity)) {
+        distance.set(next, candidate);
+        previous.set(next, current.slug);
+        queue.push({ slug: next, distance: candidate });
+      }
+    }
+  }
+
+  if (!distance.has(to)) return null;
+  const path = [to];
+  let cursor = to;
+  while (previous.has(cursor)) {
+    cursor = previous.get(cursor);
+    path.unshift(cursor);
+  }
+  if (path.length > maxNodes) return null;
+  return { path, root: cursor };
+}

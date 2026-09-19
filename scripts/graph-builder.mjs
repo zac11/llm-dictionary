@@ -1,5 +1,5 @@
 import { buildCoOccurrenceCandidates } from './graph-analysis.mjs';
-import { normalizeGraphLabel } from '../src/term-schema.js';
+import { normalizeGraphLabel, tokenizeText } from '../src/term-schema.js';
 
 export const GRAPH_SCHEMA_VERSION = 1;
 export const GRAPH_GENERATOR_VERSION = 1;
@@ -397,3 +397,47 @@ export function buildGraph(terms, { sourceHash, includeCoOccurs = false } = {}) 
 }
 
 export const _test = { buildAdjacency, weightedPageRank, propagateLabels, layoutCommunities };
+
+/**
+ * Compact retrieval corpus for local Ask: term text, pre-tokenized search
+ * tokens, curated RELATED neighbors, and high-confidence co-occurrence
+ * neighbors. Consumed by the browser (lazy) and later by the Netlify function.
+ */
+export function buildRetrievalCorpus(terms, graph) {
+  const byId = new Map(Object.values(graph.nodes).map((node) => [node.id, node]));
+  const related = new Map();
+  const coOccurring = new Map();
+  const addEdge = (map, a, b) => {
+    if (!map.has(a)) map.set(a, new Set());
+    map.get(a).add(b);
+  };
+
+  for (const edge of graph.edges) {
+    const source = byId.get(edge.source)?.slug;
+    const target = byId.get(edge.target)?.slug;
+    if (!source || !target) continue;
+    if (edge.predicate === 'RELATED') {
+      addEdge(related, source, target);
+      addEdge(related, target, source);
+    } else if (edge.predicate === 'CO_OCCURS' && edge.weight >= 6) {
+      addEdge(coOccurring, source, target);
+      addEdge(coOccurring, target, source);
+    }
+  }
+
+  const list = terms.map((term) => ({
+    slug: term.slug,
+    term: term.term,
+    aliases: term.aka,
+    category: term.category,
+    definition: term.definition,
+    details: term.details,
+    citation: term.citation,
+    termTokens: tokenizeText(`${term.term} ${term.aka.join(' ')}`),
+    textTokens: tokenizeText(`${term.definition} ${term.details}`),
+    related: [...(related.get(term.slug) || [])].sort(),
+    coOccurring: [...(coOccurring.get(term.slug) || [])].sort(),
+  }));
+  list.sort((a, b) => a.slug.localeCompare(b.slug));
+  return { schemaVersion: 1, terms: list };
+}

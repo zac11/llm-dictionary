@@ -4,6 +4,7 @@ import {
   createGraphIndex,
   loadGraph,
   neighbors,
+  nearestTrail,
   shortestConceptTrail,
   validateGraph,
 } from '../src/graph.js';
@@ -44,6 +45,20 @@ test('shortestConceptTrail prefers stronger multi-edge paths', () => {
   assert.deepEqual(shortestConceptTrail(index, 'alpha', 'gamma'), ['alpha', 'beta', 'gamma']);
   assert.equal(shortestConceptTrail(index, 'missing', 'gamma'), null);
   assert.equal(shortestConceptTrail(index, 'alpha', 'gamma', { maxNodes: 2 }), null);
+});
+
+test('nearestTrail picks the closest source and respects predicate filters', () => {
+  const index = createGraphIndex(graph);
+  assert.deepEqual(nearestTrail(index, ['alpha', 'beta'], 'gamma'), {
+    path: ['beta', 'gamma'],
+    root: 'beta',
+  });
+  assert.deepEqual(nearestTrail(index, ['alpha'], 'gamma', { predicates: ['RELATED'] }), {
+    path: ['alpha', 'beta', 'gamma'],
+    root: 'alpha',
+  });
+  assert.equal(nearestTrail(index, ['alpha'], 'gamma', { predicates: ['RELATED'], maxNodes: 2 }), null);
+  assert.equal(nearestTrail(index, ['alpha'], 'missing'), null);
 });
 
 test('loadGraph deduplicates concurrent manifest and graph requests', async () => {

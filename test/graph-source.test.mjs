@@ -8,7 +8,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 test('repository dictionary passes structural graph validation', () => {
   const { terms, diagnostics } = loadDictionarySource(join(root, 'dictionary'));
-  assert.equal(terms.length, 1527);
+  assert.ok(terms.length >= 3000, `expected at least 3000 terms, got ${terms.length}`);
   assert.equal(diagnostics.filter((item) => item.level === 'error').length, 0);
   assert.equal(diagnostics.filter((item) => item.code === 'ambiguous-alias').length, 2);
 });

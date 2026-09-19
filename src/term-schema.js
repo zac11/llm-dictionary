@@ -35,6 +35,22 @@ export function normalizeGraphLabel(value) {
     .replace(/\s+/g, ' ');
 }
 
+const STOPWORDS = new Set([
+  'a', 'an', 'the', 'of', 'and', 'or', 'in', 'on', 'for', 'to', 'with', 'is',
+  'are', 'as', 'at', 'by', 'from', 'that', 'this', 'it', 'its', 'their', 'our',
+  'your', 'using', 'used', 'via', 'into', 'than', 'then', 'which', 'when',
+  'where', 'what', 'how', 'not', 'no', 'be', 'been', 'being', 'was', 'were',
+  'will', 'would', 'can', 'could', 'should', 'may', 'might', 'has', 'have',
+  'had', 'do', 'does', 'did',
+]);
+
+/** Lowercase, unicode-normalized, stopword-filtered search tokens. */
+export function tokenizeText(value, { minLength = 2, stopwords = STOPWORDS } = {}) {
+  return normalizeGraphLabel(value)
+    .split(' ')
+    .filter((token) => token.length >= minLength && !stopwords.has(token));
+}
+
 export function isValidLetter(value) {
   return typeof value === 'string' && value.length === 1 && LETTERS.includes(value);
 }
@@ -45,6 +61,9 @@ export function isValidRangeFolder(value) {
 
 export function rangeFolderForLetter(value) {
   const letter = String(value || '').toUpperCase();
+  // Guard: `LETTERS.indexOf('')` returns 0 (empty string matches at index 0),
+  // which would wrongly map a missing/empty letter to the A–B folder.
+  if (!letter) return null;
   const index = LETTERS.indexOf(letter);
   if (index === -1) return null;
   const start = LETTERS[Math.floor(index / 2) * 2];

@@ -24,6 +24,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SOURCES = [
   // earlier = preferred when both files carry the same slug
   { file: 'data/ai_terms_1500.json', tag: 'ai-terms' },
+  { file: 'data/ai_terms_extra.json', tag: 'wikipedia-extra' },
 ];
 
 // Slugs that name the same concept as a curated entry, without any
@@ -69,7 +70,13 @@ const pool = new Map(); // slug -> { record, tag }
 const report = { fileOverlap: [], skippedExisting: [], skippedConcept: [], merged: [] };
 
 for (const { file, tag } of SOURCES) {
-  const rows = JSON.parse(readFileSync(join(ROOT, file), 'utf8'));
+  let rows;
+  try {
+    rows = JSON.parse(readFileSync(join(ROOT, file), 'utf8'));
+  } catch {
+    console.warn(`! skipping missing source: ${file}`);
+    continue;
+  }
   for (const raw of rows) {
     const slug = slugify(raw.term || '');
     if (!slug) continue;
