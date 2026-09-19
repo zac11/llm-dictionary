@@ -8,7 +8,7 @@ const sampleArg = process.argv.find((arg) => arg.startsWith('--sample='));
 const sampleSize = sampleArg ? Math.max(0, Number.parseInt(sampleArg.split('=')[1], 10) || 0) : 50;
 const { terms, diagnostics } = loadDictionarySource(join(root, 'dictionary'));
 
-console.log('Neuropaedia graph source audit');
+console.log('TheAiDictionary graph source audit');
 console.log(`terms: ${terms.length}`);
 console.log(`related references: ${terms.reduce((sum, term) => sum + term.related.length, 0)}`);
 console.log(`aliases: ${terms.reduce((sum, term) => sum + term.aka.length, 0)}`);

@@ -244,7 +244,7 @@ window.addEventListener('popstate', () => applyLocation());
 applyLocation();
 
 // Dev/debug handle (safe to keep; exposes scene for inspection).
-window.__neuropaedia = {
+window.__theaidictionary = {
   library,
   scene: library.scene,
   camera: library._camera,

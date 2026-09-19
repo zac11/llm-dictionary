@@ -15,7 +15,7 @@ const includeCoOccurs = !process.argv.includes('--related-only');
 const started = performance.now();
 const { terms, diagnostics } = loadDictionarySource(join(root, 'dictionary'));
 
-console.log('Neuropaedia graph build');
+console.log('TheAiDictionary graph build');
 console.log(`terms: ${terms.length}`);
 const { errors } = printDiagnostics(diagnostics);
 if (errors.length) process.exit(1);
