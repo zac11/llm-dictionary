@@ -17,12 +17,14 @@
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { normalizeGraphLabel, rangeFolderForLetter, slugifyTerm } from '../src/term-schema.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 const SOURCES = [
   // earlier = preferred when both files carry the same slug
   { file: 'data/ai_terms_1500.json', tag: 'ai-terms' },
+  { file: 'data/ai_terms_extra.json', tag: 'wikipedia-extra' },
 ];
 
 // Slugs that name the same concept as a curated entry, without any
@@ -44,22 +46,9 @@ const MERGE_INTO_IMPORT = {
   'graph-engineering': 'graphrag',
 };
 
-const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-const folderFor = (letter) => {
-  const i = LETTERS.indexOf(letter);
-  if (i === -1) return null;
-  const a = LETTERS[Math.floor(i / 2) * 2];
-  const b = LETTERS[Math.floor(i / 2) * 2 + 1];
-  return `${a.toLowerCase()}-${b.toLowerCase()}`;
-};
-
-const slugify = (s) =>
-  s
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-
-const norm = slugify;
+const folderFor = rangeFolderForLetter;
+const slugify = slugifyTerm;
+const norm = normalizeGraphLabel;
 
 // ---------------------------------------------------------------- existing --
 const dictDir = join(ROOT, 'dictionary');
@@ -81,7 +70,13 @@ const pool = new Map(); // slug -> { record, tag }
 const report = { fileOverlap: [], skippedExisting: [], skippedConcept: [], merged: [] };
 
 for (const { file, tag } of SOURCES) {
-  const rows = JSON.parse(readFileSync(join(ROOT, file), 'utf8'));
+  let rows;
+  try {
+    rows = JSON.parse(readFileSync(join(ROOT, file), 'utf8'));
+  } catch {
+    console.warn(`! skipping missing source: ${file}`);
+    continue;
+  }
   for (const raw of rows) {
     const slug = slugify(raw.term || '');
     if (!slug) continue;
@@ -124,8 +119,9 @@ for (const [slug, { record: raw, tag }] of pool) {
     continue;
   }
 
-  const letter = LETTERS.includes((raw.letter || '')[0])
-    ? raw.letter[0].toUpperCase()
+  const suppliedLetter = String(raw.letter || '')[0]?.toUpperCase();
+  const letter = rangeFolderForLetter(suppliedLetter)
+    ? suppliedLetter
     : (raw.term[0] || '').toUpperCase();
   const folder = folderFor(letter);
   if (!folder || !raw.definition || !raw.details) {

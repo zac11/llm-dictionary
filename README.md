@@ -1,4 +1,4 @@
-# Neuropaedia — The AI Encyclopaedia
+# TheAiDictionary — The AI Encyclopaedia
 
 > Decode the language of LLMs, GenAI & AI Engineering.
 >

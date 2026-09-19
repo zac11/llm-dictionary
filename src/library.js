@@ -112,6 +112,7 @@ export class Library {
 
     this._clock = new THREE.Clock();
     this._elapsed = 0;
+    this._active = true;
 
     this._bindEvents();
     this._animate();
@@ -729,6 +730,10 @@ export class Library {
   // ---------------- loop ----------------
   _animate = () => {
     requestAnimationFrame(this._animate);
+    if (!this._active) {
+      this._clock.getDelta();
+      return;
+    }
     const dt = Math.min(this._clock.getDelta(), 0.05);
     this._elapsed += dt;
     const t = this._elapsed;
@@ -782,6 +787,20 @@ export class Library {
     this.controls.update();
     this._renderer.render(this.scene, this._camera);
   };
+
+  pause() {
+    this._active = false;
+    this._controlsWereEnabled = this.controls.enabled;
+    this.controls.enabled = false;
+    this._renderer.domElement.style.pointerEvents = 'none';
+  }
+
+  resume() {
+    this._active = true;
+    this.controls.enabled = this._controlsWereEnabled ?? true;
+    this._renderer.domElement.style.pointerEvents = '';
+    this._clock.getDelta();
+  }
 
   dispose() {
     this._ro && this._ro.disconnect();

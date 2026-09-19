@@ -257,7 +257,7 @@ export class UI {
     const idx = ROMAN[Math.max(0, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.indexOf(a) >> 1)];
     this._pageLeft.innerHTML = `
       <div class="idx-left">
-        <p class="idx-kicker">Neuropaedia · AI Engineering</p>
+        <p class="idx-kicker">TheAiDictionary · AI Engineering</p>
         <p class="idx-ornament">✦&nbsp;&nbsp;❦&nbsp;&nbsp;✦</p>
         <h2 class="idx-range">${a} – ${b}</h2>
         <p class="idx-roman">Volume ${idx}</p>
@@ -482,9 +482,66 @@ export class UI {
             : ''
         }
         ${term.story ? `<button class="pg-flip-story" type="button">${icon('book-open')}<span>Flip to the story</span>${icon('arrow-right')}</button>` : ''}
+        <aside class="pg-trail" aria-live="polite"></aside>
       </div>`;
     this._pageRight.querySelector('.pg-flip-story')?.addEventListener('click', () => this._flipToPage(1));
+    this._renderConceptTrail(term);
     this._resetScroll();
+  }
+
+  /**
+   * Concept trail: async — fills the .pg-trail container once the graph loads,
+   * guarded against stale renders when the user navigates to another term.
+   */
+  _renderConceptTrail(term) {
+    const container = this._pageRight.querySelector('.pg-trail');
+    if (!container) return;
+    const slug = term.slug;
+    container.innerHTML = `<p class="pg-trail-loading">Tracing how “${escapeHtml(term.term)}” connects…</p>`;
+    (async () => {
+      try {
+        const { loadGraph, nearestTrail, FOUNDATION_SLUGS, neighbors } = await import('./graph.js');
+        const index = await loadGraph();
+        if (!index || this._activeTerm?.slug !== slug) return;
+        // Curated RELATED edges only: trails must stay semantically meaningful.
+        this._renderTrail(container, term, index, nearestTrail(index, FOUNDATION_SLUGS, slug, { predicates: ['RELATED'], maxNodes: 5 }), neighbors);
+      } catch {
+        if (this._activeTerm?.slug === slug) container.innerHTML = '';
+      }
+    })();
+  }
+
+  _renderTrail(container, term, index, result, neighborsFn) {
+    container.innerHTML = '';
+    if (!result || result.path.length <= 1) {
+      const related = neighborsFn ? neighborsFn(index, term.slug).slice(0, 4) : [];
+      if (!related.length) return;
+      container.innerHTML = `
+        <h3 class="pg-trail-title">Related concepts</h3>
+        <div class="pg-trail-path">${related
+          .map(({ node }) => `<button class="trail-chip" type="button" data-slug="${escapeHtml(node.slug)}">${escapeHtml(node.label)}</button>`)
+          .join('<span class="trail-arrow">→</span>')}</div>`;
+    } else {
+      const chips = result.path
+        .map((s) => {
+          const node = index.bySlug.get(s);
+          return node ? `<button class="trail-chip" type="button" data-slug="${escapeHtml(s)}">${escapeHtml(node.label)}</button>` : '';
+        })
+        .join('<span class="trail-arrow">→</span>');
+      container.innerHTML = `
+        <h3 class="pg-trail-title">Concept trail</h3>
+        <p class="pg-trail-note">How it connects to related concepts</p>
+        <div class="pg-trail-path">${chips}</div>`;
+    }
+    container.querySelectorAll('.trail-chip').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const s = btn.dataset.slug;
+        if (s) {
+          btn.blur();
+          this.openEntry(s);
+        }
+      });
+    });
   }
 
   /**
@@ -500,7 +557,7 @@ export class UI {
 
     this._pageLeft.innerHTML = `
       <div class="story-left">
-        <p class="idx-kicker">Neuropaedia · The Story</p>
+        <p class="idx-kicker">TheAiDictionary · The Story</p>
         <p class="idx-ornament">✦&nbsp;&nbsp;❦&nbsp;&nbsp;✦</p>
         <h2 class="story-title">In a story</h2>
         <p class="story-subject">${escapeHtml(term.term)}</p>
@@ -661,7 +718,7 @@ export class UI {
   _shareBlurb() {
     const t = this._activeTerm;
     if (!t) return this._shareUrl();
-    const lines = [`${t.term} — ${t.definition}`, '', `Read it in Neuropaedia: ${this._shareUrl()}`];
+    const lines = [`${t.term} — ${t.definition}`, '', `Read it in TheAiDictionary: ${this._shareUrl()}`];
     const cite = formatCitation(t.citation);
     if (cite) lines.push('', `Source: ${cite}`);
     return lines.join('\n');

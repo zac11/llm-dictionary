@@ -1,12 +1,12 @@
 // Loads every term JSON file living in /dictionary/<a-b..y-z>/*.json
 // and exposes them grouped by volume (letter range) with search helpers.
 
+import { LETTERS, normalizeTerm } from './term-schema.js';
+
 const modules = import.meta.glob('../dictionary/*/*.json', {
   eager: true,
   import: 'default',
 });
-
-const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 // 13 volumes: A-B, C-D, ... Y-Z  -> folder names a-b ... y-z
 export const RANGES = (() => {
@@ -27,33 +27,6 @@ export const RANGES = (() => {
 const folderIndexOf = (folder) =>
   RANGES.findIndex((r) => r.folder === folder);
 
-function normalize(raw, file) {
-  const term = String(raw.term || '').trim();
-  if (!term) return null;
-  const letter = String(raw.letter || term[0]).toUpperCase();
-  if (!LETTERS.includes(letter)) return null;
-  const citation = raw.citation || {};
-  return {
-    slug: raw.slug || term.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-    term,
-    letter,
-    category: raw.category || 'General',
-    aka: Array.isArray(raw.aka) ? raw.aka : raw.aka ? [raw.aka] : [],
-    definition: raw.definition || '',
-    details: raw.details || '',
-    story: raw.story || '',
-    related: Array.isArray(raw.related) ? raw.related : [],
-    citation: {
-      title: citation.title || '',
-      authors: Array.isArray(citation.authors) ? citation.authors : [],
-      year: citation.year || '',
-      venue: citation.venue || '',
-      url: citation.url || '',
-    },
-    _src: file,
-  };
-}
-
 const byTerm = (a, b) => a.term.localeCompare(b.term);
 
 for (const [path, raw] of Object.entries(modules)) {
@@ -63,7 +36,7 @@ for (const [path, raw] of Object.entries(modules)) {
   const [folder, slug] = [m[1], m[2]];
   const idx = folderIndexOf(folder);
   if (idx === -1) continue;
-  const norm = normalize(raw, path);
+  const norm = normalizeTerm(raw, path);
   if (!norm) continue;
   RANGES[idx].terms.push(norm);
 }

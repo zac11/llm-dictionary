@@ -12,6 +12,7 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { slugifyTerm } from '../src/term-schema.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -23,13 +24,6 @@ for (let code = 65; code <= 90; code += 2) {
   RANGES.push(`${a.toLowerCase()}-${b.toLowerCase()}`);
 }
 const folderFor = (letter) => RANGES[Math.floor((letter.charCodeAt(0) - 65) / 2)];
-
-const slugify = (s) =>
-  s
-    .toLowerCase()
-    .replace(/&/g, 'and')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
 
 // -----------------------------------------------------------------------------
 //  ENTRIES  (term content + citations)
@@ -992,7 +986,7 @@ for (const entry of ENTRIES) {
   folderSet.add(folder);
   seenLetters.add(entry.letter);
 
-  const slug = slugify(entry.term);
+  const slug = slugifyTerm(entry.term);
   const file = join(ROOT, 'dictionary', folder, `${slug}.json`);
   mkdirSync(dirname(file), { recursive: true });
   writeFileSync(file, JSON.stringify({ ...entry, slug }, null, 2) + '\n');
