@@ -3,18 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TheAiDictionary — The AI Encyclopaedia</title>
+    <title>TheAIDictionary — The AI Encyclopaedia</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta
       name="description"
-      content="TheAiDictionary — The AI Encyclopaedia. Decode the language of LLMs, GenAI & AI Engineering: an interactive 3D encyclopaedia of large language model and machine learning terms. Pull a volume off the shelf, open it and read it like a real encyclopaedia."
+      content="TheAIDictionary — The AI Encyclopaedia. Decode the language of LLMs, GenAI & AI Engineering: an interactive 3D encyclopaedia of large language model and machine learning terms. Pull a volume off the shelf, open it and read it like a real encyclopaedia."
     />
     <meta name="theme-color" content="#0d0a08" />
     <!-- social:start -->
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="TheAiDictionary" />
+    <meta property="og:site_name" content="TheAIDictionary" />
     <meta property="og:locale" content="en" />
-    <meta property="og:title" content="TheAiDictionary — The AI Encyclopaedia" />
+    <meta property="og:title" content="TheAIDictionary — The AI Encyclopaedia" />
     <meta
       property="og:description"
       content="An interactive 3D encyclopaedia of AI and machine-learning terms, A–Z, with citations."
@@ -22,9 +22,9 @@
     <meta property="og:image" content="/og.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="TheAiDictionary — an interactive 3D encyclopaedia of AI terms" />
+    <meta property="og:image:alt" content="TheAIDictionary — an interactive 3D encyclopaedia of AI terms" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="TheAiDictionary — The AI Encyclopaedia" />
+    <meta name="twitter:title" content="TheAIDictionary — The AI Encyclopaedia" />
     <meta
       name="twitter:description"
       content="An interactive 3D encyclopaedia of AI and machine-learning terms, A–Z, with citations."
@@ -43,7 +43,7 @@
     <!-- 3D canvas mounts here -->
     <div id="scene-container"></div>
     <main id="graph-view" class="graph-view" aria-hidden="true">
-      <canvas id="graph-canvas" aria-label="Interactive map of all TheAiDictionary terms"></canvas>
+      <canvas id="graph-canvas" aria-label="Interactive map of all TheAIDictionary terms"></canvas>
       <aside class="graph-sidebar" aria-label="Explore knowledge graph">
         <div class="graph-sidebar-head">
           <p class="graph-eyebrow">Knowledge constellation</p>
@@ -62,10 +62,10 @@
     <!-- Ask overlay -->
     <section id="ask-view" class="ask-view" aria-hidden="true">
       <div class="ask-backdrop" id="ask-backdrop"></div>
-      <div class="ask-card" role="dialog" aria-modal="true" aria-label="Ask TheAiDictionary">
+      <div class="ask-card" role="dialog" aria-modal="true" aria-label="Ask TheAIDictionary">
         <button class="ask-close" id="ask-close" aria-label="Close Ask"><svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
         <div class="ask-head">
-          <p class="graph-eyebrow">Ask TheAiDictionary</p>
+          <p class="graph-eyebrow">Ask TheAIDictionary</p>
           <h2>Grounded answers</h2>
           <p id="ask-status" class="ask-status" role="status" aria-live="polite">Ask about any AI term…</p>
         </div>
@@ -82,7 +82,7 @@
       <div class="brand">
         <span class="brand-mark">A</span>
         <div class="brand-text">
-          <h1>TheAiDictionary</h1>
+          <h1>TheAIDictionary</h1>
           <p>The AI Encyclopaedia</p>
         </div>
       </div>
@@ -120,6 +120,11 @@
         <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
       </button>
     </header>
+
+    <button id="feedback-toggle" class="feedback-toggle" type="button" aria-haspopup="dialog" aria-expanded="false">
+      <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 8h8M8 12h5"/></svg>
+      <span>Feedback</span>
+    </button>
 
     <!-- Helper hints -->
     <div id="hint" class="hint">
@@ -191,6 +196,26 @@
         <p class="help-foot">
           Words live as JSON files inside the <code>dictionary/</code> folder grouped A–B, C–D, … Y–Z.
         </p>
+      </div>
+    </div>
+
+    <div id="feedback-modal" class="feedback-modal" aria-hidden="true">
+      <div class="feedback-backdrop" id="feedback-backdrop"></div>
+      <div class="feedback-card" role="dialog" aria-modal="true" aria-labelledby="feedback-title">
+        <button class="entry-close" id="feedback-close" type="button" aria-label="Close feedback form"><svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+        <p class="graph-eyebrow">Help us improve</p>
+        <h2 id="feedback-title">Send feedback</h2>
+        <p class="feedback-intro">Share a bug, correction, or idea with TheAIDictionary.</p>
+        <form class="feedback-form" action="mailto:tokenaryai@gmail.com?subject=TheAIDictionary%20feedback" method="post" enctype="text/plain">
+          <label for="feedback-name">Name</label>
+          <input id="feedback-name" name="Name" type="text" autocomplete="name" />
+          <label for="feedback-email">Email</label>
+          <input id="feedback-email" name="Email" type="email" autocomplete="email" required />
+          <label for="feedback-message">Feedback</label>
+          <textarea id="feedback-message" name="Feedback" rows="6" required></textarea>
+          <button class="feedback-submit" type="submit">Send feedback</button>
+        </form>
+        <p class="feedback-note">This opens your email app and sends to <a href="mailto:tokenaryai@gmail.com">tokenaryai@gmail.com</a>.</p>
       </div>
     </div>
 

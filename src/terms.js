@@ -1,7 +1,7 @@
 // Loads every term JSON file living in /dictionary/<a-b..y-z>/*.json
 // and exposes them grouped by volume (letter range) with search helpers.
 
-import { LETTERS, normalizeTerm } from './term-schema.js';
+import { LETTERS, normalizeTerm, rankSearchEntries } from './term-schema.js';
 
 const modules = import.meta.glob('../dictionary/*/*.json', {
   eager: true,
@@ -73,26 +73,7 @@ export const rangeTerms = (folder) => {
 
 /** Lightweight full-text search over a term's fields. */
 export function searchTerms(query) {
-  const q = query.trim().toLowerCase();
-  if (!q) return [];
-  const needles = q.split(/\s+/).filter(Boolean);
-  return ALL.filter((t) => {
-    const hay = [
-      t.term,
-      t.category,
-      ...t.aka,
-      t.definition,
-      t.details,
-      t.story,
-      t.citation.title,
-      t.citation.venue,
-      ...t.citation.authors,
-      String(t.citation.year),
-    ]
-      .join(' ')
-      .toLowerCase();
-    return needles.every((n) => hay.includes(n));
-  });
+  return rankSearchEntries(query, ALL).map(({ entry }) => entry);
 }
 
 /** Basic sanity info surfaced in the console for authors/maintenance. */

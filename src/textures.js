@@ -173,7 +173,7 @@ export function makeCoverTexture({ label, letters, count, c1, c2, roman }) {
   ctx.fillText(`V O L U M E  ${roman}`, W / 2, H - 118);
   ctx.font = 'italic 500 26px Georgia, serif';
   ctx.fillStyle = 'rgba(249,236,214,0.62)';
-  ctx.fillText(`${count} ${count === 1 ? 'TERM' : 'TERMS'} · THEAIDICTIONARY`, W / 2, H - 76);
+  ctx.fillText(`${count} ${count === 1 ? 'TERM' : 'TERMS'} · TheAIDictionary`, W / 2, H - 76);
 
   const tex = new THREE.CanvasTexture(c);
   tex.colorSpace = THREE.SRGBColorSpace;
@@ -221,13 +221,14 @@ export function makeSpineTexture({ label, letters, count, c1, c2, roman }) {
   ctx.fillText(letters[1], W / 2, 388);
   ctx.shadowBlur = 0;
 
-  // title, rotated like a real spine
+  // title, rotated like a real spine (sized so the longer wordmark clears
+  // the big range letters above and the roman/term count below)
   ctx.save();
   ctx.translate(W / 2, H * 0.66);
   ctx.rotate(Math.PI / 2);
-  ctx.font = '600 34px Georgia, serif';
+  ctx.font = '600 22px Georgia, serif';
   ctx.fillStyle = 'rgba(249,236,214,0.85)';
-  ctx.fillText('THEAIDICTIONARY', 0, 12);
+  ctx.fillText('TheAIDictionary', 0, 12);
   ctx.restore();
 
   ctx.font = '600 30px Georgia, serif';
@@ -416,7 +417,7 @@ export function makePageTexture({ letters }) {
   // header rule + running title
   ctx.font = 'italic 500 24px Georgia, serif';
   ctx.fillStyle = 'rgba(120,95,60,0.4)';
-  ctx.fillText('TheAiDictionary · AI Engineering', W / 2, 56);
+  ctx.fillText('TheAIDictionary · AI Engineering', W / 2, 56);
   ctx.strokeStyle = 'rgba(120,95,60,0.35)';
   ctx.beginPath();
   ctx.moveTo(56, 74);

@@ -1,6 +1,6 @@
-# TheAiDictionary — Knowledge Graph & Discovery Features: Revised Implementation Plan
+# TheAIDictionary — Knowledge Graph & Discovery Features: Revised Implementation Plan
 
-**Repository:** `llm-dictionary` (TheAiDictionary — The AI Encyclopaedia)  
+**Repository:** `llm-dictionary` (TheAIDictionary — The AI Encyclopaedia)
 **Status:** Phases A0, A1, A2, and the Phase B Map MVP are implemented
 **Date:** 2026-09-18  
 **Scope:** Shared term normalization, graph validation and generation, Map view, concept trails, offline retrieval, and optional grounded Ask chat
@@ -614,7 +614,7 @@ Dynamically import `src/ask.js` on first use. Add:
 - source chips;
 - cancel action for active requests;
 - keyboard and focus management;
-- clear labeling that answers are grounded in TheAiDictionary entries.
+- clear labeling that answers are grounded in TheAIDictionary entries.
 
 Define how Ask coexists with Map, Help, and the book spread. Avoid multiple modal surfaces competing for Escape or focus.
 

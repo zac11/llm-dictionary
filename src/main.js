@@ -159,11 +159,37 @@ askToggle.addEventListener('click', () => {
 document.getElementById('ask-close')?.addEventListener('click', closeAsk);
 document.getElementById('ask-backdrop')?.addEventListener('click', closeAsk);
 
+const feedbackModal = document.getElementById('feedback-modal');
+const feedbackToggle = document.getElementById('feedback-toggle');
+const feedbackClose = document.getElementById('feedback-close');
+
+function openFeedback() {
+  if (askView.classList.contains('open')) closeAsk();
+  feedbackModal.classList.add('open');
+  feedbackModal.setAttribute('aria-hidden', 'false');
+  feedbackToggle.setAttribute('aria-expanded', 'true');
+  document.getElementById('feedback-message')?.focus();
+}
+
+function closeFeedback() {
+  feedbackModal.classList.remove('open');
+  feedbackModal.setAttribute('aria-hidden', 'true');
+  feedbackToggle.setAttribute('aria-expanded', 'false');
+  feedbackToggle.focus();
+}
+
+feedbackToggle.addEventListener('click', openFeedback);
+feedbackClose.addEventListener('click', closeFeedback);
+document.getElementById('feedback-backdrop')?.addEventListener('click', closeFeedback);
+
 // Capture-phase Escape: the Ask overlay takes priority over book/map/help Escape.
 document.addEventListener(
   'keydown',
   (event) => {
-    if (event.key === 'Escape' && askView.classList.contains('open')) {
+    if (event.key === 'Escape' && feedbackModal.classList.contains('open')) {
+      event.stopPropagation();
+      closeFeedback();
+    } else if (event.key === 'Escape' && askView.classList.contains('open')) {
       event.stopPropagation();
       closeAsk();
     }

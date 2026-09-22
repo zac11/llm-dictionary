@@ -83,7 +83,7 @@ async function api(params, retries = 5) {
     let res;
     try {
       res = await fetch(url, {
-        headers: { 'User-Agent': 'TheAiDictionary-glossary/1.0 (contact: local maintainer)' },
+        headers: { 'User-Agent': 'TheAIDictionary-glossary/1.0 (contact: local maintainer)' },
       });
     } catch {
       if (attempt === retries) throw new Error('fetch failed');

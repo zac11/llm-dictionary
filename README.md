@@ -1,4 +1,4 @@
-# TheAiDictionary — The AI Encyclopaedia
+# TheAIDictionary — The AI Encyclopaedia
 
 > Decode the language of LLMs, GenAI & AI Engineering.
 >
