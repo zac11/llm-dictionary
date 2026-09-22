@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildRetrievalContext, parseComparison, rankTerms } from '../src/ask.js';
 import { tokenizeText } from '../src/term-schema.js';
-import { rerankEntries } from '../netlify/functions/ask.mjs';
+import { getLlmConfig, rerankEntries } from '../netlify/functions/ask.mjs';
 
 const corpus = {
   schemaVersion: 1,
@@ -165,4 +165,18 @@ test('rerankEntries leaves exact lookups to deterministic code', async () => {
   });
   assert.equal(result.mode, 'lexical');
   assert.equal(called, false);
+});
+
+test('getLlmConfig requires all runtime provider settings', () => {
+  assert.equal(getLlmConfig({ LLM_API_KEY: 'key' }), null);
+  assert.equal(getLlmConfig({ LLM_API_KEY: 'key', LLM_BASE_URL: 'https://provider.example/v1' }), null);
+  assert.deepEqual(getLlmConfig({
+    LLM_API_KEY: ' key ',
+    LLM_BASE_URL: 'https://provider.example/v1/',
+    LLM_MODEL: ' model ',
+  }), {
+    apiKey: 'key',
+    baseUrl: 'https://provider.example/v1',
+    model: 'model',
+  });
 });
