@@ -1,4 +1,5 @@
 import { loadGraph, neighbors } from './graph.js';
+import { rankSearchEntries } from './term-schema.js';
 
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 
@@ -288,15 +289,11 @@ export class GraphMap {
 
   _renderList(query) {
     if (!this.nodes) return;
-    const needle = query.trim().toLowerCase();
-    const matches = this.nodes
-      .filter((node) => {
-        if (!needle) return true;
-        const hay = `${node.label} ${node.category} ${(node.aka || []).join(' ')}`.toLowerCase();
-        return hay.includes(needle);
-      })
-      .sort((a, b) => b.centrality - a.centrality || a.label.localeCompare(b.label))
-      .slice(0, 100);
+    const needle = query.trim();
+    const matches = (needle
+      ? rankSearchEntries(needle, this.nodes).map(({ entry }) => entry)
+      : [...this.nodes].sort((a, b) => b.centrality - a.centrality || a.label.localeCompare(b.label))
+    ).slice(0, 100);
     this.list.replaceChildren(...matches.map((node) => {
       const button = document.createElement('button');
       button.type = 'button';

@@ -51,6 +51,55 @@ export function tokenizeText(value, { minLength = 2, stopwords = STOPWORDS } = {
     .filter((token) => token.length >= minLength && !stopwords.has(token));
 }
 
+const includesPhrase = (value, phrase) => ` ${value} `.includes(` ${phrase} `);
+
+export function rankSearchEntries(query, entries) {
+  const normalizedQuery = normalizeGraphLabel(query);
+  if (!normalizedQuery) return [];
+  const queryTokens = tokenizeText(query);
+
+  return entries
+    .map((entry) => {
+      const canonical = normalizeGraphLabel(entry.term || entry.label);
+      const aliases = (entry.aka || entry.aliases || []).map(normalizeGraphLabel).filter(Boolean);
+      const category = normalizeGraphLabel(entry.category);
+      let score = 0;
+
+      if (canonical === normalizedQuery) score = 1000;
+      else if (aliases.includes(normalizedQuery)) score = 950;
+      else if (canonical.startsWith(normalizedQuery)) score = 800;
+      else if (aliases.some((alias) => alias.startsWith(normalizedQuery))) score = 760;
+      else if (includesPhrase(canonical, normalizedQuery)) score = 650;
+      else if (aliases.some((alias) => includesPhrase(alias, normalizedQuery))) score = 620;
+      else if (queryTokens.length) {
+        const nameTokens = new Set(tokenizeText(`${canonical} ${aliases.join(' ')}`));
+        const overlap = queryTokens.filter((token) => nameTokens.has(token)).length;
+        if (overlap === queryTokens.length) score = 500 + Math.round((overlap / nameTokens.size) * 100);
+      }
+
+      if (!score && category) {
+        if (category === normalizedQuery) score = 300;
+        else if (category.startsWith(normalizedQuery) || includesPhrase(category, normalizedQuery)) score = 220;
+      }
+
+      if (!score && queryTokens.length) {
+        const citation = entry.citation || {};
+        const searchable = normalizeGraphLabel([
+          citation.title,
+          citation.venue,
+          ...(citation.authors || []),
+          citation.year,
+        ].filter(Boolean).join(' '));
+        const searchableTokens = new Set(tokenizeText(searchable));
+        if (queryTokens.every((token) => searchableTokens.has(token))) score = 100;
+      }
+
+      return { entry, score };
+    })
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score || String(a.entry.term || a.entry.label).localeCompare(String(b.entry.term || b.entry.label)));
+}
+
 export function isValidLetter(value) {
   return typeof value === 'string' && value.length === 1 && LETTERS.includes(value);
 }

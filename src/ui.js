@@ -1,4 +1,4 @@
-import { allTerms, findTerm, volumeByLetter, rangeTerms } from './terms.js';
+import { findTerm, volumeByLetter, rangeTerms, searchTerms } from './terms.js';
 import { letterColor } from './palette.js';
 import { icon } from './icons.js';
 
@@ -257,7 +257,7 @@ export class UI {
     const idx = ROMAN[Math.max(0, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.indexOf(a) >> 1)];
     this._pageLeft.innerHTML = `
       <div class="idx-left">
-        <p class="idx-kicker">TheAiDictionary · AI Engineering</p>
+        <p class="idx-kicker">TheAIDictionary · AI Engineering</p>
         <p class="idx-ornament">✦&nbsp;&nbsp;❦&nbsp;&nbsp;✦</p>
         <h2 class="idx-range">${a} – ${b}</h2>
         <p class="idx-roman">Volume ${idx}</p>
@@ -557,7 +557,7 @@ export class UI {
 
     this._pageLeft.innerHTML = `
       <div class="story-left">
-        <p class="idx-kicker">TheAiDictionary · The Story</p>
+        <p class="idx-kicker">TheAIDictionary · The Story</p>
         <p class="idx-ornament">✦&nbsp;&nbsp;❦&nbsp;&nbsp;✦</p>
         <h2 class="story-title">In a story</h2>
         <p class="story-subject">${escapeHtml(term.term)}</p>
@@ -718,7 +718,7 @@ export class UI {
   _shareBlurb() {
     const t = this._activeTerm;
     if (!t) return this._shareUrl();
-    const lines = [`${t.term} — ${t.definition}`, '', `Read it in TheAiDictionary: ${this._shareUrl()}`];
+    const lines = [`${t.term} — ${t.definition}`, '', `Read it in TheAIDictionary: ${this._shareUrl()}`];
     const cite = formatCitation(t.citation);
     if (cite) lines.push('', `Source: ${cite}`);
     return lines.join('\n');
@@ -903,16 +903,7 @@ export class UI {
   }
 
   _searchResults(q) {
-    const s = q.toLowerCase();
-    return allTerms.filter(
-      (t) =>
-        t.term.toLowerCase().includes(s) ||
-        t.category.toLowerCase().includes(s) ||
-        (t.story || '').toLowerCase().includes(s) ||
-        t.aka.some((a) => a.toLowerCase().includes(s)) ||
-        (t.citation.title || '').toLowerCase().includes(s) ||
-        t.citation.authors.some((a) => a.toLowerCase().includes(s))
-    );
+    return searchTerms(q);
   }
 
   _renderResults(results) {

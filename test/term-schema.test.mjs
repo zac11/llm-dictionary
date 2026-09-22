@@ -5,6 +5,7 @@ import {
   normalizeGraphLabel,
   normalizeTerm,
   rangeFolderForLetter,
+  rankSearchEntries,
   slugifyTerm,
   validateTerm,
 } from '../src/term-schema.js';
@@ -95,4 +96,21 @@ test('validateTerm rejects malformed list values and related slugs', () => {
     new Set(codes),
     new Set(['invalid-aka-value', 'invalid-related-slug', 'invalid-author-value'])
   );
+});
+
+test('rankSearchEntries prioritizes exact, prefix, and whole-word term matches', () => {
+  const entries = [
+    { term: 'Action model learning', category: 'Artificial Intelligence', aka: [], story: 'The system runs a loop.' },
+    { term: 'Agentic Loop', category: 'AI Engineering', aka: ['ReAct Loop'] },
+    { term: 'Loop Engineering', category: 'AI Engineering', aka: [] },
+    { term: 'Machine Learning', category: 'Foundations', aka: ['ML'] },
+    { term: 'A. R. D. Prasad', category: 'Machine learning', aka: [] },
+  ];
+
+  assert.deepEqual(rankSearchEntries('Loop', entries).map(({ entry }) => entry.term), [
+    'Loop Engineering',
+    'Agentic Loop',
+  ]);
+  assert.equal(rankSearchEntries('Machine', entries)[0].entry.term, 'Machine Learning');
+  assert.equal(rankSearchEntries('ML', entries)[0].entry.term, 'Machine Learning');
 });

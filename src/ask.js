@@ -4,6 +4,7 @@ import { normalizeGraphLabel, tokenizeText } from './term-schema.js';
 const RETRIEVAL_SCHEMA_VERSION = 1;
 
 let corpusPromise = null;
+const rankingStats = new WeakMap();
 
 async function loadCorpus() {
   if (!corpusPromise) {
@@ -28,37 +29,86 @@ async function loadCorpus() {
   return corpusPromise;
 }
 
-function scoreEntry(entry, ql, qTokens) {
+function termFrequency(tokens) {
+  const frequencies = new Map();
+  for (const token of tokens) frequencies.set(token, (frequencies.get(token) || 0) + 1);
+  return frequencies;
+}
+
+function getRankingStats(corpus) {
+  if (rankingStats.has(corpus)) return rankingStats.get(corpus);
+  const documentFrequency = new Map();
+  let totalLength = 0;
+  for (const entry of corpus.terms) {
+    const categoryTokens = tokenizeText(entry.category);
+    const tokens = [...entry.termTokens, ...categoryTokens, ...entry.textTokens];
+    totalLength += entry.termTokens.length * 3 + categoryTokens.length * 2 + entry.textTokens.length;
+    for (const token of new Set(tokens)) {
+      documentFrequency.set(token, (documentFrequency.get(token) || 0) + 1);
+    }
+  }
+  const stats = {
+    documentCount: corpus.terms.length,
+    documentFrequency,
+    averageLength: totalLength / Math.max(1, corpus.terms.length),
+  };
+  rankingStats.set(corpus, stats);
+  return stats;
+}
+
+function scoreEntry(entry, ql, qTokens, stats) {
   let score = 0;
   const reasons = [];
   const termNorm = normalizeGraphLabel(entry.term);
-  if (entry.slug === ql || termNorm === ql) {
-    score += 100;
-    reasons.push('exact-term');
-  } else if (entry.aliases.some((alias) => normalizeGraphLabel(alias) === ql)) {
-    score += 85;
-    reasons.push('exact-alias');
-  } else {
-    if (ql.length >= 3 && termNorm.startsWith(ql)) {
-      score += 60;
-      reasons.push('prefix');
-    }
-    const termSet = new Set(entry.termTokens);
-    const termOverlap = qTokens.filter((token) => termSet.has(token)).length;
-    if (termOverlap) {
-      score += 35 + termOverlap * 8;
-      reasons.push(`term-tokens:${termOverlap}`);
-    }
-    const textSet = new Set(entry.textTokens);
-    const textOverlap = qTokens.filter((token) => textSet.has(token)).length;
-    if (textOverlap) {
-      score += 8 + textOverlap;
-      reasons.push(`text-tokens:${textOverlap}`);
-    }
-    if (normalizeGraphLabel(entry.category) === ql) {
-      score += 15;
-      reasons.push('category');
-    }
+  const aliasNorms = entry.aliases.map((alias) => normalizeGraphLabel(alias));
+  const queryPhrase = ` ${ql} `;
+  if (normalizeGraphLabel(entry.slug) === ql || termNorm === ql) {
+    return { entry, score: 100, reasons: ['exact-term'] };
+  }
+  if (aliasNorms.includes(ql)) {
+    return { entry, score: 100, reasons: ['exact-alias'] };
+  }
+  if (` ${ql} `.includes(` ${termNorm} `)) {
+    score += 95;
+    reasons.push('term-in-query');
+  } else if (aliasNorms.some((alias) => queryPhrase.includes(` ${alias} `))) {
+    score += 92;
+    reasons.push('alias-in-query');
+  } else if (ql.length >= 3 && termNorm.startsWith(ql)) {
+    score += 70;
+    reasons.push('prefix');
+  }
+
+  const categoryTokens = tokenizeText(entry.category);
+  const termFrequencies = termFrequency(entry.termTokens);
+  const categoryFrequencies = termFrequency(categoryTokens);
+  const textFrequencies = termFrequency(entry.textTokens);
+  const documentLength = entry.termTokens.length * 3 + categoryTokens.length * 2 + entry.textTokens.length;
+  const matched = new Set();
+  let bm25 = 0;
+  for (const token of new Set(qTokens)) {
+    const frequency = (termFrequencies.get(token) || 0) * 3
+      + (categoryFrequencies.get(token) || 0) * 2
+      + (textFrequencies.get(token) || 0);
+    if (!frequency) continue;
+    matched.add(token);
+    const documents = stats.documentFrequency.get(token) || 0;
+    const idf = Math.log(1 + (stats.documentCount - documents + 0.5) / (documents + 0.5));
+    const denominator = frequency + 1.2 * (0.25 + 0.75 * documentLength / Math.max(1, stats.averageLength));
+    bm25 += idf * frequency * 2.2 / denominator;
+  }
+  if (bm25) {
+    score += Math.min(65, bm25 * 8);
+    reasons.push(`bm25:${bm25.toFixed(3)}`);
+  }
+  if (matched.size) {
+    const coverage = matched.size / Math.max(1, new Set(qTokens).size);
+    score += coverage * 18;
+    reasons.push(`coverage:${coverage.toFixed(3)}`);
+  }
+  if (normalizeGraphLabel(entry.category) === ql) {
+    score += 25;
+    reasons.push('category');
   }
   return { entry, score, reasons };
 }
@@ -67,8 +117,10 @@ function scoreEntry(entry, ql, qTokens) {
 export function rankTerms(query, corpus, { limit = 8 } = {}) {
   const ql = normalizeGraphLabel(query);
   const qTokens = tokenizeText(query);
+  if (!ql || !qTokens.length) return [];
+  const stats = getRankingStats(corpus);
   return corpus.terms
-    .map((entry) => scoreEntry(entry, ql, qTokens))
+    .map((entry) => scoreEntry(entry, ql, qTokens, stats))
     .filter((result) => result.score > 0)
     .sort((a, b) => b.score - a.score || a.entry.slug.localeCompare(b.entry.slug))
     .slice(0, limit);
@@ -94,7 +146,7 @@ function resolve(phrase, { corpus, bySlug }) {
   const norm = normalizeGraphLabel(phrase);
   for (const entry of corpus.terms) {
     if (
-      entry.slug === norm ||
+      normalizeGraphLabel(entry.slug) === norm ||
       normalizeGraphLabel(entry.term) === norm ||
       entry.aliases.some((alias) => normalizeGraphLabel(alias) === norm)
     ) {
@@ -159,6 +211,48 @@ function sourceLink(entry) {
   return link;
 }
 
+export function buildRetrievalContext(query, corpus, bySlug, { limit = 10 } = {}) {
+  const primary = [];
+  const comparison = parseComparison(query);
+  if (comparison) {
+    const a = resolve(comparison[0], { corpus, bySlug });
+    const b = resolve(comparison[1], { corpus, bySlug });
+    if (a) primary.push(a);
+    if (b) primary.push(b);
+  }
+  for (const { entry } of rankTerms(query, corpus, { limit: 8 })) primary.push(entry);
+
+  const seen = new Set();
+  const selected = [];
+  for (const entry of primary) {
+    if (seen.has(entry.slug)) continue;
+    seen.add(entry.slug);
+    selected.push(entry);
+    if (selected.length >= limit) break;
+  }
+  for (const entry of [...selected]) {
+    for (const slug of [...(entry.related || []), ...(entry.coOccurring || [])]) {
+      if (seen.has(slug)) continue;
+      const neighbor = bySlug.get(slug);
+      if (!neighbor) continue;
+      seen.add(slug);
+      selected.push(neighbor);
+      if (selected.length >= limit) break;
+    }
+    if (selected.length >= limit) break;
+  }
+
+  return selected.map((entry) => ({
+    slug: entry.slug,
+    term: entry.term,
+    aliases: entry.aliases,
+    category: entry.category,
+    definition: entry.definition,
+    details: entry.details,
+    citation: entry.citation,
+  }));
+}
+
 export class AskChat {
   constructor(root, { onOpenTerm } = {}) {
     this.root = root;
@@ -168,6 +262,7 @@ export class AskChat {
     this.answer = root.querySelector('#ask-answer');
     this.status = root.querySelector('#ask-status');
     this._data = null;
+    this._busy = false;
     this._bind();
   }
 
@@ -198,15 +293,100 @@ export class AskChat {
     this.root.setAttribute('aria-hidden', 'true');
   }
 
-  _answer() {
+  async _answer() {
     const query = this.input.value.trim();
-    if (!query) return;
+    if (!query || this._busy) return;
     if (!this._data) {
       this.status.textContent = 'The index is still loading — one moment.';
       return;
     }
     const { corpus, bySlug } = this._data;
-    this._render(synthesize(query, corpus, bySlug), query);
+
+    this._setBusy(true);
+    this.status.textContent = 'Asking Kimi…';
+    const remote = await this._tryRemote(query, corpus, bySlug);
+    if (remote) {
+      this.status.textContent = remote.retrieval === 'typesafe'
+        ? 'Grounded answer from Kimi with TypeSafe-ranked dictionary sources.'
+        : 'Grounded answer from Kimi, with sources from the dictionary.';
+      this._renderRemote(remote, query);
+    } else {
+      this.status.textContent = 'Ask about any AI term — try “difference between RAG and fine-tuning”.';
+      this._render(synthesize(query, corpus, bySlug), query);
+    }
+    this._setBusy(false);
+  }
+
+  _setBusy(busy) {
+    this._busy = busy;
+    const submit = this.root.querySelector('#ask-submit');
+    if (submit) submit.disabled = busy;
+  }
+
+  _buildContext(query, corpus, bySlug) {
+    return buildRetrievalContext(query, corpus, bySlug);
+  }
+
+  async _tryRemote(query, corpus, bySlug) {
+    try {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 60000);
+      const response = await fetch('/api/ask', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query, context: this._buildContext(query, corpus, bySlug) }),
+        signal: controller.signal,
+      });
+      clearTimeout(timer);
+      if (!response.ok) return null;
+      const data = await response.json();
+      return data?.mode === 'llm' && data.answer ? data : null;
+    } catch {
+      return null;
+    }
+  }
+
+  _renderRemote(result, query) {
+    const container = this.answer;
+    container.replaceChildren();
+    const answer = String(result.answer || '').replace(/\[([a-z0-9-]{1,120})\]/gi, '').trim();
+    const kicker = result.retrieval === 'typesafe'
+      ? 'Grounded answer · Kimi · TypeSafe-ranked'
+      : 'Grounded answer · Kimi';
+    container.append(el('p', 'ask-answer-kicker', kicker));
+    container.append(el('h3', 'ask-answer-title', query));
+    container.append(this._markdown(answer));
+    if (Array.isArray(result.sources) && result.sources.length) {
+      const row = el('div', 'ask-chip-row');
+      for (const source of result.sources) {
+        if (source?.slug && source?.term) row.append(this._chip(source.slug, source.term));
+      }
+      container.append(el('p', 'ask-answer-meta', 'Sources:'), row);
+    }
+  }
+
+  /** Tiny, safe markdown-lite renderer: paragraphs, bold, italic, inline code. */
+  _markdown(text) {
+    const frag = document.createDocumentFragment();
+    for (const raw of String(text || '').split(/\n{2,}/)) {
+      const block = raw.trim();
+      if (!block) continue;
+      const para = el('p', 'ask-answer-def');
+      para.innerHTML = this._inline(block);
+      frag.appendChild(para);
+    }
+    return frag;
+  }
+
+  _inline(text) {
+    return String(text)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/\n/g, '<br>')
+      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*([^*\n]+)\*/g, '<em>$1</em>')
+      .replace(/`([^`]+)`/g, '<code>$1</code>');
   }
 
   _chip(slug, label) {
