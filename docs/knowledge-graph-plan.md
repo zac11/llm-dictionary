@@ -628,9 +628,9 @@ Create `netlify/functions/ask.mjs` and configure the functions directory in `net
 
 Environment:
 
-- `LLM_BASE_URL`, defaulting to `https://api.openai.com/v1`;
+- `LLM_BASE_URL`, required for remote synthesis;
 - `LLM_API_KEY`, required for remote synthesis;
-- `LLM_MODEL`, required when remote synthesis is enabled.
+- `LLM_MODEL`, required for remote synthesis.
 
 Describe the integration as a configurable OpenAI chat-completions-compatible endpoint, not universally provider-agnostic.
 

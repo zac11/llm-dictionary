@@ -7,18 +7,21 @@
 //
 // Environment (set in Netlify UI, or a local `.env` for `netlify dev`):
 //   LLM_API_KEY    required — the provider key (sk-…)
-//   LLM_BASE_URL   optional — default https://api.moonshot.ai/v1
-//   LLM_MODEL      optional — default kimi-latest
+//   LLM_BASE_URL   required — the OpenAI-compatible API base URL
+//   LLM_MODEL      required — the provider model identifier
 
-const DEFAULT_BASE_URL = 'https://api.moonshot.ai/v1';
-const DEFAULT_MODEL = 'kimi-k3';
 const MAX_QUERY_CHARS = 500;
 const MAX_CONTEXT_CHARS = 12000;
 const UPSTREAM_TIMEOUT_MS = 60000;
 const TYPESAFE_TIMEOUT_MS = 8000;
 const TYPESAFE_URL = 'https://api.typesafe.ai/v1/systemone';
 
-const hasKey = () => Boolean((process.env.LLM_API_KEY || '').trim());
+export function getLlmConfig(env = process.env) {
+  const apiKey = String(env.LLM_API_KEY || '').trim();
+  const baseUrl = String(env.LLM_BASE_URL || '').trim().replace(/\/+$/, '');
+  const model = String(env.LLM_MODEL || '').trim();
+  return apiKey && baseUrl && model ? { apiKey, baseUrl, model } : null;
+}
 
 function json(status, body) {
   return new Response(JSON.stringify(body), {
@@ -121,7 +124,8 @@ export async function rerankEntries(query, entries, options = {}) {
 export default async function handler(request) {
   if (request.method !== 'POST') return json(405, { error: 'Method not allowed' });
 
-  if (!hasKey()) return json(503, { error: 'not_configured' });
+  const llm = getLlmConfig();
+  if (!llm) return json(503, { error: 'not_configured' });
 
   let body;
   try {
@@ -175,20 +179,17 @@ export default async function handler(request) {
 
   const user = `ENTRIES:\n${context}\n\nQUESTION: ${query}`;
 
-  const baseUrl = (process.env.LLM_BASE_URL || DEFAULT_BASE_URL).replace(/\/+$/, '');
-  const model = process.env.LLM_MODEL || DEFAULT_MODEL;
-
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), UPSTREAM_TIMEOUT_MS);
   try {
-    const upstream = await fetch(`${baseUrl}/chat/completions`, {
+    const upstream = await fetch(`${llm.baseUrl}/chat/completions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.LLM_API_KEY.trim()}`,
+        Authorization: `Bearer ${llm.apiKey}`,
       },
       body: JSON.stringify({
-        model,
+        model: llm.model,
         messages: [
           { role: 'system', content: system },
           { role: 'user', content: user },
