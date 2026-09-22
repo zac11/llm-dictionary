@@ -152,6 +152,32 @@ original papers (arXiv, NeurIPS, Nature, journals, etc.) or Wikipedia.
 - [Three.js](https://threejs.org/) — 3D rendering (`three/addons` OrbitControls)
 - Vanilla ES modules — no UI framework required
 
+## Testing
+
+Run the offline unit and integration tests:
+
+```sh
+npm test
+```
+
+The live Kimi test makes one real, low-token chat-completions request and is excluded
+from the normal suite unless explicitly enabled. Add the same provider settings used by
+Netlify to the gitignored `.env` file, then run:
+
+```dotenv
+LLM_API_KEY=your-provider-key
+LLM_BASE_URL=https://api.moonshot.ai/v1
+LLM_MODEL=kimi-k2.5
+```
+
+```sh
+npm run test:kimi
+```
+
+The test fails on authentication errors, non-JSON responses, missing completion content,
+an unexpected response, or latency beyond the function's 18-second upstream budget.
+Never commit provider credentials or place them in tracked files.
+
 ## 📄 License
 
 See [LICENSE](./LICENSE).
