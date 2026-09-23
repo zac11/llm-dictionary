@@ -328,21 +328,22 @@ export class AskChat {
   }
 
   async _tryRemote(query, corpus, bySlug) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 24000);
     try {
-      const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 60000);
       const response = await fetch('/api/ask', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query, context: this._buildContext(query, corpus, bySlug) }),
         signal: controller.signal,
       });
-      clearTimeout(timer);
       if (!response.ok) return null;
       const data = await response.json();
       return data?.mode === 'llm' && data.answer ? data : null;
     } catch {
       return null;
+    } finally {
+      clearTimeout(timer);
     }
   }
 

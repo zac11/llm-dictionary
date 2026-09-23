@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildRetrievalContext, parseComparison, rankTerms } from '../src/ask.js';
 import { tokenizeText } from '../src/term-schema.js';
-import { getLlmConfig, rerankEntries } from '../netlify/functions/ask.mjs';
+import askHandler, { completionOptions, getLlmConfig, rerankEntries } from '../netlify/functions/ask.mjs';
 
 const corpus = {
   schemaVersion: 1,
@@ -179,4 +179,68 @@ test('getLlmConfig requires all runtime provider settings', () => {
     baseUrl: 'https://provider.example/v1',
     model: 'model',
   });
+});
+
+test('completionOptions use Kimi instant or low-reasoning modes', () => {
+  assert.deepEqual(completionOptions('kimi-k2.5'), {
+    thinking: { type: 'disabled' },
+    temperature: 0.6,
+    top_p: 0.95,
+  });
+  assert.deepEqual(completionOptions('moonshotai/kimi-k2.6'), {
+    thinking: { type: 'disabled' },
+    temperature: 0.6,
+    top_p: 0.95,
+  });
+  assert.deepEqual(completionOptions('kimi-k3'), { reasoning_effort: 'low' });
+  assert.deepEqual(completionOptions('other-model'), {});
+});
+
+test('ask handler sends Kimi K2 in instant mode', async () => {
+  const previousFetch = globalThis.fetch;
+  const previous = {
+    key: process.env.LLM_API_KEY,
+    base: process.env.LLM_BASE_URL,
+    model: process.env.LLM_MODEL,
+  };
+  let upstreamBody;
+  process.env.LLM_API_KEY = 'test-key';
+  process.env.LLM_BASE_URL = 'https://provider.example/v1';
+  process.env.LLM_MODEL = 'kimi-k2.5';
+  globalThis.fetch = async (_url, init) => {
+    upstreamBody = JSON.parse(init.body);
+    return new Response(JSON.stringify({
+      choices: [{ message: { content: 'Attention weighs token relevance. [attention]' } }],
+    }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+  };
+  try {
+    const response = await askHandler(new Request('https://example.test/api/ask', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        query: 'Attention',
+        context: [{
+          slug: 'attention',
+          term: 'Attention',
+          aliases: [],
+          category: 'Architecture',
+          definition: 'Attention weighs token relevance.',
+          details: 'It uses queries, keys, and values.',
+        }],
+      }),
+    }));
+    assert.equal(response.status, 200);
+    assert.deepEqual(upstreamBody.thinking, { type: 'disabled' });
+    assert.equal(upstreamBody.temperature, 0.6);
+    assert.equal(upstreamBody.reasoning_efforts, undefined);
+    assert.equal(upstreamBody.max_tokens, 700);
+  } finally {
+    globalThis.fetch = previousFetch;
+    if (previous.key === undefined) delete process.env.LLM_API_KEY;
+    else process.env.LLM_API_KEY = previous.key;
+    if (previous.base === undefined) delete process.env.LLM_BASE_URL;
+    else process.env.LLM_BASE_URL = previous.base;
+    if (previous.model === undefined) delete process.env.LLM_MODEL;
+    else process.env.LLM_MODEL = previous.model;
+  }
 });

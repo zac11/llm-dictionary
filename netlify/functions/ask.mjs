@@ -11,9 +11,10 @@
 //   LLM_MODEL      required — the provider model identifier
 
 const MAX_QUERY_CHARS = 500;
-const MAX_CONTEXT_CHARS = 12000;
-const UPSTREAM_TIMEOUT_MS = 60000;
-const TYPESAFE_TIMEOUT_MS = 8000;
+const MAX_CONTEXT_CHARS = 8000;
+const UPSTREAM_TIMEOUT_MS = 18000;
+const TYPESAFE_TIMEOUT_MS = 3500;
+const MAX_COMPLETION_TOKENS = 700;
 const TYPESAFE_URL = 'https://api.typesafe.ai/v1/systemone';
 
 export function getLlmConfig(env = process.env) {
@@ -21,6 +22,15 @@ export function getLlmConfig(env = process.env) {
   const baseUrl = String(env.LLM_BASE_URL || '').trim().replace(/\/+$/, '');
   const model = String(env.LLM_MODEL || '').trim();
   return apiKey && baseUrl && model ? { apiKey, baseUrl, model } : null;
+}
+
+export function completionOptions(model) {
+  const normalized = String(model || '').toLowerCase();
+  if (normalized.includes('kimi-k3')) return { reasoning_effort: 'low' };
+  if (normalized.includes('kimi-k2.5') || normalized.includes('kimi-k2.6')) {
+    return { thinking: { type: 'disabled' }, temperature: 0.6, top_p: 0.95 };
+  }
+  return {};
 }
 
 function json(status, body) {
@@ -174,7 +184,7 @@ export default async function handler(request) {
     'You are the "Ask" assistant of TheAIDictionary, an encyclopaedia of AI and machine-learning terms.',
     'Answer the user\'s question using ONLY the entries provided. If the entries do not contain the answer, say so briefly.',
     'Cite every entry you use with its slug in square brackets, e.g. [retrieval-augmented-generation].',
-    'Do not invent facts, citations, or URLs. Answer in 250 to 400 words, in plain language.',
+    'Do not invent facts, citations, or URLs. Answer in 120 to 220 words, in plain language.',
   ].join(' ');
 
   const user = `ENTRIES:\n${context}\n\nQUESTION: ${query}`;
@@ -194,8 +204,8 @@ export default async function handler(request) {
           { role: 'system', content: system },
           { role: 'user', content: user },
         ],
-        reasoning_efforts: 'low',
-        max_tokens: 2000,
+        ...completionOptions(llm.model),
+        max_tokens: MAX_COMPLETION_TOKENS,
         stream: false,
       }),
       signal: controller.signal,
@@ -216,7 +226,9 @@ export default async function handler(request) {
 
     return json(200, { answer, mode: 'llm', retrieval: reranked.mode, sources: cleanSources });
   } catch (error) {
-    return json(502, { error: error.name === 'AbortError' ? 'timeout' : 'upstream_error' });
+    return json(error.name === 'AbortError' ? 503 : 502, {
+      error: error.name === 'AbortError' ? 'timeout' : 'upstream_error',
+    });
   } finally {
     clearTimeout(timer);
   }
