@@ -7,6 +7,7 @@ import { TweenRunner, easeInOutCubic, easeOutCubic, lerp } from './anim.js';
 import { makeSpineTexture, fillerSpineTexture, creamTexture, woodTexture, softShadowTexture, makeCanvas } from './textures.js';
 import { AnimatedBook, W as BOOK_W, SLIDE } from './book3d.js';
 import { currentSceneEnvironment, selectSceneProfile } from './scene-quality.js';
+import { nextVolumeCardState } from './volume-card.js';
 
 const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII'];
 
@@ -509,6 +510,7 @@ export class Library {
     const el = this._renderer.domElement;
     el.style.cursor = 'grab';
     el.addEventListener('pointermove', this._onMove);
+    el.addEventListener('pointerleave', this._onLeave);
     el.addEventListener('pointerdown', this._onPointerDown);
     el.addEventListener('wheel', this._onSceneEngage, { passive: true });
     window.addEventListener('pointerup', this._onPointerUp);
@@ -551,10 +553,12 @@ export class Library {
     }
     const folder = this._pick(e);
     if (folder !== this._hover) {
-      this._hover = folder;
+      this._setHover(folder);
       this._renderer.domElement.style.cursor = folder ? 'pointer' : this._downed ? 'grabbing' : 'grab';
     }
   };
+
+  _onLeave = () => this._setHover(null);
 
   _onClick = (e) => {
     // a click during an animation fast-forwards it instead of picking
@@ -569,6 +573,19 @@ export class Library {
 
   _setHover(folder) {
     this._hover = folder;
+    this._emitHover();
+  }
+
+  _emitHover() {
+    if (!this.hooks.onHoverVolume) return;
+    const state = nextVolumeCardState({
+      folder: this._hover,
+      animating: this.anim.busy,
+      pulled: Boolean(this._pulled),
+      paused: !this._active,
+    });
+    if (state === 'hide') this.hooks.onHoverVolume(null);
+    else this.hooks.onHoverVolume({ folder: this._hover, point: this.screenPointOf(this._hover) });
   }
 
   // ---------------- camera ----------------
@@ -801,11 +818,13 @@ export class Library {
     }
 
     this.controls.update();
+    if (this._hover) this._emitHover();
     this._renderer.render(this.scene, this._camera);
   };
 
   pause() {
     this._active = false;
+    this._emitHover();
     this._controlsWereEnabled = this.controls.enabled;
     this.controls.enabled = false;
     this._renderer.domElement.style.pointerEvents = 'none';
@@ -816,12 +835,15 @@ export class Library {
     this.controls.enabled = this._controlsWereEnabled ?? true;
     this._renderer.domElement.style.pointerEvents = '';
     this._clock.getDelta();
+    this._emitHover();
   }
 
   dispose() {
     this._ro && this._ro.disconnect();
+    this._setHover(null);
     const el = this._renderer.domElement;
     el.removeEventListener('pointermove', this._onMove);
+    el.removeEventListener('pointerleave', this._onLeave);
     el.removeEventListener('pointerdown', this._onPointerDown);
     el.removeEventListener('wheel', this._onSceneEngage);
     el.removeEventListener('click', this._onClick);

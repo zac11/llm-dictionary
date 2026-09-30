@@ -1,13 +1,22 @@
 import './styles.css';
-import { volumes, findTerm, volumeByLetter, summary } from './terms.js';
+import { volumes, findTerm, volumeByLetter, rangeTerms, summary } from './terms.js';
 import { Library } from './library.js';
 import { UI } from './ui.js';
+import { VolumeCard, volumeCardData } from './volume-card.js';
 
 const container = document.getElementById('scene-container');
 const state = { folder: null, busy: false, view: 'library', map: null };
+const volumeCard = new VolumeCard(document.getElementById('volume-card'));
+const volumesByFolder = new Map(volumes.map((volume) => [volume.folder, volume]));
 
 const library = new Library(container, volumes, {
   onSelectVolume: (folder) => openVolumeRitual(folder),
+  onHoverVolume: (hover) => {
+    if (!hover?.point?.visible) return volumeCard.hide();
+    const volume = volumesByFolder.get(hover.folder);
+    if (!volume) return volumeCard.hide();
+    volumeCard.show(volumeCardData(volume, rangeTerms(volume.folder)), hover.point);
+  },
 });
 
 const ui = new UI({
