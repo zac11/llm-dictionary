@@ -303,38 +303,85 @@ export class AskChat {
     const { corpus, bySlug } = this._data;
 
     this._setBusy(true);
-    this.status.textContent = 'Asking Kimi…';
-    const remote = await this._tryRemote(query, corpus, bySlug);
+    // Stage 1 — retrieve from the dictionary corpus (RAG) and show what was found.
+    this.status.textContent = 'Searching the encyclopaedia…';
+    const context = this._buildContext(query, corpus, bySlug);
+    this._renderLoading('Searching the encyclopaedia…', context);
+    // Let the browser paint the retrieval stage before the network wait begins.
+    await new Promise((resolve) => setTimeout(resolve, 300));
+
+    // Stage 2 — Kimi composes the answer, grounded strictly on those entries.
+    // Skipped when the dictionary has nothing to ground on.
+    let remote = null;
+    if (context.length) {
+      this._setLoadingText('Kimi is composing a grounded answer…');
+      this.status.textContent = 'Composing a grounded answer with Kimi…';
+      remote = await this._tryRemote(query, context);
+    }
+
     if (remote) {
       this.status.textContent = remote.retrieval === 'typesafe'
-        ? 'Grounded answer from Kimi with TypeSafe-ranked dictionary sources.'
-        : 'Grounded answer from Kimi, with sources from the dictionary.';
+        ? `Grounded answer from Kimi with TypeSafe-ranked dictionary sources (${context.length} entries).`
+        : `Grounded answer from Kimi, based on ${context.length} dictionary ${context.length === 1 ? 'entry' : 'entries'}.`;
       this._renderRemote(remote, query);
     } else {
-      this.status.textContent = 'Ask about any AI term — try “difference between RAG and fine-tuning”.';
+      this.status.textContent = context.length
+        ? 'Kimi is unavailable — answer composed from the dictionary only.'
+        : 'Ask about any AI term — try “difference between RAG and fine-tuning”.';
       this._render(synthesize(query, corpus, bySlug), query);
     }
     this._setBusy(false);
+  }
+
+  _renderLoading(message, context = []) {
+    const container = this.answer;
+    container.replaceChildren();
+    container.setAttribute('aria-busy', 'true');
+    const loading = el('div', 'ask-loading');
+    loading.append(el('span', 'ask-spinner'));
+    loading.append(el('p', 'ask-loading-text', message));
+    container.append(loading);
+    if (context.length) {
+      const found = el('section', 'ask-found');
+      found.append(
+        el(
+          'p',
+          'ask-found-title',
+          `Found ${context.length} related ${context.length === 1 ? 'entry' : 'entries'} in the dictionary:`
+        )
+      );
+      const row = el('div', 'ask-chip-row');
+      for (const entry of context.slice(0, 6)) row.append(this._chip(entry.slug, entry.term));
+      found.append(row);
+      container.append(found);
+    }
+  }
+
+  _setLoadingText(message) {
+    const text = this.answer.querySelector('.ask-loading-text');
+    if (text) text.textContent = message;
   }
 
   _setBusy(busy) {
     this._busy = busy;
     const submit = this.root.querySelector('#ask-submit');
     if (submit) submit.disabled = busy;
+    this.input.disabled = busy;
+    if (!busy) this.answer.removeAttribute('aria-busy');
   }
 
   _buildContext(query, corpus, bySlug) {
     return buildRetrievalContext(query, corpus, bySlug);
   }
 
-  async _tryRemote(query, corpus, bySlug) {
+  async _tryRemote(query, context) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 24000);
     try {
       const response = await fetch('/api/ask', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query, context: this._buildContext(query, corpus, bySlug) }),
+        body: JSON.stringify({ query, context }),
         signal: controller.signal,
       });
       if (!response.ok) return null;

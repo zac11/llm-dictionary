@@ -182,14 +182,50 @@ feedbackToggle.addEventListener('click', openFeedback);
 feedbackClose.addEventListener('click', closeFeedback);
 document.getElementById('feedback-backdrop')?.addEventListener('click', closeFeedback);
 
+// ---------- Contribute ----------
+const contributeModal = document.getElementById('contribute-modal');
+const contributeToggle = document.getElementById('contribute-toggle');
+let contributeForm = null;
+
+async function openContribute() {
+  if (askView.classList.contains('open')) closeAsk();
+  if (!contributeForm) {
+    const { ContributeForm } = await import('./contribute.js');
+    contributeForm = new ContributeForm(contributeModal);
+  }
+  contributeModal.classList.add('open');
+  contributeModal.setAttribute('aria-hidden', 'false');
+  contributeToggle.setAttribute('aria-expanded', 'true');
+  contributeForm.open();
+}
+
+function closeContribute() {
+  contributeModal.classList.remove('open');
+  contributeModal.setAttribute('aria-hidden', 'true');
+  contributeForm?.close();
+  contributeToggle.setAttribute('aria-expanded', 'false');
+  contributeToggle.focus();
+}
+
+contributeToggle.addEventListener('click', () => {
+  if (contributeModal.classList.contains('open')) closeContribute();
+  else openContribute();
+});
+document.getElementById('contribute-close')?.addEventListener('click', closeContribute);
+document.getElementById('contribute-backdrop')?.addEventListener('click', closeContribute);
+
 // Capture-phase Escape: the Ask overlay takes priority over book/map/help Escape.
 document.addEventListener(
   'keydown',
   (event) => {
-    if (event.key === 'Escape' && feedbackModal.classList.contains('open')) {
+    if (event.key !== 'Escape') return;
+    if (feedbackModal.classList.contains('open')) {
       event.stopPropagation();
       closeFeedback();
-    } else if (event.key === 'Escape' && askView.classList.contains('open')) {
+    } else if (contributeModal.classList.contains('open')) {
+      event.stopPropagation();
+      closeContribute();
+    } else if (askView.classList.contains('open')) {
       event.stopPropagation();
       closeAsk();
     }

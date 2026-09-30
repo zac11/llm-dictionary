@@ -92,6 +92,15 @@ npm run preview    # preview the production build
 
 ## ➕ Adding a word (no code required)
 
+**Easiest path — the in-app Contribute button.** Click **Contribute** in the
+top bar, fill in one term (or several with “+ Add another term”), and press
+**Review & submit**. The form validates everything against the dictionary
+schema, shows you the exact JSON files it generated, and opens a prefilled
+GitHub issue. The maintainer reviews, merges, and the terms go live on the
+next deploy.
+
+**Manual path — edit the repo directly:**
+
 1. Pick the folder matching the word’s first letter, e.g. `dictionary/g-h/`.
 2. Create `my-term.json` with this schema:
 
