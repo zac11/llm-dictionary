@@ -68,12 +68,12 @@ export class Library {
     this._renderer.setPixelRatio(Math.min(this._environment.devicePixelRatio, this.quality.maxPixelRatio));
     this._renderer.setSize(container.clientWidth, container.clientHeight);
     this._renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this._renderer.toneMappingExposure = 1.05;
+    this._renderer.toneMappingExposure = 1.12;
     container.appendChild(this._renderer.domElement);
 
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color('#0d0a08');
-    this.scene.fog = new THREE.Fog('#0d0a08', 16, 44);
+    this.scene.background = new THREE.Color('#120c08');
+    this.scene.fog = new THREE.Fog('#120c08', 17, 46);
 
     this._buildLights();
     this._buildRoom();
@@ -122,23 +122,27 @@ export class Library {
 
     // cinematic intro dolly
     this.controls.enabled = false;
-    this._intro = this.anim.delay(0.25).then(() => this._camTo(OVERVIEW_POSE, 1.9));
+    this._introRunning = true;
+    this._intro = this.anim
+      .delay(0.25)
+      .then(() => this._camTo(OVERVIEW_POSE, 1.9))
+      .then(() => (this._introRunning = false));
   }
 
   // ---------------- construction ----------------
   _buildLights() {
-    this.scene.add(new THREE.HemisphereLight('#ffedd0', '#241811', 0.7));
+    this.scene.add(new THREE.HemisphereLight('#fff0d8', '#302016', 0.85));
 
-    const key = new THREE.SpotLight('#ffd9a0', 190, 50, 0.62, 0.55, 1.4);
+    const key = new THREE.SpotLight('#ffdda8', 220, 50, 0.62, 0.55, 1.4);
     key.position.set(5, 10.5, 6.5);
     key.target.position.set(0, 3.2, -5);
     this.scene.add(key, key.target);
 
-    const rim = new THREE.DirectionalLight('#8a6cff', 0.45);
+    const rim = new THREE.DirectionalLight('#9f7cff', 0.62);
     rim.position.set(-9, 7, -2);
     this.scene.add(rim);
 
-    const fill = new THREE.DirectionalLight('#ffcf9a', 0.3);
+    const fill = new THREE.DirectionalLight('#ffd6a6', 0.42);
     fill.position.set(0, 4, 12);
     this.scene.add(fill);
 
@@ -194,8 +198,8 @@ export class Library {
   }
 
   _buildShelfWall() {
-    const wood = new THREE.MeshStandardMaterial({ map: woodTexture({ base: '#4a3423' }), roughness: 0.72 });
-    const woodDark = new THREE.MeshStandardMaterial({ color: '#241811', roughness: 0.9 });
+    const wood = new THREE.MeshStandardMaterial({ map: woodTexture({ base: '#543925' }), roughness: 0.7 });
+    const woodDark = new THREE.MeshStandardMaterial({ color: '#2d1d13', roughness: 0.88 });
     const group = new THREE.Group();
     this.scene.add(group);
 
@@ -469,7 +473,7 @@ export class Library {
       color: '#e8c98a',
       size: 0.05,
       transparent: true,
-      opacity: 0.5,
+      opacity: this.quality.name === 'high' ? 0.38 : 0.28,
       depthWrite: false,
       sizeAttenuation: true,
     });
@@ -505,16 +509,9 @@ export class Library {
     const el = this._renderer.domElement;
     el.style.cursor = 'grab';
     el.addEventListener('pointermove', this._onMove);
-    el.addEventListener('pointerdown', () => {
-      el.style.cursor = 'grabbing';
-      this._downed = true;
-    });
-    window.addEventListener('pointerup', () => {
-      if (this._downed) {
-        this._downed = false;
-        el.style.cursor = this._hover ? 'pointer' : 'grab';
-      }
-    });
+    el.addEventListener('pointerdown', this._onPointerDown);
+    el.addEventListener('wheel', this._onSceneEngage, { passive: true });
+    window.addEventListener('pointerup', this._onPointerUp);
     el.addEventListener('click', this._onClick);
 
     this._ro = new ResizeObserver(() => this._resize());
@@ -530,6 +527,22 @@ export class Library {
     const hits = this._raycaster.intersectObjects(meshes, false);
     return hits.length ? hits[0].object.userData.folder : null;
   }
+
+  _onSceneEngage = () => {
+    if (this._introRunning) this.anim.finishAll();
+  };
+
+  _onPointerDown = () => {
+    this._onSceneEngage();
+    this._renderer.domElement.style.cursor = 'grabbing';
+    this._downed = true;
+  };
+
+  _onPointerUp = () => {
+    if (!this._downed) return;
+    this._downed = false;
+    this._renderer.domElement.style.cursor = this._hover ? 'pointer' : 'grab';
+  };
 
   _onMove = (e) => {
     if (this._pulled || this.anim.busy) {
@@ -809,7 +822,10 @@ export class Library {
     this._ro && this._ro.disconnect();
     const el = this._renderer.domElement;
     el.removeEventListener('pointermove', this._onMove);
+    el.removeEventListener('pointerdown', this._onPointerDown);
+    el.removeEventListener('wheel', this._onSceneEngage);
     el.removeEventListener('click', this._onClick);
+    window.removeEventListener('pointerup', this._onPointerUp);
     this._renderer.dispose();
     if (el.parentNode) el.parentNode.removeChild(el);
   }

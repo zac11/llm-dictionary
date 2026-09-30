@@ -257,7 +257,7 @@ export function fillerSpineTexture({ base = '#6b3f2e', title = '', horizontal = 
   const { c, ctx } = makeCanvas(W, H);
 
   const baseCol = new THREE.Color(base);
-  const light = baseCol.clone().lerp(new THREE.Color('#ffffff'), 0.16);
+  const light = baseCol.clone().lerp(new THREE.Color('#ffffff'), 0.12);
   const deep = baseCol.clone().multiplyScalar(0.5);
 
   // edges darker than the centre → the spine looks rounded
@@ -288,8 +288,8 @@ export function fillerSpineTexture({ base = '#6b3f2e', title = '', horizontal = 
     ctx.stroke();
   }
 
-  const gilt = 'rgba(232,201,138,0.92)';
-  const giltDim = 'rgba(232,201,138,0.45)';
+  const gilt = 'rgba(220,188,125,0.66)';
+  const giltDim = 'rgba(220,188,125,0.28)';
 
   // raised hub bands (highlight ridge + shadow + faint gilt rule)
   const bands = 2 + Math.floor(rand() * 3);
