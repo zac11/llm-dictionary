@@ -6,6 +6,7 @@ import { letterColor } from './palette.js';
 import { TweenRunner, easeInOutCubic, easeOutCubic, lerp } from './anim.js';
 import { makeSpineTexture, fillerSpineTexture, creamTexture, woodTexture, softShadowTexture, makeCanvas } from './textures.js';
 import { AnimatedBook, W as BOOK_W, SLIDE } from './book3d.js';
+import { currentSceneEnvironment, selectSceneProfile } from './scene-quality.js';
 
 const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII'];
 
@@ -60,9 +61,11 @@ export class Library {
     this.hooks = hooks;
     this.volumes = volumes;
     this.anim = new TweenRunner();
+    this._environment = currentSceneEnvironment(window);
+    this.quality = selectSceneProfile(this._environment);
 
     this._renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    this._renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    this._renderer.setPixelRatio(Math.min(this._environment.devicePixelRatio, this.quality.maxPixelRatio));
     this._renderer.setSize(container.clientWidth, container.clientHeight);
     this._renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this._renderer.toneMappingExposure = 1.05;
@@ -108,7 +111,7 @@ export class Library {
     this._hover = null;
     this._pulled = null; // item currently on the desk
     this._ritual = 0; // increments to cancel stale async sequences
-    this._reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this._reducedMotion = this._environment.reducedMotion;
 
     this._clock = new THREE.Clock();
     this._elapsed = 0;
@@ -453,7 +456,7 @@ export class Library {
   }
 
   _buildDust() {
-    const count = 700;
+    const count = this.quality.dustCount;
     const pos = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
       pos[i * 3] = (Math.random() - 0.5) * 32;
@@ -780,7 +783,7 @@ export class Library {
     }
 
     // gentle idle sway until the user takes over
-    if (!this._userDrag && !this._pulled && !this.anim.busy) {
+    if (this.quality.idleMotion && !this._userDrag && !this._pulled && !this.anim.busy) {
       this._camera.position.x += (Math.sin(t * 0.1) * 0.55 - this._camera.position.x) * 0.001;
     }
 
