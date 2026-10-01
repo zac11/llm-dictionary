@@ -1,10 +1,10 @@
-import { findTerm, volumeByLetter, rangeTerms, searchTerms } from './terms.js';
+import { findTerm, volumeByLetter, rangeTerms, searchTerms, RANGES } from './terms.js';
 import { letterColor } from './palette.js';
 import { icon } from './icons.js';
+import { volumeRailItems } from './navigation.js';
 
 const $ = (id) => document.getElementById(id);
 
-const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII'];
 
 // contents spread lists this many entries per page, then paginates
@@ -58,7 +58,7 @@ export class UI {
     this._flipping = false;
     this._reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    this._buildLetterNav();
+    this._buildVolumeRail();
     this._bind();
     this._syncSearchClear();
   }
@@ -159,17 +159,19 @@ export class UI {
       ?.addEventListener('scroll', () => this.closeShareMenu(), { passive: true });
   }
 
-  // ---------- letter nav ----------
-  _buildLetterNav() {
+  // ---------- volume rail ----------
+  _buildVolumeRail() {
     const frag = document.createDocumentFragment();
-    LETTERS.forEach((L) => {
+    volumeRailItems(RANGES).forEach((item) => {
       const b = document.createElement('button');
-      b.textContent = L;
-      b.dataset.letter = L;
-      b.title = `Jump to words starting with ${L}`;
+      b.textContent = item.letters.join('–');
+      b.dataset.folder = item.folder;
+      const entries = `${item.count} ${item.count === 1 ? 'entry' : 'entries'}`;
+      b.title = `${item.label} · ${entries}`;
+      b.setAttribute('aria-label', `${item.label} volume, ${entries}`);
+      b.disabled = item.disabled;
       b.addEventListener('click', () => {
-        const vol = volumeByLetter(L);
-        if (vol) this.onPickVolume(vol.folder, L);
+        if (!item.disabled) this.onPickVolume(item.folder);
       });
       frag.appendChild(b);
     });
@@ -178,9 +180,8 @@ export class UI {
   }
 
   setActiveVolume(folder, letter) {
-    const L = letter || (folder ? folder.split('-')[0].toUpperCase() : '');
     this._navButtons.forEach((b) => {
-      b.classList.toggle('active', !!L && b.dataset.letter === L);
+      b.classList.toggle('active', !!folder && b.dataset.folder === folder);
     });
   }
 

@@ -4,6 +4,7 @@ import { Library } from './library.js';
 import { UI } from './ui.js';
 import { VolumeCard, volumeCardData } from './volume-card.js';
 import { ArchiveNav, exploreActions } from './archive-nav.js';
+import { parseAppLocation } from './navigation.js';
 
 const container = document.getElementById('scene-container');
 const state = { folder: null, busy: false, view: 'library', map: null };
@@ -299,18 +300,17 @@ console.info(`📚 ${summary()} — ${volumes.length} volumes on the shelf.`);
 // crawlers) and ?term=attention open straight to an entry; ?volume=a-b opens a
 // contents spread.
 async function applyLocation() {
-  const params = new URLSearchParams(location.search);
-  const pathTerm = location.pathname.match(/\/term\/([^/]+)\/?$/i);
-  const mapTerm = params.get('map');
-  if (mapTerm || params.get('view') === 'map') {
-    await openMap(mapTerm, { updateHistory: false });
+  const { view, slug, folder } = parseAppLocation({
+    pathname: location.pathname,
+    search: location.search,
+  });
+  if (view === 'map') {
+    await openMap(slug, { updateHistory: false });
     return;
   }
   if (state.view === 'map') await closeMap({ updateHistory: false });
-  const term = params.get('term') || (pathTerm ? decodeURIComponent(pathTerm[1]) : null);
-  const vol = params.get('volume');
-  if (term) openTermRitual(term);
-  else if (vol) openVolumeRitual(vol);
+  if (view === 'term') openTermRitual(slug);
+  else if (view === 'volume') openVolumeRitual(folder);
 }
 
 window.addEventListener('popstate', () => applyLocation());
