@@ -18,6 +18,9 @@ const archiveNav = new ArchiveNav({
   menu: document.getElementById('explore-menu'),
   actions: exploreActions({
     openMap: () => (state.view === 'map' ? closeMap() : openMap()),
+    openRandomTerm: () => openRandomTerm(),
+    showRecentlyAdded: () => archiveHome.showRecentlyAdded(),
+    focusVolumeRail: () => focusVolumeRail(),
     openContribute: () => openContribute(),
     openFeedback: () => openFeedback(),
     openHelp: () => ui.openHelp(),
@@ -61,6 +64,11 @@ document.getElementById('search')?.addEventListener('input', () => archiveHome.c
 function openRandomTerm() {
   const term = discoveryTarget({ busy: state.busy, terms: allTerms });
   if (term) openTermRitual(term.slug);
+}
+
+/** Move keyboard focus to the A–B volume rail. */
+function focusVolumeRail() {
+  document.querySelector('#letter-nav button:not(:disabled)')?.focus();
 }
 
 const viewToggle = document.getElementById('view-toggle');
@@ -311,6 +319,7 @@ async function openTermRitual(slug) {
       if (state.folder !== vol.folder) return;
     }
     ui.openEntry(slug, { from: 'ritual' });
+    archiveHome.recordTerm(slug);
   } finally {
     state.busy = false;
   }

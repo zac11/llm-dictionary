@@ -61,6 +61,13 @@ test('discoveryTarget returns null while busy and delegates while idle', () => {
   assert.equal(discoveryTarget({ busy: false, terms: list, random: () => 0 }).slug, 'a');
 });
 
+test('discoveryTarget is safe on empty input and never returns an out-of-range term', () => {
+  assert.equal(discoveryTarget({ busy: false, terms: [], random: () => 0 }), null);
+  const list = terms(['a', 'b', 'c']);
+  const pick = discoveryTarget({ busy: false, terms: list, random: () => 1 });
+  assert.ok(list.some((term) => term.slug === pick.slug));
+});
+
 // ---------- createRecentHistory ----------
 
 function memoryStorage(initial = {}) {
@@ -82,6 +89,15 @@ test('recent history dedupes to the front and caps at eight slugs', () => {
   assert.deepEqual(history.read(['a', 'b']), ['a', 'b']);
   for (let i = 0; i < 12; i++) history.record(`slug-${i}`);
   assert.equal(history.read(Array.from({ length: 12 }, (_, i) => `slug-${i}`)).length, 8);
+});
+
+test('recent recording is idempotent for repeated entry opens', () => {
+  const storage = memoryStorage();
+  const history = createRecentHistory({ storage });
+  history.record('attention');
+  history.record('attention');
+  history.record('attention');
+  assert.deepEqual(history.read(['attention', 'other']), ['attention']);
 });
 
 test('recent history filters stale slugs and persists the cleaned list', () => {

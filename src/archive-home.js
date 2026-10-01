@@ -102,9 +102,16 @@ export class ArchiveHome {
     if (persist) writeWelcomeState(this.storage, { collapsed: true });
   }
 
-  /** Record a successful entry open for Continue Exploring. */
+  /** Record a successful entry open and refresh Continue Exploring. */
   recordTerm(slug) {
     this.history.record(slug);
+    this._buildCarousel();
+  }
+
+  /** Select the Recently Added carousel slide when it exists. */
+  showRecentlyAdded() {
+    const index = this._slides?.findIndex((slide) => slide.id === 'added');
+    if (index != null && index >= 0 && this._carousel) this._carousel.select(index);
   }
 
   _buildSlides() {
@@ -126,9 +133,16 @@ export class ArchiveHome {
   _buildCarousel() {
     const root = document.getElementById('discovery-carousel');
     if (!root) return;
+    // Tear down any previous carousel before rebuilding (recordTerm refreshes it).
+    this._carousel?.destroy();
+    this._carouselAbort?.abort();
+    this._carouselAbort = new AbortController();
+    const { signal } = this._carouselAbort;
+
     const slides = this._buildSlides();
     if (!slides.length) {
       root.hidden = true;
+      root.replaceChildren();
       return;
     }
     root.hidden = false;
@@ -214,15 +228,15 @@ export class ArchiveHome {
       onChange: (index) => this._showSlide(index),
     });
 
-    root.addEventListener('mouseenter', () => this._carousel.pause('hover'));
-    root.addEventListener('mouseleave', () => this._carousel.resume('hover'));
-    root.addEventListener('focusin', () => this._carousel.pause('focus'));
-    root.addEventListener('focusout', () => this._carousel.resume('focus'));
-    this._onVisibility = () => {
+    root.addEventListener('mouseenter', () => this._carousel.pause('hover'), { signal });
+    root.addEventListener('mouseleave', () => this._carousel.resume('hover'), { signal });
+    root.addEventListener('focusin', () => this._carousel.pause('focus'), { signal });
+    root.addEventListener('focusout', () => this._carousel.resume('focus'), { signal });
+    const onVisibility = () => {
       if (document.hidden) this._carousel.pause('visibility');
       else this._carousel.resume('visibility');
     };
-    document.addEventListener('visibilitychange', this._onVisibility);
+    document.addEventListener('visibilitychange', onVisibility, { signal });
 
     this._showSlide(0);
     this._carousel.start();
@@ -244,7 +258,7 @@ export class ArchiveHome {
     this.randomBtn?.removeEventListener('click', this._onRandomClick);
     this.mapBtn?.removeEventListener('click', this._onMapClick);
     this.aboutTab?.removeEventListener('click', this._onAboutClick);
-    document.removeEventListener('visibilitychange', this._onVisibility);
+    this._carouselAbort?.abort();
     this._carousel?.destroy();
   }
 }
