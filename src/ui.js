@@ -63,10 +63,19 @@ export class UI {
     this._syncSearchClear();
   }
 
+  openHelp() {
+    this._helpModal.classList.add('open');
+    this._helpModal.setAttribute('aria-hidden', 'false');
+  }
+
+  closeHelp() {
+    this._helpModal.classList.remove('open');
+    this._helpModal.setAttribute('aria-hidden', 'true');
+  }
+
   _bind() {
-    $('help-btn').addEventListener('click', () => this._helpModal.classList.add('open'));
-    $('help-close').addEventListener('click', () => this._helpModal.classList.remove('open'));
-    $('help-backdrop').addEventListener('click', () => this._helpModal.classList.remove('open'));
+    $('help-close').addEventListener('click', () => this.closeHelp());
+    $('help-backdrop').addEventListener('click', () => this.closeHelp());
 
     $('spread-close').addEventListener('click', () => this.closeSpread());
     $('spread-backdrop').addEventListener('click', () => this.closeSpread());
@@ -921,12 +930,12 @@ export class UI {
         const col = letterColor(term.letter);
         b.style.setProperty('--letter-color', col);
         b.innerHTML = `<span class="ri-letter">${term.letter}</span>
-          <span>
-            <span class="ri-term">${escapeHtml(term.term)}</span><br />
-            <span class="ri-meta">${escapeHtml(term.category)} · ${escapeHtml(
-          (term.citation.title || '').slice(0, 60)
-        )}</span>
-          </span>`;
+          <span class="ri-content">
+            <span class="ri-term">${escapeHtml(term.term)}</span>
+            <span class="ri-meta">${escapeHtml(term.category)}</span>
+            <span class="ri-excerpt">${escapeHtml(term.definition.slice(0, 120))}</span>
+          </span>
+          <span class="ri-action">Open entry →</span>`;
         b.addEventListener('click', () => {
           this._closeResults();
           this._search.blur();

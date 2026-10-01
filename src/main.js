@@ -3,11 +3,23 @@ import { volumes, findTerm, volumeByLetter, rangeTerms, summary } from './terms.
 import { Library } from './library.js';
 import { UI } from './ui.js';
 import { VolumeCard, volumeCardData } from './volume-card.js';
+import { ArchiveNav, exploreActions } from './archive-nav.js';
 
 const container = document.getElementById('scene-container');
 const state = { folder: null, busy: false, view: 'library', map: null };
 const volumeCard = new VolumeCard(document.getElementById('volume-card'));
 const volumesByFolder = new Map(volumes.map((volume) => [volume.folder, volume]));
+let ui;
+const archiveNav = new ArchiveNav({
+  toggle: document.getElementById('explore-toggle'),
+  menu: document.getElementById('explore-menu'),
+  actions: exploreActions({
+    openMap: () => (state.view === 'map' ? closeMap() : openMap()),
+    openContribute: () => openContribute(),
+    openFeedback: () => openFeedback(),
+    openHelp: () => ui.openHelp(),
+  }),
+});
 
 const library = new Library(container, volumes, {
   onSelectVolume: (folder) => openVolumeRitual(folder),
@@ -19,7 +31,7 @@ const library = new Library(container, volumes, {
   },
 });
 
-const ui = new UI({
+ui = new UI({
   onPickVolume: (folder, letter) => openVolumeRitual(folder, { letter }),
   onPickTerm: async (slug) => {
     if (state.view === 'map') await closeMap({ updateHistory: false });
@@ -49,7 +61,7 @@ function setMapChrome(active) {
   document.body.classList.toggle('map-mode', active);
   viewToggle.setAttribute('aria-pressed', String(active));
   viewToggle.title = active ? 'Return to 3D library' : 'Open knowledge map';
-  viewToggle.querySelector('span').textContent = active ? 'Library' : 'Map';
+  viewToggle.textContent = active ? 'Return to Library' : 'Knowledge Map';
 }
 
 async function openMap(slug = null, { updateHistory = true } = {}) {
@@ -95,7 +107,7 @@ async function openMap(slug = null, { updateHistory = true } = {}) {
   } catch (error) {
     await closeMap({ updateHistory: false });
     showToast('Knowledge map is unavailable right now — try again.');
-    viewToggle.focus();
+    archiveNav.toggle.focus();
     console.warn('Map open failed:', error);
   } finally {
     state.busy = false;
@@ -114,11 +126,6 @@ async function closeMap({ updateHistory = true } = {}) {
   if (updateHistory) history.pushState({}, '', '/');
 }
 
-viewToggle.addEventListener('click', () => {
-  if (state.view === 'map') closeMap();
-  else openMap();
-});
-
 // Escape inside the map first clears the selection, then returns to the library.
 document.addEventListener('keydown', (event) => {
   if (event.key !== 'Escape' || state.view !== 'map' || !state.map) return;
@@ -127,7 +134,7 @@ document.addEventListener('keydown', (event) => {
   if (state.map.selected) state.map.deselect();
   else {
     closeMap();
-    viewToggle.focus();
+    archiveNav.toggle.focus();
   }
 });
 
@@ -184,10 +191,9 @@ function closeFeedback() {
   feedbackModal.classList.remove('open');
   feedbackModal.setAttribute('aria-hidden', 'true');
   feedbackToggle.setAttribute('aria-expanded', 'false');
-  feedbackToggle.focus();
+  archiveNav.toggle.focus();
 }
 
-feedbackToggle.addEventListener('click', openFeedback);
 feedbackClose.addEventListener('click', closeFeedback);
 document.getElementById('feedback-backdrop')?.addEventListener('click', closeFeedback);
 
@@ -213,13 +219,9 @@ function closeContribute() {
   contributeModal.setAttribute('aria-hidden', 'true');
   contributeForm?.close();
   contributeToggle.setAttribute('aria-expanded', 'false');
-  contributeToggle.focus();
+  archiveNav.toggle.focus();
 }
 
-contributeToggle.addEventListener('click', () => {
-  if (contributeModal.classList.contains('open')) closeContribute();
-  else openContribute();
-});
 document.getElementById('contribute-close')?.addEventListener('click', closeContribute);
 document.getElementById('contribute-backdrop')?.addEventListener('click', closeContribute);
 
