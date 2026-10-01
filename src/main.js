@@ -1,10 +1,12 @@
 import './styles.css';
-import { volumes, findTerm, volumeByLetter, rangeTerms, summary } from './terms.js';
+import { volumes, findTerm, volumeByLetter, rangeTerms, summary, allTerms } from './terms.js';
 import { Library } from './library.js';
 import { UI } from './ui.js';
 import { VolumeCard, volumeCardData } from './volume-card.js';
 import { ArchiveNav, exploreActions } from './archive-nav.js';
 import { parseAppLocation } from './navigation.js';
+import { ArchiveHome } from './archive-home.js';
+import { discoveryTarget } from './archive-discovery.js';
 
 const container = document.getElementById('scene-container');
 const state = { folder: null, busy: false, view: 'library', map: null };
@@ -44,6 +46,22 @@ ui = new UI({
   },
 });
 
+const archiveHome = new ArchiveHome(document.getElementById('archive-home'), {
+  terms: allTerms,
+  onSearch: () => document.getElementById('search')?.focus(),
+  onRandomTerm: () => openRandomTerm(),
+  onOpenMap: () => openMap(),
+});
+
+// Any direct use of search is a meaningful first interaction.
+document.getElementById('search')?.addEventListener('input', () => archiveHome.collapseWelcome());
+
+/** Random Term from the welcome panel / Explore menu. */
+function openRandomTerm() {
+  const term = discoveryTarget({ busy: state.busy, terms: allTerms });
+  if (term) openTermRitual(term.slug);
+}
+
 const viewToggle = document.getElementById('view-toggle');
 const graphView = document.getElementById('graph-view');
 const graphSearch = document.getElementById('graph-search');
@@ -67,6 +85,7 @@ function setMapChrome(active) {
 
 async function openMap(slug = null, { updateHistory = true } = {}) {
   if (state.busy) return;
+  archiveHome.collapseWelcome();
   if (state.view === 'map' && state.map) {
     if (slug) state.map.select(slug, { center: true, notify: false });
     return;
@@ -145,6 +164,7 @@ const askToggle = document.getElementById('ask-toggle');
 let askChat = null;
 
 async function openAsk() {
+  archiveHome.collapseWelcome();
   if (!askChat) {
     const { AskChat } = await import('./ask.js');
     askChat = new AskChat(askView, {
@@ -248,6 +268,7 @@ document.addEventListener(
 /** Click a shelf book / letter: pull the volume out and open its contents spread. */
 async function openVolumeRitual(folder, { letter } = {}) {
   if (state.busy) return;
+  archiveHome.collapseWelcome();
   // clicking the volume that's already open puts it back on the shelf
   if (state.folder === folder && ui.isSpreadOpen()) {
     ui.closeSpread();
@@ -273,6 +294,7 @@ async function openVolumeRitual(folder, { letter } = {}) {
 async function openTermRitual(slug) {
   const term = findTerm(slug);
   if (!term || state.busy) return;
+  archiveHome.collapseWelcome();
   const vol = volumeByLetter(term.letter);
   if (!vol) return;
   state.busy = true;
