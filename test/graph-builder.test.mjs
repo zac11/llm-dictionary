@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildGraph, GRAPH_SCHEMA_VERSION } from '../scripts/graph-builder.mjs';
+import { buildGraph, buildRetrievalCorpus, GRAPH_SCHEMA_VERSION } from '../scripts/graph-builder.mjs';
 
 const term = (slug, related = [], overrides = {}) => ({
   slug,
@@ -53,6 +53,29 @@ test('layout coordinates and communities cover every node within the declared ra
     Object.values(graph.communities).reduce((sum, community) => sum + community.size, 0),
     4
   );
+});
+
+test('buildRetrievalCorpus carries addedAt and blanks it when absent', () => {
+  const graph = buildGraph(
+    [
+      term('alpha', [], { addedAt: '2026-09-19' }),
+      term('beta', [], { addedAt: '' }),
+      term('gamma'),
+    ],
+    { sourceHash: 'source' }
+  );
+  const corpus = buildRetrievalCorpus(
+    [
+      term('alpha', [], { addedAt: '2026-09-19' }),
+      term('beta', [], { addedAt: '' }),
+      term('gamma'),
+    ],
+    graph
+  );
+  const bySlug = new Map(corpus.terms.map((entry) => [entry.slug, entry]));
+  assert.equal(bySlug.get('alpha').addedAt, '2026-09-19');
+  assert.equal(bySlug.get('beta').addedAt, '');
+  assert.equal(bySlug.get('gamma').addedAt, '');
 });
 
 test('uncorroborated related edges are excluded while reciprocal links are retained', () => {
