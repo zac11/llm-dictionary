@@ -51,6 +51,7 @@ const archiveHome = new ArchiveHome(document.getElementById('archive-home'), {
   onSearch: () => document.getElementById('search')?.focus(),
   onRandomTerm: () => openRandomTerm(),
   onOpenMap: () => openMap(),
+  onOpenTerm: (slug) => openTermRitual(slug),
 });
 
 // Any direct use of search is a meaningful first interaction.

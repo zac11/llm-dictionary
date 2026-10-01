@@ -5,8 +5,11 @@
 import {
   createRecentHistory,
   readWelcomeState,
+  recentlyAdded,
+  termOfDay,
   writeWelcomeState,
 } from './archive-discovery.js';
+import { CarouselState } from './discovery-carousel.js';
 
 function safeStorage() {
   try {
@@ -18,6 +21,15 @@ function safeStorage() {
   } catch {
     return null;
   }
+}
+
+function escapeHtml(value = '') {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 export class ArchiveHome {
@@ -44,6 +56,7 @@ export class ArchiveHome {
 
     this._renderCount();
     this._bind();
+    this._buildCarousel();
 
     if (readWelcomeState(this.storage).collapsed) this.collapseWelcome({ persist: false });
     else this.openWelcome();
@@ -94,10 +107,144 @@ export class ArchiveHome {
     this.history.record(slug);
   }
 
+  _buildSlides() {
+    const slides = [];
+    const bySlug = new Map(this.terms.map((term) => [term.slug, term]));
+
+    const daily = termOfDay(this.terms, new Date());
+    if (daily) slides.push({ id: 'daily', label: 'Term of the Day', term: daily });
+
+    const recent = this.history.read([...bySlug.keys()]).map((slug) => bySlug.get(slug)).find(Boolean);
+    if (recent) slides.push({ id: 'recent', label: 'Continue Exploring', term: recent });
+
+    const added = recentlyAdded(this.terms);
+    if (added.length) slides.push({ id: 'added', label: 'Recently Added', term: added[0] });
+
+    return slides;
+  }
+
+  _buildCarousel() {
+    const root = document.getElementById('discovery-carousel');
+    if (!root) return;
+    const slides = this._buildSlides();
+    if (!slides.length) {
+      root.hidden = true;
+      return;
+    }
+    root.hidden = false;
+    this._slides = slides;
+
+    const stage = document.createElement('div');
+    stage.className = 'carousel-stage';
+    stage.setAttribute('aria-live', 'polite');
+
+    this._slideEls = slides.map((slide) => {
+      const card = document.createElement('article');
+      card.className = 'carousel-slide';
+      card.dataset.slide = slide.id;
+      card.hidden = true;
+      const definition = (slide.term.definition || '').slice(0, 140);
+      card.innerHTML = `
+        <p class="carousel-kicker">${escapeHtml(slide.label)}</p>
+        <h3 class="carousel-term">${escapeHtml(slide.term.term)}</h3>
+        <p class="carousel-meta">${escapeHtml(slide.term.category)}</p>
+        <p class="carousel-def">${escapeHtml(definition)}</p>`;
+      const open = document.createElement('button');
+      open.className = 'carousel-open';
+      open.type = 'button';
+      open.textContent = 'Open entry';
+      open.addEventListener('click', () => this.onOpenTerm?.(slide.term.slug));
+      card.appendChild(open);
+      stage.appendChild(card);
+      return card;
+    });
+
+    const dots = document.createElement('div');
+    dots.className = 'carousel-dots';
+    dots.setAttribute('role', 'tablist');
+    this._dotEls = slides.map((slide, index) => {
+      const dot = document.createElement('button');
+      dot.className = 'carousel-dot';
+      dot.type = 'button';
+      dot.setAttribute('role', 'tab');
+      dot.setAttribute('aria-label', slide.label);
+      dot.addEventListener('click', () => this._carousel.select(index));
+      dots.appendChild(dot);
+      return dot;
+    });
+
+    const makeArrow = (dir, label, glyph) => {
+      const button = document.createElement('button');
+      button.className = 'carousel-arrow';
+      button.type = 'button';
+      button.setAttribute('aria-label', label);
+      button.textContent = glyph;
+      button.addEventListener('click', () =>
+        dir === 'prev' ? this._carousel.previous() : this._carousel.next()
+      );
+      return button;
+    };
+
+    const pause = document.createElement('button');
+    pause.className = 'carousel-pause';
+    pause.type = 'button';
+    pause.setAttribute('aria-pressed', 'false');
+    pause.textContent = 'Pause';
+    pause.addEventListener('click', () => {
+      if (this._carousel.paused) {
+        this._carousel.resume('manual');
+        pause.textContent = 'Pause';
+        pause.setAttribute('aria-pressed', 'false');
+      } else {
+        this._carousel.pause('manual');
+        pause.textContent = 'Play';
+        pause.setAttribute('aria-pressed', 'true');
+      }
+    });
+
+    const controls = document.createElement('div');
+    controls.className = 'carousel-controls';
+    controls.append(makeArrow('prev', 'Previous slide', '‹'), dots, pause, makeArrow('next', 'Next slide', '›'));
+
+    root.replaceChildren(stage, controls);
+
+    this._carousel = new CarouselState(slides.length, {
+      intervalMs: 9000,
+      reducedMotion: this.reducedMotion,
+      onChange: (index) => this._showSlide(index),
+    });
+
+    root.addEventListener('mouseenter', () => this._carousel.pause('hover'));
+    root.addEventListener('mouseleave', () => this._carousel.resume('hover'));
+    root.addEventListener('focusin', () => this._carousel.pause('focus'));
+    root.addEventListener('focusout', () => this._carousel.resume('focus'));
+    this._onVisibility = () => {
+      if (document.hidden) this._carousel.pause('visibility');
+      else this._carousel.resume('visibility');
+    };
+    document.addEventListener('visibilitychange', this._onVisibility);
+
+    this._showSlide(0);
+    this._carousel.start();
+  }
+
+  _showSlide(index) {
+    this._slideEls.forEach((el, i) => {
+      el.hidden = i !== index;
+      el.classList.toggle('active', i === index);
+    });
+    this._dotEls.forEach((dot, i) => {
+      dot.classList.toggle('active', i === index);
+      dot.setAttribute('aria-selected', i === index ? 'true' : 'false');
+    });
+  }
+
   destroy() {
     this.searchBtn?.removeEventListener('click', this._onSearchClick);
     this.randomBtn?.removeEventListener('click', this._onRandomClick);
     this.mapBtn?.removeEventListener('click', this._onMapClick);
     this.aboutTab?.removeEventListener('click', this._onAboutClick);
+    document.removeEventListener('visibilitychange', this._onVisibility);
+    this._carousel?.destroy();
   }
 }
