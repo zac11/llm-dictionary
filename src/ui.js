@@ -2,6 +2,7 @@ import { findTerm, volumeByLetter, rangeTerms, searchTerms, RANGES } from './ter
 import { letterColor } from './palette.js';
 import { icon } from './icons.js';
 import { volumeRailItems } from './navigation.js';
+import { entryActions, entryBreadcrumb } from './entry-actions.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -59,6 +60,7 @@ export class UI {
     this._indexPages = 1;
     this._flipping = false;
     this._reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this._hasGraph = false;
 
     this._buildVolumeRail();
     this._bind();
@@ -457,32 +459,49 @@ export class UI {
 
   /** Entry spread: definition on the left, details + citation (+ story cue) on the right. */
   _renderEntrySpread(term) {
+    const vol = volumeByLetter(term.letter);
+    const breadcrumb = entryBreadcrumb(term, vol);
     const citation = formatCitation(term.citation);
+    const actions = entryActions({ hasGraph: this._hasGraph, hasAsk: true });
+    const enabled = (id) => actions.find((action) => action.id === id).enabled;
+
     this._pageLeft.innerHTML = `
       <div class="pg-entry">
         <div class="pg-head">
-          <p class="pg-kicker">${escapeHtml(term.category)}</p>
+          <p class="pg-breadcrumb">${escapeHtml(breadcrumb.text)}</p>
           <button class="pg-share" type="button" aria-haspopup="dialog" aria-expanded="false"
                   title="Share “${escapeHtml(term.term)}”">
             ${icon('share-2')}<span>Share</span>
           </button>
         </div>
+        <p class="pg-kicker">${escapeHtml(breadcrumb.category)}</p>
         <h2 class="pg-term">${escapeHtml(term.term)}</h2>
         ${term.aka.length ? `<p class="pg-aka">also known as: ${escapeHtml(term.aka.join(', '))}</p>` : ''}
         <p class="pg-rule"></p>
         <p class="pg-def">${escapeHtml(term.definition)}</p>
+        <div class="pg-actions">
+          <button class="pg-action pg-ask" type="button" data-action="ask" ${enabled('ask') ? '' : 'disabled'}>
+            ${icon('message-circle')}<span>Ask about this</span>
+          </button>
+          <button class="pg-action pg-map" type="button" data-action="map" ${enabled('map') ? '' : 'disabled'}>
+            ${icon('network')}<span>View in Map</span>
+          </button>
+        </div>
       </div>`;
     this._pageLeft.querySelector('.pg-share')?.addEventListener('click', (e) => {
       e.stopPropagation();
       this.toggleShareMenu(e.currentTarget);
     });
+    this._pageLeft.querySelector('.pg-ask')?.addEventListener('click', () => this.onAskTerm?.(term.slug));
+    this._pageLeft.querySelector('.pg-map')?.addEventListener('click', () => this.onMapTerm?.(term.slug));
+
     this._pageRight.innerHTML = `
       <div class="pg-entry">
         <p class="pg-details">${escapeHtml(term.details)}</p>
         ${
           citation || term.citation.url
             ? `<aside class="pg-citation">
-                 <h3>${icon('quote')}&nbsp; Citation</h3>
+                 <h3>${icon('book-open')}&nbsp; Source</h3>
                  <p class="pg-citation-text">${escapeHtml(citation)}</p>
                  ${
                    term.citation.url
@@ -501,6 +520,13 @@ export class UI {
     this._resetScroll();
   }
 
+  /** Graph data became available: enable the Map action on the open entry. */
+  _setGraphReady() {
+    this._hasGraph = true;
+    const map = this._pageLeft?.querySelector('.pg-map');
+    if (map) map.disabled = false;
+  }
+
   /**
    * Concept trail: async — fills the .pg-trail container once the graph loads,
    * guarded against stale renders when the user navigates to another term.
@@ -515,6 +541,7 @@ export class UI {
         const { loadGraph, nearestTrail, FOUNDATION_SLUGS, neighbors } = await import('./graph.js');
         const index = await loadGraph();
         if (!index || this._activeTerm?.slug !== slug) return;
+        this._setGraphReady();
         // Curated RELATED edges only: trails must stay semantically meaningful.
         this._renderTrail(container, term, index, nearestTrail(index, FOUNDATION_SLUGS, slug, { predicates: ['RELATED'], maxNodes: 5 }), neighbors);
       } catch {
