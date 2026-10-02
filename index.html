@@ -42,6 +42,7 @@
   <body>
     <!-- 3D canvas mounts here -->
     <div id="scene-container"></div>
+    <aside id="volume-card" class="volume-card" aria-hidden="true"></aside>
     <main id="graph-view" class="graph-view" aria-hidden="true">
       <canvas id="graph-canvas" aria-label="Interactive map of all TheAIDictionary terms"></canvas>
       <aside class="graph-sidebar" aria-label="Explore knowledge graph">
@@ -93,7 +94,7 @@
         <input
           id="search"
           type="search"
-          placeholder="Search a term, category or citation…"
+          placeholder="What do you want to understand?"
           autocomplete="off"
           spellcheck="false"
         />
@@ -108,27 +109,39 @@
           <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
         </button>
       </div>
-      <button id="view-toggle" class="view-toggle" type="button" aria-pressed="false" title="Open knowledge map">
-        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="12" cy="18" r="2"/><path d="m7 7 4 9M17 7l-4 9M7 6h10"/></svg>
-        <span>Map</span>
-      </button>
       <button id="ask-toggle" class="ask-toggle" type="button" aria-pressed="false" title="Ask the encyclopaedia">
         <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         <span>Ask</span>
       </button>
-      <button id="contribute-toggle" class="contribute-toggle" type="button" aria-haspopup="dialog" aria-expanded="false" title="Add a term to the dictionary">
-        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
-        <span>Contribute</span>
-      </button>
-      <button id="help-btn" class="ghost-btn" title="How to use" aria-label="How to use">
-        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
-      </button>
+      <div class="explore-nav">
+        <button id="explore-toggle" class="explore-toggle" type="button" aria-haspopup="menu" aria-expanded="false">
+          <span>Explore</span>
+          <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div id="explore-menu" class="explore-menu" role="menu" hidden></div>
+      </div>
     </header>
 
-    <button id="feedback-toggle" class="feedback-toggle" type="button" aria-haspopup="dialog" aria-expanded="false">
-      <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 8h8M8 12h5"/></svg>
-      <span>Feedback</span>
-    </button>
+    <!-- Editorial welcome panel + About tab -->
+    <section id="archive-home" class="archive-home" aria-label="About this archive">
+      <div class="archive-welcome">
+        <p class="archive-kicker">The AI Encyclopaedia</p>
+        <h2 class="archive-headline">Understand the language of AI</h2>
+        <p class="archive-count" id="archive-term-count" role="status"></p>
+        <p class="archive-value">
+          A living archive of AI terms, each with a cited explanation — search,
+          browse the shelf, or ask a grounded question.
+        </p>
+        <div class="archive-actions">
+          <button class="archive-primary archive-search" type="button">Search the archive</button>
+          <div class="archive-secondary">
+            <button class="archive-btn archive-random" type="button">Random Term</button>
+            <button class="archive-btn archive-map" type="button">Knowledge Map</button>
+          </div>
+        </div>
+      </div>
+      <button class="archive-about-tab" type="button" hidden>About this archive</button>
+    </section>
 
     <!-- Helper hints -->
     <div id="hint" class="hint">
@@ -136,8 +149,11 @@
       Drag to look around · Scroll to zoom · Click a book to pull it off the shelf
     </div>
 
-    <!-- Letter navigation -->
-    <nav id="letter-nav" class="letter-nav" aria-label="Alphabet navigation"></nav>
+    <!-- Volume navigation (A–B … Y–Z rail) -->
+    <nav id="letter-nav" class="letter-nav" aria-label="Volume navigation"></nav>
+
+    <!-- Discovery carousel (desk foreground) -->
+    <section id="discovery-carousel" class="discovery-carousel" aria-label="Discover" hidden></section>
 
     <!-- Open-book reading spread -->
     <div id="book-spread" class="book-spread" aria-hidden="true">

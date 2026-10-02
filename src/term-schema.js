@@ -120,6 +120,18 @@ export function rangeFolderForLetter(value) {
   return `${start.toLowerCase()}-${end.toLowerCase()}`;
 }
 
+/** Strict calendar-date check: format AND a real day on the calendar. */
+export function isIsoDate(value) {
+  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const [year, month, day] = value.split('-').map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day));
+  return (
+    date.getUTCFullYear() === year &&
+    date.getUTCMonth() === month - 1 &&
+    date.getUTCDate() === day
+  );
+}
+
 export function normalizeTerm(raw, source = '') {
   if (!isRecord(raw)) return null;
   const term = String(raw.term || '').trim();
@@ -144,6 +156,7 @@ export function normalizeTerm(raw, source = '') {
       venue: String(citation.venue || '').trim(),
       url: String(citation.url || '').trim(),
     },
+    addedAt: isIsoDate(raw.addedAt) ? raw.addedAt : '',
     _src: source,
   };
 }
@@ -163,6 +176,9 @@ export function validateTerm(term, context = {}) {
   if (!term.definition) add('error', 'missing-definition', 'Definition is required.');
   if (!term.details) add('error', 'missing-details', 'Details are required.');
   if (!isValidLetter(term.letter)) add('error', 'invalid-letter', `Letter “${term.letter}” is invalid.`);
+  if (raw && raw.addedAt !== undefined && raw.addedAt !== '' && !isIsoDate(raw.addedAt)) {
+    add('error', 'invalid-added-at', `addedAt must be a valid ISO calendar date (YYYY-MM-DD).`);
+  }
 
   if (context.folder && rangeFolderForLetter(term.letter) !== context.folder) {
     add(

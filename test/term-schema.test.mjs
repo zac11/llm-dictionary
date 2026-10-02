@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
+  isIsoDate,
   isValidRangeFolder,
   normalizeGraphLabel,
   normalizeTerm,
@@ -49,6 +50,7 @@ test('normalizeTerm preserves an explicit slug and normalizes optional fields', 
     story: '',
     related: ['other-term'],
     citation: { title: 'Paper', authors: ['Author'], year: '', venue: '', url: '' },
+    addedAt: '',
     _src: 'c-d/example.json',
   });
 });
@@ -96,6 +98,32 @@ test('validateTerm rejects malformed list values and related slugs', () => {
     new Set(codes),
     new Set(['invalid-aka-value', 'invalid-related-slug', 'invalid-author-value'])
   );
+});
+
+test('isIsoDate accepts only real calendar dates in YYYY-MM-DD', () => {
+  assert.equal(isIsoDate('2026-09-19'), true);
+  assert.equal(isIsoDate('2026-02-29'), false); // 2026 is not a leap year
+  assert.equal(isIsoDate('2024-02-29'), true); // 2024 is a leap year
+  assert.equal(isIsoDate('2026-13-01'), false);
+  assert.equal(isIsoDate('2026-00-10'), false);
+  assert.equal(isIsoDate('2026-1-01'), false);
+  assert.equal(isIsoDate(''), false);
+  assert.equal(isIsoDate(20260919), false);
+  assert.equal(isIsoDate(undefined), false);
+});
+
+test('normalizeTerm preserves valid addedAt and blanks invalid or absent dates', () => {
+  assert.equal(normalizeTerm({ term: 'A', addedAt: '2026-09-19' }).addedAt, '2026-09-19');
+  assert.equal(normalizeTerm({ term: 'A', addedAt: 'not-a-date' }).addedAt, '');
+  assert.equal(normalizeTerm({ term: 'A' }).addedAt, '');
+});
+
+test('validateTerm flags invalid addedAt values', () => {
+  const codes = validateTerm(normalizeTerm({ term: 'Attention', letter: 'A', addedAt: '2026-13-40' }), {
+    raw: { term: 'Attention', letter: 'A', slug: 'attention', addedAt: '2026-13-40' },
+  })
+    .map((issue) => issue.code);
+  assert.ok(codes.includes('invalid-added-at'));
 });
 
 test('rankSearchEntries prioritizes exact, prefix, and whole-word term matches', () => {
