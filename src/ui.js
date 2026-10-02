@@ -28,10 +28,12 @@ export function formatCitation(c) {
 }
 
 export class UI {
-  constructor({ onPickVolume, onPickTerm, onVolumeClose }) {
+  constructor({ onPickVolume, onPickTerm, onVolumeClose, onAskTerm, onMapTerm }) {
     this.onPickVolume = onPickVolume; // (folder, letter) => void
     this.onPickTerm = onPickTerm; // (slug) => void  (main runs the pull-out ritual)
     this.onVolumeClose = onVolumeClose; // () => void (main returns the book to the shelf)
+    this.onAskTerm = onAskTerm; // (slug) => void (main opens Ask prefilled)
+    this.onMapTerm = onMapTerm; // (slug) => void (main returns book and opens Map)
 
     this._nav = $('letter-nav');
     this._search = $('search');

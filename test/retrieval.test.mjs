@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildRetrievalContext, parseComparison, rankTerms } from '../src/ask.js';
+import { askPrefill, buildRetrievalContext, parseComparison, rankTerms } from '../src/ask.js';
 import { tokenizeText } from '../src/term-schema.js';
 import askHandler, { completionOptions, getLlmConfig, rerankEntries } from '../netlify/functions/ask.mjs';
 
@@ -77,6 +77,14 @@ test('tokenizeText lowercases, filters stopwords and punctuation', () => {
     'adaptation',
     'models',
   ]);
+});
+
+test('askPrefill prefills a provided query but keeps the current value on plain open', () => {
+  assert.equal(askPrefill('attention'), 'attention');
+  assert.equal(askPrefill('  attention  ', 'existing'), 'attention');
+  assert.equal(askPrefill(undefined, 'existing'), 'existing');
+  assert.equal(askPrefill('', 'existing'), 'existing');
+  assert.equal(askPrefill(42, 'existing'), 'existing');
 });
 
 test('parseComparison detects vs / difference / compare phrasings', () => {

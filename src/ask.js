@@ -3,6 +3,14 @@ import { normalizeGraphLabel, tokenizeText } from './term-schema.js';
 
 const RETRIEVAL_SCHEMA_VERSION = 1;
 
+/**
+ * Decide the input value after `open({ query })`. A provided query pre-fills
+ * the field but never auto-submits; a plain `open()` keeps the current value.
+ */
+export function askPrefill(query, current = '') {
+  return typeof query === 'string' && query.trim() ? query.trim() : current;
+}
+
 let corpusPromise = null;
 const rankingStats = new WeakMap();
 
@@ -273,9 +281,10 @@ export class AskChat {
     });
   }
 
-  async open() {
+  async open({ query } = {}) {
     this.root.classList.add('open');
     this.root.setAttribute('aria-hidden', 'false');
+    this.input.value = askPrefill(query, this.input.value);
     this.input.focus();
     if (!this._data) {
       try {

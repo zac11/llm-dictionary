@@ -47,6 +47,8 @@ ui = new UI({
     state.folder = null;
     library.returnBook();
   },
+  onAskTerm: (slug) => openAskForTerm(slug),
+  onMapTerm: (slug) => openMapForTerm(slug),
 });
 
 const archiveHome = new ArchiveHome(document.getElementById('archive-home'), {
@@ -172,7 +174,7 @@ const askView = document.getElementById('ask-view');
 const askToggle = document.getElementById('ask-toggle');
 let askChat = null;
 
-async function openAsk() {
+async function openAsk({ query } = {}) {
   archiveHome.collapseWelcome();
   if (!askChat) {
     const { AskChat } = await import('./ask.js');
@@ -187,7 +189,22 @@ async function openAsk() {
   askView.classList.add('open');
   askView.setAttribute('aria-hidden', 'false');
   askToggle.setAttribute('aria-pressed', 'true');
-  askChat.open();
+  askChat.open({ query });
+}
+
+/** Ask about a term straight from its entry page. */
+async function openAskForTerm(slug) {
+  const term = findTerm(slug);
+  if (!term) return;
+  if (state.view === 'map') await closeMap({ updateHistory: false });
+  openAsk({ query: term.term });
+}
+
+/** Close the reader safely, then open the Map focused on a term. */
+async function openMapForTerm(slug) {
+  if (!findTerm(slug)) return;
+  if (askView.classList.contains('open')) closeAsk();
+  await openMap(slug);
 }
 
 function closeAsk() {
