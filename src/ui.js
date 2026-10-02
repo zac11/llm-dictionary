@@ -2,7 +2,7 @@ import { findTerm, volumeByLetter, rangeTerms, searchTerms, RANGES } from './ter
 import { letterColor } from './palette.js';
 import { icon } from './icons.js';
 import { volumeRailItems } from './navigation.js';
-import { entryActions, entryBreadcrumb, isCurrentEntry, learningItems } from './entry-actions.js';
+import { entryActions, entryBreadcrumb, entryTransition, isCurrentEntry, learningItems } from './entry-actions.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -441,6 +441,13 @@ export class UI {
     this._termIndex = this._termList.findIndex((t) => t.slug === slug);
     this._entryPage = 0;
 
+    const requested = opts.transition;
+    const transition =
+      requested === 'first' ? 'ritual' :
+      requested === 'repeat' ? 'short' :
+      requested || entryTransition({ spreadOpen: this.isSpreadOpen(), mode: this._mode, reducedMotion: this._reducedMotion });
+    const short = transition === 'short';
+
     const render = () => {
       this._renderEntrySpread(term);
       this._setMode('entry');
@@ -453,7 +460,7 @@ export class UI {
     } else if (this._mode === 'index') {
       this._flip('next', render);
     } else {
-      this._flip(opts.dir || 'next', render);
+      this._flip(opts.dir || 'next', render, { short });
     }
   }
 
@@ -684,7 +691,7 @@ export class UI {
   }
 
   /** Paper page-turn: the leaf covers the right page, content swaps mid-flip. */
-  _flip(dir, swap) {
+  _flip(dir, swap, { short = false } = {}) {
     const leaf = this._flipLeaf;
     // the turning leaf needs the two-page spread; stacked layouts swap instantly
     const instant = this._reducedMotion || STACKED_QUERY.matches;
@@ -693,6 +700,8 @@ export class UI {
       return;
     }
     this._flipping = true;
+    const swapDelay = short ? 130 : 240;
+    const total = short ? 360 : 580;
     leaf.classList.remove('hidden');
     leaf.style.transition = 'none';
     leaf.style.transform = dir === 'prev' ? 'rotateY(-179deg)' : 'rotateY(0deg)';
@@ -700,13 +709,13 @@ export class UI {
     requestAnimationFrame(() => {
       leaf.style.transition = '';
       leaf.style.transform = dir === 'prev' ? 'rotateY(0deg)' : 'rotateY(-179deg)';
-      setTimeout(swap, 240);
+      setTimeout(swap, swapDelay);
       setTimeout(() => {
         leaf.classList.add('hidden');
         leaf.style.transition = 'none';
         leaf.style.transform = 'rotateY(0deg)';
         this._flipping = false;
-      }, 580);
+      }, total);
     });
   }
 
