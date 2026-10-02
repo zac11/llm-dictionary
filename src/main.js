@@ -7,6 +7,7 @@ import { ArchiveNav, exploreActions } from './archive-nav.js';
 import { parseAppLocation } from './navigation.js';
 import { ArchiveHome } from './archive-home.js';
 import { discoveryTarget } from './archive-discovery.js';
+import { canCreateWebGL, createLibraryFacade, renderMode } from './render-capability.js';
 
 const container = document.getElementById('scene-container');
 const state = { folder: null, busy: false, view: 'library', map: null };
@@ -27,15 +28,35 @@ const archiveNav = new ArchiveNav({
   }),
 });
 
-const library = new Library(container, volumes, {
-  onSelectVolume: (folder) => openVolumeRitual(folder),
-  onHoverVolume: (hover) => {
-    if (!hover?.point?.visible) return volumeCard.hide();
-    const volume = volumesByFolder.get(hover.folder);
-    if (!volume) return volumeCard.hide();
-    volumeCard.show(volumeCardData(volume, rangeTerms(volume.folder)), hover.point);
-  },
+// Probe WebGL once, then either construct the live library or fall back to a
+// static shelf poster. The `library` facade keeps every downstream call safe.
+let realLibrary = null;
+let constructionFailed = false;
+const webglAvailable = canCreateWebGL({
+  document,
+  WebGLRenderingContext: window.WebGLRenderingContext,
 });
+if (webglAvailable) {
+  try {
+    realLibrary = new Library(container, volumes, {
+      onSelectVolume: (folder) => openVolumeRitual(folder),
+      onHoverVolume: (hover) => {
+        if (!hover?.point?.visible) return volumeCard.hide();
+        const volume = volumesByFolder.get(hover.folder);
+        if (!volume) return volumeCard.hide();
+        volumeCard.show(volumeCardData(volume, rangeTerms(volume.folder)), hover.point);
+      },
+    });
+  } catch (error) {
+    console.warn('Library construction failed — using static fallback:', error);
+    constructionFailed = true;
+  }
+}
+const library = createLibraryFacade(realLibrary);
+if (renderMode({ webglAvailable, constructionFailed }) === 'fallback') {
+  document.body.classList.add('library-fallback');
+  container?.classList.add('library-fallback');
+}
 
 ui = new UI({
   onPickVolume: (folder, letter) => openVolumeRitual(folder, { letter }),
@@ -368,7 +389,7 @@ applyLocation();
 // Dev/debug handle (safe to keep; exposes scene for inspection).
 window.__theaidictionary = {
   library,
-  scene: library.scene,
-  camera: library._camera,
+  scene: realLibrary?.scene,
+  camera: realLibrary?._camera,
   get map() { return state.map; },
 };
