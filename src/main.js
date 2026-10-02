@@ -58,6 +58,19 @@ if (renderMode({ webglAvailable, constructionFailed }) === 'fallback') {
   container?.classList.add('library-fallback');
 }
 
+// On the mobile immersive header, constrain volume hover/selection to the
+// header canvas so the discovery sheet below scrolls without interacting.
+const applyInteractiveRegion = () => {
+  if (window.innerWidth < 860 && container && realLibrary) {
+    const rect = container.getBoundingClientRect();
+    realLibrary.setInteractiveRegion({ left: rect.left, top: rect.top, width: rect.width, height: rect.height });
+  } else {
+    realLibrary?.setInteractiveRegion(null);
+  }
+};
+window.addEventListener('resize', applyInteractiveRegion);
+applyInteractiveRegion();
+
 ui = new UI({
   onPickVolume: (folder, letter) => openVolumeRitual(folder, { letter }),
   onPickTerm: async (slug) => {
