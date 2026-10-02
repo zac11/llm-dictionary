@@ -237,6 +237,7 @@ export class Library {
 
   _buildFillers() {
     const rand = mulberry32(42);
+    const simplified = this.quality.simplifiedFillers;
     const geo = new THREE.BoxGeometry(1, 1, 1);
     geo.translate(0, 0.5, 0);
     const group = new THREE.Group();
@@ -252,10 +253,11 @@ export class Library {
     // a few titled spine variants per colour — upright, and flat for stacks
     const spine = {};
     const spineFlat = {};
+    const variants = simplified ? 1 : 3;
     for (const col of FILLER_COLORS) {
       spine[col] = [];
       spineFlat[col] = [];
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < variants; i++) {
         spine[col].push(
           new THREE.MeshStandardMaterial({
             map: fillerSpineTexture({
@@ -287,7 +289,7 @@ export class Library {
         const blocked = (w) => keepOuts.find(([a, b]) => x + w > a - 0.05 && x < b + 0.05);
 
         // occasionally lay a small stack of flat books instead of upright ones
-        if (rand() < 0.1) {
+        if (!simplified && rand() < 0.1) {
           const w = 0.95 + rand() * 0.3;
           if (!blocked(w) && x + w < SHELF_X_MAX - 0.3) {
             let y = shelfTop;
@@ -462,6 +464,7 @@ export class Library {
 
   _buildDust() {
     const count = this.quality.dustCount;
+    this._dustFull = count;
     const pos = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
       pos[i * 3] = (Math.random() - 0.5) * 32;
@@ -518,9 +521,25 @@ export class Library {
 
     this._ro = new ResizeObserver(() => this._resize());
     this._ro.observe(this.container);
+
+    // Live quality/profile updates on rotation and resize, without a new renderer.
+    this._onViewport = () => this.applyViewportProfile(currentSceneEnvironment(window));
+    window.addEventListener('resize', this._onViewport);
+    window.addEventListener('orientationchange', this._onViewport);
   }
 
   _pick(ev) {
+    if (this._interactiveRegion) {
+      const r = this._interactiveRegion;
+      if (
+        ev.clientX < r.left ||
+        ev.clientX > r.left + r.width ||
+        ev.clientY < r.top ||
+        ev.clientY > r.top + r.height
+      ) {
+        return null;
+      }
+    }
     const rect = this._renderer.domElement.getBoundingClientRect();
     this._pointer.x = ((ev.clientX - rect.left) / rect.width) * 2 - 1;
     this._pointer.y = -((ev.clientY - rect.top) / rect.height) * 2 + 1;
@@ -742,7 +761,6 @@ export class Library {
     if (!w || !h) return;
     const aspect = w / h;
     this._camera.aspect = aspect;
-
     // On narrow (portrait / phone) screens widen the vertical FOV so the shelf
     // is not clipped at the sides.
     const BASE_ASPECT = 1.6;
@@ -758,6 +776,33 @@ export class Library {
 
     // give the portrait pull-back enough room to zoom out again if needed
     if (this.controls) this.controls.maxDistance = aspect < 1.25 ? 34 : 19;
+  }
+
+  /**
+   * Live, non-structural quality update for orientation/resize changes: pixel
+   * ratio, dust visibility/count, and idle motion. Never rebuilds the renderer
+   * or geometry.
+   */
+  applyViewportProfile(environment) {
+    const quality = selectSceneProfile(environment);
+    this.quality = quality;
+    this._environment = environment;
+    this._reducedMotion = environment.reducedMotion;
+
+    this._renderer.setPixelRatio(Math.min(environment.devicePixelRatio || 1, quality.maxPixelRatio));
+
+    if (this._dust) {
+      this._dust.geo.setDrawRange(0, Math.min(quality.dustCount, this._dustFull || quality.dustCount));
+      this._dust.pts.material.opacity =
+        quality.name === 'high' ? 0.38 : quality.name === 'balanced' ? 0.28 : 0.16;
+    }
+
+    if (this.controls) this.controls.maxDistance = environment.width < 1100 ? 34 : 19;
+  }
+
+  /** Constrain volume hover/selection to a screen rect (mobile header); null restores. */
+  setInteractiveRegion(rect) {
+    this._interactiveRegion = rect || null;
   }
 
   // ---------------- loop ----------------
@@ -840,6 +885,8 @@ export class Library {
 
   dispose() {
     this._ro && this._ro.disconnect();
+    window.removeEventListener('resize', this._onViewport);
+    window.removeEventListener('orientationchange', this._onViewport);
     this._setHover(null);
     const el = this._renderer.domElement;
     el.removeEventListener('pointermove', this._onMove);

@@ -48,6 +48,25 @@ test('selectSceneProfile returns exact rendering budgets', () => {
   });
 });
 
+test('selectSceneProfile transitions deterministically across resize and rotation', () => {
+  // high → mobile (narrow) → high, and mobile → balanced (mid-width fine pointer)
+  const high = environment({ width: 1440, deviceMemory: 8 });
+  assert.equal(selectSceneProfile(high).name, 'high');
+  assert.equal(selectSceneProfile({ ...high, width: 390 }).name, 'mobile');
+  assert.equal(selectSceneProfile({ ...high, width: 390, coarsePointer: true }).name, 'mobile');
+  assert.equal(selectSceneProfile({ ...high, width: 1440 }).name, 'high');
+
+  const mobile = environment({ width: 390, coarsePointer: true, deviceMemory: 8 });
+  assert.equal(selectSceneProfile(mobile).name, 'mobile');
+  assert.equal(selectSceneProfile({ ...mobile, width: 1024, coarsePointer: false }).name, 'balanced');
+
+  // reduced motion never selects high, even on the most capable desktop
+  assert.equal(selectSceneProfile({ ...high, reducedMotion: true }).name, 'balanced');
+
+  // absent memory stays balanced on mid-sized screens
+  assert.equal(selectSceneProfile({ width: 1024, coarsePointer: false, reducedMotion: false }).name, 'balanced');
+});
+
 test('currentSceneEnvironment reads browser capability signals safely', () => {
   const queries = {
     '(pointer: coarse)': { matches: true },
