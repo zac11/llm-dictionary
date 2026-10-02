@@ -63,6 +63,13 @@ export class CarouselState {
     this._go(index);
   }
 
+  /** Live reduced-motion toggle: stop auto-advance, then allow it to resume. */
+  setReducedMotion(reduced) {
+    this.reducedMotion = Boolean(reduced);
+    if (this.reducedMotion) this._clearTimer();
+    else this._schedule();
+  }
+
   destroy() {
     this._clearTimer();
     this._pauseReasons.clear();

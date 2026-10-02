@@ -72,6 +72,11 @@ export class UI {
     this._helpModal.setAttribute('aria-hidden', 'false');
   }
 
+  /** Live reduced-motion toggle: page turns become instant when enabled. */
+  setReducedMotion(reduced) {
+    this._reducedMotion = Boolean(reduced);
+  }
+
   closeHelp() {
     this._helpModal.classList.remove('open');
     this._helpModal.setAttribute('aria-hidden', 'true');

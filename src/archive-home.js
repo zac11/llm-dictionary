@@ -114,6 +114,12 @@ export class ArchiveHome {
     if (index != null && index >= 0 && this._carousel) this._carousel.select(index);
   }
 
+  /** Forward a live reduced-motion change to the carousel. */
+  setReducedMotion(reduced) {
+    this.reducedMotion = Boolean(reduced);
+    this._carousel?.setReducedMotion(this.reducedMotion);
+  }
+
   _buildSlides() {
     const slides = [];
     const bySlug = new Map(this.terms.map((term) => [term.slug, term]));

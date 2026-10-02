@@ -8,11 +8,13 @@ import { parseAppLocation } from './navigation.js';
 import { ArchiveHome } from './archive-home.js';
 import { discoveryTarget } from './archive-discovery.js';
 import { canCreateWebGL, createLibraryFacade, renderMode } from './render-capability.js';
+import { MotionPreference } from './motion-preference.js';
 
 const container = document.getElementById('scene-container');
 const state = { folder: null, busy: false, view: 'library', map: null };
 const volumeCard = new VolumeCard(document.getElementById('volume-card'));
 const volumesByFolder = new Map(volumes.map((volume) => [volume.folder, volume]));
+const motionPreference = new MotionPreference(window.matchMedia('(prefers-reduced-motion: reduce)'));
 let ui;
 const archiveNav = new ArchiveNav({
   toggle: document.getElementById('explore-toggle'),
@@ -91,6 +93,14 @@ const archiveHome = new ArchiveHome(document.getElementById('archive-home'), {
   onRandomTerm: () => openRandomTerm(),
   onOpenMap: () => openMap(),
   onOpenTerm: (slug) => openTermRitual(slug),
+  reducedMotion: motionPreference.reduced,
+});
+
+// One observer fans live reduced-motion changes out to every consumer.
+motionPreference.subscribe((reduced) => {
+  realLibrary?.setReducedMotion(reduced);
+  ui?.setReducedMotion(reduced);
+  archiveHome.setReducedMotion(reduced);
 });
 
 // Any direct use of search is a meaningful first interaction.

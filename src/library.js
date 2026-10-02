@@ -805,6 +805,23 @@ export class Library {
     this._interactiveRegion = rect || null;
   }
 
+  /**
+   * Live reduced-motion toggle. Turning it on finishes active tweens, disables
+   * idle sway, and skips the intro; turning it off restores eligible motion
+   * without replaying the intro.
+   */
+  setReducedMotion(reduced) {
+    this._reducedMotion = Boolean(reduced);
+    this._environment.reducedMotion = this._reducedMotion;
+    if (this._reducedMotion) {
+      this.quality = { ...this.quality, idleMotion: false };
+      this.anim.finishAll();
+      this._introRunning = false;
+    } else {
+      this.quality = selectSceneProfile(this._environment);
+    }
+  }
+
   // ---------------- loop ----------------
   _animate = () => {
     requestAnimationFrame(this._animate);
