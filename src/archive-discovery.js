@@ -100,6 +100,7 @@ export function discoveryTarget({ busy = false, terms = [], random = Math.random
 }
 
 export const WELCOME_KEY = 'theaidictionary:welcome:v1';
+export const WELCOME_SESSION_KEY = 'theaidictionary:welcome:v1:session';
 
 const FRESH_WELCOME = { collapsed: false, seen: false };
 
@@ -137,4 +138,51 @@ export function writeWelcomeState(storage, patch = {}) {
   } catch {
     // The welcome panel still operates on its in-memory state for this session.
   }
+}
+
+/**
+ * Session-scoped "already greeted" marker. Browsers that refuse durable storage
+ * — private windows, managed profiles, storage partitioned away — still allow
+ * sessionStorage, so this keeps the greeting to once per session instead of it
+ * reappearing on every page load.
+ */
+export function readWelcomeSession(session) {
+  if (!session) return false;
+  try {
+    return session.getItem(WELCOME_SESSION_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+
+/** Remember, for the rest of this browser session, that the greeting was shown. */
+export function writeWelcomeSession(session) {
+  if (!session) return;
+  try {
+    session.setItem(WELCOME_SESSION_KEY, '1');
+  } catch {
+    // Nothing more we can do; the in-memory state still holds for this page.
+  }
+}
+
+/**
+ * Decide whether the first-visit greeting should open. Durable storage makes it
+ * a once-ever courtesy; the session marker is the backstop for when durable
+ * storage is unavailable, so a fresh profile is still greeted only once.
+ *
+ * When *neither* store can be written we fail closed: a greeting that cannot be
+ * remembered would reappear on every single page load, which is worse than not
+ * greeting at all (and is exactly what private-mode browsers used to produce).
+ */
+export function shouldShowWelcome({ storage = null, session = null } = {}) {
+  if (!storage && !session) return false;
+  const { collapsed, seen } = readWelcomeState(storage);
+  if (collapsed || seen) return false;
+  return !readWelcomeSession(session);
+}
+
+/** Record that the greeting has been shown, durably and for this session. */
+export function markWelcomeShown({ storage = null, session = null } = {}) {
+  writeWelcomeState(storage, { seen: true });
+  writeWelcomeSession(session);
 }

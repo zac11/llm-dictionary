@@ -1941,34 +1941,84 @@ body.map-mode .archive-options { display: none; }
 .explore-menu-item:focus-visible { background: rgba(230, 180, 92, 0.11); color: var(--ink); outline: none; }
 .explore-menu-item:disabled { opacity: 0.38; cursor: default; }
 
-/* ---------- Archive card (welcome panel + discovery carousel) ---------- */
-/* The wrapper is purely a positioning box: it must never capture pointer
-   events, or the invisible rectangle it occupies would swallow clicks on the
-   shelf books drawn beneath it (A–B, C–D, O–P, Q–R). */
+/* ---------- Archive welcome modal ---------- */
+/* A centred dialog: the visitor reads the introduction, closes it, then browses
+   the library. The wrapper only positions and must never capture pointer events
+   itself, or the invisible rectangle it spans would swallow clicks on the shelf
+   books drawn beneath it (A–B, C–D, O–P, Q–R). */
 .archive-home {
   position: fixed;
-  left: 22px;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 18;
-  width: min(340px, calc(100vw - 44px));
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  padding: 24px;
   pointer-events: none;
 }
 
-.archive-card {
+.archive-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 6, 4, 0.62);
+  backdrop-filter: blur(3px);
   pointer-events: auto;
-  max-height: calc(100vh - 150px);
+}
+
+.archive-card {
+  position: relative;
+  pointer-events: auto;
+  width: min(430px, 100%);
+  max-height: min(78vh, 700px);
   border: 1px solid var(--line);
   border-radius: 18px;
-  background: linear-gradient(160deg, rgba(34, 23, 13, 0.92), rgba(22, 15, 9, 0.86));
+  background: linear-gradient(160deg, rgba(34, 23, 13, 0.96), rgba(22, 15, 9, 0.94));
   box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(12px);
   overflow: auto;
-  transition: opacity 0.3s ease, transform 0.3s var(--ease), visibility 0s linear 0.3s;
+  animation: archive-card-in 0.28s var(--ease);
+}
+
+@keyframes archive-card-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.985); }
+  to { opacity: 1; transform: none; }
+}
+
+.archive-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: rgba(20, 14, 9, 0.82);
+  color: var(--ink-dim);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.archive-close .icon { width: 16px; height: 16px; }
+
+.archive-close:hover,
+.archive-close:focus-visible {
+  color: var(--ink);
+  border-color: var(--gold);
+  background: rgba(40, 28, 16, 0.92);
+  outline: none;
 }
 
 .archive-welcome {
-  padding: 24px 22px;
+  padding: 26px 22px 24px;
+}
+
+/* Keep the first lines clear of the close button in the corner. */
+.archive-kicker,
+.archive-headline {
+  padding-right: 40px;
 }
 
 .archive-kicker {
@@ -2039,11 +2089,11 @@ body.map-mode .archive-options { display: none; }
 .archive-btn:hover,
 .archive-btn:focus-visible { border-color: var(--gold); background: rgba(230, 180, 92, 0.12); outline: none; }
 
+/* Collapsed: the modal is gone entirely, leaving only the ⓘ button, so the
+   library underneath is fully interactive. */
+.archive-home.collapsed .archive-backdrop,
 .archive-home.collapsed .archive-card {
-  opacity: 0;
-  transform: translateX(-24px);
-  visibility: hidden;
-  pointer-events: none;
+  display: none;
 }
 
 /* Collapsed: the card is gone and a single ⓘ button sits in the page's
@@ -2863,20 +2913,13 @@ body.map-mode .archive-options { display: none; }
     display: none;
   }
 
-  /* The card becomes the first block of the in-flow discovery sheet. */
+  /* The welcome modal stays centred on small screens, sized to the viewport. */
   .archive-home {
-    position: relative;
-    left: auto;
-    top: auto;
-    transform: none;
-    width: auto;
-    margin: calc(36vh + var(--topbar-h)) 16px 0;
+    padding: 16px;
   }
   .archive-card {
-    max-height: none;
-  }
-  .archive-home.collapsed .archive-card {
-    display: none; /* no collapsed placeholder in the sheet */
+    width: min(430px, 100%);
+    max-height: min(84vh, 700px);
   }
   .archive-info-tab {
     left: 16px;

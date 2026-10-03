@@ -38,18 +38,22 @@ It retains the warm scholarly library and adds a restrained editorial discovery 
 
 ### 3.1 Desktop home
 
-The desktop home remains a full-screen Three.js library with four coordinated layers: the archive card, the interactive shelf, the volume rail, and the top navigation.
+The desktop home remains a full-screen Three.js library with four coordinated layers: the welcome modal, the interactive shelf, the volume rail, and the top navigation.
 
-#### Archive card: welcome panel + discovery carousel
+#### Welcome modal: introduction + discovery carousel
 
-The left rail is a single card holding two stacked, divided sections:
+A centred dialog over a dimmed library holds two stacked, divided sections:
 
 1. the **editorial welcome panel** — headline “Understand the language of AI”, live term count, cited-encyclopaedia value proposition, a primary search action, and secondary Random Term and Map actions;
 2. the **discovery carousel**, showing one card at a time: **Term of the Day**, **Continue Exploring**, **Recently Added**.
 
-The card is a **first-visit greeting**: it is shown once, and the fact that it has been seen is stored locally so later loads open straight to the collapsed state. It also collapses on the first meaningful interaction—searching, selecting a volume, opening Random Term, Ask, or Map—and after two idle minutes; hovering or focusing it resets that idle countdown.
+The visitor reads the introduction, closes it, and then browses the dictionary. It closes via the corner ✕, a click on the dimmed backdrop, or Escape; it also closes on the first meaningful interaction—searching, selecting a volume, opening Random Term, Ask, or Map—and after two idle minutes, with hovering or focusing resetting that idle countdown.
 
-Collapsed, the card leaves a single **ⓘ** button in the page's bottom-left corner. It opens a deliberately minimal menu with just **Random Term** and **Term of the Day**; everything else lives in the top-bar Explore menu. Both entries pull their term off the shelf and open it, so the card never has to be reopened to reach them.
+The greeting is shown **once**: it is a first-visit courtesy, not a recurring interruption. The fact that it has been seen is stored locally so later loads open straight to the collapsed state. While the modal is open it is modal in the real sense—the backdrop intercepts pointer events—and once dismissed nothing of it remains, so the shelf underneath is immediately clickable.
+
+"Seen" is remembered durably in `localStorage`, with a `sessionStorage` backstop for browsers that refuse durable storage (private windows, managed profiles). When **neither** store can be written the greeting is suppressed entirely: a greeting that cannot be remembered would reappear on every single reload, which is worse than not greeting at all.
+
+Dismissed, the modal leaves a single **ⓘ** button in the page's bottom-left corner. It opens a deliberately minimal menu with just **Random Term** and **Term of the Day**; everything else lives in the top-bar Explore menu. Both entries pull their term off the shelf and open it, so the card never has to be reopened to reach them.
 
 The carousel advances every 9 seconds. It includes visible pagination, previous/next controls, and a pause control. It pauses on pointer hover, keyboard focus, page visibility loss, and user interaction. It does not auto-advance when reduced motion is requested.
 

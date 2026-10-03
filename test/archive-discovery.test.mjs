@@ -3,12 +3,17 @@ import assert from 'node:assert/strict';
 import {
   createRecentHistory,
   discoveryTarget,
+  markWelcomeShown,
   randomTerm,
   readWelcomeState,
+  readWelcomeSession,
   recentlyAdded,
+  shouldShowWelcome,
   termOfDay,
+  writeWelcomeSession,
   writeWelcomeState,
   WELCOME_KEY,
+  WELCOME_SESSION_KEY,
 } from '../src/archive-discovery.js';
 
 const terms = (slugs) => slugs.map((slug) => ({ slug, term: slug, addedAt: '' }));
@@ -150,4 +155,61 @@ test('welcome state treats corrupt or missing storage as a first visit', () => {
   assert.deepEqual(readWelcomeState(corrupt), { collapsed: false, seen: false });
   const wrongVersion = memoryStorage({ 'theaidictionary:welcome:v1': '{"version":99,"seen":true}' });
   assert.deepEqual(readWelcomeState(wrongVersion), { collapsed: false, seen: false });
+});
+
+// ---------- welcome greeting: durable + session memory ----------
+
+test('shouldShowWelcome greets once, then stays collapsed across reloads', () => {
+  const storage = memoryStorage();
+  const session = memoryStorage();
+  const scope = { storage, session };
+
+  assert.equal(shouldShowWelcome(scope), true); // brand-new visitor
+  markWelcomeShown(scope);
+  assert.equal(shouldShowWelcome(scope), false); // same profile, next load
+});
+
+test('a fresh profile is greeted again only in a new session, not on every load', () => {
+  // Durable storage refused (private mode / managed profile) but sessionStorage works.
+  const session = memoryStorage();
+  const scope = { storage: null, session };
+
+  assert.equal(shouldShowWelcome(scope), true);
+  markWelcomeShown(scope);
+  assert.equal(readWelcomeSession(session), true);
+  assert.equal(shouldShowWelcome(scope), false); // reload in the same session
+});
+
+test('with no usable storage at all, the greeting is suppressed rather than repeating', () => {
+  // Fail closed: a greeting we cannot remember would reappear on every load,
+  // so it is better never to show it than to show it forever.
+  const scope = { storage: null, session: null };
+  assert.equal(shouldShowWelcome(scope), false);
+  markWelcomeShown(scope); // no-op, must not throw
+  assert.equal(shouldShowWelcome(scope), false);
+});
+
+test('an explicit collapse outranks an unseen greeting', () => {
+  const storage = memoryStorage();
+  writeWelcomeState(storage, { collapsed: true });
+  assert.equal(shouldShowWelcome({ storage, session: null }), false);
+});
+
+test('markWelcomeShown writes the durable flag and the session marker', () => {
+  const storage = memoryStorage();
+  const session = memoryStorage();
+  markWelcomeShown({ storage, session });
+  assert.deepEqual(readWelcomeState(storage), { collapsed: false, seen: true });
+  assert.equal(session.getItem(WELCOME_SESSION_KEY), '1');
+  assert.equal(WELCOME_KEY, 'theaidictionary:welcome:v1');
+});
+
+test('a throwing session store is tolerated', () => {
+  const hostile = {
+    getItem() { throw new Error('denied'); },
+    setItem() { throw new Error('denied'); },
+  };
+  assert.equal(readWelcomeSession(hostile), false);
+  writeWelcomeSession(hostile);
+  assert.equal(shouldShowWelcome({ storage: null, session: hostile }), true);
 });

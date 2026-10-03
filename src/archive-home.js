@@ -4,20 +4,22 @@
 
 import {
   createRecentHistory,
-  readWelcomeState,
+  markWelcomeShown,
   recentlyAdded,
+  shouldShowWelcome,
   termOfDay,
   writeWelcomeState,
 } from './archive-discovery.js';
 import { CarouselState } from './discovery-carousel.js';
 
-function safeStorage() {
+/** Probe a Web Storage object; private modes and managed profiles can throw. */
+function safeStore(name) {
   try {
-    const storage = window.localStorage;
+    const store = window[name];
     const probe = '__theaidictionary_probe__';
-    storage.setItem(probe, '1');
-    storage.removeItem(probe);
-    return storage;
+    store.setItem(probe, '1');
+    store.removeItem(probe);
+    return store;
   } catch {
     return null;
   }
@@ -47,7 +49,10 @@ export class ArchiveHome {
     this.onOpenMap = onOpenMap;
     this.onOpenTerm = onOpenTerm;
     this.reducedMotion = reducedMotion;
-    this.storage = safeStorage();
+    this.storage = safeStore('localStorage');
+    // Session fallback: keeps the greeting to once per session when durable
+    // storage is refused, instead of it reopening on every page load.
+    this.session = safeStore('sessionStorage');
     this.history = createRecentHistory({ storage: this.storage });
     // The welcome panel and the discovery carousel are one card, collapsed
     // together and retired to a single tab once they sit idle.
@@ -60,6 +65,8 @@ export class ArchiveHome {
     // viewport-anchored; ArchiveNav owns the click, this class shows/hides it.
     this.infoTab = document.querySelector('.archive-info-tab');
     this.countEl = root.querySelector('#archive-term-count');
+    this.closeBtn = root.querySelector('#archive-close');
+    this.backdrop = root.querySelector('.archive-backdrop');
     this.searchBtn = root.querySelector('.archive-search');
     this.randomBtn = root.querySelector('.archive-random');
     this.mapBtn = root.querySelector('.archive-map');
@@ -70,12 +77,12 @@ export class ArchiveHome {
 
     // The welcome card is a first-visit greeting: show it once, then remember
     // that it has been seen so later loads start at the ⓘ button.
-    const welcomeState = readWelcomeState(this.storage);
-    if (welcomeState.collapsed || welcomeState.seen) {
-      this.collapseWelcome({ persist: false });
-    } else {
+    const welcome = { storage: this.storage, session: this.session };
+    if (shouldShowWelcome(welcome)) {
       this.openWelcome();
-      writeWelcomeState(this.storage, { seen: true });
+      markWelcomeShown(welcome);
+    } else {
+      this.collapseWelcome({ persist: false });
     }
   }
 
@@ -98,15 +105,30 @@ export class ArchiveHome {
       this.collapseWelcome();
       this.onOpenMap?.();
     };
+    this._onCloseClick = () => this.collapseWelcome();
+
     this.searchBtn?.addEventListener('click', this._onSearchClick);
     this.randomBtn?.addEventListener('click', this._onRandomClick);
     this.mapBtn?.addEventListener('click', this._onMapClick);
+    this.closeBtn?.addEventListener('click', this._onCloseClick);
+    // Clicking the dimmed library is the other obvious way out of a dialog.
+    this.backdrop?.addEventListener('click', this._onCloseClick);
 
     // Any sign of use restarts the idle countdown before the auto-collapse.
     this._onCardActivity = () => this._scheduleIdleCollapse();
     this.card?.addEventListener('pointerenter', this._onCardActivity);
     this.card?.addEventListener('pointerdown', this._onCardActivity);
     this.card?.addEventListener('keydown', this._onCardActivity);
+
+    // The modal is the topmost layer on a fresh visit, so Escape closes it
+    // before anything underneath reacts.
+    this._onKeyDown = (event) => {
+      if (event.key !== 'Escape') return;
+      if (this.root.classList.contains('collapsed')) return;
+      event.stopPropagation();
+      this.collapseWelcome();
+    };
+    document.addEventListener('keydown', this._onKeyDown, true);
   }
 
   /** Reveal the welcome panel without changing the persisted default. */
@@ -323,6 +345,9 @@ export class ArchiveHome {
     this.searchBtn?.removeEventListener('click', this._onSearchClick);
     this.randomBtn?.removeEventListener('click', this._onRandomClick);
     this.mapBtn?.removeEventListener('click', this._onMapClick);
+    this.closeBtn?.removeEventListener('click', this._onCloseClick);
+    this.backdrop?.removeEventListener('click', this._onCloseClick);
+    document.removeEventListener('keydown', this._onKeyDown, true);
     this.card?.removeEventListener('pointerenter', this._onCardActivity);
     this.card?.removeEventListener('pointerdown', this._onCardActivity);
     this.card?.removeEventListener('keydown', this._onCardActivity);
