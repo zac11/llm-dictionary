@@ -1,0 +1,36 @@
+{
+  "term": "Chunked prefill",
+  "letter": "C",
+  "category": "Systems / Infrastructure",
+  "aka": [
+    "Chunked prefill scheduling"
+  ],
+  "definition": "A serving strategy that splits a long prompt into fixed-size chunks and processes one chunk per scheduling step, batching those chunks together with the token-by-token decoding of other requests.",
+  "details": "Every LLM request runs in two phases. Prefill processes the whole input prompt at once and is compute-bound; decode generates one token per step and is bound by memory bandwidth. A request with a very long prompt can therefore occupy the GPU for hundreds of milliseconds, starving every other request and producing the latency spikes known as generation stalls. Chunked prefill, introduced with Sarathi-Serve, caps how many prompt tokens are processed per step and packs those chunks into the same batch as ongoing decoding work. Decode tokens are no longer stuck behind a monolithic prefill, so throughput rises while tail latency stays flat. It depends on paged attention, since a partially processed prompt must keep its KV cache across steps, and it complements continuous batching rather than replacing it. Modern serving stacks - vLLM, SGLang, TensorRT-LLM - expose the chunk size as a tuning parameter that trades time-to-first-token against overall throughput.",
+  "story": "Think of a hospital triage desk on a busy night. One enormous case can freeze the queue while everyone else waits, so the desk takes it in stages, treating other patients in between. Nobody is left standing in the corridor for an hour because of a single arrival. The queue keeps moving, and the worst waiting times quietly collapse. And that is Chunked prefill.",
+  "related": [
+    "continuous-batching",
+    "pagedattention",
+    "kv-cache",
+    "vllm",
+    "inference"
+  ],
+  "citation": {
+    "title": "Taming Throughput-Latency Tradeoff in LLM Inference with Sarathi-Serve",
+    "authors": [
+      "Agrawal, A.",
+      "Kedia, N.",
+      "Panwar, A.",
+      "Mohan, J.",
+      "Kwatra, N.",
+      "Gulavani, B. S.",
+      "Tumanov, A.",
+      "Ramjee, R."
+    ],
+    "year": 2024,
+    "venue": "18th USENIX Symposium on Operating Systems Design and Implementation (OSDI)",
+    "url": "https://arxiv.org/abs/2403.02310"
+  },
+  "slug": "chunked-prefill",
+  "addedAt": "2026-10-03"
+}
