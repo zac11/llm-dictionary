@@ -32,6 +32,9 @@ function escapeHtml(value = '') {
     .replace(/'/g, '&#39;');
 }
 
+// Retire the archive card to its single collapsed tab after two idle minutes.
+const AUTO_COLLAPSE_MS = 120_000;
+
 export class ArchiveHome {
   constructor(
     root,
@@ -46,9 +49,16 @@ export class ArchiveHome {
     this.reducedMotion = reducedMotion;
     this.storage = safeStorage();
     this.history = createRecentHistory({ storage: this.storage });
+    // The welcome panel and the discovery carousel are one card, collapsed
+    // together and retired to a single tab once they sit idle.
+    this.card = root.querySelector('.archive-card');
+    this._idleTimer = null;
 
     this.welcome = root.querySelector('.archive-welcome');
-    this.aboutTab = root.querySelector('.archive-about-tab');
+    // The collapsed affordance: an ⓘ that opens the archive options overlay.
+    // It lives outside the card (see index.html) so its fixed position is
+    // viewport-anchored; ArchiveNav owns the click, this class shows/hides it.
+    this.infoTab = document.querySelector('.archive-info-tab');
     this.countEl = root.querySelector('#archive-term-count');
     this.searchBtn = root.querySelector('.archive-search');
     this.randomBtn = root.querySelector('.archive-random');
@@ -58,8 +68,15 @@ export class ArchiveHome {
     this._bind();
     this._buildCarousel();
 
-    if (readWelcomeState(this.storage).collapsed) this.collapseWelcome({ persist: false });
-    else this.openWelcome();
+    // The welcome card is a first-visit greeting: show it once, then remember
+    // that it has been seen so later loads start at the ⓘ button.
+    const welcomeState = readWelcomeState(this.storage);
+    if (welcomeState.collapsed || welcomeState.seen) {
+      this.collapseWelcome({ persist: false });
+    } else {
+      this.openWelcome();
+      writeWelcomeState(this.storage, { seen: true });
+    }
   }
 
   _renderCount() {
@@ -81,25 +98,59 @@ export class ArchiveHome {
       this.collapseWelcome();
       this.onOpenMap?.();
     };
-    this._onAboutClick = () => this.openWelcome();
-
     this.searchBtn?.addEventListener('click', this._onSearchClick);
     this.randomBtn?.addEventListener('click', this._onRandomClick);
     this.mapBtn?.addEventListener('click', this._onMapClick);
-    this.aboutTab?.addEventListener('click', this._onAboutClick);
+
+    // Any sign of use restarts the idle countdown before the auto-collapse.
+    this._onCardActivity = () => this._scheduleIdleCollapse();
+    this.card?.addEventListener('pointerenter', this._onCardActivity);
+    this.card?.addEventListener('pointerdown', this._onCardActivity);
+    this.card?.addEventListener('keydown', this._onCardActivity);
   }
 
-  /** Reveal the editorial panel without changing the persisted default. */
+  /** Reveal the welcome panel without changing the persisted default. */
   openWelcome() {
     this.root.classList.remove('collapsed');
-    if (this.aboutTab) this.aboutTab.hidden = true;
+    if (this.infoTab) this.infoTab.hidden = true;
+    this._scheduleIdleCollapse();
   }
 
   /** Collapse to the About tab; optionally persist the collapsed default. */
   collapseWelcome({ persist = true } = {}) {
     this.root.classList.add('collapsed');
-    if (this.aboutTab) this.aboutTab.hidden = false;
+    if (this.infoTab) this.infoTab.hidden = false;
     if (persist) writeWelcomeState(this.storage, { collapsed: true });
+    this._clearIdleCollapse();
+  }
+
+  _clearIdleCollapse() {
+    if (this._idleTimer != null) {
+      clearTimeout(this._idleTimer);
+      this._idleTimer = null;
+    }
+  }
+
+  /** Collapse the whole card once it has sat unattended. */
+  _scheduleIdleCollapse() {
+    this._clearIdleCollapse();
+    if (this.root.classList.contains('collapsed')) return;
+    this._idleTimer = setTimeout(() => {
+      this._idleTimer = null;
+      // Reading or tabbing through the card counts as use, not idleness.
+      if (this._cardInUse()) {
+        this._scheduleIdleCollapse();
+        return;
+      }
+      this.collapseWelcome();
+    }, AUTO_COLLAPSE_MS);
+  }
+
+  _cardInUse() {
+    if (!this.card) return false;
+    if (this.card.contains(document.activeElement)) return true;
+    const hoverCapable = window.matchMedia?.('(hover: hover)').matches ?? false;
+    return hoverCapable && this.card.matches(':hover');
   }
 
   /** Record a successful entry open and refresh Continue Exploring. */
@@ -108,10 +159,16 @@ export class ArchiveHome {
     this._buildCarousel();
   }
 
-  /** Select the Recently Added carousel slide when it exists. */
-  showRecentlyAdded() {
-    const index = this._slides?.findIndex((slide) => slide.id === 'added');
-    if (index != null && index >= 0 && this._carousel) this._carousel.select(index);
+  /** Pull the newest entry off the shelf and open it. */
+  openRecentlyAdded() {
+    const [newest] = recentlyAdded(this.terms);
+    if (newest) this.onOpenTerm?.(newest.slug);
+  }
+
+  /** Pull today's featured entry off the shelf and open it. */
+  openTermOfDay() {
+    const daily = termOfDay(this.terms, new Date());
+    if (daily) this.onOpenTerm?.(daily.slug);
   }
 
   /** Forward a live reduced-motion change to the carousel. */
@@ -140,6 +197,7 @@ export class ArchiveHome {
     const root = document.getElementById('discovery-carousel');
     if (!root) return;
     // Tear down any previous carousel before rebuilding (recordTerm refreshes it).
+    this._clearIdleCollapse();
     this._carousel?.destroy();
     this._carouselAbort?.abort();
     this._carouselAbort = new AbortController();
@@ -149,6 +207,7 @@ export class ArchiveHome {
     if (!slides.length) {
       root.hidden = true;
       root.replaceChildren();
+      this._carousel = null;
       return;
     }
     root.hidden = false;
@@ -246,6 +305,7 @@ export class ArchiveHome {
 
     this._showSlide(0);
     this._carousel.start();
+    this._scheduleIdleCollapse();
   }
 
   _showSlide(index) {
@@ -263,7 +323,10 @@ export class ArchiveHome {
     this.searchBtn?.removeEventListener('click', this._onSearchClick);
     this.randomBtn?.removeEventListener('click', this._onRandomClick);
     this.mapBtn?.removeEventListener('click', this._onMapClick);
-    this.aboutTab?.removeEventListener('click', this._onAboutClick);
+    this.card?.removeEventListener('pointerenter', this._onCardActivity);
+    this.card?.removeEventListener('pointerdown', this._onCardActivity);
+    this.card?.removeEventListener('keydown', this._onCardActivity);
+    this._clearIdleCollapse();
     this._carouselAbort?.abort();
     this._carousel?.destroy();
   }

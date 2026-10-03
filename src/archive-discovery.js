@@ -101,24 +101,39 @@ export function discoveryTarget({ busy = false, terms = [], random = Math.random
 
 export const WELCOME_KEY = 'theaidictionary:welcome:v1';
 
-/** Read the persisted welcome preference; defaults open when absent or unreadable. */
+const FRESH_WELCOME = { collapsed: false, seen: false };
+
+/**
+ * Read the persisted welcome preference. The card is a first-visit greeting, so
+ * `seen` is what keeps it away on later loads; `collapsed` records an explicit
+ * dismissal. Absent or unreadable state reads as a brand-new visitor.
+ */
 export function readWelcomeState(storage) {
-  if (!storage) return { collapsed: false };
+  if (!storage) return { ...FRESH_WELCOME };
   try {
     const raw = storage.getItem(WELCOME_KEY);
-    if (raw == null) return { collapsed: false };
+    if (raw == null) return { ...FRESH_WELCOME };
     const parsed = JSON.parse(raw);
-    return { collapsed: parsed && parsed.version === 1 ? Boolean(parsed.collapsed) : false };
+    if (!parsed || parsed.version !== 1) return { ...FRESH_WELCOME };
+    return { collapsed: Boolean(parsed.collapsed), seen: Boolean(parsed.seen) };
   } catch {
-    return { collapsed: false };
+    return { ...FRESH_WELCOME };
   }
 }
 
-/** Persist the welcome preference; storage failures are non-fatal. */
-export function writeWelcomeState(storage, { collapsed }) {
+/** Persist the welcome preference, merging into whatever is already stored. */
+export function writeWelcomeState(storage, patch = {}) {
   if (!storage) return;
   try {
-    storage.setItem(WELCOME_KEY, JSON.stringify({ version: 1, collapsed: Boolean(collapsed) }));
+    const current = readWelcomeState(storage);
+    storage.setItem(
+      WELCOME_KEY,
+      JSON.stringify({
+        version: 1,
+        collapsed: patch.collapsed ?? current.collapsed,
+        seen: patch.seen ?? current.seen,
+      })
+    );
   } catch {
     // The welcome panel still operates on its in-memory state for this session.
   }

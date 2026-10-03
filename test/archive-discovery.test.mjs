@@ -131,16 +131,23 @@ test('recent history falls back to memory when storage throws', () => {
 
 // ---------- welcome state ----------
 
-test('welcome state defaults open and round-trips a collapsed preference', () => {
+test('welcome state starts fresh and round-trips collapsed and seen', () => {
   const storage = memoryStorage();
-  assert.deepEqual(readWelcomeState(storage), { collapsed: false });
+  assert.deepEqual(readWelcomeState(storage), { collapsed: false, seen: false });
   writeWelcomeState(storage, { collapsed: true });
-  assert.deepEqual(readWelcomeState(storage), { collapsed: true });
+  assert.deepEqual(readWelcomeState(storage), { collapsed: true, seen: false });
+  // Writing one field must not clobber the other.
+  writeWelcomeState(storage, { seen: true });
+  assert.deepEqual(readWelcomeState(storage), { collapsed: true, seen: true });
+  writeWelcomeState(storage, { collapsed: false });
+  assert.deepEqual(readWelcomeState(storage), { collapsed: false, seen: true });
   assert.equal(WELCOME_KEY, 'theaidictionary:welcome:v1');
 });
 
-test('welcome state treats corrupt or missing storage as open', () => {
-  assert.deepEqual(readWelcomeState(null), { collapsed: false });
+test('welcome state treats corrupt or missing storage as a first visit', () => {
+  assert.deepEqual(readWelcomeState(null), { collapsed: false, seen: false });
   const corrupt = memoryStorage({ 'theaidictionary:welcome:v1': 'oops' });
-  assert.deepEqual(readWelcomeState(corrupt), { collapsed: false });
+  assert.deepEqual(readWelcomeState(corrupt), { collapsed: false, seen: false });
+  const wrongVersion = memoryStorage({ 'theaidictionary:welcome:v1': '{"version":99,"seen":true}' });
+  assert.deepEqual(readWelcomeState(wrongVersion), { collapsed: false, seen: false });
 });

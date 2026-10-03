@@ -38,19 +38,22 @@ It retains the warm scholarly library and adds a restrained editorial discovery 
 
 ### 3.1 Desktop home
 
-The desktop home remains a full-screen Three.js library with four coordinated layers.
+The desktop home remains a full-screen Three.js library with four coordinated layers: the archive card, the interactive shelf, the volume rail, and the top navigation.
 
-#### Editorial welcome panel
+#### Archive card: welcome panel + discovery carousel
 
-A left-side panel introduces the product with:
+The left rail is a single card holding two stacked, divided sections:
 
-- headline: “Understand the language of AI”;
-- live term count from generated data;
-- cited-encyclopaedia value proposition;
-- primary search action;
-- secondary Random Term and Map actions.
+1. the **editorial welcome panel** — headline “Understand the language of AI”, live term count, cited-encyclopaedia value proposition, a primary search action, and secondary Random Term and Map actions;
+2. the **discovery carousel**, showing one card at a time: **Term of the Day**, **Continue Exploring**, **Recently Added**.
 
-After the visitor's first meaningful interaction—searching, selecting a volume, opening Random Term, Ask, or Map—the panel collapses. It remains available as a compact **About this archive** tab. The collapsed state persists locally and can always be reopened.
+The card is a **first-visit greeting**: it is shown once, and the fact that it has been seen is stored locally so later loads open straight to the collapsed state. It also collapses on the first meaningful interaction—searching, selecting a volume, opening Random Term, Ask, or Map—and after two idle minutes; hovering or focusing it resets that idle countdown.
+
+Collapsed, the card leaves a single **ⓘ** button in the page's bottom-left corner. It opens a deliberately minimal menu with just **Random Term** and **Term of the Day**; everything else lives in the top-bar Explore menu. Both entries pull their term off the shelf and open it, so the card never has to be reopened to reach them.
+
+The carousel advances every 9 seconds. It includes visible pagination, previous/next controls, and a pause control. It pauses on pointer hover, keyboard focus, page visibility loss, and user interaction. It does not auto-advance when reduced motion is requested.
+
+The card is hidden entirely while the knowledge map is open.
 
 #### Interactive shelf
 
@@ -64,16 +67,6 @@ Hovering or focusing a volume shows a DOM information card containing:
 - the volume accent color.
 
 The card follows the projected screen position of the volume but stays inside the viewport.
-
-#### Discovery carousel on the reading desk
-
-The currently underused desk foreground hosts one discovery card at a time:
-
-1. **Term of the Day**;
-2. **Continue Exploring**;
-3. **Recently Added**.
-
-The carousel advances every 9 seconds. It includes visible pagination, previous/next controls, and a pause control. It pauses on pointer hover, keyboard focus, page visibility loss, and user interaction. It does not auto-advance when reduced motion is requested.
 
 #### Volume rail
 
@@ -146,7 +139,7 @@ Mobile uses the selected **Immersive header + discovery sheet** composition.
 
 - The live Three.js shelf occupies a compact header region.
 - A native discovery sheet contains the value proposition, Search, Ask, and horizontal A–B volume navigation.
-- The discovery carousel follows in normal document flow.
+- A native discovery sheet contains the value proposition, Search, Ask, and horizontal A–B volume navigation, with the discovery carousel as its closing block in normal document flow.
 - Entry reading becomes a focused full-screen reader.
 - Map and tertiary actions remain accessible from Explore.
 
@@ -242,6 +235,8 @@ This logic should be independently testable without Three.js.
 
 The existing UI controller continues to own the book spread. It gains focused rendering helpers for breadcrumb, entry actions, citation, and learning strip rather than introducing another reader system.
 
+The spread footer owns the per-mode actions, so nothing floats inside the pages: an entry shows **Ask about this** and **View in Map** there, and a story shows **Flip back to the entry**. "Flip to the story" stays on the page as the in-page cue.
+
 ### 5.4 Navigation controller
 
 The existing view state remains authoritative for Library, Map, Ask, and entries. The redesign adds Explore-menu actions without creating a second routing system.
@@ -327,7 +322,7 @@ Profile selection is deterministic. Mobile/low is selected for a coarse primary 
 - Mobile/low profile targets at least 30 FPS on representative hardware.
 - Pixel ratio remains capped by quality profile.
 - Search and HTML controls become usable before the Three.js intro or optional discovery data completes.
-- Carousel and welcome panel do not wait for scene initialization.
+- Carousel and welcome card do not wait for scene initialization.
 - Hidden Map, Ask, reader, and library views continue to pause unnecessary rendering work.
 
 ## 10. Delivery stages
@@ -343,8 +338,8 @@ Profile selection is deterministic. Mobile/low is selected for a coarse primary 
 
 ### Stage 2 — Homepage discovery
 
-- welcome panel and About tab;
-- discovery carousel;
+- the archive card: welcome panel + discovery carousel, collapsed together;
+- the collapsed ⓘ archive-options button;
 - Term of the Day;
 - Continue Exploring;
 - `addedAt` and Recently Added;

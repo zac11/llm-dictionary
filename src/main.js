@@ -16,18 +16,31 @@ const volumeCard = new VolumeCard(document.getElementById('volume-card'));
 const volumesByFolder = new Map(volumes.map((volume) => [volume.folder, volume]));
 const motionPreference = new MotionPreference(window.matchMedia('(prefers-reduced-motion: reduce)'));
 let ui;
+// One action list drives both menus. The callbacks reference `archiveHome`
+// lazily (inside closures), so building this before ArchiveHome exists is fine.
+const archiveActions = exploreActions({
+  openMap: () => (state.view === 'map' ? closeMap() : openMap()),
+  openRandomTerm: () => openRandomTerm(),
+  openTermOfDay: () => archiveHome.openTermOfDay(),
+  openRecentlyAdded: () => archiveHome.openRecentlyAdded(),
+  focusVolumeRail: () => focusVolumeRail(),
+  openContribute: () => openContribute(),
+  openFeedback: () => openFeedback(),
+  openHelp: () => ui.openHelp(),
+});
 const archiveNav = new ArchiveNav({
   toggle: document.getElementById('explore-toggle'),
   menu: document.getElementById('explore-menu'),
-  actions: exploreActions({
-    openMap: () => (state.view === 'map' ? closeMap() : openMap()),
-    openRandomTerm: () => openRandomTerm(),
-    showRecentlyAdded: () => archiveHome.showRecentlyAdded(),
-    focusVolumeRail: () => focusVolumeRail(),
-    openContribute: () => openContribute(),
-    openFeedback: () => openFeedback(),
-    openHelp: () => ui.openHelp(),
-  }),
+  actions: archiveActions,
+  // The collapsed card's ⓘ opens a deliberately minimal overlay: just the two
+  // "surprise me" entries. Everything else lives in the top-bar Explore menu.
+  extraMenus: [
+    {
+      toggle: document.querySelector('.archive-info-tab'),
+      menu: document.getElementById('archive-options'),
+      actions: archiveActions.filter(({ id }) => id === 'random' || id === 'daily'),
+    },
+  ],
 });
 
 // Probe WebGL once, then either construct the live library or fall back to a
@@ -112,9 +125,23 @@ function openRandomTerm() {
   if (term) openTermRitual(term.slug);
 }
 
-/** Move keyboard focus to the A–B volume rail. */
+let railAttentionTimer = null;
+
+/** Move keyboard focus to the A–B volume rail and make sure it is on screen. */
 function focusVolumeRail() {
-  document.querySelector('#letter-nav button:not(:disabled)')?.focus();
+  const first = document.querySelector('#letter-nav button:not(:disabled)');
+  if (!first) return;
+  first.focus();
+  first.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  // A focus ring is easy to miss when the click came from a menu, so flash the
+  // rail itself to show where the user has been sent.
+  const rail = document.getElementById('letter-nav');
+  if (!rail) return;
+  rail.classList.remove('attention');
+  void rail.offsetWidth; // restart the animation if it is already running
+  rail.classList.add('attention');
+  clearTimeout(railAttentionTimer);
+  railAttentionTimer = setTimeout(() => rail.classList.remove('attention'), 1500);
 }
 
 const viewToggle = document.getElementById('view-toggle');

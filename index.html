@@ -122,26 +122,45 @@
       </div>
     </header>
 
-    <!-- Editorial welcome panel + About tab -->
+    <!-- Editorial welcome panel + discovery card, as one collapsible unit -->
     <section id="archive-home" class="archive-home" aria-label="About this archive">
-      <div class="archive-welcome">
-        <p class="archive-kicker">The AI Encyclopaedia</p>
-        <h2 class="archive-headline">Understand the language of AI</h2>
-        <p class="archive-count" id="archive-term-count" role="status"></p>
-        <p class="archive-value">
-          A living archive of AI terms, each with a cited explanation — search,
-          browse the shelf, or ask a grounded question.
-        </p>
-        <div class="archive-actions">
-          <button class="archive-primary archive-search" type="button">Search the archive</button>
-          <div class="archive-secondary">
-            <button class="archive-btn archive-random" type="button">Random Term</button>
-            <button class="archive-btn archive-map" type="button">Knowledge Map</button>
+      <div class="archive-card">
+        <div class="archive-welcome">
+          <p class="archive-kicker">The AI Encyclopaedia</p>
+          <h2 class="archive-headline">Understand the language of AI</h2>
+          <p class="archive-count" id="archive-term-count" role="status"></p>
+          <p class="archive-value">
+            A living archive of AI terms, each with a cited explanation — search,
+            browse the shelf, or ask a grounded question.
+          </p>
+          <div class="archive-actions">
+            <button class="archive-primary archive-search" type="button">Search the archive</button>
+            <div class="archive-secondary">
+              <button class="archive-btn archive-random" type="button">Random Term</button>
+              <button class="archive-btn archive-map" type="button">Knowledge Map</button>
+            </div>
           </div>
         </div>
+
+        <!-- Discovery carousel (desk foreground) -->
+        <section id="discovery-carousel" class="discovery-carousel" aria-label="Discover" hidden></section>
       </div>
-      <button class="archive-about-tab" type="button" hidden>About this archive</button>
     </section>
+
+    <!-- Collapsed archive affordance: an ⓘ that opens the options overlay.
+         Kept outside #archive-home so fixed positioning is viewport-anchored. -->
+    <button
+      class="archive-info-tab"
+      type="button"
+      aria-haspopup="menu"
+      aria-expanded="false"
+      aria-label="Archive options"
+      title="Archive options"
+      hidden
+    >
+      <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+    </button>
+    <div id="archive-options" class="archive-options" role="menu" aria-label="Archive options" hidden></div>
 
     <!-- Helper hints -->
     <div id="hint" class="hint">
@@ -151,9 +170,6 @@
 
     <!-- Volume navigation (A–B … Y–Z rail) -->
     <nav id="letter-nav" class="letter-nav" aria-label="Volume navigation"></nav>
-
-    <!-- Discovery carousel (desk foreground) -->
-    <section id="discovery-carousel" class="discovery-carousel" aria-label="Discover" hidden></section>
 
     <!-- Open-book reading spread -->
     <div id="book-spread" class="book-spread" aria-hidden="true">
@@ -183,7 +199,11 @@
             <button class="spread-nav" id="spread-prev" type="button"><svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m15 18-6-6 6-6"/></svg><span>Previous</span></button>
           </div>
           <span id="spread-counter"></span>
-          <button class="spread-nav" id="spread-next" type="button"><span>Next</span><svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 18 6-6-6-6"/></svg></button>
+          <div class="spread-foot-group">
+            <!-- Per-mode actions (entry: Ask/Map, story: flip back) are rendered here. -->
+            <div class="spread-actions" id="spread-actions"></div>
+            <button class="spread-nav" id="spread-next" type="button"><span>Next</span><svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 18 6-6-6-6"/></svg></button>
+          </div>
         </footer>
       </div>
     </div>
