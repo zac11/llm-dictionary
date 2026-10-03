@@ -1,16 +1,92 @@
 import './styles.css';
-import { volumes, findTerm, volumeByLetter, summary } from './terms.js';
+import { volumes, findTerm, volumeByLetter, rangeTerms, summary, allTerms } from './terms.js';
 import { Library } from './library.js';
 import { UI } from './ui.js';
+import { VolumeCard, volumeCardData } from './volume-card.js';
+import { ArchiveNav, exploreActions } from './archive-nav.js';
+import { parseAppLocation } from './navigation.js';
+import { ArchiveHome } from './archive-home.js';
+import { discoveryTarget } from './archive-discovery.js';
+import { canCreateWebGL, createLibraryFacade, renderMode } from './render-capability.js';
+import { MotionPreference } from './motion-preference.js';
 
 const container = document.getElementById('scene-container');
 const state = { folder: null, busy: false, view: 'library', map: null };
-
-const library = new Library(container, volumes, {
-  onSelectVolume: (folder) => openVolumeRitual(folder),
+const volumeCard = new VolumeCard(document.getElementById('volume-card'));
+const volumesByFolder = new Map(volumes.map((volume) => [volume.folder, volume]));
+const motionPreference = new MotionPreference(window.matchMedia('(prefers-reduced-motion: reduce)'));
+let ui;
+// One action list drives both menus. The callbacks reference `archiveHome`
+// lazily (inside closures), so building this before ArchiveHome exists is fine.
+const archiveActions = exploreActions({
+  openMap: () => (state.view === 'map' ? closeMap() : openMap()),
+  openRandomTerm: () => openRandomTerm(),
+  openTermOfDay: () => archiveHome.openTermOfDay(),
+  openRecentlyAdded: () => archiveHome.openRecentlyAdded(),
+  focusVolumeRail: () => focusVolumeRail(),
+  openContribute: () => openContribute(),
+  openFeedback: () => openFeedback(),
+  openHelp: () => ui.openHelp(),
+});
+const archiveNav = new ArchiveNav({
+  toggle: document.getElementById('explore-toggle'),
+  menu: document.getElementById('explore-menu'),
+  actions: archiveActions,
+  // The collapsed card's ⓘ opens a deliberately minimal overlay: just the two
+  // "surprise me" entries. Everything else lives in the top-bar Explore menu.
+  extraMenus: [
+    {
+      toggle: document.querySelector('.archive-info-tab'),
+      menu: document.getElementById('archive-options'),
+      actions: archiveActions.filter(({ id }) => id === 'random' || id === 'daily'),
+    },
+  ],
 });
 
-const ui = new UI({
+// Probe WebGL once, then either construct the live library or fall back to a
+// static shelf poster. The `library` facade keeps every downstream call safe.
+let realLibrary = null;
+let constructionFailed = false;
+const webglAvailable = canCreateWebGL({
+  document,
+  WebGLRenderingContext: window.WebGLRenderingContext,
+});
+if (webglAvailable) {
+  try {
+    realLibrary = new Library(container, volumes, {
+      onSelectVolume: (folder) => openVolumeRitual(folder),
+      onHoverVolume: (hover) => {
+        if (!hover?.point?.visible) return volumeCard.hide();
+        const volume = volumesByFolder.get(hover.folder);
+        if (!volume) return volumeCard.hide();
+        volumeCard.show(volumeCardData(volume, rangeTerms(volume.folder)), hover.point);
+      },
+    });
+  } catch (error) {
+    console.warn('Library construction failed — using static fallback:', error);
+    constructionFailed = true;
+  }
+}
+const library = createLibraryFacade(realLibrary);
+if (renderMode({ webglAvailable, constructionFailed }) === 'fallback') {
+  document.body.classList.add('library-fallback');
+  container?.classList.add('library-fallback');
+}
+
+// On the mobile immersive header, constrain volume hover/selection to the
+// header canvas so the discovery sheet below scrolls without interacting.
+const applyInteractiveRegion = () => {
+  if (window.innerWidth < 860 && container && realLibrary) {
+    const rect = container.getBoundingClientRect();
+    realLibrary.setInteractiveRegion({ left: rect.left, top: rect.top, width: rect.width, height: rect.height });
+  } else {
+    realLibrary?.setInteractiveRegion(null);
+  }
+};
+window.addEventListener('resize', applyInteractiveRegion);
+applyInteractiveRegion();
+
+ui = new UI({
   onPickVolume: (folder, letter) => openVolumeRitual(folder, { letter }),
   onPickTerm: async (slug) => {
     if (state.view === 'map') await closeMap({ updateHistory: false });
@@ -20,7 +96,53 @@ const ui = new UI({
     state.folder = null;
     library.returnBook();
   },
+  onAskTerm: (slug) => openAskForTerm(slug),
+  onMapTerm: (slug) => openMapForTerm(slug),
 });
+
+const archiveHome = new ArchiveHome(document.getElementById('archive-home'), {
+  terms: allTerms,
+  onSearch: () => document.getElementById('search')?.focus(),
+  onRandomTerm: () => openRandomTerm(),
+  onOpenMap: () => openMap(),
+  onOpenTerm: (slug) => openTermRitual(slug),
+  reducedMotion: motionPreference.reduced,
+});
+
+// One observer fans live reduced-motion changes out to every consumer.
+motionPreference.subscribe((reduced) => {
+  realLibrary?.setReducedMotion(reduced);
+  ui?.setReducedMotion(reduced);
+  archiveHome.setReducedMotion(reduced);
+});
+
+// Any direct use of search is a meaningful first interaction.
+document.getElementById('search')?.addEventListener('input', () => archiveHome.collapseWelcome());
+
+/** Random Term from the welcome panel / Explore menu. */
+function openRandomTerm() {
+  const term = discoveryTarget({ busy: state.busy, terms: allTerms });
+  if (term) openTermRitual(term.slug);
+}
+
+let railAttentionTimer = null;
+
+/** Move keyboard focus to the A–B volume rail and make sure it is on screen. */
+function focusVolumeRail() {
+  const first = document.querySelector('#letter-nav button:not(:disabled)');
+  if (!first) return;
+  first.focus();
+  first.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  // A focus ring is easy to miss when the click came from a menu, so flash the
+  // rail itself to show where the user has been sent.
+  const rail = document.getElementById('letter-nav');
+  if (!rail) return;
+  rail.classList.remove('attention');
+  void rail.offsetWidth; // restart the animation if it is already running
+  rail.classList.add('attention');
+  clearTimeout(railAttentionTimer);
+  railAttentionTimer = setTimeout(() => rail.classList.remove('attention'), 1500);
+}
 
 const viewToggle = document.getElementById('view-toggle');
 const graphView = document.getElementById('graph-view');
@@ -40,11 +162,12 @@ function setMapChrome(active) {
   document.body.classList.toggle('map-mode', active);
   viewToggle.setAttribute('aria-pressed', String(active));
   viewToggle.title = active ? 'Return to 3D library' : 'Open knowledge map';
-  viewToggle.querySelector('span').textContent = active ? 'Library' : 'Map';
+  viewToggle.textContent = active ? 'Return to Library' : 'Knowledge Map';
 }
 
 async function openMap(slug = null, { updateHistory = true } = {}) {
   if (state.busy) return;
+  archiveHome.collapseWelcome();
   if (state.view === 'map' && state.map) {
     if (slug) state.map.select(slug, { center: true, notify: false });
     return;
@@ -86,7 +209,7 @@ async function openMap(slug = null, { updateHistory = true } = {}) {
   } catch (error) {
     await closeMap({ updateHistory: false });
     showToast('Knowledge map is unavailable right now — try again.');
-    viewToggle.focus();
+    archiveNav.toggle.focus();
     console.warn('Map open failed:', error);
   } finally {
     state.busy = false;
@@ -105,11 +228,6 @@ async function closeMap({ updateHistory = true } = {}) {
   if (updateHistory) history.pushState({}, '', '/');
 }
 
-viewToggle.addEventListener('click', () => {
-  if (state.view === 'map') closeMap();
-  else openMap();
-});
-
 // Escape inside the map first clears the selection, then returns to the library.
 document.addEventListener('keydown', (event) => {
   if (event.key !== 'Escape' || state.view !== 'map' || !state.map) return;
@@ -118,7 +236,7 @@ document.addEventListener('keydown', (event) => {
   if (state.map.selected) state.map.deselect();
   else {
     closeMap();
-    viewToggle.focus();
+    archiveNav.toggle.focus();
   }
 });
 
@@ -127,7 +245,8 @@ const askView = document.getElementById('ask-view');
 const askToggle = document.getElementById('ask-toggle');
 let askChat = null;
 
-async function openAsk() {
+async function openAsk({ query } = {}) {
+  archiveHome.collapseWelcome();
   if (!askChat) {
     const { AskChat } = await import('./ask.js');
     askChat = new AskChat(askView, {
@@ -141,7 +260,22 @@ async function openAsk() {
   askView.classList.add('open');
   askView.setAttribute('aria-hidden', 'false');
   askToggle.setAttribute('aria-pressed', 'true');
-  askChat.open();
+  askChat.open({ query });
+}
+
+/** Ask about a term straight from its entry page. */
+async function openAskForTerm(slug) {
+  const term = findTerm(slug);
+  if (!term) return;
+  if (state.view === 'map') await closeMap({ updateHistory: false });
+  openAsk({ query: term.term });
+}
+
+/** Close the reader safely, then open the Map focused on a term. */
+async function openMapForTerm(slug) {
+  if (!findTerm(slug)) return;
+  if (askView.classList.contains('open')) closeAsk();
+  await openMap(slug);
 }
 
 function closeAsk() {
@@ -175,21 +309,52 @@ function closeFeedback() {
   feedbackModal.classList.remove('open');
   feedbackModal.setAttribute('aria-hidden', 'true');
   feedbackToggle.setAttribute('aria-expanded', 'false');
-  feedbackToggle.focus();
+  archiveNav.toggle.focus();
 }
 
-feedbackToggle.addEventListener('click', openFeedback);
 feedbackClose.addEventListener('click', closeFeedback);
 document.getElementById('feedback-backdrop')?.addEventListener('click', closeFeedback);
+
+// ---------- Contribute ----------
+const contributeModal = document.getElementById('contribute-modal');
+const contributeToggle = document.getElementById('contribute-toggle');
+let contributeForm = null;
+
+async function openContribute() {
+  if (askView.classList.contains('open')) closeAsk();
+  if (!contributeForm) {
+    const { ContributeForm } = await import('./contribute.js');
+    contributeForm = new ContributeForm(contributeModal);
+  }
+  contributeModal.classList.add('open');
+  contributeModal.setAttribute('aria-hidden', 'false');
+  contributeToggle.setAttribute('aria-expanded', 'true');
+  contributeForm.open();
+}
+
+function closeContribute() {
+  contributeModal.classList.remove('open');
+  contributeModal.setAttribute('aria-hidden', 'true');
+  contributeForm?.close();
+  contributeToggle.setAttribute('aria-expanded', 'false');
+  archiveNav.toggle.focus();
+}
+
+document.getElementById('contribute-close')?.addEventListener('click', closeContribute);
+document.getElementById('contribute-backdrop')?.addEventListener('click', closeContribute);
 
 // Capture-phase Escape: the Ask overlay takes priority over book/map/help Escape.
 document.addEventListener(
   'keydown',
   (event) => {
-    if (event.key === 'Escape' && feedbackModal.classList.contains('open')) {
+    if (event.key !== 'Escape') return;
+    if (feedbackModal.classList.contains('open')) {
       event.stopPropagation();
       closeFeedback();
-    } else if (event.key === 'Escape' && askView.classList.contains('open')) {
+    } else if (contributeModal.classList.contains('open')) {
+      event.stopPropagation();
+      closeContribute();
+    } else if (askView.classList.contains('open')) {
       event.stopPropagation();
       closeAsk();
     }
@@ -200,6 +365,7 @@ document.addEventListener(
 /** Click a shelf book / letter: pull the volume out and open its contents spread. */
 async function openVolumeRitual(folder, { letter } = {}) {
   if (state.busy) return;
+  archiveHome.collapseWelcome();
   // clicking the volume that's already open puts it back on the shelf
   if (state.folder === folder && ui.isSpreadOpen()) {
     ui.closeSpread();
@@ -225,6 +391,7 @@ async function openVolumeRitual(folder, { letter } = {}) {
 async function openTermRitual(slug) {
   const term = findTerm(slug);
   if (!term || state.busy) return;
+  archiveHome.collapseWelcome();
   const vol = volumeByLetter(term.letter);
   if (!vol) return;
   state.busy = true;
@@ -240,6 +407,7 @@ async function openTermRitual(slug) {
       if (state.folder !== vol.folder) return;
     }
     ui.openEntry(slug, { from: 'ritual' });
+    archiveHome.recordTerm(slug);
   } finally {
     state.busy = false;
   }
@@ -252,18 +420,17 @@ console.info(`📚 ${summary()} — ${volumes.length} volumes on the shelf.`);
 // crawlers) and ?term=attention open straight to an entry; ?volume=a-b opens a
 // contents spread.
 async function applyLocation() {
-  const params = new URLSearchParams(location.search);
-  const pathTerm = location.pathname.match(/\/term\/([^/]+)\/?$/i);
-  const mapTerm = params.get('map');
-  if (mapTerm || params.get('view') === 'map') {
-    await openMap(mapTerm, { updateHistory: false });
+  const { view, slug, folder } = parseAppLocation({
+    pathname: location.pathname,
+    search: location.search,
+  });
+  if (view === 'map') {
+    await openMap(slug, { updateHistory: false });
     return;
   }
   if (state.view === 'map') await closeMap({ updateHistory: false });
-  const term = params.get('term') || (pathTerm ? decodeURIComponent(pathTerm[1]) : null);
-  const vol = params.get('volume');
-  if (term) openTermRitual(term);
-  else if (vol) openVolumeRitual(vol);
+  if (view === 'term') openTermRitual(slug);
+  else if (view === 'volume') openVolumeRitual(folder);
 }
 
 window.addEventListener('popstate', () => applyLocation());
@@ -272,7 +439,7 @@ applyLocation();
 // Dev/debug handle (safe to keep; exposes scene for inspection).
 window.__theaidictionary = {
   library,
-  scene: library.scene,
-  camera: library._camera,
+  scene: realLibrary?.scene,
+  camera: realLibrary?._camera,
   get map() { return state.map; },
 };

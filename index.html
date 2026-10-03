@@ -42,6 +42,7 @@
   <body>
     <!-- 3D canvas mounts here -->
     <div id="scene-container"></div>
+    <aside id="volume-card" class="volume-card" aria-hidden="true"></aside>
     <main id="graph-view" class="graph-view" aria-hidden="true">
       <canvas id="graph-canvas" aria-label="Interactive map of all TheAIDictionary terms"></canvas>
       <aside class="graph-sidebar" aria-label="Explore knowledge graph">
@@ -93,7 +94,7 @@
         <input
           id="search"
           type="search"
-          placeholder="Search a term, category or citation…"
+          placeholder="What do you want to understand?"
           autocomplete="off"
           spellcheck="false"
         />
@@ -108,23 +109,69 @@
           <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
         </button>
       </div>
-      <button id="view-toggle" class="view-toggle" type="button" aria-pressed="false" title="Open knowledge map">
-        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="12" cy="18" r="2"/><path d="m7 7 4 9M17 7l-4 9M7 6h10"/></svg>
-        <span>Map</span>
-      </button>
       <button id="ask-toggle" class="ask-toggle" type="button" aria-pressed="false" title="Ask the encyclopaedia">
         <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         <span>Ask</span>
       </button>
-      <button id="help-btn" class="ghost-btn" title="How to use" aria-label="How to use">
-        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
-      </button>
+      <div class="explore-nav">
+        <button id="explore-toggle" class="explore-toggle" type="button" aria-haspopup="menu" aria-expanded="false">
+          <span>Explore</span>
+          <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div id="explore-menu" class="explore-menu" role="menu" hidden></div>
+      </div>
     </header>
 
-    <button id="feedback-toggle" class="feedback-toggle" type="button" aria-haspopup="dialog" aria-expanded="false">
-      <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 8h8M8 12h5"/></svg>
-      <span>Feedback</span>
+    <!-- Welcome modal: archive introduction + discovery card, centred over the
+         library. Read it, close it, then browse the dictionary. -->
+    <section id="archive-home" class="archive-home" aria-label="About this archive">
+      <div class="archive-backdrop"></div>
+      <div class="archive-card" role="dialog" aria-modal="true" aria-label="About this archive">
+        <button
+          class="archive-close"
+          id="archive-close"
+          type="button"
+          aria-label="Close and browse the dictionary"
+          title="Close and browse the dictionary"
+        >
+          <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+        <div class="archive-welcome">
+          <p class="archive-kicker">The AI Encyclopaedia</p>
+          <h2 class="archive-headline">Understand the language of AI</h2>
+          <p class="archive-count" id="archive-term-count" role="status"></p>
+          <p class="archive-value">
+            A living archive of AI terms, each with a cited explanation — search,
+            browse the shelf, or ask a grounded question.
+          </p>
+          <div class="archive-actions">
+            <button class="archive-primary archive-search" type="button">Search the archive</button>
+            <div class="archive-secondary">
+              <button class="archive-btn archive-random" type="button">Random Term</button>
+              <button class="archive-btn archive-map" type="button">Knowledge Map</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Discovery carousel (desk foreground) -->
+        <section id="discovery-carousel" class="discovery-carousel" aria-label="Discover" hidden></section>
+      </div>
+    </section>
+
+    <!-- Collapsed archive affordance: an ⓘ that opens the options overlay.
+         Kept outside #archive-home so fixed positioning is viewport-anchored. -->
+    <button
+      class="archive-info-tab"
+      type="button"
+      aria-haspopup="menu"
+      aria-expanded="false"
+      aria-label="Archive options"
+      title="Archive options"
+      hidden
+    >
+      <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
     </button>
+    <div id="archive-options" class="archive-options" role="menu" aria-label="Archive options" hidden></div>
 
     <!-- Helper hints -->
     <div id="hint" class="hint">
@@ -132,8 +179,8 @@
       Drag to look around · Scroll to zoom · Click a book to pull it off the shelf
     </div>
 
-    <!-- Letter navigation -->
-    <nav id="letter-nav" class="letter-nav" aria-label="Alphabet navigation"></nav>
+    <!-- Volume navigation (A–B … Y–Z rail) -->
+    <nav id="letter-nav" class="letter-nav" aria-label="Volume navigation"></nav>
 
     <!-- Open-book reading spread -->
     <div id="book-spread" class="book-spread" aria-hidden="true">
@@ -163,7 +210,11 @@
             <button class="spread-nav" id="spread-prev" type="button"><svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m15 18-6-6 6-6"/></svg><span>Previous</span></button>
           </div>
           <span id="spread-counter"></span>
-          <button class="spread-nav" id="spread-next" type="button"><span>Next</span><svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 18 6-6-6-6"/></svg></button>
+          <div class="spread-foot-group">
+            <!-- Per-mode actions (entry: Ask/Map, story: flip back) are rendered here. -->
+            <div class="spread-actions" id="spread-actions"></div>
+            <button class="spread-nav" id="spread-next" type="button"><span>Next</span><svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 18 6-6-6-6"/></svg></button>
+          </div>
         </footer>
       </div>
     </div>
@@ -216,6 +267,23 @@
           <button class="feedback-submit" type="submit">Send feedback</button>
         </form>
         <p class="feedback-note">This opens your email app and sends to <a href="mailto:tokenaryai@gmail.com">tokenaryai@gmail.com</a>.</p>
+      </div>
+    </div>
+
+    <div id="contribute-modal" class="contribute-modal" aria-hidden="true">
+      <div class="contribute-backdrop" id="contribute-backdrop"></div>
+      <div class="contribute-card" role="dialog" aria-modal="true" aria-labelledby="contribute-title">
+        <button class="entry-close" id="contribute-close" type="button" aria-label="Close contribute form"><svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+        <p class="graph-eyebrow">Grow the encyclopaedia</p>
+        <h2 id="contribute-title">Add a term</h2>
+        <p class="contribute-intro">Submit one term or several. Your submission opens as a prefilled GitHub issue — the maintainer reviews it, merges it, and the terms go live on the next deploy.</p>
+        <form class="contribute-form" id="contribute-form" autocomplete="off">
+          <div id="contribute-terms" class="contribute-terms"></div>
+          <button id="contribute-add" class="contribute-add" type="button">+ Add another term</button>
+          <button class="contribute-submit" type="submit">Review &amp; submit</button>
+        </form>
+        <p id="contribute-status" class="contribute-status" role="status" aria-live="polite"></p>
+        <div id="contribute-review" class="contribute-review" hidden></div>
       </div>
     </div>
 

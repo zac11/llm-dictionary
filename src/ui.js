@@ -1,10 +1,11 @@
-import { findTerm, volumeByLetter, rangeTerms, searchTerms } from './terms.js';
+import { findTerm, volumeByLetter, rangeTerms, searchTerms, RANGES } from './terms.js';
 import { letterColor } from './palette.js';
 import { icon } from './icons.js';
+import { volumeRailItems } from './navigation.js';
+import { entryActions, entryBreadcrumb, entryTransition, isCurrentEntry, learningItems } from './entry-actions.js';
 
 const $ = (id) => document.getElementById(id);
 
-const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII'];
 
 // contents spread lists this many entries per page, then paginates
@@ -28,10 +29,12 @@ export function formatCitation(c) {
 }
 
 export class UI {
-  constructor({ onPickVolume, onPickTerm, onVolumeClose }) {
+  constructor({ onPickVolume, onPickTerm, onVolumeClose, onAskTerm, onMapTerm }) {
     this.onPickVolume = onPickVolume; // (folder, letter) => void
     this.onPickTerm = onPickTerm; // (slug) => void  (main runs the pull-out ritual)
     this.onVolumeClose = onVolumeClose; // () => void (main returns the book to the shelf)
+    this.onAskTerm = onAskTerm; // (slug) => void (main opens Ask prefilled)
+    this.onMapTerm = onMapTerm; // (slug) => void (main returns book and opens Map)
 
     this._nav = $('letter-nav');
     this._search = $('search');
@@ -42,6 +45,7 @@ export class UI {
     this._pageRight = $('page-right');
     this._flipLeaf = $('page-flip');
     this._counter = $('spread-counter');
+    this._actions = $('spread-actions');
     this._helpModal = $('help-modal');
     this._shareMenu = $('share-menu');
     this._toastEl = $('toast');
@@ -57,16 +61,31 @@ export class UI {
     this._indexPages = 1;
     this._flipping = false;
     this._reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this._hasGraph = false;
 
-    this._buildLetterNav();
+    this._buildVolumeRail();
     this._bind();
     this._syncSearchClear();
   }
 
+  openHelp() {
+    this._helpModal.classList.add('open');
+    this._helpModal.setAttribute('aria-hidden', 'false');
+  }
+
+  /** Live reduced-motion toggle: page turns become instant when enabled. */
+  setReducedMotion(reduced) {
+    this._reducedMotion = Boolean(reduced);
+  }
+
+  closeHelp() {
+    this._helpModal.classList.remove('open');
+    this._helpModal.setAttribute('aria-hidden', 'true');
+  }
+
   _bind() {
-    $('help-btn').addEventListener('click', () => this._helpModal.classList.add('open'));
-    $('help-close').addEventListener('click', () => this._helpModal.classList.remove('open'));
-    $('help-backdrop').addEventListener('click', () => this._helpModal.classList.remove('open'));
+    $('help-close').addEventListener('click', () => this.closeHelp());
+    $('help-backdrop').addEventListener('click', () => this.closeHelp());
 
     $('spread-close').addEventListener('click', () => this.closeSpread());
     $('spread-backdrop').addEventListener('click', () => this.closeSpread());
@@ -150,17 +169,19 @@ export class UI {
       ?.addEventListener('scroll', () => this.closeShareMenu(), { passive: true });
   }
 
-  // ---------- letter nav ----------
-  _buildLetterNav() {
+  // ---------- volume rail ----------
+  _buildVolumeRail() {
     const frag = document.createDocumentFragment();
-    LETTERS.forEach((L) => {
+    volumeRailItems(RANGES).forEach((item) => {
       const b = document.createElement('button');
-      b.textContent = L;
-      b.dataset.letter = L;
-      b.title = `Jump to words starting with ${L}`;
+      b.textContent = item.letters.join('–');
+      b.dataset.folder = item.folder;
+      const entries = `${item.count} ${item.count === 1 ? 'entry' : 'entries'}`;
+      b.title = `${item.label} · ${entries}`;
+      b.setAttribute('aria-label', `${item.label} volume, ${entries}`);
+      b.disabled = item.disabled;
       b.addEventListener('click', () => {
-        const vol = volumeByLetter(L);
-        if (vol) this.onPickVolume(vol.folder, L);
+        if (!item.disabled) this.onPickVolume(item.folder);
       });
       frag.appendChild(b);
     });
@@ -169,9 +190,8 @@ export class UI {
   }
 
   setActiveVolume(folder, letter) {
-    const L = letter || (folder ? folder.split('-')[0].toUpperCase() : '');
     this._navButtons.forEach((b) => {
-      b.classList.toggle('active', !!L && b.dataset.letter === L);
+      b.classList.toggle('active', !!folder && b.dataset.folder === folder);
     });
   }
 
@@ -252,7 +272,26 @@ export class UI {
     }
   }
 
+  /**
+   * Fill the spread footer's action slot. The footer is shared by every mode,
+   * so each render declares the actions it needs (or none).
+   */
+  _renderFootActions(actions = []) {
+    if (!this._actions) return;
+    this._actions.replaceChildren();
+    for (const { className, icon: iconName, label, disabled, onClick } of actions) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = `spread-action ${className}`.trim();
+      button.disabled = Boolean(disabled);
+      button.innerHTML = `${icon(iconName)}<span>${escapeHtml(label)}</span>`;
+      button.addEventListener('click', onClick);
+      this._actions.appendChild(button);
+    }
+  }
+
   _renderIndexPages(vol, terms) {
+    this._renderFootActions([]);
     const [a, b] = vol.letters;
     const idx = ROMAN[Math.max(0, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.indexOf(a) >> 1)];
     this._pageLeft.innerHTML = `
@@ -427,6 +466,13 @@ export class UI {
     this._termIndex = this._termList.findIndex((t) => t.slug === slug);
     this._entryPage = 0;
 
+    const requested = opts.transition;
+    const transition =
+      requested === 'first' ? 'ritual' :
+      requested === 'repeat' ? 'short' :
+      requested || entryTransition({ spreadOpen: this.isSpreadOpen(), mode: this._mode, reducedMotion: this._reducedMotion });
+    const short = transition === 'short';
+
     const render = () => {
       this._renderEntrySpread(term);
       this._setMode('entry');
@@ -439,22 +485,45 @@ export class UI {
     } else if (this._mode === 'index') {
       this._flip('next', render);
     } else {
-      this._flip(opts.dir || 'next', render);
+      this._flip(opts.dir || 'next', render, { short });
     }
   }
 
   /** Entry spread: definition on the left, details + citation (+ story cue) on the right. */
   _renderEntrySpread(term) {
+    const vol = volumeByLetter(term.letter);
+    const breadcrumb = entryBreadcrumb(term, vol);
     const citation = formatCitation(term.citation);
+    const actions = entryActions({ hasGraph: this._hasGraph, hasAsk: true });
+    const enabled = (id) => actions.find((action) => action.id === id).enabled;
+
+    this._renderFootActions([
+      {
+        className: 'pg-ask',
+        icon: 'message-circle',
+        label: 'Ask about this',
+        disabled: !enabled('ask'),
+        onClick: () => this.onAskTerm?.(term.slug),
+      },
+      {
+        className: 'pg-map',
+        icon: 'network',
+        label: 'View in Map',
+        disabled: !enabled('map'),
+        onClick: () => this.onMapTerm?.(term.slug),
+      },
+    ]);
+
     this._pageLeft.innerHTML = `
       <div class="pg-entry">
         <div class="pg-head">
-          <p class="pg-kicker">${escapeHtml(term.category)}</p>
+          <p class="pg-breadcrumb">${escapeHtml(breadcrumb.text)}</p>
           <button class="pg-share" type="button" aria-haspopup="dialog" aria-expanded="false"
                   title="Share “${escapeHtml(term.term)}”">
             ${icon('share-2')}<span>Share</span>
           </button>
         </div>
+        <p class="pg-kicker">${escapeHtml(breadcrumb.category)}</p>
         <h2 class="pg-term">${escapeHtml(term.term)}</h2>
         ${term.aka.length ? `<p class="pg-aka">also known as: ${escapeHtml(term.aka.join(', '))}</p>` : ''}
         <p class="pg-rule"></p>
@@ -464,13 +533,14 @@ export class UI {
       e.stopPropagation();
       this.toggleShareMenu(e.currentTarget);
     });
+
     this._pageRight.innerHTML = `
       <div class="pg-entry">
         <p class="pg-details">${escapeHtml(term.details)}</p>
         ${
           citation || term.citation.url
             ? `<aside class="pg-citation">
-                 <h3>${icon('quote')}&nbsp; Citation</h3>
+                 <h3>${icon('book-open')}&nbsp; Source</h3>
                  <p class="pg-citation-text">${escapeHtml(citation)}</p>
                  ${
                    term.citation.url
@@ -489,50 +559,57 @@ export class UI {
     this._resetScroll();
   }
 
+  /** Graph data became available: enable the Map action on the open entry. */
+  _setGraphReady() {
+    this._hasGraph = true;
+    const map = this._actions?.querySelector('.pg-map');
+    if (map) map.disabled = false;
+  }
+
   /**
-   * Concept trail: async — fills the .pg-trail container once the graph loads,
-   * guarded against stale renders when the user navigates to another term.
+   * Continue Learning strip: async — fills the .pg-trail container once the
+   * graph loads, guarded against stale renders when the user navigates away.
    */
   _renderConceptTrail(term) {
     const container = this._pageRight.querySelector('.pg-trail');
     if (!container) return;
     const slug = term.slug;
-    container.innerHTML = `<p class="pg-trail-loading">Tracing how “${escapeHtml(term.term)}” connects…</p>`;
+    container.innerHTML = '';
     (async () => {
       try {
         const { loadGraph, nearestTrail, FOUNDATION_SLUGS, neighbors } = await import('./graph.js');
         const index = await loadGraph();
-        if (!index || this._activeTerm?.slug !== slug) return;
-        // Curated RELATED edges only: trails must stay semantically meaningful.
-        this._renderTrail(container, term, index, nearestTrail(index, FOUNDATION_SLUGS, slug, { predicates: ['RELATED'], maxNodes: 5 }), neighbors);
+        if (!index) return;
+        this._setGraphReady();
+        if (!isCurrentEntry(this._activeTerm?.slug, slug)) return;
+        const trail = nearestTrail(index, FOUNDATION_SLUGS, slug, { predicates: ['RELATED'], maxNodes: 5 });
+        const items = learningItems({
+          trail,
+          neighbors: neighbors(index, slug, { predicates: ['RELATED'] }),
+          currentSlug: slug,
+          limit: 4,
+          labelOf: (s) => index.bySlug.get(s)?.label || s,
+        });
+        if (!isCurrentEntry(this._activeTerm?.slug, slug)) return;
+        this._renderLearning(container, items);
       } catch {
-        if (this._activeTerm?.slug === slug) container.innerHTML = '';
+        if (isCurrentEntry(this._activeTerm?.slug, slug)) container.innerHTML = '';
       }
     })();
   }
 
-  _renderTrail(container, term, index, result, neighborsFn) {
+  _renderLearning(container, items) {
     container.innerHTML = '';
-    if (!result || result.path.length <= 1) {
-      const related = neighborsFn ? neighborsFn(index, term.slug).slice(0, 4) : [];
-      if (!related.length) return;
-      container.innerHTML = `
-        <h3 class="pg-trail-title">Related concepts</h3>
-        <div class="pg-trail-path">${related
-          .map(({ node }) => `<button class="trail-chip" type="button" data-slug="${escapeHtml(node.slug)}">${escapeHtml(node.label)}</button>`)
-          .join('<span class="trail-arrow">→</span>')}</div>`;
-    } else {
-      const chips = result.path
-        .map((s) => {
-          const node = index.bySlug.get(s);
-          return node ? `<button class="trail-chip" type="button" data-slug="${escapeHtml(s)}">${escapeHtml(node.label)}</button>` : '';
-        })
-        .join('<span class="trail-arrow">→</span>');
-      container.innerHTML = `
-        <h3 class="pg-trail-title">Concept trail</h3>
-        <p class="pg-trail-note">How it connects to related concepts</p>
-        <div class="pg-trail-path">${chips}</div>`;
-    }
+    if (!items.length) return;
+    container.innerHTML = `
+      <h3 class="pg-trail-title">Continue learning</h3>
+      <p class="pg-trail-note">Connected concepts</p>
+      <div class="pg-trail-path">${items
+        .map(
+          ({ slug, label }) =>
+            `<button class="trail-chip" type="button" data-slug="${escapeHtml(slug)}">${escapeHtml(label)}</button>`
+        )
+        .join('')}</div>`;
     container.querySelectorAll('.trail-chip').forEach((btn) => {
       btn.addEventListener('click', () => {
         const s = btn.dataset.slug;
@@ -555,6 +632,15 @@ export class UI {
     const moral = rest.length ? rest.pop() : '';
     const body = rest;
 
+    this._renderFootActions([
+      {
+        className: 'pg-flip-back',
+        icon: 'chevron-left',
+        label: 'Flip back to the entry',
+        onClick: () => this._flipToPage(0),
+      },
+    ]);
+
     this._pageLeft.innerHTML = `
       <div class="story-left">
         <p class="idx-kicker">TheAIDictionary · The Story</p>
@@ -563,7 +649,6 @@ export class UI {
         <p class="story-subject">${escapeHtml(term.term)}</p>
         ${term.aka.length ? `<p class="pg-aka">also known as: ${escapeHtml(term.aka.join(', '))}</p>` : ''}
         <p class="story-open">${highlightTerm(opening, term)}</p>
-        <button class="pg-flip-back" type="button">${icon('chevron-left')}<span>Flip back to the entry</span></button>
       </div>`;
 
     const bodyHtml = body.map((s) => `<p class="story-line">${highlightTerm(s, term)}</p>`).join('');
@@ -578,7 +663,6 @@ export class UI {
         ${this._renderSuggested(term)}
       </div>`;
 
-    this._pageLeft.querySelector('.pg-flip-back')?.addEventListener('click', () => this._flipToPage(0));
     this._pageRight.querySelectorAll('.suggested-row').forEach((btn) =>
       btn.addEventListener('click', () => {
         const slug = btn.dataset.slug;
@@ -646,7 +730,7 @@ export class UI {
   }
 
   /** Paper page-turn: the leaf covers the right page, content swaps mid-flip. */
-  _flip(dir, swap) {
+  _flip(dir, swap, { short = false } = {}) {
     const leaf = this._flipLeaf;
     // the turning leaf needs the two-page spread; stacked layouts swap instantly
     const instant = this._reducedMotion || STACKED_QUERY.matches;
@@ -655,6 +739,8 @@ export class UI {
       return;
     }
     this._flipping = true;
+    const swapDelay = short ? 130 : 240;
+    const total = short ? 360 : 580;
     leaf.classList.remove('hidden');
     leaf.style.transition = 'none';
     leaf.style.transform = dir === 'prev' ? 'rotateY(-179deg)' : 'rotateY(0deg)';
@@ -662,13 +748,13 @@ export class UI {
     requestAnimationFrame(() => {
       leaf.style.transition = '';
       leaf.style.transform = dir === 'prev' ? 'rotateY(0deg)' : 'rotateY(-179deg)';
-      setTimeout(swap, 240);
+      setTimeout(swap, swapDelay);
       setTimeout(() => {
         leaf.classList.add('hidden');
         leaf.style.transition = 'none';
         leaf.style.transform = 'rotateY(0deg)';
         this._flipping = false;
-      }, 580);
+      }, total);
     });
   }
 
@@ -921,12 +1007,12 @@ export class UI {
         const col = letterColor(term.letter);
         b.style.setProperty('--letter-color', col);
         b.innerHTML = `<span class="ri-letter">${term.letter}</span>
-          <span>
-            <span class="ri-term">${escapeHtml(term.term)}</span><br />
-            <span class="ri-meta">${escapeHtml(term.category)} · ${escapeHtml(
-          (term.citation.title || '').slice(0, 60)
-        )}</span>
-          </span>`;
+          <span class="ri-content">
+            <span class="ri-term">${escapeHtml(term.term)}</span>
+            <span class="ri-meta">${escapeHtml(term.category)}</span>
+            <span class="ri-excerpt">${escapeHtml(term.definition.slice(0, 120))}</span>
+          </span>
+          <span class="ri-action">Open entry →</span>`;
         b.addEventListener('click', () => {
           this._closeResults();
           this._search.blur();

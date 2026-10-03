@@ -6,6 +6,8 @@ import { letterColor } from './palette.js';
 import { TweenRunner, easeInOutCubic, easeOutCubic, lerp } from './anim.js';
 import { makeSpineTexture, fillerSpineTexture, creamTexture, woodTexture, softShadowTexture, makeCanvas } from './textures.js';
 import { AnimatedBook, W as BOOK_W, SLIDE } from './book3d.js';
+import { currentSceneEnvironment, selectSceneProfile } from './scene-quality.js';
+import { nextVolumeCardState } from './volume-card.js';
 
 const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII'];
 
@@ -60,17 +62,19 @@ export class Library {
     this.hooks = hooks;
     this.volumes = volumes;
     this.anim = new TweenRunner();
+    this._environment = currentSceneEnvironment(window);
+    this.quality = selectSceneProfile(this._environment);
 
     this._renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    this._renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    this._renderer.setPixelRatio(Math.min(this._environment.devicePixelRatio, this.quality.maxPixelRatio));
     this._renderer.setSize(container.clientWidth, container.clientHeight);
     this._renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this._renderer.toneMappingExposure = 1.05;
+    this._renderer.toneMappingExposure = 1.12;
     container.appendChild(this._renderer.domElement);
 
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color('#0d0a08');
-    this.scene.fog = new THREE.Fog('#0d0a08', 16, 44);
+    this.scene.background = new THREE.Color('#120c08');
+    this.scene.fog = new THREE.Fog('#120c08', 17, 46);
 
     this._buildLights();
     this._buildRoom();
@@ -108,7 +112,7 @@ export class Library {
     this._hover = null;
     this._pulled = null; // item currently on the desk
     this._ritual = 0; // increments to cancel stale async sequences
-    this._reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this._reducedMotion = this._environment.reducedMotion;
 
     this._clock = new THREE.Clock();
     this._elapsed = 0;
@@ -119,23 +123,27 @@ export class Library {
 
     // cinematic intro dolly
     this.controls.enabled = false;
-    this._intro = this.anim.delay(0.25).then(() => this._camTo(OVERVIEW_POSE, 1.9));
+    this._introRunning = true;
+    this._intro = this.anim
+      .delay(0.25)
+      .then(() => this._camTo(OVERVIEW_POSE, 1.9))
+      .then(() => (this._introRunning = false));
   }
 
   // ---------------- construction ----------------
   _buildLights() {
-    this.scene.add(new THREE.HemisphereLight('#ffedd0', '#241811', 0.7));
+    this.scene.add(new THREE.HemisphereLight('#fff0d8', '#302016', 0.85));
 
-    const key = new THREE.SpotLight('#ffd9a0', 190, 50, 0.62, 0.55, 1.4);
+    const key = new THREE.SpotLight('#ffdda8', 220, 50, 0.62, 0.55, 1.4);
     key.position.set(5, 10.5, 6.5);
     key.target.position.set(0, 3.2, -5);
     this.scene.add(key, key.target);
 
-    const rim = new THREE.DirectionalLight('#8a6cff', 0.45);
+    const rim = new THREE.DirectionalLight('#9f7cff', 0.62);
     rim.position.set(-9, 7, -2);
     this.scene.add(rim);
 
-    const fill = new THREE.DirectionalLight('#ffcf9a', 0.3);
+    const fill = new THREE.DirectionalLight('#ffd6a6', 0.42);
     fill.position.set(0, 4, 12);
     this.scene.add(fill);
 
@@ -191,8 +199,8 @@ export class Library {
   }
 
   _buildShelfWall() {
-    const wood = new THREE.MeshStandardMaterial({ map: woodTexture({ base: '#4a3423' }), roughness: 0.72 });
-    const woodDark = new THREE.MeshStandardMaterial({ color: '#241811', roughness: 0.9 });
+    const wood = new THREE.MeshStandardMaterial({ map: woodTexture({ base: '#543925' }), roughness: 0.7 });
+    const woodDark = new THREE.MeshStandardMaterial({ color: '#2d1d13', roughness: 0.88 });
     const group = new THREE.Group();
     this.scene.add(group);
 
@@ -229,6 +237,7 @@ export class Library {
 
   _buildFillers() {
     const rand = mulberry32(42);
+    const simplified = this.quality.simplifiedFillers;
     const geo = new THREE.BoxGeometry(1, 1, 1);
     geo.translate(0, 0.5, 0);
     const group = new THREE.Group();
@@ -244,10 +253,11 @@ export class Library {
     // a few titled spine variants per colour — upright, and flat for stacks
     const spine = {};
     const spineFlat = {};
+    const variants = simplified ? 1 : 3;
     for (const col of FILLER_COLORS) {
       spine[col] = [];
       spineFlat[col] = [];
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < variants; i++) {
         spine[col].push(
           new THREE.MeshStandardMaterial({
             map: fillerSpineTexture({
@@ -279,7 +289,7 @@ export class Library {
         const blocked = (w) => keepOuts.find(([a, b]) => x + w > a - 0.05 && x < b + 0.05);
 
         // occasionally lay a small stack of flat books instead of upright ones
-        if (rand() < 0.1) {
+        if (!simplified && rand() < 0.1) {
           const w = 0.95 + rand() * 0.3;
           if (!blocked(w) && x + w < SHELF_X_MAX - 0.3) {
             let y = shelfTop;
@@ -453,7 +463,8 @@ export class Library {
   }
 
   _buildDust() {
-    const count = 700;
+    const count = this.quality.dustCount;
+    this._dustFull = count;
     const pos = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
       pos[i * 3] = (Math.random() - 0.5) * 32;
@@ -466,7 +477,7 @@ export class Library {
       color: '#e8c98a',
       size: 0.05,
       transparent: true,
-      opacity: 0.5,
+      opacity: this.quality.name === 'high' ? 0.38 : 0.28,
       depthWrite: false,
       sizeAttenuation: true,
     });
@@ -502,23 +513,33 @@ export class Library {
     const el = this._renderer.domElement;
     el.style.cursor = 'grab';
     el.addEventListener('pointermove', this._onMove);
-    el.addEventListener('pointerdown', () => {
-      el.style.cursor = 'grabbing';
-      this._downed = true;
-    });
-    window.addEventListener('pointerup', () => {
-      if (this._downed) {
-        this._downed = false;
-        el.style.cursor = this._hover ? 'pointer' : 'grab';
-      }
-    });
+    el.addEventListener('pointerleave', this._onLeave);
+    el.addEventListener('pointerdown', this._onPointerDown);
+    el.addEventListener('wheel', this._onSceneEngage, { passive: true });
+    window.addEventListener('pointerup', this._onPointerUp);
     el.addEventListener('click', this._onClick);
 
     this._ro = new ResizeObserver(() => this._resize());
     this._ro.observe(this.container);
+
+    // Live quality/profile updates on rotation and resize, without a new renderer.
+    this._onViewport = () => this.applyViewportProfile(currentSceneEnvironment(window));
+    window.addEventListener('resize', this._onViewport);
+    window.addEventListener('orientationchange', this._onViewport);
   }
 
   _pick(ev) {
+    if (this._interactiveRegion) {
+      const r = this._interactiveRegion;
+      if (
+        ev.clientX < r.left ||
+        ev.clientX > r.left + r.width ||
+        ev.clientY < r.top ||
+        ev.clientY > r.top + r.height
+      ) {
+        return null;
+      }
+    }
     const rect = this._renderer.domElement.getBoundingClientRect();
     this._pointer.x = ((ev.clientX - rect.left) / rect.width) * 2 - 1;
     this._pointer.y = -((ev.clientY - rect.top) / rect.height) * 2 + 1;
@@ -528,6 +549,22 @@ export class Library {
     return hits.length ? hits[0].object.userData.folder : null;
   }
 
+  _onSceneEngage = () => {
+    if (this._introRunning) this.anim.finishAll();
+  };
+
+  _onPointerDown = () => {
+    this._onSceneEngage();
+    this._renderer.domElement.style.cursor = 'grabbing';
+    this._downed = true;
+  };
+
+  _onPointerUp = () => {
+    if (!this._downed) return;
+    this._downed = false;
+    this._renderer.domElement.style.cursor = this._hover ? 'pointer' : 'grab';
+  };
+
   _onMove = (e) => {
     if (this._pulled || this.anim.busy) {
       if (this._hover) this._setHover(null);
@@ -535,10 +572,12 @@ export class Library {
     }
     const folder = this._pick(e);
     if (folder !== this._hover) {
-      this._hover = folder;
+      this._setHover(folder);
       this._renderer.domElement.style.cursor = folder ? 'pointer' : this._downed ? 'grabbing' : 'grab';
     }
   };
+
+  _onLeave = () => this._setHover(null);
 
   _onClick = (e) => {
     // a click during an animation fast-forwards it instead of picking
@@ -553,6 +592,19 @@ export class Library {
 
   _setHover(folder) {
     this._hover = folder;
+    this._emitHover();
+  }
+
+  _emitHover() {
+    if (!this.hooks.onHoverVolume) return;
+    const state = nextVolumeCardState({
+      folder: this._hover,
+      animating: this.anim.busy,
+      pulled: Boolean(this._pulled),
+      paused: !this._active,
+    });
+    if (state === 'hide') this.hooks.onHoverVolume(null);
+    else this.hooks.onHoverVolume({ folder: this._hover, point: this.screenPointOf(this._hover) });
   }
 
   // ---------------- camera ----------------
@@ -709,7 +761,6 @@ export class Library {
     if (!w || !h) return;
     const aspect = w / h;
     this._camera.aspect = aspect;
-
     // On narrow (portrait / phone) screens widen the vertical FOV so the shelf
     // is not clipped at the sides.
     const BASE_ASPECT = 1.6;
@@ -725,6 +776,50 @@ export class Library {
 
     // give the portrait pull-back enough room to zoom out again if needed
     if (this.controls) this.controls.maxDistance = aspect < 1.25 ? 34 : 19;
+  }
+
+  /**
+   * Live, non-structural quality update for orientation/resize changes: pixel
+   * ratio, dust visibility/count, and idle motion. Never rebuilds the renderer
+   * or geometry.
+   */
+  applyViewportProfile(environment) {
+    const quality = selectSceneProfile(environment);
+    this.quality = quality;
+    this._environment = environment;
+    this._reducedMotion = environment.reducedMotion;
+
+    this._renderer.setPixelRatio(Math.min(environment.devicePixelRatio || 1, quality.maxPixelRatio));
+
+    if (this._dust) {
+      this._dust.geo.setDrawRange(0, Math.min(quality.dustCount, this._dustFull || quality.dustCount));
+      this._dust.pts.material.opacity =
+        quality.name === 'high' ? 0.38 : quality.name === 'balanced' ? 0.28 : 0.16;
+    }
+
+    if (this.controls) this.controls.maxDistance = environment.width < 1100 ? 34 : 19;
+  }
+
+  /** Constrain volume hover/selection to a screen rect (mobile header); null restores. */
+  setInteractiveRegion(rect) {
+    this._interactiveRegion = rect || null;
+  }
+
+  /**
+   * Live reduced-motion toggle. Turning it on finishes active tweens, disables
+   * idle sway, and skips the intro; turning it off restores eligible motion
+   * without replaying the intro.
+   */
+  setReducedMotion(reduced) {
+    this._reducedMotion = Boolean(reduced);
+    this._environment.reducedMotion = this._reducedMotion;
+    if (this._reducedMotion) {
+      this.quality = { ...this.quality, idleMotion: false };
+      this.anim.finishAll();
+      this._introRunning = false;
+    } else {
+      this.quality = selectSceneProfile(this._environment);
+    }
   }
 
   // ---------------- loop ----------------
@@ -780,16 +875,18 @@ export class Library {
     }
 
     // gentle idle sway until the user takes over
-    if (!this._userDrag && !this._pulled && !this.anim.busy) {
+    if (this.quality.idleMotion && !this._userDrag && !this._pulled && !this.anim.busy) {
       this._camera.position.x += (Math.sin(t * 0.1) * 0.55 - this._camera.position.x) * 0.001;
     }
 
     this.controls.update();
+    if (this._hover) this._emitHover();
     this._renderer.render(this.scene, this._camera);
   };
 
   pause() {
     this._active = false;
+    this._emitHover();
     this._controlsWereEnabled = this.controls.enabled;
     this.controls.enabled = false;
     this._renderer.domElement.style.pointerEvents = 'none';
@@ -800,13 +897,21 @@ export class Library {
     this.controls.enabled = this._controlsWereEnabled ?? true;
     this._renderer.domElement.style.pointerEvents = '';
     this._clock.getDelta();
+    this._emitHover();
   }
 
   dispose() {
     this._ro && this._ro.disconnect();
+    window.removeEventListener('resize', this._onViewport);
+    window.removeEventListener('orientationchange', this._onViewport);
+    this._setHover(null);
     const el = this._renderer.domElement;
     el.removeEventListener('pointermove', this._onMove);
+    el.removeEventListener('pointerleave', this._onLeave);
+    el.removeEventListener('pointerdown', this._onPointerDown);
+    el.removeEventListener('wheel', this._onSceneEngage);
     el.removeEventListener('click', this._onClick);
+    window.removeEventListener('pointerup', this._onPointerUp);
     this._renderer.dispose();
     if (el.parentNode) el.parentNode.removeChild(el);
   }

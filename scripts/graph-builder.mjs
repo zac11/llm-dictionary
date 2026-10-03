@@ -433,6 +433,7 @@ export function buildRetrievalCorpus(terms, graph) {
     definition: term.definition,
     details: term.details,
     citation: term.citation,
+    addedAt: term.addedAt || '',
     termTokens: tokenizeText(`${term.term} ${term.aka.join(' ')}`),
     textTokens: tokenizeText(`${term.definition} ${term.details}`),
     related: [...(related.get(term.slug) || [])].sort(),
