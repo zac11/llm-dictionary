@@ -1,5 +1,5 @@
-// Pure discovery models for the archive home: daily term, recently added,
-// recent history, random term, and welcome-state persistence.
+// Pure discovery models for the archive home: term of the day, recently added,
+// random term, and welcome-state persistence.
 // No DOM access at module scope; storage is injected so these stay testable.
 
 import { isIsoDate } from './term-schema.js';
@@ -23,67 +23,6 @@ export function recentlyAdded(terms, { limit = 8 } = {}) {
     .filter((term) => isIsoDate(term.addedAt))
     .sort((a, b) => b.addedAt.localeCompare(a.addedAt) || a.slug.localeCompare(b.slug))
     .slice(0, limit);
-}
-
-/**
- * Versioned recent-history store. Falls back to an in-memory list whenever the
- * injected storage throws (denied) or is absent; malformed JSON reads as empty.
- */
-export function createRecentHistory({
-  storage = null,
-  limit = 8,
-  key = 'theaidictionary:recent:v1',
-} = {}) {
-  let memory = [];
-  let usable = storage != null;
-
-  const load = () => {
-    if (!usable) return memory;
-    try {
-      const raw = storage.getItem(key);
-      if (raw == null) return memory;
-      const parsed = JSON.parse(raw);
-      return Array.isArray(parsed && parsed.recentTerms) ? parsed.recentTerms : [];
-    } catch {
-      return memory;
-    }
-  };
-
-  const save = (slugs) => {
-    memory = [...slugs];
-    if (!usable) return;
-    try {
-      storage.setItem(key, JSON.stringify({ version: 1, recentTerms: slugs }));
-    } catch {
-      usable = false;
-    }
-  };
-
-  return {
-    /** Return stored slugs that still exist, oldest dropped to the limit. */
-    read(validSlugs = []) {
-      const valid = new Set(validSlugs);
-      const stored = load();
-      const cleaned = [...new Set(stored.filter((slug) => valid.has(slug)))];
-      if (cleaned.length !== stored.length) save(cleaned);
-      return cleaned.slice(0, limit);
-    },
-    /** Move a slug to the front, deduplicate, cap at the limit, persist. */
-    record(slug) {
-      const next = [slug, ...load().filter((s) => s !== slug)].slice(0, limit);
-      save(next);
-      return next;
-    },
-    clear() {
-      memory = [];
-      if (!usable) return;
-      try {
-        storage.removeItem(key);
-      } catch {
-        usable = false;
-      }
-    },
-  };
 }
 
 /** Uniform random term; empty input and a busy shell both yield nothing. */

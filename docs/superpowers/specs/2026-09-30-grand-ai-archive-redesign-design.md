@@ -31,7 +31,7 @@ It retains the warm scholarly library and adds a restrained editorial discovery 
 ### Selected visual compositions
 
 - **Desktop home:** left editorial panel with the shelf visible to its right.
-- **Mobile home:** adaptive live 3D header with a native discovery sheet.
+- **Mobile home:** adaptive live 3D shelf header with the volume rail pinned along the bottom, mirroring the desktop composition.
 - **Entry reader:** editorial open book with a learning strip.
 
 ## 3. Experience architecture
@@ -40,12 +40,9 @@ It retains the warm scholarly library and adds a restrained editorial discovery 
 
 The desktop home remains a full-screen Three.js library with four coordinated layers: the welcome modal, the interactive shelf, the volume rail, and the top navigation.
 
-#### Welcome modal: introduction + discovery carousel
+#### Welcome modal: introduction
 
-A centred dialog over a dimmed library holds two stacked, divided sections:
-
-1. the **editorial welcome panel** — headline “Understand the language of AI”, live term count, cited-encyclopaedia value proposition, a primary search action, and secondary Random Term and Map actions;
-2. the **discovery carousel**, showing one card at a time: **Term of the Day**, **Continue Exploring**, **Recently Added**.
+A centred dialog over a dimmed library holds a single **editorial welcome panel** — headline “Understand the language of AI”, live term count, cited-encyclopaedia value proposition, a primary search action, and secondary Random Term and Map actions. Nothing is promoted alongside it: the greeting introduces the archive and then gets out of the way.
 
 The visitor reads the introduction, closes it, and then browses the dictionary. It closes via the corner ✕, a click on the dimmed backdrop, or Escape; it also closes on the first meaningful interaction—searching, selecting a volume, opening Random Term, Ask, or Map—and after two idle minutes, with hovering or focusing resetting that idle countdown.
 
@@ -53,9 +50,7 @@ The greeting is shown **once**: it is a first-visit courtesy, not a recurring in
 
 "Seen" is remembered durably in `localStorage`, with a `sessionStorage` backstop for browsers that refuse durable storage (private windows, managed profiles). When **neither** store can be written the greeting is suppressed entirely: a greeting that cannot be remembered would reappear on every single reload, which is worse than not greeting at all.
 
-Dismissed, the modal leaves a single **ⓘ** button in the page's bottom-left corner. It opens a deliberately minimal menu with just **Random Term** and **Term of the Day**; everything else lives in the top-bar Explore menu. Both entries pull their term off the shelf and open it, so the card never has to be reopened to reach them.
-
-The carousel advances every 9 seconds. It includes visible pagination, previous/next controls, and a pause control. It pauses on pointer hover, keyboard focus, page visibility loss, and user interaction. It does not auto-advance when reduced motion is requested.
+Dismissed, the modal leaves a single **ⓘ** button in the page's bottom-left corner. It opens a deliberately minimal menu with the two "surprise me" picks — **Random Term** and **Term of the Day** — each of which pulls a term off the shelf and opens it; everything else lives in the top-bar Explore menu.
 
 The card is hidden entirely while the knowledge map is open.
 
@@ -92,7 +87,7 @@ Brand        Search                                Ask     Explore ▾
 
 - **Search** is the primary discovery control.
 - **Ask** is the primary assisted-learning control.
-- **Explore** contains Map, Random Term, Recently Added, and Browse A–Z.
+- **Explore** contains Knowledge Map, Random Term, Term of the Day, Recently Added, and Browse A–Z.
 - Contribute, Feedback, and Help remain accessible as tertiary actions without competing with Search and Ask.
 
 On narrow layouts, Brand, Search, Ask, and Explore remain directly accessible. Tertiary actions move into the menu.
@@ -139,11 +134,12 @@ Repeated entry navigation may use shorter page transitions than the first openin
 
 ### 3.5 Mobile home
 
-Mobile uses the selected **Immersive header + discovery sheet** composition.
+Mobile mirrors the desktop composition.
 
-- The live Three.js shelf occupies a compact header region.
-- A native discovery sheet contains the value proposition, Search, Ask, and horizontal A–B volume navigation.
-- A native discovery sheet contains the value proposition, Search, Ask, and horizontal A–B volume navigation, with the discovery carousel as its closing block in normal document flow.
+- The live Three.js shelf occupies a compact header band (36vh). A full-height portrait viewport would need roughly a 110° field of view to fit the shelf, which the camera caps at 68°, so a landscape-ish band is what frames correctly; it feathers into the page background rather than ending on a hard line.
+- The welcome introduction is the same centred modal as desktop, sized to the viewport.
+- The volume rail is pinned along the bottom, where a thumb reaches, and scrolls horizontally.
+- The **ⓘ** button sits just above the rail on the left, clear of it.
 - Entry reading becomes a focused full-screen reader.
 - Map and tertiary actions remain accessible from Explore.
 
@@ -199,8 +195,6 @@ The redesign adds no bloom or third-party post-processing dependency. Premium qu
 - Volume hover response: 160 ms.
 - Hover card entrance: 200 ms.
 - Welcome-panel collapse: 300 ms.
-- Carousel crossfade: 300 ms.
-- Carousel interval: 9 seconds.
 - Initial pull-out ritual remains cinematic.
 - Repeated entry transitions are shorter.
 - Continuous animation is limited to restrained particles, light variation, and idle camera movement.
@@ -218,19 +212,15 @@ Responsibilities:
 - pause/resume lifecycle;
 - WebGL capability reporting.
 
-It does not own explanatory text, navigation menus, carousel content, or search UI.
+It does not own explanatory text, navigation menus, or search UI.
 
 ### 5.2 Archive home controller
 
 A focused controller owns:
 
 - welcome/collapsed state;
-- About tab;
-- discovery carousel;
-- Term of the Day;
-- recent history;
-- Recently Added;
-- Random Term;
+- the ⓘ options button;
+- Random Term and Term of the Day;
 - safe local persistence.
 
 This logic should be independently testable without Three.js.
@@ -247,24 +237,7 @@ The existing view state remains authoritative for Library, Map, Ask, and entries
 
 ## 6. Data design
 
-### 6.1 Term of the Day
-
-Term of the Day is deterministic from the current UTC date and a stable sorted list of eligible slugs. Every visitor receives the same term for a given day. The algorithm must not depend on array insertion order.
-
-### 6.2 Continue Exploring
-
-Store at most eight recently opened slugs locally:
-
-```json
-{
-  "version": 1,
-  "recentTerms": ["mixture-of-recursions", "looped-transformer"]
-}
-```
-
-Opening an entry moves it to the front and removes duplicates. Unknown or removed slugs are filtered when read. Failure to access local storage falls back to in-memory session history.
-
-### 6.3 Recently Added
+### 6.1 Recently Added
 
 Add optional ISO date metadata to term normalization and generated retrieval data:
 
@@ -274,13 +247,13 @@ Add optional ISO date metadata to term normalization and generated retrieval dat
 }
 ```
 
-Valid dates sort newest first with slug as the deterministic tie-breaker. Terms without valid `addedAt` remain fully supported and do not appear in Recently Added. The initial rollout adds dates only to a small, editorially verified set of genuinely recent terms; dates must not be inferred or fabricated. If no eligible terms exist, that carousel slide is omitted.
+Valid dates sort newest first with slug as the deterministic tie-breaker. Terms without valid `addedAt` remain fully supported and do not appear in Recently Added. The initial rollout adds dates only to a small, editorially verified set of genuinely recent terms; dates must not be inferred or fabricated. Recently added terms are surfaced only through the Explore menu's **Recently Added** action, which pulls the newest entry off the shelf; nothing is promoted on load.
 
-### 6.4 Welcome state
+### 6.2 Welcome state
 
-Persist a versioned collapsed/open preference. The panel defaults open for visitors without a stored preference. Reopening through About does not erase the collapsed default for future visits.
+Persist a versioned `seen` flag alongside the dismissed state. A visitor without stored state is greeted once; after that the modal stays away and only the ⓘ button remains.
 
-### 6.5 Volume cards
+### 6.3 Volume cards
 
 Volume-card content is derived from the existing volume/range term index. Representative terms are deterministic and should favor recognizable or central terms when graph centrality is available; otherwise use stable alphabetical examples.
 
@@ -298,19 +271,17 @@ Profile selection is deterministic. Mobile/low is selected for a coarse primary 
 
 ### 7.2 Fallbacks
 
-- **No WebGL:** an optimized static `public/library-fallback.webp` shelf poster, kept below 200 KB, with functional Search, Ask, Explore, carousel, and volume navigation.
+- **No WebGL:** an optimized static `public/library-fallback.webp` shelf poster, kept below 200 KB, with functional Search, Ask, Explore, and volume navigation.
 - **No local storage:** in-memory state for the current session.
-- **No valid `addedAt`:** omit Recently Added.
 - **No graph:** disable View in Map while preserving entry reading.
 - **Hover projection failure:** keep volume selection functional without the card.
-- **Reduced motion:** disable carousel auto-advance, intro dolly, page turn, and idle camera movement.
+- **Reduced motion:** disable intro dolly, page turn, and idle camera movement.
 
 ## 8. Accessibility
 
 - Every Three.js volume action has an equivalent A–B DOM control.
-- Welcome panel, carousel, menus, search results, and entry actions follow logical tab order.
+- Welcome panel, menus, search results, and entry actions follow logical tab order.
 - Explore supports Escape and arrow-key navigation.
-- Carousel pauses on hover and focus and announces its current slide.
 - Text contrast meets WCAG AA.
 - Focus rings use gold in the archive and violet/cyan for connected-intelligence actions.
 - Volume controls expose letter range and term count to assistive technology.
@@ -326,7 +297,7 @@ Profile selection is deterministic. Mobile/low is selected for a coarse primary 
 - Mobile/low profile targets at least 30 FPS on representative hardware.
 - Pixel ratio remains capped by quality profile.
 - Search and HTML controls become usable before the Three.js intro or optional discovery data completes.
-- Carousel and welcome card do not wait for scene initialization.
+- The welcome card does not wait for scene initialization.
 - Hidden Map, Ask, reader, and library views continue to pause unnecessary rendering work.
 
 ## 10. Delivery stages
@@ -342,12 +313,10 @@ Profile selection is deterministic. Mobile/low is selected for a coarse primary 
 
 ### Stage 2 — Homepage discovery
 
-- the archive card: welcome panel + discovery carousel, collapsed together;
+- the archive card: the welcome panel, retired to a single ⓘ button;
 - the collapsed ⓘ archive-options button;
-- Term of the Day;
-- Continue Exploring;
 - `addedAt` and Recently Added;
-- Random Term.
+- Random Term and the deterministic Term of the Day pick.
 
 ### Stage 3 — Entry learning experience
 
@@ -360,7 +329,7 @@ Profile selection is deterministic. Mobile/low is selected for a coarse primary 
 
 ### Stage 4 — Mobile and resilience
 
-- immersive header and discovery sheet;
+- mobile shelf header and bottom-pinned volume rail;
 - adaptive rendering profiles;
 - WebGL fallback;
 - touch, keyboard, and responsive reader refinements;
@@ -374,11 +343,9 @@ Every stage must leave Library, Search, Map, Ask, sharing, contribution, feedbac
 
 Add coverage for:
 
-- deterministic Term of the Day;
 - recent-history insertion, deduplication, limits, and stale-slug filtering;
 - Recently Added validation and sorting;
 - quality-profile selection;
-- carousel timing, pause, visibility, and reduced motion;
 - welcome-state persistence;
 - navigation route preservation;
 - volume-card content;
@@ -408,7 +375,7 @@ Verify:
 - First-visit value proposition is readable without covering most of the shelf.
 - Actionable volumes are distinguishable before reading instructions.
 - Search is the strongest control and Ask is the strongest secondary control.
-- Desk carousel is legible but does not resemble a dashboard widget.
+- The welcome modal reads as an editorial introduction, not a dashboard widget.
 - Entry reader still feels like an open encyclopaedia.
 - Mobile preserves the library identity without forcing the desktop composition into a small viewport.
 

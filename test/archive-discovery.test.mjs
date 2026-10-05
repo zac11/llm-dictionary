@@ -1,7 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  createRecentHistory,
   discoveryTarget,
   markWelcomeShown,
   randomTerm,
@@ -17,6 +16,16 @@ import {
 } from '../src/archive-discovery.js';
 
 const terms = (slugs) => slugs.map((slug) => ({ slug, term: slug, addedAt: '' }));
+
+function memoryStorage(initial = {}) {
+  const data = new Map(Object.entries(initial));
+  return {
+    getItem: (key) => (data.has(key) ? data.get(key) : null),
+    setItem: (key, value) => data.set(key, value),
+    removeItem: (key) => data.delete(key),
+    _data: data,
+  };
+}
 
 // ---------- termOfDay ----------
 
@@ -71,67 +80,6 @@ test('discoveryTarget is safe on empty input and never returns an out-of-range t
   const list = terms(['a', 'b', 'c']);
   const pick = discoveryTarget({ busy: false, terms: list, random: () => 1 });
   assert.ok(list.some((term) => term.slug === pick.slug));
-});
-
-// ---------- createRecentHistory ----------
-
-function memoryStorage(initial = {}) {
-  const data = new Map(Object.entries(initial));
-  return {
-    getItem: (key) => (data.has(key) ? data.get(key) : null),
-    setItem: (key, value) => data.set(key, value),
-    removeItem: (key) => data.delete(key),
-    _data: data,
-  };
-}
-
-test('recent history dedupes to the front and caps at eight slugs', () => {
-  const storage = memoryStorage();
-  const history = createRecentHistory({ storage });
-  history.record('a');
-  history.record('b');
-  history.record('a');
-  assert.deepEqual(history.read(['a', 'b']), ['a', 'b']);
-  for (let i = 0; i < 12; i++) history.record(`slug-${i}`);
-  assert.equal(history.read(Array.from({ length: 12 }, (_, i) => `slug-${i}`)).length, 8);
-});
-
-test('recent recording is idempotent for repeated entry opens', () => {
-  const storage = memoryStorage();
-  const history = createRecentHistory({ storage });
-  history.record('attention');
-  history.record('attention');
-  history.record('attention');
-  assert.deepEqual(history.read(['attention', 'other']), ['attention']);
-});
-
-test('recent history filters stale slugs and persists the cleaned list', () => {
-  const storage = memoryStorage({
-    'theaidictionary:recent:v1': JSON.stringify({ version: 1, recentTerms: ['a', 'stale', 'b'] }),
-  });
-  const history = createRecentHistory({ storage });
-  assert.deepEqual(history.read(['a', 'b']), ['a', 'b']);
-  const persisted = JSON.parse(storage.getItem('theaidictionary:recent:v1'));
-  assert.deepEqual(persisted.recentTerms, ['a', 'b']);
-});
-
-test('recent history recovers from malformed JSON', () => {
-  const storage = memoryStorage({ 'theaidictionary:recent:v1': '{not json' });
-  const history = createRecentHistory({ storage });
-  assert.deepEqual(history.read(['a']), []);
-  history.record('a');
-  assert.deepEqual(history.read(['a']), ['a']);
-});
-
-test('recent history falls back to memory when storage throws', () => {
-  const throwing = {
-    getItem() { throw new Error('denied'); },
-    setItem() { throw new Error('denied'); },
-    removeItem() { throw new Error('denied'); },
-  };
-  const history = createRecentHistory({ storage: throwing });
-  history.record('a');
-  assert.deepEqual(history.read(['a']), ['a']); // served from in-memory fallback
 });
 
 // ---------- welcome state ----------
