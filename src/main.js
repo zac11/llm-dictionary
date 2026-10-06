@@ -32,8 +32,8 @@ const archiveNav = new ArchiveNav({
   toggle: document.getElementById('explore-toggle'),
   menu: document.getElementById('explore-menu'),
   actions: archiveActions,
-  // The collapsed card's ⓘ opens a deliberately minimal overlay: just the two
-  // "surprise me" entries. Everything else lives in the top-bar Explore menu.
+  // The collapsed card's ⓘ opens a deliberately minimal overlay: the two
+  // "surprise me" picks. Everything else lives in the top-bar Explore menu.
   extraMenus: [
     {
       toggle: document.querySelector('.archive-info-tab'),
@@ -106,15 +106,29 @@ const archiveHome = new ArchiveHome(document.getElementById('archive-home'), {
   onRandomTerm: () => openRandomTerm(),
   onOpenMap: () => openMap(),
   onOpenTerm: (slug) => openTermRitual(slug),
-  reducedMotion: motionPreference.reduced,
 });
 
 // One observer fans live reduced-motion changes out to every consumer.
 motionPreference.subscribe((reduced) => {
   realLibrary?.setReducedMotion(reduced);
   ui?.setReducedMotion(reduced);
-  archiveHome.setReducedMotion(reduced);
 });
+
+// The top bar wraps differently at every width (the Explore button drops to its
+// own row on the narrowest phones), so keep the --topbar-h layout constant in
+// sync with the real height rather than trusting a hard-coded guess.
+const topbarEl = document.querySelector('.topbar');
+if (topbarEl) {
+  const syncTopbarHeight = () => {
+    const { height } = topbarEl.getBoundingClientRect();
+    if (height > 0) {
+      document.documentElement.style.setProperty('--topbar-h', `${Math.round(height)}px`);
+    }
+  };
+  syncTopbarHeight();
+  new ResizeObserver(syncTopbarHeight).observe(topbarEl);
+  window.addEventListener('resize', syncTopbarHeight);
+}
 
 // Any direct use of search is a meaningful first interaction.
 document.getElementById('search')?.addEventListener('input', () => archiveHome.collapseWelcome());
@@ -407,7 +421,6 @@ async function openTermRitual(slug) {
       if (state.folder !== vol.folder) return;
     }
     ui.openEntry(slug, { from: 'ritual' });
-    archiveHome.recordTerm(slug);
   } finally {
     state.busy = false;
   }

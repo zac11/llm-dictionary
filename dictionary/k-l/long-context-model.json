@@ -2,8 +2,13 @@
   "term": "Long-Context Model",
   "letter": "L",
   "category": "LLM Fundamentals",
+  "aka": [
+    "Long-Context Language Models",
+    "Long-context language model",
+    "Long-context LLM"
+  ],
   "definition": "A language model specifically designed or adapted to handle very large context windows, spanning tens of thousands to millions of tokens.",
-  "details": "Long-context models enable use cases like reasoning over entire books, codebases, or extensive conversation histories, but require architectural and engineering innovations to remain efficient as context length grows.",
+  "details": "Long-context models enable use cases like reasoning over entire books, codebases, or extensive conversation histories, but require architectural and engineering innovations to remain efficient as context length grows. Two costs set the ceiling: attention compares every token with every other, so compute grows quadratically with sequence length, while the KV cache grows linearly, so memory can bind before compute does. A separate obstacle is positional generalisation — a model trained on a few thousand tokens degrades past that range unless its position encoding is extended. The main families of fixes are positional, such as interpolating or rescaling rotation frequencies (Position Interpolation, YaRN, LongRoPE) or using a linear attention bias like ALiBi that extrapolates by construction, and architectural, such as the sliding-window and sparse attention of Longformer. Serving innovations — paged attention, chunked prefill and prompt caching — make a long prompt affordable once it fits at all. A longer window is not automatically a better-used one: facts placed in the middle of a long prompt are recalled less reliably than facts at the edges, an effect known as “lost in the middle”.",
   "story": "Picture an architect laying out a building where every room has to know which other rooms matter to it. The layout decides what the machine can even attempt, before it learns a single thing. It is the blueprint that makes everything else possible. It is the difference between a row of isolated cubicles and one big room where everyone can hear each other. And that shape of the machine — Long-Context Model — is what makes everything else possible.",
   "related": [
     "autoregressive-model",
@@ -11,5 +16,15 @@
     "model-weights",
     "open-weight-model"
   ],
+  "citation": {
+    "title": "A Comprehensive Survey on Long Context Language Modeling",
+    "authors": [
+      "Liu, J.",
+      "et al."
+    ],
+    "year": 2025,
+    "venue": "arXiv preprint",
+    "url": "https://arxiv.org/abs/2503.17407"
+  },
   "slug": "long-context-model"
 }

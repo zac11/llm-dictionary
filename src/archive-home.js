@@ -1,16 +1,14 @@
-// Archive home controller: the editorial welcome panel, About tab, and the
-// discovery surface that sits on top of the library scene. Owns DOM and state;
-// all selection/persistence rules live in archive-discovery.js.
+// Archive home controller: the welcome modal that introduces the archive on a
+// first visit. Owns DOM and state; all persistence rules live in
+// archive-discovery.js.
 
 import {
-  createRecentHistory,
   markWelcomeShown,
   recentlyAdded,
   shouldShowWelcome,
   termOfDay,
   writeWelcomeState,
 } from './archive-discovery.js';
-import { CarouselState } from './discovery-carousel.js';
 
 /** Probe a Web Storage object; private modes and managed profiles can throw. */
 function safeStore(name) {
@@ -40,7 +38,7 @@ const AUTO_COLLAPSE_MS = 120_000;
 export class ArchiveHome {
   constructor(
     root,
-    { terms = [], onSearch, onRandomTerm, onOpenMap, onOpenTerm, reducedMotion = false } = {}
+    { terms = [], onSearch, onRandomTerm, onOpenMap, onOpenTerm } = {}
   ) {
     this.root = root;
     this.terms = terms;
@@ -48,14 +46,11 @@ export class ArchiveHome {
     this.onRandomTerm = onRandomTerm;
     this.onOpenMap = onOpenMap;
     this.onOpenTerm = onOpenTerm;
-    this.reducedMotion = reducedMotion;
     this.storage = safeStore('localStorage');
     // Session fallback: keeps the greeting to once per session when durable
     // storage is refused, instead of it reopening on every page load.
     this.session = safeStore('sessionStorage');
-    this.history = createRecentHistory({ storage: this.storage });
-    // The welcome panel and the discovery carousel are one card, collapsed
-    // together and retired to a single tab once they sit idle.
+    // The welcome modal, retired to a single ⓘ button once it is dismissed.
     this.card = root.querySelector('.archive-card');
     this._idleTimer = null;
 
@@ -73,7 +68,6 @@ export class ArchiveHome {
 
     this._renderCount();
     this._bind();
-    this._buildCarousel();
 
     // The welcome card is a first-visit greeting: show it once, then remember
     // that it has been seen so later loads start at the ⓘ button.
@@ -175,170 +169,16 @@ export class ArchiveHome {
     return hoverCapable && this.card.matches(':hover');
   }
 
-  /** Record a successful entry open and refresh Continue Exploring. */
-  recordTerm(slug) {
-    this.history.record(slug);
-    this._buildCarousel();
-  }
-
-  /** Pull the newest entry off the shelf and open it. */
-  openRecentlyAdded() {
-    const [newest] = recentlyAdded(this.terms);
-    if (newest) this.onOpenTerm?.(newest.slug);
-  }
-
   /** Pull today's featured entry off the shelf and open it. */
   openTermOfDay() {
     const daily = termOfDay(this.terms, new Date());
     if (daily) this.onOpenTerm?.(daily.slug);
   }
 
-  /** Forward a live reduced-motion change to the carousel. */
-  setReducedMotion(reduced) {
-    this.reducedMotion = Boolean(reduced);
-    this._carousel?.setReducedMotion(this.reducedMotion);
-  }
-
-  _buildSlides() {
-    const slides = [];
-    const bySlug = new Map(this.terms.map((term) => [term.slug, term]));
-
-    const daily = termOfDay(this.terms, new Date());
-    if (daily) slides.push({ id: 'daily', label: 'Term of the Day', term: daily });
-
-    const recent = this.history.read([...bySlug.keys()]).map((slug) => bySlug.get(slug)).find(Boolean);
-    if (recent) slides.push({ id: 'recent', label: 'Continue Exploring', term: recent });
-
-    const added = recentlyAdded(this.terms);
-    if (added.length) slides.push({ id: 'added', label: 'Recently Added', term: added[0] });
-
-    return slides;
-  }
-
-  _buildCarousel() {
-    const root = document.getElementById('discovery-carousel');
-    if (!root) return;
-    // Tear down any previous carousel before rebuilding (recordTerm refreshes it).
-    this._clearIdleCollapse();
-    this._carousel?.destroy();
-    this._carouselAbort?.abort();
-    this._carouselAbort = new AbortController();
-    const { signal } = this._carouselAbort;
-
-    const slides = this._buildSlides();
-    if (!slides.length) {
-      root.hidden = true;
-      root.replaceChildren();
-      this._carousel = null;
-      return;
-    }
-    root.hidden = false;
-    this._slides = slides;
-
-    const stage = document.createElement('div');
-    stage.className = 'carousel-stage';
-    stage.setAttribute('aria-live', 'polite');
-
-    this._slideEls = slides.map((slide) => {
-      const card = document.createElement('article');
-      card.className = 'carousel-slide';
-      card.dataset.slide = slide.id;
-      card.hidden = true;
-      const definition = (slide.term.definition || '').slice(0, 140);
-      card.innerHTML = `
-        <p class="carousel-kicker">${escapeHtml(slide.label)}</p>
-        <h3 class="carousel-term">${escapeHtml(slide.term.term)}</h3>
-        <p class="carousel-meta">${escapeHtml(slide.term.category)}</p>
-        <p class="carousel-def">${escapeHtml(definition)}</p>`;
-      const open = document.createElement('button');
-      open.className = 'carousel-open';
-      open.type = 'button';
-      open.textContent = 'Open entry';
-      open.addEventListener('click', () => this.onOpenTerm?.(slide.term.slug));
-      card.appendChild(open);
-      stage.appendChild(card);
-      return card;
-    });
-
-    const dots = document.createElement('div');
-    dots.className = 'carousel-dots';
-    dots.setAttribute('role', 'tablist');
-    this._dotEls = slides.map((slide, index) => {
-      const dot = document.createElement('button');
-      dot.className = 'carousel-dot';
-      dot.type = 'button';
-      dot.setAttribute('role', 'tab');
-      dot.setAttribute('aria-label', slide.label);
-      dot.addEventListener('click', () => this._carousel.select(index));
-      dots.appendChild(dot);
-      return dot;
-    });
-
-    const makeArrow = (dir, label, glyph) => {
-      const button = document.createElement('button');
-      button.className = 'carousel-arrow';
-      button.type = 'button';
-      button.setAttribute('aria-label', label);
-      button.textContent = glyph;
-      button.addEventListener('click', () =>
-        dir === 'prev' ? this._carousel.previous() : this._carousel.next()
-      );
-      return button;
-    };
-
-    const pause = document.createElement('button');
-    pause.className = 'carousel-pause';
-    pause.type = 'button';
-    pause.setAttribute('aria-pressed', 'false');
-    pause.textContent = 'Pause';
-    pause.addEventListener('click', () => {
-      if (this._carousel.paused) {
-        this._carousel.resume('manual');
-        pause.textContent = 'Pause';
-        pause.setAttribute('aria-pressed', 'false');
-      } else {
-        this._carousel.pause('manual');
-        pause.textContent = 'Play';
-        pause.setAttribute('aria-pressed', 'true');
-      }
-    });
-
-    const controls = document.createElement('div');
-    controls.className = 'carousel-controls';
-    controls.append(makeArrow('prev', 'Previous slide', '‹'), dots, pause, makeArrow('next', 'Next slide', '›'));
-
-    root.replaceChildren(stage, controls);
-
-    this._carousel = new CarouselState(slides.length, {
-      intervalMs: 9000,
-      reducedMotion: this.reducedMotion,
-      onChange: (index) => this._showSlide(index),
-    });
-
-    root.addEventListener('mouseenter', () => this._carousel.pause('hover'), { signal });
-    root.addEventListener('mouseleave', () => this._carousel.resume('hover'), { signal });
-    root.addEventListener('focusin', () => this._carousel.pause('focus'), { signal });
-    root.addEventListener('focusout', () => this._carousel.resume('focus'), { signal });
-    const onVisibility = () => {
-      if (document.hidden) this._carousel.pause('visibility');
-      else this._carousel.resume('visibility');
-    };
-    document.addEventListener('visibilitychange', onVisibility, { signal });
-
-    this._showSlide(0);
-    this._carousel.start();
-    this._scheduleIdleCollapse();
-  }
-
-  _showSlide(index) {
-    this._slideEls.forEach((el, i) => {
-      el.hidden = i !== index;
-      el.classList.toggle('active', i === index);
-    });
-    this._dotEls.forEach((dot, i) => {
-      dot.classList.toggle('active', i === index);
-      dot.setAttribute('aria-selected', i === index ? 'true' : 'false');
-    });
+  /** Pull the newest entry off the shelf and open it. */
+  openRecentlyAdded() {
+    const [newest] = recentlyAdded(this.terms);
+    if (newest) this.onOpenTerm?.(newest.slug);
   }
 
   destroy() {
@@ -352,7 +192,5 @@ export class ArchiveHome {
     this.card?.removeEventListener('pointerdown', this._onCardActivity);
     this.card?.removeEventListener('keydown', this._onCardActivity);
     this._clearIdleCollapse();
-    this._carouselAbort?.abort();
-    this._carousel?.destroy();
   }
 }

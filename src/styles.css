@@ -2148,122 +2148,6 @@ body.map-mode .archive-options { display: none; }
 
 .archive-options[hidden] { display: none; }
 
-
-/* ---------- Discovery carousel ---------- */
-.discovery-carousel {
-  border-top: 1px solid var(--line);
-}
-
-.discovery-carousel[hidden] { display: none; }
-
-.carousel-stage {
-  position: relative;
-  overflow: hidden;
-}
-
-.carousel-slide {
-  padding: 18px 18px 14px;
-}
-
-.carousel-slide[hidden] { display: none; }
-
-.carousel-kicker {
-  margin: 0 0 7px;
-  font: 600 10px var(--sans);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--gold);
-}
-
-.carousel-term {
-  margin: 0 0 4px;
-  font-family: var(--serif);
-  font-size: 21px;
-  font-weight: 600;
-  line-height: 1.15;
-}
-
-.carousel-meta {
-  margin: 0 0 8px;
-  font: 600 11px var(--sans);
-  color: var(--ink-dim);
-}
-
-.carousel-def {
-  margin: 0 0 12px;
-  font-size: 13px;
-  line-height: 1.5;
-  color: var(--ink-dim);
-}
-
-.carousel-open {
-  padding: 9px 13px;
-  border: 0;
-  border-radius: 10px;
-  background: linear-gradient(135deg, var(--gold), var(--gold-2));
-  color: #241a08;
-  font: 700 12px var(--sans);
-  cursor: pointer;
-}
-
-.carousel-open:hover,
-.carousel-open:focus-visible { filter: brightness(1.06); outline: 2px solid var(--gold); outline-offset: 2px; }
-
-.carousel-controls {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 9px 10px;
-}
-
-.carousel-arrow {
-  width: 30px;
-  height: 30px;
-  border: 1px solid var(--line);
-  border-radius: 9px;
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--ink-dim);
-  font-size: 18px;
-  line-height: 1;
-  cursor: pointer;
-}
-
-.carousel-arrow:hover,
-.carousel-arrow:focus-visible { color: var(--ink); border-color: var(--gold); outline: none; }
-
-.carousel-dots {
-  display: flex;
-  flex: 1 1 auto;
-  justify-content: center;
-  gap: 6px;
-}
-
-.carousel-dot {
-  width: 8px;
-  height: 8px;
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.carousel-dot.active { background: var(--gold); transform: scale(1.25); }
-.carousel-dot:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
-
-.carousel-pause {
-  padding: 6px 10px;
-  border: 1px solid var(--line);
-  border-radius: 9px;
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--ink-dim);
-  font: 600 11px var(--sans);
-  cursor: pointer;
-}
-
-.carousel-pause:hover,
-.carousel-pause:focus-visible { color: var(--ink); border-color: var(--gold); outline: none; }
 .ask-view {
   position: fixed;
   inset: 0;
@@ -2892,12 +2776,16 @@ body.map-mode .archive-options { display: none; }
     font-size: 11px;
   }
 
-  /* Mobile immersive header + native discovery sheet */
+  /* The introduction is a modal now, so there is no in-flow discovery sheet to
+     make room for: the shelf becomes a compact header and the volume rail is
+     pinned along the bottom, where a thumb can reach it. */
   html,
   body {
-    overflow-y: auto;
     overflow-x: hidden;
   }
+  /* A full-height portrait viewport would need a ~110° field of view to fit the
+     shelf, which the camera caps at 68° — so the header keeps a landscape-ish
+     36vh band, where the shelf frames correctly. */
   #scene-container {
     position: fixed;
     top: 0;
@@ -2905,6 +2793,17 @@ body.map-mode .archive-options { display: none; }
     right: 0;
     bottom: auto;
     height: 36vh;
+  }
+  /* Feather the shelf into the page background instead of ending on a hard line. */
+  #scene-container::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 22%;
+    background: linear-gradient(180deg, rgba(18, 12, 8, 0), var(--bg));
+    pointer-events: none;
   }
   #scene-container canvas {
     touch-action: none; /* orbit gestures stay inside the header */
@@ -2921,21 +2820,23 @@ body.map-mode .archive-options { display: none; }
     width: min(430px, 100%);
     max-height: min(84vh, 700px);
   }
+
+  /* Lift the ⓘ and its menu clear of the bottom rail, which spans the full
+     width here instead of sitting centred as it does on desktop. */
   .archive-info-tab {
     left: 16px;
-    bottom: 16px;
+    bottom: 74px;
   }
   .archive-options {
     left: 16px;
-    bottom: 66px;
+    bottom: 124px;
   }
 
   .letter-nav {
-    position: relative;
-    left: auto;
-    bottom: auto;
+    left: 12px;
+    right: 12px;
+    bottom: 14px;
     transform: none;
-    margin: 14px 16px 0;
     max-width: none;
     justify-content: flex-start;
   }
