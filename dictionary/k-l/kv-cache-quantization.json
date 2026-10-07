@@ -1,35 +1,16 @@
 {
   "term": "KV Cache Quantization",
   "letter": "K",
-  "category": "Systems / Infrastructure",
-  "aka": [
-    "Quantized KV cache"
-  ],
-  "definition": "Storing the key and value tensors of the attention cache in reduced-precision formats so that long-context inference fits in far less GPU memory.",
-  "details": "During autoregressive decoding every layer keeps the keys and values it has already computed so that new tokens can attend to them. That cache grows linearly with context length and batch size, and at long contexts it can dwarf the model weights themselves, making memory - not compute - the binding constraint. KV cache quantization compresses those tensors to 8-bit, 4-bit and below. The difficulty is that keys and values are far more sensitive to quantization than weights: per-channel and per-token statistics vary widely, a few outlier channels carry most of the magnitude, and errors accumulate over thousands of decoding steps. KVQuant addresses this with per-channel key quantization, pre-RoPE quantization to avoid rotation-induced outliers, and dense-and-sparse decomposition for outliers, reaching very low bit widths with minimal perplexity loss. The technique is complementary to weight quantization and paged attention, and is exposed as a cache-dtype option in serving stacks such as vLLM and TensorRT-LLM.",
-  "story": "Think of a traveller who insists on carrying every receipt and ticket from a decade of trips. The journey is possible, but the suitcase has become the obstacle. Photograph the paperwork, keep only what the next customs officer will ask for, and suddenly you can travel further with the same hands. What you keep is smaller; what you can do is larger. And that is KV Cache Quantization.",
-  "related": [
-    "kv-cache",
-    "quantization",
-    "pagedattention",
-    "inference",
-    "large-language-model"
-  ],
+  "category": "Decoding, Inference, and Serving",
+  "definition": "Storing cached keys/values in 8-bit or 4-bit, multiplying how many concurrent long-context requests fit in memory, usually with negligible quality impact at 8-bit.",
+  "details": "Storing cached keys/values in 8-bit or 4-bit, multiplying how many concurrent long-context requests fit in memory, usually with negligible quality impact at 8-bit.",
   "citation": {
-    "title": "KVQuant: Towards 10 Million Context Length LLM Inference with KV Cache Quantization",
-    "authors": [
-      "Hooper, C.",
-      "Kim, S.",
-      "Mohammadzadeh, H.",
-      "Mahoney, M. W.",
-      "Shao, Y. S.",
-      "Keutzer, K.",
-      "Gholami, A."
-    ],
-    "year": 2024,
-    "venue": "Advances in Neural Information Processing Systems 37 (NeurIPS)",
-    "url": "https://arxiv.org/abs/2401.18079"
+    "title": "The Advanced AI Glossary",
+    "authors": [],
+    "year": "",
+    "venue": "GitHub",
+    "url": "https://github.com/h9-tec/AI-Glossary-Handbook"
   },
-  "slug": "kv-cache-quantization",
-  "addedAt": "2026-10-03"
+  "addedAt": "2026-10-07",
+  "slug": "kv-cache-quantization"
 }
