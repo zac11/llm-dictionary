@@ -364,6 +364,7 @@ body.reading .hint {
   height: 26px;
   padding: 0 8px;
   flex: 0 0 auto;
+  white-space: nowrap;
   border: 0;
   border-radius: 8px;
   background: transparent;
@@ -2593,13 +2594,13 @@ body.map-mode .results { display: none; }
 /* Phones & portrait tablets: one page at a time, search on its own row. */
 @media (max-width: 860px) {
   :root {
-    --topbar-h: 128px;
+    --topbar-h: 64px;
   }
 
   .topbar {
-    flex-wrap: wrap;
-    gap: 10px 12px;
-    padding: 12px 16px 14px;
+    flex-wrap: nowrap;
+    gap: 10px;
+    padding: 12px 14px;
   }
   .brand {
     flex: 1 1 auto;
@@ -2623,17 +2624,35 @@ body.map-mode .results { display: none; }
   }
   .ask-toggle { margin-left: auto; }
   .explore-nav { flex: 0 0 auto; }
+  /* Search opens the discovery sheet: pinned just below the 36vh scene header
+     instead of floating over the shelf inside the topbar. */
   .searchbox {
-    order: 3;
-    flex: 1 1 100%;
+    position: fixed;
+    top: calc(36vh + 8px);
+    left: 14px;
+    right: 14px;
+    z-index: 20;
+    width: auto;
     max-width: none;
     margin: 0;
   }
   .searchbox input {
     font-size: 16px; /* ≥16px keeps iOS from auto-zooming when the field is focused */
   }
+  /* In map mode the scene header is hidden, so search docks under the topbar. */
+  body.map-mode .searchbox {
+    top: calc(var(--topbar-h) + 6px);
+  }
   .results {
+    top: calc(36vh + 60px);
+    left: 14px;
+    right: 14px;
+    width: auto;
     max-height: 52vh;
+    transform: translateY(-8px);
+  }
+  .results.open {
+    transform: translateY(0);
   }
 
   /* Flatten the 3D spread: the turning leaf is off, so drop the perspective
@@ -2803,9 +2822,19 @@ body.map-mode .results { display: none; }
     left: auto;
     bottom: auto;
     transform: none;
-    margin: 14px 16px 0;
-    max-width: none;
+    width: fit-content;
+    margin: 14px auto 0;
+    max-width: calc(100vw - 24px);
+    flex-wrap: nowrap;
     justify-content: flex-start;
+    scrollbar-width: none;
+  }
+  .letter-nav::-webkit-scrollbar {
+    display: none;
+  }
+  .letter-nav button {
+    min-width: 38px;
+    height: 32px;
   }
   .discovery-carousel {
     position: relative;
@@ -2865,15 +2894,11 @@ body.map-mode .results { display: none; }
   .letter-nav {
     gap: 3px;
     padding: 6px 8px;
-    bottom: 10px;
-    scrollbar-width: none;
-  }
-  .letter-nav::-webkit-scrollbar {
-    display: none;
   }
   .letter-nav button {
-    width: 24px;
-    height: 24px;
+    min-width: 34px;
+    height: 30px;
+    padding: 0 8px;
     border-radius: 7px;
     font-size: 11px;
   }
