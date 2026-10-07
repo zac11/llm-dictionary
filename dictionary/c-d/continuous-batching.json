@@ -1,34 +1,21 @@
 {
-  "term": "Continuous batching",
+  "term": "Continuous Batching",
   "letter": "C",
-  "category": "Systems / Infrastructure",
-  "aka": [
-    "Iteration-level batching",
-    "In-flight batching"
-  ],
-  "definition": "A scheduling technique that builds a fresh batch at every decoding step, admitting new requests and retiring finished ones immediately instead of waiting for a whole batch to complete.",
-  "details": "Static batching groups requests and runs them to completion together, so the batch runs only as fast as its longest generation and new arrivals sit idle until the whole group is done. Continuous batching, introduced by Orca as iteration-level scheduling, instead decides the composition of the batch once per decoding iteration. Finished sequences leave at once and their slots are refilled from the queue, which keeps the GPU saturated and can raise throughput several-fold on realistic, variable-length traffic. Making it practical required the serving engine to manage per-sequence attention state independently, which is why paged attention and continuous batching are usually discussed together. The approach is now standard in vLLM, TensorRT-LLM and SGLang, and it pairs naturally with chunked prefill to keep long prompts from blocking the decode stream.",
-  "story": "Imagine a bus that will not leave the stop until every passenger has reached their own destination. That is an empty bus and an unhappy queue. Now imagine it instead keeps moving, letting people off at their stops and picking up whoever is waiting at each one. The seats never empty, and the timetable stops meaning anything. And that is Continuous batching.",
+  "category": "Decoding, Inference, and Serving",
+  "definition": "Scheduling at the token level so new requests join and finished requests leave a running batch every step, instead of waiting for whole-batch completion.",
+  "details": "Scheduling at the token level so new requests join and finished requests leave a running batch every step, instead of waiting for whole-batch completion. The single biggest throughput innovation in LLM serving (vLLM, TGI, TensorRT-LLM all implement it).",
   "related": [
-    "chunked-prefill",
-    "pagedattention",
-    "vllm",
-    "inference",
-    "sglang"
+    "tensorrt",
+    "throughput",
+    "token"
   ],
   "citation": {
-    "title": "Orca: A Distributed Serving System for Transformer-Based Generative Models",
-    "authors": [
-      "Yu, G.-I.",
-      "Jeong, J. S.",
-      "Kim, G.-W.",
-      "Kim, S.",
-      "Chun, B.-G."
-    ],
-    "year": 2022,
-    "venue": "16th USENIX Symposium on Operating Systems Design and Implementation (OSDI)",
-    "url": "https://www.usenix.org/conference/osdi22/presentation/yu"
+    "title": "The Advanced AI Glossary",
+    "authors": [],
+    "year": "",
+    "venue": "GitHub",
+    "url": "https://github.com/h9-tec/AI-Glossary-Handbook"
   },
-  "slug": "continuous-batching",
-  "addedAt": "2026-10-03"
+  "addedAt": "2026-10-07",
+  "slug": "continuous-batching"
 }
