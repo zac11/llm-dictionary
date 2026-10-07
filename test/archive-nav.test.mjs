@@ -7,6 +7,7 @@ test('exploreActions exposes the approved order without Search or Ask', () => {
   assert.deepEqual(actions.map(({ id, label, enabled }) => ({ id, label, enabled })), [
     { id: 'map', label: 'Knowledge Map', enabled: false },
     { id: 'random', label: 'Random Term', enabled: false },
+    { id: 'daily', label: 'Term of the Day', enabled: false },
     { id: 'recent', label: 'Recently Added', enabled: false },
     { id: 'browse', label: 'Browse A–Z', enabled: false },
     { id: 'contribute', label: 'Contribute', enabled: false },

@@ -16,18 +16,31 @@ const volumeCard = new VolumeCard(document.getElementById('volume-card'));
 const volumesByFolder = new Map(volumes.map((volume) => [volume.folder, volume]));
 const motionPreference = new MotionPreference(window.matchMedia('(prefers-reduced-motion: reduce)'));
 let ui;
+// One action list drives both menus. The callbacks reference `archiveHome`
+// lazily (inside closures), so building this before ArchiveHome exists is fine.
+const archiveActions = exploreActions({
+  openMap: () => (state.view === 'map' ? closeMap() : openMap()),
+  openRandomTerm: () => openRandomTerm(),
+  openTermOfDay: () => archiveHome.openTermOfDay(),
+  openRecentlyAdded: () => archiveHome.openRecentlyAdded(),
+  focusVolumeRail: () => focusVolumeRail(),
+  openContribute: () => openContribute(),
+  openFeedback: () => openFeedback(),
+  openHelp: () => ui.openHelp(),
+});
 const archiveNav = new ArchiveNav({
   toggle: document.getElementById('explore-toggle'),
   menu: document.getElementById('explore-menu'),
-  actions: exploreActions({
-    openMap: () => (state.view === 'map' ? closeMap() : openMap()),
-    openRandomTerm: () => openRandomTerm(),
-    showRecentlyAdded: () => archiveHome.showRecentlyAdded(),
-    focusVolumeRail: () => focusVolumeRail(),
-    openContribute: () => openContribute(),
-    openFeedback: () => openFeedback(),
-    openHelp: () => ui.openHelp(),
-  }),
+  actions: archiveActions,
+  // The collapsed card's ⓘ opens a deliberately minimal overlay: the two
+  // "surprise me" picks. Everything else lives in the top-bar Explore menu.
+  extraMenus: [
+    {
+      toggle: document.querySelector('.archive-info-tab'),
+      menu: document.getElementById('archive-options'),
+      actions: archiveActions.filter(({ id }) => id === 'random' || id === 'daily'),
+    },
+  ],
 });
 
 // Probe WebGL once, then either construct the live library or fall back to a
@@ -93,15 +106,29 @@ const archiveHome = new ArchiveHome(document.getElementById('archive-home'), {
   onRandomTerm: () => openRandomTerm(),
   onOpenMap: () => openMap(),
   onOpenTerm: (slug) => openTermRitual(slug),
-  reducedMotion: motionPreference.reduced,
 });
 
 // One observer fans live reduced-motion changes out to every consumer.
 motionPreference.subscribe((reduced) => {
   realLibrary?.setReducedMotion(reduced);
   ui?.setReducedMotion(reduced);
-  archiveHome.setReducedMotion(reduced);
 });
+
+// The top bar wraps differently at every width (the Explore button drops to its
+// own row on the narrowest phones), so keep the --topbar-h layout constant in
+// sync with the real height rather than trusting a hard-coded guess.
+const topbarEl = document.querySelector('.topbar');
+if (topbarEl) {
+  const syncTopbarHeight = () => {
+    const { height } = topbarEl.getBoundingClientRect();
+    if (height > 0) {
+      document.documentElement.style.setProperty('--topbar-h', `${Math.round(height)}px`);
+    }
+  };
+  syncTopbarHeight();
+  new ResizeObserver(syncTopbarHeight).observe(topbarEl);
+  window.addEventListener('resize', syncTopbarHeight);
+}
 
 // Any direct use of search is a meaningful first interaction.
 document.getElementById('search')?.addEventListener('input', () => archiveHome.collapseWelcome());
@@ -112,9 +139,23 @@ function openRandomTerm() {
   if (term) openTermRitual(term.slug);
 }
 
-/** Move keyboard focus to the A–B volume rail. */
+let railAttentionTimer = null;
+
+/** Move keyboard focus to the A–B volume rail and make sure it is on screen. */
 function focusVolumeRail() {
-  document.querySelector('#letter-nav button:not(:disabled)')?.focus();
+  const first = document.querySelector('#letter-nav button:not(:disabled)');
+  if (!first) return;
+  first.focus();
+  first.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  // A focus ring is easy to miss when the click came from a menu, so flash the
+  // rail itself to show where the user has been sent.
+  const rail = document.getElementById('letter-nav');
+  if (!rail) return;
+  rail.classList.remove('attention');
+  void rail.offsetWidth; // restart the animation if it is already running
+  rail.classList.add('attention');
+  clearTimeout(railAttentionTimer);
+  railAttentionTimer = setTimeout(() => rail.classList.remove('attention'), 1500);
 }
 
 const viewToggle = document.getElementById('view-toggle');
@@ -380,7 +421,6 @@ async function openTermRitual(slug) {
       if (state.folder !== vol.folder) return;
     }
     ui.openEntry(slug, { from: 'ritual' });
-    archiveHome.recordTerm(slug);
   } finally {
     state.busy = false;
   }

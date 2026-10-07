@@ -379,6 +379,29 @@ body.reading .hint {
   background: rgba(255, 255, 255, 0.08);
 }
 
+/* "Browse A–Z" moves focus here, so the ring must be visible on click too. */
+.letter-nav button:focus,
+.letter-nav button:focus-visible {
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.1);
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* "Browse A–Z" flashes the rail, because a focus ring alone is easy to miss
+   when the click came from a menu. */
+.letter-nav.attention {
+  border-color: var(--gold);
+  animation: rail-attention 1.4s ease-out;
+}
+
+@keyframes rail-attention {
+  0% { box-shadow: 0 0 0 0 rgba(230, 180, 92, 0); }
+  20% { box-shadow: 0 0 0 5px rgba(230, 180, 92, 0.45); }
+  70% { box-shadow: 0 0 0 5px rgba(230, 180, 92, 0.3); }
+  100% { box-shadow: 0 0 0 0 rgba(230, 180, 92, 0); }
+}
+
 .letter-nav button:disabled {
   opacity: 0.35;
   cursor: default;
@@ -801,8 +824,14 @@ body.reading .hint {
   flex: 0 0 auto;
   margin: 14px -26px 0;
   padding: 12px 22px 13px;
-  background: #f1e6cb;
-  border-top: 1px solid rgba(120, 95, 60, 0.22);
+  /* No hard edge: the strip feathers into the paper's own bottom tone so it
+     reads as part of the sheet rather than a toolbar stuck on the page. */
+  background: linear-gradient(
+    180deg,
+    rgba(230, 215, 184, 0) 0%,
+    rgba(230, 215, 184, 0.5) 45%,
+    rgba(230, 215, 184, 0.88) 100%
+  );
 }
 
 .idx-pager button {
@@ -943,46 +972,82 @@ body.reading .hint {
   text-overflow: ellipsis;
 }
 
-.pg-actions {
+/* ---------- Spread footer actions ---------- */
+/* Entry actions (Ask/Map) and the story's flip-back live in the shared footer. */
+.spread-actions {
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
   gap: 8px;
-  margin-top: 20px;
 }
 
-.pg-action {
+.spread-actions:empty { display: none; }
+
+.spread-action {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  min-height: 40px;
-  padding: 9px 14px;
-  border-radius: 12px;
-  border: 1px solid rgba(120, 95, 60, 0.45);
-  background: rgba(120, 95, 60, 0.08);
-  color: var(--paper-gold);
-  font: 600 12px var(--sans);
+  gap: 6px;
+  min-height: 36px;
+  padding: 8px 15px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(26, 19, 12, 0.75);
+  backdrop-filter: blur(6px);
+  color: var(--ink-dim);
+  font: 600 12.5px var(--sans);
+  white-space: nowrap;
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s, transform 0.12s;
+  transition: all 0.18s;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.pg-action:hover,
-.pg-action:focus-visible {
+.spread-action .icon { width: 14px; height: 14px; }
+
+.spread-action:hover,
+.spread-action:focus-visible {
+  color: var(--ink);
+  border-color: var(--gold);
+  transform: translateY(-1px);
   outline: none;
 }
 
-.pg-action:active { transform: scale(0.97); }
-.pg-action:disabled { opacity: 0.4; cursor: default; }
-.pg-action:disabled:hover,
-.pg-action:disabled:focus-visible { border-color: rgba(120, 95, 60, 0.45); background: rgba(120, 95, 60, 0.08); }
-.pg-action .icon { width: 15px; height: 15px; }
+.spread-action:active { transform: scale(0.97); }
+.spread-action:disabled { opacity: 0.35; cursor: default; }
+.spread-action:disabled:hover {
+  color: var(--ink-dim);
+  border-color: var(--line);
+  transform: none;
+}
 
 /* violet / cyan identify connected-intelligence actions */
-.pg-action.pg-ask { color: #5b46b5; border-color: rgba(91, 70, 181, 0.45); background: rgba(91, 70, 181, 0.08); }
-.pg-action.pg-ask:hover,
-.pg-action.pg-ask:focus-visible { background: rgba(91, 70, 181, 0.15); border-color: rgba(91, 70, 181, 0.7); }
-.pg-action.pg-map { color: #1f6f8f; border-color: rgba(31, 111, 143, 0.45); background: rgba(31, 111, 143, 0.08); }
-.pg-action.pg-map:hover,
-.pg-action.pg-map:focus-visible { background: rgba(31, 111, 143, 0.15); border-color: rgba(31, 111, 143, 0.7); }
+.spread-action.pg-ask {
+  color: var(--accent-2);
+  border-color: rgba(110, 168, 254, 0.4);
+  background: rgba(110, 168, 254, 0.1);
+}
+.spread-action.pg-ask:hover,
+.spread-action.pg-ask:focus-visible {
+  border-color: var(--accent-2);
+  background: rgba(110, 168, 254, 0.22);
+}
+.spread-action.pg-map {
+  color: #8fd8f2;
+  border-color: rgba(31, 111, 143, 0.55);
+  background: rgba(31, 111, 143, 0.18);
+}
+.spread-action.pg-map:hover,
+.spread-action.pg-map:focus-visible {
+  border-color: #8fd8f2;
+  background: rgba(31, 111, 143, 0.3);
+}
+.spread-action.pg-flip-back {
+  color: var(--gold-2);
+  border-color: rgba(230, 180, 92, 0.45);
+}
+.spread-action.pg-flip-back:hover,
+.spread-action.pg-flip-back:focus-visible {
+  border-color: var(--gold);
+  background: rgba(230, 180, 92, 0.14);
+}
 
 .pg-kicker {
   margin: 0 0 6px;
@@ -1093,12 +1158,13 @@ body.reading .hint {
   vertical-align: -0.15em;
 }
 
-/* in-page page-flip buttons (entry ↔ story) */
-.pg-flip-story,
-.pg-flip-back {
+/* In-page "Flip to the story" cue. Its counterpart, "Flip back to the entry",
+   lives in the spread footer alongside the other entry actions. */
+.pg-flip-story {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  margin: 20px 0 0;
   padding: 8px 14px;
   border-radius: 999px;
   border: 1px solid rgba(120, 95, 60, 0.45);
@@ -1113,33 +1179,14 @@ body.reading .hint {
 }
 
 .pg-flip-story:hover,
-.pg-flip-story:focus-visible,
-.pg-flip-back:hover,
-.pg-flip-back:focus-visible {
+.pg-flip-story:focus-visible {
   background: rgba(120, 95, 60, 0.17);
   border-color: rgba(120, 95, 60, 0.72);
   outline: none;
 }
 
-.pg-flip-story:active,
-.pg-flip-back:active {
-  transform: scale(0.96);
-}
-
-.pg-flip-story .icon,
-.pg-flip-back .icon {
-  width: 14px;
-  height: 14px;
-}
-
-.pg-flip-story {
-  margin: 20px 0 0;
-}
-
-.pg-flip-back {
-  margin-top: 28px;
-  align-self: flex-start;
-}
+.pg-flip-story:active { transform: scale(0.96); }
+.pg-flip-story .icon { width: 14px; height: 14px; }
 
 /* ---------- Story pages ---------- */
 .story-left {
@@ -1822,6 +1869,11 @@ body.map-mode #scene-container { visibility: hidden; }
 body.map-mode .hint,
 body.map-mode .letter-nav { opacity: 0; pointer-events: none; }
 body.map-mode .results { display: none; }
+/* The map owns the viewport: the archive card would otherwise float on top of
+   the graph. */
+body.map-mode .archive-home,
+body.map-mode .archive-info-tab,
+body.map-mode .archive-options { display: none; }
 .ask-toggle {
   display: flex;
   align-items: center;
@@ -1890,24 +1942,84 @@ body.map-mode .results { display: none; }
 .explore-menu-item:focus-visible { background: rgba(230, 180, 92, 0.11); color: var(--ink); outline: none; }
 .explore-menu-item:disabled { opacity: 0.38; cursor: default; }
 
-/* ---------- Archive welcome panel ---------- */
+/* ---------- Archive welcome modal ---------- */
+/* A centred dialog: the visitor reads the introduction, closes it, then browses
+   the library. The wrapper only positions and must never capture pointer events
+   itself, or the invisible rectangle it spans would swallow clicks on the shelf
+   books drawn beneath it (A–B, C–D, O–P, Q–R). */
 .archive-home {
   position: fixed;
-  left: 22px;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 18;
-  width: min(340px, calc(100vw - 44px));
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  pointer-events: none;
+}
+
+.archive-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 6, 4, 0.62);
+  backdrop-filter: blur(3px);
+  pointer-events: auto;
+}
+
+.archive-card {
+  position: relative;
+  pointer-events: auto;
+  width: min(430px, 100%);
+  max-height: min(78vh, 700px);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: linear-gradient(160deg, rgba(34, 23, 13, 0.96), rgba(22, 15, 9, 0.94));
+  box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(12px);
+  overflow: auto;
+  animation: archive-card-in 0.28s var(--ease);
+}
+
+@keyframes archive-card-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.985); }
+  to { opacity: 1; transform: none; }
+}
+
+.archive-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: rgba(20, 14, 9, 0.82);
+  color: var(--ink-dim);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.archive-close .icon { width: 16px; height: 16px; }
+
+.archive-close:hover,
+.archive-close:focus-visible {
+  color: var(--ink);
+  border-color: var(--gold);
+  background: rgba(40, 28, 16, 0.92);
+  outline: none;
 }
 
 .archive-welcome {
-  padding: 24px 22px;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: linear-gradient(160deg, rgba(34, 23, 13, 0.92), rgba(22, 15, 9, 0.86));
-  box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(12px);
-  transition: opacity 0.3s ease, transform 0.3s var(--ease), visibility 0s linear 0.3s;
+  padding: 26px 22px 24px;
+}
+
+/* Keep the first lines clear of the close button in the corner. */
+.archive-kicker,
+.archive-headline {
+  padding-right: 40px;
 }
 
 .archive-kicker {
@@ -1978,151 +2090,65 @@ body.map-mode .results { display: none; }
 .archive-btn:hover,
 .archive-btn:focus-visible { border-color: var(--gold); background: rgba(230, 180, 92, 0.12); outline: none; }
 
-.archive-home.collapsed .archive-welcome {
-  opacity: 0;
-  transform: translateX(-24px);
-  visibility: hidden;
-  pointer-events: none;
+/* Collapsed: the modal is gone entirely, leaving only the ⓘ button, so the
+   library underneath is fully interactive. */
+.archive-home.collapsed .archive-backdrop,
+.archive-home.collapsed .archive-card {
+  display: none;
 }
 
-.archive-about-tab {
-  padding: 10px 16px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: rgba(20, 14, 9, 0.82);
-  color: var(--ink-dim);
-  font: 600 12px var(--sans);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.archive-about-tab:hover,
-.archive-about-tab:focus-visible { color: var(--ink); border-color: var(--gold); outline: none; }
-
-/* ---------- Discovery carousel ---------- */
-.discovery-carousel {
+/* Collapsed: the card is gone and a single ⓘ button sits in the page's
+   bottom-left corner, opening the archive options overlay above itself. */
+.archive-info-tab {
   position: fixed;
   left: 22px;
-  bottom: 72px;
-  z-index: 17;
-  width: min(340px, calc(100vw - 44px));
-}
-
-.discovery-carousel[hidden] { display: none; }
-
-.carousel-stage {
-  position: relative;
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  background: linear-gradient(160deg, rgba(34, 23, 13, 0.92), rgba(22, 15, 9, 0.86));
-  box-shadow: 0 24px 60px -18px rgba(0, 0, 0, 0.65);
-  backdrop-filter: blur(12px);
-  overflow: hidden;
-}
-
-.carousel-slide {
-  padding: 18px 18px 14px;
-}
-
-.carousel-slide[hidden] { display: none; }
-
-.carousel-kicker {
-  margin: 0 0 7px;
-  font: 600 10px var(--sans);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--gold);
-}
-
-.carousel-term {
-  margin: 0 0 4px;
-  font-family: var(--serif);
-  font-size: 21px;
-  font-weight: 600;
-  line-height: 1.15;
-}
-
-.carousel-meta {
-  margin: 0 0 8px;
-  font: 600 11px var(--sans);
-  color: var(--ink-dim);
-}
-
-.carousel-def {
-  margin: 0 0 12px;
-  font-size: 13px;
-  line-height: 1.5;
-  color: var(--ink-dim);
-}
-
-.carousel-open {
-  padding: 9px 13px;
-  border: 0;
-  border-radius: 10px;
-  background: linear-gradient(135deg, var(--gold), var(--gold-2));
-  color: #241a08;
-  font: 700 12px var(--sans);
-  cursor: pointer;
-}
-
-.carousel-open:hover,
-.carousel-open:focus-visible { filter: brightness(1.06); outline: 2px solid var(--gold); outline-offset: 2px; }
-
-.carousel-controls {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 9px 10px;
-}
-
-.carousel-arrow {
-  width: 30px;
-  height: 30px;
-  border: 1px solid var(--line);
-  border-radius: 9px;
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--ink-dim);
-  font-size: 18px;
-  line-height: 1;
-  cursor: pointer;
-}
-
-.carousel-arrow:hover,
-.carousel-arrow:focus-visible { color: var(--ink); border-color: var(--gold); outline: none; }
-
-.carousel-dots {
-  display: flex;
-  flex: 1 1 auto;
-  justify-content: center;
-  gap: 6px;
-}
-
-.carousel-dot {
-  width: 8px;
-  height: 8px;
+  bottom: 18px;
+  z-index: 25;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
   padding: 0;
-  border: 0;
+  border: 1px solid var(--line);
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(20, 14, 9, 0.82);
+  color: var(--ink-dim);
   cursor: pointer;
+  backdrop-filter: blur(10px);
   transition: all 0.2s;
 }
 
-.carousel-dot.active { background: var(--gold); transform: scale(1.25); }
-.carousel-dot:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.archive-info-tab[hidden] { display: none; }
 
-.carousel-pause {
-  padding: 6px 10px;
-  border: 1px solid var(--line);
-  border-radius: 9px;
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--ink-dim);
-  font: 600 11px var(--sans);
-  cursor: pointer;
+.archive-info-tab .icon { width: 18px; height: 18px; }
+
+.archive-info-tab:hover,
+.archive-info-tab:focus-visible,
+.archive-info-tab[aria-expanded='true'] {
+  color: var(--ink);
+  border-color: var(--gold);
+  background: rgba(40, 28, 16, 0.92);
+  outline: none;
 }
 
-.carousel-pause:hover,
-.carousel-pause:focus-visible { color: var(--ink); border-color: var(--gold); outline: none; }
+.archive-options {
+  position: fixed;
+  left: 22px;
+  bottom: 68px;
+  z-index: 26;
+  /* explicit width: a body-level shrink-to-fit box resolves too wide */
+  width: 236px;
+  max-width: calc(100vw - 32px);
+  padding: 7px;
+  border: 1px solid rgba(230, 180, 92, 0.2);
+  border-radius: 14px;
+  background: rgba(24, 17, 11, 0.96);
+  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(14px);
+}
+
+.archive-options[hidden] { display: none; }
+
 .ask-view {
   position: fixed;
   inset: 0;
@@ -2702,14 +2728,6 @@ body.map-mode .results { display: none; }
   .spread-book.mode-entry .page-left {
     padding-top: 54px;
   }
-  /* Mobile reader: actions spread full width for a practical touch target. */
-  .pg-actions {
-    flex-direction: column;
-  }
-  .pg-action {
-    justify-content: center;
-    min-height: 44px;
-  }
   .page-right {
     border-radius: 3px 3px 12px 12px;
     box-shadow: inset 0 22px 34px -22px rgba(90, 64, 30, 0.55);
@@ -2777,12 +2795,16 @@ body.map-mode .results { display: none; }
     font-size: 11px;
   }
 
-  /* Mobile immersive header + native discovery sheet */
+  /* The introduction is a modal now, so there is no in-flow discovery sheet to
+     make room for: the shelf becomes a compact header and the volume rail is
+     pinned along the bottom, where a thumb can reach it. */
   html,
   body {
-    overflow-y: auto;
     overflow-x: hidden;
   }
+  /* A full-height portrait viewport would need a ~110° field of view to fit the
+     shelf, which the camera caps at 68° — so the header keeps a landscape-ish
+     36vh band, where the shelf frames correctly. */
   #scene-container {
     position: fixed;
     top: 0;
@@ -2791,6 +2813,17 @@ body.map-mode .results { display: none; }
     bottom: auto;
     height: 36vh;
   }
+  /* Feather the shelf into the page background instead of ending on a hard line. */
+  #scene-container::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 22%;
+    background: linear-gradient(180deg, rgba(18, 12, 8, 0), var(--bg));
+    pointer-events: none;
+  }
   #scene-container canvas {
     touch-action: none; /* orbit gestures stay inside the header */
   }
@@ -2798,34 +2831,32 @@ body.map-mode .results { display: none; }
     display: none;
   }
 
-  /* The welcome panel becomes the first block of the in-flow discovery sheet. */
+  /* The welcome modal stays centred on small screens, sized to the viewport. */
   .archive-home {
-    position: relative;
-    left: auto;
-    top: auto;
-    transform: none;
-    width: auto;
-    margin: calc(36vh + var(--topbar-h)) 16px 0;
+    padding: 16px;
   }
-  .archive-home.collapsed .archive-welcome {
-    display: none; /* no collapsed placeholder in the sheet */
+  .archive-card {
+    width: min(430px, 100%);
+    max-height: min(84vh, 700px);
   }
-  .archive-home.collapsed .archive-about-tab {
-    position: fixed;
+
+  /* Lift the ⓘ and its menu clear of the bottom rail, which spans the full
+     width here instead of sitting centred as it does on desktop. */
+  .archive-info-tab {
     left: 16px;
-    bottom: 16px;
-    z-index: 25;
+    bottom: 74px;
+  }
+  .archive-options {
+    left: 16px;
+    bottom: 124px;
   }
 
   .letter-nav {
-    position: relative;
-    left: auto;
-    bottom: auto;
+    left: 12px;
+    right: 12px;
+    bottom: 14px;
     transform: none;
-    width: fit-content;
-    margin: 14px auto 0;
-    max-width: calc(100vw - 24px);
-    flex-wrap: nowrap;
+    max-width: none;
     justify-content: flex-start;
     scrollbar-width: none;
   }
@@ -2835,13 +2866,6 @@ body.map-mode .results { display: none; }
   .letter-nav button {
     min-width: 38px;
     height: 32px;
-  }
-  .discovery-carousel {
-    position: relative;
-    left: auto;
-    bottom: auto;
-    width: auto;
-    margin: 14px 16px 24px;
   }
 }
 
@@ -2933,6 +2957,9 @@ body.map-mode .results { display: none; }
     display: none !important;
   }
   .hint-dot {
+    animation: none;
+  }
+  .letter-nav.attention {
     animation: none;
   }
 }

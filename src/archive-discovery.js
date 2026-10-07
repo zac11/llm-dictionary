@@ -1,5 +1,5 @@
-// Pure discovery models for the archive home: daily term, recently added,
-// recent history, random term, and welcome-state persistence.
+// Pure discovery models for the archive home: term of the day, recently added,
+// random term, and welcome-state persistence.
 // No DOM access at module scope; storage is injected so these stay testable.
 
 import { isIsoDate } from './term-schema.js';
@@ -25,67 +25,6 @@ export function recentlyAdded(terms, { limit = 8 } = {}) {
     .slice(0, limit);
 }
 
-/**
- * Versioned recent-history store. Falls back to an in-memory list whenever the
- * injected storage throws (denied) or is absent; malformed JSON reads as empty.
- */
-export function createRecentHistory({
-  storage = null,
-  limit = 8,
-  key = 'theaidictionary:recent:v1',
-} = {}) {
-  let memory = [];
-  let usable = storage != null;
-
-  const load = () => {
-    if (!usable) return memory;
-    try {
-      const raw = storage.getItem(key);
-      if (raw == null) return memory;
-      const parsed = JSON.parse(raw);
-      return Array.isArray(parsed && parsed.recentTerms) ? parsed.recentTerms : [];
-    } catch {
-      return memory;
-    }
-  };
-
-  const save = (slugs) => {
-    memory = [...slugs];
-    if (!usable) return;
-    try {
-      storage.setItem(key, JSON.stringify({ version: 1, recentTerms: slugs }));
-    } catch {
-      usable = false;
-    }
-  };
-
-  return {
-    /** Return stored slugs that still exist, oldest dropped to the limit. */
-    read(validSlugs = []) {
-      const valid = new Set(validSlugs);
-      const stored = load();
-      const cleaned = [...new Set(stored.filter((slug) => valid.has(slug)))];
-      if (cleaned.length !== stored.length) save(cleaned);
-      return cleaned.slice(0, limit);
-    },
-    /** Move a slug to the front, deduplicate, cap at the limit, persist. */
-    record(slug) {
-      const next = [slug, ...load().filter((s) => s !== slug)].slice(0, limit);
-      save(next);
-      return next;
-    },
-    clear() {
-      memory = [];
-      if (!usable) return;
-      try {
-        storage.removeItem(key);
-      } catch {
-        usable = false;
-      }
-    },
-  };
-}
-
 /** Uniform random term; empty input and a busy shell both yield nothing. */
 export function randomTerm(terms, random = Math.random) {
   if (!terms.length) return null;
@@ -100,26 +39,89 @@ export function discoveryTarget({ busy = false, terms = [], random = Math.random
 }
 
 export const WELCOME_KEY = 'theaidictionary:welcome:v1';
+export const WELCOME_SESSION_KEY = 'theaidictionary:welcome:v1:session';
 
-/** Read the persisted welcome preference; defaults open when absent or unreadable. */
+const FRESH_WELCOME = { collapsed: false, seen: false };
+
+/**
+ * Read the persisted welcome preference. The card is a first-visit greeting, so
+ * `seen` is what keeps it away on later loads; `collapsed` records an explicit
+ * dismissal. Absent or unreadable state reads as a brand-new visitor.
+ */
 export function readWelcomeState(storage) {
-  if (!storage) return { collapsed: false };
+  if (!storage) return { ...FRESH_WELCOME };
   try {
     const raw = storage.getItem(WELCOME_KEY);
-    if (raw == null) return { collapsed: false };
+    if (raw == null) return { ...FRESH_WELCOME };
     const parsed = JSON.parse(raw);
-    return { collapsed: parsed && parsed.version === 1 ? Boolean(parsed.collapsed) : false };
+    if (!parsed || parsed.version !== 1) return { ...FRESH_WELCOME };
+    return { collapsed: Boolean(parsed.collapsed), seen: Boolean(parsed.seen) };
   } catch {
-    return { collapsed: false };
+    return { ...FRESH_WELCOME };
   }
 }
 
-/** Persist the welcome preference; storage failures are non-fatal. */
-export function writeWelcomeState(storage, { collapsed }) {
+/** Persist the welcome preference, merging into whatever is already stored. */
+export function writeWelcomeState(storage, patch = {}) {
   if (!storage) return;
   try {
-    storage.setItem(WELCOME_KEY, JSON.stringify({ version: 1, collapsed: Boolean(collapsed) }));
+    const current = readWelcomeState(storage);
+    storage.setItem(
+      WELCOME_KEY,
+      JSON.stringify({
+        version: 1,
+        collapsed: patch.collapsed ?? current.collapsed,
+        seen: patch.seen ?? current.seen,
+      })
+    );
   } catch {
     // The welcome panel still operates on its in-memory state for this session.
   }
+}
+
+/**
+ * Session-scoped "already greeted" marker. Browsers that refuse durable storage
+ * — private windows, managed profiles, storage partitioned away — still allow
+ * sessionStorage, so this keeps the greeting to once per session instead of it
+ * reappearing on every page load.
+ */
+export function readWelcomeSession(session) {
+  if (!session) return false;
+  try {
+    return session.getItem(WELCOME_SESSION_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+
+/** Remember, for the rest of this browser session, that the greeting was shown. */
+export function writeWelcomeSession(session) {
+  if (!session) return;
+  try {
+    session.setItem(WELCOME_SESSION_KEY, '1');
+  } catch {
+    // Nothing more we can do; the in-memory state still holds for this page.
+  }
+}
+
+/**
+ * Decide whether the first-visit greeting should open. Durable storage makes it
+ * a once-ever courtesy; the session marker is the backstop for when durable
+ * storage is unavailable, so a fresh profile is still greeted only once.
+ *
+ * When *neither* store can be written we fail closed: a greeting that cannot be
+ * remembered would reappear on every single page load, which is worse than not
+ * greeting at all (and is exactly what private-mode browsers used to produce).
+ */
+export function shouldShowWelcome({ storage = null, session = null } = {}) {
+  if (!storage && !session) return false;
+  const { collapsed, seen } = readWelcomeState(storage);
+  if (collapsed || seen) return false;
+  return !readWelcomeSession(session);
+}
+
+/** Record that the greeting has been shown, durably and for this session. */
+export function markWelcomeShown({ storage = null, session = null } = {}) {
+  writeWelcomeState(storage, { seen: true });
+  writeWelcomeSession(session);
 }

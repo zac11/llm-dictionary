@@ -45,6 +45,7 @@ export class UI {
     this._pageRight = $('page-right');
     this._flipLeaf = $('page-flip');
     this._counter = $('spread-counter');
+    this._actions = $('spread-actions');
     this._helpModal = $('help-modal');
     this._shareMenu = $('share-menu');
     this._toastEl = $('toast');
@@ -271,7 +272,26 @@ export class UI {
     }
   }
 
+  /**
+   * Fill the spread footer's action slot. The footer is shared by every mode,
+   * so each render declares the actions it needs (or none).
+   */
+  _renderFootActions(actions = []) {
+    if (!this._actions) return;
+    this._actions.replaceChildren();
+    for (const { className, icon: iconName, label, disabled, onClick } of actions) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = `spread-action ${className}`.trim();
+      button.disabled = Boolean(disabled);
+      button.innerHTML = `${icon(iconName)}<span>${escapeHtml(label)}</span>`;
+      button.addEventListener('click', onClick);
+      this._actions.appendChild(button);
+    }
+  }
+
   _renderIndexPages(vol, terms) {
+    this._renderFootActions([]);
     const [a, b] = vol.letters;
     const idx = ROMAN[Math.max(0, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.indexOf(a) >> 1)];
     this._pageLeft.innerHTML = `
@@ -477,6 +497,23 @@ export class UI {
     const actions = entryActions({ hasGraph: this._hasGraph, hasAsk: true });
     const enabled = (id) => actions.find((action) => action.id === id).enabled;
 
+    this._renderFootActions([
+      {
+        className: 'pg-ask',
+        icon: 'message-circle',
+        label: 'Ask about this',
+        disabled: !enabled('ask'),
+        onClick: () => this.onAskTerm?.(term.slug),
+      },
+      {
+        className: 'pg-map',
+        icon: 'network',
+        label: 'View in Map',
+        disabled: !enabled('map'),
+        onClick: () => this.onMapTerm?.(term.slug),
+      },
+    ]);
+
     this._pageLeft.innerHTML = `
       <div class="pg-entry">
         <div class="pg-head">
@@ -491,21 +528,11 @@ export class UI {
         ${term.aka.length ? `<p class="pg-aka">also known as: ${escapeHtml(term.aka.join(', '))}</p>` : ''}
         <p class="pg-rule"></p>
         <p class="pg-def">${escapeHtml(term.definition)}</p>
-        <div class="pg-actions">
-          <button class="pg-action pg-ask" type="button" data-action="ask" ${enabled('ask') ? '' : 'disabled'}>
-            ${icon('message-circle')}<span>Ask about this</span>
-          </button>
-          <button class="pg-action pg-map" type="button" data-action="map" ${enabled('map') ? '' : 'disabled'}>
-            ${icon('network')}<span>View in Map</span>
-          </button>
-        </div>
       </div>`;
     this._pageLeft.querySelector('.pg-share')?.addEventListener('click', (e) => {
       e.stopPropagation();
       this.toggleShareMenu(e.currentTarget);
     });
-    this._pageLeft.querySelector('.pg-ask')?.addEventListener('click', () => this.onAskTerm?.(term.slug));
-    this._pageLeft.querySelector('.pg-map')?.addEventListener('click', () => this.onMapTerm?.(term.slug));
 
     this._pageRight.innerHTML = `
       <div class="pg-entry">
@@ -535,7 +562,7 @@ export class UI {
   /** Graph data became available: enable the Map action on the open entry. */
   _setGraphReady() {
     this._hasGraph = true;
-    const map = this._pageLeft?.querySelector('.pg-map');
+    const map = this._actions?.querySelector('.pg-map');
     if (map) map.disabled = false;
   }
 
@@ -605,6 +632,15 @@ export class UI {
     const moral = rest.length ? rest.pop() : '';
     const body = rest;
 
+    this._renderFootActions([
+      {
+        className: 'pg-flip-back',
+        icon: 'chevron-left',
+        label: 'Flip back to the entry',
+        onClick: () => this._flipToPage(0),
+      },
+    ]);
+
     this._pageLeft.innerHTML = `
       <div class="story-left">
         <p class="idx-kicker">TheAIDictionary · The Story</p>
@@ -613,7 +649,6 @@ export class UI {
         <p class="story-subject">${escapeHtml(term.term)}</p>
         ${term.aka.length ? `<p class="pg-aka">also known as: ${escapeHtml(term.aka.join(', '))}</p>` : ''}
         <p class="story-open">${highlightTerm(opening, term)}</p>
-        <button class="pg-flip-back" type="button">${icon('chevron-left')}<span>Flip back to the entry</span></button>
       </div>`;
 
     const bodyHtml = body.map((s) => `<p class="story-line">${highlightTerm(s, term)}</p>`).join('');
@@ -628,7 +663,6 @@ export class UI {
         ${this._renderSuggested(term)}
       </div>`;
 
-    this._pageLeft.querySelector('.pg-flip-back')?.addEventListener('click', () => this._flipToPage(0));
     this._pageRight.querySelectorAll('.suggested-row').forEach((btn) =>
       btn.addEventListener('click', () => {
         const slug = btn.dataset.slug;
