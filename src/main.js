@@ -32,15 +32,6 @@ const archiveNav = new ArchiveNav({
   toggle: document.getElementById('explore-toggle'),
   menu: document.getElementById('explore-menu'),
   actions: archiveActions,
-  // The collapsed card's ⓘ opens a deliberately minimal overlay: the two
-  // "surprise me" picks. Everything else lives in the top-bar Explore menu.
-  extraMenus: [
-    {
-      toggle: document.querySelector('.archive-info-tab'),
-      menu: document.getElementById('archive-options'),
-      actions: archiveActions.filter(({ id }) => id === 'random' || id === 'daily'),
-    },
-  ],
 });
 
 // Probe WebGL once, then either construct the live library or fall back to a
@@ -97,6 +88,7 @@ ui = new UI({
     library.returnBook();
   },
   onAskTerm: (slug) => openAskForTerm(slug),
+  onAskQuery: (query) => openAsk({ query }),
   onMapTerm: (slug) => openMapForTerm(slug),
 });
 
@@ -126,8 +118,17 @@ if (topbarEl) {
     }
   };
   syncTopbarHeight();
-  new ResizeObserver(syncTopbarHeight).observe(topbarEl);
+  new ResizeObserver(() => {
+    syncTopbarHeight();
+    applyInteractiveRegion();
+  }).observe(topbarEl);
   window.addEventListener('resize', syncTopbarHeight);
+}
+
+// Touch screens get gesture wording in the shelf hint.
+const hintEl = document.getElementById('hint');
+if (hintEl && window.matchMedia('(pointer: coarse)').matches) {
+  hintEl.lastChild.textContent = ' Tap a book to pull it off the shelf · Pinch to zoom';
 }
 
 // Any direct use of search is a meaningful first interaction.
@@ -176,7 +177,10 @@ function setMapChrome(active) {
   document.body.classList.toggle('map-mode', active);
   viewToggle.setAttribute('aria-pressed', String(active));
   viewToggle.title = active ? 'Return to 3D library' : 'Open knowledge map';
-  viewToggle.textContent = active ? 'Return to Library' : 'Knowledge Map';
+  const label = viewToggle.querySelector('.explore-menu-label') || viewToggle;
+  label.textContent = active ? 'Return to Library' : 'Knowledge Map';
+  const desc = viewToggle.querySelector('.explore-menu-desc');
+  if (desc) desc.textContent = active ? 'Back to the 3D shelves' : 'See how every term connects';
 }
 
 async function openMap(slug = null, { updateHistory = true } = {}) {
@@ -219,7 +223,8 @@ async function openMap(slug = null, { updateHistory = true } = {}) {
       const target = slug && selected ? `/?map=${encodeURIComponent(slug)}` : '/?view=map';
       history.pushState({}, '', target);
     }
-    graphSearch?.focus();
+    // Phones: don't summon the keyboard over the map they came to look at.
+    if (!window.matchMedia('(pointer: coarse)').matches) graphSearch?.focus();
   } catch (error) {
     await closeMap({ updateHistory: false });
     showToast('Knowledge map is unavailable right now — try again.');
@@ -242,6 +247,8 @@ async function closeMap({ updateHistory = true } = {}) {
   if (updateHistory) history.pushState({}, '', '/');
 }
 
+document.getElementById('graph-back')?.addEventListener('click', () => closeMap());
+
 // Escape inside the map first clears the selection, then returns to the library.
 document.addEventListener('keydown', (event) => {
   if (event.key !== 'Escape' || state.view !== 'map' || !state.map) return;
@@ -256,8 +263,8 @@ document.addEventListener('keydown', (event) => {
 
 // ---------- Ask ----------
 const askView = document.getElementById('ask-view');
-const askToggle = document.getElementById('ask-toggle');
 let askChat = null;
+let askReturnFocus = null;
 
 async function openAsk({ query } = {}) {
   archiveHome.collapseWelcome();
@@ -271,9 +278,9 @@ async function openAsk({ query } = {}) {
       },
     });
   }
+  if (!askView.classList.contains('open')) askReturnFocus = document.activeElement;
   askView.classList.add('open');
   askView.setAttribute('aria-hidden', 'false');
-  askToggle.setAttribute('aria-pressed', 'true');
   askChat.open({ query });
 }
 
@@ -296,14 +303,10 @@ function closeAsk() {
   askView.classList.remove('open');
   askView.setAttribute('aria-hidden', 'true');
   askChat?.close();
-  askToggle.setAttribute('aria-pressed', 'false');
-  askToggle.focus();
+  if (askReturnFocus?.isConnected && askReturnFocus !== document.body) askReturnFocus.focus();
+  askReturnFocus = null;
 }
 
-askToggle.addEventListener('click', () => {
-  if (askView.classList.contains('open')) closeAsk();
-  else openAsk();
-});
 document.getElementById('ask-close')?.addEventListener('click', closeAsk);
 document.getElementById('ask-backdrop')?.addEventListener('click', closeAsk);
 

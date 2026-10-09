@@ -1,17 +1,19 @@
-// Explore menus. One action list feeds the top-bar dropdown and the compact
-// options overlay behind the archive card's ⓘ button; each menu may narrow
-// that list, so the shared actions can never drift apart.
+// Explore menu. One action list feeds the top-bar Explore panel: a grouped
+// dropdown on wide screens and a slide-in drawer on phones (CSS decides).
+import { icon } from './icons.js';
 
 const ACTIONS = [
-  ['map', 'Knowledge Map', 'openMap'],
-  ['random', 'Random Term', 'openRandomTerm'],
-  ['daily', 'Term of the Day', 'openTermOfDay'],
-  ['recent', 'Recently Added', 'openRecentlyAdded'],
-  ['browse', 'Browse A–Z', 'focusVolumeRail'],
-  ['contribute', 'Contribute', 'openContribute'],
-  ['feedback', 'Feedback', 'openFeedback'],
-  ['help', 'Help', 'openHelp'],
+  ['map', 'Knowledge Map', 'openMap', 'discover', 'network', 'See how every term connects'],
+  ['random', 'Random Term', 'openRandomTerm', 'discover', 'shuffle', 'Pull a surprise volume'],
+  ['daily', 'Term of the Day', 'openTermOfDay', 'discover', 'sun', "Today's featured entry"],
+  ['recent', 'Recently Added', 'openRecentlyAdded', 'discover', 'clock', 'The newest entry on the shelf'],
+  ['browse', 'Browse A–Z', 'focusVolumeRail', 'discover', 'library', 'Jump to a volume'],
+  ['contribute', 'Contribute', 'openContribute', 'community', 'plus-circle', 'Suggest a new term'],
+  ['feedback', 'Feedback', 'openFeedback', 'community', 'message-square', 'Report a bug or idea'],
+  ['help', 'Help', 'openHelp', 'community', 'circle-help', 'How the 3D library works'],
 ];
+
+const GROUP_LABELS = { discover: 'Discover', community: 'Get involved' };
 
 // The top-bar dropdown keeps these ids: other modules look them up by name.
 const LEGACY_IDS = {
@@ -22,11 +24,14 @@ const LEGACY_IDS = {
 };
 
 export function exploreActions(callbacks = {}) {
-  return ACTIONS.map(([id, label, callbackName]) => {
+  return ACTIONS.map(([id, label, callbackName, group, iconName, description]) => {
     const callback = callbacks[callbackName];
     return {
       id,
       label,
+      group,
+      icon: iconName,
+      description,
       enabled: typeof callback === 'function',
       invoke: () => {
         if (typeof callback === 'function') callback();
@@ -52,8 +57,7 @@ export class ArchiveNav {
    * @param {HTMLElement} options.menu matching dropdown
    * @param {Array} options.actions entries from exploreActions()
    * @param {Array<{toggle: HTMLElement, menu: HTMLElement, actions?: Array}>} [options.extraMenus]
-   *   additional triggers; each may narrow the shared action list (the compact
-   *   archive options overlay shows only a couple of entries)
+   *   additional triggers; each may narrow the shared action list
    */
   constructor({ toggle, menu, actions, extraMenus = [] }) {
     this.actions = actions;
@@ -80,14 +84,32 @@ export class ArchiveNav {
     if (!toggle || !menu) return;
     const entry = { toggle, menu, buttons: [] };
     menu.replaceChildren();
+    // Drawer header: only visible in the phone layout, where the menu is a sheet.
+    const head = document.createElement('div');
+    head.className = 'explore-menu-head';
+    head.innerHTML = `<span>Explore</span><button type="button" class="explore-menu-close" aria-label="Close menu">${icon('x')}</button>`;
+    head.querySelector('button').addEventListener('click', () => this.closeMenu(entry, { restoreFocus: true }));
+    menu.appendChild(head);
+    let group = null;
     for (const action of actions ?? this.actions) {
+      if (action.group && action.group !== group) {
+        group = action.group;
+        const heading = document.createElement('p');
+        heading.className = 'explore-menu-group';
+        heading.setAttribute('role', 'presentation');
+        heading.textContent = GROUP_LABELS[group] || group;
+        menu.appendChild(heading);
+      }
       const button = document.createElement('button');
       button.type = 'button';
       button.className = 'explore-menu-item';
       button.id = (legacyIds && LEGACY_IDS[action.id]) || `${idPrefix}-${action.id}`;
       button.dataset.action = action.id;
       button.setAttribute('role', 'menuitem');
-      button.textContent = action.label;
+      button.innerHTML = `<span class="explore-menu-icon">${icon(action.icon)}</span>
+        <span class="explore-menu-text"><span class="explore-menu-label"></span><span class="explore-menu-desc"></span></span>`;
+      button.querySelector('.explore-menu-label').textContent = action.label;
+      button.querySelector('.explore-menu-desc').textContent = action.description || '';
       button.disabled = !action.enabled;
       button.tabIndex = -1;
       if (['contribute', 'feedback'].includes(action.id)) {
@@ -127,12 +149,14 @@ export class ArchiveNav {
     this.closeAll({ restoreFocus: false });
     entry.menu.hidden = false;
     entry.toggle.setAttribute('aria-expanded', 'true');
+    document.body.classList.add('explore-open');
     entry.buttons[0]?.focus();
   }
 
   closeMenu(entry, { restoreFocus = false } = {}) {
     entry.menu.hidden = true;
     entry.toggle.setAttribute('aria-expanded', 'false');
+    if (this._menus.every(({ menu }) => menu.hidden)) document.body.classList.remove('explore-open');
     if (restoreFocus) entry.toggle.focus();
   }
 
