@@ -174,6 +174,7 @@ canvas {
 
 .searchbox-icon {
   position: absolute;
+  z-index: 1; /* above the input's backdrop-filter layer */
   left: 16px;
   top: 50%;
   transform: translateY(-50%);
@@ -1760,22 +1761,47 @@ body.reading .hint {
   cursor: grab;
 }
 #graph-canvas:active { cursor: grabbing; }
-.graph-sidebar {
+/* Floating map chrome: a way back and a finder whose suggestions only appear
+   while typing — the constellation itself is the browsing surface. */
+.graph-toolbar {
   position: absolute;
   top: calc(var(--topbar-h) + 12px);
   left: 18px;
-  bottom: 18px;
-  width: min(310px, calc(100vw - 36px));
+  z-index: 2;
   display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  border: 1px solid rgba(159, 124, 255, 0.22);
-  border-radius: 18px;
-  background: rgba(12, 10, 19, 0.84);
-  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.38);
-  backdrop-filter: blur(16px);
+  align-items: flex-start;
+  gap: 8px;
+  width: min(460px, calc(100vw - 36px));
 }
-.graph-sidebar-head { padding: 18px 18px 12px; }
+.graph-back {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 42px;
+  padding: 0 14px 0 10px;
+  border: 1px solid rgba(159, 124, 255, 0.3);
+  border-radius: 999px;
+  background: rgba(12, 10, 19, 0.84);
+  color: var(--ink);
+  font: 600 12px var(--sans);
+  cursor: pointer;
+  backdrop-filter: blur(14px);
+}
+.graph-back .icon { width: 16px; height: 16px; color: var(--accent-2); }
+.graph-back:hover,
+.graph-back:focus-visible { border-color: var(--accent); background: rgba(30, 24, 52, 0.92); outline: none; }
+.graph-find { position: relative; flex: 1; min-width: 0; }
+.graph-find-icon {
+  position: absolute;
+  z-index: 1;
+  left: 14px;
+  top: 13px;
+  width: 16px;
+  height: 16px;
+  color: var(--ink-faint);
+  pointer-events: none;
+}
 .graph-eyebrow,
 .graph-detail-kicker {
   margin: 0 0 5px;
@@ -1785,30 +1811,67 @@ body.reading .hint {
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
-.graph-sidebar h2 { margin: 0; font: 600 25px var(--serif); }
-.graph-status { margin: 7px 0 0; color: var(--ink-faint); font-size: 11px; line-height: 1.45; }
-.graph-search-label { padding: 0 18px 7px; color: var(--ink-dim); font-size: 11px; }
-.graph-search {
-  margin: 0 12px 10px;
-  padding: 10px 12px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: rgba(255,255,255,.06);
-  color: var(--ink);
-  font: 13px var(--sans);
-  outline: none;
+.graph-status {
+  position: absolute;
+  top: calc(var(--topbar-h) + 64px);
+  left: 22px;
+  z-index: 1;
+  margin: 0;
+  max-width: calc(100vw - 44px);
+  color: var(--ink-faint);
+  font-size: 11px;
+  line-height: 1.45;
+  pointer-events: none;
 }
+.graph-search-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.graph-search {
+  width: 100%;
+  height: 42px;
+  padding: 0 14px 0 38px;
+  border: 1px solid rgba(159, 124, 255, 0.3);
+  border-radius: 999px;
+  background: rgba(12, 10, 19, 0.84);
+  color: var(--ink);
+  font: 14px var(--sans);
+  outline: none;
+  backdrop-filter: blur(14px);
+  appearance: none;
+}
+.graph-search::-webkit-search-cancel-button { filter: invert(0.7); }
 .graph-search:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(159,124,255,.15); }
-.graph-term-list { flex: 1; overflow-y: auto; padding: 0 8px 10px; }
+.graph-term-list {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  max-height: min(340px, 50vh);
+  overflow-y: auto;
+  padding: 6px;
+  border: 1px solid rgba(159, 124, 255, 0.22);
+  border-radius: 16px;
+  background: rgba(12, 10, 19, 0.94);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(16px);
+}
+.graph-term-list[hidden] { display: none; }
+.graph-term-empty { margin: 0; padding: 10px; color: var(--ink-faint); font-size: 12px; }
 .graph-term-row {
   width: 100%;
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 10px;
-  padding: 9px 10px;
+  min-height: 40px;
+  padding: 10px 12px;
   border: 0;
-  border-radius: 9px;
+  border-radius: 10px;
   background: transparent;
   color: var(--ink);
   text-align: left;
@@ -1816,8 +1879,8 @@ body.reading .hint {
 }
 .graph-term-row:hover,
 .graph-term-row:focus-visible { background: rgba(159,124,255,.13); outline: none; }
-.graph-term-row span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; }
-.graph-term-row small { flex: none; max-width: 100px; overflow: hidden; color: var(--ink-faint); font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+.graph-term-row span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
+.graph-term-row small { flex: none; max-width: 120px; overflow: hidden; color: var(--ink-faint); font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
 .graph-detail {
   position: absolute;
   right: 18px;
@@ -1871,30 +1934,9 @@ body.map-mode .letter-nav { opacity: 0; pointer-events: none; }
 body.map-mode .results { display: none; }
 /* The map owns the viewport: the archive card would otherwise float on top of
    the graph. */
-body.map-mode .archive-home,
-body.map-mode .archive-info-tab,
-body.map-mode .archive-options { display: none; }
-.ask-toggle {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  min-height: 40px;
-  padding: 0 14px;
-  border: 1px solid rgba(110, 168, 254, 0.4);
-  border-radius: 999px;
-  background: rgba(110, 168, 254, 0.1);
-  color: var(--ink);
-  font: 600 12px var(--sans);
-  cursor: pointer;
-}
-.ask-toggle:hover,
-.ask-toggle:focus-visible,
-.ask-toggle[aria-pressed='true'] {
-  border-color: var(--accent-2);
-  background: rgba(110, 168, 254, 0.22);
-  outline: none;
-}
-.ask-toggle .icon { width: 17px; height: 17px; color: var(--accent-2); }
+body.map-mode .archive-home { display: none; }
+/* The map has its own finder, so the library search steps aside. */
+body.map-mode .searchbox { visibility: hidden; }
 .explore-nav { position: relative; }
 .explore-toggle {
   min-height: 40px;
@@ -1917,29 +1959,70 @@ body.map-mode .archive-options { display: none; }
   position: absolute;
   top: calc(100% + 9px);
   right: 0;
-  min-width: 210px;
-  padding: 7px;
+  width: 320px;
+  padding: 8px;
   border: 1px solid rgba(230, 180, 92, 0.2);
-  border-radius: 14px;
-  background: rgba(24, 17, 11, 0.96);
-  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.45);
+  border-radius: 16px;
+  background: rgba(24, 17, 11, 0.97);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(14px);
+  transform-origin: top right;
+}
+.explore-menu:not([hidden]) { animation: explore-pop 0.18s var(--ease); }
+@keyframes explore-pop {
+  from { opacity: 0; transform: translateY(-6px) scale(0.98); }
 }
 .explore-menu[hidden] { display: none; }
+.explore-menu-head { display: none; }
+.explore-menu-group {
+  margin: 8px 10px 4px;
+  color: var(--ink-faint);
+  font: 700 10px var(--sans);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.explore-menu-group:first-of-type { margin-top: 4px; }
+.explore-menu-group + .explore-menu-item { margin-top: 0; }
+.explore-menu-item + .explore-menu-group {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(230, 180, 92, 0.12);
+}
 .explore-menu-item {
   width: 100%;
-  min-height: 38px;
-  padding: 9px 11px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 8px 10px;
   border: 0;
-  border-radius: 9px;
+  border-radius: 11px;
   background: transparent;
   color: var(--ink-dim);
-  font: 500 12px var(--sans);
+  font: 500 13px var(--sans);
   text-align: left;
   cursor: pointer;
 }
+.explore-menu-icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid rgba(230, 180, 92, 0.2);
+  background: rgba(230, 180, 92, 0.07);
+  color: var(--gold);
+}
+.explore-menu-icon .icon { width: 17px; height: 17px; }
+.explore-menu-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.explore-menu-label { color: var(--ink); font-weight: 600; }
+.explore-menu-desc { color: var(--ink-faint); font-size: 11px; line-height: 1.3; }
+.explore-menu-desc:empty { display: none; }
 .explore-menu-item:hover,
 .explore-menu-item:focus-visible { background: rgba(230, 180, 92, 0.11); color: var(--ink); outline: none; }
+.explore-menu-item:hover .explore-menu-icon,
+.explore-menu-item:focus-visible .explore-menu-icon { border-color: var(--gold); background: rgba(230, 180, 92, 0.16); }
 .explore-menu-item:disabled { opacity: 0.38; cursor: default; }
 
 /* ---------- Archive welcome modal ---------- */
@@ -2097,58 +2180,6 @@ body.map-mode .archive-options { display: none; }
   display: none;
 }
 
-/* Collapsed: the card is gone and a single ⓘ button sits in the page's
-   bottom-left corner, opening the archive options overlay above itself. */
-.archive-info-tab {
-  position: fixed;
-  left: 22px;
-  bottom: 18px;
-  z-index: 25;
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  padding: 0;
-  border: 1px solid var(--line);
-  border-radius: 50%;
-  background: rgba(20, 14, 9, 0.82);
-  color: var(--ink-dim);
-  cursor: pointer;
-  backdrop-filter: blur(10px);
-  transition: all 0.2s;
-}
-
-.archive-info-tab[hidden] { display: none; }
-
-.archive-info-tab .icon { width: 18px; height: 18px; }
-
-.archive-info-tab:hover,
-.archive-info-tab:focus-visible,
-.archive-info-tab[aria-expanded='true'] {
-  color: var(--ink);
-  border-color: var(--gold);
-  background: rgba(40, 28, 16, 0.92);
-  outline: none;
-}
-
-.archive-options {
-  position: fixed;
-  left: 22px;
-  bottom: 68px;
-  z-index: 26;
-  /* explicit width: a body-level shrink-to-fit box resolves too wide */
-  width: 236px;
-  max-width: calc(100vw - 32px);
-  padding: 7px;
-  border: 1px solid rgba(230, 180, 92, 0.2);
-  border-radius: 14px;
-  background: rgba(24, 17, 11, 0.96);
-  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(14px);
-}
-
-.archive-options[hidden] { display: none; }
-
 .ask-view {
   position: fixed;
   inset: 0;
@@ -2295,34 +2326,22 @@ body.map-mode .archive-options { display: none; }
 @media (max-width: 860px) {
   .view-toggle { margin-left: auto; padding: 0 11px; }
   .topbar .ghost-btn { margin-left: 0; }
-  .graph-view {
-    display: grid;
-    grid-template-rows: minmax(190px, 38vh) minmax(0, 1fr);
-    gap: 10px;
-    padding: calc(var(--topbar-h) + 8px) 10px 10px;
+  .graph-toolbar { left: 10px; width: calc(100vw - 20px); top: calc(var(--topbar-h) + 4px); }
+  .graph-search { font-size: 16px; } /* ≥16px: no iOS focus zoom */
+  .graph-status { top: calc(var(--topbar-h) + 56px); left: 14px; }
+  .graph-detail {
+    bottom: calc(10px + env(safe-area-inset-bottom));
+    right: 10px;
+    width: calc(100vw - 20px);
+    max-height: 46vh;
+    overflow-y: auto;
+    padding: 14px;
   }
-  #graph-canvas {
-    position: relative;
-    inset: auto;
-    grid-row: 2;
-    min-height: 0;
-  }
-  .graph-sidebar {
-    position: relative;
-    inset: auto;
-    grid-row: 1;
-    width: min(440px, 100%);
-    max-height: none;
-    z-index: 1;
-  }
-  .graph-detail { bottom: 10px; right: 10px; width: calc(100vw - 20px); padding: 14px; }
   .graph-detail h2 { font-size: 22px; }
 }
 @media (max-width: 520px) {
   .view-toggle span { display: none; }
   .view-toggle { width: 38px; padding: 0; justify-content: center; }
-  .graph-view { grid-template-rows: minmax(180px, 34vh) minmax(0, 1fr); }
-  .graph-sidebar { width: 100%; }
 }
 
 .feedback-toggle {
@@ -2623,11 +2642,19 @@ body.map-mode .archive-options { display: none; }
     --topbar-h: 64px;
   }
 
+  /* Two-row header: brand + Explore, then a full-width search docked at the
+     top where thumbs and eyes expect it; results drop down from it. */
   .topbar {
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     gap: 10px;
-    padding: 12px 14px;
+    padding: calc(10px + env(safe-area-inset-top)) 14px 12px;
+    background: linear-gradient(180deg, rgba(13, 10, 8, 0.98) 72%, rgba(13, 10, 8, 0));
   }
+  .topbar > .searchbox {
+    order: 3;
+    flex: 1 0 100%;
+  }
+  body.map-mode .topbar > .searchbox { display: none; }
   .brand {
     flex: 1 1 auto;
     gap: 11px;
@@ -2648,35 +2675,75 @@ body.map-mode .archive-options { display: none; }
     flex: 0 0 auto;
     margin-left: auto;
   }
-  .ask-toggle { margin-left: auto; }
   .explore-nav { flex: 0 0 auto; }
-  /* Search opens the discovery sheet: pinned just below the 36vh scene header
-     instead of floating over the shelf inside the topbar. */
   .searchbox {
-    position: fixed;
-    top: calc(36vh + 8px);
-    left: 14px;
-    right: 14px;
-    z-index: 20;
-    width: auto;
+    width: 100%;
     max-width: none;
     margin: 0;
   }
   .searchbox input {
     font-size: 16px; /* ≥16px keeps iOS from auto-zooming when the field is focused */
   }
-  /* In map mode the scene header is hidden, so search docks under the topbar. */
-  body.map-mode .searchbox {
-    top: calc(var(--topbar-h) + 6px);
-  }
   .results {
-    top: calc(36vh + 60px);
-    left: 14px;
-    right: 14px;
+    top: calc(var(--topbar-h) - 4px);
+    left: 12px;
+    right: 12px;
     width: auto;
-    max-height: 52vh;
+    max-height: min(62vh, calc(100dvh - var(--topbar-h) - 24px));
     transform: translateY(-8px);
   }
+
+  /* Explore becomes a drawer that slides in from the right edge. */
+  body.explore-open .topbar { z-index: 50; }
+  /* flex `order` reorders painting too, so lift the drawer over the search row */
+  .explore-nav { position: relative; z-index: 2; }
+  body.explore-open .topbar > :not(.explore-nav) {
+    opacity: 0.25;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+  body.explore-open::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 49;
+    background: rgba(5, 3, 2, 0.6);
+    backdrop-filter: blur(2px);
+    animation: fade-in 0.2s ease;
+  }
+  .explore-menu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(340px, 88vw);
+    padding: calc(12px + env(safe-area-inset-top)) 12px calc(20px + env(safe-area-inset-bottom));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border-width: 0 0 0 1px;
+    border-radius: 22px 0 0 22px;
+  }
+  .explore-menu:not([hidden]) { animation: drawer-in 0.28s var(--ease); }
+  .explore-menu-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 4px 10px 10px;
+    font: 600 22px var(--serif);
+  }
+  .explore-menu-close {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--ink-dim);
+    cursor: pointer;
+  }
+  .explore-menu-close .icon { width: 18px; height: 18px; }
+  .explore-menu-item { min-height: 56px; }
   .results.open {
     transform: translateY(0);
   }
@@ -2688,8 +2755,8 @@ body.map-mode .archive-options { display: none; }
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    /* asymmetric padding keeps the book clear of the topbar and alphabet rail */
-    padding: calc(var(--topbar-h) + 6px) 12px 58px;
+    /* full-screen reading sheet: the backdrop already hides the shelf chrome */
+    padding: calc(8px + env(safe-area-inset-top)) 8px calc(8px + env(safe-area-inset-bottom));
     overflow: hidden;
     perspective: none;
   }
@@ -2698,9 +2765,32 @@ body.map-mode .archive-options { display: none; }
     flex-direction: column;
     width: 100%;
     max-height: 100%;
+    height: 100%;
     min-height: 0;
     transform-style: flat;
+    /* rises from the bottom like a sheet pulled from the shelf */
+    transform: translateY(56px);
+    opacity: 0;
+    transition: transform 0.5s var(--ease), opacity 0.35s ease;
   }
+  .book-spread.open .spread-book { opacity: 1; }
+  /* reading progress rule along the top edge of the sheet */
+  .spread-book::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 14px;
+    right: 14px;
+    z-index: 3;
+    height: 3px;
+    border-radius: 0 0 3px 3px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-2));
+    transform: scaleX(var(--read-progress, 0));
+    transform-origin: left;
+    pointer-events: none;
+  }
+  .spread-book.slide-next .spread-pages { animation: sheet-next 0.42s var(--ease); }
+  .spread-book.slide-prev .spread-pages { animation: sheet-prev 0.42s var(--ease); }
   /* One long document instead of a two-page spread: block flow so each sheet is
      sized by its content. As a grid the rows were squeezed into the scrollport,
      which overflowed the list past its own box. */
@@ -2762,19 +2852,42 @@ body.map-mode .archive-options { display: none; }
     top: 8px;
     right: 8px;
   }
+  /* One-row footer: icon buttons either side of the counter. */
   .spread-foot {
     flex: 0 0 auto;
-    flex-wrap: wrap;
-    row-gap: 8px;
-    margin-top: 12px;
+    flex-wrap: nowrap;
+    gap: 6px;
+    margin-top: 8px;
+    padding: 0 2px;
   }
   .spread-foot-group {
-    flex: 1 1 auto;
+    flex: 0 0 auto;
+    gap: 6px;
   }
+  .spread-actions { gap: 6px; }
+  .spread-foot .spread-nav,
+  .spread-foot .spread-action {
+    justify-content: center;
+    width: 42px;
+    min-width: 42px;
+    height: 42px;
+    padding: 0;
+  }
+  .spread-foot .spread-nav > span,
+  .spread-foot .spread-action > span {
+    display: none;
+  }
+  .spread-foot .spread-nav .icon,
+  .spread-foot .spread-action .icon { width: 18px; height: 18px; }
   #spread-counter {
-    order: 3;
-    flex: 1 1 100%;
+    flex: 1 1 auto;
+    color: var(--ink-dim);
+    min-width: 0;
+    overflow: hidden;
+    font-size: 11px;
     text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   /* full-bleed folio strip: match the sheet's horizontal padding */
   .idx-pager {
@@ -2807,7 +2920,7 @@ body.map-mode .archive-options { display: none; }
      36vh band, where the shelf frames correctly. */
   #scene-container {
     position: fixed;
-    top: 0;
+    top: var(--topbar-h);
     left: 0;
     right: 0;
     bottom: auto;
@@ -2827,7 +2940,18 @@ body.map-mode .archive-options { display: none; }
   #scene-container canvas {
     touch-action: none; /* orbit gestures stay inside the header */
   }
+  /* Touch hint sits just under the shelf, where the page would otherwise be empty. */
   .hint {
+    top: calc(var(--topbar-h) + 36vh + 10px);
+    bottom: auto;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    width: max-content;
+    max-width: calc(100vw - 32px);
+  }
+  body.reading .hint,
+  body.map-mode .hint {
     display: none;
   }
 
@@ -2838,17 +2962,6 @@ body.map-mode .archive-options { display: none; }
   .archive-card {
     width: min(430px, 100%);
     max-height: min(84vh, 700px);
-  }
-
-  /* Lift the ⓘ and its menu clear of the bottom rail, which spans the full
-     width here instead of sitting centred as it does on desktop. */
-  .archive-info-tab {
-    left: 16px;
-    bottom: 74px;
-  }
-  .archive-options {
-    left: 16px;
-    bottom: 124px;
   }
 
   .letter-nav {
@@ -2915,6 +3028,7 @@ body.map-mode .archive-options { display: none; }
     padding: 8px 14px;
     font-size: 12px;
   }
+  .explore-toggle { padding: 0 12px; }
   .letter-nav {
     gap: 3px;
     padding: 6px 8px;
@@ -2927,10 +3041,6 @@ body.map-mode .archive-options { display: none; }
     font-size: 11px;
   }
   .hint {
-    left: 12px;
-    right: 12px;
-    bottom: 62px;
-    transform: none;
     padding: 7px 12px;
     font-size: 10.5px;
     text-align: center;
@@ -2942,7 +3052,37 @@ body.map-mode .archive-options { display: none; }
   .feedback-card { padding: 24px 18px; }
 }
 
+/* ---------- Ink-in reveal ----------
+   Each freshly rendered page writes itself in: header, term, definition,
+   then the details, rising and sharpening in sequence. */
+@keyframes ink-in {
+  from { opacity: 0; transform: translateY(12px); filter: blur(3px); }
+  to { opacity: 1; transform: none; filter: none; }
+}
+@keyframes sheet-next { from { opacity: 0.2; transform: translateX(36px); } }
+@keyframes sheet-prev { from { opacity: 0.2; transform: translateX(-36px); } }
+@keyframes drawer-in { from { transform: translateX(100%); } }
+@keyframes fade-in { from { opacity: 0; } }
+.spread-book.ink-in .page > div > * { animation: ink-in 0.6s var(--ease) both; }
+.spread-book.ink-in .page > div > :nth-child(2) { animation-delay: 0.07s; }
+.spread-book.ink-in .page > div > :nth-child(3) { animation-delay: 0.14s; }
+.spread-book.ink-in .page > div > :nth-child(4) { animation-delay: 0.21s; }
+.spread-book.ink-in .page > div > :nth-child(n + 5) { animation-delay: 0.28s; }
+.spread-book.ink-in .page-right > div > * { animation-delay: 0.22s; }
+.spread-book.ink-in .page-right > div > :nth-child(n + 2) { animation-delay: 0.32s; }
+
+.result-ask .ri-letter { color: var(--accent-2); }
+.result-ask .ri-letter .icon { width: 18px; height: 18px; }
+.result-ask { border-top: 1px solid var(--line); border-radius: 0 0 12px 12px; }
+.result-ask:first-child { border-top: 0; border-radius: 12px; }
+
 @media (prefers-reduced-motion: reduce) {
+  .spread-book.ink-in .page > div > *,
+  .spread-book .spread-pages,
+  .explore-menu:not([hidden]),
+  body.explore-open::before {
+    animation: none !important;
+  }
   .book-spread,
   .spread-book {
     transition: opacity 0.2s ease;

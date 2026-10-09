@@ -50,15 +50,10 @@ export class ArchiveHome {
     // Session fallback: keeps the greeting to once per session when durable
     // storage is refused, instead of it reopening on every page load.
     this.session = safeStore('sessionStorage');
-    // The welcome modal, retired to a single ⓘ button once it is dismissed.
     this.card = root.querySelector('.archive-card');
     this._idleTimer = null;
 
     this.welcome = root.querySelector('.archive-welcome');
-    // The collapsed affordance: an ⓘ that opens the archive options overlay.
-    // It lives outside the card (see index.html) so its fixed position is
-    // viewport-anchored; ArchiveNav owns the click, this class shows/hides it.
-    this.infoTab = document.querySelector('.archive-info-tab');
     this.countEl = root.querySelector('#archive-term-count');
     this.closeBtn = root.querySelector('#archive-close');
     this.backdrop = root.querySelector('.archive-backdrop');
@@ -70,7 +65,7 @@ export class ArchiveHome {
     this._bind();
 
     // The welcome card is a first-visit greeting: show it once, then remember
-    // that it has been seen so later loads start at the ⓘ button.
+    // that it has been seen so later loads go straight to the library.
     const welcome = { storage: this.storage, session: this.session };
     if (shouldShowWelcome(welcome)) {
       this.openWelcome();
@@ -128,14 +123,12 @@ export class ArchiveHome {
   /** Reveal the welcome panel without changing the persisted default. */
   openWelcome() {
     this.root.classList.remove('collapsed');
-    if (this.infoTab) this.infoTab.hidden = true;
     this._scheduleIdleCollapse();
   }
 
-  /** Collapse to the About tab; optionally persist the collapsed default. */
+  /** Dismiss the welcome card; optionally persist the collapsed default. */
   collapseWelcome({ persist = true } = {}) {
     this.root.classList.add('collapsed');
-    if (this.infoTab) this.infoTab.hidden = false;
     if (persist) writeWelcomeState(this.storage, { collapsed: true });
     this._clearIdleCollapse();
   }

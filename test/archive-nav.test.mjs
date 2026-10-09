@@ -41,3 +41,16 @@ test('menuKeyAction handles wrapping, boundaries, Escape, and unrelated keys', (
   assert.deepEqual(menuKeyAction({ key: 'Enter', index: 2, count: 7 }), { action: 'none', index: 2 });
   assert.deepEqual(menuKeyAction({ key: 'ArrowDown', index: -1, count: 0 }), { action: 'none', index: -1 });
 });
+
+test('exploreActions carry a group, icon and description for the grouped menu', () => {
+  const actions = exploreActions({});
+  for (const action of actions) {
+    assert.ok(['discover', 'community'].includes(action.group), action.id);
+    assert.equal(typeof action.icon, 'string');
+    assert.ok(action.description.length > 0, action.id);
+  }
+  assert.deepEqual(
+    actions.filter(({ group }) => group === 'community').map(({ id }) => id),
+    ['contribute', 'feedback', 'help']
+  );
+});

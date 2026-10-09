@@ -1,6 +1,7 @@
 import { loadGraph, neighbors } from './graph.js';
 import { rankSearchEntries } from './term-schema.js';
 
+const TOUCH = typeof window !== 'undefined' && window.matchMedia?.('(pointer: coarse)').matches;
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 
 function communityColor(id) {
@@ -39,7 +40,7 @@ export class GraphMap {
     this.index = await loadGraph();
     this.nodes = [...this.index.bySlug.values()];
     const ready = performance.now();
-    this.status.textContent = `${this.nodes.length.toLocaleString()} terms · drag to explore · scroll to zoom`;
+    this.status.textContent = `${this.nodes.length.toLocaleString()} terms · ${TOUCH ? 'drag to explore · pinch to zoom · tap a star' : 'drag to explore · scroll to zoom · click a star'}`;
     this._resize();
     this._renderList('');
     this.draw();
@@ -90,6 +91,13 @@ export class GraphMap {
 
   _bind() {
     this.search.addEventListener('input', () => this._renderList(this.search.value));
+    this.search.addEventListener('focus', () => this._renderList(this.search.value));
+    this.search.addEventListener('blur', () => {
+      // let a click on a suggestion land before the list closes
+      setTimeout(() => {
+        if (!this.list.contains(document.activeElement)) this._renderList('');
+      }, 150);
+    });
     this.search.addEventListener('keydown', (event) => this._onSearchKeys(event));
     this.list.addEventListener('keydown', (event) => this._onSearchKeys(event));
     this.canvas.addEventListener('wheel', (event) => {
@@ -104,11 +112,36 @@ export class GraphMap {
       this.offsetY = y - (y - this.offsetY) * ratio;
       this.draw();
     }, { passive: false });
+    // Active pointers, so two fingers pinch-zoom around their midpoint.
+    this._pointers = new Map();
     this.canvas.addEventListener('pointerdown', (event) => {
       this.canvas.setPointerCapture(event.pointerId);
+      this._pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      if (this._pointers.size === 2) {
+        const [a, b] = [...this._pointers.values()];
+        this.pinch = { dist: Math.hypot(a.x - b.x, a.y - b.y) || 1, scale: this.scale, offsetX: this.offsetX, offsetY: this.offsetY, mid: { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 } };
+        this.drag = null;
+        return;
+      }
+      if (this._pointers.size > 2) return;
       this.drag = { x: event.clientX, y: event.clientY, offsetX: this.offsetX, offsetY: this.offsetY, moved: false };
     });
     this.canvas.addEventListener('pointermove', (event) => {
+      if (this._pointers.has(event.pointerId)) this._pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      if (this.pinch && this._pointers.size >= 2) {
+        const [a, b] = [...this._pointers.values()];
+        const rect = this.canvas.getBoundingClientRect();
+        const { mid, dist, scale, offsetX, offsetY } = this.pinch;
+        const nextMid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+        this.scale = clamp(scale * (Math.hypot(a.x - b.x, a.y - b.y) / dist), 0.65, 12);
+        const ratio = this.scale / scale;
+        const mx = mid.x - rect.left;
+        const my = mid.y - rect.top;
+        this.offsetX = mx - (mx - offsetX) * ratio + (nextMid.x - mid.x);
+        this.offsetY = my - (my - offsetY) * ratio + (nextMid.y - mid.y);
+        this.draw();
+        return;
+      }
       if (this.drag) {
         const dx = event.clientX - this.drag.x;
         const dy = event.clientY - this.drag.y;
@@ -125,9 +158,25 @@ export class GraphMap {
         this.draw();
       }
     });
-    this.canvas.addEventListener('pointerup', (event) => {
-      const moved = this.drag?.moved;
+    const release = (event) => {
+      this._pointers.delete(event.pointerId);
+      if (this.pinch) {
+        if (this._pointers.size < 2) this.pinch = null;
+        this.drag = null;
+        this._pinchEnded = true; // the lifting finger of a pinch is not a tap
+        return true;
+      }
+      return false;
+    };
+    this.canvas.addEventListener('pointercancel', (event) => {
+      release(event);
       this.drag = null;
+    });
+    this.canvas.addEventListener('pointerup', (event) => {
+      if (release(event)) return;
+      const moved = this.drag?.moved || this._pinchEnded;
+      this.drag = null;
+      if (!this._pointers.size) this._pinchEnded = false;
       if (!moved) {
         const node = this._pick(event);
         if (node) this.select(node.slug);
@@ -150,6 +199,11 @@ export class GraphMap {
       event.stopPropagation();
       this.search.value = '';
       this._renderList('');
+      return;
+    }
+    if (event.key === 'Enter' && event.target === this.search) {
+      event.preventDefault();
+      this.list.querySelector('.graph-term-row')?.click();
       return;
     }
     if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
@@ -289,21 +343,34 @@ export class GraphMap {
 
   _renderList(query) {
     if (!this.nodes) return;
+    // Suggestions only while typing — the map itself is the browsing surface.
     const needle = query.trim();
-    const matches = (needle
-      ? rankSearchEntries(needle, this.nodes).map(({ entry }) => entry)
-      : [...this.nodes].sort((a, b) => b.centrality - a.centrality || a.label.localeCompare(b.label))
-    ).slice(0, 100);
+    const matches = needle ? rankSearchEntries(needle, this.nodes).map(({ entry }) => entry).slice(0, 8) : [];
+    this.list.hidden = !needle;
+    this.search.setAttribute('aria-expanded', String(Boolean(needle)));
+    if (needle && !matches.length) {
+      const empty = document.createElement('p');
+      empty.className = 'graph-term-empty';
+      empty.textContent = 'No matching terms';
+      this.list.replaceChildren(empty);
+      return;
+    }
     this.list.replaceChildren(...matches.map((node) => {
       const button = document.createElement('button');
       button.type = 'button';
       button.className = 'graph-term-row';
+      button.setAttribute('role', 'option');
       const label = document.createElement('span');
       label.textContent = node.label;
       const category = document.createElement('small');
       category.textContent = node.category;
       button.append(label, category);
-      button.addEventListener('click', () => this.select(node.slug, { center: true }));
+      button.addEventListener('click', () => {
+        this.search.value = '';
+        this._renderList('');
+        this.search.blur(); // dismiss the phone keyboard so the node panel is visible
+        this.select(node.slug, { center: true });
+      });
       return button;
     }));
   }

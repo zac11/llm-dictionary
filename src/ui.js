@@ -29,11 +29,12 @@ export function formatCitation(c) {
 }
 
 export class UI {
-  constructor({ onPickVolume, onPickTerm, onVolumeClose, onAskTerm, onMapTerm }) {
+  constructor({ onPickVolume, onPickTerm, onVolumeClose, onAskTerm, onAskQuery, onMapTerm }) {
     this.onPickVolume = onPickVolume; // (folder, letter) => void
     this.onPickTerm = onPickTerm; // (slug) => void  (main runs the pull-out ritual)
     this.onVolumeClose = onVolumeClose; // () => void (main returns the book to the shelf)
     this.onAskTerm = onAskTerm; // (slug) => void (main opens Ask prefilled)
+    this.onAskQuery = onAskQuery; // (query) => void (search falls through to Ask)
     this.onMapTerm = onMapTerm; // (slug) => void (main returns book and opens Map)
 
     this._nav = $('letter-nav');
@@ -65,7 +66,57 @@ export class UI {
 
     this._buildVolumeRail();
     this._bind();
+    this._bindReaderGestures();
     this._syncSearchClear();
+  }
+
+  /**
+   * Phone reader: swipe left/right to turn to the next/previous term (or
+   * contents page), and a thin progress rule tracks how far you've read.
+   */
+  _bindReaderGestures() {
+    const pages = this._spread.querySelector('.spread-pages');
+    if (!pages) return;
+    let start = null;
+    pages.addEventListener('touchstart', (event) => {
+      if (!STACKED_QUERY.matches || event.touches.length !== 1) return (start = null);
+      const t = event.touches[0];
+      start = { x: t.clientX, y: t.clientY, at: performance.now() };
+    }, { passive: true });
+    pages.addEventListener('touchend', (event) => {
+      if (!start) return;
+      const t = event.changedTouches[0];
+      const dx = t.clientX - start.x;
+      const dy = t.clientY - start.y;
+      const quick = performance.now() - start.at < 600;
+      start = null;
+      if (!quick || Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.6) return;
+      const dir = dx < 0 ? 1 : -1;
+      if (this._mode === 'entry') this._stepEntry(dir);
+      else this._stepIndex(dir);
+    }, { passive: true });
+    pages.addEventListener('scroll', () => {
+      const max = pages.scrollHeight - pages.clientHeight;
+      const progress = max > 0 ? Math.min(1, pages.scrollTop / max) : 0;
+      this._spreadBook.style.setProperty('--read-progress', progress.toFixed(3));
+    }, { passive: true });
+  }
+
+  /**
+   * Ink the freshly rendered page in: its blocks rise and fade in sequence.
+   * On the stacked phone reader (no paper page-turn) the whole sheet also
+   * slides in from the side the reader swiped towards.
+   */
+  _reveal(dir = 'rise') {
+    const book = this._spreadBook;
+    book.style.setProperty('--read-progress', '0');
+    if (this._reducedMotion) return;
+    book.classList.remove('ink-in', 'slide-next', 'slide-prev');
+    void book.offsetWidth; // restart the animation on consecutive turns
+    book.classList.add('ink-in');
+    if (STACKED_QUERY.matches && (dir === 'next' || dir === 'prev')) book.classList.add(`slide-${dir}`);
+    clearTimeout(this._revealTimer);
+    this._revealTimer = setTimeout(() => book.classList.remove('ink-in', 'slide-next', 'slide-prev'), 1400);
   }
 
   openHelp() {
@@ -269,6 +320,7 @@ export class UI {
     } else {
       render();
       this._openSpread();
+      this._reveal();
     }
   }
 
@@ -284,6 +336,8 @@ export class UI {
       button.type = 'button';
       button.className = `spread-action ${className}`.trim();
       button.disabled = Boolean(disabled);
+      button.title = label;
+      button.setAttribute('aria-label', label);
       button.innerHTML = `${icon(iconName)}<span>${escapeHtml(label)}</span>`;
       button.addEventListener('click', onClick);
       this._actions.appendChild(button);
@@ -482,6 +536,7 @@ export class UI {
     if (!this.isSpreadOpen()) {
       render();
       this._openSpread();
+      this._reveal();
     } else if (this._mode === 'index') {
       this._flip('next', render);
     } else {
@@ -736,6 +791,7 @@ export class UI {
     const instant = this._reducedMotion || STACKED_QUERY.matches;
     if (instant || this._flipping) {
       swap();
+      this._reveal(dir);
       return;
     }
     this._flipping = true;
@@ -748,7 +804,10 @@ export class UI {
     requestAnimationFrame(() => {
       leaf.style.transition = '';
       leaf.style.transform = dir === 'prev' ? 'rotateY(0deg)' : 'rotateY(-179deg)';
-      setTimeout(swap, swapDelay);
+      setTimeout(() => {
+        swap();
+        this._reveal(dir);
+      }, swapDelay);
       setTimeout(() => {
         leaf.classList.add('hidden');
         leaf.style.transition = 'none';
@@ -1021,6 +1080,25 @@ export class UI {
         this._results.appendChild(b);
         return b;
       });
+    }
+    // Ask now lives at the end of search instead of in the header.
+    const query = this._search.value.trim();
+    if (query && this.onAskQuery) {
+      const ask = document.createElement('button');
+      ask.className = 'result-item result-ask';
+      ask.innerHTML = `<span class="ri-letter">${icon('message-circle')}</span>
+        <span class="ri-content">
+          <span class="ri-term">Ask about “${escapeHtml(query)}”</span>
+          <span class="ri-meta">Get an answer grounded in the encyclopaedia</span>
+        </span>
+        <span class="ri-action">Ask →</span>`;
+      ask.addEventListener('click', () => {
+        this._closeResults();
+        this._search.blur();
+        this.onAskQuery(query);
+      });
+      this._results.appendChild(ask);
+      this._resultItems.push(ask);
     }
     this._results.classList.add('open');
     this._resultCursor = -1;
