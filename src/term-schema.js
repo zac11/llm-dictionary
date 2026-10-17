@@ -14,6 +14,155 @@ const cleanList = (value) =>
     .map((item) => String(item).trim())
     .filter(Boolean);
 
+const asArray = (value) => (Array.isArray(value) ? value : value ? [value] : []);
+
+/**
+ * Controlled entity-kind vocabulary. `category` answers "which topic does this
+ * belong to?"; `type` answers "what kind of thing is this?" and decides how the
+ * entry is presented in the reader (see `entryPresentation`).
+ */
+export const TERM_TYPES = [
+  'concept',
+  'person',
+  'organization',
+  'event',
+  'model',
+  'dataset',
+  'benchmark',
+  'tool',
+  'paper',
+  'venue',
+  'policy',
+  'award',
+];
+
+export const DEFAULT_TERM_TYPE = 'concept';
+
+/** Human-readable labels, shared by the reader and the Contribute form. */
+export const TERM_TYPE_LABELS = {
+  concept: 'Concept',
+  person: 'Person',
+  organization: 'Organization',
+  event: 'Event',
+  model: 'Model',
+  dataset: 'Dataset',
+  benchmark: 'Benchmark',
+  tool: 'Tool',
+  paper: 'Paper',
+  venue: 'Venue',
+  policy: 'Policy',
+  award: 'Award',
+};
+
+/**
+ * The three ways a second spread can read. Concepts keep their story; people
+ * and organizations show a profile (what they did, where to find them); events,
+ * papers, venues and policies show coverage (dated references).
+ */
+export const TYPE_PRESENTATIONS = {
+  concept: 'story',
+  model: 'story',
+  dataset: 'story',
+  benchmark: 'story',
+  tool: 'story',
+  person: 'profile',
+  organization: 'profile',
+  event: 'coverage',
+  paper: 'coverage',
+  venue: 'coverage',
+  policy: 'coverage',
+  award: 'coverage',
+};
+
+const TYPE_ALIASES = {
+  people: 'person',
+  persons: 'person',
+  scientist: 'person',
+  researcher: 'person',
+  org: 'organization',
+  organisation: 'organization',
+  company: 'organization',
+  institute: 'organization',
+  lab: 'organization',
+  technique: 'concept',
+  method: 'concept',
+  algorithm: 'concept',
+  architecture: 'concept',
+  idea: 'concept',
+  topic: 'concept',
+  term: 'concept',
+  conference: 'event',
+  summit: 'event',
+  incident: 'event',
+  milestone: 'event',
+  network: 'model',
+  corpus: 'dataset',
+  evaluation: 'benchmark',
+  library: 'tool',
+  framework: 'tool',
+  publication: 'paper',
+  journal: 'venue',
+  law: 'policy',
+  regulation: 'policy',
+};
+
+const typeKey = (value) => String(value == null ? '' : value).trim().toLowerCase().replace(/[^a-z]+/g, '');
+
+/**
+ * Canonical type for a raw value: `null` when the value is unrecognized, so
+ * authors can be told about a typo instead of silently getting a default.
+ */
+export function normalizeTermType(value) {
+  const key = typeKey(value);
+  if (!key) return null;
+  if (TERM_TYPES.includes(key)) return key;
+  return TYPE_ALIASES[key] || null;
+}
+
+/** Which of the three second spreads a type uses. */
+export function entryPresentation(type) {
+  return TYPE_PRESENTATIONS[type] || TYPE_PRESENTATIONS[DEFAULT_TERM_TYPE];
+}
+
+/** True when the entry's second spread is the story vignette. */
+export function isStoryType(type) {
+  return entryPresentation(type) === 'story';
+}
+
+const normalizeLink = (value) => {
+  const source = isRecord(value) ? value : {};
+  const url = String(source.url || '').trim();
+  if (!url) return null;
+  return { label: String(source.label || '').trim(), url };
+};
+
+/** `{ links, highlights }` — links to a person's or organization's own pages. */
+export function normalizeProfile(value) {
+  const source = isRecord(value) ? value : {};
+  return {
+    links: asArray(source.links).map(normalizeLink).filter(Boolean),
+    highlights: cleanList(source.highlights),
+  };
+}
+
+const normalizeCoverageItem = (value) => {
+  const source = isRecord(value) ? value : {};
+  const title = String(source.title || '').trim();
+  const url = String(source.url || '').trim();
+  if (!title && !url) return null;
+  return {
+    title,
+    source: String(source.source || '').trim(),
+    date: String(source.date || '').trim(),
+    url,
+  };
+};
+
+/** Dated references that cover an event, paper, venue or policy. */
+export function normalizeCoverage(value) {
+  return asArray(value).map(normalizeCoverageItem).filter(Boolean);
+}
+
 export function slugifyTerm(value) {
   return String(value || '')
     .normalize('NFKD')
@@ -144,10 +293,13 @@ export function normalizeTerm(raw, source = '') {
     term,
     letter,
     category: String(raw.category || 'General').trim() || 'General',
+    type: normalizeTermType(raw.type) || DEFAULT_TERM_TYPE,
     aka: cleanList(raw.aka),
     definition: String(raw.definition || '').trim(),
     details: String(raw.details || '').trim(),
     story: String(raw.story || '').trim(),
+    profile: normalizeProfile(raw.profile),
+    coverage: normalizeCoverage(raw.coverage),
     related: cleanList(raw.related),
     citation: {
       title: String(citation.title || '').trim(),
@@ -240,6 +392,71 @@ export function validateTerm(term, context = {}) {
     if (hasCitationValue && !term.citation.title) {
       add('error', 'missing-citation-title', 'A non-empty citation must include a title.');
     }
+  }
+
+  if (raw && raw.type !== undefined && raw.type !== '' && raw.type !== null) {
+    const type = normalizeTermType(raw.type);
+    if (!type) {
+      add('error', 'invalid-type', `Type “${String(raw.type)}” is not one of: ${TERM_TYPES.join(', ')}.`);
+    } else if (raw.type !== type) {
+      add('warning', 'non-canonical-type', `Type “${String(raw.type)}” should be written as “${type}”.`);
+    }
+  } else {
+    add('warning', 'missing-type', `No type given — defaulting to “${DEFAULT_TERM_TYPE}”.`);
+  }
+
+  if (raw && raw.profile !== undefined && !isRecord(raw.profile)) {
+    add('error', 'invalid-profile-shape', 'profile must be an object.');
+  }
+  if (raw && isRecord(raw.profile)) {
+    if (raw.profile.links !== undefined && !Array.isArray(raw.profile.links)) {
+      add('error', 'invalid-links-shape', 'profile.links must be an array of { label, url } objects.');
+    }
+    for (const value of asArray(raw.profile.links)) {
+      if (!isRecord(value) || !String(value.url || '').trim()) {
+        add('error', 'invalid-link-url', 'Each profile link needs a url.');
+      } else if (!/^https?:\/\/\S+$/i.test(String(value.url).trim())) {
+        add('error', 'invalid-link-url', `Profile link “${String(value.url)}” must be an http(s) URL.`);
+      } else if (!String(value.label || '').trim()) {
+        add('error', 'invalid-link-label', `Profile link “${String(value.url)}” needs a label.`);
+      }
+    }
+    if (raw.profile.highlights !== undefined && !Array.isArray(raw.profile.highlights) && typeof raw.profile.highlights !== 'string') {
+      add('error', 'invalid-highlights-shape', 'profile.highlights must be a string or an array of strings.');
+    }
+    if (Array.isArray(raw.profile.highlights) && raw.profile.highlights.some((value) => typeof value !== 'string' || !value.trim())) {
+      add('error', 'invalid-highlight-value', 'profile.highlights values must be non-empty strings.');
+    }
+  }
+
+  if (raw && raw.coverage !== undefined && !Array.isArray(raw.coverage)) {
+    add('error', 'invalid-coverage-shape', 'coverage must be an array of { title, source, date, url } objects.');
+  }
+  for (const value of asArray(raw && raw.coverage)) {
+    if (!isRecord(value)) {
+      add('error', 'invalid-coverage-item', 'Each coverage item must be an object.');
+      continue;
+    }
+    if (!String(value.title || '').trim()) add('error', 'missing-coverage-title', 'Each coverage item needs a title.');
+    const url = String(value.url || '').trim();
+    if (!url) add('error', 'missing-coverage-url', 'Each coverage item needs a url.');
+    else if (!/^https?:\/\/\S+$/i.test(url)) add('error', 'invalid-coverage-url', `Coverage url “${url}” must be an http(s) URL.`);
+    const date = String(value.date || '').trim();
+    if (date && !isIsoDate(date)) add('error', 'invalid-coverage-date', `Coverage date “${date}” must be YYYY-MM-DD.`);
+  }
+
+  // Presentation coherence: the second spread is chosen by type, so data for a
+  // different spread is silently unused.
+  const presentation = entryPresentation(term.type);
+  const hasProfile = term.profile.links.length > 0 || term.profile.highlights.length > 0;
+  if (hasProfile && presentation !== 'profile') {
+    add('warning', 'unexpected-profile', `profile data is unused because ${term.type} entries read as “${presentation}”.`);
+  }
+  if (term.coverage.length && presentation !== 'coverage') {
+    add('warning', 'unexpected-coverage', `coverage data is unused because ${term.type} entries read as “${presentation}”.`);
+  }
+  if (term.story && presentation !== 'story') {
+    add('warning', 'unexpected-story', `story is not shown for ${term.type} entries — use “${presentation}” data instead.`);
   }
 
   return issues;

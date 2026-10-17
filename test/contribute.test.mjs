@@ -6,6 +6,8 @@ import {
   collectBatchIssues,
   formRowToTerm,
   MAX_ISSUE_URL_LENGTH,
+  parseCoverage,
+  parseProfileLinks,
   termFileJson,
   termFilePath,
 } from '../src/contribute.js';
@@ -110,6 +112,7 @@ test('termFileJson emits canonical key order and omits empty fields', () => {
     'term',
     'letter',
     'category',
+    'type',
     'aka',
     'definition',
     'details',
@@ -124,10 +127,12 @@ test('termFileJson emits canonical key order and omits empty fields', () => {
     'term',
     'letter',
     'category',
+    'type',
     'definition',
     'details',
     'slug',
   ]);
+  assert.equal(minimalParsed.type, 'concept');
 });
 
 test('buildIssueBody lists file paths and JSON blocks', () => {
@@ -158,4 +163,76 @@ test('single-term URLs stay well under the length guard', () => {
   const { term } = formRowToTerm(validRow);
   const url = buildIssueUrl([term]);
   assert.ok(url.length < MAX_ISSUE_URL_LENGTH, `url length ${url.length}`);
+});
+
+test('parseProfileLinks reads Label | URL lines and tolerates a bare URL', () => {
+  assert.deepEqual(
+    parseProfileLinks('LinkedIn | https://www.linkedin.com/in/samaltman\n\nhttps://x.com/sama\nWiki | https://en.wikipedia.org/wiki/a'),
+    [
+      { label: 'LinkedIn', url: 'https://www.linkedin.com/in/samaltman' },
+      { label: '', url: 'https://x.com/sama' },
+      { label: 'Wiki', url: 'https://en.wikipedia.org/wiki/a' },
+    ]
+  );
+  assert.deepEqual(parseProfileLinks(''), []);
+});
+
+test('parseCoverage reads Title | URL | Source | date lines', () => {
+  assert.deepEqual(
+    parseCoverage('Board fires Altman | https://reuters.com/a | Reuters | 2023-11-17\nNo date | https://example.com/b'),
+    [
+      { title: 'Board fires Altman', url: 'https://reuters.com/a', source: 'Reuters', date: '2023-11-17' },
+      { title: 'No date', url: 'https://example.com/b' },
+    ]
+  );
+  assert.deepEqual(parseCoverage('   '), []);
+});
+
+test('formRowToTerm builds a typed person profile', () => {
+  const { term, issues } = formRowToTerm({
+    term: 'Sam Altman',
+    type: 'person',
+    category: 'Artificial intelligence',
+    definition: 'CEO of OpenAI since 2019.',
+    details: 'He co-founded OpenAI in 2015.',
+    highlights: 'Co-founded OpenAI (2015)\nCEO of OpenAI (2019–present)',
+    links: 'LinkedIn | https://www.linkedin.com/in/samaltman',
+  });
+  assert.deepEqual(issues, []);
+  assert.equal(term.type, 'person');
+  assert.deepEqual(term.profile.highlights, ['Co-founded OpenAI (2015)', 'CEO of OpenAI (2019–present)']);
+  assert.deepEqual(term.profile.links, [
+    { label: 'LinkedIn', url: 'https://www.linkedin.com/in/samaltman' },
+  ]);
+  const parsed = JSON.parse(termFileJson(term));
+  assert.equal(parsed.type, 'person');
+  assert.deepEqual(Object.keys(parsed.profile), ['links', 'highlights']);
+});
+
+test('formRowToTerm surfaces a mismatched type as a warning-backed problem', () => {
+  const { issues } = formRowToTerm({
+    term: 'Mixture of Experts',
+    type: 'concept',
+    definition: 'd',
+    details: 'd',
+    highlights: 'Should not be here',
+  });
+  assert.ok(issues.some((issue) => issue.code === 'unexpected-profile'));
+});
+
+test('formRowToTerm builds a typed event with coverage', () => {
+  const { term, issues } = formRowToTerm({
+    term: 'Removal of Sam Altman from OpenAI',
+    type: 'event',
+    definition: 'On November 17, 2023, the board ousted Altman.',
+    details: 'He was reinstated five days later.',
+    coverage: 'Board fires Altman | https://reuters.com/a | Reuters | 2023-11-17',
+  });
+  assert.deepEqual(issues, []);
+  assert.deepEqual(term.coverage, [
+    { title: 'Board fires Altman', url: 'https://reuters.com/a', source: 'Reuters', date: '2023-11-17' },
+  ]);
+  const parsed = JSON.parse(termFileJson(term));
+  assert.equal(parsed.coverage.length, 1);
+  assert.equal(parsed.coverage[0].date, '2023-11-17');
 });

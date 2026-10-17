@@ -1,6 +1,9 @@
 // In-app "Contribute" flow: build valid dictionary entries in the browser and
 // hand them to the maintainer as a prefilled GitHub issue — no backend needed.
 import {
+  DEFAULT_TERM_TYPE,
+  TERM_TYPE_LABELS,
+  TERM_TYPES,
   normalizeTerm,
   rangeFolderForLetter,
   slugifyTerm,
@@ -17,14 +20,51 @@ const splitList = (value) =>
     .map((item) => item.trim())
     .filter(Boolean);
 
+/** One value per line. */
+const splitLines = (value) =>
+  String(value || '')
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+/** "Label | https://url" per line — the label may be left out for a bare URL. */
+export function parseProfileLinks(value) {
+  return splitLines(value).map((line) => {
+    const [label, ...rest] = line.split('|');
+    const url = rest.join('|').trim();
+    return url ? { label: label.trim(), url } : { label: '', url: label.trim() };
+  });
+}
+
+/** "Title | url | source | YYYY-MM-DD" per line — only the title and url matter. */
+export function parseCoverage(value) {
+  return splitLines(value).map((line) => {
+    const [title = '', url = '', source = '', date = ''] = line.split('|').map((part) => part.trim());
+    return {
+      title,
+      url,
+      ...(source ? { source } : {}),
+      ...(date ? { date } : {}),
+    };
+  });
+}
+
 /** Turn one form row into a normalized term plus its validation issues. */
 export function formRowToTerm(row) {
   const raw = {
     term: String(row.term || '').trim(),
     category: String(row.category || '').trim() || 'General',
+    type: String(row.type || '').trim() || DEFAULT_TERM_TYPE,
     definition: String(row.definition || '').trim(),
     details: String(row.details || '').trim(),
   };
+  const profile = {
+    links: parseProfileLinks(row.links),
+    highlights: splitLines(row.highlights),
+  };
+  if (profile.links.length || profile.highlights.length) raw.profile = profile;
+  const coverage = parseCoverage(row.coverage);
+  if (coverage.length) raw.coverage = coverage;
   const aka = splitList(row.aka);
   if (aka.length) raw.aka = aka;
   const related = splitList(row.related).map((value) => slugifyTerm(value));
@@ -43,7 +83,7 @@ export function formRowToTerm(row) {
 
   const term = normalizeTerm(raw);
   const issues = validateTerm(term, { raw });
-  return { term, issues: issues.filter((issue) => issue.level === 'error') };
+  return { term, issues: issues.filter((issue) => issue.level === 'error' || issue.level === 'warning') };
 }
 
 /** Cross-term checks: duplicates inside the batch, collisions with the live
@@ -88,10 +128,18 @@ export function termFileJson(term) {
     term: term.term,
     letter: term.letter,
     category: term.category,
+    type: term.type,
   };
   if (term.aka.length) out.aka = term.aka;
   out.definition = term.definition;
   out.details = term.details;
+  if (term.profile.links.length || term.profile.highlights.length) {
+    out.profile = {
+      ...(term.profile.links.length ? { links: term.profile.links } : {}),
+      ...(term.profile.highlights.length ? { highlights: term.profile.highlights } : {}),
+    };
+  }
+  if (term.coverage.length) out.coverage = term.coverage;
   if (term.related.length) out.related = term.related;
   const citation = term.citation;
   if (citation.title) {
@@ -124,7 +172,7 @@ export function buildIssueBody(terms) {
     '### Maintainer checklist',
     '',
     '- [ ] `npm run graph:check` passes (slugs, letter folders, related targets)',
-    '- [ ] Category and citation look right',
+    '- [ ] Type, category and citation look right',
     '- [ ] Optionally generate a story (`npm run stories`)',
   ].join('\n');
 }
@@ -151,12 +199,42 @@ function el(tag, className, text) {
   return node;
 }
 
+const TYPE_OPTIONS = TERM_TYPES.map((type) => ({ value: type, label: TERM_TYPE_LABELS[type] }));
+
 const FIELDS = [
   { name: 'term', label: 'Term name', required: true, placeholder: 'e.g. Mixture of Experts' },
-  { name: 'category', label: 'Category', placeholder: 'General' },
+  { name: 'category', label: 'Category', placeholder: 'Architecture' },
+  {
+    name: 'type',
+    label: 'Type (what kind of thing it is)',
+    select: true,
+    options: TYPE_OPTIONS,
+    help: 'People get a profile spread, events get coverage, everything else keeps its story.',
+  },
   { name: 'aka', label: 'Also known as (comma-separated)', placeholder: 'MoE' },
   { name: 'definition', label: 'Definition (one sentence)', required: true, textarea: true, rows: 2 },
   { name: 'details', label: 'Details (why it matters)', required: true, textarea: true, rows: 3 },
+  {
+    name: 'highlights',
+    label: 'Highlights — people and organizations (one per line)',
+    textarea: true,
+    rows: 3,
+    placeholder: 'Co-founded OpenAI (2015)\nCEO of OpenAI (2019–present)',
+  },
+  {
+    name: 'links',
+    label: 'Profile links — people and organizations (Label | URL per line)',
+    textarea: true,
+    rows: 3,
+    placeholder: 'LinkedIn | https://www.linkedin.com/in/example\nGoogle Scholar | https://scholar.google.com/citations?user=abc',
+  },
+  {
+    name: 'coverage',
+    label: 'Coverage — events, policies and papers (Title | URL | Source | YYYY-MM-DD per line)',
+    textarea: true,
+    rows: 3,
+    placeholder: 'OpenAI board fires Altman | https://www.reuters.com/... | Reuters | 2023-11-17',
+  },
   { name: 'related', label: 'Related terms (comma-separated)', placeholder: 'e.g. transformers, attention' },
 ];
 
@@ -252,16 +330,38 @@ export class ContributeForm {
     fieldset.querySelector('input[name="term"]')?.focus();
   }
 
-  _field({ name, label, required = false, placeholder = '', textarea = false, rows = 2, type = 'text' }) {
+  _field({
+    name,
+    label,
+    required = false,
+    placeholder = '',
+    textarea = false,
+    select = false,
+    options = [],
+    help = '',
+    rows = 2,
+    type = 'text',
+  }) {
     const wrapper = el('label', 'contribute-label');
     wrapper.append(el('span', '', required ? `${label} *` : label));
-    const input = textarea ? el('textarea') : el('input');
+    let input;
+    if (select) {
+      input = el('select');
+      for (const option of options) {
+        const node = el('option', '', option.label);
+        node.value = option.value;
+        input.append(node);
+      }
+    } else {
+      input = textarea ? el('textarea') : el('input');
+      if (!textarea) input.type = type;
+      if (textarea) input.rows = rows;
+    }
     input.name = name;
-    if (!textarea) input.type = type;
-    if (textarea) input.rows = rows;
     if (required) input.required = true;
     if (placeholder) input.placeholder = placeholder;
     wrapper.append(input);
+    if (help) wrapper.append(el('small', 'contribute-help', help));
     return wrapper;
   }
 
@@ -276,7 +376,7 @@ export class ContributeForm {
   _readRows() {
     return [...this.terms.children].map((fieldset) => {
       const row = {};
-      for (const input of fieldset.querySelectorAll('input, textarea')) {
+      for (const input of fieldset.querySelectorAll('input, textarea, select')) {
         row[input.name] = input.value;
       }
       return row;
