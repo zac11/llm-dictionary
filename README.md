@@ -30,6 +30,8 @@ llm-dictionary/
 ├── scripts/
 │   ├── generate-terms.mjs # optional bootstrap generator (npm run terms)
 │   ├── classify-types.mjs # entity types: person, event, concept… (npm run types)
+│   ├── import-people.mjs  # bulk-add people from JSON lists (npm run import:people)
+│   ├── mark-deceased.mjs  # flags deceased people so LinkedIn is hidden (npm run deceased)
 │   ├── generate-stories.mjs# story vignettes for conceptual entries (npm run stories)
 │   ├── generate-og.mjs    # writes public/og.png (1200×630 preview card)
 │   └── prerender-share.mjs# post-build: per-term /term/<slug>/ share pages
@@ -176,11 +178,17 @@ leaving anything uncertain as `concept`.
 
 ## 📚 The seed content
 
-The repo ships with **4,376 entries** covering every letter A–Z — concepts
+The repo ships with **4,667 entries** covering every letter A–Z — concepts
 (attention, BERT, GPT, chain-of-thought, RAG, RLHF, LoRA, quantization,
-diffusion models, transformers…), plus **~410 people**, ~80 organizations, and
-the conferences, policies and incidents of the field. Citations point to the
-original papers (arXiv, NeurIPS, Nature, journals, etc.) or Wikipedia.
+diffusion models, transformers…), plus **703 people** (from Turing and Minsky to
+the teams behind today's models), ~80 organizations, and the conferences,
+policies and incidents of the field. Citations point to the original papers
+(arXiv, NeurIPS, Nature, journals, etc.) or Wikipedia.
+
+Bulk-adding people? `npm run import:people <file.json>` reads a list of names
+with `famous_for` / `contribution` fields, matches people already in the
+dictionary, and writes typed `person` entries — see
+[dictionary/README.md](dictionary/README.md).
 
 Most entries are typed already (`npm run types`); `type` decides whether an
 entry gets a story, a profile or coverage.

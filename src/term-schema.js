@@ -298,6 +298,7 @@ export function normalizeTerm(raw, source = '') {
     definition: String(raw.definition || '').trim(),
     details: String(raw.details || '').trim(),
     story: String(raw.story || '').trim(),
+    deceased: raw.deceased === true,
     profile: normalizeProfile(raw.profile),
     coverage: normalizeCoverage(raw.coverage),
     related: cleanList(raw.related),
@@ -403,6 +404,13 @@ export function validateTerm(term, context = {}) {
     }
   } else {
     add('warning', 'missing-type', `No type given — defaulting to “${DEFAULT_TERM_TYPE}”.`);
+  }
+
+  if (raw && raw.deceased !== undefined && typeof raw.deceased !== 'boolean') {
+    add('error', 'invalid-deceased-shape', 'deceased must be true or false.');
+  }
+  if (term.deceased && term.type !== 'person') {
+    add('warning', 'unexpected-deceased', `deceased only applies to person entries, not ${term.type}.`);
   }
 
   if (raw && raw.profile !== undefined && !isRecord(raw.profile)) {

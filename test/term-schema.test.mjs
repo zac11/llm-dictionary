@@ -54,6 +54,7 @@ test('normalizeTerm preserves an explicit slug and normalizes optional fields', 
     definition: '',
     details: '',
     story: '',
+    deceased: false,
     profile: { links: [], highlights: [] },
     coverage: [],
     related: ['other-term'],
@@ -181,6 +182,18 @@ test('normalizeTerm defaults the type and normalizes profile and coverage data',
   assert.deepEqual(person.coverage, [
     { title: 'Board fires Altman', source: 'Reuters', date: '2023-11-17', url: 'https://example.com/a' },
   ]);
+  assert.equal(person.deceased, false);
+  assert.equal(normalizeTerm({ term: 'Alan Turing', deceased: true }).deceased, true);
+});
+
+test('validateTerm only accepts a boolean deceased flag on people', () => {
+  const malformed = { term: 'Alan Turing', type: 'person', definition: 'd', details: 'd', deceased: 'yes' };
+  const codes = validateTerm(normalizeTerm(malformed), { raw: malformed }).map((issue) => issue.code);
+  assert.ok(codes.includes('invalid-deceased-shape'));
+
+  const onConcept = { term: 'Mixture of Experts', type: 'concept', definition: 'd', details: 'd', deceased: true };
+  const conceptCodes = validateTerm(normalizeTerm(onConcept), { raw: onConcept }).map((issue) => issue.code);
+  assert.ok(conceptCodes.includes('unexpected-deceased'));
 });
 
 test('validateTerm reports unknown types and malformed profile/coverage data', () => {

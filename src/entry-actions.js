@@ -75,7 +75,14 @@ export function profileLinks(term) {
     });
   };
 
-  for (const link of term.profile?.links || []) add(link.label, link.url, true);
+  // A LinkedIn profile (or a search for one) is meaningless once someone has
+  // died, so a deceased person gets none at all.
+  const allowLinkedIn = !term.deceased;
+  const isLinkedIn = (label) => /linkedin/i.test(String(label || ''));
+  for (const link of term.profile?.links || []) {
+    if (!allowLinkedIn && isLinkedIn(link.label)) continue;
+    add(link.label, link.url, true);
+  }
 
   const citationUrl = String(term.citation?.url || '');
   const sourcedFromWikipedia = /wikipedia\.org/i.test(citationUrl);
@@ -84,7 +91,9 @@ export function profileLinks(term) {
     sourcedFromWikipedia ? citationUrl : searchUrl('https://en.wikipedia.org/w/index.php?search=', term.term),
     sourcedFromWikipedia
   );
-  add('LinkedIn', searchUrl('https://www.linkedin.com/search/results/all/?keywords=', term.term));
+  if (allowLinkedIn) {
+    add('LinkedIn', searchUrl('https://www.linkedin.com/search/results/all/?keywords=', term.term));
+  }
   add('Google Scholar', searchUrl('https://scholar.google.com/scholar?q=', term.term));
   add('X', searchUrl('https://x.com/search?q=', term.term));
   return links;

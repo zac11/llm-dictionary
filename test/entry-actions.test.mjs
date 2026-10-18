@@ -132,6 +132,20 @@ test('profileLinks searches Wikipedia when the entry is not sourced from it', ()
   assert.deepEqual(profileLinks(null), []);
 });
 
+test('profileLinks hides LinkedIn for a deceased person', () => {
+  const living = profileLinks({ term: 'Sam Altman' });
+  assert.equal(living.some((link) => /linkedin/i.test(link.label)), true);
+
+  const deceased = profileLinks({
+    term: 'Alan Turing',
+    deceased: true,
+    profile: { links: [{ label: 'LinkedIn', url: 'https://www.linkedin.com/in/alan-turing' }] },
+  });
+  assert.equal(deceased.some((link) => /linkedin/i.test(link.label)), false);
+  // the other ways to find them remain
+  assert.deepEqual(deceased.map((link) => link.label), ['Wikipedia', 'Google Scholar', 'X']);
+});
+
 test('coverageLinks offers news and reference searches for events', () => {
   const links = coverageLinks({ term: 'Removal of Sam Altman from OpenAI' });
   assert.deepEqual(links.map((link) => link.label), ['Google News', 'Wikipedia']);

@@ -1,7 +1,8 @@
 // -----------------------------------------------------------------------------
 //  Type classifier — writes an entity `type` onto every dictionary entry.
 //
-//  Run:  node scripts/classify-types.mjs            (write types)
+//  Run:  node scripts/classify-types.mjs            (write types, keep hand-set ones)
+//        node scripts/classify-types.mjs --force    (re-evaluate every entry)
 //        node scripts/classify-types.mjs --dry-run  (report only)
 //        node scripts/classify-types.mjs --dry-run --samples
 //
@@ -33,6 +34,8 @@ const DICT = join(ROOT, 'dictionary');
 
 const DRY_RUN = process.argv.includes('--dry-run');
 const SAMPLES = process.argv.includes('--samples');
+// By default a type that was set by hand (or by an import) is left alone.
+const FORCE = process.argv.includes('--force');
 
 // ------------------------------------------------------------------ patterns --
 const NATIONALITY =
@@ -241,6 +244,7 @@ function main() {
   let entries = 0;
   let storiesDropped = 0;
   let alreadyTyped = 0;
+  let overrides = 0;
 
   for (const folder of readdirSync(DICT).sort()) {
     if (!/^[a-z]-[a-z]$/.test(folder)) continue;
@@ -252,10 +256,14 @@ function main() {
       if (!raw.term) continue;
       entries++;
 
-      const { type, reason } = classifyRecord(raw);
+      const classified = classifyRecord(raw);
       const existing = normalizeTermType(raw.type);
-      if (existing) alreadyTyped++;
-      else if (raw.type !== undefined && raw.type !== '') {
+      const type = existing && !FORCE ? existing : classified.type;
+      const reason = existing && !FORCE ? 'author-set' : classified.reason;
+      if (existing) {
+        alreadyTyped++;
+        if (existing !== classified.type) overrides++;
+      } else if (raw.type !== undefined && raw.type !== '') {
         changes.push(`${path}: unrecognized type “${raw.type}” -> ${type}`);
       }
 
@@ -278,6 +286,12 @@ function main() {
   console.log('=== type report ===');
   console.log(`entries: ${entries}`);
   console.log(`already typed: ${alreadyTyped}`);
+  if (overrides) {
+    console.log(
+      `author-set types kept: ${overrides} on which the classifier disagrees` +
+        (FORCE ? ' (ignored: --force)' : ' (run with --force to re-evaluate)')
+    );
+  }
   console.log(`stories dropped from non-story types: ${storiesDropped}`);
   console.log(DRY_RUN ? 'mode: dry run (nothing written)' : 'mode: written');
   console.log('');

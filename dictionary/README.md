@@ -113,6 +113,13 @@ profile/coverage entry — the app does not read it.
 }
 ```
 
+A `person` entry that adds `"deceased": true` shows no LinkedIn link at all —
+not a curated one, not a search — because a live profile is meaningless for
+someone who has died. Everything else on the profile is unchanged. Run
+`npm run deceased` to set the flag from a lifespan in the definition, death
+wording, or the Wikipedia article; it only marks someone on positive evidence,
+and you can always set or clear the flag by hand.
+
 Until `profile.links` is filled in, the profile page links out to Wikipedia,
 LinkedIn, Google Scholar and X **searches** for the name, so an entry is useful
 the moment it is added. Every link is a chip with a mark for the service; a
@@ -154,8 +161,9 @@ events they were part of is enough to build their timeline. Use existing slugs.
 ### Classifying and reclassifying
 
 ```bash
-npm run types             # assign a type to every entry (idempotent)
+npm run types                # assign a type to every untyped entry
 npm run types -- --dry-run   # report only, nothing written
+npm run types -- --force     # re-evaluate types that were set by hand
 ```
 
 The classifier reads how a definition opens — "… (born 1965) is a Canadian
@@ -164,5 +172,31 @@ computer scientist", "… is an American research institute", "On November 17,
 keeps the story reading. It also drops stories from entries that no longer read
 as one. Correct any entry it gets wrong by editing `"type"` by hand.
 
-`npm run graph:check` warns about mismatches: an unknown `type`, a `type` that
-does not match the data present, or a missing `type`.
+The classifier only fills gaps: a `type` you set by hand is never overwritten
+unless you pass `--force`. `npm run graph:check` warns about mismatches: an
+unknown `type`, a `type` that does not match the data present, or a missing
+`type`.
+
+### Bulk-importing people
+
+```bash
+npm run import:people path/to/people.json --dry-run
+npm run import:people path/to/people.json
+```
+
+The importer accepts an array of records, `{ "people": […] }`, or a single
+record, reading `name`, `famous_for` (or `known_for`), `contribution` (or
+`contributions`), `url` / `website` / `linkedin`, and `category`. It:
+
+- skips anyone already in the dictionary, matching names and aliases while
+  ignoring accents, middle initials and parentheticals (so "Diederik P. Kingma"
+  and "Diederik Kingma" are one person);
+- writes each new person as a `person` entry with a Wikipedia intro as the
+  definition and citation where one exists, the supplied contribution as
+  `details`, and curated links from the supplied website/LinkedIn URLs;
+- caches Wikipedia lookups in the system temp dir, so a re-run only fetches what
+  it does not already have. `--offline` uses the cache without any network
+  calls; `--no-wiki` ignores Wikipedia entirely and writes definitions from the
+  supplied text.
+
+Re-run it any time with another list — existing entries are never modified.
