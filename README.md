@@ -29,6 +29,10 @@ llm-dictionary/
 │   └── README.md          #    schema + how to add terms
 ├── scripts/
 │   ├── generate-terms.mjs # optional bootstrap generator (npm run terms)
+│   ├── classify-types.mjs # entity types: person, event, concept… (npm run types)
+│   ├── import-people.mjs  # bulk-add people from JSON lists (npm run import:people)
+│   ├── mark-deceased.mjs  # flags deceased people so LinkedIn is hidden (npm run deceased)
+│   ├── generate-stories.mjs# story vignettes for conceptual entries (npm run stories)
 │   ├── generate-og.mjs    # writes public/og.png (1200×630 preview card)
 │   └── prerender-share.mjs# post-build: per-term /term/<slug>/ share pages
 ├── src/
@@ -37,6 +41,8 @@ llm-dictionary/
 │   ├── book3d.js          # the openable 3D volume (pull-out → open → return)
 │   ├── anim.js            # tiny tween runner + easings
 │   ├── textures.js        # canvas-generated spine/cover/page/wood textures
+│   ├── term-schema.js     # validation, search ranking, type vocabulary
+│   ├── entry-actions.js   # pure presentation models for the entry reader
 │   ├── terms.js           # loads + indexes every dictionary/*.json
 │   ├── ui.js              # reading spread, page-turns, search, A–Z bar
 │   ├── palette.js         # shared letter/category colours
@@ -109,6 +115,7 @@ next deploy.
   "term": "My Term",
   "letter": "M",
   "category": "Architecture",            // any label you like
+  "type": "concept",                     // what kind of thing it is (see below)
   "aka": ["Alias", "Other name"],        // optional
   "definition": "One-sentence definition.",
   "details": "Longer explanation of the term and why it matters.",
@@ -128,6 +135,26 @@ next deploy.
 **Rules:** `letter` must be A–Z; keep the filename unique (it becomes the
 `slug`); every letter needs at least one entry for the A–Z bar to be complete.
 
+### What kind of thing is it? (`type`)
+
+`category` is the topic; `type` is the kind of thing, and it decides how the
+entry reads:
+
+| Type | Second spread |
+|---|---|
+| `concept` (default), `model`, `dataset`, `benchmark`, `tool` | 📖 the **story** vignette |
+| `person`, `organization` | 👤 a **profile**: what they did, where to find them (LinkedIn, Google Scholar, X…) |
+| `event`, `paper`, `venue`, `policy`, `award` | 🗞️ **coverage**: dated references plus who was involved |
+
+A person never gets a story — the vignette template only lands for a concept.
+People and organizations can carry `profile.highlights` and `profile.links`,
+events and policies can carry `coverage` entries; `related` entries are grouped
+by type on both spreads, so linking a person to their events builds a timeline.
+Full field reference: [dictionary/README.md](dictionary/README.md).
+
+Prefer not to classify by hand? `npm run types` assigns a type to every entry,
+leaving anything uncertain as `concept`.
+
 ---
 
 ## 🕹 Using the app
@@ -141,6 +168,9 @@ next deploy.
   pulled out and opened straight to that word.
 - Every entry page shows a **❦ Citation** block with a **Read the source ↗**
   link to the underlying paper.
+- **Flip to the story / show the profile / see the coverage** turns to an
+  entry’s second spread — a story for a concept, a profile for a person, dated
+  coverage for an event.
 - **Esc** steps back (entry → contents → book returns to its shelf); deep-link
   with `?term=…` / `?volume=…` to share a specific word.
 
@@ -148,10 +178,20 @@ next deploy.
 
 ## 📚 The seed content
 
-The repo ships with **1,502 terms** covering every letter A–Z, each with a
-real citation (attention, BERT, GPT, chain-of-thought, RAG, RLHF, LoRA,
-quantization, diffusion models, transformers, and more). Citations point to the
-original papers (arXiv, NeurIPS, Nature, journals, etc.) or Wikipedia.
+The repo ships with **4,667 entries** covering every letter A–Z — concepts
+(attention, BERT, GPT, chain-of-thought, RAG, RLHF, LoRA, quantization,
+diffusion models, transformers…), plus **703 people** (from Turing and Minsky to
+the teams behind today's models), ~80 organizations, and the conferences,
+policies and incidents of the field. Citations point to the original papers
+(arXiv, NeurIPS, Nature, journals, etc.) or Wikipedia.
+
+Bulk-adding people? `npm run import:people <file.json>` reads a list of names
+with `famous_for` / `contribution` fields, matches people already in the
+dictionary, and writes typed `person` entries — see
+[dictionary/README.md](dictionary/README.md).
+
+Most entries are typed already (`npm run types`); `type` decides whether an
+entry gets a story, a profile or coverage.
 
 ---
 

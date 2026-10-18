@@ -134,6 +134,12 @@ The initial Map intentionally shows every term, as selected for this implementat
 
 The v1 graph used by Map and concept trails contains **term nodes only**. This avoids premature author, venue, work, category, and alias identity problems.
 
+An entry's `type` (`person`, `event`, `concept`, … in the dictionary JSON) is
+**presentation metadata only** — it selects the reader's second spread (story,
+profile or coverage) and does not create node kinds in the graph. Authors,
+venues and works still arrive as separate `term:` nodes when they get their own
+entry, which is what keeps the graph term-only.
+
 ### Concept trail
 
 A concept trail is a short, weighted route through related terms. It answers “How is this term connected to another concept?” It does not claim “learn these first.”

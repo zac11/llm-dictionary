@@ -11,11 +11,18 @@
 //  every sentence. Selection is a deterministic hash of the slug, so re-running
 //  is stable. Terms that already carry a hand-edited "story" are left untouched
 //  unless --force is passed.
+//
+//  Only entries whose type reads as a story (concepts and other technical kinds)
+//  get one: for a person, an organization or an event the reader shows a profile
+//  or coverage instead, and any existing story is dropped because the vignette
+//  template reads as nonsense for them. See `entryPresentation` in
+//  src/term-schema.js and `scripts/classify-types.mjs`.
 // -----------------------------------------------------------------------------
 
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { entryPresentation } from '../src/term-schema.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const DICT = join(ROOT, 'dictionary');
@@ -419,7 +426,7 @@ function computeRelated(records) {
   return out;
 }
 
-const report = { stories: 0, related: 0, malformed: 0 };
+const report = { stories: 0, dropped: 0, related: 0, malformed: 0 };
 
 // Load everything first so related-term links can see the whole collection.
 const entries = [];
@@ -454,11 +461,13 @@ for (const { path, record } of entries) {
   const hadRelated = !!(Array.isArray(record.related) && record.related.length);
 
   const story =
-    PRESERVE.has(record.slug) && hadStory
-      ? record.story
-      : !FORCE && hadStory
+    entryPresentation(record.type) !== 'story'
+      ? ''
+      : PRESERVE.has(record.slug) && hadStory
         ? record.story
-        : composeStory(record, bucketFor(record));
+        : !FORCE && hadStory
+          ? record.story
+          : composeStory(record, bucketFor(record));
   const related = !FORCE && hadRelated ? record.related : relatedBySlug.get(record.slug) || [];
 
   // Insert `story` and `related` right after `details` so the JSON stays tidy;
@@ -468,19 +477,21 @@ for (const { path, record } of entries) {
     if (key === 'story' || key === 'related') continue;
     ordered[key] = record[key];
     if (key === 'details') {
-      ordered.story = story;
+      if (story) ordered.story = story;
       ordered.related = related;
     }
   }
-  if (!('story' in ordered)) ordered.story = story;
+  if (!('story' in ordered) && story) ordered.story = story;
   if (!('related' in ordered)) ordered.related = related;
 
   writeFileSync(path, JSON.stringify(ordered, null, 2) + '\n');
-  if (!hadStory || FORCE) report.stories++;
+  if (story && (!hadStory || FORCE)) report.stories++;
+  if (!story && hadStory) report.dropped++;
   if (!hadRelated || FORCE) report.related++;
 }
 
 console.log('\n=== story report ===');
 console.log(`stories written: ${report.stories}`);
+console.log(`stories dropped (types that read as profile/coverage): ${report.dropped}`);
 console.log(`related lists written: ${report.related}`);
 console.log(`malformed/skipped records: ${report.malformed}`);

@@ -63,3 +63,140 @@ when you add, edit or remove a word.
   picks it up.
 - The `scripts/generate-terms.mjs` file was a one-time **bootstrap** for the
   seed terms. The JSON files here are the source of truth going forward.
+
+---
+
+## Types — what kind of thing an entry is
+
+`category` says **which topic** an entry belongs to (`Architecture`,
+`Machine learning`). `type` says **what kind of thing it is**, and that decides
+how the reader presents it:
+
+| Type | Reads as | Second spread shows |
+|---|---|---|
+| `concept` *(default)* | 📖 story | The story vignette |
+| `model`, `dataset`, `benchmark`, `tool` | 📖 story | The story vignette |
+| `person` | 👤 profile | What they did, where to find them |
+| `organization` | 👤 profile | What they did, where to find them |
+| `event` | 🗞️ coverage | Dated references, who was involved |
+| `paper`, `venue`, `policy`, `award` | 🗞️ coverage | Dated references, who was involved |
+
+A person never gets a story: the vignette template ("…and that idea is Sam
+Altman") only makes sense for a concept. Drop the `story` field for a
+profile/coverage entry — the app does not read it.
+
+### Person and organization entries
+
+```jsonc
+{
+  "term": "Sam Altman",
+  "letter": "S",
+  "category": "Artificial intelligence",
+  "type": "person",
+  "definition": "American entrepreneur, chief executive officer of OpenAI since 2019.",
+  "details": "…",
+  "profile": {
+    // What they did — one role, milestone or achievement per string.
+    "highlights": [
+      "Co-founded OpenAI (2015)",
+      "Chief executive officer of OpenAI (2019–present)"
+    ],
+    // Where to find them. Any label works: LinkedIn, Google Scholar, X, a
+    // personal site. http(s) URLs only.
+    "links": [
+      { "label": "LinkedIn", "url": "https://www.linkedin.com/in/samaltman" },
+      { "label": "Google Scholar", "url": "https://scholar.google.com/citations?user=…" }
+    ]
+  },
+  "related": ["removal-of-sam-altman-from-openai", "openai"],
+  "citation": { "title": "Sam Altman", "url": "https://en.wikipedia.org/wiki/Sam_Altman" }
+}
+```
+
+A `person` entry that adds `"deceased": true` shows no LinkedIn link at all —
+not a curated one, not a search — because a live profile is meaningless for
+someone who has died. Everything else on the profile is unchanged. Run
+`npm run deceased` to set the flag from a lifespan in the definition, death
+wording, or the Wikipedia article; it only marks someone on positive evidence,
+and you can always set or clear the flag by hand.
+
+Until `profile.links` is filled in, the profile page links out to Wikipedia,
+LinkedIn, Google Scholar and X **searches** for the name, so an entry is useful
+the moment it is added. Every link is a chip with a mark for the service; a
+generated search is drawn dashed with a magnifier, a curated link is solid, and
+both carry a tooltip ("Search LinkedIn"). Links are laid out side by side.
+
+### Event, policy, venue and award entries
+
+```jsonc
+{
+  "term": "Removal of Sam Altman from OpenAI",
+  "letter": "R",
+  "category": "Artificial intelligence",
+  "type": "event",
+  "definition": "On November 17, 2023, OpenAI's board of directors ousted Sam Altman.",
+  "details": "…",
+  "coverage": [
+    {
+      "title": "OpenAI board fires Sam Altman",
+      "url": "https://www.reuters.com/…",
+      "source": "Reuters",        // optional publisher
+      "date": "2023-11-17"        // optional, YYYY-MM-DD; sorts the list
+    }
+  ],
+  "related": ["sam-altman", "openai"]
+}
+```
+
+`details` holds the account of what happened; `coverage` holds the dated
+references that back it. Without `coverage`, the page offers news and reference
+searches instead.
+
+### Related entries
+
+Both spreads group `related` entries by what they are — **People**,
+**Organizations**, **Events**, **Related terms** — so linking a person to the
+events they were part of is enough to build their timeline. Use existing slugs.
+
+### Classifying and reclassifying
+
+```bash
+npm run types                # assign a type to every untyped entry
+npm run types -- --dry-run   # report only, nothing written
+npm run types -- --force     # re-evaluate types that were set by hand
+```
+
+The classifier reads how a definition opens — "… (born 1965) is a Canadian
+computer scientist", "… is an American research institute", "On November 17,
+2023, …" — and defaults anything it is not confident about to `concept`, which
+keeps the story reading. It also drops stories from entries that no longer read
+as one. Correct any entry it gets wrong by editing `"type"` by hand.
+
+The classifier only fills gaps: a `type` you set by hand is never overwritten
+unless you pass `--force`. `npm run graph:check` warns about mismatches: an
+unknown `type`, a `type` that does not match the data present, or a missing
+`type`.
+
+### Bulk-importing people
+
+```bash
+npm run import:people path/to/people.json --dry-run
+npm run import:people path/to/people.json
+```
+
+The importer accepts an array of records, `{ "people": […] }`, or a single
+record, reading `name`, `famous_for` (or `known_for`), `contribution` (or
+`contributions`), `url` / `website` / `linkedin`, and `category`. It:
+
+- skips anyone already in the dictionary, matching names and aliases while
+  ignoring accents, middle initials and parentheticals (so "Diederik P. Kingma"
+  and "Diederik Kingma" are one person);
+- writes each new person as a `person` entry with a Wikipedia intro as the
+  definition and citation where one exists, the supplied contribution as
+  `details`, and curated links from the supplied website/LinkedIn URLs;
+- caches Wikipedia lookups in the system temp dir, so a re-run only fetches what
+  it does not already have. `--offline` uses the cache without any network
+  calls; `--no-wiki` ignores Wikipedia entirely and writes definitions from the
+  supplied text.
+
+Re-run it any time with another list — existing entries are never modified.

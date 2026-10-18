@@ -1059,6 +1059,20 @@ body.reading .hint {
   color: var(--paper-gold);
 }
 
+/* Kind-of-thing badge (Person, Event, …). Concepts carry no badge. */
+.pg-type-chip {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 8px 2px;
+  border-radius: 999px;
+  border: 1px solid rgba(120, 95, 60, 0.45);
+  background: rgba(120, 95, 60, 0.1);
+  letter-spacing: 1.2px;
+  font-size: 9.5px;
+  color: #6b4e2a;
+  vertical-align: 1px;
+}
+
 .pg-term {
   margin: 0;
   font-family: var(--serif);
@@ -1153,15 +1167,19 @@ body.reading .hint {
 }
 
 .pg-citation h3 .icon,
+.pg-highlights h3 .icon,
+.pg-articles h3 .icon,
+.pg-links h3 .icon,
 .pg-suggested h3 .icon {
   width: 13px;
   height: 13px;
   vertical-align: -0.15em;
 }
 
-/* In-page "Flip to the story" cue. Its counterpart, "Flip back to the entry",
-   lives in the spread footer alongside the other entry actions. */
-.pg-flip-story {
+/* In-page cue for the second spread — a story, a profile or coverage. Its
+   counterpart, "Flip back to the entry", lives in the spread footer alongside
+   the other entry actions. */
+.pg-flip-page {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -1179,15 +1197,194 @@ body.reading .hint {
   -webkit-tap-highlight-color: transparent;
 }
 
-.pg-flip-story:hover,
-.pg-flip-story:focus-visible {
+.pg-flip-page:hover,
+.pg-flip-page:focus-visible {
   background: rgba(120, 95, 60, 0.17);
   border-color: rgba(120, 95, 60, 0.72);
   outline: none;
 }
 
-.pg-flip-story:active { transform: scale(0.96); }
-.pg-flip-story .icon { width: 14px; height: 14px; }
+.pg-flip-page:active { transform: scale(0.96); }
+.pg-flip-page .icon { width: 14px; height: 14px; }
+
+/* ---------- Profile and coverage pages ---------- */
+.pg-highlights,
+.pg-articles,
+.pg-links {
+  margin-top: 20px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(120, 95, 60, 0.45);
+}
+
+.pg-highlights h3,
+.pg-articles h3,
+.pg-links h3 {
+  margin: 0 0 10px;
+  font-size: 11px;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: var(--paper-gold);
+}
+
+.pg-highlights ul,
+.pg-articles ul,
+.pg-links ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pg-highlights li {
+  position: relative;
+  margin: 0 0 9px;
+  padding-left: 16px;
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: #4a3a26;
+}
+
+.pg-highlights li::before {
+  content: '❖';
+  position: absolute;
+  left: 0;
+  color: var(--paper-gold);
+  font-size: 9px;
+  line-height: 2.6;
+}
+
+/* Profile links sit side by side as icon chips, so four ways to find someone
+   cost one row instead of four. */
+.pg-link-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.pg-link-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 11px;
+  border: 1px solid rgba(120, 95, 60, 0.42);
+  border-radius: 999px;
+  background: rgba(120, 95, 60, 0.09);
+  color: #6b4e2a;
+  font: 600 12px var(--sans);
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.pg-link-chip .icon {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+}
+
+.pg-link-chip:hover,
+.pg-link-chip:focus-visible {
+  background: rgba(120, 95, 60, 0.18);
+  border-color: rgba(120, 95, 60, 0.75);
+  outline: none;
+}
+
+/* A generated search is a weaker promise than a curated link: dashed, muted. */
+.pg-link-chip.is-search {
+  border-style: dashed;
+  background: rgba(120, 95, 60, 0.04);
+  color: #7a6a52;
+  font-weight: 500;
+}
+
+.pg-link-chip.is-search:hover,
+.pg-link-chip.is-search:focus-visible {
+  background: rgba(120, 95, 60, 0.13);
+}
+
+.pg-link-kind {
+  width: 11px;
+  height: 11px;
+  opacity: 0.7;
+}
+
+.pg-articles li {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+
+.pg-articles a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #7a5a1e;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.pg-articles a:hover {
+  text-decoration: underline;
+}
+
+.pg-articles a .icon {
+  width: 12px;
+  height: 12px;
+  flex: 0 0 auto;
+}
+
+.pg-article-meta {
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+}
+
+.pg-article-title {
+  font-family: var(--serif);
+}
+
+.pg-related {
+  margin-top: 22px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(120, 95, 60, 0.45);
+}
+
+.pg-group {
+  margin-bottom: 14px;
+}
+
+.pg-group h3 {
+  margin: 0 0 8px;
+  font-size: 11px;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: #6b4eaa;
+}
+
+.pg-group-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.related-chip {
+  padding: 6px 10px;
+  border: 1px solid rgba(107, 78, 170, 0.35);
+  border-radius: 999px;
+  background: rgba(159, 124, 255, 0.12);
+  color: var(--paper-ink);
+  font: 11px var(--sans);
+  cursor: pointer;
+}
+
+.related-chip:hover,
+.related-chip:focus-visible {
+  background: rgba(159, 124, 255, 0.24);
+  border-color: #6b4eaa;
+  outline: none;
+}
 
 /* ---------- Story pages ---------- */
 .story-left {
@@ -2494,6 +2691,7 @@ body.map-mode .searchbox { visibility: hidden; }
 .contribute-term-title { padding: 0 6px; font: 600 13px var(--serif); color: var(--gold-2); }
 .contribute-label { display: grid; gap: 4px; color: var(--ink-dim); font-size: 11px; font-weight: 600; }
 .contribute-label input,
+.contribute-label select,
 .contribute-label textarea {
   width: 100%;
   padding: 10px 12px;
@@ -2506,7 +2704,10 @@ body.map-mode .searchbox { visibility: hidden; }
   resize: vertical;
   box-sizing: border-box;
 }
+.contribute-label select option { color: #1b1526; }
+.contribute-help { color: var(--ink-dim); font-size: 10.5px; font-weight: 500; line-height: 1.4; }
 .contribute-label input:focus,
+.contribute-label select:focus,
 .contribute-label textarea:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(230, 180, 92, 0.16); }
 .contribute-citation summary { color: var(--ink-dim); font-size: 12px; cursor: pointer; }
 .contribute-citation[open] summary { margin-bottom: 8px; }

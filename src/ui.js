@@ -2,7 +2,19 @@ import { findTerm, volumeByLetter, rangeTerms, searchTerms, RANGES } from './ter
 import { letterColor } from './palette.js';
 import { icon } from './icons.js';
 import { volumeRailItems } from './navigation.js';
-import { entryActions, entryBreadcrumb, entryTransition, isCurrentEntry, learningItems } from './entry-actions.js';
+import {
+  coverageLinks,
+  entryActions,
+  entryBreadcrumb,
+  entrySecondPage,
+  entryTransition,
+  hasSecondPage,
+  isCurrentEntry,
+  learningItems,
+  profileLinks,
+  relatedGroups,
+} from './entry-actions.js';
+import { TERM_TYPE_LABELS } from './term-schema.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -578,7 +590,11 @@ export class UI {
             ${icon('share-2')}<span>Share</span>
           </button>
         </div>
-        <p class="pg-kicker">${escapeHtml(breadcrumb.category)}</p>
+        <p class="pg-kicker">${escapeHtml(breadcrumb.category)}${
+          TERM_TYPE_LABELS[term.type] && term.type !== 'concept'
+            ? `<span class="pg-type-chip">${escapeHtml(TERM_TYPE_LABELS[term.type])}</span>`
+            : ''
+        }</p>
         <h2 class="pg-term">${escapeHtml(term.term)}</h2>
         ${term.aka.length ? `<p class="pg-aka">also known as: ${escapeHtml(term.aka.join(', '))}</p>` : ''}
         <p class="pg-rule"></p>
@@ -606,10 +622,18 @@ export class UI {
                </aside>`
             : ''
         }
-        ${term.story ? `<button class="pg-flip-story" type="button">${icon('book-open')}<span>Flip to the story</span>${icon('arrow-right')}</button>` : ''}
+        ${
+          hasSecondPage(term)
+            ? `<button class="pg-flip-page" type="button">${icon('book-open')}<span>${escapeHtml(
+                entrySecondPage(term).cue
+              )}</span>${icon('arrow-right')}</button>`
+            : ''
+        }
         <aside class="pg-trail" aria-live="polite"></aside>
       </div>`;
-    this._pageRight.querySelector('.pg-flip-story')?.addEventListener('click', () => this._flipToPage(1));
+    this._pageRight
+      .querySelector('.pg-flip-page')
+      ?.addEventListener('click', () => this._flipToPage(1));
     this._renderConceptTrail(term);
     this._resetScroll();
   }
@@ -676,6 +700,187 @@ export class UI {
     });
   }
 
+  /** Footer chrome shared by every second spread: back to the entry. */
+  _renderSecondPageFoot() {
+    this._renderFootActions([
+      {
+        className: 'pg-flip-back',
+        icon: 'chevron-left',
+        label: 'Flip back to the entry',
+        onClick: () => this._flipToPage(0),
+      },
+    ]);
+  }
+
+  /**
+   * The entry's second spread. What sits there follows the entry's type: a
+   * story for a concept, a profile for a person or organization, coverage for
+   * an event, paper, venue, policy or award.
+   */
+  _renderSecondSpread(term) {
+    const { presentation } = entrySecondPage(term);
+    if (presentation === 'profile') return this._renderProfileSpread(term);
+    if (presentation === 'coverage') return this._renderCoverageSpread(term);
+    return this._renderStorySpread(term);
+  }
+
+  /**
+   * Profile spread: the one-line bio and where to find them (left), then what
+   * they did and the entries around them (right). Curated `profile.highlights`
+   * and `profile.links` lead; searches stand in until a curator fills them.
+   */
+  _renderProfileSpread(term) {
+    this._renderSecondPageFoot();
+    this._renderSecondPageHead(term, { kicker: 'The Profile', title: 'Profile' });
+
+    this._pageRight.innerHTML = `
+      <div class="pg-entry">
+        <p class="pg-story-term">${escapeHtml(term.term)}</p>
+        ${this._renderHighlights(term)}
+        ${this._renderLinks('', profileLinks(term))}
+        ${this._renderRelatedGroups(term)}
+      </div>`;
+    this._bindRelatedChips();
+    this._resetScroll();
+  }
+
+  /**
+   * Coverage spread: the brief and where to read more (left), then dated
+   * references and everyone involved (right).
+   */
+  _renderCoverageSpread(term) {
+    this._renderSecondPageFoot();
+    this._renderSecondPageHead(term, { kicker: 'The Coverage', title: 'Coverage' });
+
+    this._pageRight.innerHTML = `
+      <div class="pg-entry">
+        <p class="pg-story-term">${escapeHtml(term.term)}</p>
+        ${this._renderArticles(term)}
+        ${this._renderLinks('Search the record', coverageLinks(term))}
+        ${this._renderRelatedGroups(term)}
+      </div>`;
+    this._bindRelatedChips();
+    this._resetScroll();
+  }
+
+  /** Left page shared by the profile and coverage spreads. */
+  _renderSecondPageHead(term, { kicker, title }) {
+    this._pageLeft.innerHTML = `
+      <div class="story-left">
+        <p class="idx-kicker">TheAIDictionary · ${escapeHtml(kicker)}</p>
+        <p class="idx-ornament">✦&nbsp;&nbsp;❦&nbsp;&nbsp;✦</p>
+        <h2 class="story-title">${escapeHtml(title)}</h2>
+        <p class="story-subject">${escapeHtml(term.term)}</p>
+        ${term.aka.length ? `<p class="pg-aka">also known as: ${escapeHtml(term.aka.join(', '))}</p>` : ''}
+        <p class="story-open">${highlightTerm(term.definition, term)}</p>
+      </div>`;
+  }
+
+  /** "What they did" — the curated highlights of a person or organization. */
+  _renderHighlights(term) {
+    const highlights = (term.profile && term.profile.highlights) || [];
+    if (!highlights.length) return '';
+    return `
+      <section class="pg-highlights">
+        <h3>${icon('sparkles')}&nbsp; What they did</h3>
+        <ul>${highlights.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul>
+      </section>`;
+  }
+
+  /** Dated references covering an event, policy, paper, venue or award. */
+  _renderArticles(term) {
+    const items = (term.coverage || []).filter((item) => item.title && item.url);
+    if (!items.length) return '';
+    const dated = items
+      .map((item) => ({ ...item, stamp: Date.parse(item.date) }))
+      .sort((a, b) => (Number.isNaN(b.stamp) ? -Infinity : b.stamp) - (Number.isNaN(a.stamp) ? -Infinity : a.stamp));
+    return `
+      <section class="pg-articles">
+        <h3>${icon('clock')}&nbsp; In the news</h3>
+        <ul>
+          ${dated
+            .map(
+              (item) => `
+            <li>
+              <a href="${escapeHtml(item.url)}" target="_blank" rel="noopener">
+                <span class="pg-article-title">${escapeHtml(item.title)}</span>${icon('arrow-up-right')}
+              </a>
+              <span class="pg-article-meta">${escapeHtml([item.source, item.date].filter(Boolean).join(' · '))}</span>
+            </li>`
+            )
+            .join('')}
+        </ul>
+      </section>`;
+  }
+
+  /**
+   * Outbound links as a row of icon chips. Curated links read as themselves;
+   * generated ones are marked as searches so the two never look alike.
+   */
+  _renderLinks(title, links) {
+    if (!links.length) return '';
+    return `
+      <section class="pg-links">
+        ${title ? `<h3>${icon('search')}&nbsp; ${escapeHtml(title)}</h3>` : ''}
+        <ul class="pg-link-row">
+          ${links
+            .map((link) => {
+              const label = escapeHtml(link.label);
+              // "X" is only rendered as a label: its mark and its name are the
+              // same glyph, so showing both reads as a stutter.
+              const mark = link.icon === 'x' && link.label.trim().toLowerCase() === 'x' ? '' : icon(link.icon || 'link');
+              const kind = link.curated ? '' : icon('search', 'icon pg-link-kind');
+              return `
+            <li>
+              <a class="pg-link-chip${link.curated ? '' : ' is-search'}" href="${escapeHtml(link.url)}"
+                 target="_blank" rel="noopener" title="${escapeHtml(link.description || link.label)}">${mark}<span>${label}</span>${kind}</a>
+            </li>`;
+            })
+            .join('')}
+        </ul>
+      </section>`;
+  }
+
+  /** Related entries bucketed by what they are: people, organizations, events. */
+  _renderRelatedGroups(term) {
+    const resolved = (term.related || []).map((slug) => findTerm(slug)).filter(Boolean);
+    const groups = relatedGroups(resolved, { perGroup: 4 });
+    if (!groups.length) return '';
+    return `
+      <aside class="pg-related">
+        ${groups
+          .map(
+            (group) => `
+          <section class="pg-group">
+            <h3>${escapeHtml(group.label)}</h3>
+            <div class="pg-group-items">
+              ${group.items
+                .map(
+                  (item) =>
+                    `<button class="related-chip" type="button" data-slug="${escapeHtml(item.slug)}">${escapeHtml(
+                      item.term
+                    )}</button>`
+                )
+                .join('')}
+            </div>
+          </section>`
+          )
+          .join('')}
+      </aside>`;
+  }
+
+  _bindRelatedChips() {
+    this._pageRight.querySelectorAll('.related-chip').forEach((btn) =>
+      btn.addEventListener('click', () => {
+        const slug = btn.dataset.slug;
+        if (slug) {
+          btn.blur(); // don't keep focus inside the overlay while it closes
+          this.openEntry(slug);
+        }
+      })
+    );
+  }
+
   /**
    * Story spread: the opening sentence on the left ("Imagine…" no longer sits
    * alone), the rest of the vignette plus suggested related terms on the right.
@@ -687,14 +892,7 @@ export class UI {
     const moral = rest.length ? rest.pop() : '';
     const body = rest;
 
-    this._renderFootActions([
-      {
-        className: 'pg-flip-back',
-        icon: 'chevron-left',
-        label: 'Flip back to the entry',
-        onClick: () => this._flipToPage(0),
-      },
-    ]);
+    this._renderSecondPageFoot();
 
     this._pageLeft.innerHTML = `
       <div class="story-left">
@@ -759,7 +957,7 @@ export class UI {
   /** Footer chrome for the entry mode (counter + prev/next labels). */
   _syncEntryChrome(term, vol) {
     this.closeShareMenu();
-    const page = this._entryPage === 1 ? ' · story' : '';
+    const page = this._entryPage === 1 ? ` · ${entrySecondPage(term).counter}` : '';
     this._counter.textContent = `${this._termIndex + 1} of ${this._termList.length} · ${vol.label}${page}`;
     this._syncSpreadNav();
   }
@@ -778,7 +976,7 @@ export class UI {
     const dir = page > this._entryPage ? 'next' : 'prev';
     this._entryPage = page;
     this._flip(dir, () => {
-      if (page === 1) this._renderStorySpread(term);
+      if (page === 1) this._renderSecondSpread(term);
       else this._renderEntrySpread(term);
       this._syncEntryChrome(term, vol);
     });
