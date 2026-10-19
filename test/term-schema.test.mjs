@@ -61,6 +61,7 @@ test('normalizeTerm preserves an explicit slug and normalizes optional fields', 
     citation: { title: 'Paper', authors: ['Author'], year: '', venue: '', url: '' },
     addedAt: '',
     _src: 'c-d/example.json',
+    explainer: null,
   });
 });
 

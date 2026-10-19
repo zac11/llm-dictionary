@@ -1,3 +1,5 @@
+import { explainerIssues, normalizeExplainer } from './explainer.js';
+
 export const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 const RANGE_FOLDERS = new Set(
@@ -34,6 +36,9 @@ export const TERM_TYPES = [
   'venue',
   'policy',
   'award',
+  'architecture',
+  'algorithm',
+  'metric',
 ];
 
 export const DEFAULT_TERM_TYPE = 'concept';
@@ -52,6 +57,9 @@ export const TERM_TYPE_LABELS = {
   venue: 'Venue',
   policy: 'Policy',
   award: 'Award',
+  architecture: 'Architecture',
+  algorithm: 'Algorithm',
+  metric: 'Metric',
 };
 
 /**
@@ -72,6 +80,9 @@ export const TYPE_PRESENTATIONS = {
   venue: 'coverage',
   policy: 'coverage',
   award: 'coverage',
+  architecture: 'story',
+  algorithm: 'story',
+  metric: 'story',
 };
 
 const TYPE_ALIASES = {
@@ -85,9 +96,8 @@ const TYPE_ALIASES = {
   institute: 'organization',
   lab: 'organization',
   technique: 'concept',
-  method: 'concept',
-  algorithm: 'concept',
-  architecture: 'concept',
+  method: 'algorithm',
+  procedure: 'algorithm',
   idea: 'concept',
   topic: 'concept',
   term: 'concept',
@@ -95,7 +105,11 @@ const TYPE_ALIASES = {
   summit: 'event',
   incident: 'event',
   milestone: 'event',
-  network: 'model',
+  network: 'architecture',
+  measure: 'metric',
+  score: 'metric',
+  case: 'event',
+  lawsuit: 'event',
   corpus: 'dataset',
   evaluation: 'benchmark',
   library: 'tool',
@@ -298,6 +312,7 @@ export function normalizeTerm(raw, source = '') {
     definition: String(raw.definition || '').trim(),
     details: String(raw.details || '').trim(),
     story: String(raw.story || '').trim(),
+    explainer: normalizeExplainer(raw.explainer, normalizeTermType(raw.type) || DEFAULT_TERM_TYPE),
     deceased: raw.deceased === true,
     profile: normalizeProfile(raw.profile),
     coverage: normalizeCoverage(raw.coverage),
@@ -453,6 +468,10 @@ export function validateTerm(term, context = {}) {
     if (date && !isIsoDate(date)) add('error', 'invalid-coverage-date', `Coverage date “${date}” must be YYYY-MM-DD.`);
   }
 
+  if (raw && raw.explainer !== undefined) {
+    for (const message of explainerIssues(raw.explainer, term.type)) add('warning', 'weak-explainer', message);
+  }
+
   // Presentation coherence: the second spread is chosen by type, so data for a
   // different spread is silently unused.
   const presentation = entryPresentation(term.type);
@@ -463,7 +482,7 @@ export function validateTerm(term, context = {}) {
   if (term.coverage.length && presentation !== 'coverage') {
     add('warning', 'unexpected-coverage', `coverage data is unused because ${term.type} entries read as “${presentation}”.`);
   }
-  if (term.story && presentation !== 'story') {
+  if (term.story && presentation !== 'story' && !term.explainer) {
     add('warning', 'unexpected-story', `story is not shown for ${term.type} entries — use “${presentation}” data instead.`);
   }
 

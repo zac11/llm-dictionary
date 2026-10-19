@@ -5,6 +5,8 @@
 //        node scripts/classify-types.mjs --force    (re-evaluate every entry)
 //        node scripts/classify-types.mjs --dry-run  (report only)
 //        node scripts/classify-types.mjs --dry-run --samples
+//        node scripts/classify-types.mjs --refine   (sort concepts into architecture,
+//                                                    algorithm, model, metric …)
 //
 //  `category` says which topic an entry belongs to; `type` says what kind of
 //  thing it is, and the reader shows a story, a profile or coverage accordingly
@@ -36,6 +38,8 @@ const DRY_RUN = process.argv.includes('--dry-run');
 const SAMPLES = process.argv.includes('--samples');
 // By default a type that was set by hand (or by an import) is left alone.
 const FORCE = process.argv.includes('--force');
+// Re-sort entries typed "concept" into the finer kinds (see `refineConcept`).
+const REFINE = process.argv.includes('--refine');
 
 // ------------------------------------------------------------------ patterns --
 const NATIONALITY =
@@ -219,6 +223,35 @@ export function classifyRecord(record) {
   return { type: 'concept', reason: 'default' };
 }
 
+// ------------------------------------------------------- concept refinement --
+const IS = String.raw`\b(?:is|are|was|refers to|describes)\s+(?:an?|the|one of the)?\s*`;
+const MOD = String.raw`(?:[\w'’()-]+\s+){0,5}?`;
+/**
+ * A finer kind for an entry that reads as a concept: architecture, algorithm,
+ * model, metric, benchmark, dataset, tool, paper — or an event for a court
+ * case. Reads the opening sentence the same way `classifyRecord` does and
+ * returns null when unsure, so the entry stays a concept.
+ */
+export function refineConcept(record) {
+  const term = String(record.term || '').trim();
+  const opening = `${firstSentence(record.definition)} ${firstSentence(record.details)}`;
+  const def = firstSentence(record.definition);
+  const t = (re) => re.test(term);
+  // Topic words: "Dataset shift", "Benchmark saturation", "Corpus linguistics" are ideas about the thing.
+  if (/\b(?:shift|saturation|contamination|annotation|exploration|linguistics|attack|error|learning|theory|mathematics of|laws? of|processing|reasoning|computing|classification)\b/i.test(term)) return /\sv\.?\s/.test(term) ? 'event' : null;
+  const o = (re) => re.test(def);
+  if (/\sv\.?\s/.test(term) && /\b(?:lawsuit|case|court|suit|litigation)\b/i.test(`${record.definition} ${record.details}`.slice(0, 400))) return 'event';
+  if (t(/-bench$|\bbench$|\(benchmark\)|\bGLUE\b/i) || o(new RegExp(`${IS}${MOD}benchmarks?\\b`, 'i'))) return 'benchmark';
+  if (t(/\(dataset\)|\bdatabase$/i) || o(new RegExp(`${IS}${MOD}(?:dataset|data set|corpus|database of)\\b`, 'i'))) return 'dataset';
+  if (o(new RegExp(`${IS}${MOD}(?:metric|evaluation measure|performance measure|scoring (?:method|function))\\b`, 'i')) || t(/\(metric\)/i)) return 'metric';
+  if (o(new RegExp(`${IS}${MOD}(?:large )?(?:language |foundation |multimodal |generative |text-to-\\w+ |AI )?(?:models?|chatbots?|model family|family of[^.]{0,40}models)\\b[^.]{0,120}\\b(?:developed|released|created|trained|introduced|built|launched|made)\\s+by\\b`, 'i'))) return 'model';
+  if (o(new RegExp(`${IS}${MOD}(?:open[- ]source |free |proprietary )?(?:software|python |javascript )?(?:library|libraries|framework|toolkit|software package|programming language|platform|IDE|command-line tool|SDK)\\b`, 'i')) && !o(/\btheoretical framework|conceptual framework\b/i)) return 'tool';
+  if (o(new RegExp(`${IS}${MOD}(?:neural network |deep learning |network |model |transformer )?architectures?\\b`, 'i')) || o(new RegExp(`${IS}${MOD}(?:type|kind|class|family|variant) of${MOD}(?:artificial )?neural networks?\\b`, 'i')) || t(/\b(?:network|transformer|autoencoder|perceptron|LSTM|ResNet|U-Net|encoder-decoder|mixture of experts)s?\b/i) && o(/\bnetwork|architecture|layers?\b/i)) return 'architecture';
+  if (o(new RegExp(`${IS}${MOD}(?:algorithms?|optimi[sz]ation (?:method|algorithm|technique)|iterative method|search (?:algorithm|method)|procedure|heuristic)\\b`, 'i')) || t(/\balgorithm\b/i)) return 'algorithm';
+  if (o(new RegExp(`${IS}${MOD}(?:paper|article|preprint)\\b`, 'i'))) return 'paper';
+  return null;
+}
+
 /** Rebuild a record with `type` placed after `category`, dropping dead stories. */
 export function applyType(record, type) {
   const ordered = {};
@@ -258,8 +291,15 @@ function main() {
 
       const classified = classifyRecord(raw);
       const existing = normalizeTermType(raw.type);
-      const type = existing && !FORCE ? existing : classified.type;
-      const reason = existing && !FORCE ? 'author-set' : classified.reason;
+      let type = existing && !FORCE ? existing : classified.type;
+      let reason = existing && !FORCE ? 'author-set' : classified.reason;
+      if (REFINE && type === 'concept') {
+        const refined = refineConcept(raw);
+        if (refined) {
+          type = refined;
+          reason = 'refined';
+        }
+      }
       if (existing) {
         alreadyTyped++;
         if (existing !== classified.type) overrides++;

@@ -2,13 +2,99 @@
   "term": "Gradient Descent",
   "letter": "G",
   "category": "Optimization",
-  "type": "concept",
+  "type": "algorithm",
   "aka": [
     "Steepest descent"
   ],
   "definition": "An iterative optimization method that moves parameters in the direction that most decreases the loss.",
   "details": "Gradient descent computes the derivative of the loss with respect to each parameter and steps against it, scaled by a learning rate. Its stochastic variants (SGD and its many descendants such as Adam) estimate the gradient from small batches of data, which is how virtually all neural networks are trained. The method traces back to the classic work on stochastic approximation.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. That steady, miss-by-miss improvement is Gradient Descent.",
+  "explainer": {
+    "lead": "Gradient descent is how almost every neural network learns. Picture walking down a foggy hill: you can't see the bottom, but you can feel which way is downhill, so you take a small step that way and repeat.",
+    "goal": "Find the parameter values that make the loss — the model's measure of how wrong it is — as small as possible.",
+    "inputs": [
+      "A loss function",
+      "Starting parameters",
+      "A learning rate (the step size)"
+    ],
+    "outputs": [
+      "Parameters with a lower loss"
+    ],
+    "steps": [
+      "Compute the loss for the current parameters.",
+      "Compute the gradient: how the loss changes as each parameter changes.",
+      "Move every parameter a small step against its gradient (step = learning rate × gradient).",
+      "Repeat until the loss stops improving."
+    ],
+    "example": "Minimise f(x) = x² starting at x = 3 with a learning rate of 0.1. The gradient is 2x = 6, so x becomes 3 − 0.1 × 6 = 2.4, then 1.92, then 1.54 … sliding toward the minimum at 0.",
+    "tradeoffs": [
+      "Too large a learning rate overshoots and diverges; too small crawls.",
+      "It can settle in a local minimum or a flat region.",
+      "Stochastic variants (SGD, Adam) estimate the gradient from small batches to stay fast on huge datasets."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "params",
+          "label": "Parameters",
+          "note": ""
+        },
+        {
+          "id": "loss",
+          "label": "Compute loss",
+          "note": ""
+        },
+        {
+          "id": "grad",
+          "label": "Compute gradient",
+          "note": ""
+        },
+        {
+          "id": "step",
+          "label": "Step downhill",
+          "note": ""
+        }
+      ],
+      "edges": [
+        {
+          "from": "params",
+          "to": "loss",
+          "label": ""
+        },
+        {
+          "from": "loss",
+          "to": "grad",
+          "label": ""
+        },
+        {
+          "from": "grad",
+          "to": "step",
+          "label": ""
+        },
+        {
+          "from": "step",
+          "to": "params",
+          "label": "repeat"
+        }
+      ],
+      "caption": "The gradient descent loop."
+    },
+    "image": {
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4c/Gradient_Descent_in_2D.webm/500px--Gradient_Descent_in_2D.webm.jpg",
+      "alt": "Gradient descent — Optimization algorithm",
+      "width": 640,
+      "height": 640,
+      "credit": "Gpeyre",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Gradient_Descent_in_2D.webm"
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Gradient descent",
+        "url": "https://en.wikipedia.org/wiki/Gradient_descent"
+      }
+    ]
+  },
   "related": [
     "stochastic-gradient-descent",
     "differentially-private-stochastic-gradient-descent",

@@ -2,10 +2,89 @@
   "term": "F-score",
   "letter": "F",
   "category": "Machine learning",
-  "type": "concept",
+  "type": "metric",
   "definition": "In statistical analysis of binary classification and information retrieval systems, the F-score or F-measure is a measure of predictive performance.",
   "details": "It is calculated from the precision and recall of the test, where the precision is the number of true positive results divided by the number of all samples predicted to be positive, including those not identified correctly, and the recall is the number of true positive results divided by the number of all samples that should have been identified as positive. Precision is also known as positive predictive value, and recall is also known as sensitivity in diagnostic binary classification. The F1 score is the harmonic mean of the precision and recall. It thus symmetrically represents both precision and recall in one metric. The more generic F β {\\displaystyle F_{\\beta }} score applies additional weights, valuing one of precision or recall more than the other. The highest possible value of an F-score is 1.0, indicating perfect precision and recall, and the lowest possible value is 0, if the precision or the recall is zero.",
-  "story": "Think of a referee whose job is to be completely honest about who touched the ball last. Before trusting a machine, someone has to measure how good it really is — fairly and honestly. It is the exam that separates “it sounds good” from “it actually is good”. What gets measured is what actually gets better. That shared ruler is F-score.",
+  "explainer": {
+    "lead": "The F-score boils a classifier's precision and recall down to one number. It only scores high when the model both finds most of the true cases and is usually right when it says “yes”.",
+    "measures": "How well a binary classifier or search system balances precision (how many of its positives are correct) and recall (how many real positives it found).",
+    "howScored": [
+      "Count true positives, false positives and false negatives on a test set.",
+      "Precision = TP / (TP + FP); recall = TP / (TP + FN).",
+      "Combine them with the harmonic mean, which punishes a large gap between the two."
+    ],
+    "formula": "F1 = 2 · precision · recall / (precision + recall)\nFβ = (1 + β²) · precision · recall / (β² · precision + recall)",
+    "example": "A spam filter flags 50 emails, 40 of them spam (precision 0.8), but the inbox held 80 spam emails (recall 0.5). F1 = 2 × 0.8 × 0.5 / 1.3 ≈ 0.62.",
+    "typicalResults": "Ranges from 0 to 1; F1 is the common default, while F2 weights recall higher and F0.5 weights precision higher.",
+    "caveats": [
+      "Ignores true negatives entirely.",
+      "Depends on the decision threshold you pick.",
+      "Averaging across classes (macro vs micro) can change the story."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "preds",
+          "label": "Predictions vs labels",
+          "note": ""
+        },
+        {
+          "id": "p",
+          "label": "Precision",
+          "note": ""
+        },
+        {
+          "id": "r",
+          "label": "Recall",
+          "note": ""
+        },
+        {
+          "id": "f",
+          "label": "F-score (harmonic mean)",
+          "note": ""
+        }
+      ],
+      "edges": [
+        {
+          "from": "preds",
+          "to": "p",
+          "label": ""
+        },
+        {
+          "from": "preds",
+          "to": "r",
+          "label": ""
+        },
+        {
+          "from": "p",
+          "to": "f",
+          "label": ""
+        },
+        {
+          "from": "r",
+          "to": "f",
+          "label": ""
+        }
+      ],
+      "caption": ""
+    },
+    "image": {
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/26/Precisionrecall.svg/960px-Precisionrecall.svg.png",
+      "alt": "F-score — Statistical measure of a test's accuracy",
+      "width": 640,
+      "height": 1164,
+      "credit": "Walber",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Precisionrecall.svg"
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: F-score",
+        "url": "https://en.wikipedia.org/wiki/F-score"
+      }
+    ]
+  },
   "related": [
     "a-r-d-prasad",
     "abeba-birhane",
