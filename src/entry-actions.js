@@ -3,6 +3,7 @@
 // No DOM here — the UI reader renders these strings.
 
 import { entryPresentation } from './term-schema.js';
+import { EXPLAINER_LAYOUTS } from './explainer.js';
 
 const SECOND_PAGE = {
   story: { title: 'In a story', cue: 'Flip to the story', counter: 'story' },
@@ -11,10 +12,17 @@ const SECOND_PAGE = {
 };
 
 /**
- * The second spread an entry carries, plus its copy. A concept keeps its story;
- * a person shows a profile; an event shows coverage.
+ * The second spread an entry carries, plus its copy. An entry with an
+ * `explainer` reads through its type's layout (how it works, anatomy, their
+ * work …); without one, a concept keeps its story, a person shows a profile and
+ * an event shows coverage.
  */
 export function entrySecondPage(term) {
+  if (term && term.explainer && EXPLAINER_LAYOUTS[term.explainer.layout]) {
+    const { layout } = term.explainer;
+    const { title, cue } = EXPLAINER_LAYOUTS[layout];
+    return { presentation: 'explainer', layout, title, cue, counter: title.toLowerCase() };
+  }
   const presentation = entryPresentation(term && term.type);
   return { presentation, ...SECOND_PAGE[presentation] };
 }

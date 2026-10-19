@@ -2,13 +2,125 @@
   "term": "Transformer",
   "letter": "T",
   "category": "Architecture",
-  "type": "concept",
+  "type": "architecture",
   "aka": [
     "Transformer network"
   ],
   "definition": "A neural architecture based on self-attention rather than recurrence or convolution, the foundation of modern LLMs.",
   "details": "The Transformer processes entire sequences in parallel, using multi-head self-attention to model pairwise relationships and positional encodings to retain order. Removing recurrence made training dramatically more parallelizable, enabling the scaling that produced GPT, BERT and today’s large language models.",
-  "story": "You're at a dinner party where everyone is talking at once, and somehow you can still follow the one story being told to you. A Transformer reads a whole sentence in one go, noticing which words matter most to every other word. Instead of moving through words one at a time, like a student reading aloud with a finger under each line, it takes in the whole room and connects the dots. That one trick is what lets computers write, translate and hold conversations the way they do today. The Transformer is the good listener at a loud party — hearing everything at once, and still catching the part that matters.",
+  "explainer": {
+    "lead": "The Transformer is the design inside almost every modern language model. Instead of reading a sentence one word at a time, it looks at every word at once and lets each word decide which others matter to it.",
+    "components": [
+      {
+        "name": "Token embeddings",
+        "detail": "turn each word piece into a vector of numbers"
+      },
+      {
+        "name": "Positional encoding",
+        "detail": "adds each token's position, since attention alone ignores order"
+      },
+      {
+        "name": "Multi-head self-attention",
+        "detail": "every token weighs every other token, several ways in parallel"
+      },
+      {
+        "name": "Feed-forward layer",
+        "detail": "a small network applied to each token on its own"
+      },
+      {
+        "name": "Residual connections + layer norm",
+        "detail": "keep signals stable across dozens of stacked blocks"
+      },
+      {
+        "name": "Output head",
+        "detail": "turns the final vectors into probabilities for the next token"
+      }
+    ],
+    "flow": [
+      "Text is split into tokens and each token becomes an embedding.",
+      "Position information is added so the model knows word order.",
+      "Self-attention mixes information between tokens.",
+      "A feed-forward layer refines each token's vector.",
+      "The attention + feed-forward block repeats N times.",
+      "The last layer predicts the next token (or a label)."
+    ],
+    "origin": "Introduced in 2017 by Ashish Vaswani and colleagues at Google in the paper “Attention Is All You Need”, originally for machine translation.",
+    "lineage": "It replaced recurrent networks such as LSTMs for most language tasks, and led directly to BERT, GPT and today's large language models.",
+    "whyItMatters": "Because it processes a whole sequence in parallel, it trains far faster on modern hardware — which is what made scaling to billions of parameters practical.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "tokens",
+          "label": "Input tokens",
+          "note": ""
+        },
+        {
+          "id": "embed",
+          "label": "Embeddings + positions",
+          "note": ""
+        },
+        {
+          "id": "attn",
+          "label": "Multi-head self-attention",
+          "note": ""
+        },
+        {
+          "id": "ffn",
+          "label": "Feed-forward",
+          "note": ""
+        },
+        {
+          "id": "out",
+          "label": "Next-token probabilities",
+          "note": ""
+        }
+      ],
+      "edges": [
+        {
+          "from": "tokens",
+          "to": "embed",
+          "label": ""
+        },
+        {
+          "from": "embed",
+          "to": "attn",
+          "label": ""
+        },
+        {
+          "from": "attn",
+          "to": "ffn",
+          "label": ""
+        },
+        {
+          "from": "ffn",
+          "to": "attn",
+          "label": "× N blocks"
+        },
+        {
+          "from": "ffn",
+          "to": "out",
+          "label": ""
+        }
+      ],
+      "caption": "One Transformer block — attention, then feed-forward — stacked N times."
+    },
+    "image": {
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/34/Transformer%2C_full_architecture.png/960px-Transformer%2C_full_architecture.png",
+      "alt": "Transformer (deep learning) — Algorithm for modelling sequential data",
+      "width": 640,
+      "height": 673,
+      "credit": "dvgodoy",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Transformer,_full_architecture.png"
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Transformer (deep learning)",
+        "url": "https://en.wikipedia.org/wiki/Transformer_(deep_learning)"
+      }
+    ]
+  },
   "related": [
     "vision-transformer",
     "convolutional-neural-network",

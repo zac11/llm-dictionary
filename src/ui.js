@@ -15,6 +15,8 @@ import {
   relatedGroups,
 } from './entry-actions.js';
 import { TERM_TYPE_LABELS } from './term-schema.js';
+import { EXPLAINER_LAYOUTS, explainerSections } from './explainer.js';
+import { renderDiagramSvg } from './diagram.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -719,9 +721,136 @@ export class UI {
    */
   _renderSecondSpread(term) {
     const { presentation } = entrySecondPage(term);
+    if (presentation === 'explainer') return this._renderExplainerSpread(term);
     if (presentation === 'profile') return this._renderProfileSpread(term);
     if (presentation === 'coverage') return this._renderCoverageSpread(term);
     return this._renderStorySpread(term);
+  }
+
+  /**
+   * Explainer spread: the plain-language lead and the entry's figure (left),
+   * then the sections its type's layout reads in — how it works, the parts,
+   * their work, what happened — followed by where to go next (right).
+   */
+  _renderExplainerSpread(term) {
+    const explainer = term.explainer;
+    const layout = EXPLAINER_LAYOUTS[explainer.layout];
+    this._renderSecondPageFoot();
+
+    const diagram = explainer.diagram ? this._renderDiagramFigure(term, explainer.diagram) : '';
+    const image = explainer.image ? this._renderImageFigure(term, explainer.image) : '';
+    const [leadFigure, trailFigure] = layout.figure === 'image' ? [image || diagram, image ? diagram : ''] : [diagram || image, diagram ? image : ''];
+    const typeLabel = TERM_TYPE_LABELS[term.type] || 'Entry';
+
+    this._pageLeft.innerHTML = `
+      <div class="story-left xp-left xp-layout-${escapeHtml(explainer.layout)}">
+        <p class="idx-kicker">TheAIDictionary · ${escapeHtml(typeLabel)}</p>
+        <p class="idx-ornament">✦&nbsp;&nbsp;❦&nbsp;&nbsp;✦</p>
+        <h2 class="story-title">${escapeHtml(layout.title)}</h2>
+        <p class="story-subject">${escapeHtml(term.term)}</p>
+        ${term.aka.length ? `<p class="pg-aka">also known as: ${escapeHtml(term.aka.join(', '))}</p>` : ''}
+        <p class="story-open xp-lead">${escapeHtml(explainer.lead)}</p>
+        ${leadFigure}
+      </div>`;
+
+    const sections = explainerSections(explainer).map((section) => this._renderExplainerSection(section, term)).join('');
+    let next;
+    if (explainer.layout === 'person' || explainer.layout === 'organization') {
+      next = `${this._renderLinks('', profileLinks(term))}${this._renderRelatedGroups(term)}`;
+    } else if (explainer.layout === 'timeline') {
+      next = `${this._renderArticles(term)}${this._renderLinks('Search the record', coverageLinks(term))}${this._renderRelatedGroups(term)}`;
+    } else {
+      next = this._renderSuggested(term);
+    }
+    const sources = (explainer.sources || [])
+      .map((src) => `<a href="${escapeHtml(src.url)}" target="_blank" rel="noopener">${escapeHtml(src.title)}${icon('arrow-up-right')}</a>`)
+      .join(' · ');
+
+    this._pageRight.innerHTML = `
+      <div class="pg-entry xp-right">
+        <p class="pg-story-term">${escapeHtml(term.term)}</p>
+        ${sections}
+        ${trailFigure}
+        ${sources ? `<p class="xp-sources">Sources: ${sources}</p>` : ''}
+        <p class="pg-story-end" aria-hidden="true">❦</p>
+        ${next}
+      </div>`;
+    this._bindRelatedChips();
+    this._bindSuggestedRows();
+    this._resetScroll();
+  }
+
+  _renderExplainerSection({ field, heading, kind, icon: iconName, value }, term) {
+    const ordered = ['howItWorks', 'flow', 'steps', 'howScored'].includes(field);
+    let body;
+    if (kind === 'text') body = `<p>${highlightTerm(value, term)}</p>`;
+    else if (kind === 'formula') body = `<pre class="xp-formula">${escapeHtml(value)}</pre>`;
+    else if (kind === 'list') {
+      const tag = ordered ? 'ol' : 'ul';
+      body = `<${tag} class="xp-list${ordered ? ' xp-steps' : ''}">${value.map((item) => `<li>${highlightTerm(item, term)}</li>`).join('')}</${tag}>`;
+    } else if (kind === 'items') {
+      body = `<ul class="xp-items">${value
+        .map((item) => `<li><strong>${escapeHtml(item.name)}</strong>${item.detail ? ` <span>${escapeHtml(item.detail)}</span>` : ''}</li>`)
+        .join('')}</ul>`;
+    } else if (kind === 'events') {
+      body = `<ol class="xp-timeline">${value
+        .map((item) => `<li>${item.when ? `<span class="xp-when">${escapeHtml(item.when)}</span>` : ''}<span class="xp-what">${escapeHtml(item.what)}</span></li>`)
+        .join('')}</ol>`;
+    } else if (kind === 'works') {
+      body = `<ul class="xp-works">${value
+        .map((item) => {
+          const title = escapeHtml(item.title);
+          const linked = item.url ? `<a href="${escapeHtml(item.url)}" target="_blank" rel="noopener">${title}${icon('arrow-up-right')}</a>` : title;
+          return `<li>${linked}${item.year ? ` <span class="xp-year">${escapeHtml(item.year)}</span>` : ''}</li>`;
+        })
+        .join('')}</ul>`;
+    } else return '';
+    return `
+      <section class="xp-section xp-kind-${escapeHtml(kind)}">
+        <h3>${icon(iconName)}&nbsp; ${escapeHtml(heading)}</h3>
+        ${body}
+      </section>`;
+  }
+
+  _renderDiagramFigure(term, diagram) {
+    const svg = renderDiagramSvg(diagram, { id: `dg-${term.slug}`, title: `${term.term} diagram` });
+    if (!svg) return '';
+    return `
+      <figure class="xp-figure xp-diagram">
+        ${svg}
+        <figcaption>${escapeHtml(diagram.caption || `${term.term}, drawn as a diagram`)}</figcaption>
+      </figure>`;
+  }
+
+  _renderImageFigure(term, image) {
+    const credit = [
+      image.credit && escapeHtml(image.credit),
+      image.license &&
+        (image.licenseUrl
+          ? `<a href="${escapeHtml(image.licenseUrl)}" target="_blank" rel="noopener license">${escapeHtml(image.license)}</a>`
+          : escapeHtml(image.license)),
+      image.page && `<a href="${escapeHtml(image.page)}" target="_blank" rel="noopener">via Wikimedia Commons</a>`,
+    ]
+      .filter(Boolean)
+      .join(' · ');
+    const size = image.width && image.height ? ` width="${image.width}" height="${image.height}"` : '';
+    return `
+      <figure class="xp-figure xp-photo">
+        <img src="${escapeHtml(image.src)}" alt="${escapeHtml(image.alt || term.term)}" loading="lazy" decoding="async"${size} />
+        ${credit ? `<figcaption>${credit}</figcaption>` : ''}
+      </figure>`;
+  }
+
+  _bindSuggestedRows() {
+    this._pageRight.querySelectorAll('.suggested-row').forEach((btn) =>
+      btn.addEventListener('click', () => {
+        const slug = btn.dataset.slug;
+        if (slug) {
+          btn.blur(); // don't keep focus inside the overlay while it closes
+          this.openEntry(slug);
+        }
+      })
+    );
   }
 
   /**
@@ -916,15 +1045,7 @@ export class UI {
         ${this._renderSuggested(term)}
       </div>`;
 
-    this._pageRight.querySelectorAll('.suggested-row').forEach((btn) =>
-      btn.addEventListener('click', () => {
-        const slug = btn.dataset.slug;
-        if (slug) {
-          btn.blur(); // don't keep focus inside the overlay while it closes
-          this.openEntry(slug);
-        }
-      })
-    );
+    this._bindSuggestedRows();
     this._resetScroll();
   }
 
