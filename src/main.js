@@ -1,4 +1,5 @@
 import './styles.css';
+import './visits.js';
 import { volumes, findTerm, volumeByLetter, rangeTerms, summary, allTerms } from './terms.js';
 import { Library } from './library.js';
 import { UI } from './ui.js';
