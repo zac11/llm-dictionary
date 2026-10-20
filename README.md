@@ -37,6 +37,7 @@ llm-dictionary/
 │   └── prerender-share.mjs# post-build: per-term /term/<slug>/ share pages
 ├── src/
 │   ├── main.js            # app entry / ritual orchestration
+│   ├── visits.js          # first-party reader count (footer)
 │   ├── library.js         # Three.js library room, shelf wall, camera, picking
 │   ├── book3d.js          # the openable 3D volume (pull-out → open → return)
 │   ├── anim.js            # tiny tween runner + easings
@@ -49,6 +50,9 @@ llm-dictionary/
 │   └── styles.css
 ├── public/
 │   └── og.png             # generated social preview card (npm run og)
+├── netlify/functions/
+│   ├── ask.mjs            # grounded Q&A proxy
+│   └── visit.mjs          # distinct-reader counter (POST /api/visit)
 └── index.html
 ```
 
@@ -226,6 +230,45 @@ npm run test:kimi
 The test fails on authentication errors, non-JSON responses, missing completion content,
 an unexpected response, or latency beyond the function's 18-second upstream budget.
 Never commit provider credentials or place them in tracked files.
+
+## 📈 Distinct visitor count
+
+The footer shows an all-time count of distinct readers. It is measured
+first-party, with no third-party analytics:
+
+- `POST /api/visit` (`netlify/functions/visit.mjs`) is called once per page load.
+- The first visit gets an `HttpOnly`, `SameSite=Lax` cookie with a random UUID.
+  A valid cookie means "returning" — the function only reads the total.
+- New visitors are recorded in a Netlify Blobs store (`visitor-count`) and the
+  `stats/total` counter is bumped atomically.
+- Crawlers, automation user agents, prefetches, and cross-site calls are ignored.
+- To stop cookie-clearing from inflating the number, one IP can add at most five
+  new visitors per UTC day. The gate stores a salted hash of the IP and only
+  today's count — raw IPs and per-day history are never stored.
+- Deploy previews and branch deploys read the total but never write to it.
+
+The count starts at zero on the deploy that ships this feature; traffic before it
+was never recorded. To read the raw number outside the footer, open the
+`visitor-count` store → `stats/total` in Netlify Blobs.
+
+Set the salt in Netlify (Site configuration → Environment variables):
+
+```dotenv
+VISITOR_HASH_SALT=<random string>
+# optional, default 5
+VISITOR_MAX_NEW_PER_IP_DAY=5
+```
+
+The count needs Netlify Functions and Blobs, so plain `npm run dev` (Vite only)
+leaves the footer hidden. Use `netlify dev` to exercise the endpoint locally.
+
+Privacy: the cookie holds only a random ID and is never used for cross-site
+tracking. It is still an analytics cookie; if your jurisdiction requires consent
+for analytics, gate `recordVisit()` behind your consent banner.
+
+**Limitation:** the count is distinct browsers, not verified humans. A person who
+clears cookies or uses several devices may be counted more than once, while
+privacy tools that strip the user agent may not be counted at all.
 
 ## 📄 License
 
