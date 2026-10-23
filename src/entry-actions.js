@@ -208,3 +208,14 @@ export function entryTransition({ spreadOpen, mode, reducedMotion }) {
   if (mode !== 'entry') return 'ritual';
   return 'short';
 }
+
+/** Bullet points from a details sentence like "Built X, co-authored Y, and led Z." */
+export function detailHighlights(details) {
+  const parts = String(details || '')
+    .replace(/\.$/, '')
+    .split(/;\s+|,\s+(?:and\s+)?(?=(?:co-)?[a-z]+(?:ed|built|wrote|made|ran|won|leads|runs|builds)\b)/i)
+    .map((part) => part.trim())
+    .filter((part) => part.length > 12);
+  if (parts.length < 2) return details ? [String(details).trim()] : [];
+  return parts.map((part) => part.charAt(0).toUpperCase() + part.slice(1));
+}

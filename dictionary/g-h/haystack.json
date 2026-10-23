@@ -1,0 +1,36 @@
+{
+  "term": "Haystack",
+  "letter": "H",
+  "category": "LLM apps and agents",
+  "type": "library",
+  "definition": "Haystack is an open-source framework for building production RAG pipelines, search systems and agents from composable components.",
+  "details": "Created by deepset (Berlin) in 2019.",
+  "explainer": {
+    "lead": "How to install Haystack, a first working example, and where it fits in an AI project.",
+    "createdBy": "deepset GmbH.",
+    "install": {
+      "python": "pip install haystack-ai"
+    },
+    "quickstart": {
+      "python": "from haystack import Pipeline\nfrom haystack.components.builders import ChatPromptBuilder\nfrom haystack.components.generators.chat import OpenAIChatGenerator\nfrom haystack.dataclasses import ChatMessage\n\npipe = Pipeline()\npipe.add_component(\"prompt\", ChatPromptBuilder(template=[ChatMessage.from_user(\"Define {{term}} briefly.\")]))\npipe.add_component(\"llm\", OpenAIChatGenerator(model=\"gpt-4o-mini\"))\npipe.connect(\"prompt.prompt\", \"llm.messages\")\nprint(pipe.run({\"prompt\": {\"term\": \"reranking\"}})[\"llm\"][\"replies\"][0].text)"
+    },
+    "inAi": "Build retrieval pipelines (retriever → reranker → generator) that are explicit and easy to evaluate.",
+    "jsNote": "Haystack is a Python library with no official JavaScript or TypeScript package; call it from a Python service if your app is written in JavaScript.",
+    "sources": [
+      {
+        "title": "Haystack documentation",
+        "url": "https://docs.haystack.deepset.ai/"
+      }
+    ]
+  },
+  "citation": {
+    "title": "Haystack documentation",
+    "authors": [
+      "deepset GmbH"
+    ],
+    "venue": "Official documentation",
+    "url": "https://docs.haystack.deepset.ai/"
+  },
+  "slug": "haystack",
+  "addedAt": "2026-10-23"
+}

@@ -2,9 +2,28 @@
   "term": "LangGraph",
   "letter": "L",
   "category": "AI/ML glossary",
-  "type": "concept",
-  "definition": "A framework for building stateful, multi-actor applications with LLMs, extending LangChain with cyclic computational graphs crucial for reliable agent orchestration.",
-  "details": "A framework for building stateful, multi-actor applications with LLMs, extending LangChain with cyclic computational graphs crucial for reliable agent orchestration.",
+  "type": "library",
+  "definition": "LangGraph is a library for building stateful AI agents as graphs of steps, with loops, branching, memory and human-in-the-loop checkpoints.",
+  "details": "Released by LangChain, Inc. in January 2024. It works with or without LangChain and is available for Python and JavaScript.",
+  "explainer": {
+    "lead": "How to install LangGraph, a first working example, and where it fits in an AI project.",
+    "createdBy": "LangChain, Inc.",
+    "install": {
+      "python": "pip install langgraph",
+      "javascript": "npm install @langchain/langgraph @langchain/core"
+    },
+    "quickstart": {
+      "python": "from typing import TypedDict\nfrom langgraph.graph import StateGraph, START, END\n\nclass State(TypedDict):\n    question: str\n    answer: str\n\ndef respond(state: State):\n    return {\"answer\": f\"You asked: {state['question']}\"}   # call an LLM here\n\ngraph = StateGraph(State)\ngraph.add_node(\"respond\", respond)\ngraph.add_edge(START, \"respond\")\ngraph.add_edge(\"respond\", END)\nprint(graph.compile().invoke({\"question\": \"What is RAG?\"}))",
+      "javascript": "import { Annotation, StateGraph, START, END } from \"@langchain/langgraph\";\n\nconst State = Annotation.Root({ question: Annotation(), answer: Annotation() });\nconst app = new StateGraph(State)\n  .addNode(\"respond\", (s) => ({ answer: \"You asked: \" + s.question }))\n  .addEdge(START, \"respond\")\n  .addEdge(\"respond\", END)\n  .compile();\nconsole.log(await app.invoke({ question: \"What is RAG?\" }));"
+    },
+    "inAi": "Model an agent as nodes (call model, run tool, check result) and conditional edges that loop until done; a checkpointer gives it memory between turns.",
+    "sources": [
+      {
+        "title": "LangGraph documentation",
+        "url": "https://langchain-ai.github.io/langgraph/"
+      }
+    ]
+  },
   "related": [
     "langchain",
     "orchestration"

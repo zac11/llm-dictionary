@@ -1,0 +1,37 @@
+{
+  "term": "Pinecone",
+  "letter": "P",
+  "category": "Vector search",
+  "type": "library",
+  "definition": "Pinecone is a managed, serverless vector database; its SDKs create indexes, upsert vectors and run similarity queries.",
+  "details": "Founded by Edo Liberty in 2019; Pinecone Systems, Inc.",
+  "explainer": {
+    "lead": "How to install Pinecone, a first working example, and where it fits in an AI project.",
+    "createdBy": "Pinecone Systems, Inc. (founded by Edo Liberty).",
+    "install": {
+      "python": "pip install pinecone",
+      "javascript": "npm install @pinecone-database/pinecone"
+    },
+    "quickstart": {
+      "python": "from pinecone import Pinecone, ServerlessSpec\n\npc = Pinecone()   # reads PINECONE_API_KEY\npc.create_index(\"docs\", dimension=3, metric=\"cosine\", spec=ServerlessSpec(cloud=\"aws\", region=\"us-east-1\"))\nindex = pc.Index(\"docs\")\nindex.upsert(vectors=[(\"a\", [0.1, 0.9, 0.0], {\"topic\": \"cats\"})])\nprint(index.query(vector=[0.1, 0.8, 0.1], top_k=1, include_metadata=True))",
+      "javascript": "import { Pinecone } from \"@pinecone-database/pinecone\";\n\nconst pc = new Pinecone(); // reads PINECONE_API_KEY\nconst index = pc.index(\"docs\");\nawait index.upsert([{ id: \"a\", values: [0.1, 0.9, 0.0], metadata: { topic: \"cats\" } }]);\nconsole.log(await index.query({ vector: [0.1, 0.8, 0.1], topK: 1, includeMetadata: true }));"
+    },
+    "inAi": "Hosted retrieval for RAG without running servers; it can also embed and rerank text for you.",
+    "sources": [
+      {
+        "title": "Pinecone documentation",
+        "url": "https://docs.pinecone.io/"
+      }
+    ]
+  },
+  "citation": {
+    "title": "Pinecone documentation",
+    "authors": [
+      "Pinecone Systems, Inc"
+    ],
+    "venue": "Official documentation",
+    "url": "https://docs.pinecone.io/"
+  },
+  "slug": "pinecone",
+  "addedAt": "2026-10-23"
+}

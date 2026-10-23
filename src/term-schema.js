@@ -39,6 +39,7 @@ export const TERM_TYPES = [
   'architecture',
   'algorithm',
   'metric',
+  'library',
 ];
 
 export const DEFAULT_TERM_TYPE = 'concept';
@@ -60,6 +61,7 @@ export const TERM_TYPE_LABELS = {
   architecture: 'Architecture',
   algorithm: 'Algorithm',
   metric: 'Metric',
+  library: 'Library',
 };
 
 /**
@@ -83,6 +85,7 @@ export const TYPE_PRESENTATIONS = {
   architecture: 'story',
   algorithm: 'story',
   metric: 'story',
+  library: 'story',
 };
 
 const TYPE_ALIASES = {
@@ -112,7 +115,10 @@ const TYPE_ALIASES = {
   lawsuit: 'event',
   corpus: 'dataset',
   evaluation: 'benchmark',
-  library: 'tool',
+  library: 'library',
+  libraries: 'library',
+  package: 'library',
+  sdk: 'library',
   framework: 'tool',
   publication: 'paper',
   journal: 'venue',

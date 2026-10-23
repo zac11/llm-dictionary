@@ -1,0 +1,36 @@
+{
+  "term": "Equinox",
+  "letter": "E",
+  "category": "Deep learning",
+  "type": "library",
+  "definition": "Equinox is a small JAX library that represents neural networks as callable PyTrees, keeping everything plain JAX.",
+  "details": "Created by Patrick Kidger in 2021.",
+  "explainer": {
+    "lead": "How to install Equinox, a first working example, and where it fits in an AI project.",
+    "createdBy": "Patrick Kidger.",
+    "install": {
+      "python": "pip install equinox"
+    },
+    "quickstart": {
+      "python": "import equinox as eqx\nimport jax\n\nmodel = eqx.nn.MLP(in_size=4, out_size=1, width_size=32, depth=2, key=jax.random.PRNGKey(0))\n\n@eqx.filter_jit\ndef loss(model, x, y):\n    return ((jax.vmap(model)(x) - y) ** 2).mean()\n\nx, y = jax.numpy.ones((8, 4)), jax.numpy.zeros((8, 1))\nprint(eqx.filter_grad(loss)(model, x, y).layers[0].weight.shape)"
+    },
+    "inAi": "Popular in scientific ML (neural ODEs, physics models) where you want full control of JAX transformations.",
+    "jsNote": "Equinox is a Python library with no official JavaScript or TypeScript package; call it from a Python service if your app is written in JavaScript.",
+    "sources": [
+      {
+        "title": "Equinox documentation",
+        "url": "https://docs.kidger.site/equinox/"
+      }
+    ]
+  },
+  "citation": {
+    "title": "Equinox documentation",
+    "authors": [
+      "Patrick Kidger"
+    ],
+    "venue": "Official documentation",
+    "url": "https://docs.kidger.site/equinox/"
+  },
+  "slug": "equinox",
+  "addedAt": "2026-10-23"
+}

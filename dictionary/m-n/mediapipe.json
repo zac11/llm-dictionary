@@ -2,10 +2,28 @@
   "term": "MediaPipe",
   "letter": "M",
   "category": "Computer vision",
-  "type": "tool",
+  "type": "library",
   "definition": "MediaPipe is an open source framework with many libraries developed by Google for several artificial intelligence and machine learning solutions.",
   "details": "These solutions range from generative AI, real-time computer vision, natural language processing and audio techniques. These solutions can also be used on various platforms such as Android, JavaScript web, Python and iOS, supporting edge devices.",
-  "story": "Picture a child pointing at pictures in a book — cat, car, cloud — learning to see by seeing a thousand examples. It turns a picture into an understanding: this is a cat, that is a stop sign. What your eyes do without thinking, the machine does one careful layer at a time. It is eyes made of arithmetic — pixels become edges, edges become shapes, shapes become meaning. And that is MediaPipe — giving a machine the gift of sight.",
+  "explainer": {
+    "lead": "How to install MediaPipe, a first working example, and where it fits in an AI project.",
+    "createdBy": "Google.",
+    "install": {
+      "python": "pip install mediapipe",
+      "javascript": "npm install @mediapipe/tasks-vision"
+    },
+    "quickstart": {
+      "python": "import mediapipe as mp\nfrom mediapipe.tasks.python import vision, BaseOptions\n\noptions = vision.HandLandmarkerOptions(base_options=BaseOptions(model_asset_path=\"hand_landmarker.task\"))\nlandmarker = vision.HandLandmarker.create_from_options(options)\nresult = landmarker.detect(mp.Image.create_from_file(\"hand.jpg\"))\nprint(len(result.hand_landmarks), \"hands\")",
+      "javascript": "import { FilesetResolver, HandLandmarker } from \"@mediapipe/tasks-vision\";\n\nconst vision = await FilesetResolver.forVisionTasks(\"https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/wasm\");\nconst landmarker = await HandLandmarker.createFromOptions(vision, {\n  baseOptions: { modelAssetPath: \"hand_landmarker.task\" },\n});\nconst result = landmarker.detect(document.querySelector(\"img\"));\nconsole.log(result.landmarks.length, \"hands\");"
+    },
+    "inAi": "On-device face, hand and pose tracking that runs in real time in the browser — great for gesture-driven UIs.",
+    "sources": [
+      {
+        "title": "MediaPipe documentation",
+        "url": "https://ai.google.dev/edge/mediapipe/solutions/guide"
+      }
+    ]
+  },
   "related": [
     "accord-net",
     "active-appearance-model",

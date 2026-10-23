@@ -2,10 +2,28 @@
   "term": "OpenCV",
   "letter": "O",
   "category": "Computer vision",
-  "type": "tool",
+  "type": "library",
   "definition": "OpenCV (Open Source Computer Vision Library) is a library of programming functions mainly for real-time computer vision.",
   "details": "Originally developed by Intel, it was later supported by Willow Garage, then Itseez (which was later acquired by Intel). The library is cross-platform and licensed as free and open-source software under Apache License 2. Starting in 2011, OpenCV features GPU acceleration for real-time operations.",
-  "story": "Imagine an art restorer who can spot a single cracked tile in a vast mosaic. What your eyes do without thinking, the machine does one careful layer at a time. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. The model looks the way you look at a crowd and finds the one face you know. That pixel-to-meaning climb is OpenCV.",
+  "explainer": {
+    "lead": "How to install OpenCV, a first working example, and where it fits in an AI project.",
+    "createdBy": "Started at Intel Research in 1999 (Gary Bradski); now maintained by the non-profit OpenCV.org.",
+    "install": {
+      "python": "pip install opencv-python",
+      "javascript": "npm install @techstark/opencv-js   # community build of opencv.js"
+    },
+    "quickstart": {
+      "python": "import cv2\n\nimg = cv2.imread(\"photo.jpg\")\ngray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)\nedges = cv2.Canny(gray, 100, 200)\nsmall = cv2.resize(img, (224, 224))       # model-ready size\ncv2.imwrite(\"edges.png\", edges)",
+      "javascript": "import cv from \"@techstark/opencv-js\";\n\ncv.onRuntimeInitialized = () => {\n  const src = cv.imread(\"canvasInput\");     // an <img> or <canvas> id\n  const gray = new cv.Mat();\n  cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY);\n  cv.imshow(\"canvasOutput\", gray);\n  src.delete(); gray.delete();\n};"
+    },
+    "inAi": "Read video frames, resize and crop images before inference, and draw boxes from a detector on the output.",
+    "sources": [
+      {
+        "title": "OpenCV documentation",
+        "url": "https://docs.opencv.org/"
+      }
+    ]
+  },
   "related": [
     "accord-net",
     "active-appearance-model",

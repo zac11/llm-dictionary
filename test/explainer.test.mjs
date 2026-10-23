@@ -15,8 +15,9 @@ import { entrySecondPage, hasSecondPage } from '../src/entry-actions.js';
 import { buildMessages, extractJson, parseExplainerReply } from '../scripts/explainer-prompt.mjs';
 import { refineConcept } from '../scripts/classify-types.mjs';
 
-test('every entry type reads through one of the seven layouts', () => {
-  assert.equal(Object.keys(EXPLAINER_LAYOUTS).length, 7);
+test('every entry type reads through one of the eight layouts', () => {
+  assert.equal(Object.keys(EXPLAINER_LAYOUTS).length, 8);
+  assert.equal(explainerLayout('library'), 'library');
   for (const type of TERM_TYPES) assert.ok(EXPLAINER_LAYOUTS[TYPE_LAYOUTS[type]], type);
   assert.equal(explainerLayout('architecture'), 'anatomy');
   assert.equal(explainerLayout('person'), 'person');
@@ -180,4 +181,27 @@ test('refineConcept sorts technical concepts into finer kinds and leaves ideas a
   assert.equal(r('ROUGE (metric)', 'ROUGE is a set of metrics used for evaluating summarization.'), 'metric');
   assert.equal(r('Dataset shift', 'Dataset shift is a change in the data distribution.'), null);
   assert.equal(r('Overfitting', 'Overfitting is the production of an analysis that corresponds too closely to data.'), null);
+});
+
+test('library explainers keep Python and JavaScript code variants', () => {
+  const explainer = normalizeExplainer(
+    {
+      lead: 'Install it and run a first example.',
+      createdBy: 'Hugging Face.',
+      install: { python: 'pip install transformers', js: 'npm install @huggingface/transformers', ruby: 'gem install x' },
+      quickstart: [{ lang: 'py', code: '\nprint("hi")\n\n' }, { lang: 'typescript', code: '' }],
+      inAi: 'Run open models.',
+      intuition: 'belongs to concepts, dropped',
+    },
+    'library'
+  );
+  assert.equal(explainer.layout, 'library');
+  assert.deepEqual(explainer.install, [
+    { lang: 'python', code: 'pip install transformers' },
+    { lang: 'javascript', code: 'npm install @huggingface/transformers' },
+  ]);
+  assert.deepEqual(explainer.quickstart, [{ lang: 'python', code: 'print("hi")' }]);
+  assert.equal(explainer.intuition, undefined);
+  assert.deepEqual(explainerIssues(explainer, 'library'), []);
+  assert.equal(entrySecondPage({ type: 'library', explainer }).title, 'Install & use');
 });

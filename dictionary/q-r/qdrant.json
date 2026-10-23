@@ -1,0 +1,37 @@
+{
+  "term": "Qdrant",
+  "letter": "Q",
+  "category": "Vector search",
+  "type": "library",
+  "definition": "Qdrant is an open-source vector database written in Rust, with filtering, hybrid search and clients for many languages.",
+  "details": "Created by Andrey Vasnetsov and André Zayarni in 2021; developed by Qdrant Solutions GmbH (Berlin).",
+  "explainer": {
+    "lead": "How to install Qdrant, a first working example, and where it fits in an AI project.",
+    "createdBy": "Qdrant Solutions GmbH.",
+    "install": {
+      "python": "pip install qdrant-client",
+      "javascript": "npm install @qdrant/js-client-rest"
+    },
+    "quickstart": {
+      "python": "from qdrant_client import QdrantClient, models\n\nclient = QdrantClient(\":memory:\")      # or url=\"http://localhost:6333\"\nclient.create_collection(\"docs\", vectors_config=models.VectorParams(size=3, distance=models.Distance.COSINE))\nclient.upsert(\"docs\", points=[models.PointStruct(id=1, vector=[0.1, 0.9, 0.0], payload={\"lang\": \"en\"})])\nprint(client.query_points(\"docs\", query=[0.1, 0.8, 0.1], limit=1).points)",
+      "javascript": "import { QdrantClient } from \"@qdrant/js-client-rest\";\n\nconst client = new QdrantClient({ url: \"http://localhost:6333\" });\nawait client.createCollection(\"docs\", { vectors: { size: 3, distance: \"Cosine\" } });\nawait client.upsert(\"docs\", { points: [{ id: 1, vector: [0.1, 0.9, 0.0], payload: { lang: \"en\" } }] });\nconsole.log(await client.query(\"docs\", { query: [0.1, 0.8, 0.1], limit: 1 }));"
+    },
+    "inAi": "Store embeddings with metadata filters (user, language, date) for production RAG and recommendations.",
+    "sources": [
+      {
+        "title": "Qdrant documentation",
+        "url": "https://qdrant.tech/documentation/"
+      }
+    ]
+  },
+  "citation": {
+    "title": "Qdrant documentation",
+    "authors": [
+      "Qdrant Solutions GmbH"
+    ],
+    "venue": "Official documentation",
+    "url": "https://qdrant.tech/documentation/"
+  },
+  "slug": "qdrant",
+  "addedAt": "2026-10-23"
+}
