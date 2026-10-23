@@ -1,4 +1,4 @@
-// The type-aware second spread. Each entry type reads through one of seven
+// The type-aware second spread. Each entry type reads through one of eight
 // layouts — a concept explains how it works, an architecture shows its anatomy,
 // a person shows their work — and `explainer` holds the content for it. No DOM
 // here: src/ui.js renders the sections, src/diagram.js draws the figure.
@@ -9,7 +9,19 @@ const text = (value) => (typeof value === 'string' || typeof value === 'number' 
 const isHttpUrl = (value) => /^https?:\/\/\S+$/i.test(value);
 
 /** Field shapes an explainer section can take. */
+const CODE_LANGS = { python: 'python', py: 'python', javascript: 'javascript', js: 'javascript', typescript: 'typescript', ts: 'typescript', shell: 'shell', bash: 'shell', sh: 'shell' };
+const codeText = (value) => (typeof value === 'string' ? value.replace(/\r\n?/g, '\n').replace(/^\n+|\s+$/g, '') : '');
+
+/** Code variants, from `{ python: '…', javascript: '…' }` or `[{ lang, code }]`. */
+export function normalizeCode(value) {
+  const list = isRecord(value) ? Object.entries(value).map(([lang, code]) => ({ lang, code })) : asArray(value);
+  return list
+    .map((item) => (isRecord(item) ? { lang: CODE_LANGS[String(item.lang || '').toLowerCase()] || '', code: codeText(item.code) } : null))
+    .filter((item) => item && item.lang && item.code);
+}
+
 const KINDS = {
+  code: normalizeCode,
   text: (value) => text(value),
   list: (value) => asArray(value).map(text).filter(Boolean),
   items: (value) =>
@@ -31,7 +43,7 @@ const KINDS = {
 };
 
 /**
- * The seven layouts. `sections` is the reading order of the right-hand page:
+ * The layouts. `sections` is the reading order of the right-hand page:
  * `[field, heading, kind, icon]`. `figure` says which picture leads when an
  * entry has both a drawn diagram and a photograph.
  */
@@ -122,6 +134,20 @@ export const EXPLAINER_LAYOUTS = {
   },
 };
 
+EXPLAINER_LAYOUTS.library = {
+  title: 'Install & use',
+  cue: 'See how to install and use it',
+  figure: 'diagram',
+  sections: [
+    ['createdBy', 'Who made it', 'text', 'users'],
+    ['install', 'Install it', 'code', 'plus-circle'],
+    ['quickstart', 'A first example', 'code', 'sparkles'],
+    ['customize', 'Make it yours', 'code', 'cog'],
+    ['inAi', 'Using it in AI', 'text', 'lightbulb'],
+    ['jsNote', 'From JavaScript', 'text', 'globe'],
+  ],
+};
+
 /** Which layout each entry type reads through. */
 export const TYPE_LAYOUTS = {
   concept: 'concept',
@@ -139,6 +165,7 @@ export const TYPE_LAYOUTS = {
   metric: 'measure',
   benchmark: 'measure',
   dataset: 'measure',
+  library: 'library',
 };
 
 export function explainerLayout(type) {

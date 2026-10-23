@@ -1,0 +1,37 @@
+{
+  "term": "pgvector",
+  "letter": "P",
+  "category": "Vector search",
+  "type": "library",
+  "definition": "pgvector is a PostgreSQL extension that adds a vector column type and nearest-neighbour search, with client libraries for Python and Node.",
+  "details": "Created by Andrew Kane in 2021; open source and available on most managed Postgres services.",
+  "explainer": {
+    "lead": "How to install pgvector, a first working example, and where it fits in an AI project.",
+    "createdBy": "Andrew Kane.",
+    "install": {
+      "python": "pip install pgvector psycopg",
+      "javascript": "npm install pgvector pg"
+    },
+    "quickstart": {
+      "python": "import psycopg\nfrom pgvector.psycopg import register_vector\n\nconn = psycopg.connect(\"dbname=app\", autocommit=True)\nconn.execute(\"CREATE EXTENSION IF NOT EXISTS vector\")\nregister_vector(conn)\nconn.execute(\"CREATE TABLE IF NOT EXISTS docs (id serial, body text, embedding vector(3))\")\nconn.execute(\"INSERT INTO docs (body, embedding) VALUES (%s, %s)\", (\"cats\", [0.1, 0.9, 0.0]))\nprint(conn.execute(\"SELECT body FROM docs ORDER BY embedding <=> %s::vector LIMIT 1\", ([0.1, 0.8, 0.1],)).fetchone())",
+      "javascript": "import pg from \"pg\";\nimport pgvector from \"pgvector/pg\";\n\nconst client = new pg.Client({ database: \"app\" });\nawait client.connect();\nawait pgvector.registerTypes(client);\nconst { rows } = await client.query(\"SELECT body FROM docs ORDER BY embedding <=> $1 LIMIT 1\", [pgvector.toSql([0.1, 0.8, 0.1])]);\nconsole.log(rows);"
+    },
+    "inAi": "Keep embeddings next to your app data and join them with ordinary SQL filters — no separate vector database.",
+    "sources": [
+      {
+        "title": "pgvector documentation",
+        "url": "https://github.com/pgvector/pgvector"
+      }
+    ]
+  },
+  "citation": {
+    "title": "pgvector documentation",
+    "authors": [
+      "Andrew Kane"
+    ],
+    "venue": "Official documentation",
+    "url": "https://github.com/pgvector/pgvector"
+  },
+  "slug": "pgvector",
+  "addedAt": "2026-10-23"
+}

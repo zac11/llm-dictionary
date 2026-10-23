@@ -1,0 +1,42 @@
+{
+  "term": "MCP SDK",
+  "letter": "M",
+  "category": "LLM apps and agents",
+  "type": "library",
+  "definition": "The MCP SDKs let you build servers and clients for the Model Context Protocol, the open standard for giving AI assistants tools and data.",
+  "details": "MCP was introduced by Anthropic in November 2024; the official SDKs are maintained in the modelcontextprotocol GitHub organisation.",
+  "explainer": {
+    "lead": "How to install MCP SDK, a first working example, and where it fits in an AI project.",
+    "createdBy": "Anthropic and the Model Context Protocol project.",
+    "install": {
+      "python": "pip install \"mcp[cli]\"",
+      "javascript": "npm install @modelcontextprotocol/sdk zod"
+    },
+    "quickstart": {
+      "python": "from mcp.server.fastmcp import FastMCP\n\nmcp = FastMCP(\"dictionary\")\n\n@mcp.tool()\ndef define(term: str) -> str:\n    \"\"\"Look up a term in the AI dictionary.\"\"\"\n    return f\"{term}: ...\"\n\nif __name__ == \"__main__\":\n    mcp.run()   # stdio server an MCP client can launch",
+      "javascript": "import { McpServer } from \"@modelcontextprotocol/sdk/server/mcp.js\";\nimport { StdioServerTransport } from \"@modelcontextprotocol/sdk/server/stdio.js\";\nimport { z } from \"zod\";\n\nconst server = new McpServer({ name: \"dictionary\", version: \"1.0.0\" });\nserver.tool(\"define\", { term: z.string() }, async ({ term }) => ({\n  content: [{ type: \"text\", text: term + \": ...\" }],\n}));\nawait server.connect(new StdioServerTransport());"
+    },
+    "inAi": "Write a tool once and use it from Claude, ChatGPT, Cursor, VS Code and other MCP-capable assistants.",
+    "sources": [
+      {
+        "title": "MCP SDK documentation",
+        "url": "https://modelcontextprotocol.io/docs/sdk"
+      }
+    ]
+  },
+  "aka": [
+    "Model Context Protocol SDK",
+    "MCP Python SDK",
+    "MCP TypeScript SDK"
+  ],
+  "citation": {
+    "title": "MCP SDK documentation",
+    "authors": [
+      "Anthropic and the Model Context Protocol project"
+    ],
+    "venue": "Official documentation",
+    "url": "https://modelcontextprotocol.io/docs/sdk"
+  },
+  "slug": "mcp-python-sdk",
+  "addedAt": "2026-10-23"
+}

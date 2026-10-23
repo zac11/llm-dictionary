@@ -2,10 +2,28 @@
   "term": "LangChain",
   "letter": "L",
   "category": "Large language models",
-  "type": "tool",
+  "type": "library",
   "definition": "LangChain is a software framework that helps facilitate the integration of large language models (LLMs) into applications.",
   "details": "As a language model integration framework, LangChain's use-cases largely overlap with those of language models in general, including document analysis and summarization, chatbots, and code analysis.",
-  "story": "Imagine learning a language by reading every book in the library and noticing, over time, which words travel together. It does not memorize a rulebook; it absorbs a library. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It is fluency built from pattern, not from memorized rules. That pattern-earned fluency is LangChain.",
+  "explainer": {
+    "lead": "How to install LangChain, a first working example, and where it fits in an AI project.",
+    "createdBy": "Created by Harrison Chase in October 2022; developed by LangChain, Inc.",
+    "install": {
+      "python": "pip install langchain langchain-openai",
+      "javascript": "npm install langchain @langchain/openai"
+    },
+    "quickstart": {
+      "python": "from langchain.chat_models import init_chat_model\nfrom langchain_core.prompts import ChatPromptTemplate\n\nllm = init_chat_model(\"gpt-4o-mini\", model_provider=\"openai\")\nprompt = ChatPromptTemplate.from_messages([\n    (\"system\", \"You explain AI terms to beginners.\"),\n    (\"user\", \"Explain {term} in two sentences.\"),\n])\nchain = prompt | llm\nprint(chain.invoke({\"term\": \"embeddings\"}).content)",
+      "javascript": "import { ChatOpenAI } from \"@langchain/openai\";\nimport { ChatPromptTemplate } from \"@langchain/core/prompts\";\n\nconst prompt = ChatPromptTemplate.fromMessages([\n  [\"system\", \"You explain AI terms to beginners.\"],\n  [\"user\", \"Explain {term} in two sentences.\"],\n]);\nconst chain = prompt.pipe(new ChatOpenAI({ model: \"gpt-4o-mini\" }));\nconsole.log((await chain.invoke({ term: \"embeddings\" })).content);"
+    },
+    "inAi": "Swap model providers behind one interface, wire prompts to retrievers for RAG, and give models tools. Needs an API key such as OPENAI_API_KEY in the environment.",
+    "sources": [
+      {
+        "title": "LangChain documentation",
+        "url": "https://python.langchain.com/docs/"
+      }
+    ]
+  },
   "related": [
     "ai-tiger",
     "alice-ai-ai-model-family",

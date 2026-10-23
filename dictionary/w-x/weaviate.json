@@ -1,0 +1,37 @@
+{
+  "term": "Weaviate",
+  "letter": "W",
+  "category": "Vector search",
+  "type": "library",
+  "definition": "Weaviate is an open-source vector database with built-in vectorisers, hybrid (keyword + vector) search and generative modules.",
+  "details": "Created by Bob van Luijt and team in 2019; developed by Weaviate B.V. (Amsterdam).",
+  "explainer": {
+    "lead": "How to install Weaviate, a first working example, and where it fits in an AI project.",
+    "createdBy": "Weaviate B.V.",
+    "install": {
+      "python": "pip install weaviate-client",
+      "javascript": "npm install weaviate-client"
+    },
+    "quickstart": {
+      "python": "import weaviate\n\nclient = weaviate.connect_to_local()        # docker run -p 8080:8080 semitechnologies/weaviate\ndocs = client.collections.create(\"Doc\")\ndocs.data.insert({\"text\": \"Cats purr when happy.\"}, vector=[0.1, 0.9, 0.0])\nprint(docs.query.near_vector([0.1, 0.8, 0.1], limit=1).objects[0].properties)\nclient.close()",
+      "javascript": "import weaviate from \"weaviate-client\";\n\nconst client = await weaviate.connectToLocal();\nconst docs = client.collections.get(\"Doc\");\nconst res = await docs.query.nearVector([0.1, 0.8, 0.1], { limit: 1 });\nconsole.log(res.objects[0]?.properties);\nawait client.close();"
+    },
+    "inAi": "Hybrid search often beats pure vector search for RAG; Weaviate does both in one query.",
+    "sources": [
+      {
+        "title": "Weaviate documentation",
+        "url": "https://weaviate.io/developers/weaviate"
+      }
+    ]
+  },
+  "citation": {
+    "title": "Weaviate documentation",
+    "authors": [
+      "Weaviate B"
+    ],
+    "venue": "Official documentation",
+    "url": "https://weaviate.io/developers/weaviate"
+  },
+  "slug": "weaviate",
+  "addedAt": "2026-10-23"
+}

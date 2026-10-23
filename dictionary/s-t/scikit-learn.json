@@ -2,10 +2,30 @@
   "term": "Scikit-learn",
   "letter": "S",
   "category": "Machine learning",
-  "type": "tool",
+  "type": "library",
   "definition": "scikit-learn (formerly scikits.learn and also known as sklearn) is a free and open-source machine learning library for the Python programming language.",
   "details": "It features various classification, regression and clustering algorithms including support-vector machines, random forests, gradient boosting, k-means and DBSCAN, and is designed to interoperate with the Python numerical and scientific libraries NumPy and SciPy. Scikit-learn is a NumFOCUS fiscally sponsored project.",
-  "story": "Imagine learning a language by reading every book in the library and noticing, over time, which words travel together. It does not memorize a rulebook; it absorbs a library. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It is fluency built from pattern, not from memorized rules. And that is Scikit-learn — teaching a machine to read between the lines.",
+  "explainer": {
+    "lead": "How to install scikit-learn, a first working example, and where it fits in an AI project.",
+    "createdBy": "Started by David Cournapeau as a Google Summer of Code project (2007); developed by INRIA and a large community, under NumFOCUS.",
+    "install": {
+      "python": "pip install scikit-learn"
+    },
+    "quickstart": {
+      "python": "from sklearn.datasets import load_iris\nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.model_selection import train_test_split\n\nX, y = load_iris(return_X_y=True)\nX_tr, X_te, y_tr, y_te = train_test_split(X, y, random_state=0)\nmodel = RandomForestClassifier(n_estimators=200).fit(X_tr, y_tr)\nprint(model.score(X_te, y_te))"
+    },
+    "customize": {
+      "python": "from sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import StandardScaler\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.model_selection import GridSearchCV\n\npipe = make_pipeline(StandardScaler(), LogisticRegression(max_iter=1000))\nsearch = GridSearchCV(pipe, {\"logisticregression__C\": [0.1, 1, 10]}, cv=5)\nsearch.fit(X_tr, y_tr)\nprint(search.best_params_)"
+    },
+    "inAi": "The go-to for classical ML baselines, train/test splits, metrics and preprocessing — and for classifiers trained on top of LLM embeddings.",
+    "jsNote": "scikit-learn is a Python library with no official JavaScript or TypeScript package; call it from a Python service if your app is written in JavaScript.",
+    "sources": [
+      {
+        "title": "scikit-learn documentation",
+        "url": "https://scikit-learn.org/stable/"
+      }
+    ]
+  },
   "related": [
     "scikit-multiflow",
     "a-r-d-prasad",
@@ -21,5 +41,8 @@
     "venue": "Wikipedia, The Free Encyclopedia",
     "url": "https://en.wikipedia.org/wiki/Scikit-learn"
   },
-  "slug": "scikit-learn"
+  "slug": "scikit-learn",
+  "aka": [
+    "sklearn"
+  ]
 }

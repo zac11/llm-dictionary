@@ -2,10 +2,28 @@
   "term": "ChromaDB",
   "letter": "C",
   "category": "Large language models",
-  "type": "concept",
-  "definition": "ChromaDB or simply Chroma, is an open-source vector database tailored to applications with large language models.",
-  "details": "Its headquarters are in San Francisco. In April 2023, it raised 18 million US dollars as seed funding. ChromaDB has been used in academic studies on artificial intelligence, particularly as part of the tech stack for retrieval-augmented generation.",
-  "story": "Imagine learning a language by reading every book in the library and noticing, over time, which words travel together. It does not memorize a rulebook; it absorbs a library. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It is fluency built from pattern, not from memorized rules. And that is ChromaDB — teaching a machine to read between the lines.",
+  "type": "library",
+  "definition": "Chroma is an open-source embedding database that stores documents with their vectors and metadata and finds the closest matches.",
+  "details": "Created by Jeff Huber and Anton Troynikov in 2022; developed by Chroma (Chroma Inc.). It runs in-process, as a server or as Chroma Cloud.",
+  "explainer": {
+    "lead": "How to install ChromaDB, a first working example, and where it fits in an AI project.",
+    "createdBy": "Jeff Huber and Anton Troynikov; Chroma Inc.",
+    "install": {
+      "python": "pip install chromadb",
+      "javascript": "npm install chromadb"
+    },
+    "quickstart": {
+      "python": "import chromadb\n\nclient = chromadb.Client()\nnotes = client.create_collection(\"notes\")\nnotes.add(ids=[\"1\", \"2\"], documents=[\"Cats purr when happy.\", \"GPUs speed up training.\"])\nprint(notes.query(query_texts=[\"why do kittens purr\"], n_results=1)[\"documents\"])",
+      "javascript": "import { ChromaClient } from \"chromadb\";\n\n// after:  chroma run --path ./db\nconst client = new ChromaClient();\nconst notes = await client.getOrCreateCollection({ name: \"notes\" });\nawait notes.add({ ids: [\"1\", \"2\"], documents: [\"Cats purr when happy.\", \"GPUs speed up training.\"] });\nconsole.log(await notes.query({ queryTexts: [\"why do kittens purr\"], nResults: 1 }));"
+    },
+    "inAi": "The simplest way to add retrieval to a prototype: it embeds documents for you with a default model.",
+    "sources": [
+      {
+        "title": "ChromaDB documentation",
+        "url": "https://docs.trychroma.com/"
+      }
+    ]
+  },
   "related": [
     "ai-tiger",
     "alice-ai-ai-model-family",

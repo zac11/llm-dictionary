@@ -2,10 +2,28 @@
   "term": "VLLM",
   "letter": "V",
   "category": "Large language models",
-  "type": "tool",
+  "type": "library",
   "definition": "vLLM is an open-source software framework for inference and serving of large language models and related multimodal models.",
   "details": "Originally developed at the University of California, Berkeley's Sky Computing Lab, the project is centered on PagedAttention, a memory-management method for transformer key–value caches, and supports features such as continuous batching, distributed inference, quantization, and OpenAI-compatible APIs.",
-  "story": "Picture a translator at the United Nations, listening to one language and whispering the meaning into another in real time. It figures out meaning by noticing which words like to travel together. It does not memorize a rulebook; it absorbs a library. Meaning lives in company — a word is known by the words it keeps. That pattern-earned fluency is VLLM.",
+  "explainer": {
+    "lead": "How to install vLLM, a first working example, and where it fits in an AI project.",
+    "createdBy": "Created at UC Berkeley Sky Computing Lab (Woosuk Kwon, Zhuohan Li and others, 2023); now a PyTorch Foundation project.",
+    "install": {
+      "python": "pip install vllm   # Linux + NVIDIA/AMD GPU",
+      "javascript": "npm install openai   # talk to vLLM’s OpenAI-compatible server"
+    },
+    "quickstart": {
+      "python": "from vllm import LLM, SamplingParams\n\nllm = LLM(model=\"Qwen/Qwen2.5-0.5B-Instruct\")\nparams = SamplingParams(temperature=0.7, max_tokens=64)\nfor out in llm.generate([\"Explain KV caching in one sentence.\"], params):\n    print(out.outputs[0].text)\n# or serve it:  vllm serve Qwen/Qwen2.5-0.5B-Instruct",
+      "javascript": "import OpenAI from \"openai\";\n\n// after: vllm serve Qwen/Qwen2.5-0.5B-Instruct\nconst client = new OpenAI({ baseURL: \"http://localhost:8000/v1\", apiKey: \"EMPTY\" });\nconst res = await client.chat.completions.create({\n  model: \"Qwen/Qwen2.5-0.5B-Instruct\",\n  messages: [{ role: \"user\", content: \"Explain KV caching in one sentence.\" }],\n});\nconsole.log(res.choices[0].message.content);"
+    },
+    "inAi": "High-throughput self-hosted LLM serving thanks to PagedAttention and continuous batching; any OpenAI SDK can call it.",
+    "sources": [
+      {
+        "title": "vLLM documentation",
+        "url": "https://docs.vllm.ai/"
+      }
+    ]
+  },
   "related": [
     "ai-tiger",
     "alice-ai-ai-model-family",

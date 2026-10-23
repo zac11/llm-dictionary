@@ -13,9 +13,13 @@ import {
   learningItems,
   profileLinks,
   relatedGroups,
+  detailHighlights,
 } from './entry-actions.js';
 import { TERM_TYPE_LABELS } from './term-schema.js';
 import { EXPLAINER_LAYOUTS, explainerSections } from './explainer.js';
+
+const CODE_LABELS = { python: 'Python', javascript: 'JavaScript', typescript: 'TypeScript', shell: 'Terminal' };
+
 import { renderDiagramSvg } from './diagram.js';
 
 const $ = (id) => document.getElementById(id);
@@ -753,7 +757,16 @@ export class UI {
         ${leadFigure}
       </div>`;
 
-    const sections = explainerSections(explainer).map((section) => this._renderExplainerSection(section, term)).join('');
+    const filled = explainerSections(explainer);
+    const sections = filled.map((section) => this._renderExplainerSection(section, term)).join('');
+    const codeLangs = new Set(filled.filter((s) => s.kind === 'code').flatMap((s) => s.value.map((item) => item.lang)));
+    const langTabs =
+      codeLangs.has('python') && (codeLangs.has('javascript') || codeLangs.has('typescript'))
+        ? `<div class="xp-lang-tabs" role="group" aria-label="Code language">
+            <button type="button" data-lang="python" aria-pressed="true">Python</button>
+            <button type="button" data-lang="javascript" aria-pressed="false">JavaScript / TypeScript</button>
+          </div>`
+        : '';
     let next;
     if (explainer.layout === 'person' || explainer.layout === 'organization') {
       next = `${this._renderLinks('', profileLinks(term))}${this._renderRelatedGroups(term)}`;
@@ -767,14 +780,16 @@ export class UI {
       .join(' · ');
 
     this._pageRight.innerHTML = `
-      <div class="pg-entry xp-right">
+      <div class="pg-entry xp-right"${langTabs ? ' data-lang="python"' : ''}>
         <p class="pg-story-term">${escapeHtml(term.term)}</p>
+        ${langTabs}
         ${sections}
         ${trailFigure}
         ${sources ? `<p class="xp-sources">Sources: ${sources}</p>` : ''}
         <p class="pg-story-end" aria-hidden="true">❦</p>
         ${next}
       </div>`;
+    this._bindLangTabs();
     this._bindRelatedChips();
     this._bindSuggestedRows();
     this._resetScroll();
@@ -804,6 +819,23 @@ export class UI {
           return `<li>${linked}${item.year ? ` <span class="xp-year">${escapeHtml(item.year)}</span>` : ''}</li>`;
         })
         .join('')}</ul>`;
+    } else if (kind === 'code') {
+      body = value
+        .map(
+          (item) => `
+        <div class="xp-code" data-lang="${escapeHtml(item.lang)}">
+          <span class="xp-code-lang">${escapeHtml(CODE_LABELS[item.lang] || item.lang)}</span>
+          <pre><code>${escapeHtml(item.code)}</code></pre>
+        </div>`,
+        )
+        .join('');
+      const hasJs = value.some((item) => item.lang === 'javascript' || item.lang === 'typescript');
+      const hasPy = value.some((item) => item.lang === 'python');
+      return `
+      <section class="xp-section xp-kind-code${hasJs ? ' xp-has-js' : ''}${hasPy ? ' xp-has-py' : ''}">
+        <h3>${icon(iconName)}&nbsp; ${escapeHtml(heading)}</h3>
+        ${body}
+      </section>`;
     } else return '';
     return `
       <section class="xp-section xp-kind-${escapeHtml(kind)}">
@@ -907,7 +939,7 @@ export class UI {
 
   /** "What they did" — the curated highlights of a person or organization. */
   _renderHighlights(term) {
-    const highlights = (term.profile && term.profile.highlights) || [];
+    const highlights = (term.profile && term.profile.highlights && term.profile.highlights.length ? term.profile.highlights : detailHighlights(term.details));
     if (!highlights.length) return '';
     return `
       <section class="pg-highlights">
@@ -996,6 +1028,18 @@ export class UI {
           )
           .join('')}
       </aside>`;
+  }
+
+  _bindLangTabs() {
+    const right = this._pageRight.querySelector('.xp-right[data-lang]');
+    if (!right) return;
+    const buttons = [...right.querySelectorAll('.xp-lang-tabs button')];
+    for (const button of buttons) {
+      button.addEventListener('click', () => {
+        right.dataset.lang = button.dataset.lang;
+        for (const other of buttons) other.setAttribute('aria-pressed', String(other === button));
+      });
+    }
   }
 
   _bindRelatedChips() {

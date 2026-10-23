@@ -2,10 +2,27 @@
   "term": "Optuna",
   "letter": "O",
   "category": "Deep learning",
-  "type": "tool",
+  "type": "library",
   "definition": "Optuna is an open-source Python library for automatic hyperparameter tuning of machine learning models.",
   "details": "It was first introduced in 2018 by Preferred Networks, a Japanese startup that works on practical applications of deep learning in various fields. The beta version of Optuna was released at the end of the year, with the subsequent first major stable release announced in January 2020.",
-  "story": "Think of an orchestra warming up: no single instrument carries the piece, but together they make the sound. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. The layout decides what the machine can even attempt, before it learns a single thing. The shape of the machine is half the idea. That blueprint is Optuna.",
+  "explainer": {
+    "lead": "How to install Optuna, a first working example, and where it fits in an AI project.",
+    "createdBy": "Preferred Networks, released 2018.",
+    "install": {
+      "python": "pip install optuna"
+    },
+    "quickstart": {
+      "python": "import optuna\nfrom sklearn.datasets import load_iris\nfrom sklearn.model_selection import cross_val_score\nfrom sklearn.svm import SVC\n\nX, y = load_iris(return_X_y=True)\n\ndef objective(trial):\n    c = trial.suggest_float(\"C\", 1e-3, 1e3, log=True)\n    return cross_val_score(SVC(C=c), X, y, cv=3).mean()\n\nstudy = optuna.create_study(direction=\"maximize\")\nstudy.optimize(objective, n_trials=30)\nprint(study.best_params)"
+    },
+    "inAi": "Tune learning rates, LoRA ranks or retrieval settings automatically; Optuna prunes bad trials early to save GPU time.",
+    "jsNote": "Optuna is a Python library with no official JavaScript or TypeScript package; call it from a Python service if your app is written in JavaScript.",
+    "sources": [
+      {
+        "title": "Optuna documentation",
+        "url": "https://optuna.readthedocs.io/"
+      }
+    ]
+  },
   "related": [
     "adobe-firefly",
     "akool",

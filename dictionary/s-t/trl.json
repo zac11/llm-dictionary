@@ -2,9 +2,30 @@
   "term": "TRL",
   "letter": "T",
   "category": "AI/ML glossary",
-  "type": "concept",
-  "definition": "Transformer Reinforcement Learning, a framework for training and evaluating RL agents in the context of language generation tasks.",
-  "details": "Transformer Reinforcement Learning, a framework for training and evaluating RL agents in the context of language generation tasks.",
+  "type": "library",
+  "definition": "TRL is Hugging Face’s library for post-training language models: supervised fine-tuning, reward modelling, DPO, PPO and GRPO.",
+  "details": "Started by Leandro von Werra in 2020 and now developed by Hugging Face. It builds on Transformers, PEFT and Accelerate.",
+  "explainer": {
+    "lead": "How to install TRL, a first working example, and where it fits in an AI project.",
+    "createdBy": "Leandro von Werra; Hugging Face.",
+    "install": {
+      "python": "pip install trl"
+    },
+    "quickstart": {
+      "python": "from datasets import load_dataset\nfrom trl import SFTConfig, SFTTrainer\n\ndataset = load_dataset(\"trl-lib/Capybara\", split=\"train\")\ntrainer = SFTTrainer(\n    model=\"Qwen/Qwen2.5-0.5B\",\n    train_dataset=dataset,\n    args=SFTConfig(output_dir=\"qwen-sft\", max_steps=100),\n)\ntrainer.train()"
+    },
+    "customize": {
+      "python": "from trl import DPOConfig, DPOTrainer\n\n# preference data: prompt / chosen / rejected\nprefs = load_dataset(\"trl-lib/ultrafeedback_binarized\", split=\"train\")\nDPOTrainer(model=\"qwen-sft\", train_dataset=prefs,\n           args=DPOConfig(output_dir=\"qwen-dpo\", beta=0.1)).train()"
+    },
+    "inAi": "The usual recipe for turning a base model into an assistant: SFT on conversations, then DPO or GRPO on preferences or rewards.",
+    "jsNote": "TRL is a Python library with no official JavaScript or TypeScript package; call it from a Python service if your app is written in JavaScript.",
+    "sources": [
+      {
+        "title": "TRL documentation",
+        "url": "https://huggingface.co/docs/trl"
+      }
+    ]
+  },
   "related": [
     "reinforcement-learning",
     "transformer"
@@ -17,5 +38,8 @@
     "url": "https://github.com/huggingface/trl"
   },
   "addedAt": "2026-10-07",
-  "slug": "trl"
+  "slug": "trl",
+  "aka": [
+    "Transformer Reinforcement Learning"
+  ]
 }

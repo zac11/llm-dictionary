@@ -1,0 +1,39 @@
+{
+  "term": "Accelerate",
+  "letter": "A",
+  "category": "Deep learning",
+  "type": "library",
+  "definition": "Accelerate runs the same PyTorch training script on one GPU, many GPUs, TPUs or with mixed precision, with only a few line changes.",
+  "details": "Created by Sylvain Gugger at Hugging Face in 2021.",
+  "explainer": {
+    "lead": "How to install Accelerate, a first working example, and where it fits in an AI project.",
+    "createdBy": "Hugging Face.",
+    "install": {
+      "python": "pip install accelerate"
+    },
+    "quickstart": {
+      "python": "import torch\nfrom accelerate import Accelerator\n\naccelerator = Accelerator(mixed_precision=\"bf16\")\nmodel = torch.nn.Linear(4, 1)\nopt = torch.optim.AdamW(model.parameters())\ndata = torch.utils.data.DataLoader(torch.utils.data.TensorDataset(torch.randn(64, 4), torch.randn(64, 1)), batch_size=8)\nmodel, opt, data = accelerator.prepare(model, opt, data)\n\nfor x, y in data:\n    loss = torch.nn.functional.mse_loss(model(x), y)\n    accelerator.backward(loss)\n    opt.step(); opt.zero_grad()"
+    },
+    "inAi": "Also loads huge models across GPU, CPU and disk (device_map=\"auto\"), which is how Transformers fits big LLMs on small machines.",
+    "jsNote": "Accelerate is a Python library with no official JavaScript or TypeScript package; call it from a Python service if your app is written in JavaScript.",
+    "sources": [
+      {
+        "title": "Accelerate documentation",
+        "url": "https://huggingface.co/docs/accelerate"
+      }
+    ]
+  },
+  "aka": [
+    "Hugging Face Accelerate"
+  ],
+  "citation": {
+    "title": "Accelerate documentation",
+    "authors": [
+      "Hugging Face"
+    ],
+    "venue": "Official documentation",
+    "url": "https://huggingface.co/docs/accelerate"
+  },
+  "slug": "accelerate",
+  "addedAt": "2026-10-23"
+}

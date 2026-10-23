@@ -2,10 +2,27 @@
   "term": "DeepSpeed",
   "letter": "D",
   "category": "Deep learning",
-  "type": "tool",
-  "definition": "DeepSpeed' is an open-source optimization library for the distributed training and inference of deep learning models using PyTorch.",
-  "details": "DeepSpeed' is an open-source optimization library for the distributed training and inference of deep learning models using PyTorch.",
-  "story": "Imagine teaching a friend to shoot a basketball. They miss, and you walk them backwards through the shot — elbow, wrist, release — to find what needs fixing. It is the same loop you use to learn anything: try, miss, correct, try again. Underneath all the magic is a patient process of small improvements. It is learning from every miss instead of repeating the same mistake. That steady, miss-by-miss improvement is DeepSpeed.",
+  "type": "library",
+  "definition": "DeepSpeed is a library for training and running very large models across many GPUs efficiently.",
+  "details": "Developed by Microsoft Research and released in 2020. Its ZeRO optimizer splits optimizer state, gradients and weights across GPUs so models far bigger than one GPU’s memory can be trained.",
+  "explainer": {
+    "lead": "How to install DeepSpeed, a first working example, and where it fits in an AI project.",
+    "createdBy": "Microsoft (DeepSpeed team, Microsoft Research).",
+    "install": {
+      "python": "pip install deepspeed"
+    },
+    "quickstart": {
+      "python": "import deepspeed\nimport torch\n\nmodel = torch.nn.Linear(1024, 1024)\nconfig = {\n    \"train_batch_size\": 32,\n    \"bf16\": {\"enabled\": True},\n    \"zero_optimization\": {\"stage\": 2},\n    \"optimizer\": {\"type\": \"AdamW\", \"params\": {\"lr\": 1e-4}},\n}\nengine, optimizer, _, _ = deepspeed.initialize(model=model, model_parameters=model.parameters(), config=config)\n# launch with:  deepspeed train.py"
+    },
+    "inAi": "Fine-tune billion-parameter LLMs on a handful of GPUs; Hugging Face Trainer and Accelerate can switch it on with a config file.",
+    "jsNote": "DeepSpeed is a Python library with no official JavaScript or TypeScript package; call it from a Python service if your app is written in JavaScript.",
+    "sources": [
+      {
+        "title": "DeepSpeed documentation",
+        "url": "https://www.deepspeed.ai/"
+      }
+    ]
+  },
   "related": [
     "adobe-firefly",
     "akool",

@@ -1,0 +1,39 @@
+{
+  "term": "PyTorch Lightning",
+  "letter": "P",
+  "category": "Deep learning",
+  "type": "library",
+  "definition": "PyTorch Lightning organises PyTorch code so the training loop, multi-GPU, mixed precision and checkpointing are handled for you.",
+  "details": "Created by William Falcon in 2019 while at NYU and Facebook AI Research; developed by Lightning AI.",
+  "explainer": {
+    "lead": "How to install PyTorch Lightning, a first working example, and where it fits in an AI project.",
+    "createdBy": "William Falcon; Lightning AI.",
+    "install": {
+      "python": "pip install lightning"
+    },
+    "quickstart": {
+      "python": "import lightning as L\nimport torch\nfrom torch import nn\n\nclass Regressor(L.LightningModule):\n    def __init__(self):\n        super().__init__()\n        self.net = nn.Linear(4, 1)\n\n    def training_step(self, batch, _):\n        x, y = batch\n        return nn.functional.mse_loss(self.net(x), y)\n\n    def configure_optimizers(self):\n        return torch.optim.Adam(self.parameters(), lr=1e-2)\n\ndata = torch.utils.data.TensorDataset(torch.randn(256, 4), torch.randn(256, 1))\nL.Trainer(max_epochs=5, accelerator=\"auto\").fit(Regressor(), torch.utils.data.DataLoader(data, batch_size=32))"
+    },
+    "inAi": "Scale the same model from a laptop to many GPUs by changing Trainer arguments (devices, strategy=\"ddp\", precision=\"bf16-mixed\").",
+    "jsNote": "PyTorch Lightning is a Python library with no official JavaScript or TypeScript package; call it from a Python service if your app is written in JavaScript.",
+    "sources": [
+      {
+        "title": "PyTorch Lightning documentation",
+        "url": "https://lightning.ai/docs/pytorch/stable/"
+      }
+    ]
+  },
+  "aka": [
+    "Lightning"
+  ],
+  "citation": {
+    "title": "PyTorch Lightning documentation",
+    "authors": [
+      "William Falcon"
+    ],
+    "venue": "Official documentation",
+    "url": "https://lightning.ai/docs/pytorch/stable/"
+  },
+  "slug": "pytorch-lightning",
+  "addedAt": "2026-10-23"
+}

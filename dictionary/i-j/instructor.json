@@ -1,0 +1,37 @@
+{
+  "term": "Instructor",
+  "letter": "I",
+  "category": "LLM apps and agents",
+  "type": "library",
+  "definition": "Instructor gets structured, validated outputs from LLMs by patching the client to return Pydantic (or Zod) objects, with automatic retries.",
+  "details": "Created by Jason Liu in 2023 (567 Labs).",
+  "explainer": {
+    "lead": "How to install Instructor, a first working example, and where it fits in an AI project.",
+    "createdBy": "Jason Liu (567 Labs).",
+    "install": {
+      "python": "pip install instructor",
+      "javascript": "npm install @instructor-ai/instructor openai zod"
+    },
+    "quickstart": {
+      "python": "import instructor\nfrom pydantic import BaseModel\n\nclass Person(BaseModel):\n    name: str\n    born: int\n\nclient = instructor.from_provider(\"openai/gpt-4o-mini\")\nperson = client.chat.completions.create(\n    response_model=Person,\n    messages=[{\"role\": \"user\", \"content\": \"Alan Turing was born in 1912.\"}],\n)\nprint(person)",
+      "javascript": "import Instructor from \"@instructor-ai/instructor\";\nimport OpenAI from \"openai\";\nimport { z } from \"zod\";\n\nconst client = Instructor({ client: new OpenAI(), mode: \"TOOLS\" });\nconst Person = z.object({ name: z.string(), born: z.number() });\nconst person = await client.chat.completions.create({\n  model: \"gpt-4o-mini\",\n  messages: [{ role: \"user\", content: \"Alan Turing was born in 1912.\" }],\n  response_model: { schema: Person, name: \"Person\" },\n});\nconsole.log(person);"
+    },
+    "inAi": "Extraction pipelines: turn emails, PDFs or transcripts into typed records you can store in a database.",
+    "sources": [
+      {
+        "title": "Instructor documentation",
+        "url": "https://python.useinstructor.com/"
+      }
+    ]
+  },
+  "citation": {
+    "title": "Instructor documentation",
+    "authors": [
+      "Jason Liu (567 Labs)"
+    ],
+    "venue": "Official documentation",
+    "url": "https://python.useinstructor.com/"
+  },
+  "slug": "instructor",
+  "addedAt": "2026-10-23"
+}
