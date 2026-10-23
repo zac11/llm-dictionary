@@ -204,6 +204,19 @@ export function buildPersonExplainer({ entry, wiki, entity, label }) {
 }
 
 /** An explainer worth a page: a lead plus two filled sections, or a real timeline. */
+// Hand-researched explainers cite sources beyond Wikipedia/Wikidata; never regenerate them.
+export function isCurated(explainer) {
+  return Boolean(explainer) && (explainer.sources || []).some((source) => !/(^|\.)(wikipedia|wikidata)\.org$/.test(hostOf(source.url)));
+}
+
+const hostOf = (url) => {
+  try {
+    return new URL(url).hostname;
+  } catch {
+    return '';
+  }
+};
+
 export function isUseful(explainer) {
   const sections = explainerSections(normalizeExplainer(explainer, 'person'));
   return sections.length >= 1 && Boolean(explainer.lead);
@@ -388,6 +401,7 @@ async function main() {
       }
     }
 
+    if (isCurated(record.explainer)) { if (!dryRun) writeFileSync(path, `${JSON.stringify(record, null, 2)}\n`); return; }
     if (record.explainer && !force) { if (!dryRun) writeFileSync(path, `${JSON.stringify(record, null, 2)}\n`); return; }
     const wiki = page ? { ...page } : null;
     const explainer = page || entity ? buildPersonExplainer({ entry: record, wiki, entity, label }) : null;

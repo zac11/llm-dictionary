@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { alreadySaid, isUseful, parseSections, repairLead, tidy } from '../scripts/enrich-people.mjs';
+import { alreadySaid, isCurated, isUseful, parseSections, repairLead, tidy } from '../scripts/enrich-people.mjs';
 import { detailHighlights } from '../src/entry-actions.js';
 
 test('repairLead rejoins a definition cut at an initial', () => {
@@ -40,4 +40,10 @@ test('detailHighlights turns a list of achievements into bullets', () => {
   ]);
   assert.deepEqual(detailHighlights('Pioneered text-to-image systems.'), ['Pioneered text-to-image systems.']);
   assert.deepEqual(detailHighlights(''), []);
+});
+
+test('isCurated protects hand-researched explainers from regeneration', () => {
+  assert.ok(isCurated({ sources: [{ url: 'https://en.wikipedia.org/wiki/X' }, { url: 'https://mila.quebec/en/x' }] }));
+  assert.ok(!isCurated({ sources: [{ url: 'https://en.wikipedia.org/wiki/X' }, { url: 'https://www.wikidata.org/wiki/Q1' }] }));
+  assert.ok(!isCurated(null));
 });
