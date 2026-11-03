@@ -604,7 +604,7 @@ export class UI {
         <div class="story-left page-left-intro">
           <p class="idx-kicker">TheAIDictionary · Coverage</p>
           <h2 class="story-title">Where the shelf is thin</h2>
-          <p class="story-open">${stats.total.toLocaleString('en-US')} terms across ${stats.categoryCount.toLocaleString('en-US')} categories.
+          <p class="cov-summary">${stats.total.toLocaleString('en-US')} terms across ${stats.categoryCount.toLocaleString('en-US')} categories.
             ${stats.withExplainer.toLocaleString('en-US')} have an explainer; ${stats.withContributors.toLocaleString('en-US')} credit a contributor.</p>
           <h3 class="cov-head">Terms per letter</h3>
           <ul class="cov-list cov-letters">${stats.letters.map(({ letter, count, thin }) => bar(letter, count, max, thin)).join('')}</ul>
