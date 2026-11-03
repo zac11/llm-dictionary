@@ -32,5 +32,56 @@
     "venue": "Advances in Neural Information Processing Systems 30 (NeurIPS)",
     "url": "https://arxiv.org/abs/1706.03762"
   },
-  "slug": "attention"
+  "slug": "attention",
+  "explainer": {
+    "lead": "Attention lets a model decide, for every word it is reading, which other words matter most right now.",
+    "eli5": "When you read \"the cat sat because it was tired\", you know \"it\" means the cat. Attention gives a model the same trick: for each word it looks back at all the other words and pays the most attention to the ones that help it understand.",
+    "practitioner": "Each token is projected into a query, a key and a value. Scores are dot products between one token's query and every key, softmaxed into weights, and the output is the weighted sum of values. In practice you use multi-head scaled dot-product attention (e.g. torch.nn.functional.scaled_dot_product_attention), add a causal mask for decoders, and watch the quadratic memory cost in sequence length — FlashAttention, KV caching and sliding windows are the usual mitigations.",
+    "paperLevel": "Scaled dot-product attention computes Attention(Q, K, V) = softmax(QKᵀ / √d_k) V, where the √d_k factor keeps logits from saturating the softmax as dimension grows. Multi-head attention runs h such maps on learned projections and concatenates them. It generalises the additive alignment model of Bahdanau, Cho and Bengio (2014) and is the sole sequence-mixing operation in the Transformer of Vaswani et al. (2017); its O(n²) time and memory in sequence length motivates sparse, linear and IO-aware variants.",
+    "intuition": "Instead of squeezing a whole sentence into one fixed summary, the model keeps every word available and, at each step, looks up the parts that are relevant — like skimming back through notes for the line you need.",
+    "howItWorks": [
+      "Turn each token into three vectors: a query (what am I looking for?), a key (what do I contain?) and a value (what do I pass on?).",
+      "Score the query against every key with a dot product and divide by the square root of the key size.",
+      "Softmax the scores so they become weights that sum to one.",
+      "Blend the value vectors with those weights to get the token's new, context-aware representation.",
+      "Repeat in several heads in parallel so different heads can track different relationships."
+    ],
+    "example": "Translating \"The animal didn't cross the street because it was too tired\", the attention weights for \"it\" peak on \"animal\"; change \"tired\" to \"wide\" and they shift toward \"street\".",
+    "whyItMatters": "Attention removed the bottleneck of recurrent encoders and parallelises across the whole sequence, which is what made training today's large language models practical.",
+    "misconceptions": [
+      "Attention weights are not a faithful explanation of a model's reasoning; they show where information flowed, not why.",
+      "Attention is not only for text — the same operation powers vision transformers, speech models and protein models."
+    ],
+    "usedIn": [
+      {
+        "name": "Transformer",
+        "detail": "self-attention is its only sequence-mixing layer",
+        "url": "https://arxiv.org/abs/1706.03762"
+      },
+      {
+        "name": "BERT",
+        "detail": "bidirectional self-attention over the whole input",
+        "url": "https://arxiv.org/abs/1810.04805"
+      },
+      {
+        "name": "GPT models",
+        "detail": "causally masked self-attention for next-token prediction"
+      },
+      {
+        "name": "Vision Transformer (ViT)",
+        "detail": "attention over image patches",
+        "url": "https://arxiv.org/abs/2010.11929"
+      }
+    ],
+    "sources": [
+      {
+        "title": "Attention Is All You Need (Vaswani et al., 2017)",
+        "url": "https://arxiv.org/abs/1706.03762"
+      },
+      {
+        "title": "Neural Machine Translation by Jointly Learning to Align and Translate (Bahdanau et al., 2014)",
+        "url": "https://arxiv.org/abs/1409.0473"
+      }
+    ]
+  }
 }

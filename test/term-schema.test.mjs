@@ -89,6 +89,7 @@ test('validateTerm reports folder, required-field, duplicate, and citation error
       'invalid-authors-shape',
       'missing-citation-title',
       'missing-type',
+      'missing-explainer',
     ])
   );
 });
@@ -107,7 +108,7 @@ test('validateTerm rejects malformed list values and related slugs', () => {
   const codes = validateTerm(normalizeTerm(raw), { raw }).map((issue) => issue.code);
   assert.deepEqual(
     new Set(codes),
-    new Set(['invalid-aka-value', 'invalid-related-slug', 'invalid-author-value', 'missing-type'])
+    new Set(['invalid-aka-value', 'invalid-related-slug', 'invalid-author-value', 'missing-type', 'missing-explainer'])
   );
 });
 
@@ -218,8 +219,22 @@ test('validateTerm reports unknown types and malformed profile/coverage data', (
       // an unreadable type falls back to `concept`, so the person/event data is unused
       'unexpected-profile',
       'unexpected-coverage',
+      'missing-explainer',
     ])
   );
+});
+
+test('validateTerm warns when a story-type term lacks an explainer or example', () => {
+  const base = { term: 'Attention', letter: 'A', type: 'concept', definition: 'D.', details: 'More.' };
+  const codes = (raw) => validateTerm(normalizeTerm(raw), { raw }).map((issue) => issue.code);
+  assert.ok(codes(base).includes('missing-explainer'));
+  const noExample = { ...base, explainer: { eli5: 'Simple.', intuition: 'I', howItWorks: 'H', whyItMatters: 'W' } };
+  assert.ok(codes(noExample).includes('missing-example'));
+  assert.ok(!codes(noExample).includes('missing-explainer'));
+  const full = { ...noExample, explainer: { ...noExample.explainer, example: 'E' } };
+  assert.ok(!codes(full).some((code) => code.startsWith('missing-ex')));
+  const person = { ...base, term: 'Ada', type: 'person' };
+  assert.ok(!codes(person).includes('missing-explainer'));
 });
 
 test('validateTerm warns when a type and its second-spread data disagree', () => {

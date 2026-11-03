@@ -15,8 +15,8 @@ import {
   relatedGroups,
   detailHighlights,
 } from './entry-actions.js';
-import { TERM_TYPE_LABELS } from './term-schema.js';
-import { EXPLAINER_LAYOUTS, explainerSections } from './explainer.js';
+import { TERM_TYPE_LABELS, isStoryType } from './term-schema.js';
+import { EXPLAINER_LAYOUTS, EXPLAINER_TIERS, explainerSections } from './explainer.js';
 
 const CODE_LABELS = { python: 'Python', javascript: 'JavaScript', typescript: 'TypeScript', shell: 'Terminal' };
 
@@ -782,17 +782,88 @@ export class UI {
     this._pageRight.innerHTML = `
       <div class="pg-entry xp-right"${langTabs ? ' data-lang="python"' : ''}>
         <p class="pg-story-term">${escapeHtml(term.term)}</p>
+        ${isStoryType(term.type) ? this._renderExplainerTiers(explainer.tiers) : ''}
         ${langTabs}
         ${sections}
+        ${this._renderExampleCallout(explainer.example)}
+        ${this._renderUsedIn(explainer.usedIn)}
         ${trailFigure}
         ${sources ? `<p class="xp-sources">Sources: ${sources}</p>` : ''}
         <p class="pg-story-end" aria-hidden="true">❦</p>
         ${next}
       </div>`;
     this._bindLangTabs();
+    this._bindTierTabs();
     this._bindRelatedChips();
     this._bindSuggestedRows();
     this._resetScroll();
+  }
+
+  /** ELI5 / Practitioner / Paper-level reading levels as a tab strip. */
+  _renderExplainerTiers(tiers) {
+    const levels = EXPLAINER_TIERS.filter(([field]) => tiers && tiers[field]);
+    if (!levels.length) return '';
+    const tabs = levels
+      .map(
+        ([field, label], i) =>
+          `<button type="button" role="tab" id="xp-tier-tab-${field}" aria-controls="xp-tier-${field}" aria-selected="${i === 0}" tabindex="${i === 0 ? 0 : -1}" data-tier="${field}">${escapeHtml(label)}</button>`
+      )
+      .join('');
+    const panels = levels
+      .map(
+        ([field], i) =>
+          `<p class="xp-tier-panel" role="tabpanel" id="xp-tier-${field}" aria-labelledby="xp-tier-tab-${field}"${i === 0 ? '' : ' hidden'}>${escapeHtml(tiers[field])}</p>`
+      )
+      .join('');
+    return `<section class="xp-tiers" aria-label="Explain it at your level">
+        <div class="xp-tier-tabs" role="tablist" aria-label="Reading level">${tabs}</div>
+        ${panels}
+      </section>`;
+  }
+
+  _renderExampleCallout(example) {
+    if (!example) return '';
+    return `<aside class="xp-example" aria-label="Example">
+        <p class="xp-example-label">Example</p>
+        <p>${escapeHtml(example)}</p>
+      </aside>`;
+  }
+
+  _renderUsedIn(usedIn) {
+    if (!usedIn || !usedIn.length) return '';
+    const items = usedIn
+      .map((item) => {
+        const name = item.url
+          ? `<a href="${escapeHtml(item.url)}" target="_blank" rel="noopener">${escapeHtml(item.name)}${icon('arrow-up-right')}</a>`
+          : `<strong>${escapeHtml(item.name)}</strong>`;
+        return `<li>${name}${item.detail ? ` — ${escapeHtml(item.detail)}` : ''}</li>`;
+      })
+      .join('');
+    return `<section class="xp-section xp-used-in"><h3 class="xp-h">Used in</h3><ul class="xp-list">${items}</ul></section>`;
+  }
+
+  _bindTierTabs() {
+    const tabs = [...this._pageRight.querySelectorAll('.xp-tier-tabs [role="tab"]')];
+    const select = (tab) => {
+      for (const other of tabs) {
+        const on = other === tab;
+        other.setAttribute('aria-selected', String(on));
+        other.tabIndex = on ? 0 : -1;
+        const panel = this._pageRight.querySelector(`#${other.getAttribute('aria-controls')}`);
+        if (panel) panel.hidden = !on;
+      }
+    };
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => select(tab));
+      tab.addEventListener('keydown', (event) => {
+        if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
+        event.preventDefault();
+        event.stopPropagation(); // arrows otherwise turn the page
+        const next = tabs[(i + (event.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+        next.focus();
+        select(next);
+      });
+    });
   }
 
   _renderExplainerSection({ field, heading, kind, icon: iconName, value }, term) {

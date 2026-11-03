@@ -477,6 +477,10 @@ export function validateTerm(term, context = {}) {
   if (raw && raw.explainer !== undefined) {
     for (const message of explainerIssues(raw.explainer, term.type)) add('warning', 'weak-explainer', message);
   }
+  if (isStoryType(term.type)) {
+    if (!term.explainer) add('warning', 'missing-explainer', `${term.type} entries read best with an explainer (eli5 / practitioner / paperLevel).`);
+    else if (!term.explainer.example) add('warning', 'missing-example', 'Explainer has no worked example.');
+  }
 
   // Presentation coherence: the second spread is chosen by type, so data for a
   // different spread is silently unused.

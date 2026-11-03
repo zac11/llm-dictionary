@@ -83,7 +83,12 @@ export function formRowToTerm(row) {
 
   const term = normalizeTerm(raw);
   const issues = validateTerm(term, { raw });
-  return { term, issues: issues.filter((issue) => issue.level === 'error' || issue.level === 'warning') };
+  // Explainers are added by maintainers after review, so the form does not nag about them.
+  const MAINTAINER_ONLY = new Set(['missing-explainer', 'missing-example']);
+  return {
+    term,
+    issues: issues.filter((issue) => (issue.level === 'error' || issue.level === 'warning') && !MAINTAINER_ONLY.has(issue.code)),
+  };
 }
 
 /** Cross-term checks: duplicates inside the batch, collisions with the live

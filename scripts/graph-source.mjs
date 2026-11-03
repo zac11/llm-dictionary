@@ -110,6 +110,9 @@ export function printDiagnostics(diagnostics, { limit = 30 } = {}) {
   const warnings = diagnostics.filter((item) => item.level === 'warning');
   console.log(`errors: ${errors.length}`);
   console.log(`warnings: ${warnings.length}`);
+  const byCode = new Map();
+  for (const item of diagnostics) byCode.set(`${item.level} ${item.code}`, (byCode.get(`${item.level} ${item.code}`) || 0) + 1);
+  for (const [key, count] of [...byCode].sort((a, b) => b[1] - a[1])) console.log(`  ${count}\t${key}`);
   for (const item of diagnostics.slice(0, limit)) {
     console.log(`  ${item.level.toUpperCase()} [${item.code}] ${item.source}: ${item.message}`);
   }

@@ -10,6 +10,9 @@
   "details": "Gradient descent computes the derivative of the loss with respect to each parameter and steps against it, scaled by a learning rate. Its stochastic variants (SGD and its many descendants such as Adam) estimate the gradient from small batches of data, which is how virtually all neural networks are trained. The method traces back to the classic work on stochastic approximation.",
   "explainer": {
     "lead": "Gradient descent is how almost every neural network learns. Picture walking down a foggy hill: you can't see the bottom, but you can feel which way is downhill, so you take a small step that way and repeat.",
+    "eli5": "Imagine you are on a foggy hill and want to reach the bottom. You feel which way the ground slopes and take a small step downhill, again and again, until it stops sloping.",
+    "practitioner": "Compute the gradient of the loss with respect to the parameters (backpropagation does this for neural networks) and update θ ← θ − η∇L(θ). In practice you use mini-batch stochastic variants with momentum or Adam/AdamW, tune the learning rate (with warm-up and decay schedules), and clip gradients when training is unstable.",
+    "paperLevel": "For a differentiable objective f, gradient descent iterates x_{k+1} = x_k − η∇f(x_k). If ∇f is L-Lipschitz and η ≤ 1/L, the iterates decrease f monotonically; for convex f the suboptimality falls as O(1/k), and for μ-strongly convex f convergence is linear with rate (1 − μ/L). The method goes back to Cauchy (1847); stochastic approximation (Robbins and Monro, 1951) gives the SGD variant used in deep learning.",
     "goal": "Find the parameter values that make the loss — the model's measure of how wrong it is — as small as possible.",
     "inputs": [
       "A loss function",
@@ -92,6 +95,20 @@
       {
         "title": "Wikipedia: Gradient descent",
         "url": "https://en.wikipedia.org/wiki/Gradient_descent"
+      }
+    ],
+    "usedIn": [
+      {
+        "name": "Neural network training",
+        "detail": "SGD, Adam and friends are all gradient-descent variants"
+      },
+      {
+        "name": "Linear and logistic regression",
+        "detail": "fitting coefficients on large datasets"
+      },
+      {
+        "name": "Matrix factorization recommenders",
+        "detail": "learning user and item embeddings"
       }
     ]
   },

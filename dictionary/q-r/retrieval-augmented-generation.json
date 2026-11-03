@@ -10,6 +10,9 @@
   "details": "RAG first retrieves relevant passages for a query, then feeds them to a generator along with the question. Because the knowledge comes from an external corpus, RAG reduces hallucination, allows updating knowledge without retraining, and is the architecture behind many “chat with your documents” assistants.",
   "explainer": {
     "lead": "Retrieval-augmented generation (RAG) lets a language model look things up before it answers. It is the difference between answering from memory and answering with the right book open.",
+    "eli5": "Before answering, the model looks things up — like a student allowed to check the textbook — and then answers using what it found.",
+    "practitioner": "Chunk your documents, embed the chunks, and store them in a vector index. At query time embed the question, retrieve the top-k chunks (often hybrid BM25 + vector search, then a reranker), and put them into the prompt with instructions to answer only from that context and cite it. Most quality problems come from chunking, retrieval recall and prompt assembly rather than the generator.",
+    "paperLevel": "Lewis et al. (2020) define RAG as a generator p_θ(y | x, z) conditioned on passages z retrieved by a dense retriever p_η(z | x) (DPR), marginalising over the top-k passages either once per sequence (RAG-Sequence) or per token (RAG-Token), with retriever query encoder and generator trained end to end. It pairs parametric memory (model weights) with non-parametric memory (an index that can be updated without retraining).",
     "intuition": "A model's built-in knowledge is frozen at training time and can be wrong. RAG fetches relevant passages from your own documents at question time and hands them to the model as context.",
     "howItWorks": [
       "Split your documents into chunks and index them, usually as embeddings in a vector store.",
@@ -94,6 +97,21 @@
       {
         "title": "Wikipedia: Retrieval-augmented generation",
         "url": "https://en.wikipedia.org/wiki/Retrieval-augmented_generation"
+      }
+    ],
+    "usedIn": [
+      {
+        "name": "Perplexity and Bing Copilot",
+        "detail": "web search results fed to an LLM with citations"
+      },
+      {
+        "name": "Enterprise document assistants",
+        "detail": "answers grounded in an internal knowledge base"
+      },
+      {
+        "name": "Original RAG model",
+        "detail": "BART generator with a DPR retriever over Wikipedia",
+        "url": "https://arxiv.org/abs/2005.11401"
       }
     ]
   },
