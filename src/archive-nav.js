@@ -9,6 +9,8 @@ const ACTIONS = [
   ['recent', 'Recently Added', 'openRecentlyAdded', 'discover', 'clock', 'The newest entry on the shelf'],
   ['paths', 'Learning Paths', 'openCollections', 'discover', 'graduation-cap', 'Curated routes through the terms'],
   ['browse', 'Browse A–Z', 'focusVolumeRail', 'discover', 'library', 'Jump to a volume'],
+  ['coverage', 'Coverage', 'openCoverage', 'community', 'layers', 'Where the shelf is thin'],
+  ['request', 'Request a Term', 'openRequest', 'community', 'circle-help', 'Ask for a missing term'],
   ['contribute', 'Contribute', 'openContribute', 'community', 'plus-circle', 'Suggest a new term'],
   ['feedback', 'Feedback', 'openFeedback', 'community', 'message-square', 'Report a bug or idea'],
   ['help', 'Help', 'openHelp', 'community', 'circle-help', 'How the 3D library works'],

@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {
   buildIssueBody,
   buildIssueUrl,
+  buildRequestUrl,
   collectBatchIssues,
   formRowToTerm,
   MAX_ISSUE_URL_LENGTH,
@@ -235,4 +236,19 @@ test('formRowToTerm builds a typed event with coverage', () => {
   const parsed = JSON.parse(termFileJson(term));
   assert.equal(parsed.coverage.length, 1);
   assert.equal(parsed.coverage[0].date, '2023-11-17');
+});
+
+test('contributor credit flows from the form into the committed JSON', () => {
+  const { term, issues } = formRowToTerm({ ...validRow, contributors: '@octocat, Ada Lovelace' });
+  assert.deepEqual(issues, []);
+  assert.deepEqual(JSON.parse(termFileJson(term)).contributors, ['@octocat', 'Ada Lovelace']);
+  assert.equal(JSON.parse(termFileJson(formRowToTerm(validRow).term)).contributors, undefined);
+});
+
+test('buildRequestUrl prefills a term-request issue', () => {
+  const url = new URL(buildRequestUrl({ term: 'Speculative Decoding', reason: 'Common in inference.', source: 'https://arxiv.org/abs/2211.17192' }));
+  assert.equal(url.pathname, '/zac11/llm-dictionary/issues/new');
+  assert.equal(url.searchParams.get('title'), 'Request term: Speculative Decoding');
+  assert.equal(url.searchParams.get('labels'), 'term-request');
+  assert.ok(url.searchParams.get('body').includes('https://arxiv.org/abs/2211.17192'));
 });

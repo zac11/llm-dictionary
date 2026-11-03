@@ -1,4 +1,5 @@
-import { findTerm, volumeByLetter, rangeTerms, searchTerms, RANGES } from './terms.js';
+import { allTerms, findTerm, volumeByLetter, rangeTerms, searchTerms, RANGES } from './terms.js';
+import { coverageStats } from './coverage.js';
 import { letterColor } from './palette.js';
 import { icon } from './icons.js';
 import { volumeRailItems } from './navigation.js';
@@ -49,7 +50,8 @@ export function formatCitation(c) {
 }
 
 export class UI {
-  constructor({ onPickVolume, onPickTerm, onVolumeClose, onAskTerm, onAskQuery, onMapTerm }) {
+  constructor({ onPickVolume, onPickTerm, onVolumeClose, onAskTerm, onAskQuery, onMapTerm, onContribute }) {
+    this.onContribute = onContribute; // () => void  (opens the Contribute modal)
     this.onPickVolume = onPickVolume; // (folder, letter) => void
     this.onPickTerm = onPickTerm; // (slug) => void  (main runs the pull-out ritual)
     this.onVolumeClose = onVolumeClose; // () => void (main returns the book to the shelf)
@@ -574,6 +576,105 @@ export class UI {
   }
 
   /** Entry spread: definition on the left, details + citation (+ story cue) on the right. */
+  // ---------- contribution flywheel ----------
+
+  _renderContributors(term) {
+    if (!term.contributors?.length) return '';
+    const names = term.contributors.map(({ name, url, role }) => {
+      const label = escapeHtml(name) + (role ? ` <span class="pg-contrib-role">(${escapeHtml(role)})</span>` : '');
+      return url ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener">${label}</a>` : label;
+    });
+    return `<p class="pg-contributors">${icon('users')}<span>Contributed by ${names.join(', ')}</span></p>`;
+  }
+
+  /** Coverage dashboard: term counts per letter, category and type, with thin areas called out. */
+  openCoverage() {
+    const stats = coverageStats(allTerms);
+    const max = Math.max(1, ...stats.letters.map(({ count }) => count));
+    const bar = (label, count, top, thin, attrs = '') => `
+      <li class="cov-row${thin ? ' is-thin' : ''}" ${attrs}>
+        <span class="cov-label">${escapeHtml(label)}</span>
+        <span class="cov-bar"><span style="width:${Math.max(2, Math.round((count / top) * 100))}%"></span></span>
+        <span class="cov-count">${count.toLocaleString('en-US')}</span>
+      </li>`;
+    const topCategory = Math.max(1, ...stats.topCategories.map(({ count }) => count));
+    const thinCats = stats.thinCategories.slice(0, 18);
+    this._showPage(() => {
+      this._pageLeft.innerHTML = `
+        <div class="story-left page-left-intro">
+          <p class="idx-kicker">TheAIDictionary · Coverage</p>
+          <h2 class="story-title">Where the shelf is thin</h2>
+          <p class="story-open">${stats.total.toLocaleString('en-US')} terms across ${stats.categoryCount.toLocaleString('en-US')} categories.
+            ${stats.withExplainer.toLocaleString('en-US')} have an explainer; ${stats.withContributors.toLocaleString('en-US')} credit a contributor.</p>
+          <h3 class="cov-head">Terms per letter</h3>
+          <ul class="cov-list cov-letters">${stats.letters.map(({ letter, count, thin }) => bar(letter, count, max, thin)).join('')}</ul>
+          <p class="cov-note">Highlighted letters hold under half the median (${stats.letterMedian}) per letter.</p>
+        </div>`;
+      this._pageRight.innerHTML = `
+        <div class="pg-entry">
+          <h3 class="cov-head">Largest categories</h3>
+          <ul class="cov-list">${stats.topCategories.map(({ category, count }) => bar(category, count, topCategory, false)).join('')}</ul>
+          <h3 class="cov-head">By type</h3>
+          <ul class="cov-list">${stats.types
+            .map(({ type, count }) => bar(TERM_TYPE_LABELS[type] || type, count, stats.types[0].count, count < 20))
+            .join('')}</ul>
+          ${
+            thinCats.length
+              ? `<h3 class="cov-head">Thin categories (${stats.thinCategories.length})</h3>
+                 <p class="cov-chips">${thinCats.map(({ category, count }) => `<span class="cov-chip">${escapeHtml(category)} · ${count}</span>`).join('')}</p>`
+              : ''
+          }
+          <p class="path-actions">
+            <button type="button" class="pg-flip-page cov-request">${icon('circle-help')}<span>Request a missing term</span>${icon('arrow-right')}</button>
+          </p>
+        </div>`;
+      this._pageRight.querySelector('.cov-request')?.addEventListener('click', () => this.openRequest());
+    }, `Coverage · ${stats.total.toLocaleString('en-US')} terms`);
+  }
+
+  /** "Request a term": checks the shelf first, then opens a prefilled term-request issue. */
+  openRequest() {
+    this._showPage(() => {
+      this._pageLeft.innerHTML = `
+        <div class="story-left page-left-intro">
+          <p class="idx-kicker">TheAIDictionary · Community</p>
+          <h2 class="story-title">Request a term</h2>
+          <p class="story-open">Missing something? Name it and say why it matters. Requests become GitHub issues labelled
+            <code>term-request</code> that contributors pick up — and credit themselves on the entry.</p>
+          <p class="story-open">Ready to write it yourself? Use <button type="button" class="pg-part-link req-contribute">Contribute</button> instead.</p>
+        </div>`;
+      this._pageRight.innerHTML = `
+        <div class="pg-entry">
+          <form class="req-form" autocomplete="off">
+            <label>Term<input name="term" required maxlength="120" placeholder="e.g. Speculative decoding" /></label>
+            <p class="req-match" role="status" aria-live="polite"></p>
+            <label>Why it belongs<textarea name="reason" rows="3" maxlength="800"></textarea></label>
+            <label>A good source (URL)<input name="source" type="url" placeholder="https://arxiv.org/abs/…" /></label>
+            <label>Your name or @handle (optional)<input name="requester" maxlength="80" /></label>
+            <button type="submit" class="pg-flip-page">${icon('arrow-up-right')}<span>Open the request on GitHub</span></button>
+          </form>
+        </div>`;
+      const form = this._pageRight.querySelector('.req-form');
+      const match = form.querySelector('.req-match');
+      const input = form.elements.term;
+      input.addEventListener('input', () => {
+        const [hit] = input.value.trim().length >= 3 ? searchTerms(input.value) : [];
+        match.innerHTML = hit
+          ? `Already on the shelf? <button type="button" class="pg-part-link" data-slug="${escapeHtml(hit.slug)}">${escapeHtml(hit.term)}</button>`
+          : '';
+        match.querySelector('[data-slug]')?.addEventListener('click', (event) => this.onPickTerm?.(event.currentTarget.dataset.slug));
+      });
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        if (!input.value.trim()) return input.focus();
+        const { buildRequestUrl } = await import('./contribute.js');
+        const data = Object.fromEntries(new FormData(form));
+        window.open(buildRequestUrl(data), '_blank', 'noopener');
+      });
+      this._pageLeft.querySelector('.req-contribute')?.addEventListener('click', () => this.onContribute?.());
+    }, 'Request a term');
+  }
+
   // ---------- learning paths ----------
 
   /** "Step 3 of 8" walker while on a path, plus "Part of:" links to every path holding the term. */
@@ -825,6 +926,7 @@ export class UI {
                </aside>`
             : ''
         }
+        ${this._renderContributors(term)}
         ${
           hasSecondPage(term)
             ? `<button class="pg-flip-page" type="button">${icon('book-open')}<span>${escapeHtml(

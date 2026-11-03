@@ -59,6 +59,7 @@ test('normalizeTerm preserves an explicit slug and normalizes optional fields', 
     profile: { links: [], highlights: [], knownFor: '', currentRole: '', notableWorks: [] },
     library: null,
     coverage: [],
+    contributors: [],
     related: ['other-term'],
     citation: { title: 'Paper', authors: ['Author'], year: '', venue: '', url: '' },
     addedAt: '',
@@ -278,6 +279,26 @@ test('validateTerm accepts a well-formed person profile', () => {
   };
   const codes = validateTerm(normalizeTerm(raw), { raw }).map((issue) => issue.code);
   assert.deepEqual(codes, []);
+});
+
+test('normalizeContributors accepts names, @handles and objects and drops duplicates', () => {
+  const term = normalizeTerm({
+    term: 'Thing',
+    definition: 'd',
+    details: 'x',
+    contributors: ['Ada Lovelace', '@octocat', { github: 'octocat' }, { name: 'Grace', url: 'https://example.org', role: 'editor' }, ''],
+  });
+  assert.deepEqual(term.contributors, [
+    { name: 'Ada Lovelace', github: '', url: '', role: '' },
+    { name: 'octocat', github: 'octocat', url: 'https://github.com/octocat', role: '' },
+    { name: 'Grace', github: '', url: 'https://example.org', role: 'editor' },
+  ]);
+  const raw = { term: 'Thing', definition: 'd', details: 'x', contributors: [{}, { name: 'B', url: 'ftp://x' }] };
+  const codes = validateTerm(normalizeTerm(raw), { raw }).map(({ code }) => code);
+  assert.ok(codes.includes('invalid-contributor'));
+  assert.ok(codes.includes('invalid-contributor-url'));
+  const bad = { term: 'Thing', definition: 'd', details: 'x', contributors: 'me' };
+  assert.ok(validateTerm(normalizeTerm(bad), { raw: bad }).some(({ code }) => code === 'invalid-contributors'));
 });
 
 test('rankSearchEntries tolerates typos and prefixes, and ranks body text last', () => {

@@ -25,6 +25,8 @@ const archiveActions = exploreActions({
   openTermOfDay: () => archiveHome.openTermOfDay(),
   openRecentlyAdded: () => archiveHome.openRecentlyAdded(),
   openCollections: () => openPage(() => ui.openCollections()),
+  openCoverage: () => openPage(() => ui.openCoverage()),
+  openRequest: () => openPage(() => ui.openRequest()),
   focusVolumeRail: () => focusVolumeRail(),
   openContribute: () => openContribute(),
   openFeedback: () => openFeedback(),
@@ -92,6 +94,7 @@ ui = new UI({
   onAskTerm: (slug) => openAskForTerm(slug),
   onAskQuery: (query) => openAsk({ query }),
   onMapTerm: (slug) => openMapForTerm(slug),
+  onContribute: () => openContribute(),
 });
 
 const archiveHome = new ArchiveHome(document.getElementById('archive-home'), {
@@ -459,6 +462,8 @@ async function applyLocation() {
   else if (view === 'volume') openVolumeRitual(folder);
   else if (view === 'paths') openPage(() => ui.openCollections());
   else if (view === 'today') archiveHome.openTermOfDay();
+  else if (view === 'coverage') openPage(() => ui.openCoverage());
+  else if (view === 'request') openPage(() => ui.openRequest());
   else if (view === 'path') openPage(() => ui.openCollection(slug) || ui.openCollections());
 }
 

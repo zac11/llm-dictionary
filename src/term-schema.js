@@ -212,6 +212,42 @@ export function normalizeLibrary(value, explainer = null) {
 }
 
 /** True when a profile has any card data beyond generated links. */
+/**
+ * Contributor credits: "Ada Lovelace", "@octocat" or { name, github, url, role }.
+ * A bare GitHub handle links to the profile.
+ */
+export function normalizeContributors(value) {
+  const out = [];
+  const seen = new Set();
+  for (const item of Array.isArray(value) ? value : []) {
+    let entry = null;
+    if (typeof item === 'string') {
+      const label = item.trim();
+      const handle = /^@([a-z0-9](?:[a-z0-9-]{0,38}))$/i.exec(label);
+      if (handle) entry = { name: handle[1], github: handle[1], url: `https://github.com/${handle[1]}`, role: '' };
+      else if (label) entry = { name: label, github: '', url: '', role: '' };
+    } else if (isRecord(item)) {
+      const github = String(item.github || '').trim().replace(/^@/, '');
+      const name = String(item.name || '').trim() || github;
+      const url = String(item.url || '').trim();
+      if (name) {
+        entry = {
+          name,
+          github: /^[a-z0-9](?:[a-z0-9-]{0,38})$/i.test(github) ? github : '',
+          url: isWebUrl(url) ? url : github && /^[a-z0-9](?:[a-z0-9-]{0,38})$/i.test(github) ? `https://github.com/${github}` : '',
+          role: String(item.role || '').trim(),
+        };
+      }
+    }
+    if (!entry) continue;
+    const key = (entry.github || entry.name).toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(entry);
+  }
+  return out;
+}
+
 export function hasProfileCard(profile) {
   return Boolean(profile && (profile.knownFor || profile.currentRole || profile.notableWorks.length));
 }
@@ -443,6 +479,7 @@ export function normalizeTerm(raw, source = '') {
     profile: normalizeProfile(raw.profile),
     library: normalizeLibrary(raw.library, type === 'library' ? explainer : null),
     coverage: normalizeCoverage(raw.coverage),
+    contributors: normalizeContributors(raw.contributors),
     related: cleanList(raw.related),
     citation: {
       title: String(citation.title || '').trim(),
@@ -473,6 +510,24 @@ export function validateTerm(term, context = {}) {
   if (!isValidLetter(term.letter)) add('error', 'invalid-letter', `Letter “${term.letter}” is invalid.`);
   if (raw && raw.addedAt !== undefined && raw.addedAt !== '' && !isIsoDate(raw.addedAt)) {
     add('error', 'invalid-added-at', `addedAt must be a valid ISO calendar date (YYYY-MM-DD).`);
+  }
+
+  if (raw && raw.contributors !== undefined) {
+    if (!Array.isArray(raw.contributors)) add('error', 'invalid-contributors', 'contributors must be an array.');
+    else {
+      for (const item of raw.contributors) {
+        const ok =
+          (typeof item === 'string' && item.trim()) ||
+          (isRecord(item) && (String(item.name || '').trim() || String(item.github || '').trim()));
+        if (!ok) add('error', 'invalid-contributor', 'Each contributor needs a name or GitHub handle.');
+        else if (isRecord(item) && item.url && !isWebUrl(String(item.url).trim())) {
+          add('warning', 'invalid-contributor-url', `Contributor link “${item.url}” is not an http(s) URL.`);
+        }
+      }
+      if (term.contributors.length < raw.contributors.length) {
+        add('warning', 'duplicate-contributor', 'Some contributors are listed more than once or are empty.');
+      }
+    }
   }
 
   if (context.folder && rangeFolderForLetter(term.letter) !== context.folder) {
