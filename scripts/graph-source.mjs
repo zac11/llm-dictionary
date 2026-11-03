@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import {
   isValidRangeFolder,
@@ -7,6 +7,7 @@ import {
   normalizeTerm,
   validateTerm,
 } from '../src/term-schema.js';
+import { validateCollections } from '../src/collection-schema.js';
 
 const addDiagnostic = (diagnostics, level, code, source, message) =>
   diagnostics.push({ level, code, source, message });
@@ -96,6 +97,26 @@ export function loadDictionarySource(dictionary) {
   );
   terms.sort((a, b) => a.slug.localeCompare(b.slug));
   return { terms, diagnostics };
+}
+
+/** Diagnostics for collections/*.json: every listed slug must resolve to a term. */
+export function loadCollectionDiagnostics(directory, terms) {
+  if (!existsSync(directory)) return [];
+  const diagnostics = [];
+  const files = [];
+  for (const filename of readdirSync(directory).filter((name) => name.endsWith('.json')).sort()) {
+    const source = `collections/${filename}`;
+    try {
+      files.push({ file: source, raw: JSON.parse(readFileSync(join(directory, filename), 'utf8')) });
+    } catch (error) {
+      addDiagnostic(diagnostics, 'error', 'malformed-json', source, error.message);
+    }
+  }
+  const known = new Set(terms.map((term) => term.slug));
+  for (const issue of validateCollections(files, known)) {
+    addDiagnostic(diagnostics, issue.level, issue.code, issue.file, issue.message);
+  }
+  return diagnostics;
 }
 
 export function normalizedSourceHash(terms) {

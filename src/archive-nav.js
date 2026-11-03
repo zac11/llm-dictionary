@@ -7,6 +7,7 @@ const ACTIONS = [
   ['random', 'Random Term', 'openRandomTerm', 'discover', 'shuffle', 'Pull a surprise volume'],
   ['daily', 'Term of the Day', 'openTermOfDay', 'discover', 'sun', "Today's featured entry"],
   ['recent', 'Recently Added', 'openRecentlyAdded', 'discover', 'clock', 'The newest entry on the shelf'],
+  ['paths', 'Learning Paths', 'openCollections', 'discover', 'graduation-cap', 'Curated routes through the terms'],
   ['browse', 'Browse A–Z', 'focusVolumeRail', 'discover', 'library', 'Jump to a volume'],
   ['contribute', 'Contribute', 'openContribute', 'community', 'plus-circle', 'Suggest a new term'],
   ['feedback', 'Feedback', 'openFeedback', 'community', 'message-square', 'Report a bug or idea'],

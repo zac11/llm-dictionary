@@ -2,6 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { parseAppLocation } from '../src/navigation.js';
 
+test('parseAppLocation maps learning-path links', () => {
+  assert.deepEqual(parseAppLocation({ search: '?path=rag-from-scratch' }), { view: 'path', slug: 'rag-from-scratch', folder: null });
+  assert.deepEqual(parseAppLocation({ search: '?view=paths' }), { view: 'paths', slug: null, folder: null });
+});
+
 test('parseAppLocation maps deep-link and query forms to their views', () => {
   assert.deepEqual(parseAppLocation({ pathname: '/term/attention/', search: '' }), {
     view: 'term', slug: 'attention', folder: null,

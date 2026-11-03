@@ -17,6 +17,8 @@ import {
 } from './entry-actions.js';
 import { TERM_TYPE_LABELS, isStoryType, hasProfileCard } from './term-schema.js';
 import { EXPLAINER_LAYOUTS, EXPLAINER_TIERS, explainerSections } from './explainer.js';
+import { collections, collectionsForTerm, findCollection } from './collections.js';
+import { pathNeighbors } from './collection-schema.js';
 
 const CODE_LABELS = { python: 'Python', javascript: 'JavaScript', typescript: 'TypeScript', shell: 'Terminal' };
 
@@ -70,7 +72,8 @@ export class UI {
     this._toastEl = $('toast');
     this._shareAnchor = null;
 
-    this._mode = 'index'; // 'index' | 'entry'
+    this._mode = 'index'; // 'index' | 'entry' | 'page'
+    this._path = null; // { collection, index } while walking a learning path
     this._folder = null;
     this._activeTerm = null;
     this._termList = [];
@@ -289,6 +292,7 @@ export class UI {
     this._mode = mode;
     this._spreadBook.classList.toggle('mode-index', mode === 'index');
     this._spreadBook.classList.toggle('mode-entry', mode === 'entry');
+    this._spreadBook.classList.toggle('mode-page', mode === 'page');
     this.closeShareMenu(); // the share anchor belongs to the page being replaced
     this._syncBackButton();
   }
@@ -502,16 +506,18 @@ export class UI {
   _syncSpreadNav() {
     const prev = $('spread-prev');
     const next = $('spread-next');
-    const atFirst = this._mode === 'index' && this._indexPage <= 0;
-    const atLast = this._mode === 'index' && this._indexPage >= this._indexPages - 1;
-    prev.disabled = atFirst;
-    next.disabled = atLast;
+    const step = this._mode === 'entry' && this._path ? pathNeighbors(this._path.collection, this._path.index) : null;
+    const atFirst = (this._mode === 'index' && this._indexPage <= 0) || this._mode === 'page' || (step && !step.prev);
+    const atLast =
+      (this._mode === 'index' && this._indexPage >= this._indexPages - 1) || this._mode === 'page' || (step && !step.next);
+    prev.disabled = Boolean(atFirst);
+    next.disabled = Boolean(atLast);
 
     // In contents mode these buttons page through the sheets; in entry mode
     // they always walk between terms — flipping to the story is done by the
     // in-page flip buttons so the footer stays unambiguous.
-    const prevLabel = this._mode === 'index' ? 'Previous contents page' : 'Previous entry';
-    const nextLabel = this._mode === 'index' ? 'Next contents page' : 'Next entry';
+    const prevLabel = this._mode === 'index' ? 'Previous contents page' : step ? 'Previous step in path' : 'Previous entry';
+    const nextLabel = this._mode === 'index' ? 'Next contents page' : step ? 'Next step in path' : 'Next entry';
     prev.title = prevLabel;
     next.title = nextLabel;
     prev.setAttribute('aria-label', prevLabel);
@@ -532,6 +538,11 @@ export class UI {
     }
 
     this._activeTerm = term;
+    if (opts.path) this._path = opts.path;
+    else if (this._path) {
+      const index = this._path.collection.terms.indexOf(term.slug);
+      this._path = index === -1 ? null : { collection: this._path.collection, index };
+    }
     const vol = volumeByLetter(term.letter);
     this._folder = vol.folder;
     this._termList = rangeTerms(vol.folder);
@@ -563,6 +574,137 @@ export class UI {
   }
 
   /** Entry spread: definition on the left, details + citation (+ story cue) on the right. */
+  // ---------- learning paths ----------
+
+  /** "Step 3 of 8" walker while on a path, plus "Part of:" links to every path holding the term. */
+  _renderPathBox(term) {
+    const memberships = collectionsForTerm(term.slug);
+    let walker = '';
+    if (this._path && this._path.collection.terms[this._path.index] === term.slug) {
+      const { collection, index } = this._path;
+      const { prev, next } = pathNeighbors(collection, index);
+      const stepButton = (slug, dir, label) => {
+        const target = slug ? findTerm(slug) : null;
+        return target
+          ? `<button type="button" class="pg-path-step" data-step="${dir}">${dir < 0 ? icon('chevron-left') : ''}<span>${escapeHtml(label)}: ${escapeHtml(target.term)}</span>${dir > 0 ? icon('chevron-right') : ''}</button>`
+          : '';
+      };
+      walker = `<nav class="pg-path" aria-label="Learning path">
+          <p class="pg-path-head">${icon('graduation-cap')}<button type="button" class="pg-path-title" data-collection="${escapeHtml(collection.id)}">${escapeHtml(collection.title)}</button>
+            <span>Step ${index + 1} of ${collection.terms.length}</span></p>
+          <p class="pg-path-steps">${stepButton(prev, -1, 'Previous')}${stepButton(next, 1, 'Next')}</p>
+        </nav>`;
+    }
+    const others = memberships.filter(({ collection }) => !this._path || collection.id !== this._path.collection.id);
+    const partOf = others.length
+      ? `<p class="pg-part-of">Part of: ${others
+          .map(({ collection }) => `<button type="button" class="pg-part-link" data-collection="${escapeHtml(collection.id)}">${escapeHtml(collection.title)}</button>`)
+          .join(', ')}</p>`
+      : '';
+    return walker + partOf;
+  }
+
+  _bindPathBox() {
+    this._pageLeft.querySelectorAll('[data-collection]').forEach((button) =>
+      button.addEventListener('click', () => this.openCollection(button.dataset.collection))
+    );
+    this._pageLeft.querySelectorAll('.pg-path-step').forEach((button) =>
+      button.addEventListener('click', () => this._stepEntry(Number(button.dataset.step)))
+    );
+  }
+
+  /**
+   * Book pages that are not entries (learning paths, dashboards). They open
+   * without pulling a volume, so the prev/next arrows are disabled.
+   */
+  _showPage(render, counter) {
+    this._activeTerm = null;
+    this._termIndex = -1;
+    const draw = () => {
+      this._renderFootActions([]);
+      render();
+      this._setMode('page');
+      this._counter.textContent = counter;
+      this._syncSpreadNav();
+      this._resetScroll();
+    };
+    if (this.isSpreadOpen()) this._flip('next', draw);
+    else {
+      draw();
+      this._openSpread();
+      this._reveal();
+    }
+  }
+
+  /** Shelf of every learning path. */
+  openCollections() {
+    this._showPage(() => {
+      this._pageLeft.innerHTML = `
+        <div class="story-left page-left-intro">
+          <p class="idx-kicker">TheAIDictionary · Learning paths</p>
+          <p class="idx-ornament">✦&nbsp;&nbsp;❦&nbsp;&nbsp;✦</p>
+          <h2 class="story-title">Learning paths</h2>
+          <p class="story-open">Short, ordered routes through the dictionary. Each path reads like a chapter: start at step one and turn the page to the next idea.</p>
+        </div>`;
+      this._pageRight.innerHTML = `
+        <div class="pg-entry">
+          <ul class="path-shelf">${collections
+            .map(
+              (c) => `<li><button type="button" class="path-card" data-collection="${escapeHtml(c.id)}">
+                  <strong>${escapeHtml(c.title)}</strong>
+                  <span>${escapeHtml(c.description)}</span>
+                  <em>${c.terms.length} terms</em>
+                </button></li>`
+            )
+            .join('')}</ul>
+        </div>`;
+      this._pageRight.querySelectorAll('[data-collection]').forEach((button) =>
+        button.addEventListener('click', () => this.openCollection(button.dataset.collection))
+      );
+    }, `Learning paths · ${collections.length}`);
+  }
+
+  /** One learning path: description on the left, the ordered steps on the right. */
+  openCollection(id) {
+    const collection = findCollection(id);
+    if (!collection) return false;
+    const steps = collection.terms.map((slug) => findTerm(slug)).filter(Boolean);
+    this._showPage(() => {
+      this._pageLeft.innerHTML = `
+        <div class="story-left page-left-intro">
+          <p class="idx-kicker">TheAIDictionary · Learning path</p>
+          <p class="idx-ornament">✦&nbsp;&nbsp;❦&nbsp;&nbsp;✦</p>
+          <h2 class="story-title">${escapeHtml(collection.title)}</h2>
+          <p class="story-open">${escapeHtml(collection.description)}</p>
+          <p class="path-actions">
+            <button type="button" class="pg-flip-page path-start">${icon('book-open')}<span>Start at step 1</span>${icon('arrow-right')}</button>
+            <button type="button" class="path-all">${icon('chevron-left')}<span>All learning paths</span></button>
+          </p>
+        </div>`;
+      this._pageRight.innerHTML = `
+        <div class="pg-entry">
+          <ol class="path-steps">${steps
+            .map(
+              (term, i) => `<li><button type="button" class="path-step" data-index="${i}">
+                  <span class="path-step-n">${i + 1}</span>
+                  <span class="path-step-body"><strong>${escapeHtml(term.term)}</strong><span>${escapeHtml(term.definition)}</span></span>
+                </button></li>`
+            )
+            .join('')}</ol>
+        </div>`;
+      const open = (index) => {
+        this._path = { collection, index };
+        this.openEntry(collection.terms[index]);
+      };
+      this._pageLeft.querySelector('.path-start')?.addEventListener('click', () => open(0));
+      this._pageLeft.querySelector('.path-all')?.addEventListener('click', () => this.openCollections());
+      this._pageRight.querySelectorAll('.path-step').forEach((button) =>
+        button.addEventListener('click', () => open(Number(button.dataset.index)))
+      );
+    }, `Learning path · ${steps.length} terms`);
+    return true;
+  }
+
   /** Structured card for people, organizations and libraries on the entry page. */
   _renderEntryCard(term) {
     if (term.type === 'person' || term.type === 'organization') {
@@ -657,7 +799,9 @@ export class UI {
         ${term.aka.length ? `<p class="pg-aka">also known as: ${escapeHtml(term.aka.join(', '))}</p>` : ''}
         <p class="pg-rule"></p>
         <p class="pg-def">${escapeHtml(term.definition)}</p>
+        ${this._renderPathBox(term)}
       </div>`;
+    this._bindPathBox();
     this._pageLeft.querySelector('.pg-share')?.addEventListener('click', (e) => {
       e.stopPropagation();
       this.toggleShareMenu(e.currentTarget);
@@ -1248,11 +1392,21 @@ export class UI {
   _syncEntryChrome(term, vol) {
     this.closeShareMenu();
     const page = this._entryPage === 1 ? ` · ${entrySecondPage(term).counter}` : '';
-    this._counter.textContent = `${this._termIndex + 1} of ${this._termList.length} · ${vol.label}${page}`;
+    this._counter.textContent = this._path
+      ? `Step ${this._path.index + 1} of ${this._path.collection.terms.length} · ${this._path.collection.title}${page}`
+      : `${this._termIndex + 1} of ${this._termList.length} · ${vol.label}${page}`;
     this._syncSpreadNav();
   }
 
   _stepEntry(dir) {
+    if (this._mode === 'entry' && this._path) {
+      const { prev, next } = pathNeighbors(this._path.collection, this._path.index);
+      const slug = dir > 0 ? next : prev;
+      if (!slug) return;
+      this._path = { collection: this._path.collection, index: this._path.index + (dir > 0 ? 1 : -1) };
+      this.openEntry(slug, { dir: dir > 0 ? 'next' : 'prev' });
+      return;
+    }
     if (this._mode !== 'entry' || this._termIndex === -1 || !this._termList.length) return;
     const next = (this._termIndex + dir + this._termList.length) % this._termList.length;
     this.openEntry(this._termList[next].slug, { from: 'volume', dir: dir > 0 ? 'next' : 'prev' });
@@ -1313,6 +1467,7 @@ export class UI {
     document.body.classList.remove('reading');
     this._activeTerm = null;
     this._termIndex = -1;
+    if (!silent) this._path = null;
     this.setActiveVolume(null);
     if (!silent && this.onVolumeClose) this.onVolumeClose();
   }
