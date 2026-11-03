@@ -5,7 +5,128 @@
   "type": "concept",
   "definition": "Action selection is a way of characterizing the most basic problem of intelligent systems: what to do next.",
   "details": "In artificial intelligence and computational cognitive science, \"the action selection problem\" is typically associated with intelligent agents and animats—artificial systems that exhibit complex behavior in an agent environment. The term is also sometimes used in ethology or animal behavior. One problem for understanding action selection is determining the level of abstraction used for specifying an \"act\". At the most basic level of abstraction, an atomic act could be anything from contracting a muscle cell to provoking a war. Typically for any one action-selection mechanism, the set of possible actions is predefined and fixed. Most researchers working in this field place high demands on their agents: The acting agent typically must select its action in dynamic and unpredictable environments. The agents typically act in real time; therefore they must make decisions in a timely fashion. The agents are normally created to perform several different tasks. These tasks may conflict for resource allocation (e.g. can the agent put out a fire and deliver a cup of coffee at the same time?) The environment the agents operate in may include humans, who may make things more difficult for the a",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. And that idea, made concrete, is Action selection.",
+  "explainer": {
+    "lead": "Action selection is the fundamental question every intelligent system faces: given everything you perceive and everything you want, what single thing should you do right now? It sits at the heart of both artificial agents and biological creatures, shaping how robots, game characters, and even virtual pets behave moment to moment.",
+    "tiers": {
+      "eli5": "Imagine you're a robot in a room. You can see a ball, hear a whistle, and feel low battery. Action selection is like having a tiny judge inside you that picks just one thing to do next—chase the ball, look for the whistle, or find a charger—instead of trying to do everything at once and freezing up.",
+      "practitioner": "Action selection mechanisms are embedded in agent architectures where multiple behaviors or goals compete for control. You'll encounter them in robotics (subsumption architecture), game AI (finite-state machines for NPCs), and hybrid systems like BDI implementations (JAM, IVE). Key pitfalls include combinatorial explosion in symbolic planners, rigidity in hard-coded reactive plans, and coherence failures in distributed approaches where no single module has final authority.",
+      "paperLevel": "The action selection problem is formalized as finding a function mapping from an agent's current perceptual state and internal memory to a single action from a predefined fixed set, under constraints of real-time operation, dynamic environments, and potentially conflicting multi-task objectives. The Extended Rosenblatt & Payton architecture (Tyrrell, 1993) uses spreading activation in a hierarchical connectionist network; ASMO (Williams, Johnston, Novianto) employs attention-based orchestration of distributed modules. Satisficing provides a bounded-rationality alternative to full optimization."
+    },
+    "example": "A domestic robot detects smoke (fire) and hears a request for coffee. Its action selection mechanism weighs these tasks: they conflict for resources (mobility, manipulators). Using a priority-based ASM, it selects 'address fire' first, updates its memory that coffee is pending, and redirects perceptual attention to locate the fire source—demonstrating how the mechanism controls not just motor output but attention and memory.",
+    "usedIn": [
+      {
+        "name": "Game AI",
+        "detail": "Finite-state machines select actions for first-person shooter bots, as in Halo 2 (Isla, 2005) and Quake III (van Waveren, 2001)",
+        "url": ""
+      },
+      {
+        "name": "Virtual pets",
+        "detail": "The Creatures game uses a three-layered adaptive neural network for reactive task selection at each time step",
+        "url": ""
+      },
+      {
+        "name": "Robotics",
+        "detail": "Behavior-based AI and subsumption architecture respond to stimuli through competing modules with suppression mechanisms",
+        "url": ""
+      },
+      {
+        "name": "Belief-desire-intention systems",
+        "detail": "Goal-driven architectures like JAM and IVE implement refinements of BDI for symbolic action selection",
+        "url": ""
+      }
+    ],
+    "intuition": "Every moment, an intelligent agent has countless things it could do. Action selection is the mechanism that collapses all possibilities into one actual behavior, fast enough to matter and smart enough to serve the agent's goals.",
+    "howItWorks": [
+      "The agent perceives its environment and updates its internal state, including goals, memory, and current context.",
+      "Multiple candidate actions or behaviors are generated, either by symbolic planning, distributed modules, or reactive rules.",
+      "A selection mechanism evaluates, competes, or prioritizes these candidates, constraining the search to meet real-time demands.",
+      "One action is executed, and the cycle repeats, with the mechanism potentially updating memory or learning from outcomes."
+    ],
+    "whyItMatters": "Without action selection, agents would face paralysis by analysis, unable to act in dynamic environments. The problem forces AI to confront fundamental tradeoffs between optimality and speed, centralization and distribution, and rigidity and adaptability.",
+    "misconceptions": [
+      "Action selection is just picking the best option—actually, it often involves satisficing or constrained search due to computational limits",
+      "There must be one central decision module—actually, distributed approaches like ASMO or subsumption architectures have no single 'box' that decides",
+      "The action set can be improvised—actually, for any one mechanism, possible actions are typically predefined and fixed"
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "perceive",
+          "label": "Perceive environment",
+          "note": "Sensors gather current state"
+        },
+        {
+          "id": "generate",
+          "label": "Generate candidates",
+          "note": "Symbolic, distributed, or reactive modules propose actions"
+        },
+        {
+          "id": "select",
+          "label": "Select action",
+          "note": "ASM constrains search and picks one behavior"
+        },
+        {
+          "id": "execute",
+          "label": "Execute action",
+          "note": "Motor output to world"
+        },
+        {
+          "id": "update",
+          "label": "Update memory",
+          "note": "Learning and state for next cycle"
+        },
+        {
+          "id": "world",
+          "label": "World / environment",
+          "note": "Includes humans, other agents, dynamics"
+        }
+      ],
+      "edges": [
+        {
+          "from": "world",
+          "to": "perceive",
+          "label": "stimuli"
+        },
+        {
+          "from": "perceive",
+          "to": "generate",
+          "label": "perceptual state"
+        },
+        {
+          "from": "generate",
+          "to": "select",
+          "label": "candidates"
+        },
+        {
+          "from": "select",
+          "to": "execute",
+          "label": "chosen action"
+        },
+        {
+          "from": "execute",
+          "to": "world",
+          "label": "effects"
+        },
+        {
+          "from": "select",
+          "to": "update",
+          "label": "directs"
+        },
+        {
+          "from": "update",
+          "to": "generate",
+          "label": "informs"
+        }
+      ],
+      "caption": "The action selection loop: perception feeds candidate generation, the ASM selects one action for execution, and memory updates close the loop."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Action selection",
+        "url": "https://en.wikipedia.org/wiki/Action_selection"
+      }
+    ]
+  },
   "related": [
     "winner-take-all-in-action-selection",
     "action-model-learning",

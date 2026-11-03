@@ -2,10 +2,134 @@
   "term": "BERT (language model)",
   "letter": "B",
   "category": "Large language models",
-  "type": "concept",
+  "type": "model",
   "definition": "Bidirectional encoder representations from transformers (BERT) is a language model introduced in October 2018 by researchers at Google.",
   "details": "It learns to represent text as a sequence of vectors using self-supervised learning. It uses the encoder-only transformer architecture. BERT dramatically improved the state of the art for large language models. As of 2026, BERT is a common methodological component in natural language processing (NLP) research. BERT is trained by masked token prediction and next sentence prediction. With this training, BERT learns contextual, latent representations of tokens in their context, similar to ELMo and GPT-2. It found applications for many natural language processing tasks, such as coreference resolution and polysemy resolution. It improved on ELMo and spawned the study of \"BERTology\", which attempts to interpret what is learned by BERT. BERT was originally implemented in the English language at two model sizes, BERTBASE (110 million parameters) and BERTLARGE (340 million parameters). Both were trained on the Toronto BookCorpus (800M words) and English Wikipedia (2,500M words). The weights were released on GitHub. On March 11, 2020, 24 smaller models were released, the smallest being BERTTINY with just 4 million parameters.",
-  "story": "Imagine learning a language by reading every book in the library and noticing, over time, which words travel together. It does not memorize a rulebook; it absorbs a library. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It is fluency built from pattern, not from memorized rules. And that is BERT (language model) — teaching a machine to read between the lines.",
+  "explainer": {
+    "lead": "BERT turns words into number-based representations that depend on the surrounding sentence, allowing the same word to be represented differently in different contexts. Introduced by Google researchers in 2018, it became a widely used building block for language understanding and NLP research.",
+    "tiers": {
+      "eli5": "BERT learns language by reading sentences with some words hidden and trying to guess them, much like solving a fill-in-the-blank puzzle. It also practices deciding whether one sentence should follow another. Because it looks at the words on both sides of a blank, it can learn that a word’s meaning depends on its sentence.",
+      "practitioner": "Use BERT when a task needs contextual token vectors, such as coreference or polysemy resolution. The original English models were BERTBASE with 110 million parameters and BERTLARGE with 340 million parameters, with 24 smaller versions released later. Remember that it is an encoder-only model and that the original implementation was English-language.",
+      "paperLevel": "For tokens x_1,...,x_n, an encoder-only transformer produces contextual representations h_1,...,h_n, where each h_i depends on the token’s context. Training combines masked token prediction with next sentence prediction, using self-supervised text rather than task labels. The original English models had 110 million and 340 million parameters and were trained on the Toronto BookCorpus and English Wikipedia."
+    },
+    "example": "In “I sat on the bank beside the river,” masking “bank” lets BERT use both “I sat on the” and “beside the river” to predict the hidden word. Its resulting representation reflects the riverside meaning rather than treating every occurrence of “bank” identically.",
+    "usedIn": [
+      {
+        "name": "Coreference resolution",
+        "detail": "Contextual representations help language-processing systems work out which expressions refer to the same thing.",
+        "url": ""
+      },
+      {
+        "name": "Polysemy resolution",
+        "detail": "Different contexts can produce different representations for a word with multiple meanings.",
+        "url": ""
+      },
+      {
+        "name": "NLP research",
+        "detail": "BERT remains a common methodological component in natural language processing work.",
+        "url": ""
+      },
+      {
+        "name": "BERTology",
+        "detail": "Researchers study and interpret what BERT has learned.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Encoder-only transformer",
+        "detail": ""
+      },
+      {
+        "name": "Contextual token vectors",
+        "detail": ""
+      },
+      {
+        "name": "Masked token prediction",
+        "detail": ""
+      },
+      {
+        "name": "Next sentence prediction",
+        "detail": ""
+      },
+      {
+        "name": "Pretrained model weights",
+        "detail": ""
+      }
+    ],
+    "flow": [
+      "Feed text into the transformer encoder.",
+      "Read context from both directions around each token.",
+      "Produce a latent vector for every token in context.",
+      "Train with masked-token and next-sentence objectives.",
+      "Apply the learned representations to NLP tasks."
+    ],
+    "origin": "Researchers at Google introduced BERT in October 2018. The original English BERTBASE and BERTLARGE models were trained on the 800-million-word Toronto BookCorpus and 2,500-million-word English Wikipedia, and their weights were released on GitHub. On March 11, 2020, 24 smaller models followed, including the four-million-parameter BERTTINY.",
+    "lineage": "BERT improved on ELMo and, like ELMo and GPT-2, learns contextual latent representations of tokens. Its success prompted “BERTology,” research aimed at interpreting what the model learns.",
+    "whyItMatters": "BERT dramatically improved the state of the art for large language models by providing strong, context-sensitive text representations through self-supervised learning. It became useful across multiple NLP tasks and remains a common research component.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "text",
+          "label": "Input text",
+          "note": "Tokens enter with their surrounding context."
+        },
+        {
+          "id": "encoder",
+          "label": "Transformer encoder",
+          "note": "Processes context bidirectionally."
+        },
+        {
+          "id": "vectors",
+          "label": "Contextual vectors",
+          "note": "One latent representation per token."
+        },
+        {
+          "id": "masked",
+          "label": "Masked-token prediction",
+          "note": "Training predicts hidden tokens."
+        },
+        {
+          "id": "sentence",
+          "label": "Next-sentence prediction",
+          "note": "Training learns sentence relationships."
+        },
+        {
+          "id": "tasks",
+          "label": "NLP tasks",
+          "note": "Representations support language understanding."
+        }
+      ],
+      "edges": [
+        {
+          "from": "text",
+          "to": "encoder",
+          "label": ""
+        },
+        {
+          "from": "encoder",
+          "to": "vectors",
+          "label": ""
+        },
+        {
+          "from": "vectors",
+          "to": "masked",
+          "label": "training"
+        },
+        {
+          "from": "vectors",
+          "to": "sentence",
+          "label": "training"
+        },
+        {
+          "from": "vectors",
+          "to": "tasks",
+          "label": "application"
+        }
+      ],
+      "caption": "BERT’s encoder turns text into contextual token vectors, learned through two self-supervised objectives and used in NLP tasks."
+    }
+  },
   "related": [
     "language-model",
     "bert",

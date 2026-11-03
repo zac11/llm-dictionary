@@ -5,7 +5,154 @@
   "type": "algorithm",
   "definition": "In mathematical optimization, affine scaling is an algorithm for solving linear programming problems.",
   "details": "Specifically, it is an interior point method, discovered by Soviet mathematician I. I. Dikin in 1967 and reinvented in the U.S. in the mid-1980s.",
-  "story": "Think of a hiker descending a foggy hill in the dark, taking small steps and feeling for the steepest way down. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. It is the same loop you use to learn anything: try, miss, correct, try again. Skill, for a model, is just error pushed down until it is small enough to ignore. That steady, miss-by-miss improvement is Affine scaling.",
+  "explainer": {
+    "lead": "Affine scaling is a method for finding the best solution to a linear programming problem by staying safely inside the allowed region rather than walking along its edges. It was discovered in the Soviet Union in 1967, forgotten, then reinvented in the United States during the excitement over Karmarkar's algorithm in 1984.",
+    "tiers": {
+      "eli5": "Imagine you're trying to find the lowest point in a bowl-shaped valley, but you're not allowed to step on the rim. Affine scaling is like walking down the valley floor while staying well away from the edges, taking big steps when you're in the middle and smaller, careful steps as you get near the boundary. The 'scaling' part means you temporarily stretch or shrink your map of the valley so that your next step always looks like a simple downhill walk, then convert back to real distances.",
+      "practitioner": "Affine scaling solves linear programs in standard equality form: minimize c·x subject to Ax = b, x ≥ 0. It requires an initial strictly feasible point x₀ > 0 with Ax₀ = b. Implementations iterate by computing dual variables wᵏ = (ADₖ²Aᵀ)⁻¹ADₖ²c and reduced costs rᵏ = c − Aᵀwᵏ, then update xᵏ⁺¹ = xᵏ − β(Dₖ²rᵏ)/||Dₖrᵏ|| where Dₖ = diag(xᵏ). A step size β ≤ 2/3 guarantees convergence for Vanderbei's variant; β > 0.995 can converge to suboptimal points. In practice, modern interior-point solvers (IPOPT, Gurobi, Mosek) have largely superseded pure affine scaling with predictor-corrector and other primal-dual methods that offer better theoretical guarantees and numerical stability.",
+      "paperLevel": "Affine scaling is an interior-point method for linear programming discovered by I. I. Dikin (1967, convergence proof 1974) and independently reinvented by Barnes (IBM), Vanderbei et al. (AT&T), and Karmarkar in 1984. The algorithm solves min{cᵀx : Ax = b, x ≥ 0} via iterative affine rescaling of the feasible region. At each iteration, given current iterate xᵏ > 0, define Dₖ = diag(xᵏ). The search direction is dᵏ = −Dₖ²rᵏ/||Dₖrᵏ|| where rᵏ = c − Aᵀwᵏ and wᵏ = (ADₖ²Aᵀ)⁻¹ADₖ²c. Convergence to optimality is proven for β ≤ 2/3; for β > 0.995, Mascarenhas (1997) and others constructed examples converging to non-optimal points. Some variants exhibit chaotic behavior for β > 2/3."
+    },
+    "example": "Consider minimizing x₁ + 2x₂ subject to x₁ + x₂ = 1, x₁, x₂ ≥ 0. Start at x₀ = (0.5, 0.5), strictly feasible. With c = (1, 2), A = [1 1], b = 1, and β = 0.5: D₀ = diag(0.5, 0.5), AD₀²Aᵀ = 0.5, so w⁰ = (0.5)⁻¹ · [0.25 0.25] · [1 2]ᵀ = 0.75. Then r⁰ = [1 2]ᵀ − 0.75·[1 1]ᵀ = [0.25 1.25]ᵀ. Since r⁰ > 0, check 1ᵀD₀r⁰ = 0.5·0.25 + 0.5·1.25 = 0.75, not yet < ε. Compute step: D₀²r⁰ = [0.0625 0.3125]ᵀ, ||D₀r⁰|| = √(0.125² + 0.625²) ≈ 0.637. Update: x¹ = [0.5 0.5]ᵀ − 0.5·[0.0625 0.3125]ᵀ/0.637 ≈ [0.451 0.255]ᵀ, normalized by feasibility to ≈ [0.639 0.361]ᵀ. The iterates converge toward the optimal x* = (1, 0).",
+    "usedIn": [
+      {
+        "name": "Linear programming solvers",
+        "detail": "Historical foundation for interior-point methods, though rarely used in pure form today",
+        "url": ""
+      },
+      {
+        "name": "Energy systems optimization",
+        "detail": "Dikin's original context at the Siberian Energy Institute for power system planning",
+        "url": ""
+      },
+      {
+        "name": "Operations research education",
+        "detail": "Teaching tool for understanding interior-point methods before primal-dual algorithms",
+        "url": ""
+      }
+    ],
+    "goal": "Find the optimal solution to a linear programming problem while maintaining strict feasibility (all variables strictly positive) throughout the computation.",
+    "inputs": [
+      "Constraint matrix A and right-hand side vector b defining Ax = b",
+      "Cost vector c to minimize",
+      "Initial strictly feasible point x₀ > 0 where Ax₀ = b, or a Phase I procedure to find one",
+      "Step size parameter β (typically between 0 and 1)",
+      "Convergence tolerance ε"
+    ],
+    "outputs": [
+      "ε-optimal solution x* satisfying Ax* = b, x* ≥ 0, with c·x* within ε of optimal",
+      "Certificate of unboundedness if −Dₖrᵏ ≥ 0 occurs",
+      "Certificate of infeasibility if Phase I yields u* > 0"
+    ],
+    "steps": [
+      "Phase I (if needed): Construct auxiliary problem with slack variable u, solve to find feasible starting point or detect infeasibility",
+      "Form diagonal scaling matrix Dₖ = diag(xᵏ) from current iterate",
+      "Compute dual variables wᵏ = (ADₖ²Aᵀ)⁻¹ADₖ²c",
+      "Compute reduced costs rᵏ = c − Aᵀwᵏ measuring dual constraint slackness",
+      "Check optimality: if rᵏ > 0 and 1ᵀDₖrᵏ < ε, return current xᵏ as ε-optimal",
+      "Check unboundedness: if −Dₖrᵏ ≥ 0, declare problem unbounded",
+      "Update iterate: xᵏ⁺¹ = xᵏ − β(Dₖ²rᵏ)/||Dₖrᵏ|| and repeat from step 2"
+    ],
+    "tradeoffs": [
+      "Simple to implement compared to Karmarkar's projective method, but lacks polynomial-time guarantee",
+      "Convergence proven only for conservative step sizes β ≤ 2/3; larger steps risk suboptimal or chaotic behavior",
+      "Requires strictly feasible starting point; Phase I adds overhead",
+      "No explicit barrier term unlike log-barrier methods; boundary avoidance comes purely from scaling",
+      "Superseded by primal-dual interior-point methods with better theoretical and practical performance"
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "init",
+          "label": "Initialize x₀",
+          "note": "Strictly feasible starting point, or run Phase I"
+        },
+        {
+          "id": "scale",
+          "label": "Build Dₖ",
+          "note": "Diagonal matrix of current iterate values"
+        },
+        {
+          "id": "dual",
+          "label": "Compute wᵏ",
+          "note": "Dual variables from scaled normal equations"
+        },
+        {
+          "id": "rcost",
+          "label": "Compute rᵏ",
+          "note": "Reduced costs c − Aᵀwᵏ"
+        },
+        {
+          "id": "check",
+          "label": "Check stop",
+          "note": "Test optimality or unboundedness conditions"
+        },
+        {
+          "id": "step",
+          "label": "Take step",
+          "note": "Update xᵏ⁺¹ with scaled gradient direction"
+        },
+        {
+          "id": "out",
+          "label": "Return result",
+          "note": "ε-optimal solution or certificate"
+        }
+      ],
+      "edges": [
+        {
+          "from": "init",
+          "to": "scale",
+          "label": "x₀ > 0"
+        },
+        {
+          "from": "scale",
+          "to": "dual",
+          "label": "Dₖ"
+        },
+        {
+          "from": "dual",
+          "to": "rcost",
+          "label": "wᵏ"
+        },
+        {
+          "from": "rcost",
+          "to": "check",
+          "label": "rᵏ"
+        },
+        {
+          "from": "check",
+          "to": "out",
+          "label": "if converged"
+        },
+        {
+          "from": "check",
+          "to": "step",
+          "label": "if not"
+        },
+        {
+          "from": "step",
+          "to": "scale",
+          "label": "xᵏ⁺¹"
+        }
+      ],
+      "caption": "The affine scaling iteration loop: each cycle rescales the problem around the current iterate, computes a projected gradient step in the scaled space, then maps back to the original coordinates."
+    },
+    "image": {
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e2/Karmarkar.svg/960px-Karmarkar.svg.png",
+      "alt": "Affine scaling — Algorithm for solving linear programming problems",
+      "width": 640,
+      "height": 480,
+      "credit": "Gjacquenot",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Karmarkar.svg"
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Affine scaling",
+        "url": "https://en.wikipedia.org/wiki/Affine_scaling"
+      }
+    ]
+  },
   "related": [
     "feature-scaling",
     "generalized-iterative-scaling",

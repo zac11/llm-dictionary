@@ -5,7 +5,102 @@
   "type": "concept",
   "definition": "The bin packing problem is an optimization problem, in which items of different sizes must be packed into a finite number of bins or containers, each of a fixed given capacity, in a way that minimizes the number of bins used.",
   "details": "The problem has many applications, such as filling up containers, loading trucks with weight capacity constraints, creating file backups in media, splitting a network prefix into multiple subnets, and technology mapping in FPGA semiconductor chip design. Computationally, the problem is NP-hard, and the corresponding decision problem, deciding if items can fit into a specified number of bins, is NP-complete. Despite its worst-case hardness, optimal solutions to very large instances of the problem can be produced with sophisticated algorithms. In addition, many approximation algorithms exist. For example, the first fit algorithm provides a fast but often non-optimal solution, involving placing each item into the first bin in which it will fit. It requires Θ(n log n) time, where n is the number of items to be packed. The algorithm can be made much more effective by first sorting the list of items into decreasing order (sometimes known as the first-fit decreasing algorithm), although this still does not guarantee an optimal solution and for longer lists may increase the running time of the algorithm. It is known, however, that there always exists at least one ordering of items that allows first-fit to produce an optimal solution. There are many variations of this problem, such as 2D packing, linear packing, packing by weight, packing by cost, and so on. The bin packing problem can also be seen as a special case of the cutting stock problem. When the number of bins is restricted to 1 and each item is characterized by both a volume and a value, the problem of maximizing the value of items that can fit in the bin is known as the knapsack problem. A variant of bin packing that occurs in practice is when items can share space when packed into a bin. Specifically, a set of items could occupy less space when packed together than the sum of their individual sizes. This variant is known as VM packing since when virtual machines (VMs) are packed in a server, their total memory requirement could decrease due to pages shared by the VMs that need only be stored once. If items can share space in arbitrary ways, the bin packing problem is hard to even approximate. However, if space sharing fits into a hierarchy, as is the case with memory sharing in virtual machines, the bin packing problem can be efficiently approximated. Another variant of bin packing of interest in practice is the so-called online bin packing. Here the items of different volume are supposed to arrive sequentially, and the decision maker has to decide whether to select and pack the currently observed item, or else to let it pass. Each decision is without recall. In contrast, offline bin packing allows rearranging the items in the hope of achieving a better packing once additional items arrive. This of course requires additional storage for holding the items to be rearranged.",
-  "story": "Imagine teaching a friend to shoot a basketball. They miss, and you walk them backwards through the shot — elbow, wrist, release — to find what needs fixing. It is the same loop you use to learn anything: try, miss, correct, try again. Underneath all the magic is a patient process of small improvements. It is learning from every miss instead of repeating the same mistake. That steady, miss-by-miss improvement is Bin packing problem.",
+  "explainer": {
+    "lead": "Bin packing asks how to fit items of different sizes into as few fixed-capacity containers as possible. It matters whenever wasted space, weight capacity, or storage translates directly into extra containers, trucks, or other resources.",
+    "tiers": {
+      "eli5": "Imagine packing toys into identical boxes, where no box can hold more than its size limit. You want to use as few boxes as possible without leaving anything out. Putting each toy in the first box with enough room is quick, but it may not find the very best packing.",
+      "practitioner": "Applications include container loading, truck loading under weight limits, backup-media allocation, subnet splitting, and FPGA technology mapping. First fit places each item in the first bin that can hold it and runs in Θ(n log n) time; sorting items in decreasing order first often improves the result, but neither approach guarantees optimality. In online settings, each arriving item must be accepted and packed or passed over without recall, whereas offline packing can rearrange stored items.",
+      "paperLevel": "Given item sizes and bins of fixed capacity, assign every item to a bin without exceeding any bin's capacity while minimizing the number of bins used. The optimization problem is NP-hard, and deciding whether the items fit into a specified number of bins is NP-complete. Sophisticated algorithms can nevertheless solve very large instances optimally, and many approximation algorithms exist; variants include two-dimensional packing, VM packing with shared space, and online bin packing."
+    },
+    "example": "With bins of capacity 10 and items of sizes 6, 4, 4, 3, and 3, one packing uses bins (6, 4) and (4, 3, 3). Both bins are exactly full, so two bins suffice; one bin cannot work because the items total 20, making this packing optimal.",
+    "usedIn": [
+      {
+        "name": "Container and truck loading",
+        "detail": "Pack cargo into containers or load trucks while respecting capacity or weight constraints.",
+        "url": ""
+      },
+      {
+        "name": "File backups",
+        "detail": "Divide backup files across fixed-capacity storage media.",
+        "url": ""
+      },
+      {
+        "name": "Network subnetting",
+        "detail": "Split a network prefix into multiple subnets.",
+        "url": ""
+      },
+      {
+        "name": "FPGA technology mapping",
+        "detail": "Apply the packing formulation in semiconductor chip design.",
+        "url": ""
+      }
+    ],
+    "intuition": "The challenge is not merely making everything fit, but grouping items so that awkward gaps in one bin do not force you to open another.",
+    "howItWorks": [
+      "Start with item sizes and a fixed capacity for every bin.",
+      "Assign each item to a bin without exceeding that bin's capacity.",
+      "Use an exact, approximation, or heuristic method to choose the assignments.",
+      "Count the bins used and try to reduce that number."
+    ],
+    "whyItMatters": "Using fewer bins can reduce the containers, vehicles, or storage media needed for a task. The problem also connects a simple practical goal to important questions about computational hardness, approximation, and sequential decision-making.",
+    "misconceptions": [
+      "First fit is fast, but it does not always produce an optimal packing.",
+      "Sorting items in decreasing order can improve first fit without guaranteeing optimality.",
+      "Bin packing minimizes the number of bins; the one-bin knapsack problem instead maximizes item value."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "items",
+          "label": "Sized items",
+          "note": "Every item must be assigned."
+        },
+        {
+          "id": "capacity",
+          "label": "Bin capacity",
+          "note": "Each bin has a fixed limit."
+        },
+        {
+          "id": "method",
+          "label": "Packing method",
+          "note": "Exact, approximate, or heuristic assignment."
+        },
+        {
+          "id": "bins",
+          "label": "Packed bins",
+          "note": "No bin exceeds its capacity."
+        },
+        {
+          "id": "count",
+          "label": "Bin count",
+          "note": "The objective to minimize."
+        }
+      ],
+      "edges": [
+        {
+          "from": "items",
+          "to": "method",
+          "label": "sizes"
+        },
+        {
+          "from": "capacity",
+          "to": "method",
+          "label": "constraint"
+        },
+        {
+          "from": "method",
+          "to": "bins",
+          "label": "assignments"
+        },
+        {
+          "from": "bins",
+          "to": "count",
+          "label": "used"
+        }
+      ],
+      "caption": "A packing method assigns items to capacity-limited bins, then evaluates how many bins were used."
+    }
+  },
   "related": [
     "bin-covering-problem",
     "bongard-problem",

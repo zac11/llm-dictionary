@@ -5,7 +5,103 @@
   "type": "concept",
   "definition": "Cancer Likelihood in Plasma (CLiP) refers to a set of ensemble learning methods for integrating various genomic features useful for the noninvasive detection of early cancers from blood plasma.",
   "details": "An application of this technique for early detection of lung cancer (Lung-CLiP) was originally described by Chabon et al. (2020) from the labs of Ash Alizadeh and Max Diehn at Stanford. This method relies on several improvements to cancer personalized profiling by deep sequencing (CAPP-Seq) for analysis of circulating tumor DNA (ctDNA). The CLiP technique integrates multiple distinctive genomic features of a cancer of interest findings within a machine-learning framework for cancer detection. For example, studies have shown that the majority of somatic mutations found in cell-free DNA (cfDNA) are not tumor derived, but instead reflect clonal hematopoeisis (also known as CHIP). Even though CHIP tends to target specific genes, it also involves many generally non-recurrent mutations that can be shed from leukocytes and detected in cfDNA, regardless of whether profiling patients with cancer and healthy adults. However, genuine tumor derived ctDNA mutations can be distinguished from CHIP-derived mutations. This is because unlike tumor-derived mutations, CHIP-derived mutations that are shed from leukocytes into plasma tend to occur on longer cfDNA fragments, and to lack specific mutation",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. That is Cancer Likelihood in Plasma — a small key that opens a big door.",
+  "explainer": {
+    "lead": "Cancer Likelihood in Plasma (CLiP) combines several genomic clues from a blood sample to estimate whether cancer DNA is present. It aims to detect early cancers without a tissue biopsy, while avoiding signals that look cancer-related but actually come from blood cells.",
+    "tiers": {
+      "eli5": "A blood sample can contain tiny pieces of DNA, like scraps of paper carrying different messages. Some scraps come from a tumor, but others come from normal blood cells and can be misleading. CLiP looks at several clues together rather than trusting one suspicious message.",
+      "practitioner": "CLiP applies ensemble learning to genomic features extracted from plasma cell-free DNA, building on improvements to CAPP-Seq for circulating tumor DNA analysis. A key pitfall is clonal hematopoiesis: many somatic mutations in cfDNA are leukocyte-derived rather than tumor-derived. Fragment length helps separate these signals because CHIP-derived mutations tend to occur on longer cfDNA fragments.",
+      "paperLevel": "CLiP is an ensemble-learning framework that maps multiple genomic features x from plasma cfDNA to a cancer-likelihood estimate f(x). Lung-CLiP, its early lung-cancer application, was described by Chabon et al. (2020) from the laboratories of Ash Alizadeh and Max Diehn at Stanford. A central limitation is confounding by clonal hematopoiesis, although CHIP-derived and tumor-derived mutations can differ in cfDNA fragment length and other features."
+    },
+    "example": "Suppose a lung-cancer screening plasma sample contains a suspicious mutation, but its DNA fragment is unusually long and other features point toward CHIP rather than a tumor. Lung-CLiP weighs that evidence alongside the sample's other genomic features instead of treating the mutation alone as proof of cancer.",
+    "usedIn": [
+      {
+        "name": "Lung-CLiP",
+        "detail": "An application of CLiP for noninvasive early detection of lung cancer from blood plasma.",
+        "url": ""
+      },
+      {
+        "name": "Circulating tumor DNA analysis",
+        "detail": "Uses improved CAPP-Seq profiling and multiple cfDNA features to distinguish tumor-derived signals from background mutations.",
+        "url": ""
+      }
+    ],
+    "intuition": "No single mutation in plasma is a reliable cancer alarm, because blood cells can shed similar-looking mutations. Combining several independent genomic clues makes it easier to recognize a tumor-derived signal.",
+    "howItWorks": [
+      "Collect cell-free DNA fragments from blood plasma.",
+      "Profile them using improvements to CAPP-Seq.",
+      "Extract multiple genomic features associated with the cancer of interest.",
+      "Account for leukocyte-derived CHIP mutations, including their tendency to occur on longer fragments.",
+      "Combine the features in an ensemble-learning model to estimate cancer likelihood."
+    ],
+    "whyItMatters": "CLiP addresses a major obstacle to blood-based early cancer detection: separating scarce tumor-derived ctDNA signals from mutations shed by normal leukocytes. Its multi-feature approach is designed to make that distinction more reliable.",
+    "misconceptions": [
+      "A somatic mutation found in plasma does not necessarily come from a tumor; it may reflect clonal hematopoiesis.",
+      "CLiP is not a single mutation test, but a framework that integrates multiple genomic features.",
+      "CLiP is not the same as CAPP-Seq; it builds on improved CAPP-Seq profiling within a machine-learning framework."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "plasma",
+          "label": "Blood plasma",
+          "note": "Contains cell-free DNA from tumors and other cells."
+        },
+        {
+          "id": "cfdna",
+          "label": "Cell-free DNA",
+          "note": "Fragments may carry tumor-derived or CHIP-derived mutations."
+        },
+        {
+          "id": "cappseq",
+          "label": "Improved CAPP-Seq",
+          "note": "Profiles cfDNA for circulating tumor DNA analysis."
+        },
+        {
+          "id": "features",
+          "label": "Genomic features",
+          "note": "Multiple clues include mutation origin and fragment length."
+        },
+        {
+          "id": "ensemble",
+          "label": "Ensemble model",
+          "note": "Integrates the features in a machine-learning framework."
+        },
+        {
+          "id": "likelihood",
+          "label": "Cancer likelihood",
+          "note": "An estimate used for noninvasive early cancer detection."
+        }
+      ],
+      "edges": [
+        {
+          "from": "plasma",
+          "to": "cfdna",
+          "label": "contains"
+        },
+        {
+          "from": "cfdna",
+          "to": "cappseq",
+          "label": "profiled by"
+        },
+        {
+          "from": "cappseq",
+          "to": "features",
+          "label": "yields"
+        },
+        {
+          "from": "features",
+          "to": "ensemble",
+          "label": "inputs"
+        },
+        {
+          "from": "ensemble",
+          "to": "likelihood",
+          "label": "estimates"
+        }
+      ],
+      "caption": "CLiP turns several genomic clues from plasma cfDNA into an integrated cancer-likelihood estimate."
+    }
+  },
   "related": [
     "a-i-insight-forums",
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",

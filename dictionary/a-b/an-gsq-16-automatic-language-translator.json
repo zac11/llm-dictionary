@@ -2,10 +2,118 @@
   "term": "AN/GSQ-16 Automatic Language Translator",
   "letter": "A",
   "category": "Machine translation",
-  "type": "concept",
+  "type": "tool",
   "definition": "IBM's Automatic Language Translator was a machine translation system that converted Russian documents into English.",
   "details": "It used an optical disc that stored 170,000 word-for-word and statement-for-statement translations and a custom computer to look them up at high speed. Built for the US Air Force's Foreign Technology Division, the AN/GSQ-16 (or XW-2) as it was known to the Air Force, was primarily used to convert Soviet technical documents for distribution to western scientists. The translator was installed in 1959, dramatically upgraded in 1964, and was eventually replaced by a mainframe running SYSTRAN in 1970. In accordance with the Joint Electronics Type Designation System (JETDS), the \"AN/GSQ-16\" designation represents the 16th design of an Army-Navy electronic device for ground special combination equipment. The JETDS system also now is used to name all Department of Defense electronic systems.",
-  "story": "Imagine learning a language by reading every book in the library and noticing, over time, which words travel together. It does not memorize a rulebook; it absorbs a library. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It is fluency built from pattern, not from memorized rules. That pattern-earned fluency is AN/GSQ-16 Automatic Language Translator.",
+  "explainer": {
+    "lead": "The AN/GSQ-16 Automatic Language Translator was an IBM-built system that turned Russian documents into English for the US Air Force. It combined a high-speed optical dictionary with a custom computer, helping Western scientists read Soviet technical material. Its uneven results also illustrate why early machine translation fell short of replacing human translators.",
+    "tiers": {
+      "eli5": "Imagine a giant spinning dictionary and a very fast helper who can look up thousands of Russian words and phrases. The machine matched them with English entries, but it did not understand a document the way a person does. It helped scientists read Soviet technical writing, although the English could be awkward or wrong.",
+      "practitioner": "Treat this as a hardware-accelerated dictionary-lookup pipeline rather than a learned translation model: Russian text was prepared for machine input, matched against stored words, stems, endings, and statements, and emitted as English. Mark I used custom Cyrillic terminals and punched cards, while Mark II added a transistorized computer, a faster glass optical disc, and dictionary stuffing that attached contextual prefixes to reduce ambiguous matches. The main pitfalls were data entry, word ambiguity, and limited fluency; even the carefully demonstrated 1964 World's Fair version claimed only 20 words per minute on average.",
+      "paperLevel": "In simplified notation, T(x) = lookup(D, x), where D stored Russian–English word and statement correspondences and later represented words through stems and endings. Dictionary stuffing modified ambiguous words with prefixes derived from earlier text so they would match similarly modified dictionary entries, providing a limited form of contextual disambiguation. ALPAC testing with physics papers found the FTD process 10 percent less accurate, 21 percent slower, and associated with 29 percent lower comprehension than human translation."
+    },
+    "example": "For a Pravda article, operators hand-copied the Russian text onto punched cards using custom Cyrillic terminals. Mark I searched its 65,000-word dictionary and produced rough English for readers to interpret; the results remained questionable, although King reported that a Government operational evaluation found the system quite useful.",
+    "usedIn": [
+      {
+        "name": "US Air Force Foreign Technology Division",
+        "detail": "Translated Soviet and other Warsaw Bloc technical and scientific journals for Western researchers, with additional translations supplied on request.",
+        "url": ""
+      },
+      {
+        "name": "Pravda translation",
+        "detail": "The 65,000-word Mark I system was applied to the Soviet newspaper, producing questionable translations that King nevertheless described as operationally useful to the Government.",
+        "url": ""
+      },
+      {
+        "name": "1964 New York World's Fair",
+        "detail": "A Mark II version with a 150,000-word dictionary demonstrated translation using carefully selected input text.",
+        "url": ""
+      }
+    ],
+    "intuition": "The central bet was that readers could infer meaning from roughly translated words if the machine could search a sufficiently large dictionary quickly enough. The optical store addressed the era's storage bottleneck, while later stems, endings, and contextual prefixes reduced some of the limitations of strictly word-for-word substitution.",
+    "howItWorks": [
+      "Prepare the Russian text using custom Cyrillic terminals and punched cards.",
+      "Represent dictionary entries as words, statements, or recombinable stems and endings.",
+      "Spin the photographic or optical disc so the custom computer can retrieve entries rapidly.",
+      "Use dictionary stuffing in Mark II to add context-derived prefixes and reduce false matches.",
+      "Assemble the retrieved English material into a translation for human readers."
+    ],
+    "whyItMatters": "It was an operational attempt to solve machine translation through unusually dense, fast storage and brute-force dictionary lookup rather than linguistic understanding. Its shortcomings contributed to the evidence behind the 1966 ALPAC report, after which the US government suspended almost all machine-translation research funding.",
+    "misconceptions": [
+      "It did not produce reliable, fluent English merely by looking up every Russian word.",
+      "Its optical store was not a modern compact disc: early versions used patterned plastic disks, and Mark II used a 10-inch glass disc.",
+      "The 1959 demonstration was Mark I; the upgraded system became fully operational at FTD in February 1964.",
+      "The 170,000-entry dictionary did not make it faster or more accurate than human translation in ALPAC's tests."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "russian-text",
+          "label": "Russian document",
+          "note": "Technical, scientific, or newspaper text"
+        },
+        {
+          "id": "terminals",
+          "label": "Cyrillic terminals",
+          "note": "Operators hand-copy the text"
+        },
+        {
+          "id": "cards",
+          "label": "Punched cards",
+          "note": "Machine-readable Russian input"
+        },
+        {
+          "id": "computer",
+          "label": "Lookup computer",
+          "note": "Custom tube-based, later transistorized"
+        },
+        {
+          "id": "disc",
+          "label": "Optical dictionary",
+          "note": "Stores words, statements, stems, and endings"
+        },
+        {
+          "id": "english",
+          "label": "English translation",
+          "note": "Rough output for human readers"
+        }
+      ],
+      "edges": [
+        {
+          "from": "russian-text",
+          "to": "terminals",
+          "label": "hand copied"
+        },
+        {
+          "from": "terminals",
+          "to": "cards",
+          "label": "punches"
+        },
+        {
+          "from": "cards",
+          "to": "computer",
+          "label": "input"
+        },
+        {
+          "from": "disc",
+          "to": "computer",
+          "label": "entries"
+        },
+        {
+          "from": "computer",
+          "to": "english",
+          "label": "lookups"
+        }
+      ],
+      "caption": "The Mark I translation flow; Mark II retained dictionary lookup while upgrading the computer, storage, and contextual matching."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: AN/GSQ-16 Automatic Language Translator",
+        "url": "https://en.wikipedia.org/wiki/AN%2FGSQ-16_Automatic_Language_Translator"
+      }
+    ]
+  },
   "related": [
     "cambridge-language-research-unit",
     "distributed-language-translation",

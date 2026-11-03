@@ -5,7 +5,128 @@
   "type": "concept",
   "definition": "A structured process in which an AI agent breaks a task into steps, uses tools, and iterates based on intermediate results, rather than producing a single-shot response.",
   "details": "Agentic workflows often include planning, tool use, self-critique, and iterative refinement, extending simple prompting into more autonomous, multi-step problem solving.",
-  "story": "Think of a chess player who never commits to a move blindly — they consider the board, try an action, watch what changes, and only then decide what is next. The machine stops just answering one question and starts getting a job done, step by step, checking its work along the way. It plans a little, acts a little, looks at the result, and then decides what to do next. The model stops being a one-shot answer machine and becomes a coworker that checks its own work. That loop of reason, act, and observe is Agentic Workflow.",
+  "explainer": {
+    "lead": "Agentic workflow is how AI systems tackle complex jobs by thinking in steps, like a chef prepping a meal rather than microwaving a frozen dinner. It turns a single prompt into a back-and-forth process of planning, doing, checking, and improving.",
+    "tiers": {
+      "eli5": "Imagine you're building a LEGO castle. Instead of dumping all the bricks at once, you first look at the instructions, gather pieces, build a tower, notice it's wobbly, then fix it. An agentic workflow works the same way—an AI breaks a big job into small steps, tries things out, and fixes mistakes along the way rather than guessing everything in one go.",
+      "practitioner": "In practice, you implement an agentic workflow by chaining an LLM with tool-calling capabilities through a loop: generate a plan, execute tool calls, observe results, and feed observations back into context for the next reasoning step. Common frameworks include LangChain, AutoGPT, and ReAct-style prompting. Pitfalls include unbounded recursion, tool call explosion, and difficulty debugging where the loop diverged—logging intermediate states is essential.",
+      "paperLevel": "An agentic workflow formalizes a control loop where an agent π at timestep t produces an action a_t ∈ A (which may be a tool call or internal reasoning step), receives observation o_t from environment feedback, and updates its belief state b_{t+1} = f(b_t, a_t, o_t), iterating until a termination condition or maximum step count is reached. The paradigm extends single-turn next-token prediction to multi-turn sequential decision making under partial observability."
+    },
+    "example": "A user asks an AI to find the best flight under $500 from Boston to Austin next week. The agent plans: search flights, filter by price, check layover duration, verify seat availability. It calls a flight search tool, gets results over $500, so it revises the plan to include nearby airports, searches again, finds a $420 option through Providence, verifies the connection time is legal, and returns the itinerary with reasoning.",
+    "usedIn": [
+      {
+        "name": "Software engineering",
+        "detail": "AI coding assistants that write, test, and debug code in loops rather than single completions",
+        "url": ""
+      },
+      {
+        "name": "Research assistants",
+        "detail": "Systems that search, synthesize, and verify information across multiple queries",
+        "url": ""
+      },
+      {
+        "name": "Robotics",
+        "detail": "Controllers that plan movements, execute, sense errors, and replan trajectories",
+        "url": ""
+      },
+      {
+        "name": "Customer service",
+        "detail": "Agents that escalate, lookup knowledge bases, and confirm resolutions iteratively",
+        "url": ""
+      }
+    ],
+    "intuition": "Rather than asking an AI to solve everything in one breath, you let it think out loud, take actions, see what happens, and adjust—much like how humans tackle unfamiliar problems.",
+    "howItWorks": [
+      "The agent receives a goal and breaks it into a plan of sub-tasks.",
+      "It selects and calls tools (search, code execution, APIs) to make progress on the first sub-task.",
+      "It observes the results and checks whether they satisfy the sub-task or reveal errors.",
+      "If needed, it critiques its own progress and revises the plan or retries with different parameters.",
+      "It repeats this loop until the goal is met or a stopping condition triggers."
+    ],
+    "whyItMatters": "Agentic workflows let AI systems handle problems too complex or dynamic for single-shot answers, improving reliability on tasks requiring verification, external data, or extended reasoning.",
+    "misconceptions": [
+      "It is fully autonomous—human oversight or guardrails are typically still needed at key decision points.",
+      "It always beats single-shot prompting—simple tasks often run slower and cost more with workflow overhead.",
+      "Any multi-step prompt counts—true agentic workflows include feedback loops that change future behavior based on results."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "goal",
+          "label": "User goal",
+          "note": "The task or question to solve"
+        },
+        {
+          "id": "plan",
+          "label": "Plan step",
+          "note": "Break goal into sub-tasks"
+        },
+        {
+          "id": "tool",
+          "label": "Tool call",
+          "note": "Execute search, code, API, etc."
+        },
+        {
+          "id": "observe",
+          "label": "Observe result",
+          "note": "Receive output or error"
+        },
+        {
+          "id": "critique",
+          "label": "Self-critique",
+          "note": "Check if result meets need"
+        },
+        {
+          "id": "revise",
+          "label": "Revise plan",
+          "note": "Update strategy if needed"
+        },
+        {
+          "id": "answer",
+          "label": "Final answer",
+          "note": "Deliver when goal is met"
+        }
+      ],
+      "edges": [
+        {
+          "from": "goal",
+          "to": "plan",
+          "label": "triggers"
+        },
+        {
+          "from": "plan",
+          "to": "tool",
+          "label": "selects"
+        },
+        {
+          "from": "tool",
+          "to": "observe",
+          "label": "returns"
+        },
+        {
+          "from": "observe",
+          "to": "critique",
+          "label": "feeds"
+        },
+        {
+          "from": "critique",
+          "to": "revise",
+          "label": "fails"
+        },
+        {
+          "from": "revise",
+          "to": "plan",
+          "label": "loops back"
+        },
+        {
+          "from": "critique",
+          "to": "answer",
+          "label": "succeeds"
+        }
+      ],
+      "caption": "The agentic workflow loop: plan, act, observe, critique, and either revise or finish."
+    }
+  },
   "related": [
     "agent-registry",
     "autonomy-level",

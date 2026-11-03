@@ -2,10 +2,116 @@
   "term": "Apache Mahout",
   "letter": "A",
   "category": "Machine learning",
-  "type": "concept",
+  "type": "library",
   "definition": "Apache Mahout is a project of the Apache Software Foundation to produce free implementations of distributed or otherwise scalable machine learning algorithms focused primarily on linear algebra.",
   "details": "In the past, many of the implementations use the Apache Hadoop platform, however today it is primarily focused on Apache Spark. Mahout also provides Java/Scala libraries for common math operations (focused on linear algebra and statistics) and primitive Java collections. Mahout is a work in progress; a number of algorithms have been implemented.",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. And that idea, made concrete, is Apache Mahout.",
+  "explainer": {
+    "lead": "Apache Mahout is a free Apache Software Foundation project for scalable machine learning, with a particular focus on linear algebra. It combines Java and Scala math libraries with a concise programming language for algorithms that can run across distributed systems, making it useful for tasks such as recommendations.",
+    "tiers": {
+      "eli5": "Imagine trying to spot patterns in a enormous spreadsheet that is too big for one computer. Mahout gives you building blocks for the maths and a short way to describe the calculations, then lets a system such as Spark share the work across computers. One use is helping a shop suggest products based on what customers have chosen before.",
+      "practitioner": "Use Mahout-Samsara's Scala DSL to express algebraic machine-learning operations with R-like syntax, with Apache Spark as the main actively developed engine. The DSL is separated from the execution backend, and native solvers can offload BLAS work from the JVM to off-heap or GPU memory; ViennaCL provides OpenMP and OpenCL implementations. Treat OpenCL as experimental rather than assuming GPU support is production-ready, and do not rely on old MapReduce implementations when starting new work.",
+      "paperLevel": "Mahout is a framework for distributed or otherwise scalable machine-learning algorithms centred on linear algebra, together with Java/Scala libraries for linear algebra, statistics, and primitive Java collections. Samsara comprises an algebraic backend-independent optimizer and a Scala DSL that unifies in-memory and distributed algebraic operators. Implemented recommendation methods include Alternating Least Squares, Co-Occurrence, and Correlated Co-Occurrence; the project remains a work in progress, and OpenCL acceleration was experimental at release 14.1."
+    },
+    "example": "An online shop could use customer-product interactions with Mahout's Co-Occurrence implementation to find products that tend to be chosen together, then suggest those related products to a customer. With Correlated Co-Occurrence, the same approach can extend co-occurrence across multiple dimensions of data.",
+    "usedIn": [
+      {
+        "name": "Recommendation systems",
+        "detail": "Alternating Least Squares, Co-Occurrence, and Correlated Co-Occurrence support collaborative-filtering recommenders.",
+        "url": ""
+      },
+      {
+        "name": "Distributed data analysis",
+        "detail": "Algebraic operations can be expressed once and executed on supported distributed platforms, principally Apache Spark.",
+        "url": ""
+      },
+      {
+        "name": "Clustering and classification",
+        "detail": "Mahout's core algorithm work has included clustering, classification, and batch collaborative filtering.",
+        "url": ""
+      },
+      {
+        "name": "JVM numerical computing",
+        "detail": "Java and Scala libraries provide linear algebra, statistics, and primitive Java collections.",
+        "url": ""
+      }
+    ],
+    "createdBy": "Mahout is an Apache Software Foundation project developed by a community and managed by its Project Management Committee.",
+    "inAi": "Mahout supplies scalable implementations of machine-learning algorithms rather than a single trained model. Its clearest examples are collaborative-filtering recommenders, alongside earlier clustering and classification algorithms.",
+    "jsNote": "Mahout provides Java and Scala libraries and addresses JVM computation; no JavaScript library is described.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "algorithm",
+          "label": "ML algorithm",
+          "note": "A recommender or other scalable algebraic algorithm."
+        },
+        {
+          "id": "samsara",
+          "label": "Samsara Scala DSL",
+          "note": "R-like syntax expresses the algorithm concisely."
+        },
+        {
+          "id": "optimizer",
+          "label": "Algebraic optimizer",
+          "note": "Unifies in-memory and distributed algebraic operators."
+        },
+        {
+          "id": "spark",
+          "label": "Execution backend",
+          "note": "Apache Spark is the main active engine; other engines can be implemented."
+        },
+        {
+          "id": "native",
+          "label": "Native solvers",
+          "note": "BLAS operations can move off the JVM to CPU or GPU processing."
+        },
+        {
+          "id": "results",
+          "label": "Scalable results",
+          "note": "The computation produces outputs such as product recommendations."
+        }
+      ],
+      "edges": [
+        {
+          "from": "algorithm",
+          "to": "samsara",
+          "label": "expressed in"
+        },
+        {
+          "from": "samsara",
+          "to": "optimizer",
+          "label": "operators"
+        },
+        {
+          "from": "optimizer",
+          "to": "spark",
+          "label": "executed by"
+        },
+        {
+          "from": "spark",
+          "to": "native",
+          "label": "optional offload"
+        },
+        {
+          "from": "spark",
+          "to": "results",
+          "label": "computes"
+        },
+        {
+          "from": "native",
+          "to": "results",
+          "label": "accelerates"
+        }
+      ],
+      "caption": "Mahout separates an algorithm's mathematical description from its distributed backend and optional native acceleration."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Apache Mahout",
+        "url": "https://en.wikipedia.org/wiki/Apache_Mahout"
+      }
+    ]
+  },
   "related": [
     "a-r-d-prasad",
     "abeba-birhane",

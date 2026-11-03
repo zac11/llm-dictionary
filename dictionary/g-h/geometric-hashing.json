@@ -5,7 +5,118 @@
   "type": "concept",
   "definition": "In computer science, geometric hashing is a method for efficiently finding two-dimensional objects represented by discrete points that have undergone an affine transformation, though extensions exist to other object representations and transformations.",
   "details": "In an off-line step, the objects are encoded by treating each pair of points as a geometric basis. The remaining points can be represented in an invariant fashion with respect to this basis using two parameters. For each point, its quantized transformed coordinates are stored in the hash table as a key, and indices of the basis points as a value. Then a new pair of basis points is selected, and the process is repeated. In the on-line (recognition) step, randomly selected pairs of data points are considered as candidate bases. For each candidate basis, the remaining data points are encoded according to the basis and possible correspondences from the object are found in the previously constructed table. The candidate basis is accepted if a sufficiently large number of the data points index a consistent object basis. Geometric hashing was originally suggested in computer vision for object recognition in 2D and 3D, but later was applied to different problems such as structural alignment of proteins.",
-  "story": "Picture walking through a crowd and instantly picking out a familiar face without reading a single name tag. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. It turns a picture into an understanding: this is a cat, that is a stop sign. Sight, for a machine, is a long climb from raw light to a name. And that is Geometric hashing — giving a machine the gift of sight.",
+  "explainer": {
+    "lead": "Geometric hashing recognizes point-based objects even after they have been stretched, rotated, shifted, or otherwise changed by an affine transformation. It prepares a lookup table in advance, then uses matching point coordinates to find promising correspondences quickly.",
+    "tiers": {
+      "eli5": "Imagine describing every sticker on a sheet by where it sits relative to two chosen stickers. If the sheet is moved, turned, or stretched, those relative descriptions can still help you recognize the pattern. Geometric hashing stores many such descriptions in a table, then checks which ones match a new pattern.",
+      "practitioner": "Use it by encoding model points offline for every selected basis pair and storing quantized coordinates in a hash table. During recognition, randomly sample scene point pairs as candidate bases and look for enough points supporting one consistent object basis. Quantization affects table lookup, while a candidate without sufficient consistent support is rejected.",
+      "paperLevel": "For a point basis (b_i, b_j), represent each remaining point p by two invariant affine coordinates (u, v), quantize them as Q(u, v), and store Q(u, v) -> (i, j) in a hash table. Recognition repeats this encoding for randomly selected scene bases and accepts a candidate when sufficiently many points vote for a consistent stored basis. The original formulation concerns discrete points under affine transformations, with extensions to other representations and transformations."
+    },
+    "example": "Suppose a stored object has points A, B, C, and D. Using (A, B) as the basis, the coordinates of C and D are quantized and linked to that basis in the table. In an affinely transformed scene, trying the corresponding pair makes the other points repeatedly retrieve the same stored basis, so the candidate is accepted; an unrelated pair does not gather that consistent support.",
+    "usedIn": [
+      {
+        "name": "2D object recognition",
+        "detail": "Matches discrete-point object models to transformed scene points.",
+        "url": ""
+      },
+      {
+        "name": "3D object recognition",
+        "detail": "Extends the original computer-vision recognition idea to three-dimensional objects.",
+        "url": ""
+      },
+      {
+        "name": "Protein structural alignment",
+        "detail": "Applies geometric hashing beyond computer vision to compare protein structures.",
+        "url": ""
+      }
+    ],
+    "intuition": "A pair of points can act as a reference frame for describing all the other points. Those descriptions remain useful under affine transformations, so matching descriptions can reveal which stored object and basis fit the new data.",
+    "howItWorks": [
+      "Offline, choose a pair of object points as a geometric basis.",
+      "Express each remaining point with two invariant coordinates relative to that basis.",
+      "Quantize each coordinate pair and store it as a hash-table key, with the basis-point indices as its value.",
+      "Repeat for other basis pairs, then randomly choose scene point pairs as candidate bases during recognition.",
+      "Accept a candidate when enough scene points retrieve entries supporting the same object basis."
+    ],
+    "whyItMatters": "The offline table moves much of the matching work out of the recognition stage. It also shows how an invariant geometric representation can support object recognition and later structural-alignment tasks.",
+    "misconceptions": [
+      "It is not limited to two-dimensional recognition: it was also suggested for 3D objects and later applied to protein structural alignment.",
+      "A hash-table match alone is not recognition; a candidate basis needs sufficiently many points supporting one consistent object basis.",
+      "The basic method addresses affine transformations of discrete-point objects, although extensions cover other representations and transformations."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "model",
+          "label": "Model points",
+          "note": "Discrete points prepared offline"
+        },
+        {
+          "id": "encode",
+          "label": "Basis encoding",
+          "note": "Two invariant coordinates per point"
+        },
+        {
+          "id": "table",
+          "label": "Hash table",
+          "note": "Quantized keys map to basis indices"
+        },
+        {
+          "id": "scene",
+          "label": "Scene points",
+          "note": "Transformed points supplied online"
+        },
+        {
+          "id": "candidates",
+          "label": "Candidate bases",
+          "note": "Randomly selected point pairs"
+        },
+        {
+          "id": "lookup",
+          "label": "Table lookup",
+          "note": "Encoded points retrieve correspondences"
+        },
+        {
+          "id": "decision",
+          "label": "Consistency check",
+          "note": "Accept a basis with sufficient support"
+        }
+      ],
+      "edges": [
+        {
+          "from": "model",
+          "to": "encode",
+          "label": "offline"
+        },
+        {
+          "from": "encode",
+          "to": "table",
+          "label": "store"
+        },
+        {
+          "from": "scene",
+          "to": "candidates",
+          "label": "sample"
+        },
+        {
+          "from": "candidates",
+          "to": "lookup",
+          "label": "encode"
+        },
+        {
+          "from": "table",
+          "to": "lookup",
+          "label": "match"
+        },
+        {
+          "from": "lookup",
+          "to": "decision",
+          "label": "vote"
+        }
+      ],
+      "caption": "Offline basis encoding builds the table; online candidates retrieve matches and are tested for consistent support."
+    }
+  },
   "related": [
     "metr",
     "accord-net",

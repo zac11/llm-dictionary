@@ -5,7 +5,114 @@
   "type": "concept",
   "definition": "In computer science, the terms TBox and ABox are used to describe two different types of statements in knowledge bases.",
   "details": "TBox statements are the \"terminology component\", and describe a domain of interest by defining classes and properties as a domain vocabulary. ABox statements are the \"assertion component\" — facts associated with the TBox's conceptual model or ontologies. Together ABox and TBox statements make up a knowledge base or a knowledge graph. ABox statements must be TBox-compliant: they are assertions that use the vocabulary defined by the TBox. TBox statements are sometimes associated with object-oriented classes and ABox statements associated with instances of those classes.",
-  "story": "Picture an engineer at a cluttered workbench, turning a clever idea over in their hands until it finally clicks. At its heart it is a simple notion, once you strip away the fancy name. A small key that opens a much bigger door. It is one of those ideas that feels obvious only after someone shows it to you. That is Abox — a small key that opens a big door.",
+  "explainer": {
+    "lead": "ABox is the part of a knowledge base that stores concrete facts about individual things — who is married to whom, which city is in which country, what type of animal lives in a particular forest. It works hand-in-hand with its partner, TBox, which sets up the rules and categories those facts must follow.",
+    "tiers": {
+      "eli5": "Imagine a library card catalog. The TBox is like the system that says 'we have books, authors, and genres, and authors write books.' The ABox is all the actual cards: 'J.K. Rowling wrote Harry Potter,' 'Harry Potter is fantasy.' The ABox holds the real-world specifics; the TBox makes sure those specifics make sense in the system.",
+      "practitioner": "In RDF triplestores and OWL ontologies, the ABox contains your instance data as subject-predicate-object triples, while the TBox holds your schema (classes, properties, restrictions). When loading data, you validate ABox assertions against TBox definitions to catch category errors or relation violations. With modern graph databases like Apache Jena or RDF4J, ABox and TBox may live in the same store but typically as separate named graphs with different update frequencies and access patterns.",
+      "paperLevel": "In description logics, a knowledge base K = ⟨T, A⟩ partitions into TBox T (terminological axioms) and ABox A (assertional axioms). The ABox contains concept assertions C(a) and role assertions R(a,b) for individuals a, b. ABox reasoning tasks include instance checking (whether K ⊨ C(a)), consistency (whether A is satisfiable w.r.t. T), and query answering. The TBox/ABox distinction originates from the KL-ONE tradition of knowledge representation."
+    },
+    "example": "In a geographic knowledge base, the TBox defines that 'country' and 'city' are types of 'place', and that 'is-located-in' relates a place to a containing place. The ABox then states: 'Niger is-a country', 'Agadez is-a city', 'Agadez is-located-in Niger'. From these, a reasoner infers 'Niger is-a place' and 'Agadez is-a place'. If someone tried to add 'Dagamanet is-a neighbourhood' when 'neighbourhood' is not in the TBox, the assertion would be rejected as non-compliant.",
+    "usedIn": [
+      {
+        "name": "RDF triplestores",
+        "detail": "Store ABox triples as instance data alongside TBox ontologies in the same database",
+        "url": ""
+      },
+      {
+        "name": "OWL reasoners",
+        "detail": "Validate ABox facts against OWL TBox constraints for consistency checking",
+        "url": ""
+      },
+      {
+        "name": "Enterprise knowledge graphs",
+        "detail": "Separate stable organizational schemas (TBox) from frequently changing business facts (ABox)",
+        "url": ""
+      }
+    ],
+    "intuition": "Think of ABox as the 'who did what to whom' of a knowledge base — the specific claims about particular people, places, and things. It is the data layer, while TBox is the schema layer that gives those claims their structure.",
+    "howItWorks": [
+      "The TBox first defines a vocabulary: classes like 'country' or 'city', and properties like 'is-located-in' or 'is-next-to'.",
+      "The ABox then makes concrete assertions using only that vocabulary: 'Niger is-a country', 'Agadez is-located-in Niger'.",
+      "Each ABox assertion is checked against TBox rules to ensure it uses valid classes and properties.",
+      "Inference engines can derive new ABox facts from existing ones using TBox rules: from 'Agadez is-a city' and 'city is-a place', infer 'Agadez is-a place'.",
+      "ABox data changes frequently with new facts; TBox definitions change rarely and are treated as schema."
+    ],
+    "whyItMatters": "The ABox/TBox split lets knowledge engineers separate stable domain structure from volatile instance data, enabling cleaner maintenance, more efficient reasoning, and clearer data governance. It also allows the same schema to support many different datasets.",
+    "misconceptions": [
+      "ABox and TBox must live in separate databases — in modern RDF stores they often coexist, just as different named graphs.",
+      "ABox statements are 'just data' with no semantics — they carry logical meaning and participate in inference.",
+      "Every fact belongs clearly to ABox or TBox — some statements blur the line, and different systems may classify them differently."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "tbox",
+          "label": "TBox (schema)",
+          "note": "Defines classes, properties, rules: country, city, is-located-in"
+        },
+        {
+          "id": "abox",
+          "label": "ABox (facts)",
+          "note": "Concrete assertions about individuals: Niger, Agadez, Chad"
+        },
+        {
+          "id": "validate",
+          "label": "Validation",
+          "note": "Checks ABox uses only TBox vocabulary"
+        },
+        {
+          "id": "infer",
+          "label": "Inference engine",
+          "note": "Derives new facts using TBox rules"
+        },
+        {
+          "id": "kb",
+          "label": "Knowledge base",
+          "note": "Combined TBox + ABox for querying"
+        }
+      ],
+      "edges": [
+        {
+          "from": "tbox",
+          "to": "validate",
+          "label": "constrains"
+        },
+        {
+          "from": "abox",
+          "to": "validate",
+          "label": "checked against"
+        },
+        {
+          "from": "validate",
+          "to": "kb",
+          "label": "feeds valid"
+        },
+        {
+          "from": "tbox",
+          "to": "infer",
+          "label": "provides rules"
+        },
+        {
+          "from": "abox",
+          "to": "infer",
+          "label": "provides facts"
+        },
+        {
+          "from": "infer",
+          "to": "kb",
+          "label": "adds derived"
+        }
+      ],
+      "caption": "TBox defines the vocabulary and rules; ABox provides concrete facts. Validated and inferred statements together form the queryable knowledge base."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Abox",
+        "url": "https://en.wikipedia.org/wiki/Abox"
+      }
+    ]
+  },
   "related": [
     "abductive-reasoning",
     "agent-communications-language",

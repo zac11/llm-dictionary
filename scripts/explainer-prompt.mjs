@@ -27,6 +27,7 @@ const LAYOUT_BRIEFS = {
 };
 
 const DIAGRAM_LAYOUTS = new Set(['anatomy', 'steps', 'concept', 'measure']);
+const STORY_LAYOUTS = new Set(['anatomy', 'steps', 'concept', 'measure']);
 
 /** The JSON shape the model must return for a layout. */
 export function responseShape(layout) {
@@ -36,7 +37,10 @@ export function responseShape(layout) {
         '    "diagram": { "nodes": [{ "id": "short-id", "label": "2–4 words", "note": "one line" }], "edges": [{ "from": "id", "to": "id", "label": "optional, 1–3 words" }], "caption": "…" } (or null when a diagram would not help)',
       ]
     : [];
-  return ['{', '  "type": "<one of the allowed types>",', '  "explainer": {', '    "lead": "…",', ...fields.map((f) => `${f},`), ...diagram, '  }', '}'].join('\n');
+  const tiers = STORY_LAYOUTS.has(layout)
+    ? ['    "eli5": "…",', '    "practitioner": "…",', '    "paperLevel": "…",', '    "usedIn": [{ "name": "…", "detail": "…" }],']
+    : [];
+  return ['{', '  "type": "<one of the allowed types>",', '  "explainer": {', '    "lead": "…",', ...tiers, ...fields.map((f) => `${f},`), ...diagram, '  }', '}'].join('\n');
 }
 
 /** Chat messages for one entry. `wiki` is the cached Wikipedia page or null. */
@@ -62,6 +66,9 @@ export function buildMessages(entry, wiki) {
     'If you change the type, fill the layout that belongs to the new type instead (concept/tool: How it works; architecture/model: Anatomy; algorithm: Step by step; person: Their work; organization: What they built; event/policy/paper/venue/award: What happened; metric/benchmark/dataset: What it measures). The field lists for every layout are:',
     ...Object.keys(EXPLAINER_LAYOUTS).map((name) => `- ${name}: ${layoutFields(name).map((f) => f.field).join(', ')}`),
     '"lead" is a 2–3 sentence plain-language opening that says what this is and why anyone should care — not a copy of the definition.',
+    STORY_LAYOUTS.has(layout)
+      ? 'Also write three reading levels, 2–4 sentences each: "eli5" for a curious twelve-year-old with an everyday analogy and no jargon; "practitioner" for an engineer using it (how it is applied, typical tools or settings, pitfalls); "paperLevel" for a researcher (the formal definition or formula in plain-text notation, the originating work only if named in the sources, known limits). Never write about the sources themselves (no "the sources do not say"); just leave unknown facts out. Always fill "example" with one concrete worked example. "usedIn" lists 2–4 real systems, products or fields where it is used, each with a short detail; include a "url" only if it appears in the sources.'
+      : '',
     DIAGRAM_LAYOUTS.has(layout)
       ? 'For a diagram, use 3–8 nodes that show the real structure or flow (components and the data passing between them, or the steps of the procedure). Omit it for an abstract idea that has no structure to draw.'
       : '',

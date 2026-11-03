@@ -5,7 +5,98 @@
   "type": "concept",
   "definition": "Local binary patterns (LBP) is a type of visual descriptor used for classification in computer vision.",
   "details": "LBP is the particular case of the Texture Spectrum model proposed in 1990. LBP was first described in 1994. It has since been found to be a powerful feature for texture classification; it has further been determined that when LBP is combined with the Histogram of oriented gradients (HOG) descriptor, it improves the detection performance considerably on some datasets. A comparison of several improvements of the original LBP in the field of background subtraction was made in 2015 by Silva et al. A full survey of the different versions of LBP can be found in Bouwmans et al.",
-  "story": "Imagine an art restorer who can spot a single cracked tile in a vast mosaic. What your eyes do without thinking, the machine does one careful layer at a time. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. The model looks the way you look at a crowd and finds the one face you know. That pixel-to-meaning climb is Local binary patterns.",
+  "explainer": {
+    "lead": "Local binary patterns (LBP) describe texture by recording whether pixels around a point are brighter or darker than its center. The resulting compact patterns can be counted and used for tasks such as texture classification, detection, and background subtraction.",
+    "tiers": {
+      "eli5": "Imagine looking at a tiny patch of a photo and asking whether each surrounding dot is lighter or darker than the dot in the middle. The answers make a little pattern of yeses and nos, like a fingerprint for that patch. Collecting these fingerprints helps a computer tell different surface textures apart.",
+      "practitioner": "A basic implementation thresholds each sampled neighbor against the center pixel, encodes the comparisons as bits, and summarizes local codes with histograms for classification. Keep the neighborhood, bit ordering, and threshold convention explicit, because later LBP versions are not interchangeable. LBP can also be combined with HOG, which has improved detection performance considerably on some datasets.",
+      "paperLevel": "For neighbor samples g_p around center g_c, the basic code is LBP = sum_p s(g_p - g_c) 2^p, where s(x) = 1 if x >= 0 and 0 otherwise. LBP is a particular case of the Texture Spectrum model proposed in 1990 and was first described in 1994. Numerous versions exist: Silva et al. compared improvements for background subtraction in 2015, and Bouwmans et al. surveyed the different versions."
+    },
+    "example": "For center value 45 and eight neighbors ordered as [10, 20, 30, 40, 50, 60, 70, 80], the comparison bits are [0, 0, 0, 0, 1, 1, 1, 1]. Using weights 2^0 through 2^7 in that order gives 16 + 32 + 64 + 128 = 240, so this patch has LBP code 240.",
+    "usedIn": [
+      {
+        "name": "Texture classification",
+        "detail": "LBP codes provide features for distinguishing visual textures.",
+        "url": ""
+      },
+      {
+        "name": "Visual detection",
+        "detail": "Combining LBP with HOG has considerably improved detection performance on some datasets.",
+        "url": ""
+      },
+      {
+        "name": "Background subtraction",
+        "detail": "Improved versions of the original LBP have been developed and compared for separating foreground from background.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of describing a patch only by raw brightness values, LBP captures the local pattern of brighter and darker neighbors. Repeating this across an image produces a compact description of its texture.",
+    "howItWorks": [
+      "Choose a pixel and sample its surrounding neighbors.",
+      "Compare each neighbor's value with the center pixel's value.",
+      "Write 1 when the neighbor is at least as bright and 0 otherwise.",
+      "Interpret the ordered bits as an LBP code.",
+      "Collect codes, often as histograms, to represent texture for classification."
+    ],
+    "whyItMatters": "LBP turns local brightness comparisons into useful texture features without requiring a large learned model. It has become a powerful feature for texture classification and a basis for many later variants.",
+    "misconceptions": [
+      "LBP is a descriptor, not a complete classifier; its features are supplied to a separate classification or detection process.",
+      "LBP is not one unchanging recipe: many versions exist, and their results should not be assumed equivalent.",
+      "Adding HOG is not universally better; the reported considerable improvement applies to some datasets."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "patch",
+          "label": "Image patch",
+          "note": "Center pixel and sampled neighbors"
+        },
+        {
+          "id": "compare",
+          "label": "Compare neighbors",
+          "note": "Threshold each neighbor against the center"
+        },
+        {
+          "id": "bits",
+          "label": "Binary pattern",
+          "note": "Ordered sequence of zeros and ones"
+        },
+        {
+          "id": "code",
+          "label": "LBP code",
+          "note": "Weighted bits form one local descriptor"
+        },
+        {
+          "id": "histogram",
+          "label": "Texture summary",
+          "note": "Codes are aggregated for classification"
+        }
+      ],
+      "edges": [
+        {
+          "from": "patch",
+          "to": "compare",
+          "label": "pixel values"
+        },
+        {
+          "from": "compare",
+          "to": "bits",
+          "label": "thresholds"
+        },
+        {
+          "from": "bits",
+          "to": "code",
+          "label": "bit weights"
+        },
+        {
+          "from": "code",
+          "to": "histogram",
+          "label": "many patches"
+        }
+      ],
+      "caption": "LBP converts local brightness comparisons into binary codes and then aggregates them into a texture representation."
+    }
+  },
   "related": [
     "local-energy-based-shape-histogram",
     "accord-net",

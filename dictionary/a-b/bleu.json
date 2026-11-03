@@ -2,10 +2,93 @@
   "term": "BLEU",
   "letter": "B",
   "category": "Machine translation",
-  "type": "algorithm",
+  "type": "metric",
   "definition": "BLEU (bilingual evaluation understudy) is an algorithm for evaluating the quality of text which has been machine-translated from one natural language to another.",
   "details": "Quality is considered to be the correspondence between a machine's output and that of a human: \"the closer a machine translation is to a professional human translation, the better it is\" – this is the central idea behind BLEU.[1] Invented at IBM in 2001, BLEU was one of the first metrics to claim a high correlation with human judgements of quality,[2][3] and remains one of the most popular automated and inexpensive metrics. Scores are calculated for individual translated segments—generally sentences—by comparing them with a set of good quality reference translations. Those scores are then averaged over the whole corpus to reach an estimate of the translation's overall quality. Intelligibility or grammatical correctness are not taken into account.[4] BLEU's output is always a number between 0 and 1. This value indicates how similar the candidate text is to the reference texts, with values closer to 1 representing more similar texts. Few human translations will attain a score of 1, since this would indicate that the candidate is identical to one of the reference translations. For this reason, it is not necessary to attain a score of 1. Because there are more opportunities to match, a",
-  "story": "Picture a translator at the United Nations, listening to one language and whispering the meaning into another in real time. It figures out meaning by noticing which words like to travel together. It does not memorize a rulebook; it absorbs a library. Meaning lives in company — a word is known by the words it keeps. And that is BLEU — teaching a machine to read between the lines.",
+  "explainer": {
+    "lead": "BLEU gives machine translation a quick, inexpensive quality score by comparing it with good human reference translations. It helps researchers and engineers compare translations at scale, but it measures similarity rather than grammatical correctness or intelligibility.",
+    "tiers": {
+      "eli5": "BLEU is like checking your answer against several good model answers to see how closely it matches. Each translated sentence gets a score, and those scores are averaged for the whole collection. A number closer to 1 means a closer match, but even a good human translation usually will not get 1. The score does not tell you whether the sentence makes sense or uses correct grammar.",
+      "practitioner": "Use BLEU to compare machine-translated segments with a set of good-quality reference translations, then average the segment scores across the corpus. It is useful as an inexpensive automatic estimate, but it should not be treated as a check of intelligibility or grammar. A perfect score is unnecessary because it requires the candidate to be identical to one reference.",
+      "paperLevel": "For N translated segments, corpus BLEU = (1/N) * sum_i segmentScore_i, where each segment score lies between 0 and 1 and larger values indicate greater similarity to the references. Introduced at IBM in 2001, BLEU was one of the first metrics to claim high correlation with human judgments of translation quality. Its known limits include ignoring intelligibility and grammatical correctness; a score of 1 indicates identity with a reference and is rarely attained by human translations."
+    },
+    "example": "Suppose four translated sentences receive scores of 0.8, 0.6, 0.4 and 0.2. Their corpus score is (0.8 + 0.6 + 0.4 + 0.2) / 4 = 0.5.",
+    "usedIn": [
+      {
+        "name": "Machine translation evaluation",
+        "detail": "Provides an automated, inexpensive estimate of how closely machine output corresponds to human reference translations.",
+        "url": ""
+      },
+      {
+        "name": "Translation system comparison",
+        "detail": "Corpus-level scores can summarize and compare overall translation quality.",
+        "url": ""
+      }
+    ],
+    "measures": "BLEU measures correspondence between machine-translated text and good-quality human reference translations. Its central assumption is that closer correspondence to a professional human translation indicates better quality.",
+    "howScored": [
+      "Individual translated segments, generally sentences, are compared with a set of reference translations and receive scores from 0 to 1. Those scores are averaged over the corpus, with values closer to 1 indicating greater similarity."
+    ],
+    "formula": "Corpus BLEU = (1/N) * sum_i segmentScore_i, for N translated segments. Each segment score is between 0 and 1.",
+    "caveats": [
+      "Intelligibility is not assessed.",
+      "Grammatical correctness is not assessed.",
+      "Good-quality reference translations are required.",
+      "A useful translation need not score 1."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "candidate",
+          "label": "Machine translation",
+          "note": "Candidate segments to evaluate"
+        },
+        {
+          "id": "references",
+          "label": "Reference translations",
+          "note": "Good-quality human translations"
+        },
+        {
+          "id": "compare",
+          "label": "Compare segments",
+          "note": "Measure correspondence with references"
+        },
+        {
+          "id": "scores",
+          "label": "Segment scores",
+          "note": "One value from 0 to 1 per segment"
+        },
+        {
+          "id": "average",
+          "label": "Corpus average",
+          "note": "Estimate overall translation quality"
+        }
+      ],
+      "edges": [
+        {
+          "from": "candidate",
+          "to": "compare",
+          "label": "candidate text"
+        },
+        {
+          "from": "references",
+          "to": "compare",
+          "label": "references"
+        },
+        {
+          "from": "compare",
+          "to": "scores",
+          "label": "scores"
+        },
+        {
+          "from": "scores",
+          "to": "average",
+          "label": "average"
+        }
+      ],
+      "caption": "BLEU compares translated segments with references, then averages their scores across the corpus."
+    }
+  },
   "related": [
     "adi-vaani",
     "alexander-lyudskanov",

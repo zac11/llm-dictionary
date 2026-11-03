@@ -5,7 +5,119 @@
   "type": "concept",
   "definition": "Action model learning (sometimes abbreviated action learning) is an area of machine learning concerned with the creation and modification of a software agent's knowledge about the effects and preconditions of the actions that can be executed within its environment.",
   "details": "This knowledge is usually represented in a logic-based action description language and used as input for automated planners. Learning action models is important when goals change. When an agent acted for a while, it can use its accumulated knowledge about actions in the domain to make better decisions. Thus, learning action models differs from reinforcement learning. It enables reasoning about actions instead of expensive trials in the world. Action model learning is a form of inductive reasoning, where new knowledge is generated based on the agent's observations. The usual motivation for action model learning is the fact that manual specification of action models for planners is often a difficult, time-consuming, and error-prone task (especially in complex environments).",
-  "story": "Think of a chess player who never commits to a move blindly — they consider the board, try an action, watch what changes, and only then decide what is next. The machine stops just answering one question and starts getting a job done, step by step, checking its work along the way. It plans a little, acts a little, looks at the result, and then decides what to do next. The model stops being a one-shot answer machine and becomes a coworker that checks its own work. That loop of reason, act, and observe is Action model learning.",
+  "explainer": {
+    "lead": "Action model learning is how a robot or software agent figures out what its actions actually do, without someone having to write down every rule by hand. Instead of learning by trial and error like reinforcement learning, it learns by watching and reasoning about what it sees.",
+    "tiers": {
+      "eli5": "Imagine you're learning to cook in a new kitchen. Instead of trying every knob and hoping nothing burns, you watch someone else cook and figure out: 'When they turn the big dial, the pan gets hot.' Action model learning is like that — the agent watches what happens when actions are taken, then builds a set of rules about what each action needs and what it changes. It's faster and safer than learning by breaking things.",
+      "practitioner": "You use action model learning when you need a planner but don't have a complete domain model. Typical inputs are state-action-state triples (s, a, s') from logs or demonstrations. Tools include SAT solvers (SLAF, ARMS), Answer Set Programming, and inductive logic programming. FAMA handles missing observations and produces lifted models; NOLAM tolerates noisy data. Pitfalls: many methods assume determinism, and the learned model may fail in unobserved edge cases — safe action model (SAM) methods address this by guaranteeing plan validity.",
+      "paperLevel": "Given a training set E of examples e = (s, a, s') where s, s' are consecutive state observations and a is the observed action, the goal is to construct an action model ⟨D, P⟩ where D is a domain dynamics description in a formalism such as STRIPS, ADL, or PDDL, and P is a probability function over D's elements. Most state-of-the-art methods assume determinism and omit P. The problem was studied as early as 1992 as an extension of reinforcement learning. Key limitations: partial observability, sensor noise, and the computational cost of inducing general (lifted) models from grounded observations."
+    },
+    "example": "A warehouse robot observes: at location A with empty arms (state s), it executes 'pick-up box1' (action a), and ends at location A holding box1 (state s'). From many such traces, it learns the action model: preconditions of pick-up(x) are 'at(robot, loc), at(x, loc), empty(robot)'; effects are 'holding(robot, x), not empty(robot), not at(x, loc)'. When asked to deliver box1 to location B, the planner uses this model to generate a valid pick-up-then-move-then-place sequence without further trial.",
+    "usedIn": [
+      {
+        "name": "Automated planning systems",
+        "detail": "Action model learning generates PDDL or STRIPS models for classical planners when manual encoding is impractical.",
+        "url": ""
+      },
+      {
+        "name": "Robotics",
+        "detail": "Robots learn preconditions and effects of physical actions from demonstration traces rather than exhaustive experimentation.",
+        "url": ""
+      },
+      {
+        "name": "Reinforcement learning enhancement",
+        "detail": "The RAMP algorithm uses learned numeric action models (N-SAM) to improve RL performance by reducing expensive environment interaction.",
+        "url": ""
+      }
+    ],
+    "intuition": "An agent watches the world change, then reverse-engineers the rules: 'To make this happen, that must have been true, and this action must have been possible.'",
+    "howItWorks": [
+      "The agent collects observations of state transitions: before an action, what action was taken, and what resulted.",
+      "It searches for consistent rules that explain all observed transitions, typically using logic solvers or inductive methods.",
+      "The output is a structured action model with preconditions (what must hold) and effects (what changes), in a formal language like PDDL.",
+      "This model is fed to an automated planner to generate plans for new goals.",
+      "When observations are incomplete or noisy, specialized methods (FAMA, NOLAM) still extract usable models."
+    ],
+    "whyItMatters": "Hand-writing action models for complex domains is difficult, time-consuming, and error-prone. Learning them from data makes planners practical in new or changing environments, and enables reasoning that avoids costly real-world experimentation.",
+    "misconceptions": [
+      "It is not reinforcement learning: it learns explicit symbolic models for reasoning, not a policy through reward feedback.",
+      "It does not require complete or perfect observations: methods like FAMA and NOLAM handle missing or noisy data.",
+      "The learned model is not guaranteed correct for unseen situations unless using safe action model (SAM) methods."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "obs",
+          "label": "Observations",
+          "note": "State-action-state triples (s, a, s') from agent experience"
+        },
+        {
+          "id": "learner",
+          "label": "Learning engine",
+          "note": "SAT solver, ASP, or ILP that finds consistent rules"
+        },
+        {
+          "id": "model",
+          "label": "Action model",
+          "note": "Preconditions and effects in PDDL/STRIPS/ADL"
+        },
+        {
+          "id": "planner",
+          "label": "Planner",
+          "note": "Generates plans using the learned model"
+        },
+        {
+          "id": "plan",
+          "label": "Plan",
+          "note": "Sequence of actions for a new goal"
+        },
+        {
+          "id": "exec",
+          "label": "Execution",
+          "note": "Agent acts, producing new observations"
+        }
+      ],
+      "edges": [
+        {
+          "from": "obs",
+          "to": "learner",
+          "label": "feeds"
+        },
+        {
+          "from": "learner",
+          "to": "model",
+          "label": "produces"
+        },
+        {
+          "from": "model",
+          "to": "planner",
+          "label": "inputs"
+        },
+        {
+          "from": "planner",
+          "to": "plan",
+          "label": "outputs"
+        },
+        {
+          "from": "plan",
+          "to": "exec",
+          "label": "guides"
+        },
+        {
+          "from": "exec",
+          "to": "obs",
+          "label": "generates"
+        }
+      ],
+      "caption": "The action model learning loop: observations feed learning, which produces a model for planning; execution generates new observations, enabling refinement."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Action model learning",
+        "url": "https://en.wikipedia.org/wiki/Action_model_learning"
+      }
+    ]
+  },
   "related": [
     "model-free-reinforcement-learning",
     "vision-language-action-model",

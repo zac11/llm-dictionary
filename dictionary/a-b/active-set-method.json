@@ -5,7 +5,148 @@
   "type": "algorithm",
   "definition": "In mathematical optimization, the active-set method is an algorithm used to identify the active constraints in a set of inequality constraints.",
   "details": "The active constraints are then expressed as equality constraints, thereby transforming an inequality-constrained problem into a simpler equality-constrained subproblem. An optimization problem is defined using an objective function to minimize or maximize, and a set of constraints g 1 ( x ) ≥ 0 , … , g k ( x ) ≥ 0 {\\displaystyle g_{1}(x)\\geq 0,\\dots ,g_{k}(x)\\geq 0} that define the feasible region, that is, the set of all x to search for the optimal solution. Given a point x {\\displaystyle x} in the feasible region, a constraint g i ( x ) ≥ 0 {\\displaystyle g_{i}(x)\\geq 0} is called active at x 0 {\\displaystyle x_{0}} if g i ( x 0 ) = 0 {\\displaystyle g_{i}(x_{0})=0} , and inactive at x 0 {\\displaystyle x_{0}} if 0.}\"> g i ( x 0 ) > 0. {\\displaystyle g_{i}(x_{0})>0.} Equality constraints are always active. The active set at x 0 {\\displaystyle x_{0}} is made up of those constraints g i ( x 0 ) {\\displaystyle g_{i}(x_{0})} that are active at the current point (Nocedal &amp; Wright 2006, p. 308). The active set is particularly important in optimization theory, as it determines which constraints will influence the final result of optimization. For example, in solving the linear programming problem, the active set gives the hyperplanes that intersect at the solution point. In quadratic programming, as the solution is not necessarily on one of the edges of the bounding polygon, an estimation of the active set gives us a subset of inequalities to watch while searching the solution, which reduces the complexity of the search. Active-set methods, which traverse the edges of the feasible set, stand in contrast to interior-point methods, which try to always stay inside of the feasible set.",
-  "story": "Imagine a factory floor where each workstation can glance at every other workstation before doing its part. It is the blueprint that makes everything else possible. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. Structure decides what the model can even express — the blueprint before the bricks. That blueprint is Active-set method.",
+  "explainer": {
+    "lead": "The active-set method is a workhorse algorithm for solving optimization problems with inequality constraints. It works by figuring out which constraints are actually 'touching' the solution, then temporarily treating those as equalities to make the problem easier to solve—repeating this guess-and-check process until it finds the true optimum.",
+    "tiers": {
+      "eli5": "Imagine you're trying to find the comfiest spot on a couch, but you can't sit on certain cushions. The active-set method is like checking which 'no-sitting' rules actually matter at your current spot. If a rule isn't stopping you, you ignore it for now. You keep adjusting which rules you're watching until you find the best spot without breaking any that actually count.",
+      "practitioner": "Active-set methods are commonly used in quadratic programming and nonlinear optimization where constraints define a feasible boundary. In practice, you might encounter them in model predictive control, portfolio optimization, or structural engineering. Implementation requires careful handling of degenerate cases where Lagrange multipliers are near zero, and warm-starting from a previous active set can dramatically improve convergence. Modern toolboxes like MATLAB's `quadprog` or IPOPT may use active-set strategies as one option among several.",
+      "paperLevel": "Given an inequality-constrained problem min f(x) s.t. g_i(x) >= 0 for i = 1,...,k, the active set A(x) = {i : g_i(x) = 0} at a feasible point x. The algorithm iteratively solves equality-constrained subproblems where active constraints are enforced as g_i(x) = 0, updates Lagrange multipliers λ_i, removes constraints with λ_i < 0, and adds violated inactive constraints. For linearly constrained convex quadratic programming with strongly convex objective and regular constraint system, finite termination with global solution is guaranteed (Nocedal & Wright 2006, p. 308), though worst-case iteration count can be exponential in the number of constraints m."
+    },
+    "example": "Consider minimizing (x-2)^2 + (y-1)^2 subject to x >= 0, y >= 0, and x + y <= 1. Starting at (0,0), the constraints x >= 0 and y >= 0 are both active (g_1 = 0, g_2 = 0). Solving the equality problem with x = 0 and y = 0 gives a candidate at (0,0) with negative multipliers, so we drop these constraints. Now with no active constraints, we find the unconstrained minimum at (2,1), but this violates x + y <= 1. We add this violated constraint, solve with x + y = 1 active, and find the true optimum at (0.5, 0.5) where x + y = 1 binds and x > 0, y > 0 are inactive.",
+    "usedIn": [
+      {
+        "name": "Model predictive control",
+        "detail": "Real-time optimization with bounds on actuators and states",
+        "url": ""
+      },
+      {
+        "name": "Portfolio optimization",
+        "detail": "Quadratic programs with inequality constraints on asset weights",
+        "url": ""
+      },
+      {
+        "name": "Structural engineering",
+        "detail": "Design optimization with stress and displacement limits",
+        "url": ""
+      },
+      {
+        "name": "Sequential quadratic programming",
+        "detail": "As a subproblem solver in nonlinear programming frameworks",
+        "url": ""
+      }
+    ],
+    "goal": "Find the optimal solution to a constrained optimization problem by identifying and tracking the set of constraints that are active (binding) at the solution.",
+    "inputs": [
+      "An objective function to minimize or maximize",
+      "A set of inequality constraints g_i(x) >= 0 defining the feasible region",
+      "An initial feasible starting point"
+    ],
+    "outputs": [
+      "The optimal point x*",
+      "The final active set of binding constraints",
+      "Lagrange multipliers indicating constraint sensitivity"
+    ],
+    "steps": [
+      "Find a feasible starting point inside the constraint region",
+      "Identify the current active set: constraints where g_i(x) = 0",
+      "Solve the equality-constrained subproblem using only the active constraints",
+      "Compute Lagrange multipliers for the active constraints",
+      "Remove constraints with negative Lagrange multipliers from the active set",
+      "Search inactive constraints for violations and add any violators to the active set",
+      "Repeat until convergence criteria are met"
+    ],
+    "tradeoffs": [
+      "Typically faster than interior-point methods when a good initial active set is known",
+      "Can exploit warm starts effectively when solving sequences of related problems",
+      "Worst-case iteration count grows exponentially with number of constraints",
+      "Requires feasible starting point, unlike some interior-point methods",
+      "Struggles with degeneracy when constraints are nearly parallel or multipliers are near zero",
+      "Each subproblem solve becomes expensive as the active set grows large"
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "start",
+          "label": "Feasible start",
+          "note": "Initial point satisfying all constraints"
+        },
+        {
+          "id": "identify",
+          "label": "Identify active",
+          "note": "Find constraints where g_i(x) = 0"
+        },
+        {
+          "id": "solve",
+          "label": "Solve equality QP",
+          "note": "Optimize treating active constraints as equalities"
+        },
+        {
+          "id": "multipliers",
+          "label": "Compute λ",
+          "note": "Lagrange multipliers for active constraints"
+        },
+        {
+          "id": "drop",
+          "label": "Drop if λ < 0",
+          "note": "Remove constraints that shouldn't be active"
+        },
+        {
+          "id": "check",
+          "label": "Check inactive",
+          "note": "Find violated constraints to add"
+        },
+        {
+          "id": "converge",
+          "label": "Converged?",
+          "note": "Stop if optimal, else repeat"
+        }
+      ],
+      "edges": [
+        {
+          "from": "start",
+          "to": "identify",
+          "label": ""
+        },
+        {
+          "from": "identify",
+          "to": "solve",
+          "label": "active set"
+        },
+        {
+          "from": "solve",
+          "to": "multipliers",
+          "label": "solution"
+        },
+        {
+          "from": "multipliers",
+          "to": "drop",
+          "label": ""
+        },
+        {
+          "from": "drop",
+          "to": "check",
+          "label": "revised set"
+        },
+        {
+          "from": "check",
+          "to": "converge",
+          "label": "updated set"
+        },
+        {
+          "from": "converge",
+          "to": "solve",
+          "label": "not done"
+        }
+      ],
+      "caption": "The active-set method loops between solving equality-constrained subproblems and updating which constraints are considered active."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Active-set method",
+        "url": "https://en.wikipedia.org/wiki/Active-set_method"
+      }
+    ]
+  },
   "related": [
     "level-set-method",
     "active-learning-machine-learning",

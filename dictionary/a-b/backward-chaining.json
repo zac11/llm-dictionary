@@ -5,7 +5,102 @@
   "type": "concept",
   "definition": "Backward chaining (or backward reasoning) is an inference method described colloquially as working backward from the goal.",
   "details": "It is used in automated theorem provers, inference engines, proof assistants, and other artificial intelligence applications. In game theory, researchers apply it to (simpler) subgames to find a solution to the game, in a process called backward induction. In chess, it is called retrograde analysis, and it is used to generate table bases for chess endgames for computer chess. Backward chaining is implemented in logic programming by SLD resolution. Both rules are based on the modus ponens inference rule. It is one of the two most commonly used methods of reasoning with inference rules and logical implications – the other is forward chaining. Backward chaining systems usually employ a depth-first search strategy, e.g. Prolog.",
-  "story": "Picture solving a puzzle by talking yourself through it out loud — wrong turns, second guesses, and all — until the answer clicks. It writes its thinking down, reads it back, and fixes the parts that do not hold up. Slowing down to think often beats answering fast. It is thinking made visible — the model shows its work, then reads its own work and improves it. That loop of draft, check, and revise is Backward chaining.",
+  "explainer": {
+    "lead": "Backward chaining is a way to prove something by starting with the goal and asking what would make it true. It keeps turning those requirements into smaller goals until it reaches known facts, making it useful in logic programming, theorem proving, and reasoning engines.",
+    "tiers": {
+      "eli5": "Imagine you want to know whether you can go outside and play. You start with that goal, then check the rules: you can go if your homework is done, so you check whether your homework is done. Backward chaining works the same way, starting with what you want to prove and working back to facts you already know.",
+      "practitioner": "Backward chaining is applied in Prolog, inference engines, automated theorem provers, and proof assistants, with SLD resolution providing its logic-programming implementation. Systems commonly search depth-first, so rule and subgoal ordering can affect how quickly a proof is found and how much time is spent on unproductive branches. It is a natural fit when there is a specific query to answer rather than a need to derive every possible conclusion.",
+      "paperLevel": "Backward chaining is goal-directed inference: to prove goal G, select an implication whose consequent matches G, then recursively prove its antecedents, with known facts closing proof branches. The rule-based steps rest on modus ponens, and logic programming implements the method through SLD resolution. Backward-chaining systems commonly use depth-first search, as exemplified by Prolog."
+    },
+    "example": "Suppose the knowledge base contains the fact bird(Tweety) and the rule canFly(X) if bird(X). To answer canFly(Tweety), backward chaining matches the goal to the rule, creates the subgoal bird(Tweety), and finds that fact directly. The original goal is therefore proved.",
+    "usedIn": [
+      {
+        "name": "Prolog",
+        "detail": "Implements goal-directed logic programming through SLD resolution and typically depth-first search.",
+        "url": ""
+      },
+      {
+        "name": "Automated theorem provers and proof assistants",
+        "detail": "Use backward reasoning to reduce a theorem to premises and known facts.",
+        "url": ""
+      },
+      {
+        "name": "Computer chess",
+        "detail": "Uses backward chaining as retrograde analysis to generate endgame table bases.",
+        "url": ""
+      },
+      {
+        "name": "Game theory",
+        "detail": "Applies the idea to simpler subgames through backward induction to solve a game.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of starting with everything known and seeing where it leads, begin with the question and trace its requirements backward. The search succeeds when every required condition can be connected to established facts.",
+    "howItWorks": [
+      "Start with the goal to be proved.",
+      "Find a fact that establishes it or a rule whose conclusion matches it.",
+      "For a matching rule, treat its conditions as new subgoals.",
+      "Repeat until the subgoals reach known facts and the goal is proved."
+    ],
+    "whyItMatters": "Backward chaining focuses reasoning on facts and rules relevant to a particular goal. Alongside forward chaining, it is one of the two most common ways to reason with inference rules and logical implications.",
+    "misconceptions": [
+      "Backward chaining is not reasoning backward in time; it is searching backward through conditions needed to establish a goal.",
+      "It is not the same as forward chaining, which starts from known facts and derives new conclusions.",
+      "Retrograde analysis and backward induction are applications of the idea in chess and game theory, not separate names for Prolog's search procedure."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "goal",
+          "label": "Initial goal",
+          "note": "The statement to prove."
+        },
+        {
+          "id": "rule",
+          "label": "Matching rule",
+          "note": "Its conclusion matches the goal."
+        },
+        {
+          "id": "subgoals",
+          "label": "Required subgoals",
+          "note": "Conditions needed by the rule."
+        },
+        {
+          "id": "facts",
+          "label": "Known facts",
+          "note": "Established statements that close branches."
+        },
+        {
+          "id": "proof",
+          "label": "Goal proved",
+          "note": "Requirements connect back to facts."
+        }
+      ],
+      "edges": [
+        {
+          "from": "goal",
+          "to": "rule",
+          "label": "matches"
+        },
+        {
+          "from": "rule",
+          "to": "subgoals",
+          "label": "requires"
+        },
+        {
+          "from": "subgoals",
+          "to": "facts",
+          "label": "resolves to"
+        },
+        {
+          "from": "facts",
+          "to": "proof",
+          "label": "establishes"
+        }
+      ],
+      "caption": "Backward chaining reduces a goal to subgoals until known facts establish the proof."
+    }
+  },
   "related": [
     "a-i-insight-forums",
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",

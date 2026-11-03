@@ -5,7 +5,108 @@
   "type": "concept",
   "definition": "Binary classification is the task of putting things into one of two categories (each called a class).",
   "details": "As such, it is the simplest form of the general task of classification into any number of classes. Typical binary classification problems include: Medical testing to determine if a patient has a certain disease or not; Quality control in industry, deciding whether a specification has been met; In information retrieval, deciding whether a page should be in the result set of a search or not In administration, deciding whether someone should be issued with a driving licence or not In cognition, deciding whether an object is food or not food. A common statistical technique to effect the classification is binary regression. When measuring the accuracy of a binary classifier, the simplest way is to count the errors. But in the real world often one of the two classes is more important, so that the number of both of the different types of errors is of interest. For example, in medical testing, detecting a disease when it is not present (a false positive) is considered differently from not detecting a disease when it is present (a false negative).",
-  "story": "Think of a lightbulb moment: the idea was always there, but someone had to point a finger at it. Behind the jargon is an idea you could explain to a friend over coffee. At its heart it is a simple notion, once you strip away the fancy name. Once you see it, you cannot unsee it. That is Binary classification — a small key that opens a big door.",
+  "explainer": {
+    "lead": "Binary classification sorts each item into one of exactly two classes, such as disease present or disease absent. It is the simplest form of classification, but judging its results often means separating different kinds of mistakes rather than counting errors alone.",
+    "tiers": {
+      "eli5": "Imagine sorting objects into two boxes: one for food and one for things that are not food. Binary classification is the task of choosing which of the two boxes each object belongs in. Getting the right box matters, and some mistakes can matter more than others.",
+      "practitioner": "Use binary classification when each case must receive one of two labels, such as whether a patient has a disease or whether a product meets a specification. Binary regression is a common statistical technique for this task. Counting total errors is the simplest accuracy check, but false positives and false negatives should be tracked separately when one kind of error is more important.",
+      "paperLevel": "Binary classification learns a decision function f: X -> {0, 1}, assigning every input in X to one of two classes. It is the two-class case of general classification and can be performed with binary regression. Evaluation by total error count alone is limited when the two error types have different importance, notably false positives versus false negatives."
+    },
+    "example": "A medical test classifies a patient as having a disease or not having it. Reporting the disease when it is absent is a false positive, while missing it when it is present is a false negative.",
+    "usedIn": [
+      {
+        "name": "Medical testing",
+        "detail": "Deciding whether a patient has a certain disease or not.",
+        "url": ""
+      },
+      {
+        "name": "Industrial quality control",
+        "detail": "Deciding whether a specification has been met.",
+        "url": ""
+      },
+      {
+        "name": "Information retrieval",
+        "detail": "Deciding whether a page belongs in a search result set.",
+        "url": ""
+      },
+      {
+        "name": "Administration",
+        "detail": "Deciding whether someone should be issued a driving licence.",
+        "url": ""
+      }
+    ],
+    "intuition": "Think of a two-way decision: every item is examined and placed into one of two possible classes, with no third class available.",
+    "howItWorks": [
+      "Define the two possible classes.",
+      "Examine the item to be classified.",
+      "Use a classification method such as binary regression.",
+      "Assign the item to one class.",
+      "Count errors, separating false positives from false negatives when needed."
+    ],
+    "whyItMatters": "Many practical decisions have two outcomes, from passing quality control to including a page in search results. Distinguishing the two kinds of error helps reflect which mistakes matter most.",
+    "misconceptions": [
+      "Binary classification is not limited to medical tests; it applies to any two-class decision.",
+      "Total accuracy alone may not describe performance well when one error type matters more.",
+      "The two classes can represent different decisions, not just the presence or absence of a disease."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "item",
+          "label": "Input item",
+          "note": "The case to classify"
+        },
+        {
+          "id": "classifier",
+          "label": "Binary classifier",
+          "note": "Chooses between two classes"
+        },
+        {
+          "id": "class-a",
+          "label": "Class one",
+          "note": "First possible outcome"
+        },
+        {
+          "id": "class-b",
+          "label": "Class two",
+          "note": "Second possible outcome"
+        },
+        {
+          "id": "errors",
+          "label": "Error check",
+          "note": "Tracks false positives and negatives"
+        }
+      ],
+      "edges": [
+        {
+          "from": "item",
+          "to": "classifier",
+          "label": "examined"
+        },
+        {
+          "from": "classifier",
+          "to": "class-a",
+          "label": "one outcome"
+        },
+        {
+          "from": "classifier",
+          "to": "class-b",
+          "label": "other outcome"
+        },
+        {
+          "from": "class-a",
+          "to": "errors",
+          "label": "evaluated"
+        },
+        {
+          "from": "class-b",
+          "to": "errors",
+          "label": "evaluated"
+        }
+      ],
+      "caption": "An item receives one of two class labels, and its errors can then be evaluated separately."
+    }
+  },
   "related": [
     "document-classification",
     "evaluation-of-binary-classifiers",

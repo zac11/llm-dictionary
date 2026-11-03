@@ -5,7 +5,110 @@
   "type": "architecture",
   "definition": "A neural network trained to compress input data into a lower-dimensional representation and then reconstruct the original input from it.",
   "details": "Autoencoders are used for dimensionality reduction, denoising, and as building blocks for more advanced generative architectures like VAEs.",
-  "story": "Picture an architect laying out a building where every room has to know which other rooms matter to it. The layout decides what the machine can even attempt, before it learns a single thing. It is the blueprint that makes everything else possible. It is the difference between a row of isolated cubicles and one big room where everyone can hear each other. That blueprint is Autoencoder.",
+  "explainer": {
+    "lead": "An autoencoder learns a compact way to describe data by trying to rebuild the original input from that description. This makes it useful for reducing dimensionality and removing noise, and its encoder–decoder structure also serves as a building block for variational autoencoders.",
+    "tiers": {
+      "eli5": "Imagine describing a detailed picture with just a few short notes, then asking a friend to redraw the picture using only those notes. An autoencoder learns both jobs: writing the notes and redrawing the picture. If the redrawn picture is close to the original, the notes captured something useful about it.",
+      "practitioner": "Engineers train the encoder and decoder together by comparing the reconstruction with the original input, then use the learned code for compression-oriented representations, denoising, or later generative models. The latent dimension is set below the input dimension; otherwise, the architecture does not perform the intended compression. For example, a network can encode a 1,024-value input into 32 values, decode those values back into 1,024 outputs, and update its weights to reduce the reconstruction error.",
+      "paperLevel": "For an input x in R^d, an encoder f produces z = f(x) in R^p with p < d, and a decoder g produces the reconstruction x_hat = g(z). Training minimizes a reconstruction loss L(x, x_hat), such as the discrepancy between the input and its reconstruction. The architecture supports dimensionality reduction and denoising, while variational autoencoders build on this structure for generative modeling."
+    },
+    "usedIn": [
+      {
+        "name": "Dimensionality reduction",
+        "detail": "The encoder maps high-dimensional data into a smaller latent representation.",
+        "url": ""
+      },
+      {
+        "name": "Denoising",
+        "detail": "The reconstruction process is used to recover cleaner data from noisy input.",
+        "url": ""
+      },
+      {
+        "name": "Generative modeling",
+        "detail": "Autoencoder components provide building blocks for variational autoencoders.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Encoder",
+        "detail": "Transforms the original input into a lower-dimensional representation."
+      },
+      {
+        "name": "Latent representation",
+        "detail": "The compressed code from which the decoder must recover the input."
+      },
+      {
+        "name": "Decoder",
+        "detail": "Maps the latent representation back to a reconstruction of the original input."
+      },
+      {
+        "name": "Reconstruction loss",
+        "detail": "Measures the difference between the input and its reconstruction and guides training."
+      }
+    ],
+    "flow": [
+      "Input data enters the encoder.",
+      "The encoder compresses it into a lower-dimensional latent representation.",
+      "The decoder uses that representation to reconstruct the input.",
+      "The reconstruction is compared with the original input.",
+      "Training adjusts the encoder and decoder to reduce reconstruction error."
+    ],
+    "lineage": "Autoencoders provide architectural building blocks for variational autoencoders, extending their reconstruction-based structure into more advanced generative modeling.",
+    "whyItMatters": "Autoencoders connect compression and reconstruction in one trainable architecture. That combination supports smaller data representations, denoising, and later generative architectures.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Original input",
+          "note": "High-dimensional data to encode"
+        },
+        {
+          "id": "encoder",
+          "label": "Encoder",
+          "note": "Compresses the input"
+        },
+        {
+          "id": "latent",
+          "label": "Latent code",
+          "note": "Lower-dimensional representation"
+        },
+        {
+          "id": "decoder",
+          "label": "Decoder",
+          "note": "Rebuilds data from the code"
+        },
+        {
+          "id": "output",
+          "label": "Reconstruction",
+          "note": "Compared with the original input"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "encoder",
+          "label": "data"
+        },
+        {
+          "from": "encoder",
+          "to": "latent",
+          "label": "compresses"
+        },
+        {
+          "from": "latent",
+          "to": "decoder",
+          "label": "code"
+        },
+        {
+          "from": "decoder",
+          "to": "output",
+          "label": "rebuilds"
+        }
+      ],
+      "caption": "Data flows through compression and reconstruction, with training driven by the difference between input and output."
+    }
+  },
   "related": [
     "sparse-autoencoder",
     "variational-autoencoder",

@@ -5,7 +5,102 @@
   "type": "concept",
   "definition": "Automatic acquisition of lexicon is a computerized process used for the development of a complex morphological lexicon of a language.",
   "details": "The lexicon is essential for the NLP (Natural language processing), as well as a prerequisite to any wide-coverage parser. The two main requirements represent raw corpus and the morphological description of the language. The aim is to provide lemmas that will serve to the explanation of all the words that occur within the corpus. For the achievement of a quality lexicon it is necessary to manually validate the generated lemmas and iterate the whole process several times. The process is focused on the open word classes (e.g. nouns, adjectives, verbs). Closed classes (e.g. prepositions, pronouns, numerals) are excluded. This method is applicable to the languages with a rich morphology, such as Slovak, Russian or Croatian. Applied to Slovak, being an inflectional language, the automatic acquisition focuses on the inflectional morphology as well as on the derivational morphology. This fact enables the users to find out the information about derivational relations (e.g. adjectivizations, prefixes) in the lexicon. For example, Slovak word korpusový is an adjectivization of korpus (eng. corpus).",
-  "story": "Picture a translator at the United Nations, listening to one language and whispering the meaning into another in real time. It figures out meaning by noticing which words like to travel together. It does not memorize a rulebook; it absorbs a library. Meaning lives in company — a word is known by the words it keeps. And that is Automatic acquisition of lexicon — teaching a machine to read between the lines.",
+  "explainer": {
+    "lead": "Automatic acquisition of lexicon uses a text collection and a description of a language’s word forms to build a morphological dictionary. It reduces the manual work of explaining corpus words through their lemmas, supporting natural language processing and wide-coverage parsing.",
+    "tiers": {
+      "eli5": "Imagine reading a huge pile of books and grouping different forms of a word, much as you might group a puzzle with its puzzles. A computer uses rules about how the language changes words to suggest these groups, and a person checks the suggestions. Repeating this creates a useful dictionary of base words and their relationships.",
+      "practitioner": "The inputs are a raw corpus and a morphological description of the target language. Generated lemmas for open-class words must be manually validated, with the acquisition and validation cycle repeated to improve lexicon quality. For Slovak, coverage should include both inflectional and derivational morphology; prepositions, pronouns, numerals, and other closed classes are outside this process.",
+      "paperLevel": "Given a raw corpus C and a morphological description M, acquire a lemma set L that accounts for the open-class word forms occurring in C, then manually validate L and iterate. For inflectional languages such as Slovak, the acquired lexicon can represent inflectional and derivational relations. The method targets morphologically rich languages, and lemma quality depends on manual validation rather than fully automatic generation."
+    },
+    "example": "In Slovak, the process can connect the adjective korpusový with korpus, meaning “corpus.” The lexicon therefore records not only the relevant lemma but also the derivational relation of adjectivization.",
+    "usedIn": [
+      {
+        "name": "Natural language processing",
+        "detail": "Provides the morphological lexicon needed to interpret word forms and their lemmas.",
+        "url": ""
+      },
+      {
+        "name": "Wide-coverage parsing",
+        "detail": "Supplies lexical information as a prerequisite for parsers intended to handle broad ranges of text.",
+        "url": ""
+      },
+      {
+        "name": "Morphological dictionary development",
+        "detail": "Supports iterative construction of lexicons for rich-morphology languages such as Slovak, Russian, and Croatian.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of writing a dictionary entry for every word form by hand, use corpus evidence and the language’s morphology to propose the lemmas behind those forms. Human checking and repeated passes turn those proposals into a reliable lexicon.",
+    "howItWorks": [
+      "Collect a raw corpus and a morphological description of the language.",
+      "Generate lemmas intended to explain the corpus’s open-class word forms.",
+      "Manually validate the generated lemmas.",
+      "Repeat acquisition and validation several times to improve lexicon quality."
+    ],
+    "whyItMatters": "A good morphological lexicon lets NLP systems relate varied word forms to lemmas and, where covered, understand derivational relationships. This lexical foundation is especially important for wide-coverage parsing in languages with rich morphology.",
+    "misconceptions": [
+      "It is not fully automatic: generated lemmas require manual validation.",
+      "It does not cover every word class: closed classes such as prepositions and pronouns are excluded.",
+      "It is more than compiling surface word forms: the goal is to explain them through lemmas."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "corpus",
+          "label": "Raw corpus",
+          "note": "Supplies the word forms to be explained."
+        },
+        {
+          "id": "morphology",
+          "label": "Morphological description",
+          "note": "Describes the language’s word-form patterns."
+        },
+        {
+          "id": "generation",
+          "label": "Lemma generation",
+          "note": "Proposes lemmas for open-class words."
+        },
+        {
+          "id": "validation",
+          "label": "Manual validation",
+          "note": "Checks and corrects generated lemmas."
+        },
+        {
+          "id": "lexicon",
+          "label": "Morphological lexicon",
+          "note": "Stores lemmas and covered morphological relations."
+        }
+      ],
+      "edges": [
+        {
+          "from": "corpus",
+          "to": "generation",
+          "label": "word forms"
+        },
+        {
+          "from": "morphology",
+          "to": "generation",
+          "label": "language rules"
+        },
+        {
+          "from": "generation",
+          "to": "validation",
+          "label": "candidate lemmas"
+        },
+        {
+          "from": "validation",
+          "to": "lexicon",
+          "label": "validated entries"
+        },
+        {
+          "from": "validation",
+          "to": "generation",
+          "label": "iterate"
+        }
+      ],
+      "caption": "Corpus evidence and morphological knowledge produce candidate lemmas, which are checked and refined through repeated acquisition and validation."
+    }
+  },
   "related": [
     "automatic-acquisition-of-sense-tagged-corpora",
     "automatic-clustering-algorithms",

@@ -5,7 +5,109 @@
   "type": "concept",
   "definition": "An AI engine is the computational core of artificial intelligence systems and is used for AI inference.",
   "details": "It can also refer to a specific computing architecture created by AMD (formerly by Xilinx, acquired by AMD in 2022). For AI inference, an AI engine consists of software layers that run AI workloads and manage memory and scheduling, simplifying application development. The AMD AI engine is commonly used for streamlining linear algebra operations (such as matrix multiplication), for artificial intelligence algorithms, digital signal processing, and more generally, for high-performance computing. The first products containing AI engines were the Versal adaptive compute acceleration platforms, which combine scalar, adaptable, and intelligent engines connected through a Network on Chip (NoC). AI engines have evolved significantly alongside modern computing workloads, with developments specifically focused on accelerating AI applications. The basic architecture of a single AI engine integrates vector processors and scalar processors to implement Single Instruction Multiple Data (SIMD) capabilities. AI engines are integrated with other hardware such as FPGAs, CPUs, and GPUs to support high-performance, heterogeneous computation across various domains.",
-  "story": "Think of a lightbulb moment: the idea was always there, but someone had to point a finger at it. Behind the jargon is an idea you could explain to a friend over coffee. At its heart it is a simple notion, once you strip away the fancy name. Once you see it, you cannot unsee it. And that idea, made concrete, is AI engine.",
+  "explainer": {
+    "lead": "An AI engine can mean the software core that runs a trained AI model, or AMD's specialized processor architecture for fast, parallel mathematics. The AMD design appears in Versal platforms and Ryzen AI PCs, where it accelerates inference and signal processing alongside other hardware.",
+    "tiers": {
+      "eli5": "An AI engine is like a kitchen team that prepares many small parts of a meal at the same time instead of making everything one step at a time. AMD's version has many small processors that are good at doing the same maths operation on lots of numbers together. This helps computers run AI tasks and process signals more quickly.",
+      "practitioner": "On first-generation AMD AI engines, developers typically write tile kernels and their connections as a C++ AIE graph, then use the compiler for placement and routing; Riallto and the Ryzen AI SW toolchain support later programmability and inference workflows. Static scheduling can cause code explosion, so kernels may need manual optimization. A tile's 32 KB data memory can reach 128 KB by borrowing from neighbours, but this reduces the number of usable compute cores.",
+      "paperLevel": "In AMD's architecture, each first-generation AI engine tile is a statically scheduled, 7-way VLIW processor combining a 128-bit SIMD vector unit, a scalar unit, load/store units, 32 KB of data memory, and 16 KB of program memory, with vector registers up to 1024 bits. AIE-ML adds INT8 and bfloat formats, greater compute density and memory bandwidth, and up to three times the TOPS per watt of the first generation. Known limits include code explosion from static scheduling and the need for hand-optimized kernels and data partitioning."
+    },
+    "example": "To run a neural-network layer expressed as matrix multiplication on Versal, a developer writes tile kernels and their connections in a C++ AIE graph. The compiler places and routes the graph, and the vector units process many matrix values per instruction while local memories hold intermediate results.",
+    "usedIn": [
+      {
+        "name": "Versal adaptive compute acceleration platforms",
+        "detail": "The first products with AI engines, combining them with FPGA fabric and Network on Chip connectivity.",
+        "url": ""
+      },
+      {
+        "name": "VCK190 and VCK5000",
+        "detail": "Initial Versal systems whose AI engine layer contained 400 engines.",
+        "url": ""
+      },
+      {
+        "name": "Ryzen AI Phoenix PCs",
+        "detail": "Use XDNA 1, where AI Engine ML Compute Tiles work with Memory and Shim tiles.",
+        "url": ""
+      },
+      {
+        "name": "Ryzen AI Strix systems",
+        "detail": "Announced with XDNA 2, which provides more units for machine-learning workloads.",
+        "url": ""
+      }
+    ],
+    "intuition": "Think of the general meaning as the part of a system that actually executes AI inference, handling workloads, memory, and scheduling. AMD's more specific meaning is a tile-based processor built to perform many parallel arithmetic operations efficiently.",
+    "howItWorks": [
+      "Software supplies an AI or signal-processing workload and its data.",
+      "The workload is divided into operations suited to parallel execution.",
+      "Vector units apply one instruction to many values, while scalar units handle control and sequential logic.",
+      "Local memories and tile connections hold and move intermediate results.",
+      "FPGAs, CPUs, or GPUs can handle other parts of the wider computation."
+    ],
+    "whyItMatters": "As inference software, an AI engine hides much of the work of managing workloads, memory, and scheduling. As AMD hardware, it provides efficient parallel computation for AI, digital signal processing, and high-performance computing within heterogeneous systems.",
+    "misconceptions": [
+      "According to AMD, the \"AI\" in its AI Engine name is not an acronym for artificial intelligence.",
+      "The general software meaning and AMD's hardware architecture are related uses of the term, not the same thing.",
+      "XDNA is often categorized as an NPU, but NPU is a broader label used for architectures from several companies."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "host",
+          "label": "Host memory",
+          "note": "Supplies data to the XDNA system."
+        },
+        {
+          "id": "shim",
+          "label": "Shim tile",
+          "note": "Controls exchanges with host memory."
+        },
+        {
+          "id": "memory",
+          "label": "Memory tile",
+          "note": "Provides 512 KB local memory and manages data movement."
+        },
+        {
+          "id": "compute",
+          "label": "Compute tile",
+          "note": "AI Engine ML executes vector and scalar operations."
+        }
+      ],
+      "edges": [
+        {
+          "from": "host",
+          "to": "shim",
+          "label": "host data"
+        },
+        {
+          "from": "shim",
+          "to": "memory",
+          "label": "data exchange"
+        },
+        {
+          "from": "memory",
+          "to": "compute",
+          "label": "fetch data"
+        }
+      ],
+      "caption": "The three tile types in XDNA 1 and their roles in moving and processing data."
+    },
+    "image": {
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cb/Hardware_%2813100869484%29.jpg/960px-Hardware_%2813100869484%29.jpg",
+      "alt": "AI engine — AMD computing architecture",
+      "width": 640,
+      "height": 425,
+      "credit": "Dmitry Grigoriev from Nakhabino, Russia",
+      "license": "CC BY 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Hardware_(13100869484).jpg"
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: AI engine",
+        "url": "https://en.wikipedia.org/wiki/AI_engine"
+      }
+    ]
+  },
   "related": [
     "aaai-acm-conference-on-ai-ethics-and-society",
     "ai-50",

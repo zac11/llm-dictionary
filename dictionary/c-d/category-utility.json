@@ -5,7 +5,108 @@
   "type": "concept",
   "definition": "Category utility is a measure of \"category goodness\" defined in Gluck &amp; Corter (1985) and Corter &amp; Gluck (1992).",
   "details": "It attempts to maximize both the probability that two objects in the same category have attribute values in common, and the probability that objects from different categories have different attribute values. It was intended to supersede more limited measures of category goodness such as \"cue validity\" and \"collocation index\". It provides a normative information-theoretic measure of the predictive advantage gained by the observer who possesses knowledge of the given category structure (i.e., the class labels of instances) over the observer who does not possess knowledge of the category structure. In this sense the motivation for the category utility measure is similar to the information gain metric used in decision tree learning. In certain presentations, it is also formally equivalent to the mutual information, as discussed below. A review of category utility in its probabilistic incarnation, with applications to machine learning, is provided in Witten and Frank's 2005 book.",
-  "story": "Picture an engineer at a cluttered workbench, turning a clever idea over in their hands until it finally clicks. At its heart it is a simple notion, once you strip away the fancy name. A small key that opens a much bigger door. It is one of those ideas that feels obvious only after someone shows it to you. And that idea, made concrete, is Category utility.",
+  "explainer": {
+    "lead": "Category utility scores how useful a grouping is for predicting what its members are like. A good category structure makes objects within a category alike and objects in different categories different, so knowing the category labels provides a predictive advantage.",
+    "tiers": {
+      "eli5": "Imagine sorting your toys into boxes so that the label on a box tells you a lot about what is inside. If one box holds similar toy cars and another holds similar building blocks, those labels are more useful than labels on boxes filled with random mixtures. Category utility measures that kind of usefulness.",
+      "practitioner": "Use category utility to compare category structures by their predictive value, rather than judging within-category similarity alone. Its motivation parallels information gain in decision-tree learning, but it should not be treated as the same criterion; equivalence to mutual information applies only in certain presentations. Probabilistic machine-learning applications are reviewed in Witten and Frank’s 2005 book.",
+      "paperLevel": "Category utility is a normative information-theoretic measure of the predictive advantage gained from knowing class labels rather than not knowing them. It rewards shared attribute values within categories and differing attribute values across categories, and was intended to supersede cue validity and collocation index. Defined in Gluck & Corter (1985) and Corter & Gluck (1992), it is formally equivalent to mutual information in certain presentations."
+    },
+    "example": "Suppose you group cups together and plates together. Cups share attributes such as depth and shape, while cups and plates differ on those attributes; category utility rewards that structure over mixed groupings because knowing “cup” or “plate” helps predict an object’s attributes.",
+    "usedIn": [
+      {
+        "name": "Machine learning",
+        "detail": "Its probabilistic form has applications in machine learning, reviewed by Witten and Frank in 2005.",
+        "url": ""
+      },
+      {
+        "name": "Category evaluation",
+        "detail": "It compares category structures by how much their class labels help predict attribute values.",
+        "url": ""
+      }
+    ],
+    "intuition": "A category is useful when its name tells you what attributes to expect. Category utility balances similarity within categories against differences between categories.",
+    "howItWorks": [
+      "Start with objects, their attribute values, and a proposed category structure.",
+      "Check how often objects in the same category share attribute values.",
+      "Check how often objects in different categories have different attribute values.",
+      "Favor structures that do well on both checks.",
+      "Interpret the result as the predictive advantage provided by knowing the class labels."
+    ],
+    "whyItMatters": "It gives a normative, information-theoretic way to judge category structures by their predictive value. It also improves on more limited measures of category goodness such as cue validity and collocation index.",
+    "misconceptions": [
+      "It is not just a measure of within-category similarity; differences between categories matter too.",
+      "It is not simply decision-tree information gain, although their motivations are similar.",
+      "Its formal equivalence to mutual information holds only in certain presentations."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "objects",
+          "label": "Objects and attributes",
+          "note": "Instances with observable attribute values"
+        },
+        {
+          "id": "structure",
+          "label": "Category structure",
+          "note": "Class labels assigned to instances"
+        },
+        {
+          "id": "within",
+          "label": "Within-category agreement",
+          "note": "Members tend to share attribute values"
+        },
+        {
+          "id": "between",
+          "label": "Between-category contrast",
+          "note": "Different categories tend to differ"
+        },
+        {
+          "id": "utility",
+          "label": "Category utility",
+          "note": "Balances agreement and contrast"
+        },
+        {
+          "id": "advantage",
+          "label": "Predictive advantage",
+          "note": "Benefit of knowing the labels"
+        }
+      ],
+      "edges": [
+        {
+          "from": "objects",
+          "to": "structure",
+          "label": "grouped by"
+        },
+        {
+          "from": "structure",
+          "to": "within",
+          "label": ""
+        },
+        {
+          "from": "structure",
+          "to": "between",
+          "label": ""
+        },
+        {
+          "from": "within",
+          "to": "utility",
+          "label": ""
+        },
+        {
+          "from": "between",
+          "to": "utility",
+          "label": ""
+        },
+        {
+          "from": "utility",
+          "to": "advantage",
+          "label": "measures"
+        }
+      ],
+      "caption": "Category utility combines within-category agreement and between-category contrast to measure the predictive value of class labels."
+    }
+  },
   "related": [
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",
     "accelerated-linear-algebra",

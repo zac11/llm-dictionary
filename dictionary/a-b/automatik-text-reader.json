@@ -2,10 +2,105 @@
   "term": "Automatik Text Reader",
   "letter": "A",
   "category": "Speech synthesis",
-  "type": "concept",
+  "type": "tool",
   "definition": "Automatik Text Reader was a free and open source add-on for Firefox providing text-to-speech functions available from the Mozilla Add-ons collection.",
   "details": "It supports multiple languages and accents and is capable of autonomously recognizing the language of written text and activating the respective speech synthesis engine. Amongst the peculiar features, the voice speed is adjustable and the text selection is automatic. In addition to the unique features users will find that the interface is very simple to use; having only 4 buttons to operate it.",
-  "story": "Think of a grammar teacher who never memorized a rule but can still tell you when a sentence sounds wrong. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It figures out meaning by noticing which words like to travel together. The machine learns to read between the lines by reading an impossible number of lines. That pattern-earned fluency is Automatik Text Reader.",
+  "explainer": {
+    "lead": "Automatik Text Reader was a free, open-source Firefox add-on that read written text aloud. It detected a passage's language, chose a matching speech-synthesis engine, and kept operation simple with automatic text selection, adjustable speed, and four buttons.",
+    "tiers": {
+      "eli5": "Imagine a helpful reader living inside your web browser. You show it some writing, it works out which language the writing uses, picks a suitable voice, and reads the words aloud; you can make the voice faster or slower. Its automatic selection and four buttons are like having someone hold the page and handle most of the controls for you.",
+      "practitioner": "For an engineer, it is best understood as browser-level orchestration rather than a synthesis model: Firefox text is selected, classified by language, routed to the corresponding engine, and played at a configurable rate. Interaction is through a four-button interface, with automatic selection and voice speed as the exposed behavior. Automatic language detection and engine selection are not translation, and no API, engine list, or accuracy figures are specified.",
+      "paperLevel": "For text t, the add-on computes a language label L(t), selects the corresponding synthesis engine E_L(t), and renders speech S = E_L(t)(t, r), where r is the user-adjustable speaking rate. Its automatic text-selection operation and four-control interface sit outside this synthesis mapping. Supported-language coverage, recognition accuracy, synthesis quality, and implementation details are not specified."
+    },
+    "example": "A user opens a page in Firefox and lets Automatik Text Reader select a passage in a supported language. The add-on detects the language, activates the corresponding speech engine, and reads the passage aloud; the user can then slow down or speed up the voice.",
+    "usedIn": [
+      {
+        "name": "Firefox",
+        "detail": "Hosted the add-on, which provided text-to-speech functions for written text in the browser.",
+        "url": ""
+      },
+      {
+        "name": "Multilingual speech synthesis",
+        "detail": "Used automatic language recognition to activate the speech-synthesis engine matching each passage.",
+        "url": ""
+      }
+    ],
+    "intuition": "The add-on acts like a multilingual reader inside Firefox: it identifies what language a passage uses before choosing how to speak it. This removes the need for the user to select the language and synthesis engine manually.",
+    "howItWorks": [
+      "The user works with written text in Firefox.",
+      "The add-on selects the text automatically.",
+      "It recognizes the language of the selected passage.",
+      "It activates the speech-synthesis engine for that language.",
+      "The engine reads the text aloud, with voice speed adjustable through the simple four-button interface."
+    ],
+    "whyItMatters": "It combined language detection, engine selection, and playback inside the browser, reducing manual setup for reading multilingual text aloud. Automatic selection and a four-button interface made those functions straightforward to operate.",
+    "misconceptions": [
+      "It was not a translation tool: language recognition was used to choose a speech engine, not to change the text's language.",
+      "It was a Firefox add-on that activated speech-synthesis engines, not a standalone synthesis engine itself."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "text",
+          "label": "Webpage text",
+          "note": "Written content available in Firefox."
+        },
+        {
+          "id": "selection",
+          "label": "Automatic selection",
+          "note": "Selects the passage to be read."
+        },
+        {
+          "id": "language",
+          "label": "Language recognition",
+          "note": "Identifies the passage's language."
+        },
+        {
+          "id": "engine",
+          "label": "Speech engine",
+          "note": "The engine matching the detected language."
+        },
+        {
+          "id": "speed",
+          "label": "Speed control",
+          "note": "Adjusts how quickly the voice speaks."
+        },
+        {
+          "id": "speech",
+          "label": "Spoken output",
+          "note": "The selected text read aloud."
+        }
+      ],
+      "edges": [
+        {
+          "from": "text",
+          "to": "selection",
+          "label": "passage"
+        },
+        {
+          "from": "selection",
+          "to": "language",
+          "label": "selected text"
+        },
+        {
+          "from": "language",
+          "to": "engine",
+          "label": "language match"
+        },
+        {
+          "from": "speed",
+          "to": "engine",
+          "label": "voice rate"
+        },
+        {
+          "from": "engine",
+          "to": "speech",
+          "label": "synthesizes"
+        }
+      ],
+      "caption": "The add-on selects text, detects its language, routes it to a matching speech engine, and produces adjustable-speed speech."
+    }
+  },
   "related": [
     "text-to-speech-in-digital-television",
     "arabic-speech-corpus",

@@ -5,7 +5,123 @@
   "type": "concept",
   "definition": "Bayesian structural time series (BSTS) model is a statistical technique used for feature selection, time series forecasting, nowcasting, inferring causal impact and other applications.",
   "details": "The model is designed to work with time series data. The model has also promising application in the field of analytical marketing. In particular, it can be used in order to assess how much different marketing campaigns have contributed to the change in web search volumes, product sales, brand popularity and other relevant indicators. Difference-in-differences models and interrupted time series designs are alternatives to this approach. \"In contrast to classical difference-in-differences schemes, state-space models make it possible to (i) infer the temporal evolution of attributable impact, (ii) incorporate empirical priors on the parameters in a fully Bayesian treatment, and (iii) flexibly accommodate multiple sources of variation, including the time-varying influence of contemporaneous covariates, i.e., synthetic controls.\"",
-  "story": "Picture an engineer at a cluttered workbench, turning a clever idea over in their hands until it finally clicks. At its heart it is a simple notion, once you strip away the fancy name. A small key that opens a much bigger door. It is one of those ideas that feels obvious only after someone shows it to you. That is Bayesian structural time series — a small key that opens a big door.",
+  "explainer": {
+    "lead": "Bayesian structural time series is a way to model measurements that unfold over time while keeping uncertainty explicit. It can forecast or nowcast a series and estimate how an event, such as a marketing campaign, changed its path compared with what the model suggests would otherwise have happened.",
+    "tiers": {
+      "eli5": "Imagine tracking weekly sales and then starting a new advertising campaign. This approach learns the old rhythm of sales, uses other helpful information, and makes an educated guess about what sales would have looked like without the campaign. Comparing that guess with actual sales gives an estimate of the campaign's effect, along with uncertainty rather than one perfectly certain answer.",
+      "practitioner": "A practitioner represents the target series with a state-space model, places priors on its parameters, and can include time-varying contemporaneous covariates. The fitted model supports forecasting, nowcasting, feature selection, and causal-impact analysis, including an impact estimate that changes over time. A key pitfall is treating a before-and-after difference as causal without considering whether the model and covariates adequately represent other sources of variation.",
+      "paperLevel": "A generic representation is y_t = Z_t' alpha_t + beta' x_t + epsilon_t and alpha_{t+1} = T_t alpha_t + eta_t, where y_t is the observed series, alpha_t is the latent state, and x_t contains contemporaneous covariates. Priors on the parameters lead to a fully Bayesian posterior treatment; counterfactual predictions can then be compared with observations to infer the temporal evolution of attributable impact. Causal interpretation remains dependent on how well the state, priors, and covariates accommodate the relevant sources of variation."
+    },
+    "example": "Suppose a company wants to assess a campaign's effect on weekly web searches for its brand. It fits a BSTS model to the search series, using earlier behavior and relevant contemporaneous covariates to estimate the searches expected without the campaign; the evolving gap between observed and expected searches is the estimated attributable impact. This can reveal whether the effect grows, fades, or changes after the campaign rather than reducing it to one before-and-after comparison.",
+    "usedIn": [
+      {
+        "name": "Analytical marketing",
+        "detail": "Estimating how campaigns contributed to changes in web search volumes, product sales, and brand popularity.",
+        "url": ""
+      },
+      {
+        "name": "Causal-impact analysis",
+        "detail": "Comparing observations with a model-based counterfactual and tracking attributable impact over time.",
+        "url": ""
+      },
+      {
+        "name": "Time series analysis",
+        "detail": "Supporting forecasting, nowcasting, and feature selection for measurements collected over time.",
+        "url": ""
+      }
+    ],
+    "intuition": "The core idea is to learn a plausible explanation of a series before and around an intervention, then ask what path it would likely have followed without that intervention. Bayesian priors and a flexible state-space representation let the estimate combine several sources of variation and express uncertainty.",
+    "howItWorks": [
+      "Represent the observed time series with a state-space model.",
+      "Add empirical priors on parameters and, when available, contemporaneous covariates.",
+      "Fit the model in a fully Bayesian treatment, allowing for multiple sources of variation.",
+      "Forecast or nowcast the series, or construct the path expected without an intervention.",
+      "Compare that counterfactual path with observations to estimate impact as it evolves over time."
+    ],
+    "whyItMatters": "It connects forecasting with intervention analysis, so the same model can describe a series and estimate how an action changed it. Its temporal impact estimates, empirical priors, and flexible covariates offer capabilities that classical difference-in-differences schemes do not provide in the same form.",
+    "misconceptions": [
+      "It is not only a forecasting method; it also supports nowcasting, feature selection, and causal-impact inference.",
+      "An estimated impact is not automatically proof of causation; it depends on the modeled counterfactual and sources of variation.",
+      "It is not the same as difference-in-differences or interrupted time series, which are alternative approaches."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "series",
+          "label": "Observed time series",
+          "note": "Measurements such as sales or searches over time."
+        },
+        {
+          "id": "covariates",
+          "label": "Contemporaneous covariates",
+          "note": "Other time-varying information included in the model."
+        },
+        {
+          "id": "priors",
+          "label": "Empirical priors",
+          "note": "Bayesian prior information about model parameters."
+        },
+        {
+          "id": "state-space",
+          "label": "State-space model",
+          "note": "Represents the series and multiple sources of variation."
+        },
+        {
+          "id": "posterior",
+          "label": "Bayesian posterior",
+          "note": "Combines data, covariates, and priors."
+        },
+        {
+          "id": "forecast",
+          "label": "Forecast or counterfactual",
+          "note": "Predicts future values or the path without an intervention."
+        },
+        {
+          "id": "impact",
+          "label": "Impact over time",
+          "note": "Compares observations with the counterfactual path."
+        }
+      ],
+      "edges": [
+        {
+          "from": "series",
+          "to": "state-space",
+          "label": "observations"
+        },
+        {
+          "from": "covariates",
+          "to": "state-space",
+          "label": "variation"
+        },
+        {
+          "from": "priors",
+          "to": "state-space",
+          "label": "parameters"
+        },
+        {
+          "from": "state-space",
+          "to": "posterior",
+          "label": "Bayesian fit"
+        },
+        {
+          "from": "posterior",
+          "to": "forecast",
+          "label": "prediction"
+        },
+        {
+          "from": "forecast",
+          "to": "impact",
+          "label": "comparison"
+        },
+        {
+          "from": "series",
+          "to": "impact",
+          "label": "observed path"
+        }
+      ],
+      "caption": "BSTS combines a time series, optional covariates, and priors in a Bayesian state-space model, then uses predictions for forecasting or counterfactual impact analysis."
+    }
+  },
   "related": [
     "time-series",
     "bayesian-interpretation-of-kernel-regularization",

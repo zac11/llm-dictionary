@@ -5,7 +5,103 @@
   "type": "concept",
   "definition": "Bin picking (also referred to as random bin picking) is a core problem in computer vision and robotics.",
   "details": "The goal is to have a robot with sensors and cameras attached to it pick-up known objects with random poses out of a bin using a suction gripper, parallel gripper, or other kind of robot end effector. Early work on bin picking made use of Photometric Stereo in recovering the shapes of objects and to determine their orientation in space. Amazon previously held a competition focused on bin picking referred to as the \"Amazon Picking Challenge\", which was held from 2015 to 2017. The challenge tasked entrants with building their own robot hardware and software that could attempt simplified versions of the general task of picking and stowing items on shelves. The robots were scored by how many items were picked and stowed in a fixed amount of time. The first Amazon Robotics challenge was won by a team from TU Berlin in 2015, followed by a team from TU Delft and the Dutch company \"Fizyr\" in 2016. The last Amazon Robotics Challenge was won by the Australian Centre for Robotic Vision at Queensland University of Technology with their robot named Cartman. The Amazon Robotics/Picking Challenge was discontinued following the 2017 competition. Although there can be some overlap, bin picking is d",
-  "story": "Picture a child pointing at pictures in a book — cat, car, cloud — learning to see by seeing a thousand examples. It turns a picture into an understanding: this is a cat, that is a stop sign. What your eyes do without thinking, the machine does one careful layer at a time. It is eyes made of arithmetic — pixels become edges, edges become shapes, shapes become meaning. That pixel-to-meaning climb is Bin picking.",
+  "explainer": {
+    "lead": "Bin picking is the task of getting a robot to pick known objects out of a bin when they lie at random angles and positions. It combines camera-based perception with grasping, turning a cluttered container into objects a robot can handle one by one.",
+    "tiers": {
+      "eli5": "Imagine reaching into a toy box where every toy is lying in a different direction. A robot doing bin picking has to look into the box, work out how a toy is positioned, and choose a way to grab it. It may use a suction cup or a gripper instead of fingers.",
+      "practitioner": "A bin-picking system combines cameras and other sensors with a robot fitted with a suction gripper, parallel gripper, or another end effector. Its vision system must recover enough shape and pose information for the robot to grasp known objects despite their random poses. Early systems used photometric stereo, while the Amazon challenges evaluated simplified picking-and-stowing systems by counting successful actions within a fixed time.",
+      "paperLevel": "Given known objects with random poses in a bin, bin picking seeks to estimate object shape and spatial orientation and then execute a grasp with a robot end effector. Early work applied photometric stereo to shape recovery and orientation estimation. The Amazon Picking and Robotics Challenges studied simplified versions of the general problem through timed shelf-picking and stowing tasks."
+    },
+    "example": "A camera examines a bin containing a known box lying at an angle. The system estimates the box's orientation, and the robot lifts it with a suction gripper; in the Amazon challenges, robots earned scores by completing comparable simplified picking and stowing actions before time expired.",
+    "usedIn": [
+      {
+        "name": "Amazon Picking Challenge",
+        "detail": "Held from 2015 to 2017, it scored robots on items picked and stowed in simplified shelf tasks within a fixed time.",
+        "url": ""
+      },
+      {
+        "name": "TU Berlin challenge team",
+        "detail": "Won the first Amazon Robotics challenge in 2015.",
+        "url": ""
+      },
+      {
+        "name": "TU Delft and Fizyr team",
+        "detail": "Won the 2016 competition with its robot hardware and software.",
+        "url": ""
+      },
+      {
+        "name": "Cartman",
+        "detail": "The Queensland University of Technology robot that won the final 2017 challenge for the Australian Centre for Robotic Vision.",
+        "url": ""
+      }
+    ],
+    "intuition": "The hard part is not merely closing a gripper: the robot must first understand where each known object is and how it is oriented. Once it has a usable pose, it can choose an appropriate grasp and remove the object.",
+    "howItWorks": [
+      "Place known objects with random poses in a bin.",
+      "Observe the bin with cameras and other robot-mounted sensors.",
+      "Recover object shape and orientation information.",
+      "Choose a grasp for a suction, parallel, or other end effector.",
+      "Move the robot to grasp and remove the object."
+    ],
+    "whyItMatters": "Bin picking links visual perception and physical manipulation in one concrete task. The Amazon competitions also provided a common timed setting in which teams could compare complete robot hardware and software systems.",
+    "misconceptions": [
+      "It is not just grasping: recognizing an object's shape and pose is central to the task.",
+      "The Amazon shelf-picking tasks were simplified versions of general bin picking, not the entire problem.",
+      "There is no single required gripper; suction and parallel grippers are among the options."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "bin",
+          "label": "Object bin",
+          "note": "Known objects in random poses"
+        },
+        {
+          "id": "sensors",
+          "label": "Cameras and sensors",
+          "note": "Observe objects in the bin"
+        },
+        {
+          "id": "vision",
+          "label": "Shape and pose",
+          "note": "Estimate object geometry and orientation"
+        },
+        {
+          "id": "grasp",
+          "label": "Grasp choice",
+          "note": "Select how to pick an object"
+        },
+        {
+          "id": "robot",
+          "label": "Robot and gripper",
+          "note": "Execute the pick with an end effector"
+        }
+      ],
+      "edges": [
+        {
+          "from": "bin",
+          "to": "sensors",
+          "label": "observations"
+        },
+        {
+          "from": "sensors",
+          "to": "vision",
+          "label": "images"
+        },
+        {
+          "from": "vision",
+          "to": "grasp",
+          "label": "object pose"
+        },
+        {
+          "from": "grasp",
+          "to": "robot",
+          "label": "pick command"
+        }
+      ],
+      "caption": "A bin-picking system turns sensor observations of randomly posed objects into a grasp performed by the robot."
+    }
+  },
   "related": [
     "aerial-manned-unmanned-teaming",
     "afghan-girls-robotics-team",

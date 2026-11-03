@@ -5,7 +5,46 @@
   "type": "concept",
   "definition": "Affix grammars over a finite lattice (AGFL) is a restricted type of affix grammar in which affixes can only assume finite sets of values.",
   "details": "It is aimed at natural language processing and other applications in linguistics. Some applications have been published. The AGFL project developed AGFL-based technology and made it available under the GNU GPL.",
-  "story": "Picture an engineer at a cluttered workbench, turning a clever idea over in their hands until it finally clicks. At its heart it is a simple notion, once you strip away the fancy name. A small key that opens a much bigger door. It is one of those ideas that feels obvious only after someone shows it to you. That is Affix grammar over a finite lattice — a small key that opens a big door.",
+  "explainer": {
+    "lead": "Affix grammars over a finite lattice (AGFL) are a specialized formalism that puts guardrails on traditional grammars by limiting their variables to small, fixed sets of values. This restriction makes them practical for parsing natural language while keeping the underlying logic mathematically tractable.",
+    "tiers": {
+      "eli5": "Imagine you're building a set of rules for how sentences work, like a recipe book for language. Normally you might let ingredients vary infinitely, but AGFL says you can only pick from a small, fixed menu of options—like choosing only from ten specific spices instead of any spice in the world. This makes the recipe book easier to use and less likely to spiral into impossible combinations.",
+      "practitioner": "AGFL is applied in natural language processing tasks where controlled grammars are needed for parsing or generation. The AGFL project provides tools released under the GNU GPL for building and deploying these grammars. Pitfalls include the finite lattice restriction itself: if your linguistic phenomenon requires unbounded values, you'll need to either approximate or switch formalisms.",
+      "paperLevel": "AGFL is defined as an affix grammar where each affix ranges over a finite lattice (L, ≤), meaning affix values are drawn from finite sets with a partial order. The formal restriction distinguishes it from general affix grammars, which permit recursively generated or unbounded affix values. The originating work is not named in the available sources."
+    },
+    "example": "Consider a simple noun-phrase rule: NP(Number) → Det(Number) N(Number). The affix 'Number' is restricted to the finite lattice {singular, plural}. The rule only succeeds when determiner and noun share the same value from this two-element set. 'The (singular) dog (singular)' parses; 'The (singular) dogs (plural)' fails at this rule.",
+    "usedIn": [
+      {
+        "name": "Natural language parsing",
+        "detail": "Used for syntactic analysis where grammatical features like case, number, or agreement must be checked against finite inventories of values",
+        "url": ""
+      },
+      {
+        "name": "The AGFL project",
+        "detail": "Developed and distributed AGFL-based technology under open-source licensing for linguistic applications",
+        "url": ""
+      }
+    ],
+    "intuition": "Think of affixes as grammatical labels that track properties like whether a noun is singular or plural, or whether a verb is past or present. AGFL insists these labels can only come from a predetermined, limited collection—never invented on the fly.",
+    "howItWorks": [
+      "A grammar writer defines rules with affix slots that carry grammatical information",
+      "Each affix is declared to range over a finite set of possible values (the lattice)",
+      "When a rule applies, the affix must unify with one of the allowed values from its finite set",
+      "Because the value sets are finite and fixed, parsing remains decidable and computationally bounded",
+      "The restricted form trades some expressive power for predictability and implementation simplicity"
+    ],
+    "whyItMatters": "The finite lattice restriction makes AGFL grammars implementable without risking unbounded computation, while still capturing important linguistic constraints like agreement and inflection that depend on finite feature inventories.",
+    "misconceptions": [
+      "AGFL can handle any affix grammar by approximation—in fact, the finite restriction is strict and some grammars are inexpressible",
+      "Finite lattice means only two values—lattices can have any finite size, just not infinite ones"
+    ],
+    "sources": [
+      {
+        "title": "Wikipedia: Affix grammar over a finite lattice",
+        "url": "https://en.wikipedia.org/wiki/Affix_grammar_over_a_finite_lattice"
+      }
+    ]
+  },
   "related": [
     "artificial-grammar-learning",
     "categorial-grammar",

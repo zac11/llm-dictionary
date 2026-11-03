@@ -5,7 +5,103 @@
   "type": "concept",
   "definition": "Association rule learning is a rule-based machine learning method for discovering interesting relations between variables in large databases.",
   "details": "It is intended to identify strong rules discovered in databases using some measures of interestingness. In any given transaction with a variety of items, association rules are meant to discover the rules that determine how or why certain items are connected. Based on the concept of strong rules, Rakesh Agrawal, Tomasz Imieliński and Arun Swami introduced association rules for discovering regularities between products in large-scale transaction data recorded by point-of-sale (POS) systems in supermarkets. For example, the rule { o n i o n s , p o t a t o e s } ⇒ { b u r g e r } {\\displaystyle \\{\\mathrm {onions,potatoes} \\}\\Rightarrow \\{\\mathrm {burger} \\}} found in the sales data of a supermarket would indicate that if a customer buys onions and potatoes together, they are likely to also buy hamburger meat. Such information can be used as the basis for decisions about marketing activities such as, e.g., promotional pricing or product placements. In addition to the above example from market basket analysis, association rules are employed today in many application areas including Web usage mining, intrusion detection, continuous production, and bioinformatics. In contrast with sequence mining, association rule learning typically does not consider the order of items either within a transaction or across transactions. The association rule algorithm itself consists of various parameters that can make it difficult for those without some expertise in data mining to execute, with many rules that are arduous to understand.",
-  "story": "Imagine a chef tasting every ingredient before it goes into the pot, deciding what belongs and what would ruin the broth. Better ingredients make a better meal, and the same is true here. Every machine is shaped by what it was shown, so someone has to choose that material with care. It is the raw material; the model is only ever as good as what it was fed. That care with the raw material is Association rule learning.",
+  "explainer": {
+    "lead": "Association rule learning finds patterns such as “people who buy these items often buy that item too” in large collections of records. It turns repeated co-occurrences into rules that can guide decisions, provided the results are interpreted carefully.",
+    "tiers": {
+      "eli5": "Imagine looking through thousands of shopping baskets and noticing that many baskets with onions and potatoes also contain burger meat. Association rule learning does this search automatically and writes down the patterns it finds. It can help a shop decide which products to promote or place together.",
+      "practitioner": "Apply it to transaction-style data, such as supermarket baskets, then generate candidate rules and retain those considered strong by chosen measures of interestingness. Parameter choices can be difficult without data-mining expertise, and the output may contain many rules that are hard to interpret. Review rules before using them for pricing, placement, or other decisions, and remember that item order is normally ignored.",
+      "paperLevel": "An association rule has the form X => Y, where X and Y are items or variables whose co-occurrence is mined from a large database; strong rules are selected using measures of interestingness. Rakesh Agrawal, Tomasz Imieliński and Arun Swami introduced association rules for regularities in supermarket point-of-sale transaction data. The method typically ignores item order within and across transactions, and practical use is limited by parameter complexity and potentially numerous, difficult-to-understand rules."
+    },
+    "example": "In supermarket sales data, the rule {onions, potatoes} => {burger} means that customers who buy onions and potatoes together are likely also to buy hamburger meat. A retailer could use that pattern when considering promotional pricing or product placement.",
+    "usedIn": [
+      {
+        "name": "Supermarket retail",
+        "detail": "Finds product regularities in point-of-sale transactions to inform promotional pricing and product placement.",
+        "url": ""
+      },
+      {
+        "name": "Web usage mining",
+        "detail": "Discovers associations in recorded web-use data.",
+        "url": ""
+      },
+      {
+        "name": "Intrusion detection",
+        "detail": "Uses discovered associations to examine security-related data.",
+        "url": ""
+      },
+      {
+        "name": "Bioinformatics",
+        "detail": "Finds interesting relationships among variables in biological data.",
+        "url": ""
+      }
+    ],
+    "intuition": "If the same combination of things appears together often enough, a rule can summarize that pattern and suggest what else is likely to be present. The method searches large databases for these recurring relationships rather than relying on someone to spot them manually.",
+    "howItWorks": [
+      "Start with a large database of transactions, each containing a set of items.",
+      "Look for combinations of items that recur across transactions.",
+      "Express possible relationships as rules, with one item set implying another.",
+      "Use chosen measures of interestingness to identify strong rules.",
+      "Inspect the resulting rules and use the useful ones to inform decisions."
+    ],
+    "whyItMatters": "It makes repeated relationships in very large transaction records visible and expresses them in a form people can inspect. Those patterns can support practical decisions in retail and are also applied in web usage mining, intrusion detection, continuous production, and bioinformatics.",
+    "misconceptions": [
+      "It is not sequence mining: item order within a transaction and across transactions is typically ignored.",
+      "A rule shows an association, not proof that buying one item causes another purchase.",
+      "A generated rule is not automatically useful; strong-rule selection can still leave many rules that are difficult to understand."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "transactions",
+          "label": "Transaction records",
+          "note": "Sets of items recorded together"
+        },
+        {
+          "id": "combinations",
+          "label": "Recurring combinations",
+          "note": "Item combinations found across records"
+        },
+        {
+          "id": "rules",
+          "label": "Candidate rules",
+          "note": "Relationships written as X => Y"
+        },
+        {
+          "id": "filter",
+          "label": "Interestingness filter",
+          "note": "Selects rules considered strong"
+        },
+        {
+          "id": "output",
+          "label": "Strong rules",
+          "note": "Patterns reviewed for practical use"
+        }
+      ],
+      "edges": [
+        {
+          "from": "transactions",
+          "to": "combinations",
+          "label": "searched for"
+        },
+        {
+          "from": "combinations",
+          "to": "rules",
+          "label": "expressed as"
+        },
+        {
+          "from": "rules",
+          "to": "filter",
+          "label": "evaluated by"
+        },
+        {
+          "from": "filter",
+          "to": "output",
+          "label": "retains"
+        }
+      ],
+      "caption": "Transaction data is searched for recurring item combinations, which become candidate rules and are filtered for interestingness."
+    }
+  },
   "related": [
     "action-model-learning",
     "active-learning-machine-learning",

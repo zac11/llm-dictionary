@@ -5,7 +5,70 @@
   "type": "concept",
   "definition": "Archetypal analysis in statistics is an unsupervised learning method similar to cluster analysis and introduced by Adele Cutler and Leo Breiman in 1994.",
   "details": "Rather than \"typical\" observations (cluster centers), it seeks extremal points in the multidimensional data, the \"archetypes\". The archetypes are convex combinations of observations chosen so that observations can be approximated by convex combinations of the archetypes.",
-  "story": "Picture an engineer at a cluttered workbench, turning a clever idea over in their hands until it finally clicks. At its heart it is a simple notion, once you strip away the fancy name. A small key that opens a much bigger door. It is one of those ideas that feels obvious only after someone shows it to you. That is Archetypal analysis — a small key that opens a big door.",
+  "explainer": {
+    "lead": "Archetypal analysis summarizes a dataset through extreme points rather than average or typical ones. These archetypes can describe both the outer shape of the data and, through mixtures, the observations inside it.",
+    "tiers": {
+      "eli5": "Imagine describing a crowd by picking a few people at its outer edges instead of finding one average person. Everyone else can then be described as a blend of those edge people. Archetypal analysis does something similar with numbers, looking for extreme examples that together explain the whole group.",
+      "practitioner": "Apply it when extreme profiles are more informative than cluster centroids, and represent each observation by nonnegative archetype weights summing to one. The learned archetypes are themselves convex combinations of observations, so they need not be rows of the original dataset. Check the reconstruction error and weight constraints, and remember that the result depends on how observations and features are represented.",
+      "paperLevel": "For observations x_i, archetypal analysis seeks archetypes z_k = sum_i a_ki x_i and reconstructions x_i approximately equal to sum_k b_ik z_k, where a_ki and b_ik are nonnegative and sum to one over i and k, respectively. Thus both archetypes and reconstructed observations are convex combinations, with extremal rather than central representatives. Adele Cutler and Leo Breiman introduced the method in 1994."
+    },
+    "example": "Suppose the archetypes for three two-dimensional observations are (0,0), (10,0), and (0,10). An observation at (2,3) is exactly reconstructed with weights 0.5, 0.2, and 0.3: 0.5(0,0) + 0.2(10,0) + 0.3(0,10) = (2,3). The weights are nonnegative and sum to one.",
+    "intuition": "Cluster analysis asks which typical points best represent groups; archetypal analysis asks which extreme points span the data. Each observation is then explained as a mixture of those extremes.",
+    "howItWorks": [
+      "Start with multidimensional observations.",
+      "Represent candidate archetypes as convex combinations of the observations.",
+      "Represent each observation as a convex combination of the archetypes.",
+      "Choose the archetypes so these combinations approximate the observations well.",
+      "Use the resulting archetypes and mixture weights to summarize the data."
+    ],
+    "whyItMatters": "It provides a summary based on the boundaries of the data while still expressing interior observations as interpretable mixtures. This complements summaries based only on central or typical observations.",
+    "misconceptions": [
+      "Archetypes are not cluster centers: they represent extremes rather than typical observations.",
+      "An archetype need not be an original observation, because it can be a convex combination of several."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "observations",
+          "label": "Original observations",
+          "note": "Multidimensional data points"
+        },
+        {
+          "id": "archetypes",
+          "label": "Archetypes",
+          "note": "Extremal convex combinations"
+        },
+        {
+          "id": "weights",
+          "label": "Mixture weights",
+          "note": "Nonnegative weights summing to one"
+        },
+        {
+          "id": "reconstruction",
+          "label": "Approximate observations",
+          "note": "Mixtures of the archetypes"
+        }
+      ],
+      "edges": [
+        {
+          "from": "observations",
+          "to": "archetypes",
+          "label": "convex combinations"
+        },
+        {
+          "from": "archetypes",
+          "to": "reconstruction",
+          "label": "combine"
+        },
+        {
+          "from": "weights",
+          "to": "reconstruction",
+          "label": "control"
+        }
+      ],
+      "caption": "Archetypes are built from observations, then mixed to approximate those observations."
+    }
+  },
   "related": [
     "affinity-analysis",
     "cluster-analysis",

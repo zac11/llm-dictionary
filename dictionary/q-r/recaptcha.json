@@ -5,7 +5,113 @@
   "type": "concept",
   "definition": "reCAPTCHA Inc.",
   "details": "is a corporation that produces CAPTCHA systems, which help websites distinguish between human users and automated bots. It is owned by Google, its parent company. The original version of reCAPTCHA asked users to decipher hard-to-read text or match images. Version 2 also asked users to decipher text or match images if the analysis of cookies and canvas rendering suggested the page was being downloaded automatically. Since version 3, reCAPTCHA will never interrupt users and is intended to run automatically when users load pages or click buttons. The original iteration of the service was a mass collaboration platform designed for the digitization of books, particularly those that were too illegible to be scanned by computers. The verification prompts utilized pairs of words from scanned pages, with one known word used as a control for verification, and the second used to crowdsource the reading of an uncertain word. reCAPTCHA was originally developed by Luis von Ahn, David Abraham, Manuel Blum, Michael Crawford, Ben Maurer, Colin McMillen, and Edison Tan at Carnegie Mellon University. It was acquired by Google in September 2009. The system helped to digitize the archives of The New Yo",
-  "story": "Think of a lightbulb moment: the idea was always there, but someone had to point a finger at it. Behind the jargon is an idea you could explain to a friend over coffee. At its heart it is a simple notion, once you strip away the fancy name. Once you see it, you cannot unsee it. And that idea, made concrete, is ReCAPTCHA.",
+  "explainer": {
+    "lead": "reCAPTCHA is a Google-owned system that helps websites tell human visitors from automated bots. Some versions ask people to solve a puzzle, while version 3 runs automatically without interrupting them.",
+    "tiers": {
+      "eli5": "Imagine a club doorkeeper who sometimes asks a question to check whether a visitor is a person rather than a machine pretending to be one. reCAPTCHA does this for websites, and newer versions can make the check quietly in the background. Its first version also helped turn scanned book pages into digital text.",
+      "practitioner": "Websites use reCAPTCHA when loading pages or processing button actions to distinguish human use from automation. Version 2 could examine cookies and canvas rendering and then present a text or image challenge, while version 3 is designed to run automatically without user interruption. Integration therefore differs substantially by version, especially in whether visitors may see a challenge.",
+      "paperLevel": "reCAPTCHA can be viewed as D: page-access evidence -> an assessment of human versus automated access. The original system used pairs of scanned words: a known control word verified the response, while answers for the uncertain word crowdsourced book digitization. It was developed at Carnegie Mellon University by Luis von Ahn, David Abraham, Manuel Blum, Michael Crawford, Ben Maurer, Colin McMillen, and Edison Tan, and acquired by Google in September 2009; version 2 could still interrupt users, whereas version 3 was intended not to."
+    },
+    "example": "A visitor opens a website using version 3, and reCAPTCHA runs automatically as the page loads rather than showing an image puzzle. On the original service, a visitor instead saw two scanned words: the known word checked their answer, and their reading of the uncertain word helped digitize a book.",
+    "usedIn": [
+      {
+        "name": "Website bot screening",
+        "detail": "Helps sites distinguish human users from automated bots during page loads and button actions.",
+        "url": ""
+      },
+      {
+        "name": "Book digitization",
+        "detail": "The original service crowdsourced readings of scanned words that computers could not reliably decipher.",
+        "url": ""
+      },
+      {
+        "name": "The New York Times archives",
+        "detail": "The system helped digitize the newspaper's archives.",
+        "url": ""
+      }
+    ],
+    "intuition": "A website can use evidence about a visit—and, in some versions, a short puzzle—to check whether it is dealing with a person. The original design made those puzzles do double duty by also deciphering scanned text.",
+    "howItWorks": [
+      "A visitor loads a page or clicks a button.",
+      "reCAPTCHA assesses whether the activity appears automated.",
+      "Version 2 could inspect cookies and canvas rendering.",
+      "If version 2 suspected automation, it requested text or image solving.",
+      "Version 3 runs automatically without interrupting the visitor."
+    ],
+    "whyItMatters": "It gives websites a way to resist automated access while newer versions avoid visible interruptions. Its original design also turned human verification work into a large-scale book-digitization effort.",
+    "misconceptions": [
+      "It does not always show a puzzle; version 3 is designed not to interrupt users.",
+      "It is not only an image-matching test; earlier versions also used text.",
+      "Its original purpose included digitizing books, not just blocking bots."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "visitor",
+          "label": "Website visitor",
+          "note": "Loads a page or clicks a button."
+        },
+        {
+          "id": "recaptcha",
+          "label": "reCAPTCHA check",
+          "note": "Assesses human versus automated activity."
+        },
+        {
+          "id": "signals",
+          "label": "Version 2 signals",
+          "note": "May include cookies and canvas rendering."
+        },
+        {
+          "id": "challenge",
+          "label": "Text or images",
+          "note": "Shown when version 2 suspects automation."
+        },
+        {
+          "id": "automatic",
+          "label": "Version 3 check",
+          "note": "Runs without interrupting the user."
+        },
+        {
+          "id": "website",
+          "label": "Protected website",
+          "note": "Uses the assessment to distinguish bots from people."
+        }
+      ],
+      "edges": [
+        {
+          "from": "visitor",
+          "to": "recaptcha",
+          "label": "page activity"
+        },
+        {
+          "from": "recaptcha",
+          "to": "signals",
+          "label": "version 2"
+        },
+        {
+          "from": "signals",
+          "to": "challenge",
+          "label": "if suspicious"
+        },
+        {
+          "from": "recaptcha",
+          "to": "automatic",
+          "label": "version 3"
+        },
+        {
+          "from": "challenge",
+          "to": "website",
+          "label": "verification"
+        },
+        {
+          "from": "automatic",
+          "to": "website",
+          "label": "assessment"
+        }
+      ],
+      "caption": "reCAPTCHA checks website activity, with visible challenges possible in version 2 and automatic operation in version 3."
+    }
+  },
   "related": [
     "a-i-insight-forums",
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",

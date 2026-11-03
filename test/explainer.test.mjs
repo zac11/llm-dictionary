@@ -77,6 +77,7 @@ test('normalizeExplainer reads layered tiers, an example and a used-in list', ()
   assert.equal(explainer.example, 'E');
   assert.deepEqual(explainer.usedIn.map((item) => item.name), ['GPT-4', 'BERT']);
   assert.equal(normalizeExplainer({ lead: 'L', intuition: 'I' }, 'concept').tiers, undefined);
+  assert.deepEqual(normalizeExplainer({ lead: 'L', tiers: { eli5: 'E', paperLevel: 'P' } }, 'concept').tiers, { eli5: 'E', paperLevel: 'P' });
 });
 
 test('explainerIssues flags thin explainers, broken diagrams and uncredited images', () => {

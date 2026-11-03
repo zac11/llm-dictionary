@@ -5,7 +5,124 @@
   "type": "concept",
   "definition": "Bitext word alignment or simply word alignment is the natural language processing task of identifying translation relationships among the words (or more rarely multiword units) in a bitext, resulting in a bipartite graph between the two sides of the bitext, with an arc between two words if and only if they are translations of one another.",
   "details": "Word alignment is typically done after sentence alignment has already identified pairs of sentences that are translations of one another. Bitext word alignment is an important supporting task for most methods of statistical machine translation. The parameters of statistical machine translation models are typically estimated by observing word-aligned bitexts, and conversely automatic word alignment is typically done by choosing that alignment which best fits a statistical machine translation model. Circular application of these two ideas results in an instance of the expectation-maximization algorithm. This approach to training is an instance of unsupervised learning, in that the system is not given examples of the kind of output desired, but is trying to find values for the unobserved model and alignments which best explain the observed bitext. Recent work has begun to explore supervised methods which rely on presenting the system with a (usually small) number of manually aligned sentences. In addition to the benefit of the additional information provided by supervision, these models are typically also able to more easily take advantage of combining many features of the data, such ",
-  "story": "Picture guardrails on a mountain road — not there to slow you down on the straightaways, but to keep you from flying off the cliff. It is the habit of asking, before every launch, what could go wrong — and then doing something about it. Think of it as the quiet rule that a tool should be useful without being dangerous. It is the difference between “it works” and “it is safe to put in front of people.” That deliberate caution is Bitext word alignment.",
+  "explainer": {
+    "lead": "Bitext word alignment finds which words in two translated sentences correspond to each other. It turns a pair of sentences into a set of word-to-word links, providing a foundation for training statistical machine translation systems and for several other cross-lingual tasks.",
+    "tiers": {
+      "eli5": "Imagine two sentences that say the same thing in different languages, and you draw a line between words that match. Sometimes the words appear in different orders, so the lines can cross. A computer can learn from lots of these matched sentences to make better translations.",
+      "practitioner": "Run word alignment after sentence alignment, then use the aligned bitext to estimate statistical translation-model parameters or to support tasks such as lexicon induction. Common tools include GIZA++ and the Berkeley Word Aligner; Nile supports supervised alignment with syntactic information, while pialign aligns words and phrases. Traditional unsupervised training uses EM with alignments as latent variables, but generative models can be difficult to extend with context, syntax, part-of-speech, or lexicon features; supervised methods need manually aligned sentences.",
+      "paperLevel": "For source and target sentences, an alignment is a bipartite graph A whose arcs (i,j) connect source position i to target position j exactly when those units are translations. In the standard unsupervised setting, both model parameters and alignments are unobserved, and EM alternates between computing translation probabilities within sentences and accumulating them into global probabilities, as in the IBM models. Traditional generative models make features such as syntax and context difficult to integrate, whereas supervised approaches use usually small sets of manually aligned sentences."
+    },
+    "example": "For “the black cat” and French “le chat noir”, the alignment links “the” to “le”, “black” to “noir”, and “cat” to “chat”; the crossing pattern reflects the different word order.",
+    "usedIn": [
+      {
+        "name": "Statistical machine translation",
+        "detail": "Word-aligned bitexts provide observations for estimating translation-model parameters.",
+        "url": ""
+      },
+      {
+        "name": "Translation lexicon induction",
+        "detail": "Recurring word correspondences help derive translation dictionaries from parallel text.",
+        "url": ""
+      },
+      {
+        "name": "Word sense discovery and disambiguation",
+        "detail": "Cross-language correspondences provide evidence about a word's meaning.",
+        "url": ""
+      },
+      {
+        "name": "Cross-lingual linguistic annotation",
+        "detail": "Alignments support projecting linguistic information from one language to another.",
+        "url": ""
+      }
+    ],
+    "intuition": "A translated sentence pair contains many small correspondences, not just one sentence-level match. Word alignment makes those correspondences explicit as links between the two sides, even when word order differs.",
+    "howItWorks": [
+      "Start with sentence pairs already identified as translations.",
+      "Represent source and target words as the two sides of a bipartite graph.",
+      "Score possible links using a statistical translation and alignment model.",
+      "Choose the alignment that best fits the model and observed bitext.",
+      "Update model parameters from the alignments and repeat, yielding EM training."
+    ],
+    "whyItMatters": "Word alignment supplies the fine-grained evidence needed to estimate many statistical machine translation models. It also enables translation lexicon induction, word-sense tasks, and cross-lingual projection of linguistic information.",
+    "misconceptions": [
+      "It is not sentence alignment: sentence alignment comes first and supplies translated sentence pairs.",
+      "Links need not preserve word order or form a simple one-to-one sequence.",
+      "Unsupervised alignment is not given manually aligned examples; it infers both alignments and model parameters."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "bitext",
+          "label": "Aligned sentence pairs",
+          "note": "Sentence alignment has already matched translations."
+        },
+        {
+          "id": "model",
+          "label": "Alignment model",
+          "note": "Scores possible translation relationships."
+        },
+        {
+          "id": "links",
+          "label": "Word alignment",
+          "note": "A bipartite graph of corresponding words."
+        },
+        {
+          "id": "aligned",
+          "label": "Aligned bitext",
+          "note": "Parallel sentences with word-level links."
+        },
+        {
+          "id": "parameters",
+          "label": "Parameter estimation",
+          "note": "Accumulates translation probabilities from observations."
+        }
+      ],
+      "edges": [
+        {
+          "from": "bitext",
+          "to": "model",
+          "label": "observed text"
+        },
+        {
+          "from": "model",
+          "to": "links",
+          "label": "best fit"
+        },
+        {
+          "from": "links",
+          "to": "aligned",
+          "label": "adds arcs"
+        },
+        {
+          "from": "aligned",
+          "to": "parameters",
+          "label": "training evidence"
+        },
+        {
+          "from": "parameters",
+          "to": "model",
+          "label": "EM update"
+        }
+      ],
+      "caption": "Unsupervised word alignment alternates between choosing alignments and updating the translation model."
+    },
+    "image": {
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7a/Word_alignment.svg/960px-Word_alignment.svg.png",
+      "alt": "Bitext word alignment — Identifying translation relationships among the words in a bitext",
+      "width": 640,
+      "height": 246,
+      "credit": "Redienss",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Word_alignment.svg"
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Bitext word alignment",
+        "url": "https://en.wikipedia.org/wiki/Bitext_word_alignment"
+      }
+    ]
+  },
   "related": [
     "alignment",
     "ibm-alignment-models",

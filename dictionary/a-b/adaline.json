@@ -2,10 +2,147 @@
   "term": "ADALINE",
   "letter": "A",
   "category": "Artificial neural networks",
-  "type": "concept",
+  "type": "architecture",
   "definition": "ADALINE (Adaptive Linear Neuron or later Adaptive Linear Element) is an early single-layer artificial neural network and the name of the physical device that implemented it.",
   "details": "It was developed by professor Bernard Widrow and his doctoral student Marcian Hoff at Stanford University in 1960. It is based on the perceptron and consists of weights, a bias, and a summation function. The weights and biases were implemented by rheostats (as seen in the \"knobby ADALINE\"), and later, memistors. It found extensive use in adaptive signal processing, especially of adaptive noise filtering. The difference between Adaline and the standard (Rosenblatt) perceptron is in how they learn. Adaline unit weights are adjusted to match a teacher signal, before applying the Heaviside function (see figure), but the standard perceptron unit weights are adjusted to match the correct output, after applying the Heaviside function. A multilayer network of ADALINE units is known as a MADALINE.",
-  "story": "Imagine a factory floor where each workstation can glance at every other workstation before doing its part. It is the blueprint that makes everything else possible. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. Structure decides what the model can even express — the blueprint before the bricks. And that shape of the machine — ADALINE — is what makes everything else possible.",
+  "explainer": {
+    "lead": "ADALINE is one of the first learning machines ever built — a physical device with adjustable knobs that could teach itself to filter noise from telephone signals. It introduced a learning rule that is still at the heart of how modern neural networks learn from error.",
+    "tiers": {
+      "eli5": "Imagine you are trying to hear a friend in a crowded, noisy cafeteria. ADALINE is like a smart volume knob that learns which sounds to turn down and which to turn up, so your friend's voice comes through clearly. It does this by comparing what it hears to what it should hear, then slowly adjusting its knobs until it gets better and better.",
+      "practitioner": "ADALINE implements linear regression via the LMS (least mean squares) update rule, making it useful for adaptive filtering in signal processing where statistics change over time. It is limited to linearly separable problems since it uses no hidden layer or nonlinearity in the learning phase. Modern implementations appear in adaptive echo cancellation, noise reduction, and equalization, though typically superseded by more complex architectures.",
+      "paperLevel": "ADALINE computes o = Σₙ xₙwₙ + b and learns via the LMS rule w ← w + η(y - o)x, which performs stochastic gradient descent on the squared error E = (y - o)². Originating with Widrow and Hoff (1960) at Stanford, it predates backpropagation and was originally built with memistors as adjustable weights. The multilayer extension MADALINE could not train hidden layers effectively until Widrow encountered backpropagation in 1985."
+    },
+    "usedIn": [
+      {
+        "name": "Adaptive noise filtering",
+        "detail": "Originally developed for telephone line echo cancellation and noise reduction in communication systems",
+        "url": ""
+      },
+      {
+        "name": "MADALINE systems",
+        "detail": "Used for inverted pendulum balancing, weather forecasting, and speech recognition in the 1960s",
+        "url": ""
+      },
+      {
+        "name": "Signal processing hardware",
+        "detail": "The largest built machine had 1000 memistor-implemented weights in 1963",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Input nodes: receive the feature vector x",
+        "detail": ""
+      },
+      {
+        "name": "Weight vector w: adjustable parameters, originally physical rheostats or memistors",
+        "detail": ""
+      },
+      {
+        "name": "Summation unit: computes the linear combination Σ xₙwₙ + b",
+        "detail": ""
+      },
+      {
+        "name": "Bias term b: absorbed as w₀ with x₀ = 1",
+        "detail": ""
+      },
+      {
+        "name": "LMS learning rule: updates weights to minimize squared error",
+        "detail": ""
+      }
+    ],
+    "flow": [
+      "Inputs are multiplied by weights and summed with bias",
+      "The raw linear output o is compared to target y",
+      "Weight update w ← w + η(y - o)x is applied",
+      "For prediction, the Heaviside step function may be applied after learning"
+    ],
+    "origin": "Developed by Bernard Widrow and Marcian Hoff at Stanford University in 1960",
+    "whyItMatters": "ADALINE introduced the LMS algorithm, a foundational gradient descent method that directly influenced modern stochastic gradient descent and remains central to adaptive signal processing. It demonstrated that physical machines could learn continuously from data.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "inputs",
+          "label": "Input features",
+          "note": "Vector x = (x₁, ..., xₙ)"
+        },
+        {
+          "id": "weights",
+          "label": "Weights",
+          "note": "Adjustable w, originally rheostats/memistors"
+        },
+        {
+          "id": "sum",
+          "label": "Summation",
+          "note": "Computes Σ xₙwₙ + b"
+        },
+        {
+          "id": "output",
+          "label": "Linear output",
+          "note": "Raw value o before threshold"
+        },
+        {
+          "id": "compare",
+          "label": "Compare to target",
+          "note": "Error = y - o"
+        },
+        {
+          "id": "update",
+          "label": "LMS update",
+          "note": "w ← w + η(y - o)x"
+        }
+      ],
+      "edges": [
+        {
+          "from": "inputs",
+          "to": "sum",
+          "label": "multiplied by"
+        },
+        {
+          "from": "weights",
+          "to": "sum",
+          "label": "scaled by"
+        },
+        {
+          "from": "sum",
+          "to": "output",
+          "label": "produces"
+        },
+        {
+          "from": "output",
+          "to": "compare",
+          "label": "compared with"
+        },
+        {
+          "from": "compare",
+          "to": "update",
+          "label": "drives"
+        },
+        {
+          "from": "update",
+          "to": "weights",
+          "label": "adjusts"
+        }
+      ],
+      "caption": "ADALINE's learning loop: inputs are weighted and summed, the error against a teacher signal drives weight updates via the LMS rule."
+    },
+    "image": {
+      "src": "https://upload.wikimedia.org/wikipedia/commons/b/be/Adaline_flow_chart.gif",
+      "alt": "ADALINE — Early single-layer artificial neural network",
+      "width": 640,
+      "height": 985,
+      "credit": "Paskari ( talk ) ( Uploads )",
+      "license": "Public domain",
+      "licenseUrl": "",
+      "page": "https://commons.wikimedia.org/wiki/File:Adaline_flow_chart.gif"
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: ADALINE",
+        "url": "https://en.wikipedia.org/wiki/ADALINE"
+      }
+    ]
+  },
   "related": [
     "ablation-artificial-intelligence",
     "adaptive-neuro-fuzzy-inference-system",

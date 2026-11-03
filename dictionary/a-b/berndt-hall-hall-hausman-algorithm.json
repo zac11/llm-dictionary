@@ -5,7 +5,118 @@
   "type": "algorithm",
   "definition": "The Berndt–Hall–Hall–Hausman (BHHH) algorithm is a numerical optimization algorithm similar to the Newton–Raphson algorithm, but it replaces the observed negative Hessian matrix with the outer product of the gradient.",
   "details": "This approximation is based on the information matrix equality and therefore only valid while maximizing a likelihood function. The BHHH algorithm is named after the four originators: Ernst R. Berndt, Bronwyn Hall, Robert Hall, and Jerry Hausman.",
-  "story": "Think of a hiker descending a foggy hill in the dark, taking small steps and feeling for the steepest way down. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. It is the same loop you use to learn anything: try, miss, correct, try again. Skill, for a model, is just error pushed down until it is small enough to ignore. That steady, miss-by-miss improvement is Berndt–Hall–Hall–Hausman algorithm.",
+  "explainer": {
+    "lead": "The Berndt–Hall–Hall–Hausman (BHHH) algorithm finds parameter values that maximize a likelihood function. It offers a Newton–Raphson-style update without calculating second derivatives, using the gradient’s outer product instead. It is named after Ernst R. Berndt, Bronwyn Hall, Robert Hall, and Jerry Hausman.",
+    "tiers": {
+      "eli5": "Imagine adjusting a recipe until it gives the best possible score. BHHH looks at which changes improve the score and uses that information to choose the next adjustment, without measuring exactly how the score curves. Its shortcut is designed specifically for likelihood scores, not for just any scoring problem.",
+      "practitioner": "Start with parameter estimates, evaluate the log-likelihood gradients, form their outer products, and solve for a Newton-like update before iterating. Solving the linear system directly avoids explicitly inverting the approximating matrix. Check convergence and guard against a singular or poorly conditioned outer-product matrix; the Hessian replacement is justified only for likelihood maximization.",
+      "paperLevel": "For ℓ(θ) = sum_i ℓ_i(θ), let s_i(θ) = ∇ℓ_i(θ), g(θ) = sum_i s_i(θ), and G(θ) = sum_i s_i(θ)s_i(θ)^T. The update is θ_(k+1) = θ_k + G(θ_k)^(-1)g(θ_k), replacing the observed negative Hessian with the gradient outer product. The approximation relies on the information matrix equality and is therefore restricted to likelihood maximization; G may also be singular or poorly conditioned."
+    },
+    "example": "For one observation from a normal distribution with mean θ, known variance 1, and observed value 0, the log-likelihood is ℓ(θ) = -θ²/2 up to a constant. At θ = 2, the gradient is -2 and its scalar outer product is 4, so the BHHH update is 2 + 4^(-1)(-2) = 1.5. Repeating the update moves the estimate toward the maximizing value θ = 0.",
+    "usedIn": [
+      {
+        "name": "Statistical estimation",
+        "detail": "Estimating model parameters by maximizing a likelihood function.",
+        "url": ""
+      },
+      {
+        "name": "Econometric modeling",
+        "detail": "Numerically fitting likelihood-based models when second derivatives are undesirable to compute.",
+        "url": ""
+      }
+    ],
+    "goal": "Iteratively find parameter values that maximize a likelihood function while avoiding direct calculation of its Hessian matrix.",
+    "inputs": [
+      "A likelihood function to maximize",
+      "A way to evaluate its gradient",
+      "Initial parameter values",
+      "A stopping rule"
+    ],
+    "outputs": [
+      "Updated parameter estimates",
+      "Final estimates at convergence"
+    ],
+    "steps": [
+      "Evaluate the likelihood gradient at the current parameters.",
+      "Form the gradient outer product to approximate the negative Hessian.",
+      "Solve the resulting linear system for an update direction.",
+      "Add the update to the current parameters.",
+      "Repeat until the stopping rule is met."
+    ],
+    "tradeoffs": [
+      "Avoids computing second derivatives",
+      "Uses a Newton–Raphson-style update",
+      "Valid only for likelihood maximization",
+      "Outer-product matrix may be singular"
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "start",
+          "label": "Initial parameters",
+          "note": "Choose starting estimates."
+        },
+        {
+          "id": "gradient",
+          "label": "Evaluate gradients",
+          "note": "Differentiate the log-likelihood."
+        },
+        {
+          "id": "matrix",
+          "label": "Build outer product",
+          "note": "Approximate the negative Hessian."
+        },
+        {
+          "id": "update",
+          "label": "Solve update",
+          "note": "Compute the parameter change."
+        },
+        {
+          "id": "check",
+          "label": "Check convergence",
+          "note": "Stop or evaluate again."
+        },
+        {
+          "id": "result",
+          "label": "Final estimates",
+          "note": "Return the fitted parameters."
+        }
+      ],
+      "edges": [
+        {
+          "from": "start",
+          "to": "gradient",
+          "label": "parameters"
+        },
+        {
+          "from": "gradient",
+          "to": "matrix",
+          "label": "gradients"
+        },
+        {
+          "from": "matrix",
+          "to": "update",
+          "label": "approximation"
+        },
+        {
+          "from": "update",
+          "to": "check",
+          "label": "new estimates"
+        },
+        {
+          "from": "check",
+          "to": "gradient",
+          "label": "repeat"
+        },
+        {
+          "from": "check",
+          "to": "result",
+          "label": "converged"
+        }
+      ],
+      "caption": "BHHH repeatedly replaces the observed negative Hessian with a gradient outer product to update likelihood-maximizing parameters."
+    }
+  },
   "related": [
     "actor-critic-algorithm",
     "algorithm-imed",

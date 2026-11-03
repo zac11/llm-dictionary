@@ -5,7 +5,108 @@
   "type": "concept",
   "definition": "A regularization technique that randomly disables a fraction of neurons during training to prevent overfitting.",
   "details": "By forcing the network to not rely on any single neuron, dropout encourages redundancy and more robust feature representations, improving generalization to unseen data.",
-  "story": "Imagine teaching a friend to shoot a basketball. They miss, and you walk them backwards through the shot — elbow, wrist, release — to find what needs fixing. It is the same loop you use to learn anything: try, miss, correct, try again. Underneath all the magic is a patient process of small improvements. It is learning from every miss instead of repeating the same mistake. That steady, miss-by-miss improvement is Dropout.",
+  "explainer": {
+    "lead": "Dropout is a simple but powerful trick that makes neural networks less likely to memorize their training data. It works by randomly turning off pieces of the network during practice, forcing it to learn more flexible, reliable patterns.",
+    "tiers": {
+      "eli5": "Imagine you're practicing for a trivia team, but each round a few teammates are randomly told to sit out. You can't rely on any one person knowing all the answers, so everyone has to learn a bit of everything. Dropout does the same thing for a neural network's neurons — it randomly mutes some during training so the whole team gets stronger.",
+      "practitioner": "Dropout is applied during training by zeroing out neurons with a fixed probability, typically 0.2–0.5, using a Bernoulli mask. At test time, all neurons are active but their outputs are scaled by the keep probability (or equivalently, weights are scaled at training time in inverted dropout). Common pitfalls: applying dropout at inference, using too high a rate in small networks, or combining it with batch normalization without care, as the two can interact poorly.",
+      "paperLevel": "Dropout is a regularization method where, during each training iteration, each unit in a layer is retained with probability p (the 'keep probability') and otherwise set to zero. The output y of a layer with dropout is y = m * f(x), where m ~ Bernoulli(p) elementwise and f is the activation function. At test time, the expected output is approximated by using the full network with weights scaled by p (or by scaling during training in the 'inverted' variant)."
+    },
+    "example": "A fully-connected layer with 100 neurons uses dropout with p=0.5. In one training batch, neurons 3, 7, 12, and 89 (among 50 total) are randomly zeroed out; the surviving 50 have their outputs doubled. The network must classify an image correctly using only this random subset. Over thousands of batches, every neuron learns to contribute usefully in diverse combinations.",
+    "usedIn": [
+      {
+        "name": "Convolutional neural networks for image classification",
+        "detail": "Applied after fully-connected layers to reduce overfitting on datasets like ImageNet",
+        "url": ""
+      },
+      {
+        "name": "Large language model pre-training",
+        "detail": "Used in transformer architectures to stabilize training on massive text corpora",
+        "url": ""
+      },
+      {
+        "name": "Medical imaging models",
+        "detail": "Helps generalize when training data is limited relative to model capacity",
+        "url": ""
+      }
+    ],
+    "intuition": "A network that can solve a problem even when half its neurons are missing has learned robust, distributed representations rather than fragile shortcuts.",
+    "howItWorks": [
+      "During each forward pass of training, randomly select a fraction of neurons to deactivate",
+      "Set those neurons' outputs to zero and skip their backward pass for this iteration",
+      "Scale the remaining active neurons' outputs to maintain expected magnitude",
+      "At test time, use all neurons with appropriately scaled weights (or scale during training)",
+      "Repeat this random sampling every batch, creating an ensemble of thinned sub-networks"
+    ],
+    "whyItMatters": "Dropout dramatically reduces overfitting without requiring changes to the loss function or heavy computation, and it approximates training an exponential ensemble of smaller networks at no extra cost.",
+    "misconceptions": [
+      "Dropout should be used during inference — it should not; use all neurons with scaling",
+      "Higher dropout rates always help — rates near 1.0 can prevent learning entirely",
+      "Dropout and batch normalization always work well together — they can conflict because dropout shifts variance differently at train and test time"
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input batch",
+          "note": "Training data entering the layer"
+        },
+        {
+          "id": "full-layer",
+          "label": "Full layer",
+          "note": "All 100 neurons available"
+        },
+        {
+          "id": "mask",
+          "label": "Random mask",
+          "note": "Bernoulli(p) decides which neurons survive"
+        },
+        {
+          "id": "thinned",
+          "label": "Thinned layer",
+          "note": "Only active neurons pass signals"
+        },
+        {
+          "id": "scale",
+          "label": "Scale outputs",
+          "note": "Survivors multiplied by 1/p"
+        },
+        {
+          "id": "output",
+          "label": "Output",
+          "note": "Result passed to next layer"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "full-layer",
+          "label": "flows to"
+        },
+        {
+          "from": "full-layer",
+          "to": "mask",
+          "label": "sampled by"
+        },
+        {
+          "from": "mask",
+          "to": "thinned",
+          "label": "produces"
+        },
+        {
+          "from": "thinned",
+          "to": "scale",
+          "label": "adjusted"
+        },
+        {
+          "from": "scale",
+          "to": "output",
+          "label": "yields"
+        }
+      ],
+      "caption": "During training, a random mask thins the layer and surviving outputs are scaled before passing onward."
+    }
+  },
   "related": [
     "dropout-neural-networks"
   ],

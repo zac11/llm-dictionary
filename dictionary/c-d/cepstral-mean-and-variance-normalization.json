@@ -5,7 +5,97 @@
   "type": "concept",
   "definition": "Cepstral mean and variance normalization (CMVN) is a computationally efficient normalization technique for robust speech recognition.",
   "details": "The performance of CMVN is known to degrade for short utterances. This is due to insufficient data for parameter estimation and loss of discriminable information as all utterances are forced to have zero mean and unit variance. CMVN minimizes distortion by noise contamination for robust feature extraction by linearly transforming the cepstral coefficients to have the same segmental statistics. Cepstral Normalization has been effective in the CMU Sphinx for maintaining a high level of recognition accuracy over a wide variety of acoustical environments.",
-  "story": "Picture a translator at the United Nations, listening to one language and whispering the meaning into another in real time. It figures out meaning by noticing which words like to travel together. It does not memorize a rulebook; it absorbs a library. Meaning lives in company — a word is known by the words it keeps. And that is Cepstral mean and variance normalization — teaching a machine to read between the lines.",
+  "explainer": {
+    "lead": "Cepstral mean and variance normalization (CMVN) makes speech features less sensitive to changes in the acoustic environment by giving each segment the same basic statistics. It is a computationally cheap way to improve recognition robustness, although very short utterances can provide too little data for reliable normalization.",
+    "tiers": {
+      "eli5": "CMVN is like adjusting measurements from different recordings so they are all centered at the same level and spread out by the same amount. This helps a speech recognizer pay attention to the words rather than changes caused by noise or the room. If a recording is very short, the adjustment can be unreliable and may remove useful differences.",
+      "practitioner": "Compute the mean and variance of the cepstral coefficients over an utterance or segment, then subtract the mean and divide by the standard deviation before recognition. CMVN is computationally efficient and has helped CMU Sphinx maintain recognition accuracy across varied acoustic environments. Expect degraded performance on short utterances: parameter estimates have little data, and forcing zero mean and unit variance can discard discriminative information.",
+      "paperLevel": "For cepstral coefficient x_t at time t, CMVN computes the segment mean mu and standard deviation sigma, then outputs x_hat_t = (x_t - mu) / sigma, giving the normalized segment zero mean and unit variance. This linear transformation reduces noise-related feature distortion by matching segmental statistics. Its known limits on short utterances are insufficient data for parameter estimation and loss of discriminable information."
+    },
+    "example": "Suppose one cepstral coefficient takes the values [2, 4, 6] across three frames. Their mean is 4 and their population standard deviation is about 1.63, so CMVN produces approximately [-1.22, 0, 1.22], which has zero mean and unit variance.",
+    "usedIn": [
+      {
+        "name": "CMU Sphinx",
+        "detail": "Cepstral normalization has helped maintain high recognition accuracy across a wide variety of acoustic environments.",
+        "url": ""
+      },
+      {
+        "name": "Robust speech recognition",
+        "detail": "Used as an efficient feature-normalization step to reduce distortion caused by noise contamination.",
+        "url": ""
+      }
+    ],
+    "intuition": "Noise and changes in the acoustic environment can shift and rescale the cepstral features seen by a recognizer. CMVN removes each segment’s feature mean and standardizes its spread, so different segments are presented on a common statistical scale.",
+    "howItWorks": [
+      "Extract cepstral coefficients from the speech signal.",
+      "Collect those coefficients over an utterance or segment.",
+      "Estimate the segment’s mean and variance.",
+      "Subtract the mean and divide by the standard deviation.",
+      "Pass the normalized features, with zero mean and unit variance, to the recognizer."
+    ],
+    "whyItMatters": "CMVN offers a low-cost way to make feature extraction more robust to noise contamination and varying acoustic conditions. Its effectiveness in CMU Sphinx shows its practical value, while its short-utterance failure mode makes utterance length an important consideration.",
+    "misconceptions": [
+      "CMVN does not directly clean the audio waveform; it linearly transforms cepstral features.",
+      "Forcing every utterance to zero mean and unit variance is not always beneficial, especially for short utterances where useful discriminative information may be lost."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "speech",
+          "label": "Input speech",
+          "note": "Speech affected by its acoustic environment"
+        },
+        {
+          "id": "cepstra",
+          "label": "Cepstral coefficients",
+          "note": "Features extracted from the speech"
+        },
+        {
+          "id": "stats",
+          "label": "Segment statistics",
+          "note": "Mean and variance estimated from the segment"
+        },
+        {
+          "id": "normalize",
+          "label": "Normalize features",
+          "note": "Subtract the mean and divide by the standard deviation"
+        },
+        {
+          "id": "recognizer",
+          "label": "Speech recognizer",
+          "note": "Receives zero-mean, unit-variance features"
+        }
+      ],
+      "edges": [
+        {
+          "from": "speech",
+          "to": "cepstra",
+          "label": "extract"
+        },
+        {
+          "from": "cepstra",
+          "to": "stats",
+          "label": "estimate"
+        },
+        {
+          "from": "cepstra",
+          "to": "normalize",
+          "label": "features"
+        },
+        {
+          "from": "stats",
+          "to": "normalize",
+          "label": "parameters"
+        },
+        {
+          "from": "normalize",
+          "to": "recognizer",
+          "label": "normalized"
+        }
+      ],
+      "caption": "CMVN estimates statistics from a segment of cepstral features and uses them to standardize those features before recognition."
+    }
+  },
   "related": [
     "apptek",
     "callminer",

@@ -2,10 +2,122 @@
   "term": "Bi-Encoder",
   "letter": "B",
   "category": "Architecture",
-  "type": "concept",
+  "type": "architecture",
   "definition": "A model architecture that encodes two inputs (such as a query and a document) independently into separate embeddings, which can then be compared efficiently.",
   "details": "Bi-encoders enable fast large-scale retrieval because document embeddings can be precomputed and indexed, unlike cross-encoders which require joint processing of each pair at query time.",
-  "story": "Imagine a factory floor where each workstation can glance at every other workstation before doing its part. It is the blueprint that makes everything else possible. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. Structure decides what the model can even express — the blueprint before the bricks. And that shape of the machine — Bi-Encoder — is what makes everything else possible.",
+  "explainer": {
+    "lead": "A bi-encoder gives a query and each document their own embeddings, then compares those embeddings to find relevant matches. Because document embeddings can be prepared and indexed in advance, searching a large collection does not require processing every query-document pair together.",
+    "tiers": {
+      "eli5": "Imagine making a short summary card for every book before anyone asks a question. When a question arrives, you make one card for it and compare that card with the prepared book cards. This is much quicker than reading the question together with every book each time.",
+      "practitioner": "Use a bi-encoder in a large-scale retrieval pipeline by precomputing and indexing document embeddings, then encoding each incoming query and comparing its embedding with the index. Avoid jointly encoding the query with every document at search time, since that removes the main efficiency benefit.",
+      "paperLevel": "For query q and document d, compute e_q = f(q) and e_d = g(d) independently, then score the pair with s(q, d) = sim(e_q, e_d). The document embeddings g(d) can be precomputed and indexed. Since encoding is independent, the architecture does not jointly process each query-document pair as a cross-encoder does."
+    },
+    "example": "For the query “how do I reset my password?”, a document titled “Resetting your account password” is encoded and indexed before the query arrives. At search time, only the query needs a new embedding, which is then compared with the prepared document embeddings for retrieval.",
+    "usedIn": [
+      {
+        "name": "Large-scale document retrieval",
+        "detail": "Precomputed document embeddings allow queries to be compared against an indexed collection efficiently.",
+        "url": ""
+      },
+      {
+        "name": "Query-document search",
+        "detail": "Queries and documents are encoded separately so their embeddings can be compared at query time.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Query input: the search request to encode.",
+        "detail": ""
+      },
+      {
+        "name": "Document input: text that can be encoded in advance.",
+        "detail": ""
+      },
+      {
+        "name": "Input encoders: produce separate query and document embeddings.",
+        "detail": ""
+      },
+      {
+        "name": "Document index: stores precomputed document embeddings.",
+        "detail": ""
+      },
+      {
+        "name": "Embedding comparison: compares the query embedding with indexed documents.",
+        "detail": ""
+      }
+    ],
+    "flow": [
+      "Encode each document independently.",
+      "Precompute and index the document embeddings.",
+      "Encode the incoming query independently.",
+      "Compare the query embedding with indexed document embeddings.",
+      "Use the comparisons for retrieval."
+    ],
+    "whyItMatters": "Precomputation moves most document-processing work out of query time, making retrieval over large collections faster. This contrasts with a cross-encoder, which must jointly process each query-document pair when the query is made.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "documents",
+          "label": "Documents",
+          "note": "Available before query time"
+        },
+        {
+          "id": "doc-encoder",
+          "label": "Document encoder",
+          "note": "Encodes documents independently"
+        },
+        {
+          "id": "index",
+          "label": "Embedding index",
+          "note": "Stores precomputed document embeddings"
+        },
+        {
+          "id": "query",
+          "label": "Query",
+          "note": "Arrives at search time"
+        },
+        {
+          "id": "query-encoder",
+          "label": "Query encoder",
+          "note": "Produces a separate query embedding"
+        },
+        {
+          "id": "compare",
+          "label": "Compare embeddings",
+          "note": "Matches the query against indexed documents"
+        }
+      ],
+      "edges": [
+        {
+          "from": "documents",
+          "to": "doc-encoder",
+          "label": ""
+        },
+        {
+          "from": "doc-encoder",
+          "to": "index",
+          "label": "precompute"
+        },
+        {
+          "from": "query",
+          "to": "query-encoder",
+          "label": ""
+        },
+        {
+          "from": "query-encoder",
+          "to": "compare",
+          "label": "query embedding"
+        },
+        {
+          "from": "index",
+          "to": "compare",
+          "label": "document embeddings"
+        }
+      ],
+      "caption": "Documents are encoded and indexed in advance, while the query is encoded separately and compared with the stored embeddings."
+    }
+  },
   "related": [
     "bert",
     "cross-encoder",

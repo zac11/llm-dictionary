@@ -5,7 +5,83 @@
   "type": "concept",
   "definition": "In machine learning, automatic basis function construction, also known as basis discovery, is a technique that finds a set of general-purpose (task-independent) basis functions to simplify complex data (state space) into a smaller, manageable form (lower-dimensional embedding) while accurately capturing the value function.",
   "details": "Unlike methods relying on expert-designed functions, this approach works without prior knowledge of the specific problem area (domain), making it effective in situations where creating tailored basis functions is challenging or impractical.",
-  "story": "Think of a hiker descending a foggy hill in the dark, taking small steps and feeling for the steepest way down. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. It is the same loop you use to learn anything: try, miss, correct, try again. Skill, for a model, is just error pushed down until it is small enough to ignore. That steady, miss-by-miss improvement is Automatic basis function construction.",
+  "explainer": {
+    "lead": "Automatic basis function construction is a way to learn a compact set of features for representing complex states. It aims to make value-function approximation manageable without requiring someone to hand-design features for the particular problem.",
+    "tiers": {
+      "eli5": "Imagine describing every place in a huge maze by writing down lots of tiny details. This approach learns a shorter set of useful descriptions on its own, so the maze becomes easier to work with while keeping the information needed to judge how good each place is.",
+      "practitioner": "Use it when approximating a value function over a large state space and hand-crafted basis functions are difficult or impractical to design. The goal is a lower-dimensional embedding that still represents the value function accurately, rather than simply making the state vector smaller.",
+      "paperLevel": "Given a state space S, basis discovery seeks task-independent basis functions whose span provides a lower-dimensional representation of states while accurately capturing the value function. Its distinguishing requirement is construction without domain-specific prior knowledge; reducing dimension alone is insufficient if value information is lost."
+    },
+    "example": "For a maze whose states contain many detailed measurements, basis discovery might learn a small set of features that represents each location with only a few numbers. A value-function approximator can then work with that compact description instead of the full measurements, provided the learned basis preserves the value information.",
+    "usedIn": [
+      {
+        "name": "Reinforcement learning",
+        "detail": "Represents complex states with learned basis functions for value-function approximation.",
+        "url": ""
+      },
+      {
+        "name": "High-dimensional state representation",
+        "detail": "Produces a lower-dimensional embedding that is easier to manage than the original state space.",
+        "url": ""
+      }
+    ],
+    "intuition": "A small, well-chosen set of building blocks can describe a complicated state more compactly than the raw representation. Basis discovery learns those building blocks itself, aiming for general-purpose features that preserve what matters for the value function.",
+    "howItWorks": [
+      "Start with states from a complex or high-dimensional state space.",
+      "Construct candidate basis functions without relying on expert-designed, domain-specific features.",
+      "Select a general-purpose set of basis functions for representing states.",
+      "Express each state in a lower-dimensional embedding.",
+      "Check that the compact representation still accurately captures the value function."
+    ],
+    "whyItMatters": "It removes much of the burden of designing basis functions by hand, which can be difficult when the problem domain is poorly understood or the state space is complex. A good learned basis makes value-function approximation more manageable without sacrificing the information the approximation needs.",
+    "misconceptions": [
+      "It is not just any dimensionality-reduction method: the representation must also capture the value function accurately.",
+      "Task-independent does not mean value information can be ignored; the basis is general-purpose but still supports value-function approximation.",
+      "It does not depend on experts supplying tailored features for the specific domain."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "states",
+          "label": "Complex states",
+          "note": "Original high-dimensional state space"
+        },
+        {
+          "id": "discovery",
+          "label": "Basis discovery",
+          "note": "Constructs task-independent basis functions"
+        },
+        {
+          "id": "embedding",
+          "label": "Compact embedding",
+          "note": "Lower-dimensional state representation"
+        },
+        {
+          "id": "value",
+          "label": "Value approximation",
+          "note": "Uses the basis to capture the value function"
+        }
+      ],
+      "edges": [
+        {
+          "from": "states",
+          "to": "discovery",
+          "label": "state data"
+        },
+        {
+          "from": "discovery",
+          "to": "embedding",
+          "label": "basis"
+        },
+        {
+          "from": "embedding",
+          "to": "value",
+          "label": "features"
+        }
+      ],
+      "caption": "Basis discovery turns complex states into a compact representation intended to preserve value-function information."
+    }
+  },
   "related": [
     "value-function",
     "automatic-taxonomy-construction",

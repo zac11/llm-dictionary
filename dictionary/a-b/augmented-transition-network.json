@@ -5,7 +5,125 @@
   "type": "architecture",
   "definition": "An augmented transition network (ATN) is a type of graph theoretic structure used in the operational definition of formal languages, used especially in parsing relatively complex natural languages, and having wide application in artificial intelligence.",
   "details": "An ATN can, theoretically, analyze the structure of any sentence, however complicated. ATN are modified transition networks and an extension of RTNs. ATNs build on the idea of using finite-state machines (Markov model) to parse sentences. W. A. Woods in \"Transition Network Grammars for Natural Language Analysis\" argues that by adding a recursive mechanism to a finite state model, parsing can be achieved much more efficiently. Instead of building an automaton for a particular sentence, a collection of transition graphs are built. A grammatically correct sentence is parsed by reaching a final state in any state graph. Transitions between these graphs are simply subroutine calls from one state to any initial state on any graph in the network. A sentence is determined to be grammatically correct if a final state is reached by the last word in the sentence. This model meets many of the goals set forth by the nature of language in that it captures the regularities of the language. That is, if there is a process that operates in a number of environments, the grammar should encapsulate the process in a single structure. Such encapsulation not only simplifies the grammar, but has the bonus ",
-  "story": "Imagine learning a language by reading every book in the library and noticing, over time, which words travel together. It does not memorize a rulebook; it absorbs a library. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It is fluency built from pattern, not from memorized rules. That pattern-earned fluency is Augmented transition network.",
+  "explainer": {
+    "lead": "An augmented transition network checks a sentence by moving through a collection of connected grammar diagrams. Its recursive links let one diagram reuse another, so a grammar can describe repeated sentence patterns without building a separate machine for every sentence.",
+    "tiers": {
+      "eli5": "Imagine a sentence is a journey through several road maps, where one map can send you onto another and then bring you back. For “The cat sleeps,” a small map could handle “the cat,” return to the main map for “sleeps,” and finish exactly after the last word. Reaching the finish at that moment means the sentence follows the grammar.",
+      "practitioner": "Implement an ATN as a collection of transition graphs, treating graph-to-graph transitions as subroutine calls and preserving the calling state for return. Accept only when a final state is reached as the last word is consumed. Reusing subgraphs keeps grammars compact, but theoretical ability to handle arbitrarily complicated sentences does not guarantee practical language coverage.",
+      "paperLevel": "An ATN is a collection G of transition graphs extending recursive transition networks and finite-state models: a transition may call the initial state of another graph as a subroutine, then return to the caller. A sentence is accepted iff a final state is reached when its last word is consumed. W. A. Woods introduced this account in “Transition Network Grammars for Natural Language Analysis,” arguing that recursion makes parsing more efficient; theoretical generality alone does not specify a practical grammar."
+    },
+    "usedIn": [
+      {
+        "name": "Natural-language parsing",
+        "detail": "Analyzing sentence structure and deciding whether a sentence is grammatically correct.",
+        "url": ""
+      },
+      {
+        "name": "Formal languages",
+        "detail": "Providing an operational, graph-based way to define a language.",
+        "url": ""
+      },
+      {
+        "name": "Artificial intelligence",
+        "detail": "Representing relatively complex language structure with reusable transition graphs.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Transition graphs",
+        "detail": "A collection of graphs describes sentence structures instead of using one automaton built for a particular sentence."
+      },
+      {
+        "name": "States",
+        "detail": "Initial, intermediate, and final states record progress through a graph."
+      },
+      {
+        "name": "Transitions",
+        "detail": "Transitions move parsing between states as the sentence is processed."
+      },
+      {
+        "name": "Recursive graph calls",
+        "detail": "A transition can call another graph's initial state like a subroutine, allowing shared structures to be reused."
+      }
+    ],
+    "flow": [
+      "Start at an initial state with the sentence's words.",
+      "Follow transitions, calling other graphs when required.",
+      "Return from each called graph and continue parsing.",
+      "For “The cat sleeps,” reuse a noun-phrase graph for “the cat,” then accept after “sleeps” reaches a final state."
+    ],
+    "origin": "W. A. Woods presented the approach in “Transition Network Grammars for Natural Language Analysis.” He argued that adding a recursive mechanism to a finite-state model could make parsing much more efficient.",
+    "lineage": "ATNs are modified transition networks and an extension of recursive transition networks, building on finite-state machines used to parse sentences. Their reusable graph calls replaced the need to construct an automaton for each particular sentence.",
+    "whyItMatters": "An ATN captures a language process that occurs in several environments as one reusable structure. This encapsulation simplifies the grammar while supporting the analysis of highly complicated sentences.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "words",
+          "label": "Sentence words",
+          "note": "Input consumed in order"
+        },
+        {
+          "id": "state",
+          "label": "Current graph",
+          "note": "Tracks the active state"
+        },
+        {
+          "id": "call",
+          "label": "Graph call",
+          "note": "A recursive subroutine transition"
+        },
+        {
+          "id": "subgraph",
+          "label": "Called graph",
+          "note": "Parses a reusable structure"
+        },
+        {
+          "id": "final",
+          "label": "Final state",
+          "note": "Reached with the last word"
+        },
+        {
+          "id": "accept",
+          "label": "Sentence accepted",
+          "note": "The grammar recognizes the sentence"
+        }
+      ],
+      "edges": [
+        {
+          "from": "words",
+          "to": "state",
+          "label": "next word"
+        },
+        {
+          "from": "state",
+          "to": "call",
+          "label": "subroutine"
+        },
+        {
+          "from": "call",
+          "to": "subgraph",
+          "label": "initial state"
+        },
+        {
+          "from": "subgraph",
+          "to": "state",
+          "label": "return"
+        },
+        {
+          "from": "state",
+          "to": "final",
+          "label": "last word"
+        },
+        {
+          "from": "final",
+          "to": "accept",
+          "label": ""
+        }
+      ],
+      "caption": "Words drive transitions through reusable graphs; recursive calls return before parsing continues to acceptance."
+    }
+  },
   "related": [
     "albert-one",
     "alexander-gelbukh",

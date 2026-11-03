@@ -2,10 +2,41 @@
   "term": "AdamW",
   "letter": "A",
   "category": "Optimization",
-  "type": "concept",
+  "type": "algorithm",
   "definition": "A variant of the Adam optimizer that decouples weight decay from the gradient-based update, improving generalization.",
   "details": "AdamW is now the default optimizer for training most large transformer-based language models, replacing the L2-regularization approach used in the original Adam.",
-  "story": "Think of a hiker descending a foggy hill in the dark, taking small steps and feeling for the steepest way down. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. It is the same loop you use to learn anything: try, miss, correct, try again. Skill, for a model, is just error pushed down until it is small enough to ignore. And that is AdamW — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "AdamW is a workhorse algorithm that trains nearly every large language model you interact with today. It fixes a subtle bug in the popular Adam optimizer that was quietly making models worse at generalizing to new data.",
+    "tiers": {
+      "eli5": "Imagine you're trying to steer a boat toward an island. Adam is a smart navigator that speeds up when the water is calm and slows down when it's choppy. But Adam had a flaw: every time it adjusted the rudder, it also accidentally dragged an anchor, slowing the boat even when it shouldn't. AdamW unties the anchor from the steering, so the boat moves freely again. This lets big AI models learn better patterns instead of memorizing their training data.",
+      "practitioner": "AdamW is the default in PyTorch and Hugging Face transformers, typically with weight decay 0.01 and betas (0.9, 0.999). Unlike Adam, where weight decay is implemented as L2 regularization added to the gradient, AdamW applies decay directly to the weights after the adaptive moment update. This matters because Adam's gradient scaling interferes with L2 penalty strength. Pitfall: using Adam's default parameters with AdamW without tuning weight decay can under-regularize; cosine learning rate schedules pair well.",
+      "paperLevel": "AdamW decouples weight decay from the gradient update. Where Adam computes w_t = w_{t-1} - lr * m_t_hat / (sqrt(v_t_hat) + eps) - lr * lambda * w_{t-1}, AdamW instead computes w_t = w_{t-1} - lr * m_t_hat / (sqrt(v_t_hat) + eps) - lr * lambda * w_{t-1} as a separate step applied after the adaptive update, preventing the effective weight decay from being scaled by the adaptive learning rate. The original Adam paper (Kingma and Ba, 2014) did not name this decoupled variant; AdamW was introduced by Loshchilov and Hutter in 2017."
+    },
+    "example": "Suppose a weight w = 2.0 has gradient 0.1, with lr=0.001, beta1=0.9, beta2=0.999, epsilon=1e-8, weight_decay=0.01. After computing m_hat ≈ 0.1 and v_hat ≈ 0.01, Adam's update would be -0.001 * 0.1 / 0.1 = -0.001, but with L2 it also adds -0.001 * 0.01 * 2.0 = -0.00002 to the gradient. AdamW instead computes the adaptive step -0.001, then separately decays: w becomes 2.0 - 0.001 - 0.001 * 0.01 * 2.0 = 1.99898. The difference grows over thousands of steps, yielding better generalization.",
+    "usedIn": [
+      {
+        "name": "GPT-style transformers",
+        "detail": "Default optimizer for training large language models from BERT to GPT-3 and beyond",
+        "url": ""
+      },
+      {
+        "name": "Vision transformers (ViT)",
+        "detail": "Standard choice for image models that replace convolutions with attention",
+        "url": ""
+      },
+      {
+        "name": "PyTorch ecosystem",
+        "detail": "torch.optim.AdamW is the reference implementation used across research",
+        "url": ""
+      }
+    ],
+    "sources": [
+      {
+        "title": "Wikipedia: Stochastic gradient descent",
+        "url": "https://en.wikipedia.org/wiki/Stochastic_gradient_descent"
+      }
+    ]
+  },
   "related": [
     "adam-optimizer",
     "flashattention",

@@ -2,10 +2,159 @@
   "term": "AlphaGo Zero",
   "letter": "A",
   "category": "Machine learning",
-  "type": "concept",
+  "type": "model",
   "definition": "AlphaGo Zero is a version of DeepMind's Go software AlphaGo.",
   "details": "AlphaGo's team published an article in Nature in October 2017 introducing AlphaGo Zero, a version created without using data from human games, and stronger than any previous version. By playing games against itself, AlphaGo Zero: surpassed the strength of AlphaGo Lee in three days by winning 100 games to 0; reached the level of AlphaGo Master in 21 days; and exceeded all previous versions in 40 days. Training artificial intelligence (AI) without datasets derived from human experts has significant implications for the development of AI with superhuman skills, as expert data is \"often expensive, unreliable, or simply unavailable.\" Demis Hassabis, the co-founder and CEO of DeepMind, said that AlphaGo Zero was so powerful because it was \"no longer constrained by the limits of human knowledge\". Furthermore, AlphaGo Zero performed better than standard deep reinforcement learning models (such as Deep Q-Network implementations) due to its integration of Monte Carlo tree search. David Silver, one of the first authors of DeepMind's papers published in Nature on AlphaGo, said that it is possible to have generalized AI algorithms by removing the need to learn from humans. Google later develope",
-  "story": "Picture an engineer at a cluttered workbench, turning a clever idea over in their hands until it finally clicks. At its heart it is a simple notion, once you strip away the fancy name. A small key that opens a much bigger door. It is one of those ideas that feels obvious only after someone shows it to you. And that idea, made concrete, is AlphaGo Zero.",
+  "explainer": {
+    "lead": "AlphaGo Zero is DeepMind’s Go-playing system that learned through games against itself, without using records of human games. It showed that a system could begin with only the rules of Go and surpass earlier AlphaGo versions, reaching their level in days rather than months.",
+    "tiers": {
+      "eli5": "Imagine learning a board game by playing both sides yourself, again and again, instead of studying anyone else’s matches. AlphaGo Zero started knowing only the rules of Go and used each game to get a little better. After three days and 4.9 million games against itself, it beat AlphaGo Lee in all 100 games they played.",
+      "practitioner": "The approach combines self-play reinforcement learning and Monte Carlo tree search with a two-headed ResNet that outputs a move policy and a position value. The original network was trained using TensorFlow with 64 GPU workers and 19 CPU parameter servers, while four TPUs handled inference. Reproducing it requires enormous computation and a reliable game simulator; DeepMind cautioned that the techniques are less useful in domains that are difficult to simulate, such as driving.",
+      "paperLevel": "AlphaGo Zero learns a policy p(a|s), over 19×19 board moves plus passing, and a value v(s) in (-1,+1), representing the current player’s expected result. A 20- or 40-block residual network maps a 17×19×19 board history to these outputs, which guide Monte Carlo tree search during self-play; the Nature article appeared in October 2017. It surpassed AlphaGo Lee after three days and all earlier versions after 40 days, but its demonstrated domain was Go, and critics noted that broader generalization still required testing."
+    },
+    "example": "During its first three days, AlphaGo Zero played 4.9 million games against itself. It then defeated AlphaGo Lee 100 games to 0, despite having learned without human game records.",
+    "usedIn": [
+      {
+        "name": "Go",
+        "detail": "Learned through self-play and exceeded every earlier AlphaGo version after 40 days.",
+        "url": ""
+      },
+      {
+        "name": "AlphaZero",
+        "detail": "Generalized the approach to Go, chess and shōgi, defeating Stockfish, Elmo and the three-day AlphaGo Zero.",
+        "url": ""
+      },
+      {
+        "name": "Leela Zero",
+        "detail": "An open-source program based on ideas from the AlphaGo papers, using GPUs rather than TPUs.",
+        "url": ""
+      },
+      {
+        "name": "Protein folding research",
+        "detail": "DeepMind said in October 2017 that it had begun work applying AlphaGo Zero technology to this search-heavy problem.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Board input: 17 planes encode recent stone positions and which colour moves next.",
+        "detail": ""
+      },
+      {
+        "name": "Residual body: 20 or 40 residual blocks with 256 channels.",
+        "detail": ""
+      },
+      {
+        "name": "Policy head: scores every board point and passing.",
+        "detail": ""
+      },
+      {
+        "name": "Value head: estimates the current player’s result from -1 to +1.",
+        "detail": ""
+      },
+      {
+        "name": "Search and self-play: Monte Carlo tree search selects moves and generates training games.",
+        "detail": ""
+      }
+    ],
+    "flow": [
+      "Encode the current board and seven earlier positions.",
+      "Process the input through the residual network.",
+      "Produce move probabilities and a win-loss estimate.",
+      "Use both outputs to guide Monte Carlo tree search.",
+      "Play self-generated games and use their results to update the network."
+    ],
+    "origin": "DeepMind’s AlphaGo team introduced AlphaGo Zero in Nature in October 2017, after submitting its initial findings in April. Unlike earlier AlphaGo versions, it was created without data from human games and initially knew nothing about Go beyond the rules.",
+    "whyItMatters": "It removed the need for expert game datasets, which can be expensive, unreliable or unavailable, while achieving stronger Go performance. Its results also suggested that self-improving search and learning might transfer to other problems with enormous possibility spaces, although success outside Go was not yet established.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "board",
+          "label": "Board history",
+          "note": "A 17×19×19 tensor encodes stones and the player to move."
+        },
+        {
+          "id": "resnet",
+          "label": "Residual network",
+          "note": "Twenty or 40 residual blocks process the board."
+        },
+        {
+          "id": "policy",
+          "label": "Policy head",
+          "note": "Scores 361 board moves plus passing."
+        },
+        {
+          "id": "value",
+          "label": "Value head",
+          "note": "Estimates the expected score between -1 and +1."
+        },
+        {
+          "id": "search",
+          "label": "Tree search",
+          "note": "Monte Carlo tree search uses policy and value guidance."
+        },
+        {
+          "id": "selfplay",
+          "label": "Self-play games",
+          "note": "The system plays itself and records game outcomes."
+        },
+        {
+          "id": "update",
+          "label": "Network update",
+          "note": "Self-play experience improves the neural network."
+        }
+      ],
+      "edges": [
+        {
+          "from": "board",
+          "to": "resnet",
+          "label": ""
+        },
+        {
+          "from": "resnet",
+          "to": "policy",
+          "label": ""
+        },
+        {
+          "from": "resnet",
+          "to": "value",
+          "label": ""
+        },
+        {
+          "from": "policy",
+          "to": "search",
+          "label": "move priors"
+        },
+        {
+          "from": "value",
+          "to": "search",
+          "label": "position scores"
+        },
+        {
+          "from": "search",
+          "to": "selfplay",
+          "label": "selected moves"
+        },
+        {
+          "from": "selfplay",
+          "to": "update",
+          "label": "game results"
+        },
+        {
+          "from": "update",
+          "to": "resnet",
+          "label": "new weights"
+        }
+      ],
+      "caption": "A two-headed network guides tree search; self-play games then supply experience for improving that network."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: AlphaGo Zero",
+        "url": "https://en.wikipedia.org/wiki/AlphaGo_Zero"
+      }
+    ]
+  },
   "related": [
     "alphago",
     "leela-chess-zero",

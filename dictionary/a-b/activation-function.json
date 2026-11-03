@@ -5,7 +5,108 @@
   "type": "concept",
   "definition": "A non-linear function applied to a neuron's output that allows neural networks to model complex, non-linear relationships.",
   "details": "Without activation functions, stacking layers would collapse into a single linear transformation. Common examples include ReLU, GELU, sigmoid, and tanh.",
-  "story": "Think of an orchestra warming up: no single instrument carries the piece, but together they make the sound. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. The layout decides what the machine can even attempt, before it learns a single thing. The shape of the machine is half the idea. That blueprint is Activation Function.",
+  "explainer": {
+    "lead": "An activation function is the decision-maker inside every artificial neuron. It takes a number, applies a twist, and decides whether that signal should fire forward — and how strongly.",
+    "tiers": {
+      "eli5": "Imagine a dimmer switch for a light. The activation function is like the person turning the knob: they look at how much electricity is coming in, then decide how bright the bulb gets. Without that person, every light in your house would just be on or off with no middle settings, and you couldn't make a cozy movie night or a bright reading corner. The twist in the knob — making things non-linear — is what lets neural networks learn curves and patterns instead of just straight lines.",
+      "practitioner": "You select an activation function per layer, typically ReLU for hidden layers in vision and NLP models, GELU in Transformers like BERT and GPT, and sigmoid or softmax for output probabilities. ReLU is computationally cheap but can 'die' (permanent zero gradients for negative inputs); GELU is smoother but slower. Set it in PyTorch as `nn.ReLU()` or `nn.GELU()`, or in TensorFlow via `tf.keras.activations.relu`. Watch for vanishing gradients with sigmoid/tanh in deep networks.",
+      "paperLevel": "Given pre-activation z = w·x + b, an activation function σ: ℝ → ℝ introduces non-linearity via y = σ(z). Without it, L layers of weights W₁...Wₗ collapse to a single linear map W = Wₗ...W₁. Common forms: ReLU(z) = max(0,z); GELU(z) = z·Φ(z) where Φ is the standard normal CDF; σ_sigmoid(z) = 1/(1+e^{-z}); tanh(z) = (e^z - e^{-z})/(e^z + e^{-z}). The choice shapes gradient flow and representational capacity."
+    },
+    "example": "A single neuron receives inputs x₁ = 2.0 and x₂ = -1.0 with weights w₁ = 0.5, w₂ = 1.0, and bias b = -0.5. The pre-activation is z = (0.5)(2.0) + (1.0)(-1.0) + (-0.5) = 1.0 - 1.0 - 0.5 = -0.5. With ReLU, the output is max(0, -0.5) = 0 — the neuron is 'off.' With sigmoid, the output is 1/(1+e^{0.5}) ≈ 0.38 — a weak positive signal. This same neuron, with different activation functions, behaves completely differently in the network.",
+    "usedIn": [
+      {
+        "name": "Convolutional neural networks",
+        "detail": "ReLU follows each convolution to enable hierarchical feature detection in images",
+        "url": ""
+      },
+      {
+        "name": "Transformer language models",
+        "detail": "GELU is used in BERT, GPT, and their descendants for smoother gradients than ReLU",
+        "url": ""
+      },
+      {
+        "name": "Neural network classifiers",
+        "detail": "Sigmoid or softmax in the final layer outputs probabilities for binary or multi-class predictions",
+        "url": ""
+      }
+    ],
+    "intuition": "Think of a neuron as a voter. The weighted sum of inputs is like the tally of opinions. The activation function is the rule that converts that tally into an actual vote: maybe you need a strong majority to say yes (ReLU's threshold), or you gradually get more convinced as the tally grows (sigmoid's curve). Without this rule, every voter would just pass along a scaled version of what they heard, and the whole committee could be replaced by one person with a calculator.",
+    "howItWorks": [
+      "Each neuron computes a weighted sum of its inputs plus a bias: z = w₁x₁ + w₂x₂ + ... + wₙxₙ + b",
+      "The activation function transforms this sum: y = σ(z)",
+      "This output y becomes the input to neurons in the next layer",
+      "During backpropagation, the derivative σ'(z) determines how much the weights get updated",
+      "Different choices of σ create different shapes of non-linearity and different gradient behaviors"
+    ],
+    "whyItMatters": "Without activation functions, no matter how many layers a neural network has, it could only ever learn straight-line relationships. The non-linearity lets networks approximate arbitrary functions, which is why they can recognize faces, translate languages, and play chess.",
+    "misconceptions": [
+      "More complex activation functions always work better — ReLU often outperforms fancier options",
+      "Activation functions and loss functions are the same thing — loss guides training; activation shapes layer outputs",
+      "All neurons in a network must use the same activation function — in practice, hidden and output layers typically differ"
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "inputs",
+          "label": "Input values",
+          "note": "x₁, x₂, ... from previous layer or data"
+        },
+        {
+          "id": "weights",
+          "label": "Weights & bias",
+          "note": "w₁, w₂, ..., b learned during training"
+        },
+        {
+          "id": "sum",
+          "label": "Weighted sum",
+          "note": "z = Σwᵢxᵢ + b, a linear combination"
+        },
+        {
+          "id": "activate",
+          "label": "Activation σ",
+          "note": "Non-linear transform: ReLU, GELU, sigmoid, etc."
+        },
+        {
+          "id": "output",
+          "label": "Output y",
+          "note": "Signal passed to next layer"
+        },
+        {
+          "id": "grad",
+          "label": "Gradient σ'",
+          "note": "Derivative used in backprop to update weights"
+        }
+      ],
+      "edges": [
+        {
+          "from": "inputs",
+          "to": "sum",
+          "label": "multiply, add"
+        },
+        {
+          "from": "weights",
+          "to": "sum",
+          "label": "parameters"
+        },
+        {
+          "from": "sum",
+          "to": "activate",
+          "label": "pre-activation z"
+        },
+        {
+          "from": "activate",
+          "to": "output",
+          "label": "post-activation y"
+        },
+        {
+          "from": "activate",
+          "to": "grad",
+          "label": "compute"
+        }
+      ],
+      "caption": "Data flow through a single neuron: linear combination followed by non-linear activation, with the derivative enabling learning."
+    }
+  },
   "related": [
     "softmax-function",
     "attention",

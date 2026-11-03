@@ -8,7 +8,129 @@
   ],
   "definition": "AI systems that can plan, use tools, and act toward goals with limited human supervision.",
   "details": "Agentic AI wraps a language model in a loop of reasoning, tool use and feedback so it can carry out multi-step tasks instead of producing a single answer. It is the umbrella idea behind AI agents, autonomous agents and agentic workflows, and it is what lets systems operate software, browsers and APIs on a user's behalf.",
-  "story": "Imagine handing a to-do list to a very clever intern who refuses to guess: before each step, they look around, check the result, and adjust. It is the difference between a search engine and a helper who actually finishes the task. The machine stops just answering one question and starts getting a job done, step by step, checking its work along the way. It is a loop of look, act, and learn — the same way you cook from a recipe you have never tried: add, taste, correct. And that habit of checking, acting, then checking again is Agentic AI.",
+  "explainer": {
+    "lead": "Agentic AI is the shift from asking an AI a question and getting an answer, to giving it a goal and letting it figure out the steps. It is what turns a chatbot into a worker that can browse, code, book flights, or file reports while you do something else.",
+    "tiers": {
+      "eli5": "Imagine you tell a really smart helper: \"Plan my birthday party.\" Instead of just suggesting ideas, they check your calendar, compare bakery prices, send invites, and order the cake—all on their own. Agentic AI is like that helper: it gets a mission, breaks it into tasks, uses tools like a browser or spreadsheet, and keeps going until the job is done.",
+      "practitioner": "In practice, agentic AI means wrapping an LLM in a loop: the model reasons about a task, calls a tool (API, browser, code executor), observes the result, and decides the next step. Common patterns include ReAct reasoning, tool-use APIs like OpenAI's function calling (late 2023), and Anthropic's Model Context Protocol (late 2024) for standardized tool access. Pitfalls include infinite loops, fragile tool schemas, and over-claiming autonomy—most production systems still need human checkpoints for irreversible actions.",
+      "paperLevel": "Agentic AI lacks a formal axiomatic definition, but the architecture described in the literature comprises: (1) a foundation model (typically an LLM) as the reasoning core; (2) an agent harness/scaffold managing prompts, memory, tool interfaces, and execution state; (3) an environment interface for observation and action; and (4) a control loop iterating planning→action→observation. Theoretical roots trace to cybernetics and the BDI model (1990s); LLM-driven agents emerged from 2018 academic study and accelerated after 2023. Key limits include: no guaranteed convergence, brittleness in long-horizon planning, and the absence of verifiable safety properties in open-ended tool use."
+    },
+    "example": "A user asks: \"Find me a flight to Tokyo under $800 next week and book it.\" The agent searches flight APIs, compares prices, checks the user's calendar for conflicts, holds a seat, asks for payment confirmation, and completes the booking—handling errors like sold-out flights by searching alternative dates.",
+    "usedIn": [
+      {
+        "name": "OpenAI Operator",
+        "detail": "A web browser agent that navigates sites and completes tasks like booking tickets",
+        "url": ""
+      },
+      {
+        "name": "Cursor",
+        "detail": "An AI coding agent that writes, edits, and debugs code across multiple files",
+        "url": ""
+      },
+      {
+        "name": "Salesforce Agentforce",
+        "detail": "Deployed by the IRS and Kyle, Texas for customer service and case routing",
+        "url": ""
+      },
+      {
+        "name": "OpenAI Deep Research",
+        "detail": "A research agent that queries sources and synthesizes multi-page reports",
+        "url": ""
+      }
+    ],
+    "intuition": "Most software waits for you to click. Agentic AI clicks for you—then checks what happened, adjusts, and clicks again until the job is finished.",
+    "howItWorks": [
+      "A user gives a high-level goal, not a single command.",
+      "The agent breaks the goal into sub-tasks and plans a sequence.",
+      "It calls external tools—browsers, APIs, code runners—to execute each step.",
+      "It reads the results, updates its plan, and repeats until done or blocked.",
+      "A harness layer manages memory, permissions, and safety constraints throughout."
+    ],
+    "whyItMatters": "Agentic AI moves artificial intelligence from information retrieval to action in the world, promising to automate complex workflows that previously required human judgment and multiple software tools.",
+    "misconceptions": [
+      "It is fully autonomous—most systems still need human approval for critical actions.",
+      "It is the same as any LLM with tools—agentic AI requires persistent goals, memory, and iterative planning, not just one-off function calls.",
+      "It is a new technology—the concept dates to 1950s cybernetics and 1990s BDI agents; the LLM-driven form is what is recent."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "user",
+          "label": "User goal",
+          "note": "High-level task, e.g. 'book a flight'"
+        },
+        {
+          "id": "planner",
+          "label": "Planner / LLM",
+          "note": "Breaks goal into steps and reasons about next action"
+        },
+        {
+          "id": "harness",
+          "label": "Agent harness",
+          "note": "Manages memory, context, tool schemas, permissions"
+        },
+        {
+          "id": "tools",
+          "label": "Tool interfaces",
+          "note": "APIs, browsers, code runners, databases"
+        },
+        {
+          "id": "env",
+          "label": "Environment",
+          "note": "External systems: websites, enterprise software, devices"
+        },
+        {
+          "id": "feedback",
+          "label": "Observation",
+          "note": "Results returned to the planner for next iteration"
+        }
+      ],
+      "edges": [
+        {
+          "from": "user",
+          "to": "planner",
+          "label": "submits goal"
+        },
+        {
+          "from": "planner",
+          "to": "harness",
+          "label": "requests tool call"
+        },
+        {
+          "from": "harness",
+          "to": "tools",
+          "label": "formats call"
+        },
+        {
+          "from": "tools",
+          "to": "env",
+          "label": "executes action"
+        },
+        {
+          "from": "env",
+          "to": "tools",
+          "label": "returns result"
+        },
+        {
+          "from": "tools",
+          "to": "feedback",
+          "label": "passes observation"
+        },
+        {
+          "from": "feedback",
+          "to": "planner",
+          "label": "updates state"
+        }
+      ],
+      "caption": "The agent loop: the planner reasons, the harness executes tools in the environment, and observations feed back for the next decision."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: AI agent",
+        "url": "https://en.wikipedia.org/wiki/AI_agent"
+      }
+    ]
+  },
   "related": [
     "ai-agent",
     "ai-copilot",

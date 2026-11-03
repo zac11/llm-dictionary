@@ -5,7 +5,103 @@
   "type": "concept",
   "definition": "Algorithmic learning theory is a mathematical framework for analyzing machine learning problems and algorithms.",
   "details": "Synonyms include formal learning theory and algorithmic inductive inference. Algorithmic learning theory is different from statistical learning theory in that it does not make use of statistical assumptions and analysis. Both algorithmic and statistical learning theory are concerned with machine learning and can thus be viewed as branches of computational learning theory.",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. That is Algorithmic learning theory — a small key that opens a big door.",
+  "explainer": {
+    "lead": "Algorithmic learning theory studies when a learning algorithm can eventually arrive at a correct rule, without assuming that its examples are random samples. It helps separate what is learnable in principle from what is merely likely to work, while also exposing limits involving incomplete examples, computation, and noisy data.",
+    "tiers": {
+      "eli5": "Imagine guessing the rule behind a game as a friend shows you more and more moves. You keep changing your guessed rule so it fits everything seen so far, and eventually you might settle on the right rule forever. The catch is that you may never know for sure that you have finished guessing.",
+      "practitioner": "This is a framework for analysis rather than a software library or a training recipe. It is useful for reasoning about convergence without independent, random samples, and about criteria such as how many examples or hypothesis changes are needed. Its abstract models omit runtime and memory limits, and simple enumeration can fail with erroneous input, so theoretical learnability should not be read as practical efficiency.",
+      "paperLevel": "Learning in the limit requires a learner to converge to a correct hypothesis on every possible data sequence consistent with the problem space; unlike statistical consistency, failure is not permitted even on sequences of probability measure 0. E. Mark Gold introduced the concept in \"Language identification in the limit\": the learner's hypothesis must fit all sentences seen so far and must eventually stop changing. Gold showed that enumeration lets a Turing-complete learner identify any language defined by a Turing machine program, while positive examples alone guarantee learning only for languages with finitely many possible sentences. The model does not bound runtime or memory, and the learner need not know when convergence has occurred."
+    },
+    "example": "A tester presents sentences one at a time, with every grammatical and ungrammatical sentence guaranteed to appear eventually. The learner tests Turing machine programs in turn and uses the first program that classifies all sentences seen so far correctly; it eventually reaches a correct program and never changes again, although it cannot tell when that point has arrived.",
+    "usedIn": [
+      {
+        "name": "Language learning",
+        "detail": "A setting where observations can be relatively noise-free but are not random samples.",
+        "url": ""
+      },
+      {
+        "name": "Automated scientific discovery",
+        "detail": "Another domain suited to non-random observations with relatively little noise.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of asking whether an algorithm will probably generalize from a random sample, ask whether continued evidence can force it toward a correct hypothesis. The central demand is eventual convergence on every allowable sequence of data, however that sequence is ordered.",
+    "howItWorks": [
+      "Define the possible hypotheses and the sequences of observations the learner may receive.",
+      "At each step, give the learner another observation and require a hypothesis consistent with everything seen so far.",
+      "Continue until the hypothesis eventually stops changing and is correct for all possible observations.",
+      "Assess learnability separately from efficiency, the number of hypothesis changes, and practical resource limits."
+    ],
+    "whyItMatters": "The framework gives precise guarantees for non-random data and reveals fundamental limits, such as the difficulty of learning from positive examples alone. It also distinguishes eventual correctness from knowing that correctness has been achieved or reaching it with practical time and memory.",
+    "misconceptions": [
+      "It does not assume data points are independent random samples, unlike statistical learning theory.",
+      "Convergence in the limit does not mean the learner knows when it has found the correct hypothesis.",
+      "A guarantee of eventual learning does not imply bounded runtime, bounded memory, or robustness to input errors."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "tester",
+          "label": "Sentence tester",
+          "note": "Eventually supplies every possible sentence."
+        },
+        {
+          "id": "stream",
+          "label": "Example stream",
+          "note": "One sentence arrives at each step."
+        },
+        {
+          "id": "learner",
+          "label": "Learning machine",
+          "note": "Tracks every example received so far."
+        },
+        {
+          "id": "search",
+          "label": "Program enumeration",
+          "note": "Finds the first program consistent so far."
+        },
+        {
+          "id": "limit",
+          "label": "Stable hypothesis",
+          "note": "Eventually remains correct without further changes."
+        }
+      ],
+      "edges": [
+        {
+          "from": "tester",
+          "to": "stream",
+          "label": "presents"
+        },
+        {
+          "from": "stream",
+          "to": "learner",
+          "label": "examples"
+        },
+        {
+          "from": "learner",
+          "to": "search",
+          "label": "seen data"
+        },
+        {
+          "from": "search",
+          "to": "learner",
+          "label": "hypothesis"
+        },
+        {
+          "from": "learner",
+          "to": "limit",
+          "label": "converges"
+        }
+      ],
+      "caption": "Gold's language-identification model: repeated hypotheses eventually stabilize on a correct program."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Algorithmic learning theory",
+        "url": "https://en.wikipedia.org/wiki/Algorithmic_learning_theory"
+      }
+    ]
+  },
   "related": [
     "computational-learning-theory",
     "distribution-learning-theory",

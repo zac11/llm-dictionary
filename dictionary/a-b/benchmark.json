@@ -5,7 +5,98 @@
   "type": "concept",
   "definition": "A standardized dataset and evaluation protocol used to measure and compare the performance of different models on a specific task or set of tasks.",
   "details": "Benchmarks like GLUE, MMLU, and HumanEval provide common yardsticks for tracking progress in NLP and LLM capabilities, though over-optimization to specific benchmarks (benchmark overfitting) is a recognized concern.",
-  "story": "Think of a referee whose job is to be completely honest about who touched the ball last. Before trusting a machine, someone has to measure how good it really is — fairly and honestly. It is the exam that separates “it sounds good” from “it actually is good”. What gets measured is what actually gets better. That shared ruler is Benchmark.",
+  "explainer": {
+    "lead": "A benchmark gives different AI models the same test so their performance can be compared fairly. It makes progress easier to track, although a strong score can become misleading when models are over-optimized for that particular test.",
+    "tiers": {
+      "eli5": "A benchmark is like giving several students the same quiz and marking it the same way. Their scores help you compare them, but a student who practises only that quiz may do well without becoming better at the whole subject.",
+      "practitioner": "Engineers run candidate models through the same dataset and evaluation protocol, then compare the resulting scores when selecting models or tracking changes. Benchmarks such as GLUE, MMLU, and HumanEval provide common yardsticks, but repeated tuning against one can produce benchmark overfitting rather than a corresponding gain in capability.",
+      "paperLevel": "A benchmark can be represented as B = (D, P, S): a standardized dataset D, an evaluation protocol P, and a scoring procedure S that maps each model's results to a comparable score. Its measurements concern the specified task or tasks, and repeated optimization against B can inflate scores without equivalent improvement in the underlying capability."
+    },
+    "example": "Suppose three models are evaluated on MMLU using the same dataset and protocol, receiving scores of 76, 82, and 79. The second model ranks highest on this benchmark, but that result alone does not establish that it is best at every task or setting.",
+    "usedIn": [
+      {
+        "name": "GLUE",
+        "detail": "A common yardstick for measuring and comparing progress in NLP.",
+        "url": ""
+      },
+      {
+        "name": "MMLU",
+        "detail": "A benchmark used to track and compare LLM capabilities.",
+        "url": ""
+      },
+      {
+        "name": "HumanEval",
+        "detail": "A shared evaluation used when measuring and comparing LLM performance.",
+        "url": ""
+      }
+    ],
+    "intuition": "Comparing models is easiest when everyone takes the same test under the same rules. The benchmark supplies both the test material and the scoring procedure, reducing differences caused by inconsistent evaluation.",
+    "howItWorks": [
+      "Choose the task or set of tasks to evaluate.",
+      "Give each model the same standardized dataset.",
+      "Run every model under the same evaluation protocol.",
+      "Score the outputs with the shared procedure.",
+      "Compare the scores while keeping the benchmark's scope and limitations in mind."
+    ],
+    "whyItMatters": "Shared benchmarks turn separate experiments into comparable measurements and make progress in NLP and LLM capabilities easier to track. They also create a risk of benchmark overfitting, so scores should be interpreted as evidence about the tested tasks rather than a complete measure of a model.",
+    "misconceptions": [
+      "A higher benchmark score does not automatically mean a model is better at every task.",
+      "Different benchmarks are not interchangeable because they can evaluate different tasks or sets of tasks.",
+      "Improving a score through repeated tuning does not necessarily mean the underlying capability has improved by the same amount."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "task",
+          "label": "Target tasks",
+          "note": "The capabilities selected for evaluation"
+        },
+        {
+          "id": "dataset",
+          "label": "Standard dataset",
+          "note": "The same evaluation material for every model"
+        },
+        {
+          "id": "models",
+          "label": "Candidate models",
+          "note": "Models evaluated under shared conditions"
+        },
+        {
+          "id": "protocol",
+          "label": "Evaluation protocol",
+          "note": "Common rules for running and scoring"
+        },
+        {
+          "id": "scores",
+          "label": "Comparable scores",
+          "note": "Results used for ranking and progress tracking"
+        }
+      ],
+      "edges": [
+        {
+          "from": "task",
+          "to": "dataset",
+          "label": "defines"
+        },
+        {
+          "from": "dataset",
+          "to": "models",
+          "label": "shared input"
+        },
+        {
+          "from": "models",
+          "to": "protocol",
+          "label": "outputs"
+        },
+        {
+          "from": "protocol",
+          "to": "scores",
+          "label": "scores"
+        }
+      ],
+      "caption": "A benchmark places candidate models on common ground: the same dataset and protocol produce scores that can be compared."
+    }
+  },
   "related": [
     "glue-benchmark",
     "synthetic-benchmark-contamination",

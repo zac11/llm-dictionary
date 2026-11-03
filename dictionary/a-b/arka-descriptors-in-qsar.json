@@ -5,7 +5,108 @@
   "type": "concept",
   "definition": "In computational chemistry and cheminformatics, ARKA descriptors in QSAR are a class of molecular descriptors used in quantitative structure–activity relationship (QSAR) modeling (or related approaches such as QSPR and QSTR), a computational method for predicting the biological activity or toxicity of chemical compounds based on their molecular structure.",
   "details": "Molecular descriptors are numerical values that summarize information about a molecule's structure, topology, geometry, or physicochemical properties in a form suitable for machine learning or statistical modeling. ARKA (Arithmetic Residuals in K-Groups Analysis) descriptors differ from traditional descriptors by encoding atomic-level information through recursive autoregression techniques, which aim to capture subtle structural patterns and improve predictive accuracy. They are designed to be both interpretable and well-suited to modeling nonlinear relationships in QSAR studies.",
-  "story": "Picture an architect laying out a building where every room has to know which other rooms matter to it. The layout decides what the machine can even attempt, before it learns a single thing. It is the blueprint that makes everything else possible. It is the difference between a row of isolated cubicles and one big room where everyone can hear each other. And that shape of the machine — ARKA descriptors in QSAR — is what makes everything else possible.",
+  "explainer": {
+    "lead": "ARKA descriptors turn details of a molecule’s structure into numbers that a statistical or machine-learning model can use. Their purpose is to help predict properties such as biological activity or toxicity while retaining interpretable, atom-level structural information.",
+    "tiers": {
+      "eli5": "Imagine describing different toy buildings by counting and comparing their pieces instead of showing someone every building. ARKA descriptors do something similar for molecules, using repeated calculations to turn small structural patterns into numbers. A computer can then use those numbers to estimate how a molecule might behave.",
+      "practitioner": "Use ARKA descriptors as input features for QSAR, QSPR, or QSTR modeling rather than as predictive models themselves. Their recursive encoding is intended to capture subtle atomic patterns and nonlinear relationships, but descriptor generation does not remove the need for careful model fitting and predictive validation.",
+      "paperLevel": "For a molecular structure M, ARKA featurization can be written as x = f(M), where x is a numerical descriptor vector produced by encoding atomic-level information through recursive autoregression using arithmetic residuals in K-groups. A QSAR-related model then estimates y-hat = g(x), with y representing activity, a physicochemical property, or toxicity. The approach is designed for interpretability and nonlinear modeling, but improved predictive accuracy is an objective rather than a guaranteed result."
+    },
+    "example": "Suppose three candidate compounds are being screened for toxicity. Each compound is converted into its own vector of ARKA descriptor values, and those vectors are supplied to a QSTR model; the model then produces a toxicity estimate for each candidate from its numerical structural summary.",
+    "usedIn": [
+      {
+        "name": "QSAR modeling",
+        "detail": "Predicting biological activity from molecular structure.",
+        "url": ""
+      },
+      {
+        "name": "QSPR modeling",
+        "detail": "Relating molecular structure to physicochemical properties.",
+        "url": ""
+      },
+      {
+        "name": "QSTR modeling",
+        "detail": "Estimating chemical toxicity from structural information.",
+        "url": ""
+      }
+    ],
+    "intuition": "A learning algorithm cannot directly compare molecular diagrams, so each molecule must first be summarized numerically. ARKA descriptors build that summary from atomic-level information, using recursive calculations to represent structural details that simpler summaries may miss.",
+    "howItWorks": [
+      "Start with a molecule’s structural representation.",
+      "Extract atomic-level information relevant to the descriptor calculation.",
+      "Apply recursive autoregression with arithmetic residuals in K-groups to encode that information.",
+      "Collect the results into a numerical feature vector for the molecule.",
+      "Use the vectors to train a QSAR, QSPR, or QSTR model that predicts activity, properties, or toxicity."
+    ],
+    "whyItMatters": "The choice of descriptors determines what structural information a model can learn from. ARKA descriptors aim to preserve subtle atomic patterns in an interpretable form, making them useful for studying nonlinear structure–activity, structure–property, and structure–toxicity relationships.",
+    "misconceptions": [
+      "ARKA descriptors are molecular features, not standalone activity- or toxicity-prediction models.",
+      "They are not limited to biological activity; related uses include property and toxicity modeling.",
+      "Encoding more subtle structural patterns does not by itself guarantee better predictions."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "molecule",
+          "label": "Molecular structure",
+          "note": "The compound to be summarized."
+        },
+        {
+          "id": "atoms",
+          "label": "Atomic information",
+          "note": "Atom-level structural details are extracted."
+        },
+        {
+          "id": "recursion",
+          "label": "Recursive autoregression",
+          "note": "Arithmetic residuals in K-groups encode patterns."
+        },
+        {
+          "id": "vector",
+          "label": "ARKA descriptor vector",
+          "note": "The molecule becomes numerical features."
+        },
+        {
+          "id": "model",
+          "label": "QSAR-related model",
+          "note": "A statistical or machine-learning model is fitted."
+        },
+        {
+          "id": "prediction",
+          "label": "Predicted endpoint",
+          "note": "Activity, property, or toxicity is estimated."
+        }
+      ],
+      "edges": [
+        {
+          "from": "molecule",
+          "to": "atoms",
+          "label": "describes"
+        },
+        {
+          "from": "atoms",
+          "to": "recursion",
+          "label": "encoded by"
+        },
+        {
+          "from": "recursion",
+          "to": "vector",
+          "label": "produces"
+        },
+        {
+          "from": "vector",
+          "to": "model",
+          "label": "feeds"
+        },
+        {
+          "from": "model",
+          "to": "prediction",
+          "label": "estimates"
+        }
+      ],
+      "caption": "ARKA descriptors convert molecular structure into numerical features for QSAR-related prediction."
+    }
+  },
   "related": [
     "a-r-d-prasad",
     "abeba-birhane",

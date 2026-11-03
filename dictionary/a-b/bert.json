@@ -2,13 +2,126 @@
   "term": "BERT",
   "letter": "B",
   "category": "Architecture",
-  "type": "concept",
+  "type": "architecture",
   "aka": [
     "Bidirectional Encoder Representations from Transformers"
   ],
   "definition": "A Transformer encoder pre-trained on masked language modeling that produced state-of-the-art contextual word representations.",
   "details": "BERT randomly masks tokens in unlabeled text and learns to predict them while attending to words on both sides, giving genuinely bidirectional context. After pre-training, a single BERT model can be fine-tuned to excel on many tasks, from question answering to sentiment analysis, without task-specific architectures.",
-  "story": "Think of an orchestra warming up: no single instrument carries the piece, but together they make the sound. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. The layout decides what the machine can even attempt, before it learns a single thing. The shape of the machine is half the idea. That blueprint is BERT.",
+  "explainer": {
+    "lead": "BERT learns what words mean from the sentences around them, paying attention to context on both sides. Once trained on unlabeled text, the same model can be adapted for tasks such as answering questions or judging sentiment.",
+    "tiers": {
+      "eli5": "Imagine reading a sentence with one word covered up and guessing it using the words before and after. BERT practices this puzzle on lots of text, so it learns useful connections between words. Afterward, it can get extra practice for a particular job, like answering questions or deciding whether a review sounds happy.",
+      "practitioner": "Start with a pre-trained BERT encoder and fine-tune it on labeled data for the target task, rather than building a separate architecture for question answering or sentiment analysis. Masked-token prediction is the pre-training objective; downstream fine-tuning uses the task's examples and labels. Its token representations are contextual, so the same word can be represented differently in different sentences.",
+      "paperLevel": "Given a token sequence x, randomly mask a set M of positions and train a Transformer encoder to maximize the sum over i in M of log P_theta(x_i | x_masked). Each position can attend to both left and right context, producing bidirectional contextual representations. The pre-trained parameters are then fine-tuned with a task objective, without requiring a task-specific architecture."
+    },
+    "example": "In “I sat on the river bank,” suppose “bank” is masked. BERT learns to predict it using both “I sat on the river” and the sentence's full context, rather than reading only from left to right. After pre-training, the model could instead be fine-tuned on labeled reviews to classify “The food was wonderful” as positive sentiment.",
+    "usedIn": [
+      {
+        "name": "Question answering",
+        "detail": "A pre-trained BERT model can be fine-tuned for question-answering tasks.",
+        "url": ""
+      },
+      {
+        "name": "Sentiment analysis",
+        "detail": "The same pre-trained model can be adapted to classify the sentiment expressed in text.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Unlabeled text provides the training examples.",
+        "detail": ""
+      },
+      {
+        "name": "Random masking hides selected tokens.",
+        "detail": ""
+      },
+      {
+        "name": "A Transformer encoder processes the whole sequence.",
+        "detail": ""
+      },
+      {
+        "name": "Masked-token prediction supplies the pre-training objective.",
+        "detail": ""
+      },
+      {
+        "name": "Fine-tuning adapts the model to a labeled task.",
+        "detail": ""
+      }
+    ],
+    "flow": [
+      "Select unlabeled text and randomly mask some tokens.",
+      "Encode the sequence while attending to words on both sides of each position.",
+      "Predict the hidden tokens and learn from prediction errors.",
+      "Fine-tune the resulting model for question answering, sentiment analysis, or another task."
+    ],
+    "origin": "BERT combines a Transformer encoder with pre-training through masked language modeling. Randomly hiding tokens and learning to recover them trains representations using genuinely bidirectional context.",
+    "lineage": "BERT's key shift is to learn contextual word representations once through pre-training and then transfer them through fine-tuning. One pre-trained model can therefore support multiple tasks without separate task-specific architectures.",
+    "whyItMatters": "It produced state-of-the-art contextual word representations while separating general language pre-training from task-specific adaptation. This made one pre-trained model reusable across substantially different language tasks.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "text",
+          "label": "Unlabeled text",
+          "note": "Provides token sequences for pre-training."
+        },
+        {
+          "id": "mask",
+          "label": "Random token masking",
+          "note": "Hides selected tokens to create prediction targets."
+        },
+        {
+          "id": "encoder",
+          "label": "Transformer encoder",
+          "note": "Attends to context on both sides."
+        },
+        {
+          "id": "predict",
+          "label": "Masked-token predictions",
+          "note": "Learns to recover the hidden tokens."
+        },
+        {
+          "id": "pretrained",
+          "label": "Pre-trained BERT",
+          "note": "Contains reusable contextual representations."
+        },
+        {
+          "id": "tasks",
+          "label": "Fine-tuned tasks",
+          "note": "Adapts one model to question answering or sentiment analysis."
+        }
+      ],
+      "edges": [
+        {
+          "from": "text",
+          "to": "mask",
+          "label": "token sequences"
+        },
+        {
+          "from": "mask",
+          "to": "encoder",
+          "label": "masked input"
+        },
+        {
+          "from": "encoder",
+          "to": "predict",
+          "label": "context"
+        },
+        {
+          "from": "predict",
+          "to": "pretrained",
+          "label": "pre-training"
+        },
+        {
+          "from": "pretrained",
+          "to": "tasks",
+          "label": "fine-tuning"
+        }
+      ],
+      "caption": "BERT pre-trains by recovering masked tokens with bidirectional context, then fine-tunes the same model for downstream tasks."
+    }
+  },
   "related": [
     "bi-encoder",
     "cross-encoder",

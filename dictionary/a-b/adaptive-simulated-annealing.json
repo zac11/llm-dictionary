@@ -5,7 +5,139 @@
   "type": "algorithm",
   "definition": "Adaptive simulated annealing (ASA) is a variant of simulated annealing (SA) algorithm in which the algorithm parameters that control temperature schedule and random step selection are automatically adjusted according to algorithm progress.",
   "details": "This makes the algorithm more efficient and less sensitive to user defined parameters than canonical SA. These are in the standard variant often selected on the basis of experience and experimentation (since optimal values are problem dependent), which represents a significant deficiency in practice. The algorithm works by representing the parameters of the function to be optimized as continuous numbers, and as dimensions of a hypercube (N dimensional space). Some SA algorithms apply Gaussian moves to the state, while others have distributions permitting faster temperature schedules. Imagine the state as a point in a box and the moves as a rugby-ball shaped cloud around it. The temperature and the step size are adjusted so that all of the search space is sampled to a coarse resolution in the early stages, whilst the state is directed to favorable areas in the late stages. Another ASA variant, thermodynamic simulated annealing, automatically adjusts the temperature at each step based on the energy difference between the two states, according to the laws of thermodynamics.",
-  "story": "Think of an orchestra warming up: no single instrument carries the piece, but together they make the sound. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. The layout decides what the machine can even attempt, before it learns a single thing. The shape of the machine is half the idea. That blueprint is Adaptive simulated annealing.",
+  "explainer": {
+    "lead": "Adaptive simulated annealing is a self-tuning version of simulated annealing that removes the painful guesswork of setting temperature schedules and step sizes by hand. It watches its own progress and tightens or loosens its search strategy automatically, making it more practical for real optimization problems where the right parameters are unknown.",
+    "tiers": {
+      "eli5": "Imagine you're trying to find the lowest point in a hilly landscape while blindfolded. Regular simulated annealing makes big jumps at first, then small ones, but someone has to guess how big and how fast to shrink them. ASA is like having smart boots that feel how well you're doing and adjust their own bounciness—big leaps when you're clueless, careful steps when you're close to the bottom.",
+      "practitioner": "Use ASA when you need to optimize a continuous, potentially non-convex function and don't have time to hand-tune annealing parameters for each new problem. It represents parameters as coordinates in an N-dimensional hypercube and adjusts temperature and step size so early exploration covers the whole space coarsely while later stages refine promising regions. Pitfalls: the extra adaptation logic adds overhead, and for very high-dimensional or heavily constrained problems you may still need problem-specific move distributions.",
+      "paperLevel": "ASA extends canonical SA by treating the cooling schedule and random-step distribution as dynamic quantities adjusted based on algorithm progress. The state is represented as a point in an N-dimensional hypercube with continuous parameters; moves are drawn from distributions (Gaussian or others permitting faster schedules) shaped like a rugby-ball cloud around the current state. A thermodynamic variant adjusts temperature at each step according to the energy difference between states via thermodynamic laws. No originating author or publication year is named in the sources."
+    },
+    "example": "Minimize f(x,y) = x² + y² + 5·sin(3x)·sin(3y) on [-5,5]×[-5,5]. Start at (4, -3). ASA begins with high temperature T=10 and large step size σ=2, accepting many uphill moves to escape the sin-induced local minima. After 500 evaluations, it detects improving trends and lowers T to 1, σ to 0.5. By 2000 evaluations, T=0.01 and σ=0.05, fine-tuning near the global minimum at approximately (0,0) with f≈0.",
+    "usedIn": [
+      {
+        "name": "Continuous global optimization",
+        "detail": "Problems where gradient-based methods get trapped in local minima",
+        "url": ""
+      },
+      {
+        "name": "Engineering design",
+        "detail": "Parameter tuning when objective function evaluations are expensive",
+        "url": ""
+      },
+      {
+        "name": "Thermodynamic simulated annealing variant",
+        "detail": "Physics-inspired problems where energy differences are meaningful",
+        "url": ""
+      }
+    ],
+    "goal": "Find the global minimum (or near-minimum) of a continuous function without requiring hand-tuned annealing parameters.",
+    "inputs": [
+      "A continuous objective function to minimize",
+      "Initial parameter values (starting point in N-dimensional space)",
+      "Bounds defining the hypercube search space"
+    ],
+    "outputs": [
+      "Optimized parameter values",
+      "Corresponding objective function value",
+      "Adapted temperature and step-size history"
+    ],
+    "steps": [
+      "Initialize the state as a point in the N-dimensional hypercube and set initial temperature and step size",
+      "Generate a candidate move from a distribution (e.g., Gaussian or faster-permitting) centered on the current state",
+      "Evaluate the objective function at the candidate state and compute the energy difference",
+      "Accept or reject the move using the Metropolis criterion with current temperature",
+      "Adapt temperature and step size based on algorithm progress (acceptance rate, energy trends, or thermodynamic laws)",
+      "Repeat until convergence criteria are met, with coarse global sampling early and refined local search late"
+    ],
+    "tradeoffs": [
+      "More efficient and less sensitive to user parameters than canonical SA, but adaptation logic adds computational overhead",
+      "Automatic adjustment removes manual tuning burden, yet the adaptation rules themselves introduce new design choices",
+      "Coarse-to-fine sampling balances global exploration and local exploitation, though very high-dimensional spaces may still challenge convergence"
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "init",
+          "label": "Initialize state",
+          "note": "Random start point in hypercube, set T and step size"
+        },
+        {
+          "id": "move",
+          "label": "Generate move",
+          "note": "Sample from rugby-ball distribution around current state"
+        },
+        {
+          "id": "eval",
+          "label": "Evaluate energy",
+          "note": "Compute objective at candidate point"
+        },
+        {
+          "id": "accept",
+          "label": "Accept/reject",
+          "note": "Metropolis criterion with current temperature"
+        },
+        {
+          "id": "adapt",
+          "label": "Adapt parameters",
+          "note": "Auto-adjust T and step size based on progress"
+        },
+        {
+          "id": "converge",
+          "label": "Converged?",
+          "note": "Check stopping criteria; loop or finish"
+        },
+        {
+          "id": "output",
+          "label": "Return optimum",
+          "note": "Best found state and adapted schedule"
+        }
+      ],
+      "edges": [
+        {
+          "from": "init",
+          "to": "move",
+          "label": "first step"
+        },
+        {
+          "from": "move",
+          "to": "eval",
+          "label": "candidate"
+        },
+        {
+          "from": "eval",
+          "to": "accept",
+          "label": "energy diff"
+        },
+        {
+          "from": "accept",
+          "to": "adapt",
+          "label": "after decision"
+        },
+        {
+          "from": "adapt",
+          "to": "converge",
+          "label": "check"
+        },
+        {
+          "from": "converge",
+          "to": "move",
+          "label": "continue"
+        },
+        {
+          "from": "converge",
+          "to": "output",
+          "label": "done"
+        }
+      ],
+      "caption": "The ASA loop: each iteration generates, evaluates, and accepts or rejects a move, then automatically adapts temperature and step size before deciding whether to continue."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Adaptive simulated annealing",
+        "url": "https://en.wikipedia.org/wiki/Adaptive_simulated_annealing"
+      }
+    ]
+  },
   "related": [
     "simulated-annealing",
     "adaptive-coordinate-descent",

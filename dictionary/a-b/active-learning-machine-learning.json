@@ -5,7 +5,119 @@
   "type": "concept",
   "definition": "Active learning is a special case of machine learning in which a learning algorithm can interactively query a human user (or some other information source) to label new data points with the desired outputs.",
   "details": "The human user must possess expertise in the problem domain, including the ability to consult authoritative sources when necessary. In statistics literature, it is sometimes also called optimal experimental design. The information source is also called teacher or oracle. There are situations in which unlabeled data is abundant but manual labeling is expensive. In such a scenario, learning algorithms can actively query the teacher for labels. Since the learner chooses the examples, the number of examples to learn a concept can often be much lower than the number required in normal supervised learning. However, there is a risk that the algorithm is overwhelmed by uninformative examples. Recent developments are dedicated to multi-label active learning, hybrid active learning and active learning in a single-pass (on-line) context, combining concepts from the field of machine learning (e.g. conflict and ignorance) with adaptive, incremental learning policies in the field of online machine learning. Using active learning allows for faster development of a machine learning algorithm, when comparative updates would require a quantum or super computer. Large-scale active learning projects may benefit from crowdsourcing frameworks such as Amazon Mechanical Turk that include many humans in the active learning loop.",
-  "story": "Picture an architect laying out a building where every room has to know which other rooms matter to it. The layout decides what the machine can even attempt, before it learns a single thing. It is the blueprint that makes everything else possible. It is the difference between a row of isolated cubicles and one big room where everyone can hear each other. And that shape of the machine — Active learning (machine learning) — is what makes everything else possible.",
+  "explainer": {
+    "lead": "Active learning is a way to teach machines with less human effort by letting the machine choose which examples it needs labeled. Instead of blindly labeling thousands of random items, the algorithm asks targeted questions, like a student who raises their hand only on the topics they find confusing.",
+    "tiers": {
+      "eli5": "Imagine you're trying to learn which animals are mammals. Instead of your teacher showing you every animal in the zoo, you look at all the animals yourself and only ask about the tricky ones—like the platypus. Active learning works the same way: the computer picks the examples it's most unsure about and asks a human expert to label just those.",
+      "practitioner": "Active learning is deployed when unlabeled data is plentiful but annotation is costly, such as in medical imaging or NLP. Common implementations use uncertainty sampling (querying points where model confidence is lowest) or query-by-committee (disagreement among an ensemble). Pitfalls include sampling bias—getting stuck on outliers that are informative but unrepresentative—and the cold-start problem, where early model uncertainty is poorly calibrated. Pool-based sampling dominates in practice, though stream-based methods suit real-time feeds. Tools like scikit-learn-compatible libraries or custom loops around Amazon Mechanical Turk are typical.",
+      "paperLevel": "Formally, given a total set T partitioned into labeled T_K,i, unlabeled T_U,i, and candidate T_C,i at iteration i, the learner selects a query strategy to minimize the expected generalization error. The learner interacts with an oracle (teacher) that returns labels y for queried x ∈ T_C,i. Key strategies include uncertainty sampling (argmin_x P(ŷ|x)), expected model change, and expected error reduction. The field draws on optimal experimental design from statistics. Recent work addresses multi-label settings, hybrid active learning, and online single-pass variants combining conflict and ignorance metrics with adaptive incremental policies."
+    },
+    "example": "A hospital has 100,000 unlabeled chest X-rays but only budget to have radiologists label 500. An active learning system first trains on 50 randomly labeled scans, then identifies the 450 images where its predictions are most uncertain—perhaps a mix of ambiguous shadows and rare conditions. After radiologists label these, the model reaches accuracy comparable to training on 5,000 random labels, saving 90% of annotation cost.",
+    "usedIn": [
+      {
+        "name": "Protein engineering",
+        "detail": "Identifying which proteins to test for interesting activity from a vast pool of candidates",
+        "url": ""
+      },
+      {
+        "name": "Crowdsourced labeling",
+        "detail": "Large projects using Amazon Mechanical Turk to include many humans in the active learning loop",
+        "url": ""
+      },
+      {
+        "name": "Medical diagnosis",
+        "detail": "Selecting which patient cases need expert physician review when unlabeled scans are abundant",
+        "url": ""
+      }
+    ],
+    "intuition": "The best way to learn isn't always to study everything—it's to study what you don't understand yet. Active learning gives machines the ability to ask for help strategically, making each human label count for more.",
+    "howItWorks": [
+      "Start with a small labeled dataset and train an initial model.",
+      "Use the model to evaluate all unlabeled data and score each point by how informative it would be to label.",
+      "Select the most informative points according to a query strategy (uncertainty, expected error reduction, etc.).",
+      "Ask the human oracle (teacher) to label only those selected points.",
+      "Retrain the model with the new labels and repeat until performance is satisfactory or budget is exhausted."
+    ],
+    "whyItMatters": "Labeling data is often the most expensive part of building machine learning systems. Active learning can reduce the number of labels needed by an order of magnitude, making AI feasible in domains where expert time is scarce or costly.",
+    "misconceptions": [
+      "Active learning is the same as online learning—online learning updates models continuously as data streams in, while active learning specifically chooses which data to get labeled.",
+      "The algorithm always knows the right questions to ask—early in training, the model's uncertainty may be poorly calibrated, leading to uninformative queries.",
+      "Active learning eliminates the need for human experts—it actually depends heavily on them, just uses their time more efficiently."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "unlabeled-pool",
+          "label": "Unlabeled data pool",
+          "note": "Large set of data without labels"
+        },
+        {
+          "id": "model",
+          "label": "Current model",
+          "note": "Trained on labeled data so far"
+        },
+        {
+          "id": "scorer",
+          "label": "Query strategy",
+          "note": "Ranks unlabeled points by informativeness"
+        },
+        {
+          "id": "selector",
+          "label": "Point selector",
+          "note": "Chooses top-k most informative points"
+        },
+        {
+          "id": "oracle",
+          "label": "Human oracle",
+          "note": "Expert who provides labels"
+        },
+        {
+          "id": "labeled-set",
+          "label": "Labeled dataset",
+          "note": "Growing set of labeled examples"
+        }
+      ],
+      "edges": [
+        {
+          "from": "unlabeled-pool",
+          "to": "scorer",
+          "label": "evaluated by"
+        },
+        {
+          "from": "model",
+          "to": "scorer",
+          "label": "provides predictions"
+        },
+        {
+          "from": "scorer",
+          "to": "selector",
+          "label": "ranked scores"
+        },
+        {
+          "from": "selector",
+          "to": "oracle",
+          "label": "queries labels for"
+        },
+        {
+          "from": "oracle",
+          "to": "labeled-set",
+          "label": "returns labels"
+        },
+        {
+          "from": "labeled-set",
+          "to": "model",
+          "label": "retrains"
+        }
+      ],
+      "caption": "The active learning loop: the model evaluates unlabeled data, the query strategy selects the most informative points, the human oracle labels them, and the model retrains."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Active learning (machine learning)",
+        "url": "https://en.wikipedia.org/wiki/Active_learning_(machine_learning)"
+      }
+    ]
+  },
   "related": [
     "active-learning",
     "machine-learning",

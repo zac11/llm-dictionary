@@ -5,7 +5,97 @@
   "type": "concept",
   "definition": "In mathematical optimization, Bland's rule (also known as Bland's algorithm, Bland's anti-cycling rule or Bland's pivot rule) is an algorithmic refinement of the simplex method for linear optimization.",
   "details": "With Bland's rule, the simplex algorithm solves feasible linear optimization problems without cycling. The original simplex algorithm starts with an arbitrary basic feasible solution, and then changes the basis in order to decrease the minimization target and find an optimal solution. Usually, the target indeed decreases in every step, and thus after a bounded number of steps an optimal solution is found. However, there are examples of degenerate linear programs, on which the original simplex algorithm cycles forever. It gets stuck at a basic feasible solution (a corner of the feasible polytope) and changes bases in a cyclic way without decreasing the minimization target. Such cycles are avoided by Bland's rule for choosing a column to enter and a column to leave the basis. Bland's rule was developed by Robert G. Bland while he was a research fellow at the Center for Operations Research and Econometrics in Belgium.",
-  "story": "Imagine teaching a friend to shoot a basketball. They miss, and you walk them backwards through the shot — elbow, wrist, release — to find what needs fixing. It is the same loop you use to learn anything: try, miss, correct, try again. Underneath all the magic is a patient process of small improvements. It is learning from every miss instead of repeating the same mistake. And that is Bland's rule — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "Some linear optimization problems can make the simplex method repeat the same bases forever without improving the answer. Bland's rule tells the method which columns to bring into and remove from the basis, preventing those loops so feasible problems can be solved without cycling.",
+    "tiers": {
+      "eli5": "Imagine following directions around a table, only to keep returning to the same seat without getting any closer to your goal. Bland's rule changes how each move is chosen so the search cannot keep going around in that circle. This lets it finish instead of repeating the same moves forever.",
+      "practitioner": "Use Bland's rule as the pivot-selection policy within a simplex implementation when cycling on degenerate linear programs is a concern. It governs both the entering and leaving columns, rather than replacing the simplex algorithm. Its purpose is to prevent endless basis cycles, not to guarantee that the minimization target decreases at every individual step.",
+      "paperLevel": "Bland's rule refines the simplex method by specifying the entering column and leaving column at each basis change. For feasible linear optimization problems, this prevents the cyclic basis sequences that can occur in degenerate programs while the minimization target does not decrease. It was developed by Robert G. Bland while he was a research fellow at the Center for Operations Research and Econometrics in Belgium."
+    },
+    "example": "Suppose a degenerate program makes a simplex run revisit bases B1, B2, B3, then B1 again, all at the same corner and with no decrease in the minimization target. Bland's rule changes the entering and leaving column choices so this repeating basis sequence cannot continue indefinitely, allowing the algorithm to proceed toward an optimal solution.",
+    "usedIn": [
+      {
+        "name": "Linear optimization",
+        "detail": "Prevents cycling when the simplex method is applied to feasible problems.",
+        "url": ""
+      },
+      {
+        "name": "Simplex-method implementations",
+        "detail": "Supplies the entering- and leaving-column choices as a refinement of the original algorithm.",
+        "url": ""
+      }
+    ],
+    "intuition": "A degenerate problem can let the simplex method change bases repeatedly while staying at the same corner and making no progress. Bland's rule constrains those basis changes so the algorithm cannot fall into such a cycle.",
+    "howItWorks": [
+      "Start with a basic feasible solution.",
+      "Choose a column to enter the basis using Bland's rule.",
+      "Choose a column to leave the basis using the same refinement.",
+      "Update the basis and repeat until an optimal solution is found, without cycling."
+    ],
+    "whyItMatters": "It closes a termination gap in the original simplex method: degenerate linear programs no longer cause endless cycling when the rule is used. This makes the simplex procedure dependable for feasible linear optimization problems.",
+    "misconceptions": [
+      "It is not a replacement for the simplex method; it only refines how pivots are chosen.",
+      "Cycling is a problem associated with degenerate linear programs, not something every linear program exhibits.",
+      "Preventing cycles does not mean the minimization target must decrease at every step."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "start",
+          "label": "Basic feasible solution",
+          "note": "Begin at a corner of the feasible polytope."
+        },
+        {
+          "id": "enter",
+          "label": "Choose entering column",
+          "note": "Apply Bland's rule."
+        },
+        {
+          "id": "leave",
+          "label": "Choose leaving column",
+          "note": "Apply Bland's rule again."
+        },
+        {
+          "id": "update",
+          "label": "Update basis",
+          "note": "Move to the next basis without cycling."
+        },
+        {
+          "id": "optimum",
+          "label": "Optimal solution",
+          "note": "Stop when the optimum is found."
+        }
+      ],
+      "edges": [
+        {
+          "from": "start",
+          "to": "enter",
+          "label": ""
+        },
+        {
+          "from": "enter",
+          "to": "leave",
+          "label": ""
+        },
+        {
+          "from": "leave",
+          "to": "update",
+          "label": ""
+        },
+        {
+          "from": "update",
+          "to": "enter",
+          "label": "repeat"
+        },
+        {
+          "from": "update",
+          "to": "optimum",
+          "label": "when found"
+        }
+      ],
+      "caption": "Bland's rule controls both pivot choices inside the repeating simplex-method loop."
+    }
+  },
   "related": [
     "association-rule-learning",
     "cunningham-s-rule",

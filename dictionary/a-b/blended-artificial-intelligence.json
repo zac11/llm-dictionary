@@ -5,7 +5,85 @@
   "type": "concept",
   "definition": "Blended artificial intelligence (blended AI) refers to the blending of different artificial intelligence techniques or approaches to achieve more robust and practical solutions.",
   "details": "It involves integrating multiple AI models, algorithms, and technologies to leverage their respective strengths and compensate for their weaknesses.",
-  "story": "Picture an engineer at a cluttered workbench, turning a clever idea over in their hands until it finally clicks. At its heart it is a simple notion, once you strip away the fancy name. A small key that opens a much bigger door. It is one of those ideas that feels obvious only after someone shows it to you. And that idea, made concrete, is Blended artificial intelligence.",
+  "explainer": {
+    "lead": "Blended AI is a system-design approach that combines several AI techniques instead of relying on one method alone. The aim is to make practical systems more capable or dependable by letting each component handle the part of a problem it suits best.",
+    "tiers": {
+      "eli5": "Blended AI is like asking a team to solve a puzzle: one person is good at spotting patterns, another remembers facts, and another checks the rules. A computer system can work the same way, using different AI methods together and combining their answers. The team can do a better job than any one member working alone, although it can still make mistakes.",
+      "practitioner": "Apply blended AI when no single model covers the whole task: combine components through routing, voting, confidence thresholds, or rule-based decision logic. Evaluate the complete pipeline as well as each component, because errors can compound and weak components may fail together. The extra integration also brings more latency, maintenance, and failure modes to manage.",
+      "paperLevel": "In plain-text notation, let M1, M2, ..., Mn be different models or algorithms, and let B be a combination function: output = B(M1(x), M2(x), ..., Mn(x), x). Blending is intended to exploit complementary strengths and offset weaknesses, but it does not guarantee robustness. Its limits include integration complexity, interaction between component errors, and the difficulty of validating the combined system."
+    },
+    "example": "A customer-support triage system could use rules to recognize clear account-closure requests, a language model to classify less predictable messages, and a retrieval component to find relevant policy text. Combination logic would then choose a queue and suggested response, while sending low-confidence or conflicting cases to a human reviewer.",
+    "intuition": "Different methods are good at different parts of a problem, so a combined system can cover gaps that a single method leaves. The key is not simply adding more models, but coordinating them so their outputs contribute usefully to one result.",
+    "howItWorks": [
+      "Break the task into parts that may need different techniques.",
+      "Assign those parts to suitable models, algorithms, or other technologies.",
+      "Pass the same input or intermediate results through the components as needed.",
+      "Combine their outputs using rules, routing, confidence checks, or another decision method.",
+      "Test the complete system, including cases where components disagree or fail."
+    ],
+    "whyItMatters": "Real tasks often contain a mixture of clear rules, ambiguous inputs, and specialized subproblems. Blending methods can make a system more practical than forcing one technique to handle all of them, provided the added complexity is justified and tested.",
+    "misconceptions": [
+      "It is not a guarantee of accuracy or robustness; combined components can still share blind spots or amplify one another's errors.",
+      "It is not just using several models at once: their roles and outputs must be integrated to solve a common task."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Task input",
+          "note": "The problem or data to process"
+        },
+        {
+          "id": "rules",
+          "label": "Rule component",
+          "note": "Handles well-defined cases"
+        },
+        {
+          "id": "model",
+          "label": "Learned model",
+          "note": "Handles pattern-based cases"
+        },
+        {
+          "id": "combiner",
+          "label": "Combination logic",
+          "note": "Routes or merges component outputs"
+        },
+        {
+          "id": "output",
+          "label": "System output",
+          "note": "One decision or result"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "rules",
+          "label": "input"
+        },
+        {
+          "from": "input",
+          "to": "model",
+          "label": "input"
+        },
+        {
+          "from": "rules",
+          "to": "combiner",
+          "label": "result"
+        },
+        {
+          "from": "model",
+          "to": "combiner",
+          "label": "result"
+        },
+        {
+          "from": "combiner",
+          "to": "output",
+          "label": "decision"
+        }
+      ],
+      "caption": "Different components process the task, and combination logic turns their contributions into a single system output."
+    }
+  },
   "related": [
     "artificial-intelligence",
     "aaai-conference-on-artificial-intelligence",

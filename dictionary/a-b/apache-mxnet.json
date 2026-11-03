@@ -5,7 +5,114 @@
   "type": "tool",
   "definition": "Apache MXNet is an open-source deep learning software framework that trains and deploys deep neural networks.",
   "details": "It aims to be scalable, allows fast model training, and supports a flexible programming model and multiple programming languages (including C++, Python, Java, Julia, MATLAB, JavaScript, Go, R, Scala, Perl, and Wolfram Language). The MXNet library is portable and can scale to multiple GPUs and machines. It was co-developed by Carlos Guestrin at the University of Washington, along with GraphLab. As of September 2023, it is no longer actively developed. Apache MXNet was effectively abandoned due to a combination of factors including lack of significant contributions, outdated builds, and a shift in focus by its major backer, Amazon, towards other frameworks like PyTorch. The project saw no new releases for over a year, and there were very few pull requests or updates from contributors, leading to its move to the Apache Attic in 2023. Additionally, the community began migrating to other frameworks that offered more robust support and development activity.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. That steady, miss-by-miss improvement is Apache MXNet.",
+  "explainer": {
+    "lead": "Apache MXNet is an open-source framework for building, training, and running deep neural networks. It was designed to make the same model portable across programming languages and scalable from one computer to many GPUs or machines. It is no longer actively developed and moved to the Apache Attic in 2023.",
+    "tiers": {
+      "eli5": "MXNet is like a set of building tools for teaching computer programs to recognize patterns, such as objects in pictures. You can build on one computer, then use several computers together to finish the work faster. The finished program can also be packed up to run on smaller devices like phones. The tools are no longer being actively updated.",
+      "practitioner": "MXNet supports imperative and symbolic model development, distributed training through a parameter server, and deployment to GPUs, CPUs, mobile devices, IoT devices, serverless functions, and containers. Engineers can use Python and several other front-end languages, with C++ handling back-end optimization. Its debugging features include checkpoints, hyperparameter changes, and early stopping, but outdated builds and the end of active development are major concerns for ongoing work.",
+      "paperLevel": "Apache MXNet is an open-source deep learning framework for training and deploying deep neural networks, including convolutional neural networks and long short-term memory networks. It supports imperative and symbolic programming and distributes computation with a parameter server based on research at Carnegie Mellon University, Baidu, and Google. With multiple GPUs or CPUs, it can approach linear scaling, while Amalgamation enables model deployment to resource-limited devices. Its known practical limitation is that development effectively ended, with the project entering the Apache Attic in 2023."
+    },
+    "example": "A team could define a convolutional neural network in Python, train it on a GPU-based cluster, and distribute the work across multiple GPUs or machines using MXNet's parameter server. After saving checkpoints during training, the team could use Amalgamation to deploy the trained model for inference on a mobile device with a weaker CPU and limited memory.",
+    "usedIn": [
+      {
+        "name": "Amazon Web Services",
+        "detail": "Provides public-cloud support for MXNet; deployment options include AWS Greengrass for IoT devices and AWS Lambda for serverless computing.",
+        "url": ""
+      },
+      {
+        "name": "Microsoft Azure",
+        "detail": "Supports MXNet as a public cloud provider.",
+        "url": ""
+      },
+      {
+        "name": "Mobile and IoT inference",
+        "detail": "Trained models can run on devices with weaker CPUs or limited memory, including mobile devices through Amalgamation and IoT devices through AWS Greengrass.",
+        "url": ""
+      }
+    ],
+    "intuition": "MXNet separates the description and training of a neural network from the hardware it runs on. That lets a developer train a model across multiple processors or machines and then deploy the trained model in a smaller, less powerful environment.",
+    "howItWorks": [
+      "Define a neural network, such as a CNN or LSTM, using imperative or symbolic programming.",
+      "Write the front end in a supported language such as Python, R, Scala, Julia, or JavaScript, with C++ optimizing the back end.",
+      "Train on CPUs or GPUs, using a distributed parameter server to spread work across machines when needed.",
+      "Track and debug training, save checkpoints, change hyperparameters, or stop early.",
+      "Deploy the trained model to cloud infrastructure, containers, serverless functions, or resource-limited devices."
+    ],
+    "whyItMatters": "MXNet brought language flexibility, distributed training, and portable deployment into one deep learning framework. Its retirement also illustrates why contributor activity, current builds, and ongoing backing matter when choosing software for a long-lived project.",
+    "misconceptions": [
+      "MXNet is not itself a neural network; it is a framework for training and deploying networks such as CNNs and LSTMs.",
+      "Scaling across machines does not require symbolic programming alone, because MXNet supports both symbolic and imperative styles.",
+      "Availability through cloud providers does not mean the project is still actively developed."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "model",
+          "label": "Model definition",
+          "note": "A CNN or LSTM written imperatively or symbolically"
+        },
+        {
+          "id": "frontend",
+          "label": "Language front end",
+          "note": "Python, R, Scala, Julia, and other supported languages"
+        },
+        {
+          "id": "backend",
+          "label": "C++ back end",
+          "note": "Optimizes framework computation"
+        },
+        {
+          "id": "training",
+          "label": "Distributed training",
+          "note": "Uses CPUs, GPUs, and a parameter server"
+        },
+        {
+          "id": "trained",
+          "label": "Trained model",
+          "note": "Checkpoints preserve the trained result"
+        },
+        {
+          "id": "deployment",
+          "label": "Deployment targets",
+          "note": "Cloud, containers, serverless, mobile, or IoT"
+        }
+      ],
+      "edges": [
+        {
+          "from": "model",
+          "to": "frontend",
+          "label": "defined through"
+        },
+        {
+          "from": "frontend",
+          "to": "backend",
+          "label": "calls"
+        },
+        {
+          "from": "backend",
+          "to": "training",
+          "label": "executes"
+        },
+        {
+          "from": "training",
+          "to": "trained",
+          "label": "produces"
+        },
+        {
+          "from": "trained",
+          "to": "deployment",
+          "label": "runs on"
+        }
+      ],
+      "caption": "MXNet connects a model definition to optimized training and then carries the trained model to a deployment target."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Apache MXNet",
+        "url": "https://en.wikipedia.org/wiki/Apache_MXNet"
+      }
+    ]
+  },
   "related": [
     "apache-singa",
     "adobe-firefly",

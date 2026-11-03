@@ -5,7 +5,80 @@
   "type": "benchmark",
   "definition": "Humanity's Last Exam (HLE) is a language model benchmark consisting of 2,500 questions across a broad range of subjects.",
   "details": "It was created jointly by the Center for AI Safety and Scale AI and publicly released in January 2025.",
-  "story": "Imagine learning a language by reading every book in the library and noticing, over time, which words travel together. It does not memorize a rulebook; it absorbs a library. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It is fluency built from pattern, not from memorized rules. And that is Humanity's Last Exam — teaching a machine to read between the lines.",
+  "explainer": {
+    "lead": "Humanity's Last Exam (HLE) is a 2,500-question test for language models, covering a broad range of subjects. It gives researchers a common way to compare how accurately different models answer demanding questions.",
+    "tiers": {
+      "eli5": "HLE is like one giant school quiz with 2,500 questions from many subjects. Different language models take the same quiz, and their scores show how many answers they get right.",
+      "practitioner": "Use HLE to compare language models on the same fixed set of 2,500 questions and report the proportion answered correctly. Break results down by subject where possible, because a single overall score can conceal uneven performance.",
+      "paperLevel": "Let Q be HLE's set of 2,500 questions; for model outputs a_q and reference answers r_q, accuracy = (1/2500) * sum over q in Q of I(a_q = r_q). HLE was created jointly by the Center for AI Safety and Scale AI and publicly released in January 2025."
+    },
+    "example": "If a model answers 2,000 of the 2,500 questions correctly, its accuracy is 2,000 / 2,500 = 0.80, or 80%.",
+    "usedIn": [
+      {
+        "name": "Language model evaluation",
+        "detail": "Provides a shared question set for comparing answer accuracy across models.",
+        "url": ""
+      },
+      {
+        "name": "Cross-subject question answering",
+        "detail": "Tests performance across a broad range of subjects rather than one narrow domain.",
+        "url": ""
+      }
+    ],
+    "measures": "HLE measures how accurately a language model answers its 2,500 questions across a broad range of subjects.",
+    "howScored": [
+      "Give each model the same set of questions.",
+      "Compare its answers with the correct answers.",
+      "Report the proportion of questions answered correctly."
+    ],
+    "formula": "accuracy = correct answers / total questions",
+    "caveats": [
+      "One overall accuracy score can hide large differences between subjects.",
+      "Scores describe performance on this fixed question set, not every aspect of real-world usefulness."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "questions",
+          "label": "2,500 questions",
+          "note": "A broad range of subjects"
+        },
+        {
+          "id": "model",
+          "label": "Language model",
+          "note": "Produces an answer to each question"
+        },
+        {
+          "id": "comparison",
+          "label": "Answer comparison",
+          "note": "Checks answers against correct answers"
+        },
+        {
+          "id": "score",
+          "label": "Accuracy score",
+          "note": "Correct answers divided by total questions"
+        }
+      ],
+      "edges": [
+        {
+          "from": "questions",
+          "to": "model",
+          "label": "prompts"
+        },
+        {
+          "from": "model",
+          "to": "comparison",
+          "label": "answers"
+        },
+        {
+          "from": "comparison",
+          "to": "score",
+          "label": "correct count"
+        }
+      ],
+      "caption": "HLE turns a fixed set of 2,500 questions into a comparable accuracy score."
+    }
+  },
   "related": [
     "ai-tiger",
     "alice-ai-ai-model-family",

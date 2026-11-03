@@ -5,7 +5,109 @@
   "type": "concept",
   "definition": "Adaptive resonance theory (ART) is a theory developed by Stephen Grossberg and Gail Carpenter on aspects of how the brain processes information.",
   "details": "It describes a number of artificial neural network models which use supervised and unsupervised learning methods, and address problems such as pattern recognition and prediction. The primary intuition behind the ART model is that object identification and recognition generally occur as a result of the interaction of 'top-down' observer expectations with 'bottom-up' sensory information. The model postulates that 'top-down' expectations take the form of a memory template or prototype that is then compared with the actual features of an object as detected by the senses. This comparison gives rise to a measure of category belongingness. As long as this difference between sensation and expectation does not exceed a set threshold called the 'vigilance parameter', the sensed object will be considered a member of the expected class. The system thus offers a solution to the 'plasticity/stability' problem, i.e. the problem of acquiring new knowledge without disrupting existing knowledge that is also called incremental learning.",
-  "story": "Think of an orchestra warming up: no single instrument carries the piece, but together they make the sound. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. The layout decides what the machine can even attempt, before it learns a single thing. The shape of the machine is half the idea. That blueprint is Adaptive resonance theory.",
+  "explainer": {
+    "lead": "Adaptive resonance theory is a brain-inspired approach to machine learning that lets a computer recognize patterns without forgetting what it already knows. It solves a stubborn problem: how to keep learning new things without wiping out old memories.",
+    "tiers": {
+      "eli5": "Imagine sorting toys into boxes. Most kids either use too few boxes and mix everything up, or keep making new boxes until they have hundreds. ART is like a smart sorting system that checks if a toy fits an existing box well enough before deciding to make a new one. It uses a 'close enough' rule so you don't end up with a mess or a million boxes.",
+      "practitioner": "ART networks are used when you need online clustering or classification that won't suffer catastrophic forgetting. Common variants include ART 1 for binary data, ART 2/2-A for continuous vectors, and Fuzzy ARTMAP for supervised tasks. The vigilance parameter is your main knob: tune it high for fine-grained categories, low for broader groupings. Watch out for order-dependency in Fuzzy ART and ART 1—training sequence affects the learned categories, and consistency is not guaranteed. For noisy data, consider Gaussian ART or TopoART instead of standard Fuzzy ART.",
+      "paperLevel": "ART is formally defined by coupled differential equations governing a comparison field F1 and recognition field F2, with bottom-up adaptive filters W^{ij} and top-down expectations W^{ji}. The resonance condition requires the match function |x ∧ w|/|x| ≥ ρ, where ρ ∈ [0,1] is the vigilance parameter, x is the input vector, w is the prototype, and ∧ denotes the fuzzy AND (component-wise minimum). When resonance fails, a reset mechanism triggers search through the F2 field until either resonance occurs or an uncommitted node is recruited. Originating work: Grossberg and Carpenter, beginning with ART 1 (1987). Known limits: Fuzzy ART and ART 1 lack statistical consistency due to order-dependent category formation; this is mitigated in TopoART and Hypersphere TopoART via cluster summarization."
+    },
+    "example": "A factory sorts widgets by shape using a camera that outputs continuous feature vectors. With vigilance set to 0.7, the system sees its first widget and commits neuron A to that shape. A second, slightly different widget arrives: its match to A is 0.75, above vigilance, so A's prototype loosens to accommodate both. A third widget arrives with sharp corners; its match to A is only 0.6, below vigilance. Neuron A is reset, no other committed neuron matches, so uncommitted neuron B learns this new shape. The system now has two stable categories without ever retraining from scratch.",
+    "usedIn": [
+      {
+        "name": "Cognitive neuroscience modeling",
+        "detail": "Used to simulate how biological brains balance learning new patterns with stabilizing existing memories",
+        "url": ""
+      },
+      {
+        "name": "Real-time pattern recognition systems",
+        "detail": "Deployed in settings requiring incremental learning without retraining from scratch",
+        "url": ""
+      },
+      {
+        "name": "Data clustering and classification pipelines",
+        "detail": "Fuzzy ARTMAP serves as an alternative to k-means or SVMs for online supervised learning tasks",
+        "url": ""
+      }
+    ],
+    "intuition": "Your brain doesn't start from scratch every time you see something new. Instead, it compares what you see against what you expect, and only updates its beliefs when the mismatch is too big to ignore. ART formalizes this give-and-take between expectation and reality.",
+    "howItWorks": [
+      "An input vector arrives at the comparison field and is broadcast to all neurons in the recognition field.",
+      "Each recognition neuron computes how well its stored prototype matches the input; the best match wins through lateral inhibition of competitors.",
+      "The reset module checks whether the winning match exceeds the vigilance parameter, a threshold for 'close enough'.",
+      "If vigilance is satisfied, the winning neuron's weights shift toward the input vector, refining its prototype.",
+      "If vigilance fails, the winner is shut down and the search continues; if no committed neuron matches, an uncommitted neuron learns the input as a new category."
+    ],
+    "whyItMatters": "Most neural networks suffer catastrophic forgetting—learning new tasks destroys old weights. ART's built-in stability mechanism lets it learn continuously, making it valuable for open-ended environments where data arrives in streams and retraining is expensive or impossible.",
+    "misconceptions": [
+      "ART is only unsupervised: variants like ARTMAP and Fuzzy ARTMAP support supervised learning by pairing two ART modules.",
+      "Higher vigilance always gives better results: while it creates more categories, it can fragment natural groupings and overfit to noise.",
+      "All ART variants are robust to input order: Fuzzy ART and ART 1 specifically suffer from order-dependent category formation."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input vector",
+          "note": "Raw data entering the system"
+        },
+        {
+          "id": "compare",
+          "label": "Comparison field",
+          "note": "Holds and preprocesses the input"
+        },
+        {
+          "id": "recognize",
+          "label": "Recognition field",
+          "note": "Competitive neurons, each representing a category prototype"
+        },
+        {
+          "id": "reset",
+          "label": "Reset module",
+          "note": "Checks match against vigilance parameter"
+        },
+        {
+          "id": "learn",
+          "label": "Weight update",
+          "note": "Adjusts winning prototype or recruits new neuron"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "compare",
+          "label": "feeds into"
+        },
+        {
+          "from": "compare",
+          "to": "recognize",
+          "label": "broadcasts to"
+        },
+        {
+          "from": "recognize",
+          "to": "reset",
+          "label": "best match sent"
+        },
+        {
+          "from": "reset",
+          "to": "recognize",
+          "label": "inhibits if fail"
+        },
+        {
+          "from": "reset",
+          "to": "learn",
+          "label": "triggers"
+        }
+      ],
+      "caption": "Data flows from input through the comparison field to competing recognition neurons. The reset module enforces the vigilance check, either permitting learning or forcing continued search."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Adaptive resonance theory",
+        "url": "https://en.wikipedia.org/wiki/Adaptive_resonance_theory"
+      }
+    ]
+  },
   "related": [
     "adaptive-neuro-fuzzy-inference-system",
     "ablation-artificial-intelligence",

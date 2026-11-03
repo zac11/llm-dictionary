@@ -5,7 +5,119 @@
   "type": "concept",
   "definition": "AlphaTensor is an artificial intelligence system developed by DeepMind for discovering efficient matrix multiplication algorithms using reinforcement learning.",
   "details": "Introduced in 2022, the system was based on AlphaZero and formulated the search for matrix multiplication algorithms as a single-player game called TensorGame. AlphaTensor was designed to search for new ways to multiply matrices with fewer scalar multiplication operations. Matrix multiplication is a fundamental operation in linear algebra, numerical analysis, scientific computing, computer graphics, and machine learning. The system discovered thousands of matrix multiplication algorithms, including algorithms that rediscovered known human-designed methods and others that improved on previously known results for particular matrix sizes and mathematical settings.",
-  "story": "Picture a gambler who slowly learns which slot machines pay out, not by reading a manual but by pulling the lever. The machine is not handed the answers — it tries things, earns a reward or a miss, and slowly figures out what works. It learns the way a child learns to walk: wobble, fall, adjust, repeat. The learner writes its own textbook from consequences. That learn-by-reward loop is AlphaTensor.",
+  "explainer": {
+    "lead": "AlphaTensor is DeepMind's reinforcement-learning system for finding matrix multiplication methods that use fewer scalar multiplications. Introduced in 2022, it turned algorithm discovery into a game and produced both rediscoveries of known methods and improvements for particular matrix sizes, arithmetic settings, and hardware.",
+    "tiers": {
+      "eli5": "Multiplying grids of numbers can take a lot of individual multiplications, rather like following a recipe with many repeated steps. AlphaTensor plays a puzzle in which it searches for a shorter recipe, then checks whether that recipe still gives the right answer. It found thousands of recipes, including some shorter than previously known ones for special cases.",
+      "practitioner": "AlphaTensor is used to search for low-rank matrix multiplication algorithms rather than as a general replacement for a matrix multiplication library. DeepMind released its source code and discovered algorithms through a public GitHub repository, including algorithms tailored to GPUs and Tensor Processing Units. Results depend on matrix size, arithmetic field, and hardware, so fewer scalar multiplications do not automatically imply faster execution on another system.",
+      "paperLevel": "AlphaTensor searches for a low-rank decomposition of the matrix multiplication tensor T, written as T = sum_{r=1}^R u_r tensor v_r tensor w_r, where rank R corresponds to the number of scalar multiplications. It frames this search as the single-player TensorGame and adapts AlphaZero-style reinforcement learning to its very large search space; the work was published in Nature in October 2022. Discoveries are tied to particular sizes, fields, and hardware settings, and the optimal complexity of matrix multiplication remains open."
+    },
+    "example": "For multiplying 4 × 4 matrices over the field with two elements, AlphaTensor found an algorithm using 47 multiplication operations. Applying Strassen's algorithm recursively in that setting required 49, so the discovered method saved two operations.",
+    "usedIn": [
+      {
+        "name": "Algorithm discovery",
+        "detail": "Searches tensor decompositions for matrix multiplication methods with fewer scalar multiplications.",
+        "url": ""
+      },
+      {
+        "name": "Graphics processing units",
+        "detail": "Some discovered algorithms were optimized and evaluated for execution on GPUs.",
+        "url": ""
+      },
+      {
+        "name": "Tensor Processing Units",
+        "detail": "Hardware-specific algorithms were also designed for and tested on TPUs.",
+        "url": ""
+      },
+      {
+        "name": "Numerical computing",
+        "detail": "Its results concern matrix multiplication, a basic operation in numerical analysis and scientific computing.",
+        "url": ""
+      }
+    ],
+    "intuition": "A matrix multiplication algorithm can be represented by a decomposition of a tensor, and a shorter decomposition means fewer scalar multiplications. AlphaTensor treats the search for that decomposition as a game, using reinforcement learning to explore possibilities that are difficult to enumerate by hand.",
+    "howItWorks": [
+      "Represent matrix multiplication as a tensor whose decomposition encodes an algorithm.",
+      "Play TensorGame, where each move performs an operation that reduces that tensor.",
+      "Use an adapted AlphaZero-style search and neural network to navigate the very large search space.",
+      "Finish with a low-rank decomposition and convert it into a multiplication algorithm.",
+      "Evaluate algorithms for particular matrix sizes, arithmetic fields, or hardware."
+    ],
+    "whyItMatters": "AlphaTensor showed that machine learning can help discover algorithms, not merely apply existing ones. Its results connect reinforcement learning with program synthesis, automated algorithm design, and the open question of the optimal complexity of matrix multiplication.",
+    "misconceptions": [
+      "It does not make every matrix multiplication faster; improvements apply to particular sizes, fields, or hardware.",
+      "It is not a faster version of Strassen's algorithm, but a system that searches for algorithms, sometimes rediscovering known methods.",
+      "Fewer scalar multiplications do not guarantee lower execution time on arbitrary hardware."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "tensor",
+          "label": "Multiplication tensor",
+          "note": "Represents the matrix multiplication problem."
+        },
+        {
+          "id": "game",
+          "label": "TensorGame",
+          "note": "Each move reduces the tensor."
+        },
+        {
+          "id": "search",
+          "label": "AlphaZero-style search",
+          "note": "Reinforcement learning guides exploration."
+        },
+        {
+          "id": "decomposition",
+          "label": "Low-rank decomposition",
+          "note": "Its rank counts scalar multiplications."
+        },
+        {
+          "id": "algorithm",
+          "label": "Multiplication algorithm",
+          "note": "The decomposition becomes an executable method."
+        },
+        {
+          "id": "evaluation",
+          "label": "Hardware evaluation",
+          "note": "Selected algorithms are tested on GPUs or TPUs."
+        }
+      ],
+      "edges": [
+        {
+          "from": "tensor",
+          "to": "game",
+          "label": "defines"
+        },
+        {
+          "from": "game",
+          "to": "search",
+          "label": "explored by"
+        },
+        {
+          "from": "search",
+          "to": "decomposition",
+          "label": "finds"
+        },
+        {
+          "from": "decomposition",
+          "to": "algorithm",
+          "label": "encodes"
+        },
+        {
+          "from": "algorithm",
+          "to": "evaluation",
+          "label": "tested by"
+        }
+      ],
+      "caption": "AlphaTensor converts tensor decomposition into a game, then turns the discovered decomposition into a matrix multiplication algorithm."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: AlphaTensor",
+        "url": "https://en.wikipedia.org/wiki/AlphaTensor"
+      }
+    ]
+  },
   "related": [
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",
     "accelerated-linear-algebra",

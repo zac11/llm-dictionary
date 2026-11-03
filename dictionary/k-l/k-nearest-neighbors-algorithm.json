@@ -5,7 +5,124 @@
   "type": "algorithm",
   "definition": "In statistics and machine learning, the k-nearest neighbors algorithm (k-NN) is a non-parametric supervised learning method that assigns weightage only to the k (number of) nearest neighbors of an entity in making a decision about the entity.",
   "details": "It is used both in classification -- where a new example is assigned a label based on the labels of its k nearest training examples; and in regression -- where the prediction is computed from the values of those neighbors. Its more frequent use is for classification, as the k-NN classifier, the output of which is a class membership decided by a plurality vote of its neighbors. k, an integer, is typically small; if k = 1, then the object is simply assigned to the class of that single nearest neighbor. It was first developed by Evelyn Fix and Joseph Hodges in 1951, and later expanded by Thomas Cover. The k-NN algorithm can also be generalized for regression. In k-NN regression, also known as nearest neighbor smoothing, the output is the property value for the object. This value is the average of the values of k nearest neighbors. If k = 1, then the output is simply assigned to the value of that single nearest neighbor, also known as nearest neighbor interpolation. For both classification and regression, a useful technique can be to assign weights to the contributions of the neighbors, so that nearer neighbors contribute more to the average than distant ones. For example, a common wei",
-  "story": "Imagine a driving test that every new model has to pass before it is allowed on the road. It is the exam that separates “it sounds good” from “it actually is good”. A fair scoreboard keeps everyone honest. It is the exam that keeps everyone honest. And that, done honestly, is K-nearest neighbors algorithm.",
+  "explainer": {
+    "lead": "K-nearest neighbors makes a prediction by looking at the most similar examples already in the training data. It can choose a class by neighbor vote or estimate a numerical value by averaging, making one simple idea useful for both classification and regression.",
+    "tiers": {
+      "eli5": "Imagine deciding whether a new fruit is sweet by checking the five most similar fruits you have already tasted. If most were sweet, you predict that the new one is sweet too. You can also average their sweetness scores instead of taking a vote, and you can listen more closely to the most similar fruits.",
+      "practitioner": "Keep the training examples available, choose a typically small integer k, and find the k examples nearest to each new object. Use a plurality vote for classification or the mean neighbor value for regression; k = 1 reduces either task to copying the single nearest neighbor. Distance-based weighting can give nearer neighbors more influence, while k = 1 leaves the prediction entirely dependent on one example.",
+      "paperLevel": "Given supervised training pairs (x_i, y_i), let N_k(x) contain the k training examples nearest to query x. For classification, the output is the plurality class among {y_i : i in N_k(x)}; for regression, y_hat = (1/k) * sum_{i in N_k(x)} y_i, with neighbor contributions optionally weighted so nearer examples count more. This non-parametric method was developed by Evelyn Fix and Joseph Hodges in 1951 and later expanded by Thomas Cover."
+    },
+    "example": "Suppose the five nearest training examples to a new object have labels cat, dog, cat, cat, and dog. With k = 5 and no weighting, cat receives three votes and dog receives two, so the algorithm classifies the object as a cat.",
+    "usedIn": [
+      {
+        "name": "Statistical classification",
+        "detail": "Assigns class membership by a plurality vote among the nearest labeled training examples.",
+        "url": ""
+      },
+      {
+        "name": "Regression",
+        "detail": "Estimates an object's property value by averaging neighboring values, also called nearest neighbor smoothing.",
+        "url": ""
+      }
+    ],
+    "goal": "Predict a new object's class or property value using only its k nearest training examples. The same neighbor set supports voting for classification and averaging for regression.",
+    "inputs": [
+      "Labeled training examples for classification, or examples with property values for regression",
+      "A new object to classify or estimate",
+      "A typically small integer k",
+      "Optional weights that favor nearer neighbors"
+    ],
+    "outputs": [
+      "A class membership decided by neighbor vote",
+      "A property value computed from neighbor values"
+    ],
+    "steps": [
+      "Provide the training examples, the new object, and a value for k.",
+      "Identify the k training examples nearest to the new object.",
+      "Optionally weight contributions so nearer neighbors count more.",
+      "For classification, take a plurality vote of the neighbors' labels.",
+      "For regression, average the neighbors' property values.",
+      "Return the selected class or computed value."
+    ],
+    "tradeoffs": [
+      "With k = 1, one nearest neighbor completely determines the result.",
+      "Larger k combines more neighbors, although k is typically small.",
+      "Weighting favors nearby examples but introduces a weighting choice.",
+      "Classification requires voting, while regression uses neighbor values rather than labels."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "training",
+          "label": "Training examples",
+          "note": "Labels or property values"
+        },
+        {
+          "id": "query",
+          "label": "New object",
+          "note": "The entity to predict"
+        },
+        {
+          "id": "neighbors",
+          "label": "K nearest neighbors",
+          "note": "Select k nearby examples"
+        },
+        {
+          "id": "vote",
+          "label": "Plurality vote",
+          "note": "Combine class labels"
+        },
+        {
+          "id": "average",
+          "label": "Average values",
+          "note": "Combine property values"
+        },
+        {
+          "id": "class",
+          "label": "Class membership",
+          "note": "Classification output"
+        },
+        {
+          "id": "value",
+          "label": "Property value",
+          "note": "Regression output"
+        }
+      ],
+      "edges": [
+        {
+          "from": "training",
+          "to": "neighbors",
+          "label": "search"
+        },
+        {
+          "from": "query",
+          "to": "neighbors",
+          "label": "compare"
+        },
+        {
+          "from": "neighbors",
+          "to": "vote",
+          "label": "classification"
+        },
+        {
+          "from": "neighbors",
+          "to": "average",
+          "label": "regression"
+        },
+        {
+          "from": "vote",
+          "to": "class",
+          "label": ""
+        },
+        {
+          "from": "average",
+          "to": "value",
+          "label": ""
+        }
+      ],
+      "caption": "The same nearest-neighbor set produces a class by voting or a numerical prediction by averaging."
+    }
+  },
   "related": [
     "ho-kashyap-algorithm",
     "bayes-error-rate",

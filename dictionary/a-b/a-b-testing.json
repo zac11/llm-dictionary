@@ -5,7 +5,123 @@
   "type": "concept",
   "definition": "An experimental method that compares two (or more) variants of a system by randomly assigning users or samples to each variant and measuring outcome differences.",
   "details": "A/B testing is widely used to evaluate real-world impact of model or product changes, including comparing different model versions or prompting strategies in production AI systems.",
-  "story": "Imagine a driving test that every new model has to pass before it is allowed on the road. It is the exam that separates “it sounds good” from “it actually is good”. A fair scoreboard keeps everyone honest. It is the exam that keeps everyone honest. That shared ruler is A/B Testing.",
+  "explainer": {
+    "lead": "A/B testing is how teams stop guessing and start knowing whether a change actually helps. It is the simplest, most trusted way to measure whether a new model, feature, or design beats what you already have.",
+    "tiers": {
+      "eli5": "Imagine your teacher tries two ways to explain fractions: one class gets pictures, the other gets stories. Then everyone takes the same quiz. Whichever class scores higher shows the better method. A/B testing does exactly this for websites, apps, or AI models—split people into groups, give each group something slightly different, and see which group has the better outcome.",
+      "practitioner": "In production ML, you typically route a small percentage of live traffic to a new model variant (the 'B' arm) while keeping the rest on the current model ('A'). Tools like Split, LaunchDarkly, or in-house experimentation platforms handle traffic splitting, event logging, and statistical analysis. Key pitfalls include peeking at results too early (inflating false positives), unequal variances between arms, and interaction effects when multiple experiments run simultaneously on the same users.",
+      "paperLevel": "A/B testing is a randomized controlled experiment with two arms: treatment and control. Formally, units i = 1,...,n are randomly assigned to groups A or B; the average treatment effect is estimated as τ̂ = Ȳ_B − Ȳ_A, where Ȳ denotes the sample mean of the measured outcome.Limitations include the assumption of no interference between units (SUTVA) and the need for large sample sizes to detect small effects with adequate power."
+    },
+    "example": "A team wants to know if a new prompt template improves their customer-service chatbot's resolution rate. They route 5% of chats to the new prompt (B) and keep 95% on the old prompt (A). After two weeks, the B group shows a 4.2% higher resolution rate with a p-value below 0.05, so the team gradually rolls out the new prompt to all users.",
+    "usedIn": [
+      {
+        "name": "Search engines",
+        "detail": "Google and Bing test ranking algorithm changes by showing variant results to small user slices before full rollout.",
+        "url": ""
+      },
+      {
+        "name": "Recommender systems",
+        "detail": "Netflix and Spotify compare recommendation models by measuring engagement differences between user groups.",
+        "url": ""
+      },
+      {
+        "name": "Large language model deployment",
+        "detail": "OpenAI and Anthropic test prompt versions or fine-tuned models on live traffic to measure helpfulness or safety metrics.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of asking 'Which version do we think is better?', you ask 'Which version actually produced better results for real users, under real conditions?' Random assignment is what lets you trust the answer.",
+    "howItWorks": [
+      "Define a single, measurable goal—click-through rate, accuracy, revenue, or task success.",
+      "Split your users or samples randomly into two groups: group A sees the current version, group B sees the variant.",
+      "Run both versions simultaneously for a fixed period, collecting outcome data for both groups.",
+      "Apply statistical tests to check whether the difference between groups is larger than random variation would produce.",
+      "Ship the winning version only if the improvement is both statistically significant and practically meaningful."
+    ],
+    "whyItMatters": "Without randomization, you cannot separate the effect of your change from confounding factors like time trends, user selection, or external events. A/B testing is the minimal viable method for causal inference in production systems.",
+    "misconceptions": [
+      "A/B testing can tell you why something won, not just which version won; in fact, it reveals nothing about mechanism without additional investigation.",
+      "A statistically significant result is always worth shipping; a tiny improvement may not justify maintenance complexity or risk.",
+      "You can check results daily and stop early when something looks good; this 'peeking' invalidates standard statistical guarantees and inflates false positive rates."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "users",
+          "label": "All users",
+          "note": "The full population eligible for the experiment"
+        },
+        {
+          "id": "split",
+          "label": "Random split",
+          "note": "Assign each user to A or B by coin flip"
+        },
+        {
+          "id": "group-a",
+          "label": "Group A (control)",
+          "note": "Sees the current version"
+        },
+        {
+          "id": "group-b",
+          "label": "Group B (treatment)",
+          "note": "Sees the new variant"
+        },
+        {
+          "id": "collect",
+          "label": "Collect outcomes",
+          "note": "Log the same metric for both groups"
+        },
+        {
+          "id": "compare",
+          "label": "Statistical test",
+          "note": "Check if difference exceeds chance"
+        },
+        {
+          "id": "decision",
+          "label": "Ship or keep",
+          "note": "Roll out winner, iterate, or abandon"
+        }
+      ],
+      "edges": [
+        {
+          "from": "users",
+          "to": "split",
+          "label": "enters"
+        },
+        {
+          "from": "split",
+          "to": "group-a",
+          "label": "50%"
+        },
+        {
+          "from": "split",
+          "to": "group-b",
+          "label": "50%"
+        },
+        {
+          "from": "group-a",
+          "to": "collect",
+          "label": "outcome A"
+        },
+        {
+          "from": "group-b",
+          "to": "collect",
+          "label": "outcome B"
+        },
+        {
+          "from": "collect",
+          "to": "compare",
+          "label": "data"
+        },
+        {
+          "from": "compare",
+          "to": "decision",
+          "label": "result"
+        }
+      ],
+      "caption": "The flow of an A/B test: random assignment isolates the effect of the variant from everything else."
+    }
+  },
   "related": [
     "hallucination-testing",
     "ablation-study",
