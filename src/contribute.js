@@ -69,6 +69,8 @@ export function formRowToTerm(row) {
   if (aka.length) raw.aka = aka;
   const related = splitList(row.related).map((value) => slugifyTerm(value));
   if (related.length) raw.related = related;
+  const contributors = splitList(row.contributors);
+  if (contributors.length) raw.contributors = contributors;
 
   const citation = {
     title: String(row.citeTitle || '').trim(),
@@ -83,7 +85,12 @@ export function formRowToTerm(row) {
 
   const term = normalizeTerm(raw);
   const issues = validateTerm(term, { raw });
-  return { term, issues: issues.filter((issue) => issue.level === 'error' || issue.level === 'warning') };
+  // Explainers and card details are added by maintainers after review, so the form does not nag about them.
+  const MAINTAINER_ONLY = new Set(['missing-explainer', 'missing-example', 'thin-person-card', 'missing-install']);
+  return {
+    term,
+    issues: issues.filter((issue) => (issue.level === 'error' || issue.level === 'warning') && !MAINTAINER_ONLY.has(issue.code)),
+  };
 }
 
 /** Cross-term checks: duplicates inside the batch, collisions with the live
@@ -141,6 +148,9 @@ export function termFileJson(term) {
   }
   if (term.coverage.length) out.coverage = term.coverage;
   if (term.related.length) out.related = term.related;
+  if (term.contributors.length) {
+    out.contributors = term.contributors.map(({ name, github }) => (github ? `@${github}` : name));
+  }
   const citation = term.citation;
   if (citation.title) {
     out.citation = {
@@ -236,6 +246,7 @@ const FIELDS = [
     placeholder: 'OpenAI board fires Altman | https://www.reuters.com/... | Reuters | 2023-11-17',
   },
   { name: 'related', label: 'Related terms (comma-separated)', placeholder: 'e.g. transformers, attention' },
+  { name: 'contributors', label: 'Credit — your name or @github handle (comma-separated)', placeholder: '@octocat' },
 ];
 
 const CITATION_FIELDS = [
@@ -474,4 +485,31 @@ export class ContributeForm {
       return ok;
     }
   }
+}
+
+/**
+ * "Request a term": readers who cannot write the entry themselves name the
+ * term and why it matters; maintainers or contributors pick it up from the
+ * `term-request` issue label.
+ */
+export function buildRequestUrl({ term = '', reason = '', source = '', requester = '' } = {}) {
+  const name = String(term).trim();
+  const body = [
+    '## Term request',
+    '',
+    `**Term:** ${name}`,
+    '',
+    '### Why it belongs in the dictionary',
+    '',
+    String(reason).trim() || '_Not given_',
+    '',
+    '### A good source to start from',
+    '',
+    String(source).trim() || '_Not given_',
+    '',
+    ...(String(requester).trim() ? [`Requested by ${String(requester).trim()}`, ''] : []),
+    'Submitted through the in-app Request a term page. Want to write it? Use **Contribute** and credit yourself in `contributors`.',
+  ].join('\n');
+  const params = new URLSearchParams({ title: `Request term: ${name}`, labels: 'term-request', body });
+  return `https://github.com/${REPO}/issues/new?${params.toString()}`;
 }

@@ -24,6 +24,9 @@ const archiveActions = exploreActions({
   openRandomTerm: () => openRandomTerm(),
   openTermOfDay: () => archiveHome.openTermOfDay(),
   openRecentlyAdded: () => archiveHome.openRecentlyAdded(),
+  openCollections: () => openPage(() => ui.openCollections()),
+  openCoverage: () => openPage(() => ui.openCoverage()),
+  openRequest: () => openPage(() => ui.openRequest()),
   focusVolumeRail: () => focusVolumeRail(),
   openContribute: () => openContribute(),
   openFeedback: () => openFeedback(),
@@ -91,6 +94,7 @@ ui = new UI({
   onAskTerm: (slug) => openAskForTerm(slug),
   onAskQuery: (query) => openAsk({ query }),
   onMapTerm: (slug) => openMapForTerm(slug),
+  onContribute: () => openContribute(),
 });
 
 const archiveHome = new ArchiveHome(document.getElementById('archive-home'), {
@@ -405,6 +409,14 @@ async function openVolumeRitual(folder, { letter } = {}) {
   }
 }
 
+/** Learning paths and other book pages that are not tied to a volume. */
+async function openPage(open) {
+  if (state.busy) return;
+  archiveHome.collapseWelcome();
+  if (state.view === 'map') await closeMap({ updateHistory: false });
+  open();
+}
+
 /** Search pick: pull the right volume and land straight on the term's page. */
 async function openTermRitual(slug) {
   const term = findTerm(slug);
@@ -448,6 +460,11 @@ async function applyLocation() {
   if (state.view === 'map') await closeMap({ updateHistory: false });
   if (view === 'term') openTermRitual(slug);
   else if (view === 'volume') openVolumeRitual(folder);
+  else if (view === 'paths') openPage(() => ui.openCollections());
+  else if (view === 'today') archiveHome.openTermOfDay();
+  else if (view === 'coverage') openPage(() => ui.openCoverage());
+  else if (view === 'request') openPage(() => ui.openRequest());
+  else if (view === 'path') openPage(() => ui.openCollection(slug) || ui.openCollections());
 }
 
 window.addEventListener('popstate', () => applyLocation());

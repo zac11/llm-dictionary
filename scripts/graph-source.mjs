@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import {
   isValidRangeFolder,
@@ -7,6 +7,7 @@ import {
   normalizeTerm,
   validateTerm,
 } from '../src/term-schema.js';
+import { validateCollections } from '../src/collection-schema.js';
 
 const addDiagnostic = (diagnostics, level, code, source, message) =>
   diagnostics.push({ level, code, source, message });
@@ -98,6 +99,26 @@ export function loadDictionarySource(dictionary) {
   return { terms, diagnostics };
 }
 
+/** Diagnostics for collections/*.json: every listed slug must resolve to a term. */
+export function loadCollectionDiagnostics(directory, terms) {
+  if (!existsSync(directory)) return [];
+  const diagnostics = [];
+  const files = [];
+  for (const filename of readdirSync(directory).filter((name) => name.endsWith('.json')).sort()) {
+    const source = `collections/${filename}`;
+    try {
+      files.push({ file: source, raw: JSON.parse(readFileSync(join(directory, filename), 'utf8')) });
+    } catch (error) {
+      addDiagnostic(diagnostics, 'error', 'malformed-json', source, error.message);
+    }
+  }
+  const known = new Set(terms.map((term) => term.slug));
+  for (const issue of validateCollections(files, known)) {
+    addDiagnostic(diagnostics, issue.level, issue.code, issue.file, issue.message);
+  }
+  return diagnostics;
+}
+
 export function normalizedSourceHash(terms) {
   const source = [...terms]
     .sort((a, b) => a.slug.localeCompare(b.slug))
@@ -110,6 +131,9 @@ export function printDiagnostics(diagnostics, { limit = 30 } = {}) {
   const warnings = diagnostics.filter((item) => item.level === 'warning');
   console.log(`errors: ${errors.length}`);
   console.log(`warnings: ${warnings.length}`);
+  const byCode = new Map();
+  for (const item of diagnostics) byCode.set(`${item.level} ${item.code}`, (byCode.get(`${item.level} ${item.code}`) || 0) + 1);
+  for (const [key, count] of [...byCode].sort((a, b) => b[1] - a[1])) console.log(`  ${count}\t${key}`);
   for (const item of diagnostics.slice(0, limit)) {
     console.log(`  ${item.level.toUpperCase()} [${item.code}] ${item.source}: ${item.message}`);
   }

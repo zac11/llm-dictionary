@@ -12,6 +12,7 @@ import {
   normalizeTermType,
   rangeFolderForLetter,
   rankSearchEntries,
+  editDistance,
   slugifyTerm,
   validateTerm,
 } from '../src/term-schema.js';
@@ -55,8 +56,10 @@ test('normalizeTerm preserves an explicit slug and normalizes optional fields', 
     details: '',
     story: '',
     deceased: false,
-    profile: { links: [], highlights: [] },
+    profile: { links: [], highlights: [], knownFor: '', currentRole: '', notableWorks: [] },
+    library: null,
     coverage: [],
+    contributors: [],
     related: ['other-term'],
     citation: { title: 'Paper', authors: ['Author'], year: '', venue: '', url: '' },
     addedAt: '',
@@ -89,6 +92,7 @@ test('validateTerm reports folder, required-field, duplicate, and citation error
       'invalid-authors-shape',
       'missing-citation-title',
       'missing-type',
+      'missing-explainer',
     ])
   );
 });
@@ -107,7 +111,7 @@ test('validateTerm rejects malformed list values and related slugs', () => {
   const codes = validateTerm(normalizeTerm(raw), { raw }).map((issue) => issue.code);
   assert.deepEqual(
     new Set(codes),
-    new Set(['invalid-aka-value', 'invalid-related-slug', 'invalid-author-value', 'missing-type'])
+    new Set(['invalid-aka-value', 'invalid-related-slug', 'invalid-author-value', 'missing-type', 'missing-explainer'])
   );
 });
 
@@ -179,6 +183,9 @@ test('normalizeTerm defaults the type and normalizes profile and coverage data',
   assert.deepEqual(person.profile, {
     links: [{ label: 'LinkedIn', url: 'https://www.linkedin.com/in/samaltman' }],
     highlights: ['Co-founded OpenAI (2015)'],
+    knownFor: '',
+    currentRole: '',
+    notableWorks: [],
   });
   assert.deepEqual(person.coverage, [
     { title: 'Board fires Altman', source: 'Reuters', date: '2023-11-17', url: 'https://example.com/a' },
@@ -218,8 +225,22 @@ test('validateTerm reports unknown types and malformed profile/coverage data', (
       // an unreadable type falls back to `concept`, so the person/event data is unused
       'unexpected-profile',
       'unexpected-coverage',
+      'missing-explainer',
     ])
   );
+});
+
+test('validateTerm warns when a story-type term lacks an explainer or example', () => {
+  const base = { term: 'Attention', letter: 'A', type: 'concept', definition: 'D.', details: 'More.' };
+  const codes = (raw) => validateTerm(normalizeTerm(raw), { raw }).map((issue) => issue.code);
+  assert.ok(codes(base).includes('missing-explainer'));
+  const noExample = { ...base, explainer: { eli5: 'Simple.', intuition: 'I', howItWorks: 'H', whyItMatters: 'W' } };
+  assert.ok(codes(noExample).includes('missing-example'));
+  assert.ok(!codes(noExample).includes('missing-explainer'));
+  const full = { ...noExample, explainer: { ...noExample.explainer, example: 'E' } };
+  assert.ok(!codes(full).some((code) => code.startsWith('missing-ex')));
+  const person = { ...base, term: 'Ada', type: 'person' };
+  assert.ok(!codes(person).includes('missing-explainer'));
 });
 
 test('validateTerm warns when a type and its second-spread data disagree', () => {
@@ -253,10 +274,53 @@ test('validateTerm accepts a well-formed person profile', () => {
         { label: 'Wikipedia', url: 'https://en.wikipedia.org/wiki/Sam_Altman' },
       ],
       highlights: ['Chief executive officer of OpenAI since 2019'],
+      knownFor: 'Leading OpenAI through the launch of ChatGPT',
     },
   };
   const codes = validateTerm(normalizeTerm(raw), { raw }).map((issue) => issue.code);
   assert.deepEqual(codes, []);
+});
+
+test('normalizeContributors accepts names, @handles and objects and drops duplicates', () => {
+  const term = normalizeTerm({
+    term: 'Thing',
+    definition: 'd',
+    details: 'x',
+    contributors: ['Ada Lovelace', '@octocat', { github: 'octocat' }, { name: 'Grace', url: 'https://example.org', role: 'editor' }, ''],
+  });
+  assert.deepEqual(term.contributors, [
+    { name: 'Ada Lovelace', github: '', url: '', role: '' },
+    { name: 'octocat', github: 'octocat', url: 'https://github.com/octocat', role: '' },
+    { name: 'Grace', github: '', url: 'https://example.org', role: 'editor' },
+  ]);
+  const raw = { term: 'Thing', definition: 'd', details: 'x', contributors: [{}, { name: 'B', url: 'ftp://x' }] };
+  const codes = validateTerm(normalizeTerm(raw), { raw }).map(({ code }) => code);
+  assert.ok(codes.includes('invalid-contributor'));
+  assert.ok(codes.includes('invalid-contributor-url'));
+  const bad = { term: 'Thing', definition: 'd', details: 'x', contributors: 'me' };
+  assert.ok(validateTerm(normalizeTerm(bad), { raw: bad }).some(({ code }) => code === 'invalid-contributors'));
+});
+
+test('rankSearchEntries tolerates typos and prefixes, and ranks body text last', () => {
+  const entries = [
+    { term: 'Transformer', aka: [], category: 'Architecture', definition: 'A neural network built on attention.', details: '' },
+    { term: 'Attention', aka: [], category: 'Mechanism', definition: 'Weights inputs by relevance.', details: 'Core of the transformer.' },
+    { term: 'Language Model', aka: [], category: 'NLP', definition: 'Predicts the next token.', details: '' },
+  ];
+  const names = (query) => rankSearchEntries(query, entries).map(({ entry }) => entry.term);
+  assert.deepEqual(names('transfomer'), ['Transformer']);
+  assert.equal(names('langu mod')[0], 'Language Model');
+  assert.deepEqual(names('attention'), ['Attention', 'Transformer']);
+  assert.deepEqual(names('next token'), ['Language Model']);
+  assert.deepEqual(names('xyzzy'), []);
+  const scores = rankSearchEntries('attention', entries).map(({ score }) => score);
+  assert.ok(scores[0] > scores[1] && scores[1] < 300);
+});
+
+test('editDistance stops early once past the budget', () => {
+  assert.equal(editDistance('kitten', 'sitting'), 3);
+  assert.equal(editDistance('kitten', 'sitting', 1), 2);
+  assert.equal(editDistance('same', 'same', 0), 0);
 });
 
 test('rankSearchEntries prioritizes exact, prefix, and whole-word term matches', () => {
@@ -274,4 +338,43 @@ test('rankSearchEntries prioritizes exact, prefix, and whole-word term matches',
   ]);
   assert.equal(rankSearchEntries('Machine', entries)[0].entry.term, 'Machine Learning');
   assert.equal(rankSearchEntries('ML', entries)[0].entry.term, 'Machine Learning');
+});
+
+test('normalizeProfile reads card fields and normalizeTerm derives a library block', () => {
+  const person = normalizeTerm({
+    term: 'Ada',
+    letter: 'A',
+    type: 'person',
+    profile: { knownFor: 'Notes', currentRole: 'Countess', notableWorks: ['Note G', { title: 'Sketch', year: 1843, url: 'ftp://x' }] },
+  });
+  assert.equal(person.profile.knownFor, 'Notes');
+  assert.deepEqual(person.profile.notableWorks, [
+    { title: 'Note G', year: '', url: '' },
+    { title: 'Sketch', year: '1843', url: '' },
+  ]);
+  assert.equal(person.library, null);
+  const lib = normalizeTerm({
+    term: 'Torch',
+    letter: 'T',
+    type: 'library',
+    explainer: { lead: 'L', install: { python: '# header\npip install torch   # cuda' } },
+    library: { githubUrl: 'https://github.com/pytorch/pytorch', useCases: ['training'] },
+  });
+  assert.equal(lib.library.installCmd, 'pip install torch');
+  assert.deepEqual(lib.library.useCases, ['training']);
+});
+
+test('validateTerm checks person and library card data', () => {
+  const codes = (raw) => validateTerm(normalizeTerm(raw), { raw }).map((issue) => issue.code);
+  const person = { term: 'Ada', letter: 'A', type: 'person', definition: 'D.', details: 'More.' };
+  assert.ok(codes(person).includes('thin-person-card'));
+  assert.ok(!codes({ ...person, profile: { knownFor: 'Notes' } }).includes('thin-person-card'));
+  const bad = { ...person, profile: { knownFor: 3, notableWorks: [{ year: 1 }] }, library: { githubUrl: 'nope' } };
+  const badCodes = codes(bad);
+  for (const code of ['invalid-profile-text', 'invalid-notable-work', 'invalid-library-url', 'unexpected-library']) {
+    assert.ok(badCodes.includes(code), code);
+  }
+  const lib = { term: 'Torch', letter: 'T', type: 'library', definition: 'D.', details: 'More.' };
+  assert.ok(codes(lib).includes('missing-install'));
+  assert.ok(!codes({ ...lib, library: { installCmd: 'pip install torch' } }).includes('missing-install'));
 });

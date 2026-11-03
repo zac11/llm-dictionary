@@ -29,5 +29,50 @@
     "venue": "Advances in Neural Information Processing Systems 26 (NeurIPS)",
     "url": "https://arxiv.org/abs/1310.4546"
   },
-  "slug": "embedding"
+  "slug": "embedding",
+  "explainer": {
+    "lead": "An embedding turns something discrete — a word, a sentence, an image, a product — into a list of numbers placed so that similar things end up close together.",
+    "eli5": "Think of a giant map where every word gets a spot. Words that mean similar things, like \"cat\" and \"kitten\", are placed next to each other, so a computer can measure meaning by measuring distance.",
+    "practitioner": "Use a pretrained embedding model (e.g. a sentence-transformers model or a hosted embeddings API) to map text to fixed-length vectors, normalise them, and compare with cosine similarity. Store them in a vector index for semantic search, clustering, deduplication or RAG retrieval. Re-embed everything when you change models — vectors from different models are not comparable.",
+    "paperLevel": "An embedding is a learned map f: X → ℝ^d trained so that geometric relations reflect a task signal — co-occurrence for word2vec and GloVe, contrastive objectives such as InfoNCE for sentence and image encoders (SimCSE, CLIP), or the input lookup table of a language model. Linear regularities like king − man + woman ≈ queen (Mikolov et al., 2013) emerge from factorising co-occurrence statistics.",
+    "intuition": "Meaning becomes geometry: distance and direction in the vector space stand in for similarity and relationships.",
+    "howItWorks": [
+      "Pick the unit to embed: tokens, sentences, documents, images or users.",
+      "Train (or reuse) a model whose objective pulls related items together and pushes unrelated ones apart.",
+      "Read the model's output or hidden layer as a fixed-length vector for each item.",
+      "Compare vectors with cosine similarity or dot product to search, cluster or classify."
+    ],
+    "example": "Embedding \"How do I reset my password?\" and \"I forgot my login\" gives vectors with high cosine similarity even though they share no words, so a support search engine can match them.",
+    "whyItMatters": "Embeddings are how neural networks read discrete data at all, and they power semantic search, recommendations and the retrieval step of RAG.",
+    "misconceptions": [
+      "Dimensions are not individually meaningful features; meaning lives in the overall geometry.",
+      "Embeddings inherit biases from their training data, so similarity can encode stereotypes."
+    ],
+    "usedIn": [
+      {
+        "name": "Semantic search and RAG",
+        "detail": "query and document vectors in a vector database"
+      },
+      {
+        "name": "word2vec",
+        "detail": "classic word embeddings",
+        "url": "https://arxiv.org/abs/1301.3781"
+      },
+      {
+        "name": "CLIP",
+        "detail": "shared image–text embedding space",
+        "url": "https://arxiv.org/abs/2103.00020"
+      },
+      {
+        "name": "Recommender systems",
+        "detail": "user and item embeddings"
+      }
+    ],
+    "sources": [
+      {
+        "title": "Efficient Estimation of Word Representations in Vector Space (Mikolov et al., 2013)",
+        "url": "https://arxiv.org/abs/1301.3781"
+      }
+    ]
+  }
 }

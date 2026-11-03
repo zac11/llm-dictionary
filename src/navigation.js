@@ -34,6 +34,13 @@ export function parseAppLocation({ pathname = '/', search = '' } = {}) {
   const term = params.get('term') || pathTerm;
   if (term) return { view: 'term', slug: term, folder: null };
 
+  const path = params.get('path');
+  if (path) return { view: 'path', slug: path, folder: null };
+  if (params.get('view') === 'paths') return { view: 'paths', slug: null, folder: null };
+  if (params.get('view') === 'today') return { view: 'today', slug: null, folder: null };
+  if (params.get('view') === 'coverage') return { view: 'coverage', slug: null, folder: null };
+  if (params.get('view') === 'request') return { view: 'request', slug: params.get('term') || null, folder: null };
+
   const folder = params.get('volume');
   if (folder) return { view: 'volume', slug: null, folder };
 

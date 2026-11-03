@@ -6,6 +6,7 @@ import {
   markWelcomeShown,
   recentlyAdded,
   shouldShowWelcome,
+  termEmbedSnippet,
   termOfDay,
   writeWelcomeState,
 } from './archive-discovery.js';
@@ -62,6 +63,7 @@ export class ArchiveHome {
     this.mapBtn = root.querySelector('.archive-map');
 
     this._renderCount();
+    this._renderDaily();
     this._bind();
 
     // The welcome card is a first-visit greeting: show it once, then remember
@@ -79,6 +81,34 @@ export class ArchiveHome {
     if (!this.countEl) return;
     const count = this.terms.length.toLocaleString('en-US');
     this.countEl.textContent = `${count} cited terms on the shelf`;
+  }
+
+  /** Today's featured entry on the home card, with an embeddable snippet. */
+  _renderDaily() {
+    const panel = this.root.querySelector('#archive-daily');
+    const today = new Date();
+    const daily = termOfDay(this.terms, today);
+    if (!panel || !daily) return;
+    panel.querySelector('.archive-daily-term').textContent = daily.term;
+    panel.querySelector('.archive-daily-def').textContent = daily.definition || '';
+    panel.querySelector('.archive-daily-open').addEventListener('click', () => {
+      this.collapseWelcome();
+      this.onOpenTerm?.(daily.slug);
+    });
+    const embed = panel.querySelector('.archive-daily-embed');
+    embed.addEventListener('click', async () => {
+      const snippet = termEmbedSnippet(daily, { origin: window.location.origin, date: today });
+      let copied = false;
+      try {
+        await navigator.clipboard.writeText(snippet);
+        copied = true;
+      } catch {
+        copied = false;
+      }
+      embed.textContent = copied ? 'Embed copied' : 'Copy blocked';
+      setTimeout(() => (embed.textContent = 'Copy embed snippet'), 2000);
+    });
+    panel.hidden = false;
   }
 
   _bind() {

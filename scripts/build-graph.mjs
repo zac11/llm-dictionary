@@ -4,7 +4,7 @@ import { basename, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
 import { buildGraph, buildRetrievalCorpus, GRAPH_SCHEMA_VERSION } from './graph-builder.mjs';
-import { loadDictionarySource, normalizedSourceHash, printDiagnostics } from './graph-source.mjs';
+import { loadCollectionDiagnostics, loadDictionarySource, normalizedSourceHash, printDiagnostics } from './graph-source.mjs';
 
 const scriptPath = fileURLToPath(import.meta.url);
 const root = join(dirname(scriptPath), '..');
@@ -13,7 +13,9 @@ const manifestPath = join(outputDirectory, 'manifest.json');
 const checkOnly = process.argv.includes('--check');
 const includeCoOccurs = !process.argv.includes('--related-only');
 const started = performance.now();
-const { terms, diagnostics } = loadDictionarySource(join(root, 'dictionary'));
+const { terms, diagnostics: termDiagnostics } = loadDictionarySource(join(root, 'dictionary'));
+// Collection errors (a slug that matches no term) fail the build like term errors.
+const diagnostics = [...loadCollectionDiagnostics(join(root, 'collections'), terms), ...termDiagnostics];
 
 console.log('TheAIDictionary graph build');
 console.log(`terms: ${terms.length}`);

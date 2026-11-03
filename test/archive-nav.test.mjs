@@ -9,7 +9,10 @@ test('exploreActions exposes the approved order without Search or Ask', () => {
     { id: 'random', label: 'Random Term', enabled: false },
     { id: 'daily', label: 'Term of the Day', enabled: false },
     { id: 'recent', label: 'Recently Added', enabled: false },
+    { id: 'paths', label: 'Learning Paths', enabled: false },
     { id: 'browse', label: 'Browse A–Z', enabled: false },
+    { id: 'coverage', label: 'Coverage', enabled: false },
+    { id: 'request', label: 'Request a Term', enabled: false },
     { id: 'contribute', label: 'Contribute', enabled: false },
     { id: 'feedback', label: 'Feedback', enabled: false },
     { id: 'help', label: 'Help', enabled: false },
@@ -51,6 +54,6 @@ test('exploreActions carry a group, icon and description for the grouped menu', 
   }
   assert.deepEqual(
     actions.filter(({ group }) => group === 'community').map(({ id }) => id),
-    ['contribute', 'feedback', 'help']
+    ['coverage', 'request', 'contribute', 'feedback', 'help']
   );
 });

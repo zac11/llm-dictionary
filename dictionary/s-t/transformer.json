@@ -10,6 +10,30 @@
   "details": "The Transformer processes entire sequences in parallel, using multi-head self-attention to model pairwise relationships and positional encodings to retain order. Removing recurrence made training dramatically more parallelizable, enabling the scaling that produced GPT, BERT and today’s large language models.",
   "explainer": {
     "lead": "The Transformer is the design inside almost every modern language model. Instead of reading a sentence one word at a time, it looks at every word at once and lets each word decide which others matter to it.",
+    "eli5": "A transformer reads a whole sentence at once and lets every word look at every other word to work out what it means, then stacks that step many times to build up understanding.",
+    "practitioner": "A stack of identical blocks, each a multi-head self-attention layer followed by a feed-forward MLP, with residual connections and layer normalization around both. Tokens get embeddings plus positional information (sinusoidal, learned, or rotary). Decoder-only stacks (GPT, Llama) use causal masking for generation; encoder-only stacks (BERT) suit classification and embeddings; encoder–decoder (T5) suits translation and summarisation.",
+    "paperLevel": "Vaswani et al. (2017) replaced recurrence with scaled dot-product attention, softmax(QKᵀ/√d_k)V, in h parallel heads, interleaved with position-wise feed-forward networks, residual paths and layer normalization. The base model used d_model = 512, 8 heads and 6 encoder plus 6 decoder layers. Because every position attends to every other in one step, the maximum path length between tokens is O(1) and training parallelises across the sequence, at O(n²·d) cost per layer.",
+    "example": "Given the prompt \"The capital of France is\", a decoder-only transformer attends over all five tokens in each layer and its final layer assigns high probability to \"Paris\" as the next token.",
+    "usedIn": [
+      {
+        "name": "GPT-4 and ChatGPT",
+        "detail": "decoder-only transformer language models"
+      },
+      {
+        "name": "BERT",
+        "detail": "encoder-only transformer for understanding tasks",
+        "url": "https://arxiv.org/abs/1810.04805"
+      },
+      {
+        "name": "T5",
+        "detail": "encoder–decoder text-to-text transformer",
+        "url": "https://arxiv.org/abs/1910.10683"
+      },
+      {
+        "name": "AlphaFold 2",
+        "detail": "attention-based Evoformer for protein structure"
+      }
+    ],
     "components": [
       {
         "name": "Token embeddings",
@@ -137,5 +161,12 @@
     "venue": "Advances in Neural Information Processing Systems 30 (NeurIPS)",
     "url": "https://arxiv.org/abs/1706.03762"
   },
+  "contributors": [
+    {
+      "github": "zac11",
+      "name": "Rahul Yadav",
+      "role": "author"
+    }
+  ],
   "slug": "transformer"
 }

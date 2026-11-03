@@ -57,8 +57,26 @@ test('explainerSections follows the layout order and skips empty fields', () => 
   );
   assert.deepEqual(
     sections.map((s) => s.field),
-    ['intuition', 'example']
+    ['intuition']
   );
+});
+
+test('normalizeExplainer reads layered tiers, an example and a used-in list', () => {
+  const explainer = normalizeExplainer(
+    {
+      eli5: 'Simple.',
+      practitioner: 'Practical.',
+      paperLevel: 'Formal.',
+      example: 'E',
+      usedIn: ['GPT-4', { name: 'BERT', detail: 'encoder', url: 'https://arxiv.org/abs/1810.04805' }, { detail: 'nameless' }],
+    },
+    'concept'
+  );
+  assert.equal(explainer.lead, 'Simple.');
+  assert.deepEqual(explainer.tiers, { eli5: 'Simple.', practitioner: 'Practical.', paperLevel: 'Formal.' });
+  assert.equal(explainer.example, 'E');
+  assert.deepEqual(explainer.usedIn.map((item) => item.name), ['GPT-4', 'BERT']);
+  assert.equal(normalizeExplainer({ lead: 'L', intuition: 'I' }, 'concept').tiers, undefined);
 });
 
 test('explainerIssues flags thin explainers, broken diagrams and uncredited images', () => {

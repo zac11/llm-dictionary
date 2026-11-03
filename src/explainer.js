@@ -245,13 +245,49 @@ const normalizeSource = (value) => {
  * Fields from other layouts are dropped, so a re-typed entry never shows a
  * section that belongs to a different kind of page.
  */
+/** Reading levels for the layered explainer, in tab order. */
+export const EXPLAINER_TIERS = [
+  ['eli5', 'ELI5'],
+  ['practitioner', 'Practitioner'],
+  ['paperLevel', 'Paper-level'],
+];
+
+/** `{ eli5, practitioner, paperLevel }` with only the filled levels, or null. */
+export function normalizeTiers(value) {
+  const source = isRecord(value) ? value : {};
+  const out = {};
+  for (const [field] of EXPLAINER_TIERS) {
+    const tier = text(source[field]);
+    if (tier) out[field] = tier;
+  }
+  return Object.keys(out).length ? out : null;
+}
+
+/** "Used in" entries: products, models or systems that rely on the idea. */
+export function normalizeUsedIn(value) {
+  return asArray(value)
+    .map((item) => {
+      if (!isRecord(item)) return text(item) ? { name: text(item), detail: '', url: '' } : null;
+      const url = text(item.url);
+      return { name: text(item.name), detail: text(item.detail), url: isHttpUrl(url) ? url : '' };
+    })
+    .filter((item) => item && item.name);
+}
+
 export function normalizeExplainer(value, type) {
   if (!isRecord(value)) return null;
-  const lead = text(value.lead);
+  const tiers = normalizeTiers(value);
+  const lead = text(value.lead) || (tiers && tiers.eli5) || '';
   if (!lead) return null;
   const layout = explainerLayout(type);
   const out = { layout, lead };
+  if (tiers) out.tiers = tiers;
+  const example = text(value.example);
+  if (example) out.example = example;
+  const usedIn = normalizeUsedIn(value.usedIn);
+  if (usedIn.length) out.usedIn = usedIn;
   for (const { field, kind } of layoutFields(layout)) {
+    if (field === 'example') continue;
     const normalized = KINDS[kind](value[field]);
     if (Array.isArray(normalized) ? normalized.length : normalized) out[field] = normalized;
   }
@@ -264,12 +300,16 @@ export function normalizeExplainer(value, type) {
   return out;
 }
 
-/** Sections of a normalized explainer that have content, in reading order. */
+/**
+ * Sections of a normalized explainer that have content, in reading order. The
+ * example is rendered as its own callout, so it is not a section here.
+ */
 export function explainerSections(explainer) {
   if (!explainer) return [];
   const spec = EXPLAINER_LAYOUTS[explainer.layout] || EXPLAINER_LAYOUTS.concept;
   return spec.sections
     .filter(([field]) => {
+      if (field === 'example') return false;
       const value = explainer[field];
       return Array.isArray(value) ? value.length > 0 : Boolean(value);
     })
@@ -282,11 +322,15 @@ export function explainerIssues(raw, type) {
   if (!isRecord(raw)) return ['explainer must be an object'];
   const explainer = normalizeExplainer(raw, type);
   if (!explainer) return ['explainer needs a lead'];
-  const filled = explainerSections(explainer).length;
+  const filled = explainerSections(explainer).length + (explainer.example ? 1 : 0);
   const total = EXPLAINER_LAYOUTS[explainer.layout].sections.length;
   if (filled < Math.min(3, total)) issues.push(`only ${filled} of ${total} ${explainer.layout} sections are filled`);
   if (raw.diagram !== undefined && !explainer.diagram) issues.push('diagram needs at least two nodes joined by an edge');
   if (raw.image !== undefined && !explainer.image) issues.push('image needs an https src');
   if (explainer.image && !explainer.image.credit) issues.push('image needs a credit line');
+  for (const [field, label] of EXPLAINER_TIERS) {
+    if (raw[field] !== undefined && typeof raw[field] !== 'string') issues.push(`${field} (${label}) must be text`);
+  }
+  if (raw.usedIn !== undefined && !Array.isArray(raw.usedIn)) issues.push('usedIn must be a list');
   return issues;
 }

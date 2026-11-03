@@ -1,4 +1,5 @@
-import { findTerm, volumeByLetter, rangeTerms, searchTerms, RANGES } from './terms.js';
+import { allTerms, findTerm, volumeByLetter, rangeTerms, searchTerms, RANGES } from './terms.js';
+import { coverageStats } from './coverage.js';
 import { letterColor } from './palette.js';
 import { icon } from './icons.js';
 import { volumeRailItems } from './navigation.js';
@@ -15,8 +16,10 @@ import {
   relatedGroups,
   detailHighlights,
 } from './entry-actions.js';
-import { TERM_TYPE_LABELS } from './term-schema.js';
-import { EXPLAINER_LAYOUTS, explainerSections } from './explainer.js';
+import { TERM_TYPE_LABELS, isStoryType, hasProfileCard } from './term-schema.js';
+import { EXPLAINER_LAYOUTS, EXPLAINER_TIERS, explainerSections } from './explainer.js';
+import { collections, collectionsForTerm, findCollection } from './collections.js';
+import { pathNeighbors } from './collection-schema.js';
 
 const CODE_LABELS = { python: 'Python', javascript: 'JavaScript', typescript: 'TypeScript', shell: 'Terminal' };
 
@@ -47,7 +50,8 @@ export function formatCitation(c) {
 }
 
 export class UI {
-  constructor({ onPickVolume, onPickTerm, onVolumeClose, onAskTerm, onAskQuery, onMapTerm }) {
+  constructor({ onPickVolume, onPickTerm, onVolumeClose, onAskTerm, onAskQuery, onMapTerm, onContribute }) {
+    this.onContribute = onContribute; // () => void  (opens the Contribute modal)
     this.onPickVolume = onPickVolume; // (folder, letter) => void
     this.onPickTerm = onPickTerm; // (slug) => void  (main runs the pull-out ritual)
     this.onVolumeClose = onVolumeClose; // () => void (main returns the book to the shelf)
@@ -70,7 +74,8 @@ export class UI {
     this._toastEl = $('toast');
     this._shareAnchor = null;
 
-    this._mode = 'index'; // 'index' | 'entry'
+    this._mode = 'index'; // 'index' | 'entry' | 'page'
+    this._path = null; // { collection, index } while walking a learning path
     this._folder = null;
     this._activeTerm = null;
     this._termList = [];
@@ -289,6 +294,7 @@ export class UI {
     this._mode = mode;
     this._spreadBook.classList.toggle('mode-index', mode === 'index');
     this._spreadBook.classList.toggle('mode-entry', mode === 'entry');
+    this._spreadBook.classList.toggle('mode-page', mode === 'page');
     this.closeShareMenu(); // the share anchor belongs to the page being replaced
     this._syncBackButton();
   }
@@ -502,16 +508,18 @@ export class UI {
   _syncSpreadNav() {
     const prev = $('spread-prev');
     const next = $('spread-next');
-    const atFirst = this._mode === 'index' && this._indexPage <= 0;
-    const atLast = this._mode === 'index' && this._indexPage >= this._indexPages - 1;
-    prev.disabled = atFirst;
-    next.disabled = atLast;
+    const step = this._mode === 'entry' && this._path ? pathNeighbors(this._path.collection, this._path.index) : null;
+    const atFirst = (this._mode === 'index' && this._indexPage <= 0) || this._mode === 'page' || (step && !step.prev);
+    const atLast =
+      (this._mode === 'index' && this._indexPage >= this._indexPages - 1) || this._mode === 'page' || (step && !step.next);
+    prev.disabled = Boolean(atFirst);
+    next.disabled = Boolean(atLast);
 
     // In contents mode these buttons page through the sheets; in entry mode
     // they always walk between terms — flipping to the story is done by the
     // in-page flip buttons so the footer stays unambiguous.
-    const prevLabel = this._mode === 'index' ? 'Previous contents page' : 'Previous entry';
-    const nextLabel = this._mode === 'index' ? 'Next contents page' : 'Next entry';
+    const prevLabel = this._mode === 'index' ? 'Previous contents page' : step ? 'Previous step in path' : 'Previous entry';
+    const nextLabel = this._mode === 'index' ? 'Next contents page' : step ? 'Next step in path' : 'Next entry';
     prev.title = prevLabel;
     next.title = nextLabel;
     prev.setAttribute('aria-label', prevLabel);
@@ -532,6 +540,11 @@ export class UI {
     }
 
     this._activeTerm = term;
+    if (opts.path) this._path = opts.path;
+    else if (this._path) {
+      const index = this._path.collection.terms.indexOf(term.slug);
+      this._path = index === -1 ? null : { collection: this._path.collection, index };
+    }
     const vol = volumeByLetter(term.letter);
     this._folder = vol.folder;
     this._termList = rangeTerms(vol.folder);
@@ -563,6 +576,288 @@ export class UI {
   }
 
   /** Entry spread: definition on the left, details + citation (+ story cue) on the right. */
+  // ---------- contribution flywheel ----------
+
+  _renderContributors(term) {
+    if (!term.contributors?.length) return '';
+    const names = term.contributors.map(({ name, url, role }) => {
+      const label = escapeHtml(name) + (role ? ` <span class="pg-contrib-role">(${escapeHtml(role)})</span>` : '');
+      return url ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener">${label}</a>` : label;
+    });
+    return `<p class="pg-contributors">${icon('users')}<span>Contributed by ${names.join(', ')}</span></p>`;
+  }
+
+  /** Coverage dashboard: term counts per letter, category and type, with thin areas called out. */
+  openCoverage() {
+    const stats = coverageStats(allTerms);
+    const max = Math.max(1, ...stats.letters.map(({ count }) => count));
+    const bar = (label, count, top, thin, attrs = '') => `
+      <li class="cov-row${thin ? ' is-thin' : ''}" ${attrs}>
+        <span class="cov-label">${escapeHtml(label)}</span>
+        <span class="cov-bar"><span style="width:${Math.max(2, Math.round((count / top) * 100))}%"></span></span>
+        <span class="cov-count">${count.toLocaleString('en-US')}</span>
+      </li>`;
+    const topCategory = Math.max(1, ...stats.topCategories.map(({ count }) => count));
+    const thinCats = stats.thinCategories.slice(0, 18);
+    this._showPage(() => {
+      this._pageLeft.innerHTML = `
+        <div class="story-left page-left-intro">
+          <p class="idx-kicker">TheAIDictionary · Coverage</p>
+          <h2 class="story-title">Where the shelf is thin</h2>
+          <p class="cov-summary">${stats.total.toLocaleString('en-US')} terms across ${stats.categoryCount.toLocaleString('en-US')} categories.
+            ${stats.withExplainer.toLocaleString('en-US')} have an explainer; ${stats.withContributors.toLocaleString('en-US')} credit a contributor.</p>
+          <h3 class="cov-head">Terms per letter</h3>
+          <ul class="cov-list cov-letters">${stats.letters.map(({ letter, count, thin }) => bar(letter, count, max, thin)).join('')}</ul>
+          <p class="cov-note">Highlighted letters hold under half the median (${stats.letterMedian}) per letter.</p>
+        </div>`;
+      this._pageRight.innerHTML = `
+        <div class="pg-entry">
+          <h3 class="cov-head">Largest categories</h3>
+          <ul class="cov-list">${stats.topCategories.map(({ category, count }) => bar(category, count, topCategory, false)).join('')}</ul>
+          <h3 class="cov-head">By type</h3>
+          <ul class="cov-list">${stats.types
+            .map(({ type, count }) => bar(TERM_TYPE_LABELS[type] || type, count, stats.types[0].count, count < 20))
+            .join('')}</ul>
+          ${
+            thinCats.length
+              ? `<h3 class="cov-head">Thin categories (${stats.thinCategories.length})</h3>
+                 <p class="cov-chips">${thinCats.map(({ category, count }) => `<span class="cov-chip">${escapeHtml(category)} · ${count}</span>`).join('')}</p>`
+              : ''
+          }
+          <p class="path-actions">
+            <button type="button" class="pg-flip-page cov-request">${icon('circle-help')}<span>Request a missing term</span>${icon('arrow-right')}</button>
+          </p>
+        </div>`;
+      this._pageRight.querySelector('.cov-request')?.addEventListener('click', () => this.openRequest());
+    }, `Coverage · ${stats.total.toLocaleString('en-US')} terms`);
+  }
+
+  /** "Request a term": checks the shelf first, then opens a prefilled term-request issue. */
+  openRequest() {
+    this._showPage(() => {
+      this._pageLeft.innerHTML = `
+        <div class="story-left page-left-intro">
+          <p class="idx-kicker">TheAIDictionary · Community</p>
+          <h2 class="story-title">Request a term</h2>
+          <p class="story-open">Missing something? Name it and say why it matters. Requests become GitHub issues labelled
+            <code>term-request</code> that contributors pick up — and credit themselves on the entry.</p>
+          <p class="story-open">Ready to write it yourself? Use <button type="button" class="pg-part-link req-contribute">Contribute</button> instead.</p>
+        </div>`;
+      this._pageRight.innerHTML = `
+        <div class="pg-entry">
+          <form class="req-form" autocomplete="off">
+            <label>Term<input name="term" required maxlength="120" placeholder="e.g. Speculative decoding" /></label>
+            <p class="req-match" role="status" aria-live="polite"></p>
+            <label>Why it belongs<textarea name="reason" rows="3" maxlength="800"></textarea></label>
+            <label>A good source (URL)<input name="source" type="url" placeholder="https://arxiv.org/abs/…" /></label>
+            <label>Your name or @handle (optional)<input name="requester" maxlength="80" /></label>
+            <button type="submit" class="pg-flip-page">${icon('arrow-up-right')}<span>Open the request on GitHub</span></button>
+          </form>
+        </div>`;
+      const form = this._pageRight.querySelector('.req-form');
+      const match = form.querySelector('.req-match');
+      const input = form.elements.term;
+      input.addEventListener('input', () => {
+        const [hit] = input.value.trim().length >= 3 ? searchTerms(input.value) : [];
+        match.innerHTML = hit
+          ? `Already on the shelf? <button type="button" class="pg-part-link" data-slug="${escapeHtml(hit.slug)}">${escapeHtml(hit.term)}</button>`
+          : '';
+        match.querySelector('[data-slug]')?.addEventListener('click', (event) => this.onPickTerm?.(event.currentTarget.dataset.slug));
+      });
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        if (!input.value.trim()) return input.focus();
+        const { buildRequestUrl } = await import('./contribute.js');
+        const data = Object.fromEntries(new FormData(form));
+        window.open(buildRequestUrl(data), '_blank', 'noopener');
+      });
+      this._pageLeft.querySelector('.req-contribute')?.addEventListener('click', () => this.onContribute?.());
+    }, 'Request a term');
+  }
+
+  // ---------- learning paths ----------
+
+  /** "Step 3 of 8" walker while on a path, plus "Part of:" links to every path holding the term. */
+  _renderPathBox(term) {
+    const memberships = collectionsForTerm(term.slug);
+    let walker = '';
+    if (this._path && this._path.collection.terms[this._path.index] === term.slug) {
+      const { collection, index } = this._path;
+      const { prev, next } = pathNeighbors(collection, index);
+      const stepButton = (slug, dir, label) => {
+        const target = slug ? findTerm(slug) : null;
+        return target
+          ? `<button type="button" class="pg-path-step" data-step="${dir}">${dir < 0 ? icon('chevron-left') : ''}<span>${escapeHtml(label)}: ${escapeHtml(target.term)}</span>${dir > 0 ? icon('chevron-right') : ''}</button>`
+          : '';
+      };
+      walker = `<nav class="pg-path" aria-label="Learning path">
+          <p class="pg-path-head">${icon('graduation-cap')}<button type="button" class="pg-path-title" data-collection="${escapeHtml(collection.id)}">${escapeHtml(collection.title)}</button>
+            <span>Step ${index + 1} of ${collection.terms.length}</span></p>
+          <p class="pg-path-steps">${stepButton(prev, -1, 'Previous')}${stepButton(next, 1, 'Next')}</p>
+        </nav>`;
+    }
+    const others = memberships.filter(({ collection }) => !this._path || collection.id !== this._path.collection.id);
+    const partOf = others.length
+      ? `<p class="pg-part-of">Part of: ${others
+          .map(({ collection }) => `<button type="button" class="pg-part-link" data-collection="${escapeHtml(collection.id)}">${escapeHtml(collection.title)}</button>`)
+          .join(', ')}</p>`
+      : '';
+    return walker + partOf;
+  }
+
+  _bindPathBox() {
+    this._pageLeft.querySelectorAll('[data-collection]').forEach((button) =>
+      button.addEventListener('click', () => this.openCollection(button.dataset.collection))
+    );
+    this._pageLeft.querySelectorAll('.pg-path-step').forEach((button) =>
+      button.addEventListener('click', () => this._stepEntry(Number(button.dataset.step)))
+    );
+  }
+
+  /**
+   * Book pages that are not entries (learning paths, dashboards). They open
+   * without pulling a volume, so the prev/next arrows are disabled.
+   */
+  _showPage(render, counter) {
+    this._activeTerm = null;
+    this._termIndex = -1;
+    const draw = () => {
+      this._renderFootActions([]);
+      render();
+      this._setMode('page');
+      this._counter.textContent = counter;
+      this._syncSpreadNav();
+      this._resetScroll();
+    };
+    if (this.isSpreadOpen()) this._flip('next', draw);
+    else {
+      draw();
+      this._openSpread();
+      this._reveal();
+    }
+  }
+
+  /** Shelf of every learning path. */
+  openCollections() {
+    this._showPage(() => {
+      this._pageLeft.innerHTML = `
+        <div class="story-left page-left-intro">
+          <p class="idx-kicker">TheAIDictionary · Learning paths</p>
+          <p class="idx-ornament">✦&nbsp;&nbsp;❦&nbsp;&nbsp;✦</p>
+          <h2 class="story-title">Learning paths</h2>
+          <p class="story-open">Short, ordered routes through the dictionary. Each path reads like a chapter: start at step one and turn the page to the next idea.</p>
+        </div>`;
+      this._pageRight.innerHTML = `
+        <div class="pg-entry">
+          <ul class="path-shelf">${collections
+            .map(
+              (c) => `<li><button type="button" class="path-card" data-collection="${escapeHtml(c.id)}">
+                  <strong>${escapeHtml(c.title)}</strong>
+                  <span>${escapeHtml(c.description)}</span>
+                  <em>${c.terms.length} terms</em>
+                </button></li>`
+            )
+            .join('')}</ul>
+        </div>`;
+      this._pageRight.querySelectorAll('[data-collection]').forEach((button) =>
+        button.addEventListener('click', () => this.openCollection(button.dataset.collection))
+      );
+    }, `Learning paths · ${collections.length}`);
+  }
+
+  /** One learning path: description on the left, the ordered steps on the right. */
+  openCollection(id) {
+    const collection = findCollection(id);
+    if (!collection) return false;
+    const steps = collection.terms.map((slug) => findTerm(slug)).filter(Boolean);
+    this._showPage(() => {
+      this._pageLeft.innerHTML = `
+        <div class="story-left page-left-intro">
+          <p class="idx-kicker">TheAIDictionary · Learning path</p>
+          <p class="idx-ornament">✦&nbsp;&nbsp;❦&nbsp;&nbsp;✦</p>
+          <h2 class="story-title">${escapeHtml(collection.title)}</h2>
+          <p class="story-open">${escapeHtml(collection.description)}</p>
+          <p class="path-actions">
+            <button type="button" class="pg-flip-page path-start">${icon('book-open')}<span>Start at step 1</span>${icon('arrow-right')}</button>
+            <button type="button" class="path-all">${icon('chevron-left')}<span>All learning paths</span></button>
+          </p>
+        </div>`;
+      this._pageRight.innerHTML = `
+        <div class="pg-entry">
+          <ol class="path-steps">${steps
+            .map(
+              (term, i) => `<li><button type="button" class="path-step" data-index="${i}">
+                  <span class="path-step-n">${i + 1}</span>
+                  <span class="path-step-body"><strong>${escapeHtml(term.term)}</strong><span>${escapeHtml(term.definition)}</span></span>
+                </button></li>`
+            )
+            .join('')}</ol>
+        </div>`;
+      const open = (index) => {
+        this._path = { collection, index };
+        this.openEntry(collection.terms[index]);
+      };
+      this._pageLeft.querySelector('.path-start')?.addEventListener('click', () => open(0));
+      this._pageLeft.querySelector('.path-all')?.addEventListener('click', () => this.openCollections());
+      this._pageRight.querySelectorAll('.path-step').forEach((button) =>
+        button.addEventListener('click', () => open(Number(button.dataset.index)))
+      );
+    }, `Learning path · ${steps.length} terms`);
+    return true;
+  }
+
+  /** Structured card for people, organizations and libraries on the entry page. */
+  _renderEntryCard(term) {
+    if (term.type === 'person' || term.type === 'organization') {
+      const profile = term.profile;
+      const knownFor = profile.knownFor || (term.explainer && term.explainer.knownFor) || '';
+      if (!knownFor && !hasProfileCard(profile)) return '';
+      const works = profile.notableWorks
+        .map((work) => {
+          const title = work.url
+            ? `<a href="${escapeHtml(work.url)}" target="_blank" rel="noopener">${escapeHtml(work.title)}${icon('arrow-up-right')}</a>`
+            : escapeHtml(work.title);
+          return `<li>${title}${work.year ? ` <span class="card-year">${escapeHtml(work.year)}</span>` : ''}</li>`;
+        })
+        .join('');
+      return `<aside class="entry-card entry-card-${term.type}" aria-label="${term.type === 'person' ? 'Person' : 'Organization'} card">
+          <dl>
+            ${knownFor ? `<dt>Known for</dt><dd>${escapeHtml(knownFor)}</dd>` : ''}
+            ${profile.currentRole ? `<dt>${term.type === 'person' ? 'Current role' : 'Today'}</dt><dd>${escapeHtml(profile.currentRole)}</dd>` : ''}
+            ${works ? `<dt>Notable works</dt><dd><ul class="card-works">${works}</ul></dd>` : ''}
+          </dl>
+        </aside>`;
+    }
+    if (term.type === 'library' && term.library) {
+      const lib = term.library;
+      const link = (url, label, iconName) =>
+        url ? `<a class="card-link" href="${escapeHtml(url)}" target="_blank" rel="noopener">${icon(iconName)}<span>${label}</span></a>` : '';
+      return `<aside class="entry-card entry-card-library" aria-label="Library card">
+          <dl>
+            ${lib.package ? `<dt>Package</dt><dd><code>${escapeHtml(lib.package)}</code>${lib.language ? ` · ${escapeHtml(lib.language)}` : ''}</dd>` : ''}
+            ${
+              lib.installCmd
+                ? `<dt>Install</dt><dd class="card-install"><code>${escapeHtml(lib.installCmd)}</code>
+                     <button type="button" class="card-copy" data-copy="${escapeHtml(lib.installCmd)}" aria-label="Copy install command">${icon('copy')}</button></dd>`
+                : ''
+            }
+            ${lib.useCases.length ? `<dt>Use cases</dt><dd><ul class="card-uses">${lib.useCases.map((use) => `<li>${escapeHtml(use)}</li>`).join('')}</ul></dd>` : ''}
+          </dl>
+          ${lib.githubUrl || lib.docsUrl ? `<p class="card-links">${link(lib.githubUrl, 'GitHub', 'arrow-up-right')}${link(lib.docsUrl, 'Docs', 'book-open')}</p>` : ''}
+        </aside>`;
+    }
+    return '';
+  }
+
+  _bindEntryCard() {
+    this._pageRight.querySelectorAll('.card-copy').forEach((button) =>
+      button.addEventListener('click', async (event) => {
+        event.stopPropagation();
+        this._toast((await this._copyText(button.dataset.copy)) ? 'Install command copied' : 'Copying was blocked');
+      })
+    );
+  }
+
   _renderEntrySpread(term) {
     const vol = volumeByLetter(term.letter);
     const breadcrumb = entryBreadcrumb(term, vol);
@@ -605,7 +900,9 @@ export class UI {
         ${term.aka.length ? `<p class="pg-aka">also known as: ${escapeHtml(term.aka.join(', '))}</p>` : ''}
         <p class="pg-rule"></p>
         <p class="pg-def">${escapeHtml(term.definition)}</p>
+        ${this._renderPathBox(term)}
       </div>`;
+    this._bindPathBox();
     this._pageLeft.querySelector('.pg-share')?.addEventListener('click', (e) => {
       e.stopPropagation();
       this.toggleShareMenu(e.currentTarget);
@@ -614,6 +911,7 @@ export class UI {
     this._pageRight.innerHTML = `
       <div class="pg-entry">
         <p class="pg-details">${escapeHtml(term.details)}</p>
+        ${this._renderEntryCard(term)}
         ${
           citation || term.citation.url
             ? `<aside class="pg-citation">
@@ -628,6 +926,7 @@ export class UI {
                </aside>`
             : ''
         }
+        ${this._renderContributors(term)}
         ${
           hasSecondPage(term)
             ? `<button class="pg-flip-page" type="button">${icon('book-open')}<span>${escapeHtml(
@@ -640,6 +939,7 @@ export class UI {
     this._pageRight
       .querySelector('.pg-flip-page')
       ?.addEventListener('click', () => this._flipToPage(1));
+    this._bindEntryCard();
     this._renderConceptTrail(term);
     this._resetScroll();
   }
@@ -782,17 +1082,88 @@ export class UI {
     this._pageRight.innerHTML = `
       <div class="pg-entry xp-right"${langTabs ? ' data-lang="python"' : ''}>
         <p class="pg-story-term">${escapeHtml(term.term)}</p>
+        ${isStoryType(term.type) ? this._renderExplainerTiers(explainer.tiers) : ''}
         ${langTabs}
         ${sections}
+        ${this._renderExampleCallout(explainer.example)}
+        ${this._renderUsedIn(explainer.usedIn)}
         ${trailFigure}
         ${sources ? `<p class="xp-sources">Sources: ${sources}</p>` : ''}
         <p class="pg-story-end" aria-hidden="true">❦</p>
         ${next}
       </div>`;
     this._bindLangTabs();
+    this._bindTierTabs();
     this._bindRelatedChips();
     this._bindSuggestedRows();
     this._resetScroll();
+  }
+
+  /** ELI5 / Practitioner / Paper-level reading levels as a tab strip. */
+  _renderExplainerTiers(tiers) {
+    const levels = EXPLAINER_TIERS.filter(([field]) => tiers && tiers[field]);
+    if (!levels.length) return '';
+    const tabs = levels
+      .map(
+        ([field, label], i) =>
+          `<button type="button" role="tab" id="xp-tier-tab-${field}" aria-controls="xp-tier-${field}" aria-selected="${i === 0}" tabindex="${i === 0 ? 0 : -1}" data-tier="${field}">${escapeHtml(label)}</button>`
+      )
+      .join('');
+    const panels = levels
+      .map(
+        ([field], i) =>
+          `<p class="xp-tier-panel" role="tabpanel" id="xp-tier-${field}" aria-labelledby="xp-tier-tab-${field}"${i === 0 ? '' : ' hidden'}>${escapeHtml(tiers[field])}</p>`
+      )
+      .join('');
+    return `<section class="xp-tiers" aria-label="Explain it at your level">
+        <div class="xp-tier-tabs" role="tablist" aria-label="Reading level">${tabs}</div>
+        ${panels}
+      </section>`;
+  }
+
+  _renderExampleCallout(example) {
+    if (!example) return '';
+    return `<aside class="xp-example" aria-label="Example">
+        <p class="xp-example-label">Example</p>
+        <p>${escapeHtml(example)}</p>
+      </aside>`;
+  }
+
+  _renderUsedIn(usedIn) {
+    if (!usedIn || !usedIn.length) return '';
+    const items = usedIn
+      .map((item) => {
+        const name = item.url
+          ? `<a href="${escapeHtml(item.url)}" target="_blank" rel="noopener">${escapeHtml(item.name)}${icon('arrow-up-right')}</a>`
+          : `<strong>${escapeHtml(item.name)}</strong>`;
+        return `<li>${name}${item.detail ? ` — ${escapeHtml(item.detail)}` : ''}</li>`;
+      })
+      .join('');
+    return `<section class="xp-section xp-used-in"><h3 class="xp-h">Used in</h3><ul class="xp-list">${items}</ul></section>`;
+  }
+
+  _bindTierTabs() {
+    const tabs = [...this._pageRight.querySelectorAll('.xp-tier-tabs [role="tab"]')];
+    const select = (tab) => {
+      for (const other of tabs) {
+        const on = other === tab;
+        other.setAttribute('aria-selected', String(on));
+        other.tabIndex = on ? 0 : -1;
+        const panel = this._pageRight.querySelector(`#${other.getAttribute('aria-controls')}`);
+        if (panel) panel.hidden = !on;
+      }
+    };
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => select(tab));
+      tab.addEventListener('keydown', (event) => {
+        if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
+        event.preventDefault();
+        event.stopPropagation(); // arrows otherwise turn the page
+        const next = tabs[(i + (event.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+        next.focus();
+        select(next);
+      });
+    });
   }
 
   _renderExplainerSection({ field, heading, kind, icon: iconName, value }, term) {
@@ -1123,11 +1494,21 @@ export class UI {
   _syncEntryChrome(term, vol) {
     this.closeShareMenu();
     const page = this._entryPage === 1 ? ` · ${entrySecondPage(term).counter}` : '';
-    this._counter.textContent = `${this._termIndex + 1} of ${this._termList.length} · ${vol.label}${page}`;
+    this._counter.textContent = this._path
+      ? `Step ${this._path.index + 1} of ${this._path.collection.terms.length} · ${this._path.collection.title}${page}`
+      : `${this._termIndex + 1} of ${this._termList.length} · ${vol.label}${page}`;
     this._syncSpreadNav();
   }
 
   _stepEntry(dir) {
+    if (this._mode === 'entry' && this._path) {
+      const { prev, next } = pathNeighbors(this._path.collection, this._path.index);
+      const slug = dir > 0 ? next : prev;
+      if (!slug) return;
+      this._path = { collection: this._path.collection, index: this._path.index + (dir > 0 ? 1 : -1) };
+      this.openEntry(slug, { dir: dir > 0 ? 'next' : 'prev' });
+      return;
+    }
     if (this._mode !== 'entry' || this._termIndex === -1 || !this._termList.length) return;
     const next = (this._termIndex + dir + this._termList.length) % this._termList.length;
     this.openEntry(this._termList[next].slug, { from: 'volume', dir: dir > 0 ? 'next' : 'prev' });
@@ -1188,6 +1569,7 @@ export class UI {
     document.body.classList.remove('reading');
     this._activeTerm = null;
     this._termIndex = -1;
+    if (!silent) this._path = null;
     this.setActiveVolume(null);
     if (!silent && this.onVolumeClose) this.onVolumeClose();
   }

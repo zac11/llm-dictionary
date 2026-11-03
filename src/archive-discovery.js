@@ -7,8 +7,15 @@ import { isIsoDate } from './term-schema.js';
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 /** Deterministic daily pick: same UTC day -> same term, regardless of input order. */
+/**
+ * Deterministic daily pick: terms ordered by `addedAt` (undated first, then
+ * oldest to newest, slug as tie-break) and indexed by the UTC day number, so
+ * every visitor sees the same entry and consecutive days never repeat.
+ */
 export function termOfDay(terms, date) {
-  const slugs = [...new Set(terms.map((term) => term.slug).filter(Boolean))].sort();
+  const bySlug = new Map();
+  for (const term of terms) if (term.slug && !bySlug.has(term.slug)) bySlug.set(term.slug, term.addedAt || '');
+  const slugs = [...bySlug.keys()].sort((a, b) => bySlug.get(a).localeCompare(bySlug.get(b)) || a.localeCompare(b));
   if (!slugs.length) return null;
   const dayIndex = Math.floor(
     Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()) / DAY_MS
@@ -124,4 +131,25 @@ export function shouldShowWelcome({ storage = null, session = null } = {}) {
 export function markWelcomeShown({ storage = null, session = null } = {}) {
   writeWelcomeState(storage, { seen: true });
   writeWelcomeSession(session);
+}
+
+const escapeEmbed = (value) =>
+  String(value).replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]);
+
+/**
+ * Self-contained HTML snippet for embedding a term (e.g. the term of the day)
+ * in a blog or newsletter: plain markup with inline styles and a link back.
+ */
+export function termEmbedSnippet(term, { origin = '', date = null } = {}) {
+  if (!term) return '';
+  const url = `${origin}/term/${encodeURIComponent(term.slug)}/`;
+  const kicker = date ? `Term of the day · ${date.toISOString().slice(0, 10)}` : 'TheAIDictionary';
+  return [
+    '<blockquote class="aidictionary-term" style="border-left:3px solid #b8863b;margin:0;padding:12px 16px;font-family:Georgia,serif;background:#fbf6ec;color:#2b1f14">',
+    `  <p style="margin:0 0 4px;font:600 11px system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#8a5a1c">${escapeEmbed(kicker)}</p>`,
+    `  <p style="margin:0 0 6px;font-size:20px"><strong>${escapeEmbed(term.term)}</strong></p>`,
+    `  <p style="margin:0 0 8px;line-height:1.5">${escapeEmbed(term.definition || '')}</p>`,
+    `  <a href="${escapeEmbed(url)}" style="font:600 13px system-ui,sans-serif;color:#8a5a1c">Read it in TheAIDictionary →</a>`,
+    '</blockquote>',
+  ].join('\n');
 }
