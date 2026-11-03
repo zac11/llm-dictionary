@@ -83,8 +83,8 @@ export function formRowToTerm(row) {
 
   const term = normalizeTerm(raw);
   const issues = validateTerm(term, { raw });
-  // Explainers are added by maintainers after review, so the form does not nag about them.
-  const MAINTAINER_ONLY = new Set(['missing-explainer', 'missing-example']);
+  // Explainers and card details are added by maintainers after review, so the form does not nag about them.
+  const MAINTAINER_ONLY = new Set(['missing-explainer', 'missing-example', 'thin-person-card', 'missing-install']);
   return {
     term,
     issues: issues.filter((issue) => (issue.level === 'error' || issue.level === 'warning') && !MAINTAINER_ONLY.has(issue.code)),

@@ -156,13 +156,64 @@ const normalizeLink = (value) => {
   return { label: String(source.label || '').trim(), url };
 };
 
-/** `{ links, highlights }` — links to a person's or organization's own pages. */
+const isWebUrl = (value) => /^https?:\/\/\S+$/i.test(value);
+
+const normalizeWork = (value) => {
+  if (typeof value === 'string') return value.trim() ? { title: value.trim(), year: '', url: '' } : null;
+  if (!isRecord(value)) return null;
+  const title = String(value.title || '').trim();
+  if (!title) return null;
+  const url = String(value.url || '').trim();
+  return { title, year: String(value.year || '').trim(), url: isWebUrl(url) ? url : '' };
+};
+
+/**
+ * `{ links, highlights, knownFor, currentRole, notableWorks }` — a person's or
+ * organization's card: what they are known for, where they are now, and the
+ * works worth reading.
+ */
 export function normalizeProfile(value) {
   const source = isRecord(value) ? value : {};
   return {
     links: asArray(source.links).map(normalizeLink).filter(Boolean),
     highlights: cleanList(source.highlights),
+    knownFor: typeof source.knownFor === 'string' ? source.knownFor.trim() : '',
+    currentRole: typeof source.currentRole === 'string' ? source.currentRole.trim() : '',
+    notableWorks: asArray(source.notableWorks).map(normalizeWork).filter(Boolean),
   };
+}
+
+/** First shell command from an explainer's install snippet, without its comment. */
+function installFromExplainer(explainer) {
+  const snippet = explainer && Array.isArray(explainer.install) ? explainer.install[0] : null;
+  if (!snippet) return '';
+  const line = snippet.code.split('\n').find((row) => row.trim() && !row.trim().startsWith('#')) || '';
+  return line.replace(/\s+#.*$/, '').trim();
+}
+
+/**
+ * `{ package, installCmd, githubUrl, docsUrl, language, useCases }` for library
+ * entries, or null. The install command falls back to the explainer's install
+ * snippet so every library with an explainer gets a card.
+ */
+export function normalizeLibrary(value, explainer = null) {
+  const source = isRecord(value) ? value : {};
+  const str = (key) => (typeof source[key] === 'string' ? source[key].trim() : '');
+  const url = (key) => (isWebUrl(str(key)) ? str(key) : '');
+  const out = {
+    package: str('package'),
+    installCmd: str('installCmd') || installFromExplainer(explainer),
+    githubUrl: url('githubUrl'),
+    docsUrl: url('docsUrl'),
+    language: str('language'),
+    useCases: cleanList(source.useCases),
+  };
+  return Object.values(out).some((v) => (Array.isArray(v) ? v.length : v)) ? out : null;
+}
+
+/** True when a profile has any card data beyond generated links. */
+export function hasProfileCard(profile) {
+  return Boolean(profile && (profile.knownFor || profile.currentRole || profile.notableWorks.length));
 }
 
 const normalizeCoverageItem = (value) => {
@@ -308,6 +359,8 @@ export function normalizeTerm(raw, source = '') {
   const letter = String(raw.letter || term[0] || '').trim().toUpperCase();
   if (!isValidLetter(letter)) return null;
   const citation = isRecord(raw.citation) ? raw.citation : {};
+  const type = normalizeTermType(raw.type) || DEFAULT_TERM_TYPE;
+  const explainer = normalizeExplainer(raw.explainer, type);
   return {
     slug: String(raw.slug || slugifyTerm(term)).trim(),
     term,
@@ -318,9 +371,10 @@ export function normalizeTerm(raw, source = '') {
     definition: String(raw.definition || '').trim(),
     details: String(raw.details || '').trim(),
     story: String(raw.story || '').trim(),
-    explainer: normalizeExplainer(raw.explainer, normalizeTermType(raw.type) || DEFAULT_TERM_TYPE),
+    explainer,
     deceased: raw.deceased === true,
     profile: normalizeProfile(raw.profile),
+    library: normalizeLibrary(raw.library, type === 'library' ? explainer : null),
     coverage: normalizeCoverage(raw.coverage),
     related: cleanList(raw.related),
     citation: {
@@ -456,6 +510,44 @@ export function validateTerm(term, context = {}) {
     if (Array.isArray(raw.profile.highlights) && raw.profile.highlights.some((value) => typeof value !== 'string' || !value.trim())) {
       add('error', 'invalid-highlight-value', 'profile.highlights values must be non-empty strings.');
     }
+    for (const key of ['knownFor', 'currentRole']) {
+      if (raw.profile[key] !== undefined && typeof raw.profile[key] !== 'string') {
+        add('error', 'invalid-profile-text', `profile.${key} must be a string.`);
+      }
+    }
+    if (raw.profile.notableWorks !== undefined && !Array.isArray(raw.profile.notableWorks)) {
+      add('error', 'invalid-notable-works-shape', 'profile.notableWorks must be an array of { title, year, url } objects.');
+    }
+    for (const work of asArray(raw.profile.notableWorks)) {
+      if (!normalizeWork(work)) add('error', 'invalid-notable-work', 'Each notable work needs a title.');
+      else if (isRecord(work) && work.url && !isWebUrl(String(work.url).trim())) {
+        add('error', 'invalid-notable-work-url', `Notable work “${work.title}” has a non-http url.`);
+      }
+    }
+  }
+  if (raw && raw.library !== undefined) {
+    if (!isRecord(raw.library)) add('error', 'invalid-library-shape', 'library must be an object.');
+    else {
+      for (const key of ['githubUrl', 'docsUrl']) {
+        const value = raw.library[key];
+        if (value !== undefined && !(typeof value === 'string' && isWebUrl(value.trim()))) {
+          add('error', 'invalid-library-url', `library.${key} must be an http(s) URL.`);
+        }
+      }
+      if (raw.library.githubUrl && typeof raw.library.githubUrl === 'string' && !/^https:\/\/github\.com\//.test(raw.library.githubUrl)) {
+        add('warning', 'non-github-url', 'library.githubUrl should point at github.com.');
+      }
+      if (raw.library.useCases !== undefined && !Array.isArray(raw.library.useCases)) {
+        add('error', 'invalid-use-cases-shape', 'library.useCases must be an array of strings.');
+      }
+    }
+    if (term.type !== 'library') add('warning', 'unexpected-library', `library data only renders on library entries, not ${term.type}.`);
+  }
+  if (term.type === 'person' && !term.profile.knownFor && !(term.explainer && term.explainer.knownFor)) {
+    add('warning', 'thin-person-card', 'Person card has nothing for “Known for” (profile.knownFor or explainer.knownFor).');
+  }
+  if (term.type === 'library' && !(term.library && term.library.installCmd)) {
+    add('warning', 'missing-install', 'Library card has no install command (library.installCmd or explainer.install).');
   }
 
   if (raw && raw.coverage !== undefined && !Array.isArray(raw.coverage)) {
@@ -485,7 +577,7 @@ export function validateTerm(term, context = {}) {
   // Presentation coherence: the second spread is chosen by type, so data for a
   // different spread is silently unused.
   const presentation = entryPresentation(term.type);
-  const hasProfile = term.profile.links.length > 0 || term.profile.highlights.length > 0;
+  const hasProfile = term.profile.links.length > 0 || term.profile.highlights.length > 0 || hasProfileCard(term.profile);
   if (hasProfile && presentation !== 'profile') {
     add('warning', 'unexpected-profile', `profile data is unused because ${term.type} entries read as “${presentation}”.`);
   }

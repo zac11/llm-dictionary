@@ -55,7 +55,8 @@ test('normalizeTerm preserves an explicit slug and normalizes optional fields', 
     details: '',
     story: '',
     deceased: false,
-    profile: { links: [], highlights: [] },
+    profile: { links: [], highlights: [], knownFor: '', currentRole: '', notableWorks: [] },
+    library: null,
     coverage: [],
     related: ['other-term'],
     citation: { title: 'Paper', authors: ['Author'], year: '', venue: '', url: '' },
@@ -180,6 +181,9 @@ test('normalizeTerm defaults the type and normalizes profile and coverage data',
   assert.deepEqual(person.profile, {
     links: [{ label: 'LinkedIn', url: 'https://www.linkedin.com/in/samaltman' }],
     highlights: ['Co-founded OpenAI (2015)'],
+    knownFor: '',
+    currentRole: '',
+    notableWorks: [],
   });
   assert.deepEqual(person.coverage, [
     { title: 'Board fires Altman', source: 'Reuters', date: '2023-11-17', url: 'https://example.com/a' },
@@ -268,6 +272,7 @@ test('validateTerm accepts a well-formed person profile', () => {
         { label: 'Wikipedia', url: 'https://en.wikipedia.org/wiki/Sam_Altman' },
       ],
       highlights: ['Chief executive officer of OpenAI since 2019'],
+      knownFor: 'Leading OpenAI through the launch of ChatGPT',
     },
   };
   const codes = validateTerm(normalizeTerm(raw), { raw }).map((issue) => issue.code);
@@ -289,4 +294,43 @@ test('rankSearchEntries prioritizes exact, prefix, and whole-word term matches',
   ]);
   assert.equal(rankSearchEntries('Machine', entries)[0].entry.term, 'Machine Learning');
   assert.equal(rankSearchEntries('ML', entries)[0].entry.term, 'Machine Learning');
+});
+
+test('normalizeProfile reads card fields and normalizeTerm derives a library block', () => {
+  const person = normalizeTerm({
+    term: 'Ada',
+    letter: 'A',
+    type: 'person',
+    profile: { knownFor: 'Notes', currentRole: 'Countess', notableWorks: ['Note G', { title: 'Sketch', year: 1843, url: 'ftp://x' }] },
+  });
+  assert.equal(person.profile.knownFor, 'Notes');
+  assert.deepEqual(person.profile.notableWorks, [
+    { title: 'Note G', year: '', url: '' },
+    { title: 'Sketch', year: '1843', url: '' },
+  ]);
+  assert.equal(person.library, null);
+  const lib = normalizeTerm({
+    term: 'Torch',
+    letter: 'T',
+    type: 'library',
+    explainer: { lead: 'L', install: { python: '# header\npip install torch   # cuda' } },
+    library: { githubUrl: 'https://github.com/pytorch/pytorch', useCases: ['training'] },
+  });
+  assert.equal(lib.library.installCmd, 'pip install torch');
+  assert.deepEqual(lib.library.useCases, ['training']);
+});
+
+test('validateTerm checks person and library card data', () => {
+  const codes = (raw) => validateTerm(normalizeTerm(raw), { raw }).map((issue) => issue.code);
+  const person = { term: 'Ada', letter: 'A', type: 'person', definition: 'D.', details: 'More.' };
+  assert.ok(codes(person).includes('thin-person-card'));
+  assert.ok(!codes({ ...person, profile: { knownFor: 'Notes' } }).includes('thin-person-card'));
+  const bad = { ...person, profile: { knownFor: 3, notableWorks: [{ year: 1 }] }, library: { githubUrl: 'nope' } };
+  const badCodes = codes(bad);
+  for (const code of ['invalid-profile-text', 'invalid-notable-work', 'invalid-library-url', 'unexpected-library']) {
+    assert.ok(badCodes.includes(code), code);
+  }
+  const lib = { term: 'Torch', letter: 'T', type: 'library', definition: 'D.', details: 'More.' };
+  assert.ok(codes(lib).includes('missing-install'));
+  assert.ok(!codes({ ...lib, library: { installCmd: 'pip install torch' } }).includes('missing-install'));
 });

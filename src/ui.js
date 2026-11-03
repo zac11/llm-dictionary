@@ -15,7 +15,7 @@ import {
   relatedGroups,
   detailHighlights,
 } from './entry-actions.js';
-import { TERM_TYPE_LABELS, isStoryType } from './term-schema.js';
+import { TERM_TYPE_LABELS, isStoryType, hasProfileCard } from './term-schema.js';
 import { EXPLAINER_LAYOUTS, EXPLAINER_TIERS, explainerSections } from './explainer.js';
 
 const CODE_LABELS = { python: 'Python', javascript: 'JavaScript', typescript: 'TypeScript', shell: 'Terminal' };
@@ -563,6 +563,58 @@ export class UI {
   }
 
   /** Entry spread: definition on the left, details + citation (+ story cue) on the right. */
+  /** Structured card for people, organizations and libraries on the entry page. */
+  _renderEntryCard(term) {
+    if (term.type === 'person' || term.type === 'organization') {
+      const profile = term.profile;
+      const knownFor = profile.knownFor || (term.explainer && term.explainer.knownFor) || '';
+      if (!knownFor && !hasProfileCard(profile)) return '';
+      const works = profile.notableWorks
+        .map((work) => {
+          const title = work.url
+            ? `<a href="${escapeHtml(work.url)}" target="_blank" rel="noopener">${escapeHtml(work.title)}${icon('arrow-up-right')}</a>`
+            : escapeHtml(work.title);
+          return `<li>${title}${work.year ? ` <span class="card-year">${escapeHtml(work.year)}</span>` : ''}</li>`;
+        })
+        .join('');
+      return `<aside class="entry-card entry-card-${term.type}" aria-label="${term.type === 'person' ? 'Person' : 'Organization'} card">
+          <dl>
+            ${knownFor ? `<dt>Known for</dt><dd>${escapeHtml(knownFor)}</dd>` : ''}
+            ${profile.currentRole ? `<dt>${term.type === 'person' ? 'Current role' : 'Today'}</dt><dd>${escapeHtml(profile.currentRole)}</dd>` : ''}
+            ${works ? `<dt>Notable works</dt><dd><ul class="card-works">${works}</ul></dd>` : ''}
+          </dl>
+        </aside>`;
+    }
+    if (term.type === 'library' && term.library) {
+      const lib = term.library;
+      const link = (url, label, iconName) =>
+        url ? `<a class="card-link" href="${escapeHtml(url)}" target="_blank" rel="noopener">${icon(iconName)}<span>${label}</span></a>` : '';
+      return `<aside class="entry-card entry-card-library" aria-label="Library card">
+          <dl>
+            ${lib.package ? `<dt>Package</dt><dd><code>${escapeHtml(lib.package)}</code>${lib.language ? ` · ${escapeHtml(lib.language)}` : ''}</dd>` : ''}
+            ${
+              lib.installCmd
+                ? `<dt>Install</dt><dd class="card-install"><code>${escapeHtml(lib.installCmd)}</code>
+                     <button type="button" class="card-copy" data-copy="${escapeHtml(lib.installCmd)}" aria-label="Copy install command">${icon('copy')}</button></dd>`
+                : ''
+            }
+            ${lib.useCases.length ? `<dt>Use cases</dt><dd><ul class="card-uses">${lib.useCases.map((use) => `<li>${escapeHtml(use)}</li>`).join('')}</ul></dd>` : ''}
+          </dl>
+          ${lib.githubUrl || lib.docsUrl ? `<p class="card-links">${link(lib.githubUrl, 'GitHub', 'arrow-up-right')}${link(lib.docsUrl, 'Docs', 'book-open')}</p>` : ''}
+        </aside>`;
+    }
+    return '';
+  }
+
+  _bindEntryCard() {
+    this._pageRight.querySelectorAll('.card-copy').forEach((button) =>
+      button.addEventListener('click', async (event) => {
+        event.stopPropagation();
+        this._toast((await this._copyText(button.dataset.copy)) ? 'Install command copied' : 'Copying was blocked');
+      })
+    );
+  }
+
   _renderEntrySpread(term) {
     const vol = volumeByLetter(term.letter);
     const breadcrumb = entryBreadcrumb(term, vol);
@@ -614,6 +666,7 @@ export class UI {
     this._pageRight.innerHTML = `
       <div class="pg-entry">
         <p class="pg-details">${escapeHtml(term.details)}</p>
+        ${this._renderEntryCard(term)}
         ${
           citation || term.citation.url
             ? `<aside class="pg-citation">
@@ -640,6 +693,7 @@ export class UI {
     this._pageRight
       .querySelector('.pg-flip-page')
       ?.addEventListener('click', () => this._flipToPage(1));
+    this._bindEntryCard();
     this._renderConceptTrail(term);
     this._resetScroll();
   }
