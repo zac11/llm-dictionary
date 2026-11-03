@@ -5,7 +5,102 @@
   "type": "concept",
   "definition": "In mathematics, the theory of optimal stopping or early stopping is concerned with the problem of choosing a time to take a particular action, in order to maximise an expected reward or minimise an expected cost.",
   "details": "Optimal stopping problems can be found in areas of statistics, economics, and mathematical finance (related to the pricing of American options). A key example of an optimal stopping problem is the secretary problem. Optimal stopping problems can often be written in the form of a Bellman equation, and are therefore often solved using dynamic programming.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. That steady, miss-by-miss improvement is Optimal stopping.",
+  "explainer": {
+    "lead": "Optimal stopping is about deciding when to act, not just what to do. It weighs the reward available now against what might happen later, helping avoid both stopping too soon and waiting too long.",
+    "tiers": {
+      "eli5": "Imagine picking a snack as different options appear one at a time. If you take one, you cannot wait for something better; if you pass, you might miss your best chance. Optimal stopping is a way to choose the best moment to say, “I’ll take it.”",
+      "practitioner": "Optimal stopping problems are commonly formulated with a Bellman equation and solved using dynamic programming. The main decision at each point is whether to stop and collect the current outcome or continue and face future uncertainty. Applications include statistical and economic decisions and the pricing of American options; poor timing can sacrifice reward or increase cost.",
+      "paperLevel": "The objective is to choose a stopping time T that maximizes an expected reward, written as E[R_T], or minimizes an expected cost, written as E[C_T]. Many such problems can be expressed through a Bellman equation and solved by dynamic programming. The difficulty is that the current choice changes which future outcomes remain possible."
+    },
+    "example": "In the secretary problem, candidates are interviewed one after another, and a decision must be made about when to select one. Choosing immediately avoids losing that candidate, while continuing creates a chance of meeting a better one; optimal stopping seeks the rule with the best expected result.",
+    "usedIn": [
+      {
+        "name": "Statistics",
+        "detail": "Used to frame decisions about when to act on sequential information.",
+        "url": ""
+      },
+      {
+        "name": "Economics",
+        "detail": "Used for choices that trade a current payoff against uncertain future opportunities.",
+        "url": ""
+      },
+      {
+        "name": "Mathematical finance",
+        "detail": "Applied to problems related to pricing American options.",
+        "url": ""
+      }
+    ],
+    "intuition": "At every moment, compare what you gain by acting now with what you might gain by waiting. The best stopping rule balances those two possibilities in terms of expected reward or cost.",
+    "howItWorks": [
+      "Observe the current situation and the outcome available if you stop.",
+      "Consider the uncertain outcomes that could arise if you continue.",
+      "Compare stopping with continuing using expected reward or expected cost.",
+      "Stop when stopping is the better choice; otherwise, continue and repeat.",
+      "Where possible, express this comparison as a Bellman equation and solve it with dynamic programming."
+    ],
+    "whyItMatters": "It provides a principled way to make irreversible timing decisions under uncertainty. This connects sequential decision-making with dynamic programming and supports applications in statistics, economics, and finance.",
+    "misconceptions": [
+      "It does not always mean stopping as early as possible; sometimes continuing has greater expected value.",
+      "It is not simply choosing the largest current reward while ignoring what waiting could bring."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "observe",
+          "label": "Observe situation",
+          "note": "See the current state and available outcome."
+        },
+        {
+          "id": "compare",
+          "label": "Compare choices",
+          "note": "Weigh stopping now against continuing."
+        },
+        {
+          "id": "stop",
+          "label": "Stop and act",
+          "note": "Take the current reward or cost."
+        },
+        {
+          "id": "continue",
+          "label": "Continue",
+          "note": "Wait for another uncertain outcome."
+        },
+        {
+          "id": "update",
+          "label": "New observation",
+          "note": "The next state becomes available."
+        }
+      ],
+      "edges": [
+        {
+          "from": "observe",
+          "to": "compare",
+          "label": ""
+        },
+        {
+          "from": "compare",
+          "to": "stop",
+          "label": "stop"
+        },
+        {
+          "from": "compare",
+          "to": "continue",
+          "label": "wait"
+        },
+        {
+          "from": "continue",
+          "to": "update",
+          "label": ""
+        },
+        {
+          "from": "update",
+          "to": "observe",
+          "label": "repeat"
+        }
+      ],
+      "caption": "At each observation, optimal stopping compares acting now with waiting for another outcome."
+    }
+  },
   "related": [
     "optimal-substructure",
     "automatic-basis-function-construction",

@@ -2,10 +2,119 @@
   "term": "Apache SINGA",
   "letter": "A",
   "category": "Deep learning",
-  "type": "concept",
+  "type": "library",
   "definition": "Apache SINGA is an Apache top-level project for developing an open source machine learning library.",
   "details": "It provides a flexible architecture for scalable distributed training, is extensible to run over a wide range of hardware, and has a focus on health-care applications. Apache SINGA has won the 2024 SIGMOD Systems Award for the development of a distributed, efficient, scalable, and easy-to-use deep learning platform for large scale data analytics.",
-  "story": "Think of a referee whose job is to be completely honest about who touched the ball last. Before trusting a machine, someone has to measure how good it really is — fairly and honestly. It is the exam that separates “it sounds good” from “it actually is good”. What gets measured is what actually gets better. That shared ruler is Apache SINGA.",
+  "explainer": {
+    "lead": "Apache SINGA is an open-source machine learning library built for distributed deep learning across a cluster. It also includes tools for training and deploying models, managing ML pipelines, and running model selection inside PostgreSQL, with particular attention to healthcare applications.",
+    "tiers": {
+      "eli5": "Imagine a puzzle too big for one person, so a team splits both the picture and the pieces into smaller jobs and solves them together. Apache SINGA helps computers share the work of teaching an AI model. It also offers tools that make training and using those models easier, including apps that can recognize food in photographs.",
+      "practitioner": "SINGA distributes training by partitioning models and data across cluster nodes, with core tensor and memory operations, IO, and model components. Users can add SINGA-Auto for training and inference services, SINGA-Easy for domain applications, MLCask for versioned pipelines, or PostgreSQL integration from version 4.1.0. Practical considerations include managing cluster resources and failure recovery through the service layer and checking preprocessing carefully, because MLCask reuses pipeline history to skip unchanged steps.",
+      "paperLevel": "Apache SINGA is a distributed machine learning system that partitions model and data across cluster nodes and parallelizes training. Its stack is decomposed into core, IO, and model components; SINGA-Auto adds distributed hyperparameter tuning and reinforcement-learning-based inference scheduling, while MLCask supplies non-linear, Git-like pipeline versioning. The project began in 2014 at the National University of Singapore and Zhejiang University."
+    },
+    "example": "In the JurongHealth Food Log app, a user photographs a dish such as laksa. SINGA helps match the image against a cleaned database of 209,861 images spanning 13 food groups and 233 food categories, after which the app can draw on nutrition data to support the user's weight-loss and exercise goals.",
+    "usedIn": [
+      {
+        "name": "JurongHealth Food Log",
+        "detail": "Matches food photographs to local dishes and nutrition data to support a hospital lifestyle-intervention programme.",
+        "url": ""
+      },
+      {
+        "name": "Healthcare",
+        "detail": "Used at organizations including JurongHealth Hospital, National University Hospital, Singapore General Hospital, and Tan Tock Seng Hospital.",
+        "url": ""
+      },
+      {
+        "name": "Banking and finance",
+        "detail": "SINGA is applied in these fields, with Citigroup among the organizations listed as users.",
+        "url": ""
+      },
+      {
+        "name": "NetEase",
+        "detail": "One of the organizations using Apache SINGA.",
+        "url": ""
+      }
+    ],
+    "createdBy": "The DB System Group at the National University of Singapore and the database group of Zhejiang University initiated SINGA in 2014. It entered the Apache Incubator in March 2015 and became an Apache top-level project in October 2019.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data",
+          "label": "Datasets",
+          "note": "Disk or network data"
+        },
+        {
+          "id": "io",
+          "label": "IO component",
+          "note": "Reads and writes data"
+        },
+        {
+          "id": "model",
+          "label": "Model component",
+          "note": "Layers, losses, and optimizers"
+        },
+        {
+          "id": "core",
+          "label": "Core component",
+          "note": "Memory and tensor operations"
+        },
+        {
+          "id": "cluster",
+          "label": "Cluster hardware",
+          "note": "Runs partitioned training"
+        },
+        {
+          "id": "auto",
+          "label": "SINGA-Auto",
+          "note": "Training and inference services"
+        },
+        {
+          "id": "mlcask",
+          "label": "MLCask",
+          "note": "Versions ML pipelines"
+        }
+      ],
+      "edges": [
+        {
+          "from": "data",
+          "to": "io",
+          "label": "input data"
+        },
+        {
+          "from": "io",
+          "to": "model",
+          "label": "training data"
+        },
+        {
+          "from": "model",
+          "to": "core",
+          "label": "tensor work"
+        },
+        {
+          "from": "core",
+          "to": "cluster",
+          "label": "distributed run"
+        },
+        {
+          "from": "model",
+          "to": "auto",
+          "label": "train and serve"
+        },
+        {
+          "from": "mlcask",
+          "to": "model",
+          "label": "pipeline versions"
+        }
+      ],
+      "caption": "SINGA's three-part software stack supports distributed training, with optional subsystems for model services and pipeline management."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Apache SINGA",
+        "url": "https://en.wikipedia.org/wiki/Apache_SINGA"
+      }
+    ]
+  },
   "related": [
     "apache-mxnet",
     "adobe-firefly",

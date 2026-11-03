@@ -5,7 +5,113 @@
   "type": "tool",
   "definition": "AUTINDEX is a commercial text mining software package based on sophisticated linguistics.",
   "details": "AUTINDEX, resulting from research in information extraction, is a product of the Institute of Applied Information Sciences (IAI) which is a non-profit institute that has been researching and developing language technology since its foundation in 1985. IAI is an institute affiliated to Saarland University in Saarbrücken, Germany. AUTINDEX is the result of a number of research projects funded by the EU (Project BINDEX), by Deutsche Forschungsgemeinschaft and the German Ministry for Economy. Amongst the latter there are the projects LinSearch, and WISSMER, see also the reference to IAI-Website. The basic functionality of AUTINDEX is the extraction of key words from a document to represent the semantics of the document. Ideally the system is integrated with a thesaurus that defines the standardised terms to be used for key word assignment. AUTINDEX is used in library applications (e.g. integrated in dandelon.com) as well as in high quality (expert) information systems, and in document management and content management environments. Together with AUTINDEX a number of additional software comes along such as an integration with Apache Solr / Lucene to provide a complete information retrieval environment, a classification and categorisation system on the basis of a machine learning software that assigns domains to the document, and a system for searching with semantically similar terms that are collected in so called tag clouds.",
-  "story": "Imagine learning a language by reading every book in the library and noticing, over time, which words travel together. It does not memorize a rulebook; it absorbs a library. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It is fluency built from pattern, not from memorized rules. And that is AUTINDEX — teaching a machine to read between the lines.",
+  "explainer": {
+    "lead": "AUTINDEX is a commercial text-mining package that turns a document into a set of keywords representing its meaning. It helps libraries, expert information systems, and content-management platforms make documents easier to index, classify, and find.",
+    "tiers": {
+      "eli5": "AUTINDEX works like a helper who reads a long document and puts a few useful labels on it, so you can find it again without reading every page. It can use a special list of approved words to keep those labels consistent. For example, a library could use the same label for every document about the same subject instead of choosing different wording each time.",
+      "practitioner": "AUTINDEX is applied as a keyword-extraction and indexing component, ideally backed by a thesaurus of standardized terms. It can be integrated with Apache Solr/Lucene for information retrieval, alongside a machine-learning classifier that assigns document domains and a tag-cloud system for searches using semantically similar terms. A thesaurus is an optional ideal rather than a guaranteed part of every deployment, and the accompanying classification and tag-cloud functions are separate components.",
+      "paperLevel": "AUTINDEX can be described as a function f(d, T) -> K, where d is a document, T is an optional thesaurus of standardized terms, and K is a set of keywords intended to represent the document's semantics. It resulted from research in information extraction and projects including BINDEX, LinSearch, and WISSMER. The stated core operation is keyword assignment, not full document summarization or a complete formal representation of meaning."
+    },
+    "example": "A library feeds a long document into AUTINDEX and receives keywords for its subject. If a thesaurus is connected, those keywords use its standardized terms; the document can then be indexed through the Solr/Lucene integration and found alongside other documents assigned the same terms.",
+    "usedIn": [
+      {
+        "name": "dandelon.com",
+        "detail": "A library application in which AUTINDEX has been integrated.",
+        "url": ""
+      },
+      {
+        "name": "Expert information systems",
+        "detail": "Used to support high-quality information access through document keywords.",
+        "url": ""
+      },
+      {
+        "name": "Document and content management",
+        "detail": "Used in environments that need documents indexed and organized for retrieval.",
+        "url": ""
+      }
+    ],
+    "intuition": "A short, consistent set of keywords can act as a useful handle for a much longer document. AUTINDEX supplies those keywords, and a thesaurus can steer it toward an agreed vocabulary.",
+    "howItWorks": [
+      "Take a document as input.",
+      "Extract keywords intended to represent the document's semantics.",
+      "When integrated with a thesaurus, use its standardized terms for keyword assignment.",
+      "Optionally assign document domains with the accompanying machine-learning classification and categorization system.",
+      "Use Apache Solr/Lucene integration and semantically similar terms collected in tag clouds to support retrieval."
+    ],
+    "whyItMatters": "Consistent keywords make large document collections easier to organize and search without requiring every item to be described manually. Its retrieval, classification, and similar-term search components extend that basic indexing into a broader information-retrieval environment.",
+    "misconceptions": [
+      "It is not a general-purpose search engine by itself; Solr/Lucene integration supplies the surrounding retrieval environment.",
+      "Keyword extraction is not the same as writing a summary of the document.",
+      "A thesaurus improves standardization when integrated, but is not required for the basic keyword-extraction function."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "document",
+          "label": "Input document",
+          "note": "Text to be indexed"
+        },
+        {
+          "id": "autindex",
+          "label": "AUTINDEX extraction",
+          "note": "Selects semantic keywords"
+        },
+        {
+          "id": "thesaurus",
+          "label": "Optional thesaurus",
+          "note": "Provides standardized terms"
+        },
+        {
+          "id": "keywords",
+          "label": "Assigned keywords",
+          "note": "Represents document semantics"
+        },
+        {
+          "id": "solr",
+          "label": "Solr / Lucene",
+          "note": "Provides indexing and retrieval"
+        },
+        {
+          "id": "search",
+          "label": "Search environment",
+          "note": "Supports finding indexed documents"
+        }
+      ],
+      "edges": [
+        {
+          "from": "document",
+          "to": "autindex",
+          "label": "text"
+        },
+        {
+          "from": "autindex",
+          "to": "thesaurus",
+          "label": "term lookup"
+        },
+        {
+          "from": "thesaurus",
+          "to": "autindex",
+          "label": "standard terms"
+        },
+        {
+          "from": "autindex",
+          "to": "keywords",
+          "label": "assigns"
+        },
+        {
+          "from": "keywords",
+          "to": "solr",
+          "label": "indexing"
+        },
+        {
+          "from": "solr",
+          "to": "search",
+          "label": "retrieval"
+        }
+      ],
+      "caption": "AUTINDEX extracts document keywords, optionally standardizes them with a thesaurus, and can feed a Solr/Lucene retrieval environment."
+    }
+  },
   "related": [
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",
     "accelerated-linear-algebra",

@@ -5,7 +5,139 @@
   "type": "concept",
   "definition": "As part of the Gaza war, the Israel Defense Forces (IDF) have used artificial intelligence to rapidly and automatically perform much of the process of determining what to bomb.",
   "details": "Israel has greatly expanded the bombing of the Gaza Strip, which in previous wars had been limited by the Israeli Air Force running out of targets. These tools include the Gospel, an AI which automatically reviews surveillance data looking for buildings, equipment and people thought to belong to the enemy, and upon finding them, recommends bombing targets to a human analyst who may then decide whether to pass it along to the field. Another is Lavender, an \"AI-powered database\" which lists tens of thousands of Palestinian men linked by AI to Hamas or Palestinian Islamic Jihad, and which is also used for target recommendation. Critics and researchers have argued the use of these AI tools puts civilians at risk, blurs accountability, and results in militarily disproportionate violence in violation of international humanitarian law, concretely describing the system's function as \"automating civilian harm\".",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. That is AI-assisted targeting in the Gaza Strip — a small key that opens a big door.",
+  "explainer": {
+    "lead": "AI-assisted targeting in the Gaza Strip refers to the Israel Defense Forces' use of software to find possible bombing targets and help organize attacks during the Gaza war. Systems including the Gospel, Lavender, and Fire Factory greatly accelerated parts of this process. Their use matters because faster target generation can affect the scale of bombing, while critics warn of civilian harm, unreliable pattern-matching, and unclear accountability.",
+    "tiers": {
+      "eli5": "Imagine a computer searching an enormous photo album for pictures that resemble examples it was given, then suggesting which places or people soldiers should investigate. The Gospel works a bit like that with surveillance information, while Lavender keeps a huge list of men it links to armed groups. A person is supposed to review the suggestions, but mistakes can still put civilians in danger.",
+      "practitioner": "In this setting, machine-learning target recommendation is combined with an AI-linked database and strike-planning software: the Gospel proposes targets, Lavender supplies target recommendations linked to suspected militants, and Fire Factory plans accepted attacks. The central engineering risks are dependence on training data, statistical pattern-matching without causal reasoning, and poor performance when combatant status is ambiguous. A 2021 after-action report also identified discarded negative intelligence—material analysts had judged not to be a target—as a potential source of bias.",
+      "paperLevel": "A simplified formulation is: given intelligence and surveillance data D, learn statistical patterns associated with analyst-labelled targets, then output candidate target T when new observations match those patterns; a human analyst decides whether T proceeds to operational planning. The Gospel's precise inputs are not known, and its recommendations do not themselves establish factual evidence or causation. Reported limits include algorithmic error, unstable or ambiguous combatant labels, training-data bias, and disagreement over whether human review and collateral-damage estimates adequately protect civilians."
+    },
+    "example": "In a simplified example, surveillance of Hamas members identified by human analysts provides patterns for the Gospel to learn. If a person or building in new surveillance material shares enough of those patterns, the system may recommend it as a target, such as a suspected command post or the private home of an alleged Hamas or Islamic Jihad member; an analyst then decides whether to pass the recommendation to the field.",
+    "usedIn": [
+      {
+        "name": "The Gospel (Habsora)",
+        "detail": "Reviews surveillance material and recommends possible bombing targets to a human analyst.",
+        "url": ""
+      },
+      {
+        "name": "Lavender",
+        "detail": "An AI-powered database listing tens of thousands of Palestinian men linked by AI to Hamas or Palestinian Islamic Jihad, also used for target recommendations.",
+        "url": ""
+      },
+      {
+        "name": "Fire Factory",
+        "detail": "Calculates munition loads, prioritizes and assigns accepted targets to aircraft and drones, and proposes an attack schedule.",
+        "url": ""
+      }
+    ],
+    "intuition": "The core idea is to replace slow manual searching with automated pattern-matching: software examines far more intelligence material than analysts can, then supplies a stream of candidates for humans to review. This removes a bottleneck on target production, but speed does not guarantee that the underlying classifications are correct.",
+    "howItWorks": [
+      "Combine large amounts of surveillance and intelligence material.",
+      "Learn patterns associated with people or objects already labelled as enemy targets.",
+      "Match new material against those patterns to propose targets.",
+      "Let a human analyst decide whether to forward a recommendation.",
+      "Use Fire Factory to organize accepted attacks."
+    ],
+    "whyItMatters": "Aviv Kohavi said the system could generate 100 targets a day in Gaza, compared with roughly 50 a year by human analysts beforehand, and about 200 of the 1,500 targets Israel struck in May 2021 reportedly came from the Gospel. Critics argue that this scale can facilitate disproportionate violence and automate civilian harm, while Israeli military and media accounts have emphasized the potential for greater precision.",
+    "misconceptions": [
+      "The Gospel recommends targets; it does not by itself authorize every strike.",
+      "Human review does not eliminate data errors or guarantee civilian safety.",
+      "The Gospel, Lavender, and Fire Factory perform different functions."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data",
+          "label": "Surveillance and intelligence",
+          "note": "Large amounts of material from diverse sources."
+        },
+        {
+          "id": "gospel",
+          "label": "The Gospel",
+          "note": "Uses pattern-matching to propose possible targets."
+        },
+        {
+          "id": "lavender",
+          "label": "Lavender database",
+          "note": "Lists men linked by AI to Hamas or Islamic Jihad."
+        },
+        {
+          "id": "analyst",
+          "label": "Human analyst",
+          "note": "Decides whether recommendations proceed to the field."
+        },
+        {
+          "id": "accepted",
+          "label": "Accepted targets",
+          "note": "Recommendations approved for operational planning."
+        },
+        {
+          "id": "factory",
+          "label": "Fire Factory",
+          "note": "Calculates loads, assignments, priorities, and schedules."
+        },
+        {
+          "id": "forces",
+          "label": "Aircraft and drones",
+          "note": "Receive assigned targets for attack operations."
+        }
+      ],
+      "edges": [
+        {
+          "from": "data",
+          "to": "gospel",
+          "label": "pattern matching"
+        },
+        {
+          "from": "data",
+          "to": "lavender",
+          "label": "AI linkage"
+        },
+        {
+          "from": "gospel",
+          "to": "analyst",
+          "label": "recommendations"
+        },
+        {
+          "from": "lavender",
+          "to": "analyst",
+          "label": "recommendations"
+        },
+        {
+          "from": "analyst",
+          "to": "accepted",
+          "label": "approval"
+        },
+        {
+          "from": "accepted",
+          "to": "factory",
+          "label": "attack planning"
+        },
+        {
+          "from": "factory",
+          "to": "forces",
+          "label": "assignments"
+        }
+      ],
+      "caption": "Reported flow from intelligence material through target recommendation, human review, and automated attack planning."
+    },
+    "image": {
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b6/IAI_Heron-1_Maritime_patrol_UAV_Shoval_Yam.jpg/960px-IAI_Heron-1_Maritime_patrol_UAV_Shoval_Yam.jpg",
+      "alt": "AI-assisted targeting in the Gaza Strip — Use of AI by the Israel Defense Forces in the Gaza war",
+      "width": 640,
+      "height": 221,
+      "credit": "IDF Spokesperson's Unit photographer",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "page": "https://commons.wikimedia.org/wiki/File:IAI_Heron-1_Maritime_patrol_UAV_Shoval_Yam.jpg"
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: AI-assisted targeting in the Gaza Strip",
+        "url": "https://en.wikipedia.org/wiki/AI-assisted_targeting_in_the_Gaza_Strip"
+      }
+    ]
+  },
   "related": [
     "ai-assisted-reverse-engineering",
     "ai-assisted-software-development",

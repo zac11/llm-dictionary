@@ -5,7 +5,114 @@
   "type": "concept",
   "definition": "Accumulated local effects (ALE) is a machine learning interpretability method.",
   "details": "Accumulated local effects (ALE) is a machine learning interpretability method.",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. And that idea, made concrete, is Accumulated local effects.",
+  "explainer": {
+    "lead": "Accumulated local effects is a way to peek inside a trained machine-learning model and see how changing one feature actually changes its predictions, even when that feature is tangled up with others. It matters because simpler methods can give misleading answers when features are correlated, which is nearly always true in real data.",
+    "tiers": {
+      "eli5": "Imagine you're trying to figure out if bigger houses always cost more, but bigger houses also tend to be closer to downtown. ALE is like comparing two nearly identical houses that are the same distance from downtown but different sizes — so you can see the true effect of size alone. It does this by looking at tiny, local changes rather than big, unrealistic jumps.",
+      "practitioner": "ALE is used after model training to produce feature effect plots that remain reliable when predictors are correlated, unlike partial dependence plots. You typically bin the feature of interest, compute prediction differences within each bin using a conditional distribution, accumulate those differences, and center the result. Pitfalls include subjective bin-width choice, failure under very high feature correlation, and the need for dense, well-distributed data to estimate conditional distributions reliably.",
+      "paperLevel": "ALE estimates the effect of a feature x_j by accumulating average prediction differences over small intervals: for interval k, compute the average of f(x_j=z, x_{\\j}) - f(x_j=z_{k-1}, x_{\\j}) where x_{\\j} is sampled from the conditional distribution p(x_{\\j}|x_j in interval k). These differences are accumulated and centered to produce the ALE curve. The method was introduced by Apley and Zhu (2016) as a response to the correlated predictor failures of PDPs and M-plots. Known limitations include sensitivity to bin definition, degradation under strong multicollinearity, and data sparsity in high dimensions."
+    },
+    "example": "A model predicts house prices from distance to city center and building area. To find ALE for area, we take houses in a 100–110 m² bin and compare model predictions for 110 m² versus 100 m² versions, keeping distance realistic for that bin. Repeating across all area bins and stacking the differences shows how area alone pushes price up or down, cleanly separated from location effects.",
+    "usedIn": [
+      {
+        "name": "Real estate valuation models",
+        "detail": "Separating the true price effect of building size from its correlation with location.",
+        "url": ""
+      },
+      {
+        "name": "Credit risk scoring",
+        "detail": "Understanding how income affects default predictions without confounding by correlated variables like employment length.",
+        "url": ""
+      },
+      {
+        "name": "Healthcare outcome prediction",
+        "detail": "Isolating the effect of a single biomarker that correlates with patient age and other vitals.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of asking \"what happens if we change this feature wildly?\" ALE asks \"what happens if we nudge this feature a little, for realistic cases nearby?\" It builds the full picture by stacking up many small, local nudges.",
+    "howItWorks": [
+      "Choose a feature to explain and split its range into small, contiguous intervals (bins).",
+      "For each bin, generate augmented data by keeping other features realistic — sampling from their conditional distribution given that the feature falls in that bin.",
+      "Compute the difference in model predictions between the upper and lower edge of each bin, averaged over the augmented data.",
+      "Accumulate these average differences from left to right to build the cumulative effect curve.",
+      "Center the curve so the mean effect is zero, making it easy to read relative impacts."
+    ],
+    "whyItMatters": "Correlated features are the norm, not the exception. Methods that ignore this correlation can suggest a feature has a strong effect when it does not, or vice versa. ALE stays honest by respecting how features actually co-occur in the data.",
+    "misconceptions": [
+      "ALE eliminates the need to check for correlation — it helps but still degrades under very strong correlation.",
+      "ALE shows causal effects — it only shows model-predicted associations, not real-world causation.",
+      "ALE works with any amount of data — sparse or high-dimensional data can make conditional distributions impossible to estimate well."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "trained-model",
+          "label": "Trained model",
+          "note": "The black-box predictor to explain"
+        },
+        {
+          "id": "feature-bins",
+          "label": "Feature bins",
+          "note": "Intervals of the target feature"
+        },
+        {
+          "id": "conditional-sampler",
+          "label": "Conditional sampler",
+          "note": "Generates realistic nearby data"
+        },
+        {
+          "id": "prediction-diffs",
+          "label": "Prediction differences",
+          "note": "Average change across augmented points"
+        },
+        {
+          "id": "accumulator",
+          "label": "Accumulator",
+          "note": "Running sum of local effects"
+        },
+        {
+          "id": "centered-ale",
+          "label": "Centered ALE curve",
+          "note": "Final interpretable plot"
+        }
+      ],
+      "edges": [
+        {
+          "from": "trained-model",
+          "to": "feature-bins",
+          "label": "select feature"
+        },
+        {
+          "from": "feature-bins",
+          "to": "conditional-sampler",
+          "label": "define intervals"
+        },
+        {
+          "from": "conditional-sampler",
+          "to": "prediction-diffs",
+          "label": "compute deltas"
+        },
+        {
+          "from": "prediction-diffs",
+          "to": "accumulator",
+          "label": "sum up"
+        },
+        {
+          "from": "accumulator",
+          "to": "centered-ale",
+          "label": "center"
+        }
+      ],
+      "caption": "ALE flows from selecting a feature through local sampling and differencing to an accumulated, centered curve."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Accumulated local effects",
+        "url": "https://en.wikipedia.org/wiki/Accumulated_local_effects"
+      }
+    ]
+  },
   "related": [
     "a-r-d-prasad",
     "abeba-birhane",

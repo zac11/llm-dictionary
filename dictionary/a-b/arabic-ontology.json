@@ -5,7 +5,119 @@
   "type": "concept",
   "definition": "Arabic Ontology is a website offering linguistic ontology services for the Arabic language which can be used like the online site WordNet.",
   "details": "Users can use Arabic Ontology to classify or clarify the concepts and meanings of Arabic terms.",
-  "story": "Think of a grammar teacher who never memorized a rule but can still tell you when a sentence sounds wrong. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It figures out meaning by noticing which words like to travel together. The machine learns to read between the lines by reading an impossible number of lines. And that is Arabic Ontology — teaching a machine to read between the lines.",
+  "explainer": {
+    "lead": "Arabic Ontology is a structured database of Arabic words and the concepts they express, accessible through a website. By separating terms from meanings and recording relationships between concepts, it helps computers search, translate, and connect information using meaning rather than word strings alone.",
+    "tiers": {
+      "eli5": "Think of a dictionary combined with a family tree: it explains what Arabic words mean and shows how their meanings are connected. If one word has several meanings, the ontology keeps those meanings separate instead of treating them as one thing. This can help a search engine understand what you actually want.",
+      "practitioner": "Applications can look up a concept by ConceptID or an Arabic term, follow semantic relations, and use mappings to WordNet, BFO, DOLCE, or SAMA. Typical uses include query enrichment, word-sense disambiguation, machine translation, and linking databases through a shared semantic reference. A term lookup retrieves every concept lexicalized by that term, so applications must handle ambiguity rather than assuming a single sense.",
+      "paperLevel": "Formally, each concept c has a unique URI, a gloss, and one or more synonymous lemma terms; each term-concept pair is a sense with a SenseID, and a set of senses forms a synset. Concepts carry attributes such as era and area and participate in semantic relations, while selected individuals have IndividualIDs and connect to concepts through InstanceOf. Concepts are mapped to WordNet synsets, BFO, and DOLCE, and terms are mapped to lemmas in the LDC's SAMA database."
+    },
+    "example": "Requesting https://ontology.birzeit.edu/concept/293198 retrieves that concept and its direct subtypes. Requesting a term instead retrieves all the concepts it lexicalizes, allowing an application to distinguish the term's possible meanings.",
+    "usedIn": [
+      {
+        "name": "Information retrieval",
+        "detail": "Enriches search queries with concepts so results can reflect meaning rather than only string matches.",
+        "url": ""
+      },
+      {
+        "name": "Machine translation",
+        "detail": "Uses concept mappings across languages, including links to WordNet, to identify corresponding meanings.",
+        "url": ""
+      },
+      {
+        "name": "Data integration",
+        "detail": "Provides a semantic reference for linking databases and information systems.",
+        "url": ""
+      },
+      {
+        "name": "Semantic Web",
+        "detail": "Supplies concept identifiers and relations that can disambiguate meanings used on websites.",
+        "url": ""
+      }
+    ],
+    "intuition": "A word is only a label, and the same label can point to several ideas. Arabic Ontology stores the ideas separately, attaches the Arabic labels to them, and draws meaningful connections between them.",
+    "howItWorks": [
+      "Give each concept a unique URI and describe it informally with a gloss.",
+      "Lexicalize the concept with one or more synonymous Arabic lemma terms.",
+      "Represent each term-concept pairing as a sense with a SenseID, and group senses into synsets.",
+      "Add attributes and semantic relations, linking selected individuals to concepts with InstanceOf.",
+      "Expose concepts and relations through URLs and map entries to WordNet, BFO, DOLCE, and SAMA."
+    ],
+    "whyItMatters": "It gives Arabic-language systems a shared way to represent meaning, supporting more precise search, translation, disambiguation, and data linking. Its URL design also lets users and programs explore the database as a graph.",
+    "misconceptions": [
+      "It is not just a list of Arabic words: concepts, senses, attributes, individuals, and semantic relations are distinct parts of the model.",
+      "A term does not necessarily identify one concept; looking it up can return every concept that the term lexicalizes.",
+      "It is not simply WordNet with Arabic labels: its structure is similar to WordNet's, but it has its own identifiers and mappings to several other resources."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "term",
+          "label": "Arabic lemma",
+          "note": "A term used to lexicalize a concept."
+        },
+        {
+          "id": "sense",
+          "label": "Sense",
+          "note": "A term-concept pair with a SenseID."
+        },
+        {
+          "id": "concept",
+          "label": "Concept",
+          "note": "A URI-identified meaning with a gloss."
+        },
+        {
+          "id": "related",
+          "label": "Related concepts",
+          "note": "Connected through semantic relations."
+        },
+        {
+          "id": "individual",
+          "label": "Individual",
+          "note": "An entity with its own IndividualID."
+        },
+        {
+          "id": "wordnet",
+          "label": "External mappings",
+          "note": "WordNet, BFO, DOLCE, and SAMA links."
+        }
+      ],
+      "edges": [
+        {
+          "from": "term",
+          "to": "sense",
+          "label": "forms"
+        },
+        {
+          "from": "sense",
+          "to": "concept",
+          "label": "identifies"
+        },
+        {
+          "from": "concept",
+          "to": "related",
+          "label": "relations"
+        },
+        {
+          "from": "individual",
+          "to": "concept",
+          "label": "InstanceOf"
+        },
+        {
+          "from": "concept",
+          "to": "wordnet",
+          "label": "mapped to"
+        }
+      ],
+      "caption": "Arabic terms connect to identified concepts through senses; concepts then support semantic relations, individual instances, and mappings to external resources."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Arabic Ontology",
+        "url": "https://en.wikipedia.org/wiki/Arabic_Ontology"
+      }
+    ]
+  },
   "related": [
     "ontology-learning",
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",

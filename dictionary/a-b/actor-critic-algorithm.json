@@ -5,7 +5,152 @@
   "type": "algorithm",
   "definition": "The actor-critic algorithm (AC) is a family of reinforcement learning (RL) algorithms that combine policy-based RL algorithms such as policy gradient methods, and value-based RL algorithms such as value iteration, Q-learning, SARSA, and TD learning.",
   "details": "An AC algorithm consists of two main components: an \"actor\" that determines which actions to take according to a policy function, and a \"critic\" that evaluates those actions according to a value function. Some AC algorithms are on-policy, some are off-policy. Some apply to either continuous or discrete action spaces. Some work in both cases.",
-  "story": "Imagine a video game where the only feedback is the score ticking up or down — and you learn by playing a million rounds. Instead of being told the rules, it discovers them by living with the consequences. The machine is not handed the answers — it tries things, earns a reward or a miss, and slowly figures out what works. Reward, not instructions, is the teacher. And that is Actor-critic algorithm — skill forged from consequences.",
+  "explainer": {
+    "lead": "Actor-critic algorithms are a way to teach computers to make better decisions by having two neural networks work together: one tries actions, the other judges how good those actions were. This teamwork often learns faster and more stably than either approach alone.",
+    "tiers": {
+      "eli5": "Imagine you're learning to play a video game. You have a friend who actually presses the buttons (the actor), and another friend watching over your shoulder who says \"that was a great move!\" or \"that was terrible!\" (the critic). The button-presser gets better because of the feedback, and the watcher also gets better at judging over time. Together they improve much faster than either would alone.",
+      "practitioner": "In practice, actor-critic is implemented with two networks updated simultaneously: the actor network outputs action probabilities or values, while the critic network estimates state values or Q-values. Common variants include A2C/A3C (synchronous/asynchronous advantage actor-critic), DDPG and TD3 for continuous control, and SAC for maximum-entropy RL. Key pitfalls include the moving target problem (both networks are changing), unstable gradients when the critic is poorly trained, and sensitivity to hyperparameters like the learning rate ratio between actor and critic.",
+      "paperLevel": "The actor-critic method combines policy gradient optimization with value function approximation. The actor π_θ(a|s) is updated by gradient ascent on ∇_θ J(θ) = E[∇_θ ln π_θ(A_j|S_j) · Ψ_j], where Ψ_j can be the advantage function A(s,a) = Q(s,a) - V(s), reducing variance compared to REINFORCE while maintaining unbiasedness. The critic estimates V^π(s), Q^π(s,a), or A^π(s,a) to provide this baseline."
+    },
+    "example": "A robot learns to balance a pole. At state s (pole angle 5°, velocity 0.2 rad/s), the actor outputs probabilities: push left 0.3, push right 0.7. It pushes right. The pole stays up, reward +1. The critic had estimated V(s) = 10. Next state s' looks stable, critic estimates V(s') = 12. TD error = 1 + 0.9×12 - 10 = 1.8. The actor increases probability of 'push right' in similar states; the critic adjusts V(s) upward toward 11.8.",
+    "usedIn": [
+      {
+        "name": "Robotics control",
+        "detail": "Continuous motor control in robotic arms and legged locomotion, where policy gradients handle continuous action spaces and the critic reduces sample complexity.",
+        "url": ""
+      },
+      {
+        "name": "Game playing AI",
+        "detail": "Real-time strategy and continuous-action games where simultaneous policy improvement and value estimation stabilize learning.",
+        "url": ""
+      },
+      {
+        "name": "Autonomous vehicles",
+        "detail": "End-to-end driving policies that must handle high-dimensional continuous steering and acceleration outputs.",
+        "url": ""
+      }
+    ],
+    "goal": "Find a policy that maximizes expected cumulative reward by using a value function to reduce the variance of policy gradient estimates.",
+    "inputs": [
+      "Current state of the environment",
+      "Reward signal from the previous action",
+      "Discount factor γ"
+    ],
+    "outputs": [
+      "Updated policy parameters θ",
+      "Updated value function parameters",
+      "Action to execute in the environment"
+    ],
+    "steps": [
+      "Observe the current state s from the environment.",
+      "The actor selects action a ~ π_θ(·|s).",
+      "Execute action a, observe reward r and next state s'.",
+      "The critic evaluates: computes V(s), Q(s,a), or A(s,a) using its current parameters.",
+      "Compute the temporal-difference error or advantage estimate.",
+      "Update the critic's parameters to better predict returns.",
+      "Update the actor's parameters using policy gradient weighted by the critic's evaluation.",
+      "Repeat from step 1."
+    ],
+    "tradeoffs": [
+      "Lower variance than pure policy gradients, but introduces bias if the critic is inaccurate.",
+      "More complex to implement and tune due to two interacting learning processes.",
+      "Can suffer from instability when actor and critic are poorly balanced in learning rates.",
+      "Works in both continuous and discrete spaces, but specific variants are needed for each."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "env",
+          "label": "Environment",
+          "note": "Provides states and rewards"
+        },
+        {
+          "id": "actor",
+          "label": "Actor network",
+          "note": "Policy π_θ(a|s)"
+        },
+        {
+          "id": "critic",
+          "label": "Critic network",
+          "note": "Value function V or Q"
+        },
+        {
+          "id": "action",
+          "label": "Action selection",
+          "note": "Sampled from policy"
+        },
+        {
+          "id": "td",
+          "label": "TD error",
+          "note": "r + γV(s') - V(s)"
+        },
+        {
+          "id": "update-a",
+          "label": "Actor update",
+          "note": "Policy gradient × advantage"
+        },
+        {
+          "id": "update-c",
+          "label": "Critic update",
+          "note": "Minimize prediction error"
+        }
+      ],
+      "edges": [
+        {
+          "from": "env",
+          "to": "actor",
+          "label": "state s"
+        },
+        {
+          "from": "actor",
+          "to": "action",
+          "label": "probability"
+        },
+        {
+          "from": "action",
+          "to": "env",
+          "label": "executed action"
+        },
+        {
+          "from": "env",
+          "to": "critic",
+          "label": "s, r, s'"
+        },
+        {
+          "from": "critic",
+          "to": "td",
+          "label": "V(s), V(s')"
+        },
+        {
+          "from": "td",
+          "to": "update-a",
+          "label": "advantage"
+        },
+        {
+          "from": "td",
+          "to": "update-c",
+          "label": "target vs estimate"
+        },
+        {
+          "from": "update-a",
+          "to": "actor",
+          "label": "new θ"
+        },
+        {
+          "from": "update-c",
+          "to": "critic",
+          "label": "new w"
+        }
+      ],
+      "caption": "The actor and critic both observe the environment. The actor acts, the critic judges, and both update from the temporal-difference error."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Actor-critic algorithm",
+        "url": "https://en.wikipedia.org/wiki/Actor-critic_algorithm"
+      }
+    ]
+  },
   "related": [
     "distributional-soft-actor-critic",
     "algorithm-imed",

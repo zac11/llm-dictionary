@@ -5,7 +5,139 @@
   "type": "concept",
   "definition": "AI infrastructure comprises the physical and software systems used to develop, train, deploy and operate artificial intelligence (AI) models and applications.",
   "details": "In a narrow sense, the term refers to the physical computing resources that underpin AI, including semiconductors, processors, memory, servers, storage, networking equipment and data centres. Broader descriptions also include the software that makes this hardware usable, such as drivers, compilers, machine-learning frameworks, resource-management systems and cloud platforms. AI infrastructure is one part of a wider AI supply chain that also includes training data, models and applications. It may be owned and operated by an organisation, obtained through cloud computing, or provided through shared public or national computing programmes. The expansion of AI has made access to advanced chips, cloud capacity, electricity and suitable sites a subject of industrial policy, competition policy and environmental assessment.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. And that is AI infrastructure — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "AI infrastructure is the combination of computing equipment, facilities and software that lets people build and run AI systems. It matters because a model is only usable when there is enough suitable hardware, memory, networking, electricity and supporting software behind it.",
+    "tiers": {
+      "eli5": "Think of an AI model as a recipe: AI infrastructure is the kitchen, including the ovens, worktops, storage, electricity and tools needed to prepare and serve the food. It covers powerful computer chips and data centres as well as the programs that organise their work. Without this support, even a good AI model cannot be trained or used at scale.",
+      "practitioner": "Engineers use AI infrastructure to distribute training across accelerator clusters, manage data and model files, and serve inference with the required latency, throughput and availability. The stack can include GPUs, ASICs or FPGAs, drivers, compilers, machine-learning frameworks, job schedulers, monitoring, data pipelines and cloud services. Common pitfalls are judging capacity by processor count alone, overlooking memory and network bottlenecks, underestimating power and cooling constraints, and becoming dependent on a cloud provider's ecosystem.",
+      "paperLevel": "AI infrastructure = physical systems + software systems used to develop, train, deploy and operate AI models and applications. Its boundary is not universal: data, algorithms, trained models and applications depend on infrastructure but are not necessarily classified as part of it. Usable capacity depends jointly on processors, memory bandwidth, storage, networking, distributed coordination and systems software, while deployment is also constrained by electricity, cooling, siting and market access."
+    },
+    "example": "An organisation rents accelerator instances in a public cloud to train a model. Its training data is read from storage, management software schedules work across an accelerator cluster, and high-bandwidth networking lets the machines exchange intermediate results; the resulting model files are then passed to a serving system for inference, while the cloud data centre supplies power, backup and cooling.",
+    "usedIn": [
+      {
+        "name": "Large-scale model training",
+        "detail": "Accelerator clusters and distributed software divide calculations and exchange intermediate results across many machines.",
+        "url": ""
+      },
+      {
+        "name": "Public cloud AI services",
+        "detail": "Customers rent virtual machines, accelerator instances or managed services instead of building private data centres.",
+        "url": ""
+      },
+      {
+        "name": "High-volume model inference",
+        "detail": "Data-centre infrastructure serves trained models while balancing cost, response time, throughput and availability.",
+        "url": ""
+      },
+      {
+        "name": "Shared public computing programmes",
+        "detail": "Public or nationally supported capacity provides an alternative to organisation-owned infrastructure and commercial cloud access.",
+        "url": ""
+      }
+    ],
+    "intuition": "An AI model is not self-contained: it needs a layered system that supplies computation, moves and stores data, coordinates work, and keeps the equipment powered and cooled. Hardware provides capacity, while software determines how effectively that capacity can be used.",
+    "howItWorks": [
+      "Data centres supply buildings, power distribution, backup systems, cooling and network connections for computing equipment.",
+      "CPUs and specialised accelerators are assembled into servers and clusters, supported by memory, storage and high-bandwidth links.",
+      "Drivers, compilers, libraries and frameworks turn model operations into processor work, while management software schedules jobs and monitors resources.",
+      "Training systems distribute calculations across machines and store intermediate results and trained model files.",
+      "Model-serving systems apply trained models to new inputs, using hardware chosen for the required cost, latency, throughput and availability."
+    ],
+    "whyItMatters": "Access to chips, cloud capacity, electricity and suitable sites can determine whether an AI project is practical and how quickly capacity becomes available. High fixed costs, concentrated supply chains and vertically integrated providers also make infrastructure important for industrial policy, competition and environmental assessment.",
+    "misconceptions": [
+      "A data centre is one facility-level component of AI infrastructure, not a synonym for the entire stack.",
+      "Processor counts alone do not describe usable capacity because memory, storage, networking and software also constrain performance.",
+      "Training data, trained models and applications rely on infrastructure but are not necessarily infrastructure themselves."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "power-cooling",
+          "label": "Power and cooling",
+          "note": "Electricity, backup and heat removal"
+        },
+        {
+          "id": "data-centre",
+          "label": "Data centre",
+          "note": "Facilities and network connections"
+        },
+        {
+          "id": "training-storage",
+          "label": "Training storage",
+          "note": "Data and intermediate results"
+        },
+        {
+          "id": "software",
+          "label": "Software stack",
+          "note": "Frameworks, compilers and scheduling"
+        },
+        {
+          "id": "cluster",
+          "label": "Accelerator cluster",
+          "note": "Servers, memory and networking"
+        },
+        {
+          "id": "model-storage",
+          "label": "Model storage",
+          "note": "Trained and deployed model files"
+        },
+        {
+          "id": "serving",
+          "label": "Serving system",
+          "note": "Runs inference on new inputs"
+        },
+        {
+          "id": "applications",
+          "label": "AI applications",
+          "note": "Use model outputs"
+        }
+      ],
+      "edges": [
+        {
+          "from": "power-cooling",
+          "to": "data-centre",
+          "label": "supports"
+        },
+        {
+          "from": "data-centre",
+          "to": "cluster",
+          "label": "houses"
+        },
+        {
+          "from": "training-storage",
+          "to": "cluster",
+          "label": "training data"
+        },
+        {
+          "from": "software",
+          "to": "cluster",
+          "label": "coordinates"
+        },
+        {
+          "from": "cluster",
+          "to": "model-storage",
+          "label": "trained models"
+        },
+        {
+          "from": "model-storage",
+          "to": "serving",
+          "label": "model files"
+        },
+        {
+          "from": "serving",
+          "to": "applications",
+          "label": "outputs"
+        }
+      ],
+      "caption": "Facilities, hardware and software support training; stored model files then flow to inference systems and applications."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: AI infrastructure",
+        "url": "https://en.wikipedia.org/wiki/AI_infrastructure"
+      }
+    ]
+  },
   "related": [
     "ai-alignment",
     "ai-anthropomorphism",

@@ -5,7 +5,129 @@
   "type": "algorithm",
   "definition": "Alpha–beta pruning is a tree search algorithm that seeks to decrease the number of nodes that are evaluated by the minimax algorithm in its search tree.",
   "details": "It is an adversarial search algorithm used commonly for machine playing of two-player combinatorial games (Tic-tac-toe, Chess, Connect 4, etc.). It stops evaluating a move when at least one possibility has been found that proves the move to be worse than a previously examined move. Such moves need not be evaluated further. When applied to a standard minimax tree, it returns the same move as minimax would, but prunes away branches that cannot possibly influence the final decision.",
-  "story": "Imagine a driving test that every new model has to pass before it is allowed on the road. It is the exam that separates “it sounds good” from “it actually is good”. A fair scoreboard keeps everyone honest. It is the exam that keeps everyone honest. That shared ruler is Alpha–beta pruning.",
+  "explainer": {
+    "lead": "Alpha–beta pruning makes minimax game-tree search cheaper by discarding branches that cannot change the final choice. It lets a game-playing program concentrate on promising moves, often searching deeper in the same amount of time.",
+    "tiers": {
+      "eli5": "Imagine choosing a board-game move by imagining every possible reply. If one move already lets your opponent force a win, you do not need to imagine the rest of that move’s future: a move you checked earlier is safer. Alpha–beta pruning uses that idea to skip useless possibilities while still choosing the same move as checking everything.",
+      "practitioner": "Use it inside minimax for two-player zero-sum game trees, carrying alpha and beta through recursive search and cutting off a node when beta < alpha. Move ordering strongly affects performance: with optimal ordering, a depth-d search at branching factor b examines about O(b^(d/2)) leaves, but worst-case ordering remains O(b^d). It returns the minimax move, so the gain is reduced evaluation cost rather than a different decision.",
+      "paperLevel": "For a minimax tree, alpha is the minimum score assured to the maximizer and beta is the maximum score assured to the minimizer; descendants are pruned once beta < alpha. With branching factor b and depth d, worst-case leaf evaluations are O(b^d), while optimal move ordering gives O(b^(d/2)) = O(sqrt(b^d)). McCarthy invented alpha–beta search; Knuth and Moore refined it in 1975, Pearl proved its expected-time optimality for trees with randomly assigned leaf values, and Saks and Wigderson proved optimality of the randomized version in 1986."
+    },
+    "example": "At a chess turn, move A improves your position and does not allow a forced loss in two moves. While checking move B, you find that it lets your opponent force checkmate in two moves, so B is worse than A and every other continuation after B can be skipped.",
+    "usedIn": [
+      {
+        "name": "Chess programs",
+        "detail": "Searches possible moves and replies while skipping lines that cannot change the chosen move.",
+        "url": ""
+      },
+      {
+        "name": "Checkers simulation",
+        "detail": "Arthur Samuel used an early version of alpha–beta in a checkers simulation.",
+        "url": ""
+      },
+      {
+        "name": "Two-player combinatorial games",
+        "detail": "Commonly applied to machine play of games such as tic-tac-toe and Connect 4.",
+        "url": ""
+      }
+    ],
+    "goal": "Find the same move as minimax while evaluating fewer nodes. Branches that cannot influence the final decision are abandoned as soon as an already examined move is known to be better.",
+    "inputs": [
+      "A game tree of positions, moves, and replies",
+      "Numeric scores for terminal outcomes",
+      "A search depth and an order for examining moves"
+    ],
+    "outputs": [
+      "The same move as a standard minimax search",
+      "A search that leaves irrelevant branches unevaluated"
+    ],
+    "steps": [
+      "Set alpha to negative infinity and beta to positive infinity.",
+      "Examine moves and replies while tracking each player’s assured score.",
+      "Raise alpha with the best score found for the maximizing player.",
+      "Lower beta with the best score found for the minimizing player.",
+      "Stop examining a node’s descendants when beta < alpha.",
+      "Return the best move, which matches minimax’s choice."
+    ],
+    "tradeoffs": [
+      "It preserves minimax’s result while reducing node evaluations.",
+      "Good move ordering can allow twice the search depth for the same computation.",
+      "Worst-case move ordering gives no asymptotic saving: O(b^d) leaves.",
+      "Savings can be spent searching the more promising subtree more deeply."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "tree",
+          "label": "Game tree",
+          "note": "Positions, moves, replies, and scores"
+        },
+        {
+          "id": "minimax",
+          "label": "Minimax search",
+          "note": "Evaluates the players’ alternatives"
+        },
+        {
+          "id": "bounds",
+          "label": "Alpha and beta",
+          "note": "Tracks both players’ assured scores"
+        },
+        {
+          "id": "cutoff",
+          "label": "Compare bounds",
+          "note": "Checks whether beta < alpha"
+        },
+        {
+          "id": "prune",
+          "label": "Prune branch",
+          "note": "Skips descendants that cannot matter"
+        },
+        {
+          "id": "move",
+          "label": "Best move",
+          "note": "Matches standard minimax’s choice"
+        }
+      ],
+      "edges": [
+        {
+          "from": "tree",
+          "to": "minimax",
+          "label": "positions"
+        },
+        {
+          "from": "minimax",
+          "to": "bounds",
+          "label": "scores"
+        },
+        {
+          "from": "bounds",
+          "to": "cutoff",
+          "label": "alpha, beta"
+        },
+        {
+          "from": "cutoff",
+          "to": "prune",
+          "label": "beta < alpha"
+        },
+        {
+          "from": "prune",
+          "to": "minimax",
+          "label": "next branch"
+        },
+        {
+          "from": "minimax",
+          "to": "move",
+          "label": "final result"
+        }
+      ],
+      "caption": "Alpha–beta carries assured-score bounds through minimax and stops searching a branch once beta < alpha."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Alpha–beta pruning",
+        "url": "https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning"
+      }
+    ]
+  },
   "related": [
     "pruning",
     "decision-tree-pruning",

@@ -5,7 +5,82 @@
   "type": "concept",
   "definition": "A Bongard problem is a visual pattern recognition puzzle that shows two sets of figures and asks what concept sets them apart.",
   "details": "The original collection of 100 problems first appeared in an appendix to Soviet computer scientist Mikhail Bongard's 1967 book on pattern recognition. In the preface, Bongard attributes the ideas to joint work with M. N. Vaintsvaig, V. V. Maksimov, and M. S. Smirnov.",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. And that idea, made concrete, is Bongard problem.",
+  "explainer": {
+    "lead": "A Bongard problem is a small visual test of whether you can discover a rule, not just recognize a shape. By contrasting figures that fit a concept with figures that do not, it turns abstract reasoning into a puzzle for people and AI systems.",
+    "tiers": {
+      "eli5": "Imagine two groups of buttons: every button on the left has a hole, and none on the right does. Their colors and sizes may vary, but the hidden rule is \"has a hole.\" A Bongard problem asks you to find that kind of rule by comparing the two groups.",
+      "practitioner": "Bongard-style tasks can test whether a visual reasoning system infers a rule from positive and negative examples rather than memorizing individual figures. Controlled puzzles should vary irrelevant attributes so that surface cues do not reveal the answer. A key pitfall is that several rules may separate a small pair of sets, making an apparently correct answer ambiguous.",
+      "paperLevel": "Given left examples L = {x1, ..., xm} and right examples R = {y1, ..., yn}, the task is to infer a concept C such that C(x) is true for every x in L and false for every y in R. The original collection of 100 problems appeared in an appendix to Mikhail Bongard's 1967 book on pattern recognition. Its preface attributes the ideas to joint work with M. N. Vaintsvaig, V. V. Maksimov, and M. S. Smirnov."
+    },
+    "example": "The left set contains outlined triangles of different sizes, while the right set contains filled triangles of different sizes; the separating concept is \"unfilled,\" not size or triangular shape.",
+    "usedIn": [
+      {
+        "name": "Pattern recognition",
+        "detail": "Provides visual puzzles based on discovering the distinction between two sets of figures.",
+        "url": ""
+      },
+      {
+        "name": "Artificial intelligence",
+        "detail": "Offers a compact setting for studying visual pattern recognition and concept inference.",
+        "url": ""
+      }
+    ],
+    "intuition": "The challenge is to look past individual drawings and find one idea that explains why every figure belongs on its side.",
+    "howItWorks": [
+      "Present one set of figures that share a hidden concept.",
+      "Present a second set whose figures do not share that concept.",
+      "Compare shapes, arrangement, and other visual properties across both sets.",
+      "State a rule that accepts every left figure and rejects every right figure."
+    ],
+    "whyItMatters": "It makes abstraction and rule discovery visible in a compact task: success requires explaining the difference between sets, not merely labeling familiar objects.",
+    "misconceptions": [
+      "It is not simply a test of naming shapes.",
+      "Matching one pair of figures is not enough; the rule must cover both entire sets.",
+      "A visually obvious feature may be irrelevant if it varies within each set."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "left-set",
+          "label": "Left figure set",
+          "note": "Examples sharing the hidden concept"
+        },
+        {
+          "id": "right-set",
+          "label": "Right figure set",
+          "note": "Examples lacking the hidden concept"
+        },
+        {
+          "id": "compare",
+          "label": "Compare properties",
+          "note": "Test visual features across both sets"
+        },
+        {
+          "id": "rule",
+          "label": "Separating concept",
+          "note": "Accepts the left set and rejects the right"
+        }
+      ],
+      "edges": [
+        {
+          "from": "left-set",
+          "to": "compare",
+          "label": "positive examples"
+        },
+        {
+          "from": "right-set",
+          "to": "compare",
+          "label": "negative examples"
+        },
+        {
+          "from": "compare",
+          "to": "rule",
+          "label": "infer"
+        }
+      ],
+      "caption": "A Bongard problem contrasts two sets so that a solver can infer the concept separating them."
+    }
+  },
   "related": [
     "bin-covering-problem",
     "bin-packing-problem",

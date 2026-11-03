@@ -5,7 +5,154 @@
   "type": "concept",
   "definition": "An agent harness, also known as agent scaffolding, is the software infrastructure surrounding a large language model (LLM) that enables it to operate as an AI agent.",
   "details": "It manages tool use, memory, state persistence, execution environments and feedback loops, as opposed to the model's internal reasoning. The UK's AI Security Institute described an AI agent as being formed by the model plus the scaffolding back in 2023. The relationship can be expressed as Agent = Model + Harness. Because an LLM is stateless, unaided, and produces only text, the harness is what allows a model to take actions over multiple steps, use external tools, and sustain a long-running task across sessions. Rather than repeatedly re-reading an ever-growing transcript inside the context window, a harness can offload record-keeping into a structured software environment that manages the agent's state. A minimal harness is unnecessary for a single prompt-and-response exchange, but becomes important as tasks grow multi-step, tool-oriented, or long-running. Popular agent harnesses are focused on AI-assisted software development, including Anthropic's Claude Code, OpenAI's Codex, Google DeepMind's Antigravity, and SpaceXAI's Cursor. China's Qwen, DeepSeek, Kimi, and GLM models are also offered with official harnesses.",
-  "story": "Think of a chess player who never commits to a move blindly — they consider the board, try an action, watch what changes, and only then decide what is next. The machine stops just answering one question and starts getting a job done, step by step, checking its work along the way. It plans a little, acts a little, looks at the result, and then decides what to do next. It is a loop of look, act, and learn — the same way you cook from a recipe you have never tried: add, taste, correct. And that habit of checking, acting, then checking again is Agent harness.",
+  "explainer": {
+    "lead": "An agent harness is the software wrapper that turns a chatbot into a doer. Without it, even the smartest language model is just a text generator; with it, the same model can write code, run tests, remember what it did yesterday, and keep working on a task for hours.",
+    "tiers": {
+      "eli5": "Imagine a really smart parrot that can only talk. The harness is like giving that parrot a robot body, a notebook to write things down, and a set of tools—so now it can actually build things, check its work, and come back tomorrow to finish the job. The parrot's brain is still the same; the harness is everything else that makes it useful.",
+      "practitioner": "In practice, you build or configure a harness when you need an LLM to do more than generate text. Typical setups include tool dispatch (API calls, code execution), vector memory for long-term context, sandboxed environments for safe execution, and guardrails like approval tiers. Pitfalls include over-relying on the model to self-correct without sensor feedback, letting context windows grow unwieldy instead of offloading state, and treating harness failures as model failures. Tools in this space range from vendor-shipped inner harnesses (Claude Code, Codex) to composable outer harnesses you assemble with MCP servers and custom skills.",
+      "paperLevel": "The formal relationship is expressed as Agent = Model + Harness, where the model is a stateless probabilistic function mapping token sequences to token sequences, and the harness provides the persistent state, tool interfaces, and environmental feedback required for multi-step agency. The ReAct framework introduced the reasoning-acting loop pattern; Toolformer demonstrated tool-calling capability. The term 'harness engineering' emerged in early 2026, with attribution contested between Mitchell Hashimoto's practice of permanent environmental fixes and Vivek Trivedy's component derivation from the agent = model + harness formula."
+    },
+    "example": "A developer asks an agent to 'refactor the authentication module.' The harness initializes a git branch, reads the codebase structure, and prompts the model to plan. The model suggests moving password hashing to a separate file; the harness writes the file, runs tests, and reports a failure. The model proposes a fix; the harness applies it, tests pass, the harness commits with a descriptive message and updates a progress record. Three hours later, the developer returns to find the task complete with full commit history and no context window overflow.",
+    "usedIn": [
+      {
+        "name": "Claude Code",
+        "detail": "Anthropic's coding agent with built-in tool use and environment management",
+        "url": ""
+      },
+      {
+        "name": "OpenAI Codex",
+        "detail": "Agent harness for software development with sandboxed execution",
+        "url": ""
+      },
+      {
+        "name": "Cursor",
+        "detail": "SpaceXAI's coding tool that wraps models in a persistent workspace harness",
+        "url": ""
+      },
+      {
+        "name": "Harness-1",
+        "detail": "Open-source search agent improving retrieval through harness redesign rather than model scaling",
+        "url": ""
+      }
+    ],
+    "intuition": "A raw LLM is like a brilliant consultant with severe amnesia who can only speak. The harness is the office, the filing system, the phone, the assistant who takes notes, and the quality checker who catches errors—everything that lets the consultant actually run a business.",
+    "howItWorks": [
+      "The harness receives the user's high-level goal and breaks it into subtasks, maintaining a structured state outside the model's context window.",
+      "It dispatches tools or code execution on the model's behalf, feeding results back as new context rather than expecting the model to hold everything in memory.",
+      "It persists memory across sessions—commit histories, progress records, learned failures—so work can resume without re-reading entire transcripts.",
+      "It runs guardrails and sensors: deterministic checks (linters, tests) and inferential checks (LLM-as-judge) to catch and recover from model errors.",
+      "It loops: the model proposes an action, the harness executes and observes, then the model reasons about the result and proposes the next step."
+    ],
+    "whyItMatters": "As models plateau in raw capability, the harness becomes the primary lever for building capable agents. A well-designed harness can make a smaller model outperform a larger one by compensating for limitations in memory, tool use, and error recovery—shifting engineering focus from scaling to systems design.",
+    "misconceptions": [
+      "The harness is just prompt engineering at scale—it actually designs the operational environment, not just the instructions.",
+      "A bigger model removes the need for a harness—even large models remain stateless and hallucinate; the harness provides persistence and recovery.",
+      "The harness and model are sold as one thing—Birgitta Böckeler distinguishes the builder's inner harness from the user's outer harness, which are often layered."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "user",
+          "label": "User goal",
+          "note": "High-level task request"
+        },
+        {
+          "id": "harness",
+          "label": "Agent harness",
+          "note": "Manages state, tools, loops, guardrails"
+        },
+        {
+          "id": "model",
+          "label": "LLM core",
+          "note": "Stateless reasoning and text generation"
+        },
+        {
+          "id": "tools",
+          "label": "Tool dispatch",
+          "note": "API calls, code execution, file I/O"
+        },
+        {
+          "id": "memory",
+          "label": "State & memory",
+          "note": "Persistent storage outside context window"
+        },
+        {
+          "id": "sandbox",
+          "label": "Sandbox env",
+          "note": "Isolated workspace for safe execution"
+        },
+        {
+          "id": "sensors",
+          "label": "Sensors & guards",
+          "note": "Checks, tests, approvals, recovery"
+        }
+      ],
+      "edges": [
+        {
+          "from": "user",
+          "to": "harness",
+          "label": "submits goal"
+        },
+        {
+          "from": "harness",
+          "to": "model",
+          "label": "prompts with context"
+        },
+        {
+          "from": "model",
+          "to": "harness",
+          "label": "proposes action"
+        },
+        {
+          "from": "harness",
+          "to": "tools",
+          "label": "dispatches"
+        },
+        {
+          "from": "tools",
+          "to": "sandbox",
+          "label": "executes in"
+        },
+        {
+          "from": "sandbox",
+          "to": "sensors",
+          "label": "results to"
+        },
+        {
+          "from": "sensors",
+          "to": "harness",
+          "label": "feedback"
+        },
+        {
+          "from": "harness",
+          "to": "memory",
+          "label": "persists state"
+        },
+        {
+          "from": "memory",
+          "to": "harness",
+          "label": "recalls for next loop"
+        }
+      ],
+      "caption": "The harness mediates between the stateless LLM and the persistent world, looping through tool use, execution, observation, and memory update until the task completes or needs human approval."
+    },
+    "image": {
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4d/Agent_harness.png/960px-Agent_harness.png",
+      "alt": "Agent harness — Digital technology which directs AI models to perform tasks",
+      "width": 640,
+      "height": 333,
+      "credit": "Wikideas1",
+      "license": "CC0",
+      "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "page": "https://commons.wikimedia.org/wiki/File:Agent_harness.png"
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Agent harness",
+        "url": "https://en.wikipedia.org/wiki/Agent_harness"
+      }
+    ]
+  },
   "related": [
     "agent-experience",
     "agent-mining",

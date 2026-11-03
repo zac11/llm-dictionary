@@ -5,7 +5,103 @@
   "type": "metric",
   "definition": "In information theory, linguistics, and computer science, the Levenshtein distance is a string metric for measuring the difference between two sequences.",
   "details": "For two strings, it is the minimum number of single-symbol edits—insertions, deletions, or substitutions—required to transform one string into the other. Each edit has unit cost in the classical definition. The distance is named after Soviet mathematician Vladimir Levenshtein, who introduced it in 1965 in the context of error-correcting codes. Levenshtein distance is a particular form of edit distance; the latter term is also used for broader models in which the set of allowed operations or their costs differ. It is closely related to sequence alignment.",
-  "story": "Think of a grammar teacher who never memorized a rule but can still tell you when a sentence sounds wrong. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It figures out meaning by noticing which words like to travel together. The machine learns to read between the lines by reading an impossible number of lines. That pattern-earned fluency is Levenshtein distance.",
+  "explainer": {
+    "lead": "Levenshtein distance counts how many single-character changes are needed to turn one string into another. It gives a precise way to compare sequences when insertions, deletions, and substitutions all matter.",
+    "tiers": {
+      "eli5": "Imagine changing one word into another using only three moves: add a letter, remove a letter, or swap one letter for another. Levenshtein distance is the smallest number of moves you need. Turning \"kitten\" into \"sitting\" takes three moves, so their distance is 3.",
+      "practitioner": "Use it when string differences should be expressed as a minimum edit count, with insertion, deletion, and substitution each costing 1. Check whether that unit-cost model fits the task; other edit-distance variants allow different operations or costs. The result measures sequence difference and is closely related to sequence alignment.",
+      "paperLevel": "For strings a and b, lev(a,b) is the minimum number of unit-cost insertions, deletions, and substitutions transforming a into b. Its recurrence is lev(i,j) = min(lev(i-1,j)+1, lev(i,j-1)+1, lev(i-1,j-1)+[a_i != b_j]), with lev(i,0)=i and lev(0,j)=j. Vladimir Levenshtein introduced the measure in 1965 in the context of error-correcting codes; its classical form fixes both the allowed operations and their unit costs."
+    },
+    "example": "For \"kitten\" and \"sitting\", substitute k with s, substitute e with i, then insert g at the end. These three edits give lev(\"kitten\", \"sitting\") = 3.",
+    "usedIn": [
+      {
+        "name": "Information theory",
+        "detail": "Provides a string metric for measuring differences between sequences.",
+        "url": ""
+      },
+      {
+        "name": "Linguistics",
+        "detail": "Quantifies how many single-symbol edits separate two strings.",
+        "url": ""
+      },
+      {
+        "name": "Computer science",
+        "detail": "Supports comparison of sequences through minimum edit counts.",
+        "url": ""
+      },
+      {
+        "name": "Error-correcting codes",
+        "detail": "The context in which Vladimir Levenshtein introduced the distance in 1965.",
+        "url": ""
+      }
+    ],
+    "measures": "It measures the difference between two strings as the minimum number of single-symbol edits needed to transform one into the other.",
+    "howScored": [
+      "Allow insertion, deletion, and substitution of single symbols.",
+      "Assign every edit a cost of 1 in the classical definition.",
+      "Find a sequence of edits with the smallest total count.",
+      "Report that minimum count as the distance."
+    ],
+    "formula": "lev(a,b) = minimum number of unit-cost insertions, deletions, and substitutions needed to transform string a into string b.",
+    "typicalResults": "The result is a non-negative integer: identical strings have distance 0, while strings requiring more edits have larger distances.",
+    "caveats": [
+      "The classical definition allows only insertions, deletions, and substitutions.",
+      "Each operation has unit cost; broader edit-distance models may change operations or costs.",
+      "A larger distance means more required edits, not a different kind of sequence relationship."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "source",
+          "label": "Source string",
+          "note": "The sequence to transform."
+        },
+        {
+          "id": "target",
+          "label": "Target string",
+          "note": "The sequence to reach."
+        },
+        {
+          "id": "edits",
+          "label": "Allowed edits",
+          "note": "Insert, delete, or substitute one symbol at cost 1."
+        },
+        {
+          "id": "minimum",
+          "label": "Minimum edit sequence",
+          "note": "The transformation requiring the fewest edits."
+        },
+        {
+          "id": "distance",
+          "label": "Distance",
+          "note": "The number of edits in that minimum sequence."
+        }
+      ],
+      "edges": [
+        {
+          "from": "source",
+          "to": "edits",
+          "label": "transform"
+        },
+        {
+          "from": "target",
+          "to": "edits",
+          "label": "match"
+        },
+        {
+          "from": "edits",
+          "to": "minimum",
+          "label": "minimize"
+        },
+        {
+          "from": "minimum",
+          "to": "distance",
+          "label": "count"
+        }
+      ],
+      "caption": "Levenshtein distance is the edit count of the cheapest allowed transformation between two strings."
+    }
+  },
   "related": [
     "hamming-distance",
     "normalized-google-distance",

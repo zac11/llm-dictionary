@@ -5,7 +5,108 @@
   "type": "concept",
   "definition": "Agent experience (AX) is the design of digital environments in which AI agents can understand, navigate, and act effectively.",
   "details": "The term can also refer to the appearance and affordances of an environment from a machine-user's point of view. In other words, the experience AI agents have as users of platforms and products; in this sense it has a close parallel with user experience (UX). Less often, the term spans the experience of collaborating with AI agents from the human perspective.",
-  "story": "Picture hiring a brilliant new assistant on their first morning — smart, motivated, but with no idea how anything in your office actually works. It plans a little, acts a little, looks at the result, and then decides what to do next. It is the difference between a search engine and a helper who actually finishes the task. It is a loop of look, act, and learn — the same way you cook from a recipe you have never tried: add, taste, correct. And that habit of checking, acting, then checking again is Agent experience.",
+  "explainer": {
+    "lead": "Agent experience is the emerging discipline of designing software for AI users instead of human ones. As large language models begin to browse, shop, and manage systems on our behalf, the interfaces they encounter need to be rethought from the ground up.",
+    "tiers": {
+      "eli5": "Imagine you built a house with doors, light switches, and labels designed for people. Now robots need to live there too—but they can't read handwritten notes, they get confused by pretty pictures, and they need exact instructions. Agent experience is like retrofitting (or rebuilding) that house so robots can find their way around, while still keeping it nice for people.",
+      "practitioner": "When designing for AX, you expose structured data over visual presentation: machine-readable schemas instead of HTML soup, tool definitions with clear parameters, and MCP servers that declare capabilities explicitly. REST APIs designed for human developers often fail here—one-endpoint-per-tool patterns scale poorly, and ambiguous documentation hurts agent reliability. Typical tooling includes OpenAPI specs, function-calling schemas, and dedicated agent protocols like MCP. Pitfalls include overloading agents with too many tools, mixing deterministic and agentic paths without clear boundaries, and neglecting discoverability (agents don't browse aimlessly; they need explicit sitemaps and structured metadata).",
+      "paperLevel": "Agent experience (AX) is defined as the design of digital environments in which AI agents can understand, navigate, and act effectively, with the term also denoting the affordances of an environment from a machine-user's perspective (parallel to UX). The concept was articulated by Pablo Romeo (CTO, CloudX) in 2024 and gained traction following Mathias Biilmann's January 2025 essay 'Introducing AX: Why Agent Experience Matters.' Design considerations include: (1) tool quality and granularity—reusing human-oriented REST APIs endpoint-by-endpoint yields poor AX; (2) discoverability and measurable comparability over emotional or brand factors for agent purchasing decisions; (3) model-capability alignment, where task difficulty matching improves efficiency and encouraging prompting enhances near-limit performance. No formal mathematical framework is established in the literature."
+    },
+    "example": "A travel booking site redesigns for AX: instead of a visually rich homepage with promotional banners, it exposes a structured /search endpoint with typed parameters for dates, budget, and preferences; returns comparison tables with normalized review scores rather than narrative descriptions; and offers an MCP server so agents can check availability, hold reservations, and complete bookings through explicit tool calls. A human visitor still sees the polished site, but an AI agent planning a user's vacation navigates efficiently through the structured layer.",
+    "usedIn": [
+      {
+        "name": "Netlify",
+        "detail": "Biilmann's 2025 essay popularized AX as a design priority for web platforms serving AI agent traffic",
+        "url": ""
+      },
+      {
+        "name": "CloudX",
+        "detail": "Pablo Romeo's early 2024 usage established the term for machine-user interface design",
+        "url": ""
+      },
+      {
+        "name": "E-commerce platforms",
+        "detail": "Alvarez and Marsal advise retailers on AX for agent-driven purchasing, emphasizing discoverability and review scores over brand appeal",
+        "url": ""
+      },
+      {
+        "name": "MCP server ecosystems",
+        "detail": "Model Context Protocol servers provide structured tool definitions designed explicitly for agent consumption",
+        "url": ""
+      }
+    ],
+    "intuition": "Just as UX asks 'can a person use this?', AX asks 'can an AI agent use this?'—but agents reason differently: they need explicit structure, can't interpret visual hierarchy, and fail unpredictably when ambiguity exceeds their confidence threshold.",
+    "howItWorks": [
+      "Expose capabilities as structured, declarative tools rather than visual interfaces—schemas, APIs, and protocol definitions that an agent can parse and select from",
+      "Design for discoverability: agents need explicit indexes, sitemaps, and metadata; they don't casually browse or respond to emotional cues like brand loyalty",
+      "Match task difficulty to model capability: assign complex reasoning to capable models, routine work to smaller models or deterministic tools, avoiding both under- and over-utilization",
+      "Provide clear instructions and encouraging framing near capability limits, as this measurably improves agent performance even absent any consensus on machine consciousness"
+    ],
+    "whyItMatters": "AI agents already drive hundreds of billions in consumer spending as of 2026, with projections exceeding $3 trillion by 2030. Organizations that optimize for AX capture this machine-mediated demand; those that don't risk invisibility to an emerging class of autonomous users.",
+    "misconceptions": [
+      "AX is just APIs for machines—it's not; deterministic APIs (1940s–present) serve fixed programs, while AX serves reasoning agents with autonomy and tool selection",
+      "AX means making things worse for humans—good AX adds structured layers beneath human-friendly surfaces, degrading neither",
+      "AX requires believing AI is sentient—model welfare arguments are separable; capability alignment and encouraging prompts improve outcomes regardless of consciousness debates"
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "human-ui",
+          "label": "Human interface",
+          "note": "Visual, emotional, brand-rich layer for people"
+        },
+        {
+          "id": "agent-layer",
+          "label": "AX structured layer",
+          "note": "Schemas, tools, MCP servers for AI agents"
+        },
+        {
+          "id": "agent",
+          "label": "AI agent",
+          "note": "Reasoning, autonomous machine user"
+        },
+        {
+          "id": "backend",
+          "label": "Backend systems",
+          "note": "Databases, APIs, business logic"
+        },
+        {
+          "id": "deterministic",
+          "label": "Deterministic tools",
+          "note": "Smaller models, algorithms for routine tasks"
+        }
+      ],
+      "edges": [
+        {
+          "from": "human-ui",
+          "to": "backend",
+          "label": "human requests"
+        },
+        {
+          "from": "agent-layer",
+          "to": "backend",
+          "label": "structured calls"
+        },
+        {
+          "from": "agent",
+          "to": "agent-layer",
+          "label": "discovers, selects"
+        },
+        {
+          "from": "agent",
+          "to": "deterministic",
+          "label": "delegates routine"
+        }
+      ],
+      "caption": "Agent experience adds a parallel structured layer for AI users, while agents delegate appropriately between reasoning and deterministic paths."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Agent experience",
+        "url": "https://en.wikipedia.org/wiki/Agent_experience"
+      }
+    ]
+  },
   "related": [
     "agent-harness",
     "agent-mining",

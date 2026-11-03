@@ -2,10 +2,137 @@
   "term": "Apertium",
   "letter": "A",
   "category": "Natural language processing",
-  "type": "concept",
+  "type": "tool",
   "definition": "Apertium is a free/open-source rule-based machine translation platform.",
   "details": "It is free software and released under the terms of the GNU General Public License.",
-  "story": "Imagine learning a language by reading every book in the library and noticing, over time, which words travel together. It does not memorize a rulebook; it absorbs a library. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It is fluency built from pattern, not from memorized rules. That pattern-earned fluency is Apertium.",
+  "explainer": {
+    "lead": "Apertium is an open-source platform for building and running rule-based machine translation systems. It lets language communities and developers create translation pairs using dictionaries and explicit grammatical rules rather than relying on proprietary technology.",
+    "tiers": {
+      "eli5": "Apertium translates a bit like following a very detailed phrasebook and grammar guide. It looks words up, works out their roles, chooses suitable translations, and rearranges or changes them so the new sentence follows the other language’s rules. Because its books and tools are open, people can inspect them and add instructions for more languages.",
+      "practitioner": "A new pair is built by supplying linguistic data—principally dictionaries and rules—in Apertium’s XML formats. Depending on the pair, the pipeline uses lttoolbox or HFST for morphology, vislcg3 Constraint Grammar for most disambiguation, bidix for lexical transfer, and apertium-lex-tools for lexical selection; structural transfer may use chunking or a CFG-based module. Expect to engineer and test linguistic data rather than train an end-to-end model: results can be fast and reasonably intelligible, but errors remain, especially as pairs move beyond the closely related languages for which Apertium was originally designed.",
+      "paperLevel": "Apertium defines transfer-based translation as a staged mapping x → analysis/disambiguation → lexical transfer and selection → structural transfer → generation → y, with finite-state transducers performing lexical transformations. Disambiguation uses Constraint Grammar, hidden Markov models, or Perceptrons, while structural transfer uses shallow chunking rules or newer, potentially recursive context-free-grammar rules. It originated in OpenTrad through the Transducens group at the Universitat d'Alacant; its main costs are manually specified dictionaries and rules, and its December 2020 release quality was described as reasonably intelligible with correctable errors rather than uniformly exact."
+    },
+    "example": "For English “the black cats” translating into Spanish, analysis identifies “cats” as plural and “black” as an adjective; lexical transfer supplies forms of “gato” and “negro.” Structural transfer places the adjective after the noun and marks agreement, so generation produces “los gatos negros,” with the article, noun, and adjective all masculine plural.",
+    "usedIn": [
+      {
+        "name": "OpenTrad",
+        "detail": "Apertium originated as one of the machine translation engines in this Spanish-government-funded project.",
+        "url": ""
+      },
+      {
+        "name": "Language-pair development",
+        "detail": "Developers can build and contribute translation pairs by writing dictionaries and rules in specified XML formats.",
+        "url": ""
+      },
+      {
+        "name": "Turkic-language translation",
+        "detail": "Pairs involving agglutinative morphology, including several Turkic languages, can use the Helsinki Finite State Transducer.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of learning translation as one opaque mapping, Apertium applies inspectable linguistic operations in sequence. Finite-state machinery handles word forms, while dictionaries and grammar rules handle word choice, movement, and agreement.",
+    "howItWorks": [
+      "Remove formatting markup, then analyse words into dictionary forms and grammatical tags.",
+      "Disambiguate multiple analyses and retokenise sequences where needed.",
+      "Map source words to target equivalents and select among alternative meanings.",
+      "Apply structural rules for reordering, agreement, and other grammatical differences.",
+      "Generate target word forms, fix spelling at word boundaries, and restore the formatting."
+    ],
+    "whyItMatters": "Its free code and language-independent specification make translation technology easier to inspect, adapt, and extend than proprietary alternatives. By December 2020 it had released 51 stable language pairs and offered developers tools to contribute their own.",
+    "misconceptions": [
+      "It is not an end-to-end neural translator, although some taggers use hidden Markov models or Perceptrons.",
+      "Adding a language pair is not automatic: developers must supply dictionaries and grammatical rules.",
+      "It is no longer limited to closely related languages, though that was its original design focus."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "source",
+          "label": "Source text",
+          "note": "Text in the language being translated."
+        },
+        {
+          "id": "deformat",
+          "label": "Remove formatting",
+          "note": "Set aside HTML, RTF, and other markup."
+        },
+        {
+          "id": "analyse",
+          "label": "Analyse and disambiguate",
+          "note": "Produce dictionary forms and tags, then choose among ambiguous analyses."
+        },
+        {
+          "id": "lexical",
+          "label": "Transfer vocabulary",
+          "note": "Find target equivalents and select between alternative meanings."
+        },
+        {
+          "id": "structure",
+          "label": "Transfer structure",
+          "note": "Reorder chunks and handle grammatical agreement."
+        },
+        {
+          "id": "generate",
+          "label": "Generate word forms",
+          "note": "Turn target tags into correct surface forms."
+        },
+        {
+          "id": "restore",
+          "label": "Restore text details",
+          "note": "Apply orthographic fixes and replace the saved markup."
+        },
+        {
+          "id": "target",
+          "label": "Target translation",
+          "note": "Deliver the translated, formatted text."
+        }
+      ],
+      "edges": [
+        {
+          "from": "source",
+          "to": "deformat",
+          "label": "text"
+        },
+        {
+          "from": "deformat",
+          "to": "analyse",
+          "label": "plain text"
+        },
+        {
+          "from": "analyse",
+          "to": "lexical",
+          "label": "tagged forms"
+        },
+        {
+          "from": "lexical",
+          "to": "structure",
+          "label": "target lemmas"
+        },
+        {
+          "from": "structure",
+          "to": "generate",
+          "label": "ordered tags"
+        },
+        {
+          "from": "generate",
+          "to": "restore",
+          "label": "surface forms"
+        },
+        {
+          "from": "restore",
+          "to": "target",
+          "label": "translation"
+        }
+      ],
+      "caption": "Apertium’s translation pipeline separates formatting, word analysis, vocabulary choice, grammatical transfer, and target-text generation."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Apertium",
+        "url": "https://en.wikipedia.org/wiki/Apertium"
+      }
+    ]
+  },
   "related": [
     "amazon-lex",
     "amebis",

@@ -5,7 +5,112 @@
   "type": "concept",
   "definition": "An input deliberately crafted, often with small, imperceptible perturbations, to cause a machine learning model to make an incorrect prediction.",
   "details": "Adversarial examples reveal that models can be highly sensitive to inputs that look nearly identical to humans but are perceived very differently by the model, raising robustness and security concerns.",
-  "story": "Imagine a new medicine that works brilliantly in the lab but still has to be tested on real people before anyone takes it. Think of it as the quiet rule that a tool should be useful without being dangerous. The idea is simple: before something powerful is let loose, someone checks that it will not do real harm to real people. Rules and red-teaming are the brakes that make the speed trustworthy. That deliberate caution is Adversarial Example.",
+  "explainer": {
+    "lead": "Adversarial examples are optical illusions for machines: tiny tweaks that humans cannot see, but that completely fool AI systems into seeing something else. They expose a deep fragility in how models perceive the world, with implications from self-driving car safety to medical diagnosis.",
+    "tiers": {
+      "eli5": "Imagine you draw a cat, then add a few invisible dots that your eyes skip over—but a computer looks at it and shouts \"turtle!\" That's an adversarial example. It's like a secret code only machines can read, but it makes them give the wrong answer. Researchers use these to find blind spots in AI, like testing whether a friend really knows their stuff by asking a trick question.",
+      "practitioner": "Adversarial examples are generated via optimization: typically gradient-based methods like FGSM or PGD that maximize model loss while bounding perturbation size with an L-p norm constraint. They're used to stress-test models during training (adversarial training) and to evaluate deployed systems. Pitfalls include overfitting to specific attack types, the computational cost of robust training, and the arms-race nature of attack and defense methods.",
+      "paperLevel": "Formally, given a classifier f and input x with true label y, an adversarial example x' satisfies f(x') ≠ y with ||x' - x||_p ≤ ε for small ε, where the perturbation is often found by maximizing the loss L(f(x'), y). The phenomenon was first systematically demonstrated in deep learning by Szegedy et al. (2014) and Goodfellow et al. (2015) with the fast gradient sign method. Known limits include transferability between models, the existence of universal perturbations, and the unresolved trade-off between standard and robust accuracy."
+    },
+    "example": "Goodfellow et al.'s classic demonstration: a panda image classified with 57.7% confidence as 'panda' has added perturbation with ε=0.007 in L-infinity norm. The result is visually indistinguishable, yet the model classifies it as 'gibbon' with 99.3% confidence.",
+    "usedIn": [
+      {
+        "name": "Autonomous vehicles",
+        "detail": "Testing whether stop signs are misclassified as speed limits under camera noise or sticker attacks",
+        "url": ""
+      },
+      {
+        "name": "Face recognition systems",
+        "detail": "Evaluating robustness against adversarial glasses or patches that evade detection",
+        "url": ""
+      },
+      {
+        "name": "Medical imaging",
+        "detail": "Checking that CT or X-ray classifiers aren't fooled by subtle image artifacts",
+        "url": ""
+      }
+    ],
+    "intuition": "Machine learning models build decision boundaries in high-dimensional spaces that humans cannot visualize. These boundaries are often jagged and discontinuous, meaning a tiny step in input space can cross from correct to incorrect classification while remaining imperceptible to human senses.",
+    "howItWorks": [
+      "Start with an input that the model classifies correctly, like a photo of a panda.",
+      "Calculate which direction in pixel space would most increase the model's prediction error.",
+      "Take a tiny step in that direction—bounded so the image looks unchanged to humans.",
+      "The model now outputs a different label with high confidence, despite the image appearing identical."
+    ],
+    "whyItMatters": "Adversarial examples reveal that models rely on features humans do not use, making them vulnerable to manipulation in safety-critical deployments and showing that 'human-level accuracy' does not mean human-like understanding.",
+    "misconceptions": [
+      "They require access to the model's internals—many transfer across unrelated models.",
+      "They only affect deep neural networks—linear models and other classifiers are also susceptible.",
+      "Bigger models are automatically safer—scale alone does not guarantee robustness."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "clean",
+          "label": "Clean image",
+          "note": "Original input, correctly classified"
+        },
+        {
+          "id": "perturb",
+          "label": "Perturbation",
+          "note": "Tiny noise vector computed from gradients"
+        },
+        {
+          "id": "adv",
+          "label": "Adversarial image",
+          "note": "Clean + perturbation, visually identical"
+        },
+        {
+          "id": "model",
+          "label": "ML model",
+          "note": "Neural network classifier"
+        },
+        {
+          "id": "correct",
+          "label": "Correct output",
+          "note": "High confidence, true label"
+        },
+        {
+          "id": "wrong",
+          "label": "Wrong output",
+          "note": "High confidence, different label"
+        }
+      ],
+      "edges": [
+        {
+          "from": "clean",
+          "to": "model",
+          "label": "feeds"
+        },
+        {
+          "from": "clean",
+          "to": "adv",
+          "label": "plus"
+        },
+        {
+          "from": "perturb",
+          "to": "adv",
+          "label": "adds"
+        },
+        {
+          "from": "adv",
+          "to": "model",
+          "label": "feeds"
+        },
+        {
+          "from": "model",
+          "to": "correct",
+          "label": "yields"
+        },
+        {
+          "from": "model",
+          "to": "wrong",
+          "label": "yields"
+        }
+      ],
+      "caption": "The same model, fed visually identical inputs, produces opposite predictions. The only difference is an imperceptible perturbation optimized to exploit the model's decision boundary."
+    }
+  },
   "related": [
     "ai-safety",
     "alignment",

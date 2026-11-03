@@ -5,7 +5,91 @@
   "type": "concept",
   "definition": "In computer science, a ball tree, balltree or metric tree, is a space partitioning data structure for organizing points in a multi-dimensional space.",
   "details": "A ball tree partitions data points into a nested set of balls. The resulting data structure has characteristics that make it useful for a number of applications, most notably nearest neighbor search.",
-  "story": "Imagine a sketch artist who starts with static and, stroke by stroke, sharpens it into a face. The result feels creative because it is memory, reshuffled at speed. Given a starting line, the machine imagines what comes next — a word, a note, a patch of a picture. The model dreams a little, then cleans up the dream. And that is Ball tree — making something new out of everything it has ever seen.",
+  "explainer": {
+    "lead": "A ball tree organizes points in a multidimensional space by placing them inside nested balls. This structure is especially useful for nearest-neighbor search, where the goal is to find points close to a chosen point.",
+    "tiers": {
+      "eli5": "Imagine drawing circles around clusters of marbles, then drawing bigger circles around several of those circles. A ball tree does something similar with points, including points that have more dimensions than we can draw. The nested circles help a computer look for nearby points.",
+      "practitioner": "Use a ball tree to index multidimensional points when nearest-neighbor search is a central operation. The data structure partitions the points into nested balls, producing a hierarchy that the search can use. Its defining feature is this ball-based partitioning, not a particular search application or software package.",
+      "paperLevel": "A ball tree, also called a balltree or metric tree, is a space-partitioning data structure that organizes points in a multidimensional space into a nested set of balls. Its principal application is nearest-neighbor search."
+    },
+    "example": "For a collection of points on a map, place nearby points inside small balls, then place those small balls inside larger regional balls. The resulting hierarchy organizes all the points and can support a nearest-neighbor search.",
+    "usedIn": [
+      {
+        "name": "Nearest-neighbor search",
+        "detail": "Uses the nested-ball organization to support searches for nearby points.",
+        "url": ""
+      },
+      {
+        "name": "Multidimensional point organization",
+        "detail": "Partitions points in a multidimensional space into a useful hierarchy.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of keeping all points in one unstructured collection, enclose groups of them in balls and enclose those balls in larger balls. The result is a nested organization of the space.",
+    "howItWorks": [
+      "Start with points in a multidimensional space.",
+      "Partition the points into groups represented by balls.",
+      "Nest smaller balls inside larger balls.",
+      "Use the resulting ball tree for tasks such as nearest-neighbor search."
+    ],
+    "whyItMatters": "Ball trees give multidimensional points a useful structure rather than leaving them as an unorganized collection. Their most notable benefit is supporting nearest-neighbor search.",
+    "misconceptions": [
+      "A ball tree is not a flat grouping: its balls are nested.",
+      "It is a data structure, not the nearest-neighbor search itself."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "all",
+          "label": "All points",
+          "note": "The outer ball contains the full collection."
+        },
+        {
+          "id": "a",
+          "label": "Large ball A",
+          "note": "Contains one partition of the points."
+        },
+        {
+          "id": "a1",
+          "label": "Small ball A1",
+          "note": "A nested group inside ball A."
+        },
+        {
+          "id": "a2",
+          "label": "Small ball A2",
+          "note": "Another nested group inside ball A."
+        },
+        {
+          "id": "b",
+          "label": "Large ball B",
+          "note": "Contains another partition of the points."
+        }
+      ],
+      "edges": [
+        {
+          "from": "all",
+          "to": "a",
+          "label": "encloses"
+        },
+        {
+          "from": "all",
+          "to": "b",
+          "label": "encloses"
+        },
+        {
+          "from": "a",
+          "to": "a1",
+          "label": "encloses"
+        },
+        {
+          "from": "a",
+          "to": "a2",
+          "label": "encloses"
+        }
+      ],
+      "caption": "A ball tree represents points through balls nested inside larger balls."
+    }
+  },
   "related": [
     "and-or-tree",
     "decision-tree-pruning",

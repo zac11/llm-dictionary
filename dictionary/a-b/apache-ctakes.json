@@ -2,10 +2,132 @@
   "term": "Apache cTAKES",
   "letter": "A",
   "category": "Natural language processing",
-  "type": "concept",
+  "type": "tool",
   "definition": "Apache cTAKES: clinical Text Analysis and Knowledge Extraction System is an open-source Natural Language Processing (NLP) system that extracts clinical information from electronic health record unstructured text.",
   "details": "It processes clinical notes, identifying types of clinical named entities — drugs, diseases/disorders, signs/symptoms, anatomical sites and procedures. Each named entity has attributes for the text span, the ontology mapping code, context (family history of, current, unrelated to patient), and negated/not negated. cTAKES was built using the UIMA Unstructured Information Management Architecture framework and OpenNLP natural language processing toolkit.",
-  "story": "Imagine learning a language by reading every book in the library and noticing, over time, which words travel together. It does not memorize a rulebook; it absorbs a library. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It is fluency built from pattern, not from memorized rules. And that is Apache cTAKES — teaching a machine to read between the lines.",
+  "explainer": {
+    "lead": "Apache cTAKES turns the free-text notes in electronic health records into structured clinical information. It helps computers distinguish useful details such as a patient's current symptom from a negated finding or a relative's illness, supporting clinical research and decision support.",
+    "tiers": {
+      "eli5": "Apache cTAKES is like a careful highlighter for medical notes. It marks mentions of medicines, illnesses, symptoms, body parts and procedures, then adds notes about who they concern and whether they actually happened. That helps a computer avoid treating 'no chest pain' as proof of chest pain.",
+      "practitioner": "An engineer uses cTAKES as a UIMA-based NLP pipeline built with OpenNLP, running clinical text through linguistic analysis, dictionary lookup and entity annotators. The output includes text spans, ontology mapping codes, context and negation, with additional detectors for uncertainty and subject. Downstream logic must preserve those attributes so family history, negated findings and uncertain statements are not converted into current patient facts.",
+      "paperLevel": "For clinical text t, cTAKES produces entity annotations of the form E = {(textSpan, entityType, ontologyCode, context, negation)}, covering drugs, diseases/disorders, signs/symptoms, anatomical sites and procedures. Its clinically trained pipeline also supplies linguistic annotations and detects uncertainty, subject and dependency structure. The components are specifically trained for the clinical domain rather than general-purpose text."
+    },
+    "example": "For the note 'No chest pain. Father has diabetes. Started lisinopril.', cTAKES can identify chest pain as a negated sign/symptom, diabetes as a disease/disorder in family-history context, and lisinopril as a drug. Each entity retains its text span, ontology mapping code and relevant context rather than becoming an undifferentiated keyword.",
+    "usedIn": [
+      {
+        "name": "Mayo Clinic clinical data management",
+        "detail": "Became an integral part of the infrastructure and processed more than 80 million clinical notes.",
+        "url": ""
+      },
+      {
+        "name": "i2b2 and SHARP Area 4",
+        "detail": "Adopted by i2b2 in 2010 and used as a central SHARP Area 4 component.",
+        "url": ""
+      },
+      {
+        "name": "Clinical decision support",
+        "detail": "Its linguistic and semantic annotations can be used by decision support systems.",
+        "url": ""
+      },
+      {
+        "name": "Clinical research",
+        "detail": "Extracts structured information from unstructured clinical notes for research use.",
+        "url": ""
+      }
+    ],
+    "intuition": "Clinical notes contain facts mixed with negation, family history and uncertainty. cTAKES reads the language around each medical mention so the extracted record captures not just what was named, but also its context.",
+    "howItWorks": [
+      "Split the note into sections, sentences, formatted lists and tokens.",
+      "Add linguistic structure through normalization, part-of-speech tagging, chunking and dependency parsing.",
+      "Find clinical mentions with dictionary lookup and drug-mention annotation.",
+      "Determine context, negation, uncertainty and subject for each mention.",
+      "Emit entities with text spans, ontology codes and contextual attributes."
+    ],
+    "whyItMatters": "It makes information buried in clinical notes available to clinical decision support and research systems. Explicit context and negation reduce the risk of treating a ruled-out symptom or a relative's diagnosis as a current fact about the patient.",
+    "misconceptions": [
+      "It is not an electronic health record; it extracts information from EHR text.",
+      "It is not just keyword matching; it also analyzes language, context and negation.",
+      "It does not treat every mention as a current patient condition."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "note",
+          "label": "Clinical note",
+          "note": "Unstructured EHR text enters the pipeline."
+        },
+        {
+          "id": "text-structure",
+          "label": "Text structure",
+          "note": "Sections, sentences, lists and tokens are identified."
+        },
+        {
+          "id": "language",
+          "label": "Linguistic analysis",
+          "note": "Adds parts of speech, chunks and dependencies."
+        },
+        {
+          "id": "entities",
+          "label": "Entity detection",
+          "note": "Dictionary and drug annotators find clinical mentions."
+        },
+        {
+          "id": "context",
+          "label": "Context analysis",
+          "note": "Assigns negation, uncertainty, subject and context."
+        },
+        {
+          "id": "annotations",
+          "label": "Structured annotations",
+          "note": "Entities carry spans, ontology codes and attributes."
+        },
+        {
+          "id": "downstream",
+          "label": "Clinical applications",
+          "note": "Annotations support research and decision support."
+        }
+      ],
+      "edges": [
+        {
+          "from": "note",
+          "to": "text-structure",
+          "label": "raw text"
+        },
+        {
+          "from": "text-structure",
+          "to": "language",
+          "label": "tokens"
+        },
+        {
+          "from": "language",
+          "to": "entities",
+          "label": "annotations"
+        },
+        {
+          "from": "entities",
+          "to": "context",
+          "label": "mentions"
+        },
+        {
+          "from": "context",
+          "to": "annotations",
+          "label": "attributes"
+        },
+        {
+          "from": "annotations",
+          "to": "downstream",
+          "label": "structured data"
+        }
+      ],
+      "caption": "cTAKES progressively converts a clinical note into contextualized, structured entity annotations."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Apache cTAKES",
+        "url": "https://en.wikipedia.org/wiki/Apache_cTAKES"
+      }
+    ]
+  },
   "related": [
     "amazon-lex",
     "amebis",

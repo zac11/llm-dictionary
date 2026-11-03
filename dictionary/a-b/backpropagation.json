@@ -2,13 +2,136 @@
   "term": "Backpropagation",
   "letter": "B",
   "category": "Training",
-  "type": "concept",
+  "type": "algorithm",
   "aka": [
     "Backprop"
   ],
   "definition": "The algorithm that computes how much each weight contributed to the error by applying the chain rule backwards through the network.",
   "details": "Backpropagation propagates the gradient of the loss from the output layer back to the input layer, letting gradient descent update every weight efficiently. It made training multilayer neural networks practical and is used, in one form or another, by virtually every deep-learning optimizer today.",
-  "story": "Imagine teaching a friend to shoot a basketball. They miss, and you walk them backwards through the shot — elbow, wrist, release — to find what needs fixing. It is the same loop you use to learn anything: try, miss, correct, try again. Underneath all the magic is a patient process of small improvements. It is learning from every miss instead of repeating the same mistake. That steady, miss-by-miss improvement is Backpropagation.",
+  "explainer": {
+    "lead": "Backpropagation is the engine that makes deep neural networks trainable. Without it, adjusting millions of weights in a many-layered network would be computationally infeasible; with it, the process becomes orderly and efficient.",
+    "tiers": {
+      "eli5": "Imagine you're trying to tune a giant pipe organ so it plays the right song. You hear the final note is wrong, so you work backward: this wrong note came from these pipes, which were fed by those pipes, and so on. Backpropagation does the same thing in a neural network — it traces the error from the output all the way back to every knob and weight, so each one knows exactly how to adjust.",
+      "practitioner": "You don't call backpropagation directly; frameworks like PyTorch and TensorFlow build it into their autograd engines. When you call `loss.backward()`, the library traverses the computation graph in reverse, applying the chain rule to populate `.grad` attributes on every parameter. Watch for vanishing gradients in deep sigmoid networks (mitigated by ReLU, layer normalization, or skip connections) and exploding gradients in recurrent architectures (clip gradients or use LSTM/GRU gates).",
+      "paperLevel": "Backpropagation efficiently computes the gradient ∂C/∂w^l_jk for all weights in an L-layer network by applying reverse-mode automatic differentiation. It introduces error terms δ^l = ∂C/∂z^l (where z^l = W^l a^{l-1} + b^l) and propagates them backward via δ^l = ((W^{l+1})^T δ^{l+1}) ⊙ f'(z^l). The weight gradients follow as ∂C/∂w^l_jk = a^{l-1}_k δ^l_j. The method has multiple independent discoveries; it was popularized for neural networks by Rumelhart, Hinton, and Williams (1986), though Werbos (1974) had described the technique earlier."
+    },
+    "example": "Consider a tiny network with one hidden layer: input x = [2.0], target y = 1.0, weights w1 = 0.5, w2 = 0.3, ReLU activation, and squared error loss. Forward pass: hidden = ReLU(2.0 × 0.5) = 1.0; output = 1.0 × 0.3 = 0.3; loss = (1.0 − 0.3)² = 0.49. Backward: ∂C/∂output = −2(1.0 − 0.3) = −1.4. For w2: ∂C/∂w2 = ∂C/∂output × hidden = −1.4 × 1.0 = −1.4. For hidden layer: error = ∂C/∂output × w2 = −1.4 × 0.3 = −0.42; since ReLU'(1.0) = 1, this passes through. For w1: ∂C/∂w1 = error × x = −0.42 × 2.0 = −0.84. With learning rate 0.1, new w2 = 0.3 − 0.1(−1.4) = 0.44, new w1 = 0.5 − 0.1(−0.84) = 0.584. A second forward pass gives output 0.584, loss 0.173 — improved.",
+    "usedIn": [
+      {
+        "name": "PyTorch autograd",
+        "detail": "Every `backward()` call triggers reverse-mode differentiation through the dynamic computation graph.",
+        "url": ""
+      },
+      {
+        "name": "TensorFlow/Keras",
+        "detail": "GradientTape watches operations and computes gradients via backprop for optimizer.apply_gradients().",
+        "url": ""
+      },
+      {
+        "name": "Large language model pretraining",
+        "detail": "GPT, LLaMA, and similar models use backpropagation through transformer layers to update billions of parameters.",
+        "url": ""
+      },
+      {
+        "name": "Convolutional neural networks",
+        "detail": "Backprop through conv layers computes gradients with respect to filters and feature maps for image recognition.",
+        "url": ""
+      }
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input x",
+          "note": "Training example fed into network"
+        },
+        {
+          "id": "forward",
+          "label": "Forward pass",
+          "note": "Compute activations layer by layer, store for reuse"
+        },
+        {
+          "id": "loss",
+          "label": "Loss C",
+          "note": "Compare prediction to target y"
+        },
+        {
+          "id": "output-grad",
+          "label": "Output gradient",
+          "note": "Initial error term δ^L from ∂C/∂a^L"
+        },
+        {
+          "id": "backward",
+          "label": "Backward pass",
+          "note": "Propagate δ^l backward using chain rule"
+        },
+        {
+          "id": "grad-weights",
+          "label": "Weight gradients",
+          "note": "Compute ∂C/∂w^l for all weights"
+        },
+        {
+          "id": "optimizer",
+          "label": "Optimizer",
+          "note": "SGD, Adam, etc. apply updates"
+        },
+        {
+          "id": "updated",
+          "label": "Updated weights",
+          "note": "Network ready for next iteration"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "forward",
+          "label": "feeds"
+        },
+        {
+          "from": "forward",
+          "to": "loss",
+          "label": "produces"
+        },
+        {
+          "from": "loss",
+          "to": "output-grad",
+          "label": "triggers"
+        },
+        {
+          "from": "output-grad",
+          "to": "backward",
+          "label": "starts"
+        },
+        {
+          "from": "backward",
+          "to": "grad-weights",
+          "label": "yields"
+        },
+        {
+          "from": "grad-weights",
+          "to": "optimizer",
+          "label": "passed to"
+        },
+        {
+          "from": "optimizer",
+          "to": "updated",
+          "label": "produces"
+        },
+        {
+          "from": "updated",
+          "to": "forward",
+          "label": "used in next"
+        }
+      ],
+      "caption": "The backpropagation cycle: forward computation, loss evaluation, backward gradient propagation, and weight update by an optimizer."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Backpropagation",
+        "url": "https://en.wikipedia.org/wiki/Backpropagation"
+      }
+    ]
+  },
   "related": [
     "active-learning",
     "batch-size",

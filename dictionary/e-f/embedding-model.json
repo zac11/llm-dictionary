@@ -5,7 +5,102 @@
   "type": "concept",
   "definition": "A model specifically trained to convert text (or other data) into dense vector representations optimized for tasks like similarity search or clustering.",
   "details": "Embedding models are a distinct category from generative LLMs, optimized for producing representations useful for downstream retrieval and comparison tasks rather than for generating fluent text.",
-  "story": "Picture an architect laying out a building where every room has to know which other rooms matter to it. The layout decides what the machine can even attempt, before it learns a single thing. It is the blueprint that makes everything else possible. It is the difference between a row of isolated cubicles and one big room where everyone can hear each other. That blueprint is Embedding Model.",
+  "explainer": {
+    "lead": "An embedding model turns text or other data into a list of numbers that captures patterns useful for comparison. This lets computers find similar items or group them together without the model having to write a response.",
+    "tiers": {
+      "eli5": "Think of it like giving every book a set of coordinates on a map. Books about similar things end up near each other, so you can find a related book by looking nearby instead of reading every title. An embedding model makes these maps for things like sentences and documents.",
+      "practitioner": "Use the same embedding model to encode items such as queries and documents, then compare their vectors for retrieval, similarity search, or clustering. Unlike a generative LLM, its output is the representation itself rather than fluent text. A key pitfall is assuming the vectors will serve every downstream task equally well; their usefulness depends on how the model was trained and optimized.",
+      "paperLevel": "An embedding model learns a mapping f_theta: X -> R^d from input data to dense vectors, with representations optimized for downstream operations such as similarity comparison or clustering. Its objective is representational utility rather than generative text fluency. Performance is therefore task-dependent: proximity in the vector space is useful only insofar as it reflects the relationships required by the downstream task."
+    },
+    "example": "A help center encodes the query \"I forgot my password\" and its articles with one embedding model. An article titled \"Reset your account password\" can then rank highly because its vector is similar to the query vector, even though the wording differs.",
+    "usedIn": [
+      {
+        "name": "Semantic search",
+        "detail": "Retrieves documents whose vectors are similar to a query vector.",
+        "url": ""
+      },
+      {
+        "name": "Document clustering",
+        "detail": "Groups documents according to patterns captured by their vectors.",
+        "url": ""
+      },
+      {
+        "name": "Duplicate detection",
+        "detail": "Compares representations to identify closely matching items.",
+        "url": ""
+      },
+      {
+        "name": "Recommendation systems",
+        "detail": "Uses vector similarity to find items related to a user's current item or query.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of representing an input mainly by its exact words, an embedding model places it in a numerical space where useful relationships can be measured. Similarity and grouping then become geometric operations on vectors.",
+    "howItWorks": [
+      "Provide text or another supported kind of data as input.",
+      "The model converts it into a dense vector of numbers.",
+      "Encode the other items with the same model.",
+      "Compare vectors to retrieve similar items or form clusters."
+    ],
+    "whyItMatters": "Embedding models make retrieval and comparison practical across large collections of data. They supply the representations used for similarity search and clustering, complementing generative models rather than replacing them.",
+    "misconceptions": [
+      "An embedding model is not necessarily a generative LLM.",
+      "Its main output is a vector, not a fluent answer.",
+      "Vector similarity does not guarantee suitability for every task."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "inputs",
+          "label": "Input data",
+          "note": "Text or other supported data."
+        },
+        {
+          "id": "model",
+          "label": "Embedding model",
+          "note": "Learns task-useful representations."
+        },
+        {
+          "id": "vectors",
+          "label": "Dense vectors",
+          "note": "Numerical representations of inputs."
+        },
+        {
+          "id": "compare",
+          "label": "Compare vectors",
+          "note": "Measures relationships between items."
+        },
+        {
+          "id": "tasks",
+          "label": "Search or clustering",
+          "note": "Retrieves similar items or forms groups."
+        }
+      ],
+      "edges": [
+        {
+          "from": "inputs",
+          "to": "model",
+          "label": "encode"
+        },
+        {
+          "from": "model",
+          "to": "vectors",
+          "label": "outputs"
+        },
+        {
+          "from": "vectors",
+          "to": "compare",
+          "label": ""
+        },
+        {
+          "from": "compare",
+          "to": "tasks",
+          "label": ""
+        }
+      ],
+      "caption": "An embedding model converts inputs into vectors that downstream systems compare for retrieval and grouping."
+    }
+  },
   "related": [
     "embedding",
     "decoder-only-model",

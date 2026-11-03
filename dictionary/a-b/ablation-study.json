@@ -5,7 +5,118 @@
   "type": "concept",
   "definition": "An experiment that systematically removes or modifies components of a model or system to measure each component's contribution to overall performance.",
   "details": "Ablation studies are a standard scientific practice in ML research papers, helping researchers and readers understand which architectural choices or training techniques actually matter for a reported result.",
-  "story": "Imagine a driving test that every new model has to pass before it is allowed on the road. It is the exam that separates “it sounds good” from “it actually is good”. A fair scoreboard keeps everyone honest. It is the exam that keeps everyone honest. And that, done honestly, is Ablation Study.",
+  "explainer": {
+    "lead": "An ablation study is how researchers figure out which parts of their AI system actually matter. Instead of trusting that every bell and whistle helps, they deliberately break things to see what breaks with them.",
+    "tiers": {
+      "eli5": "Imagine you made a really good sandwich, and you want to know which ingredient makes it tasty. You make the sandwich again without lettuce, then without tomato, then without cheese, and taste each one. An ablation study does the same thing with AI: remove one piece at a time to see which pieces actually matter for the final result.",
+      "practitioner": "In practice, you train your full model to convergence, then re-train or evaluate with specific components removed—attention heads, regularization terms, data augmentation pipelines, or architectural blocks. Common settings include freezing subsets of layers, zeroing out specific modules, or training ablated variants from scratch to control for optimization effects. Pitfalls include only ablating at inference time (which misses training dynamics), running insufficient seeds, or cherry-picking which ablations to report.",
+      "paperLevel": "Formally, given a model M with components {c₁, ..., cₙ} and performance metric P, an ablation study computes P(M) and P(M \\ cᵢ) for each cᵢ, estimating the marginal contribution Δᵢ = P(M) − P(M \\ cᵢ). The originating work is not named in the sources. Known limits include interaction effects: components may only work in combination, and sequential ablation (removing cᵢ then cⱼ from M \\ cᵢ) can obscure synergies versus independent contributions."
+    },
+    "example": "A team reports 94% accuracy on image classification using a model with residual connections, batch normalization, and a custom attention module. They ablate each: without residual connections accuracy drops to 71%, without batch normalization to 89%, and without the custom attention to 93.5%. The study reveals that residual connections are critical, the custom attention is nearly redundant, and batch normalization provides moderate benefit.",
+    "usedIn": [
+      {
+        "name": "Transformer architecture research",
+        "detail": "Used to isolate the impact of positional encodings, layer normalization, or multi-head attention on translation quality",
+        "url": ""
+      },
+      {
+        "name": "Computer vision",
+        "detail": "Evaluates whether data augmentation, pre-training, or specific convolutional blocks drive accuracy gains",
+        "url": ""
+      },
+      {
+        "name": "Reinforcement learning",
+        "detail": "Tests which reward shaping terms or auxiliary losses stabilize training",
+        "url": ""
+      }
+    ],
+    "intuition": "You can't trust a machine you don't understand. Ablation studies force understanding by systematic destruction: if removing a component barely hurts performance, that component was either unnecessary or replaceable.",
+    "howItWorks": [
+      "Establish a baseline by training and evaluating the complete system",
+      "Select one component to remove or modify, keeping all others identical",
+      "Re-train the modified system from scratch or evaluate the change, matching computational budget where possible",
+      "Compare the new result against the baseline to quantify the component's contribution",
+      "Repeat for each component, and consider combinations when interactions are suspected"
+    ],
+    "whyItMatters": "Without ablation studies, the field accumulates architectural complexity without knowing what works. They prevent cargo-cult science where researchers copy full configurations without understanding which choices drive results.",
+    "misconceptions": [
+      "Ablation means just turning off a component at test time; proper ablation typically requires retraining to account for how other components adapted during training",
+      "A component that shows small individual contribution is always useless; it may be essential only when combined with another component",
+      "One ablation study on one dataset generalizes to all settings; results are often task-dependent"
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "full-model",
+          "label": "Full model",
+          "note": "Baseline system with all components"
+        },
+        {
+          "id": "train-full",
+          "label": "Train & evaluate",
+          "note": "Record baseline performance"
+        },
+        {
+          "id": "remove-a",
+          "label": "Remove component A",
+          "note": "System variant missing one piece"
+        },
+        {
+          "id": "remove-b",
+          "label": "Remove component B",
+          "note": "Another variant for comparison"
+        },
+        {
+          "id": "train-ablated",
+          "label": "Train & evaluate",
+          "note": "Match conditions to baseline"
+        },
+        {
+          "id": "compare",
+          "label": "Compare results",
+          "note": "Quantify each component's contribution"
+        }
+      ],
+      "edges": [
+        {
+          "from": "full-model",
+          "to": "train-full",
+          "label": ""
+        },
+        {
+          "from": "train-full",
+          "to": "compare",
+          "label": "baseline score"
+        },
+        {
+          "from": "full-model",
+          "to": "remove-a",
+          "label": ""
+        },
+        {
+          "from": "full-model",
+          "to": "remove-b",
+          "label": ""
+        },
+        {
+          "from": "remove-a",
+          "to": "train-ablated",
+          "label": ""
+        },
+        {
+          "from": "remove-b",
+          "to": "train-ablated",
+          "label": ""
+        },
+        {
+          "from": "train-ablated",
+          "to": "compare",
+          "label": "ablated scores"
+        }
+      ],
+      "caption": "The ablation study workflow: train a complete baseline, create variants each missing one component, re-train under matched conditions, and compare performances to isolate contributions."
+    }
+  },
   "related": [
     "a-b-testing",
     "baseline-model",

@@ -5,7 +5,103 @@
   "type": "concept",
   "definition": "Autoassociative memory, also known as auto-association memory or an autoassociation network, is any type of memory that is able to retrieve a piece of data from only a tiny sample of itself.",
   "details": "They are very effective in de-noising or removing interference from the input and can be used to determine whether the given input is “known” or “unknown”. In artificial neural networks, examples include variational autoencoder, denoising autoencoder, Hopfield network. In reference to computer memory, the idea of associative memory is also referred to as Content-addressable memory (CAM). The net is said to recognize a “known” vector if the net produces a pattern of activation on the output units which is the same as one of the vectors stored in it.",
-  "story": "Think of an orchestra warming up: no single instrument carries the piece, but together they make the sound. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. The layout decides what the machine can even attempt, before it learns a single thing. The shape of the machine is half the idea. And that shape of the machine — Autoassociative memory — is what makes everything else possible.",
+  "explainer": {
+    "lead": "Autoassociative memory can rebuild a stored pattern from only a small or noisy piece of it. This makes it useful for cleaning up inputs and checking whether an input matches something already known.",
+    "tiers": {
+      "eli5": "Imagine seeing just one corner of a familiar picture and being able to remember the whole picture. Autoassociative memory does something similar with data: a small or messy clue can bring back the complete stored pattern. It can also tell whether the result matches something it knows.",
+      "practitioner": "Use an autoassociative network when a partial or noisy input should reconstruct a learned pattern, or when matching the output against stored vectors can support known-versus-unknown detection. Neural-network examples include denoising autoencoders, variational autoencoders, and Hopfield networks. A “known” result requires the output activation pattern to match a stored vector.",
+      "paperLevel": "Given stored vectors, an autoassociative memory maps a partial or degraded cue to an output pattern corresponding to a stored vector. A vector is recognized as known when the output-unit activation pattern equals one of the stored vectors. The same reconstruction behavior can suppress noise or interference in the input."
+    },
+    "example": "If a network has stored a particular vector and receives a noisy fragment of it, it can output the complete stored vector. That output removes the interference; if it matches a stored vector, the input is recognized as known.",
+    "usedIn": [
+      {
+        "name": "Denoising autoencoders",
+        "detail": "Reconstruct cleaner data from an input containing noise or interference.",
+        "url": ""
+      },
+      {
+        "name": "Hopfield networks",
+        "detail": "Retrieve a stored activation pattern from an incomplete sample of that pattern.",
+        "url": ""
+      },
+      {
+        "name": "Variational autoencoders",
+        "detail": "Serve as a neural-network example of an autoassociation network.",
+        "url": ""
+      },
+      {
+        "name": "Content-addressable memory",
+        "detail": "Applies the related idea of associative memory to computer memory.",
+        "url": ""
+      }
+    ],
+    "intuition": "A familiar pattern can act as its own clue: instead of needing the whole item, the memory uses a fragment to recover the complete version.",
+    "howItWorks": [
+      "Store one or more data patterns as vectors.",
+      "Present a tiny, incomplete, or noisy sample of a pattern.",
+      "Let the memory or network produce an output activation pattern.",
+      "Use the output as the retrieved, cleaned-up pattern.",
+      "Compare it with the stored vectors to decide whether the input is known."
+    ],
+    "whyItMatters": "It combines pattern completion, noise removal, and familiarity checking, so useful information can be recovered even when the input is incomplete or corrupted.",
+    "misconceptions": [
+      "It does not need the complete original input; retrieval can begin with only a small sample.",
+      "It is not only a denoising method: it can also classify an input as known or unknown through output matching.",
+      "Content-addressable memory is the computer-memory use of the broader associative-memory idea, not a neural-network architecture."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "cue",
+          "label": "Partial input",
+          "note": "A tiny or noisy sample"
+        },
+        {
+          "id": "stored",
+          "label": "Stored vectors",
+          "note": "Patterns held in memory"
+        },
+        {
+          "id": "network",
+          "label": "Autoassociation network",
+          "note": "Rebuilds a familiar pattern"
+        },
+        {
+          "id": "output",
+          "label": "Retrieved pattern",
+          "note": "Completed and denoised output"
+        },
+        {
+          "id": "match",
+          "label": "Match check",
+          "note": "Tests known or unknown"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cue",
+          "to": "network",
+          "label": "input cue"
+        },
+        {
+          "from": "stored",
+          "to": "network",
+          "label": "patterns"
+        },
+        {
+          "from": "network",
+          "to": "output",
+          "label": "retrieves"
+        },
+        {
+          "from": "output",
+          "to": "match",
+          "label": "compare"
+        }
+      ],
+      "caption": "A partial or noisy cue is reconstructed, then compared with stored vectors to test whether it is known."
+    }
+  },
   "related": [
     "bidirectional-associative-memory",
     "time-aware-long-short-term-memory",

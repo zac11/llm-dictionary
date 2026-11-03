@@ -5,7 +5,97 @@
   "type": "concept",
   "definition": "Belief revision (also called belief change) is the process of changing beliefs to take into account a new piece of information.",
   "details": "The logical formalization of belief revision is researched in philosophy, in databases, and in artificial intelligence for the design of rational agents. What makes belief revision non-trivial is that several different ways for performing this operation may be possible. For example, if the current knowledge includes the three facts \" A {\\displaystyle A} is true\", \" B {\\displaystyle B} is true\" and \"if A {\\displaystyle A} and B {\\displaystyle B} are true then C {\\displaystyle C} is true\", the introduction of the new information \" C {\\displaystyle C} is false\" can be done preserving consistency only by removing at least one of the three facts. In this case, there are at least three different ways for performing revision. In general, there may be several different ways for changing knowledge.",
-  "story": "Picture a child pointing at pictures in a book — cat, car, cloud — learning to see by seeing a thousand examples. It turns a picture into an understanding: this is a cat, that is a stop sign. What your eyes do without thinking, the machine does one careful layer at a time. It is eyes made of arithmetic — pixels become edges, edges become shapes, shapes become meaning. That pixel-to-meaning climb is Belief revision.",
+  "explainer": {
+    "lead": "Belief revision is about updating what you accept as true when new information arrives. It becomes difficult when the new information conflicts with existing beliefs, because keeping consistency may require giving something up, and there may be several reasonable ways to do that.",
+    "tiers": {
+      "eli5": "Imagine your notes say that your red pen and blue pen are both in your desk, so you have two pens there. If you learn that you do not have two pens there, your notes disagree. You must change at least one old note, and there may be more than one way to fix them.",
+      "practitioner": "In logical work on rational agents or databases, beliefs can be represented as sentences and revision takes an existing collection plus new information. If simply adding the information creates an inconsistency, some earlier content must be withdrawn or changed. A key pitfall is assuming consistency alone determines a unique revised state: several revisions may be possible.",
+      "paperLevel": "Given a belief set K and new information phi, revision produces a changed belief set K*phi that takes phi into account. When K together with phi is inconsistent, preserving consistency can require removing or changing elements of K. The operation is not generally unique, since different removals can restore consistency."
+    },
+    "example": "Suppose the current facts are \"A is true\", \"B is true\", and \"if A and B are true, then C is true\". New information says \"C is false\". Consistency requires removing at least one of the three original facts, giving at least three possible revisions: drop A, drop B, or drop the conditional fact.",
+    "usedIn": [
+      {
+        "name": "Rational agent design",
+        "detail": "Artificial intelligence research uses logical formalizations of belief change when designing rational agents.",
+        "url": ""
+      },
+      {
+        "name": "Databases",
+        "detail": "Database research studies the logical formalization of changing knowledge in response to new information.",
+        "url": ""
+      },
+      {
+        "name": "Philosophy",
+        "detail": "Philosophy investigates how beliefs can be changed logically when new information conflicts with them.",
+        "url": ""
+      }
+    ],
+    "intuition": "New information does not always fit neatly beside what you already believe. When it creates a conflict, revision means deciding which old beliefs to change or abandon so the result can remain consistent.",
+    "howItWorks": [
+      "Start with a current collection of beliefs.",
+      "Introduce the new piece of information.",
+      "Check whether the old beliefs and new information can consistently coexist.",
+      "If they conflict, remove or change enough old content to restore consistency.",
+      "Recognize that different removals may produce different valid revisions."
+    ],
+    "whyItMatters": "It makes explicit why incorporating new information can involve more than simple addition. The possibility of multiple consistent outcomes is central to studying rational belief change.",
+    "misconceptions": [
+      "Belief revision is not always just adding a new statement while keeping every old belief.",
+      "Restoring consistency does not necessarily identify one unique revised belief set."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "beliefs",
+          "label": "Current beliefs",
+          "note": "The existing facts and rules."
+        },
+        {
+          "id": "information",
+          "label": "New information",
+          "note": "The incoming piece of information."
+        },
+        {
+          "id": "check",
+          "label": "Consistency check",
+          "note": "Tests whether old and new content conflict."
+        },
+        {
+          "id": "options",
+          "label": "Candidate revisions",
+          "note": "Different removals or changes may restore consistency."
+        },
+        {
+          "id": "result",
+          "label": "Revised beliefs",
+          "note": "A consistent result incorporating the new information."
+        }
+      ],
+      "edges": [
+        {
+          "from": "beliefs",
+          "to": "check",
+          "label": ""
+        },
+        {
+          "from": "information",
+          "to": "check",
+          "label": ""
+        },
+        {
+          "from": "check",
+          "to": "options",
+          "label": "if conflict"
+        },
+        {
+          "from": "options",
+          "to": "result",
+          "label": ""
+        }
+      ],
+      "caption": "When new information conflicts with current beliefs, several candidate changes can lead to a consistent revision."
+    }
+  },
   "related": [
     "linear-belief-function",
     "abductive-reasoning",

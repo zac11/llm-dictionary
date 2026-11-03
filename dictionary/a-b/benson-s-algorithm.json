@@ -5,7 +5,98 @@
   "type": "algorithm",
   "definition": "Benson's algorithm, named after Harold Benson, is a method for solving multi-objective linear programming problems and vector linear programs.",
   "details": "This works by finding the \"efficient extreme points in the outcome set\". The primary concept in Benson's algorithm is to evaluate the upper image of the vector optimization problem by cutting planes.",
-  "story": "Think of a historian sorting through boxes of letters, building a picture of an era one sentence at a time. Every machine is shaped by what it was shown, so someone has to choose that material with care. The examples a machine reads become the world it believes in. The words a model reads become the world it believes in. That care with the raw material is Benson's algorithm.",
+  "explainer": {
+    "lead": "Benson’s algorithm solves problems where several linear goals must be considered at once, rather than combined into a single score. It finds efficient extreme points in the set of possible outcomes, helping reveal the available trade-offs.",
+    "tiers": {
+      "eli5": "Imagine choosing a delivery plan that should be both cheap and fast. Some plans are clearly worse because another plan is better in both ways, so you can set those aside. Benson’s algorithm is a way to explore the possible results and find the important best-trade-off points when the choices and goals follow straight-line rules.",
+      "practitioner": "Use it for multi-objective linear programs or vector linear programs, with the objectives and constraints expressed in linear form. The computation evaluates the upper image of the vector optimization problem using cutting planes and seeks efficient extreme points in the outcome set. Check that the model is genuinely linear, and interpret the result as a description of efficient outcomes rather than automatically as one preferred decision.",
+      "paperLevel": "Benson’s algorithm, named after Harold Benson, addresses multi-objective linear programming and vector linear programming. Its central object is the upper image of the vector optimization problem, which it evaluates using cutting planes. The procedure finds efficient extreme points in the outcome set."
+    },
+    "example": "A planner chooses production quantities subject to linear capacity constraints while considering two linear objectives: cost and delivery time. Instead of first merging cost and time into one score, Benson’s algorithm works with the outcome set, evaluates its upper image using cutting planes, and identifies efficient extreme points representing the available trade-offs.",
+    "usedIn": [
+      {
+        "name": "Multi-objective linear programming",
+        "detail": "Solves linear decision problems with several objectives considered together.",
+        "url": ""
+      },
+      {
+        "name": "Vector linear programming",
+        "detail": "Finds efficient extreme points in the outcome set of a vector-valued linear problem.",
+        "url": ""
+      }
+    ],
+    "goal": "Evaluate the upper image of a vector linear optimization problem with cutting planes and find efficient extreme points in its outcome set.",
+    "inputs": [
+      "A multi-objective linear program or vector linear program",
+      "Its linear objectives and constraints"
+    ],
+    "outputs": [
+      "Efficient extreme points in the outcome set",
+      "An evaluation of the problem’s upper image"
+    ],
+    "steps": [
+      "Formulate the linear objectives and constraints.",
+      "Consider the resulting outcome set and its upper image.",
+      "Use cutting planes to evaluate the upper image.",
+      "Identify efficient extreme points in the outcome set."
+    ],
+    "tradeoffs": [
+      "It applies to linear multi-objective and vector linear problems, not general nonlinear models.",
+      "Finding efficient extreme points describes trade-offs but does not by itself choose one preferred solution."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "model",
+          "label": "Linear program",
+          "note": "Objectives and constraints"
+        },
+        {
+          "id": "outcomes",
+          "label": "Outcome set",
+          "note": "Possible objective vectors"
+        },
+        {
+          "id": "upper",
+          "label": "Upper image",
+          "note": "Object evaluated by the algorithm"
+        },
+        {
+          "id": "cuts",
+          "label": "Cutting planes",
+          "note": "Used to evaluate the image"
+        },
+        {
+          "id": "points",
+          "label": "Efficient extremes",
+          "note": "Efficient extreme points found"
+        }
+      ],
+      "edges": [
+        {
+          "from": "model",
+          "to": "outcomes",
+          "label": "defines"
+        },
+        {
+          "from": "outcomes",
+          "to": "upper",
+          "label": "forms"
+        },
+        {
+          "from": "cuts",
+          "to": "upper",
+          "label": "evaluates"
+        },
+        {
+          "from": "upper",
+          "to": "points",
+          "label": "yields"
+        }
+      ],
+      "caption": "Benson’s algorithm moves from a vector linear program to efficient extreme points through the upper image and cutting planes."
+    }
+  },
   "related": [
     "actor-critic-algorithm",
     "algorithm-imed",

@@ -5,7 +5,82 @@
   "type": "concept",
   "definition": "Biclustering, block clustering, co-clustering or two-mode clustering is a data mining technique which allows simultaneous clustering of the rows and columns of a matrix.",
   "details": "The term was first introduced by Boris Mirkin to name a technique introduced many years earlier, in 1972, by John A. Hartigan. Given a set of m {\\displaystyle m} samples represented by an n {\\displaystyle n} -dimensional feature vector, the entire dataset can be represented as m {\\displaystyle m} rows in n {\\displaystyle n} columns (i.e., an m × n {\\displaystyle m\\times n} matrix). The Biclustering algorithm generates Biclusters. A Bicluster is a subset of rows which exhibit similar behavior across a subset of columns, or vice versa.",
-  "story": "Imagine a chef tasting every ingredient before it goes into the pot, deciding what belongs and what would ruin the broth. Better ingredients make a better meal, and the same is true here. Every machine is shaped by what it was shown, so someone has to choose that material with care. It is the raw material; the model is only ever as good as what it was fed. That care with the raw material is Biclustering.",
+  "explainer": {
+    "lead": "Biclustering looks for groups that only make sense when you consider part of a table's rows and part of its columns together. This can reveal local patterns that clustering all rows or all columns separately would miss.",
+    "tiers": {
+      "eli5": "Imagine a table showing how much several people like different games. A small group might love just the puzzle games, while another group prefers just the racing games. Biclustering finds both the people and the games that belong in each little pattern.",
+      "practitioner": "Apply biclustering when an m × n data matrix may contain patterns confined to subsets of both samples and features. Each result pairs selected rows with selected columns, so interpreting it requires checking that their shared behavior is meaningful rather than treating it as a partition of the whole dataset.",
+      "paperLevel": "For m samples represented by n features, arrange the data as an m × n matrix. A bicluster consists of a subset of rows exhibiting similar behavior across a subset of columns, or vice versa. John A. Hartigan introduced the technique in 1972; Boris Mirkin later introduced the term biclustering."
+    },
+    "example": "Suppose a matrix has 100 samples as rows and 50 measurements as columns. If 12 samples rise and fall together across just 8 measurements, those 12 rows and 8 columns form a bicluster, even if the samples look unrelated across the other 42 measurements.",
+    "usedIn": [
+      {
+        "name": "Data mining",
+        "detail": "Finds local row-and-column patterns within matrix-shaped datasets.",
+        "url": ""
+      }
+    ],
+    "intuition": "Ordinary clustering asks which rows are similar overall; biclustering also asks which columns matter for that similarity. It therefore looks for patches of related behavior inside a matrix rather than one grouping that applies everywhere.",
+    "howItWorks": [
+      "Arrange the samples and features as an m × n matrix.",
+      "Select a subset of rows and a subset of columns.",
+      "Check whether those rows behave similarly across those columns.",
+      "Keep matching row-column subsets as biclusters."
+    ],
+    "whyItMatters": "A pattern can be strong within a small part of a dataset yet disappear when every feature or sample is considered. Biclustering preserves that local structure by identifying the relevant rows and columns together.",
+    "misconceptions": [
+      "It is not simply clustering rows and then separately clustering columns.",
+      "A bicluster need not include every row or every column.",
+      "Similarity may apply only to the selected columns, not across the whole dataset."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "matrix",
+          "label": "Data matrix",
+          "note": "Samples in rows and features in columns"
+        },
+        {
+          "id": "rows",
+          "label": "Row subset",
+          "note": "Samples considered together"
+        },
+        {
+          "id": "columns",
+          "label": "Column subset",
+          "note": "Features relevant to the pattern"
+        },
+        {
+          "id": "bicluster",
+          "label": "Bicluster",
+          "note": "Rows with similar behavior across selected columns"
+        }
+      ],
+      "edges": [
+        {
+          "from": "matrix",
+          "to": "rows",
+          "label": "select"
+        },
+        {
+          "from": "matrix",
+          "to": "columns",
+          "label": "select"
+        },
+        {
+          "from": "rows",
+          "to": "bicluster",
+          "label": "combine"
+        },
+        {
+          "from": "columns",
+          "to": "bicluster",
+          "label": "combine"
+        }
+      ],
+      "caption": "Biclustering jointly selects rows and columns to expose a local pattern in a matrix."
+    }
+  },
   "related": [
     "clustering",
     "a-r-d-prasad",

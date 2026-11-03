@@ -5,7 +5,122 @@
   "type": "concept",
   "definition": "A retrieval-augmented generation pattern where an agent actively decides when, what, and how to retrieve information, potentially issuing multiple retrieval queries and reasoning steps, rather than performing a single fixed retrieval step.",
   "details": "Agentic RAG extends standard RAG by giving the model more autonomy over the retrieval process itself — deciding to search again, refine a query, or consult multiple sources — better suited to complex, multi-hop information needs than a single retrieve-then-generate pass.",
-  "story": "Imagine handing a to-do list to a very clever intern who refuses to guess: before each step, they look around, check the result, and adjust. It is the difference between a search engine and a helper who actually finishes the task. The machine stops just answering one question and starts getting a job done, step by step, checking its work along the way. It is a loop of look, act, and learn — the same way you cook from a recipe you have never tried: add, taste, correct. And that habit of checking, acting, then checking again is Agentic RAG.",
+  "explainer": {
+    "lead": "Agentic RAG is a smarter way for AI to look things up. Instead of fetching information once and hoping it's enough, the system keeps searching, refining, and reasoning until it finds what it needs — more like a detective than a librarian.",
+    "tiers": {
+      "eli5": "Imagine you're writing a report and you can only ask one question to a search engine. That's regular RAG. Agentic RAG is like being allowed to keep asking follow-up questions, check different books, and change your search words until you really understand the topic. It keeps going because it decides for itself when it knows enough.",
+      "practitioner": "Implement by wrapping a retriever with a looped agent that can call search tools multiple times, typically using ReAct or similar agent frameworks. Common patterns include query decomposition, iterative retrieval with reflection, and dynamic source selection. Pitfalls: latency grows with each loop, cost scales with API calls, and poorly designed stopping conditions lead to runaway retrieval or premature termination. Monitor token usage and set hard limits on iterations.",
+      "paperLevel": "Agentic RAG formalizes retrieval as a sequential decision process where at each timestep t, the agent selects an action a_t ∈ {retrieve(q), reason(), generate(), stop} based on current belief state b_t, rather than the fixed pipeline retrieve(q₀) → generate. The originating work is not named in available sources. Known limits include lack of theoretical guarantees on convergence and sensitivity to the design of reward or stopping heuristics."
+    },
+    "example": "A user asks: \"What regulatory changes in 2023 affected EU AI startups' data practices, and which VCs adjusted their due diligence?\" The agent first retrieves EU AI Act provisions, notices it needs national implementations, searches Germany and France specifically, then pivots to retrieve VC firm blog posts and SEC filings, finally cross-referencing dates to answer with specific firms and policy clauses.",
+    "usedIn": [
+      {
+        "name": "Enterprise knowledge bases",
+        "detail": "Complex policy or legal queries requiring multi-document synthesis",
+        "url": ""
+      },
+      {
+        "name": "Scientific research assistants",
+        "detail": "Literature review across disconnected findings",
+        "url": ""
+      },
+      {
+        "name": "Customer support systems",
+        "detail": "Troubleshooting with iterative diagnostic questioning",
+        "url": ""
+      }
+    ],
+    "intuition": "A single search is often too blunt for hard questions. Agentic RAG treats retrieval as an ongoing conversation the system has with its knowledge base, not a one-time transaction.",
+    "howItWorks": [
+      "The user asks a complex question that probably needs several pieces of information.",
+      "The agent decides what to search for first, issues a query, and receives documents.",
+      "It reads the results and decides: answer now, search again with a refined query, or search somewhere else.",
+      "This loop continues until the agent judges it has enough to answer, then synthesizes a response."
+    ],
+    "whyItMatters": "Standard RAG fails when questions require connecting dots across multiple searches, judging relevance mid-process, or knowing what you don't know. Agentic RAG handles these by making retrieval itself intelligent.",
+    "misconceptions": [
+      "It is not just RAG with more documents fetched at once — the agent actively chooses new queries based on what it learned.",
+      "It does not guarantee better answers; poorly designed agents can chase irrelevant threads or loop indefinitely.",
+      "It is not always slower by a fixed amount; latency depends heavily on the stopping condition and query cost."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "user",
+          "label": "User query",
+          "note": "Complex, multi-part question"
+        },
+        {
+          "id": "agent",
+          "label": "Agent controller",
+          "note": "Decides next action: search, reason, or answer"
+        },
+        {
+          "id": "query-gen",
+          "label": "Query generator",
+          "note": "Produces or refines search queries"
+        },
+        {
+          "id": "retriever",
+          "label": "Retriever",
+          "note": "Fetches documents from index"
+        },
+        {
+          "id": "docs",
+          "label": "Retrieved docs",
+          "note": "Raw passages or summaries"
+        },
+        {
+          "id": "reasoner",
+          "label": "Reasoning module",
+          "note": "Evaluates sufficiency, extracts facts"
+        },
+        {
+          "id": "answer",
+          "label": "Final answer",
+          "note": "Synthesized response to user"
+        }
+      ],
+      "edges": [
+        {
+          "from": "user",
+          "to": "agent",
+          "label": "submits"
+        },
+        {
+          "from": "agent",
+          "to": "query-gen",
+          "label": "asks to search"
+        },
+        {
+          "from": "query-gen",
+          "to": "retriever",
+          "label": "sends query"
+        },
+        {
+          "from": "retriever",
+          "to": "docs",
+          "label": "returns"
+        },
+        {
+          "from": "docs",
+          "to": "reasoner",
+          "label": "feeds into"
+        },
+        {
+          "from": "reasoner",
+          "to": "agent",
+          "label": "reports status"
+        },
+        {
+          "from": "agent",
+          "to": "answer",
+          "label": "emits when done"
+        }
+      ],
+      "caption": "The agent sits in a loop, deciding whether to retrieve again or finish, unlike standard RAG's straight pipeline."
+    }
+  },
   "related": [
     "fine-grained-grounding",
     "graphrag",

@@ -5,7 +5,97 @@
   "type": "concept",
   "definition": "Branch and cut is a method of combinatorial optimization for solving integer linear programs (ILPs), that is, linear programming (LP) problems where some or all the unknowns are restricted to integer values.",
   "details": "Branch and cut involves running a branch and bound algorithm and using cutting planes to tighten the linear programming relaxations. Note that if cuts are only used to tighten the initial LP relaxation, the algorithm is called cut and branch.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. That steady, miss-by-miss improvement is Branch and cut.",
+  "explainer": {
+    "lead": "Branch and cut is a way to solve optimization problems whose answers must include whole numbers. It combines a systematic search over possible values with extra constraints that make the search easier to guide.",
+    "tiers": {
+      "eli5": "Imagine choosing whole numbers to get the best score under some rules. You can split the choices into smaller groups and rule out groups that cannot beat your best answer, while adding clues that make the rules clearer. Branch and cut uses both splitting and extra clues to find the answer.",
+      "practitioner": "Apply it to integer linear programs by running branch and bound while adding cutting planes to tighten LP relaxations. Keep the distinction between adding cuts during the search and using them only on the initial relaxation, which is called cut and branch.",
+      "paperLevel": "An ILP is a linear program in which some or all variables are constrained to integer values. Branch and cut combines branch and bound with cutting planes that tighten the LP relaxations; if cuts are used only for the initial LP relaxation, the method is called cut and branch."
+    },
+    "example": "Maximize x+y subject to 2x+2y≤3, with x and y nonnegative integers. The LP relaxation has optimum x=1.5, y=0 with value 1.5; branching into x≤1 and x≥2 rules out the second case, and the first gives the integer optimum x=1, y=0 with value 1, while cuts can tighten the relaxations encountered during this search.",
+    "usedIn": [
+      {
+        "name": "Integer linear programming",
+        "detail": "Solves linear optimization problems where some or all unknowns must take integer values.",
+        "url": ""
+      },
+      {
+        "name": "Combinatorial optimization",
+        "detail": "Provides a method for searching discrete choices by combining branching with tighter relaxations.",
+        "url": ""
+      }
+    ],
+    "intuition": "Relaxing an integer problem to an LP can produce fractional answers, but it gives a useful easier problem to analyze. Branch and cut narrows the possibilities by branching, while cutting planes sharpen those easier problems so poor regions can be recognized sooner.",
+    "howItWorks": [
+      "Start with an integer linear program and relax its integer restrictions to obtain an LP.",
+      "Run a branch and bound search, dividing fractional possibilities into smaller cases.",
+      "Add cutting planes to tighten the LP relaxations.",
+      "Continue searching the remaining cases to solve the integer problem."
+    ],
+    "whyItMatters": "It addresses integer linear programs by combining two complementary ideas: branch and bound organizes the search, and cutting planes improve the relaxations used within it.",
+    "misconceptions": [
+      "It is not just branch and bound: cutting planes are also used to tighten LP relaxations.",
+      "Using cuts only on the initial relaxation is called cut and branch, not branch and cut.",
+      "The LP relaxation is not the final problem: the original integer restrictions still have to be enforced."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "ilp",
+          "label": "Integer program",
+          "note": "Variables must take integer values."
+        },
+        {
+          "id": "relax",
+          "label": "LP relaxation",
+          "note": "Integer restrictions are relaxed."
+        },
+        {
+          "id": "cuts",
+          "label": "Cutting planes",
+          "note": "Extra cuts tighten the relaxation."
+        },
+        {
+          "id": "branch",
+          "label": "Branch and bound",
+          "note": "The search divides into smaller cases."
+        },
+        {
+          "id": "solution",
+          "label": "Integer solution",
+          "note": "The search solves the original ILP."
+        }
+      ],
+      "edges": [
+        {
+          "from": "ilp",
+          "to": "relax",
+          "label": "relax"
+        },
+        {
+          "from": "relax",
+          "to": "cuts",
+          "label": "tighten"
+        },
+        {
+          "from": "cuts",
+          "to": "branch",
+          "label": "guide search"
+        },
+        {
+          "from": "branch",
+          "to": "cuts",
+          "label": "new cases"
+        },
+        {
+          "from": "branch",
+          "to": "solution",
+          "label": "solve"
+        }
+      ],
+      "caption": "Branch and cut alternates tighter LP relaxations with a branch and bound search for the integer program."
+    }
+  },
   "related": [
     "branch-and-bound",
     "branch-and-price",

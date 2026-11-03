@@ -5,7 +5,92 @@
   "type": "concept",
   "definition": "In computer vision and image processing, blob detection methods are aimed at detecting regions in a digital image that differ in properties, such as brightness or color, compared to surrounding regions.",
   "details": "Informally, a blob is a region of an image in which some properties are constant or approximately constant; all the points in a blob can be considered in some sense to be similar to each other. The most common method for blob detection is by using convolution. Given some property of interest expressed as a function of position on the image, there are two main classes of blob detectors: (i) differential methods, which are based on derivatives of the function with respect to position, and (ii) methods based on local extrema, which are based on finding the local maxima and minima of the function. With the more recent terminology used in the field, these detectors can also be referred to as interest point operators, or alternatively interest region operators (see also interest point detection and corner detection). There are several motivations for studying and developing blob detectors. One main reason is to provide complementary information about regions, which is not obtained from edge detectors or corner detectors. In early work in the area, blob detection was used to obtain regions of interest for further processing. These regions could signal the presence of objects or parts of o",
-  "story": "Picture walking through a crowd and instantly picking out a familiar face without reading a single name tag. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. It turns a picture into an understanding: this is a cat, that is a stop sign. Sight, for a machine, is a long climb from raw light to a name. That pixel-to-meaning climb is Blob detection.",
+  "explainer": {
+    "lead": "Blob detection finds regions in an image that stand out from their surroundings in brightness, color, or another chosen property. It helps vision systems mark regions that may contain objects or object parts and deserve further processing.",
+    "tiers": {
+      "eli5": "Imagine looking at a gray picture and spotting a bright round patch, like a flashlight seen through fog. Blob detection teaches a computer to notice patches whose insides look roughly alike but differ from what surrounds them. The computer can then examine those interesting patches more closely.",
+      "practitioner": "Apply a blob detector to a chosen image property, commonly brightness or color, typically using convolution-based responses. Differential detectors analyze spatial derivatives, while local-extrema detectors search for maxima and minima; choose the approach according to the regions you want to expose for later processing. Treat the output as region information rather than a substitute for edge or corner detection.",
+      "paperLevel": "Given an image property f(x,y), a blob is a region in which the selected properties are constant or approximately constant, with points considered similar in that sense. Differential methods use derivatives of f with respect to image position, whereas local-extrema methods locate maxima and minima of the corresponding function. These operators provide region information complementary to edge and corner operators and may also be termed interest point or interest region operators."
+    },
+    "example": "Consider a small bright region surrounded by a darker background. With brightness as the property of interest, a local-extrema detector can find the response maximum associated with that region and mark it as a blob for later analysis.",
+    "usedIn": [
+      {
+        "name": "Computer vision",
+        "detail": "Finds distinctive regions that can complement edge and corner information.",
+        "url": ""
+      },
+      {
+        "name": "Image processing pipelines",
+        "detail": "Produces regions of interest for further processing, potentially indicating objects or object parts.",
+        "url": ""
+      }
+    ],
+    "intuition": "A blob is a patch whose points are similar in some chosen respect, such as brightness or color, while the patch differs from its surroundings. Detection turns that informal idea into a search using derivatives or local extrema of an image-property function.",
+    "howItWorks": [
+      "Choose an image property, such as brightness or color.",
+      "Express that property as a function of image position.",
+      "Use convolution and analyze spatial derivatives, or find local maxima and minima.",
+      "Return the detected regions as blobs for further processing."
+    ],
+    "whyItMatters": "Blob detectors describe regions, adding information that edge and corner detectors do not provide. Their output can identify useful regions of interest that signal possible objects or object parts.",
+    "misconceptions": [
+      "A blob need not be bright: it can be defined by color or another property.",
+      "Blob detection is not identical to edge or corner detection; it supplies complementary region information.",
+      "A detected blob is a region of interest, not by itself a confirmed object."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "image",
+          "label": "Digital image",
+          "note": "Contains candidate regions."
+        },
+        {
+          "id": "property",
+          "label": "Image property",
+          "note": "Brightness, color, or another property as f(x,y)."
+        },
+        {
+          "id": "convolution",
+          "label": "Convolution response",
+          "note": "Common basis for blob detection."
+        },
+        {
+          "id": "analysis",
+          "label": "Derivatives or extrema",
+          "note": "The two main detector classes."
+        },
+        {
+          "id": "blobs",
+          "label": "Blob regions",
+          "note": "Regions passed to further processing."
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "property",
+          "label": "measure"
+        },
+        {
+          "from": "property",
+          "to": "convolution",
+          "label": "transform"
+        },
+        {
+          "from": "convolution",
+          "to": "analysis",
+          "label": "analyze"
+        },
+        {
+          "from": "analysis",
+          "to": "blobs",
+          "label": "detect"
+        }
+      ],
+      "caption": "A blob detector turns a position-dependent image property into detected regions through differential or local-extrema analysis."
+    }
+  },
   "related": [
     "chessboard-detection",
     "corner-detection",

@@ -5,7 +5,103 @@
   "type": "concept",
   "definition": "In numerical analysis, an iterative method is called locally convergent if the successive approximations produced by the method are guaranteed to converge to a solution when the initial approximation is already close enough to the solution.",
   "details": "Iterative methods for nonlinear equations and their systems, such as Newton's method are usually only locally convergent. An iterative method that converges for an arbitrary initial approximation is called globally convergent. Iterative methods for systems of linear equations are usually globally convergent.",
-  "story": "Imagine teaching a friend to shoot a basketball. They miss, and you walk them backwards through the shot — elbow, wrist, release — to find what needs fixing. It is the same loop you use to learn anything: try, miss, correct, try again. Underneath all the magic is a patient process of small improvements. It is learning from every miss instead of repeating the same mistake. That steady, miss-by-miss improvement is Local convergence.",
+  "explainer": {
+    "lead": "Local convergence describes an iterative method that reliably reaches a solution when its starting guess is already close enough. It matters because methods such as Newton's method can work very well near a solution without promising success from every possible starting point.",
+    "tiers": {
+      "eli5": "Imagine rolling a ball toward a cup: if you start close and aim carefully, each gentle tap can get it closer until it drops in. Starting nearby does not promise the same result from somewhere far away. A locally convergent method works like those careful taps, improving a good guess step by step.",
+      "practitioner": "When applying Newton's method to a nonlinear equation or system, treat the initial approximation as part of the method's reliability: a sufficiently close start guarantees convergence, while an arbitrary start does not. Check whether a problem or solver offers only local convergence before relying on an untested initial guess. Iterative methods for linear systems are usually globally convergent instead.",
+      "paperLevel": "An iterative method is locally convergent to a solution x* if there is a neighborhood around x* such that, for every initial approximation x0 in that neighborhood, the generated sequence xk converges to x*. Global convergence strengthens this by allowing an arbitrary initial approximation. Local convergence alone gives no guarantee for starting points outside that neighborhood."
+    },
+    "example": "Use Newton's method to solve x^2 - 2 = 0, starting at x0 = 1.5 near the positive solution sqrt(2). The updates give approximately 1.4166667 and then 1.4142157, approaching 1.4142136. This illustrates the local setting: the initial approximation is already close to the solution.",
+    "usedIn": [
+      {
+        "name": "Newton's method",
+        "detail": "A standard example of an iterative method for nonlinear equations that is usually only locally convergent.",
+        "url": ""
+      },
+      {
+        "name": "Nonlinear systems",
+        "detail": "Iterative solvers commonly guarantee convergence only when the initial approximation is sufficiently close to a solution.",
+        "url": ""
+      },
+      {
+        "name": "Linear-system solvers",
+        "detail": "Iterative methods for systems of linear equations provide a contrast because they are usually globally convergent.",
+        "url": ""
+      }
+    ],
+    "intuition": "A good starting guess places the method close enough to the answer for each iteration to keep improving the approximation. The guarantee is local because the method says nothing about what happens when the starting point is too far away.",
+    "howItWorks": [
+      "Choose an initial approximation to the solution.",
+      "Check that it lies close enough to the solution for the method's local guarantee.",
+      "Apply the iterative update to produce successive approximations.",
+      "The approximations converge to that solution.",
+      "Do not extend the guarantee to arbitrary starting points."
+    ],
+    "whyItMatters": "It separates a dependable guarantee near a solution from the stronger promise of convergence from any starting approximation. That distinction is especially important for Newton's method and other iterative methods for nonlinear equations and systems.",
+    "misconceptions": [
+      "Local convergence does not mean the method converges from every initial guess.",
+      "It is not a claim about how quickly convergence occurs.",
+      "Methods that converge from an arbitrary initial approximation are globally convergent, not merely locally convergent."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "guess",
+          "label": "Initial guess",
+          "note": "Must be close enough to the solution"
+        },
+        {
+          "id": "update",
+          "label": "Iterative update",
+          "note": "Produces the next approximation"
+        },
+        {
+          "id": "sequence",
+          "label": "Successive approximations",
+          "note": "Each result feeds the next update"
+        },
+        {
+          "id": "solution",
+          "label": "Solution",
+          "note": "The sequence is guaranteed to converge here"
+        },
+        {
+          "id": "far-start",
+          "label": "Arbitrary start",
+          "note": "Local convergence gives no guarantee"
+        }
+      ],
+      "edges": [
+        {
+          "from": "guess",
+          "to": "update",
+          "label": "starts"
+        },
+        {
+          "from": "update",
+          "to": "sequence",
+          "label": "produces"
+        },
+        {
+          "from": "sequence",
+          "to": "update",
+          "label": "repeats"
+        },
+        {
+          "from": "sequence",
+          "to": "solution",
+          "label": "converges"
+        },
+        {
+          "from": "far-start",
+          "to": "update",
+          "label": "no guarantee"
+        }
+      ],
+      "caption": "A sufficiently close initial approximation enters the iterative process and converges to the solution; an arbitrary start has no such local guarantee."
+    }
+  },
   "related": [
     "guided-local-search",
     "iterated-local-search",

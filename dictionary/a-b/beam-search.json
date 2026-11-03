@@ -2,10 +2,128 @@
   "term": "Beam Search",
   "letter": "B",
   "category": "Inference",
-  "type": "concept",
+  "type": "algorithm",
   "definition": "A decoding algorithm that keeps track of multiple candidate sequences ('beams') at each generation step, rather than committing to a single most likely token.",
   "details": "Beam search often produces more globally coherent text than greedy decoding by considering several likely continuations in parallel, though it can sometimes produce repetitive or generic outputs.",
-  "story": "Imagine a sketch artist who starts with static and, stroke by stroke, sharpens it into a face. The result feels creative because it is memory, reshuffled at speed. Given a starting line, the machine imagines what comes next — a word, a note, a patch of a picture. The model dreams a little, then cleans up the dream. And that is Beam Search — making something new out of everything it has ever seen.",
+  "explainer": {
+    "lead": "Beam search is a way of exploring many possible paths at once without drowning in options. It keeps a handful of the most promising candidates alive at each step, trading the guarantee of finding the absolute best answer for the ability to actually finish in reasonable time and memory.",
+    "tiers": {
+      "eli5": "Imagine you're choosing toppings for a pizza and want the tastiest combination. Instead of trying every possible topping on every slice, you pick the three most promising slices so far, add one topping to each, taste-test, and keep only the three best new slices. You repeat until the pizza is done. You might miss the single perfect slice, but you avoid making 1,000 terrible pizzas first.",
+      "practitioner": "In text generation, beam search with width 3–10 is a common alternative to greedy decoding in Hugging Face Transformers, OpenNMT, and similar toolkits. You set `num_beams` and optionally `early_stopping` or `length_penalty` to tune output. The main pitfall is that wider beams often produce bland, repetitive text—especially in open-ended generation—because they favor safe, high-probability sequences. Many practitioners prefer sampling methods (nucleus/top-p, temperature) for creative tasks and reserve beam search for structured outputs like translation or summarization.",
+      "paperLevel": "Beam search is a heuristic graph search maintaining β best partial solutions at each level. Formally, given a search tree, at depth d it expands all successors of the current beam B_d, scores them by heuristic cost, and retains the β lowest-cost states as B_{d+1}. With β=∞ it reduces to best-first search; with β=1 it becomes hill-climbing. The Harpy Speech Recognition System (1976 dissertation, term 'beam search' adopted by 1977) introduced the procedure. It sacrifices completeness and optimality: a goal state may be pruned, and the surviving beam may miss the global optimum."
+    },
+    "example": "A tiny language model is generating the next words after 'The cat'. With beam width β=2: Step 1, the model scores 'sat' (0.3), 'ran' (0.25), 'jumped' (0.2); beam keeps 'The cat sat' and 'The cat ran'. Step 2, from 'sat' it scores 'on' (0.4) and 'down' (0.1), and from 'ran' it scores 'away' (0.35) and 'quickly' (0.15); the two best are 'The cat sat on' (0.3×0.4=0.12) and 'The cat ran away' (0.25×0.35=0.0875). Step 3 continues from these two, and the final highest-scoring complete sequence is returned.",
+    "usedIn": [
+      {
+        "name": "Machine translation",
+        "detail": "Traditional phrase-based and early neural systems used beam search to select the best translation from exponentially many word-sequence candidates",
+        "url": ""
+      },
+      {
+        "name": "Speech recognition",
+        "detail": "The Harpy system (1976) first used the technique to manage the enormous search space of possible word sequences from audio",
+        "url": ""
+      },
+      {
+        "name": "Neural text generation",
+        "detail": "Large language models employ beam search or its variants for tasks requiring high-probability outputs like summarization and data-to-text",
+        "url": ""
+      }
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "start",
+          "label": "Start state",
+          "note": "Initial token or root node"
+        },
+        {
+          "id": "expand",
+          "label": "Expand successors",
+          "note": "Generate all next states from current beam"
+        },
+        {
+          "id": "score",
+          "label": "Score states",
+          "note": "Rank by model probability or heuristic cost"
+        },
+        {
+          "id": "prune",
+          "label": "Prune to β best",
+          "note": "Keep only beam width worth of top candidates"
+        },
+        {
+          "id": "beam",
+          "label": "Current beam",
+          "note": "The β partial sequences alive at this step"
+        },
+        {
+          "id": "terminal",
+          "label": "Terminal check",
+          "note": "End if max length or complete sequence reached"
+        },
+        {
+          "id": "output",
+          "label": "Best output",
+          "note": "Highest-scoring finished sequence returned"
+        }
+      ],
+      "edges": [
+        {
+          "from": "start",
+          "to": "expand",
+          "label": "initial expansion"
+        },
+        {
+          "from": "expand",
+          "to": "score",
+          "label": "candidates"
+        },
+        {
+          "from": "score",
+          "to": "prune",
+          "label": "ranked"
+        },
+        {
+          "from": "prune",
+          "to": "beam",
+          "label": "survivors"
+        },
+        {
+          "from": "beam",
+          "to": "terminal",
+          "label": "check done"
+        },
+        {
+          "from": "terminal",
+          "to": "output",
+          "label": "if finished"
+        },
+        {
+          "from": "terminal",
+          "to": "expand",
+          "label": "if continue"
+        }
+      ],
+      "caption": "Beam search loops: expand, score, prune to β candidates, repeat until termination."
+    },
+    "image": {
+      "src": "https://upload.wikimedia.org/wikipedia/commons/2/23/Beam_search.gif",
+      "alt": "Beam search — Heuristic search algorithm",
+      "width": 640,
+      "height": 424,
+      "credit": "BogdanShevchenko",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Beam_search.gif"
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Beam search",
+        "url": "https://en.wikipedia.org/wiki/Beam_search"
+      }
+    ]
+  },
   "related": [
     "best-of-n-sampling",
     "edge-ai",

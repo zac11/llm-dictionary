@@ -5,7 +5,51 @@
   "type": "concept",
   "definition": "In computer science, specifically in algorithms related to pathfinding, a heuristic function is said to be admissible if it never overestimates the cost of reaching the goal, i.e.",
   "details": "the cost it estimates to reach the goal is not higher than the lowest possible cost from the current point in the path. In other words, it should act as a lower bound. It is related to the concept of consistent heuristics. While all consistent heuristics are admissible, not all admissible heuristics are consistent.",
-  "story": "Picture an engineer at a cluttered workbench, turning a clever idea over in their hands until it finally clicks. At its heart it is a simple notion, once you strip away the fancy name. A small key that opens a much bigger door. It is one of those ideas that feels obvious only after someone shows it to you. That is Admissible heuristic — a small key that opens a big door.",
+  "explainer": {
+    "lead": "An admissible heuristic is a rule of thumb that always guesses low—never high—when estimating how far you still have to go. This cautious optimism is what lets search algorithms like A* guarantee they will find the cheapest possible path.",
+    "tiers": {
+      "eli5": "Imagine you're walking through a maze and your friend shouts out how many steps they think remain to the exit. If your friend never overshoots—sometimes they're spot-on, sometimes they say \"at least 5\" when it's really 8—you can trust their hints to keep you on the shortest route. An admissible heuristic is that trustworthy friend: it always gives a hopeful but never impossible estimate.",
+      "practitioner": "In A* search, set h(n) to an admissible estimate—common choices are Euclidean distance for grid pathfinding or Manhattan distance for 4-connected grids. Check admissibility by verifying h(n) ≤ h*(n) for every node; for grids, Manhattan distance is admissible because each tile must move at least its horizontal-plus-vertical offset. Pitfall: a heuristic that is admissible but not consistent can cause A* to re-expand nodes, hurting performance without sacrificing optimality.",
+      "paperLevel": "Formally, a heuristic h is admissible iff ∀n: h(n) ≤ h*(n), where h*(n) is the optimal cost to reach a goal from node n. The property ensures that in best-first search with evaluation function f(n) = g(n) + h(n), the algorithm never commits to a suboptimal path before exhausting all paths with lower true cost. All consistent heuristics are admissible, but the converse does not hold."
+    },
+    "example": "In the fifteen puzzle, the Manhattan distance sums how many rows and columns each numbered tile is from its correct position. For a tile sitting 3 rows above and 1 column left of home, its contribution is 4. Since every tile must move at least that distance, the total Manhattan distance (36 in the article's worked example) can never exceed the actual moves required—making it admissible.",
+    "usedIn": [
+      {
+        "name": "A* pathfinding",
+        "detail": "Navigation in games and robotics relies on admissible heuristics to guarantee shortest-path optimality.",
+        "url": ""
+      },
+      {
+        "name": "Fifteen puzzle solvers",
+        "detail": "Manhattan and Hamming distance heuristics guide search without overestimating moves needed.",
+        "url": ""
+      },
+      {
+        "name": "Route planning (GPS)",
+        "detail": "Geometric distance heuristics ensure discovered routes are truly shortest, not merely fast to find.",
+        "url": ""
+      }
+    ],
+    "intuition": "Think of it as a conservative budget: if you promise to spend no more than you actually need, you'll never run out of money before finishing. The algorithm uses these safe estimates to prioritize exploration, confident that a seemingly cheap path won't hide surprise costs.",
+    "howItWorks": [
+      "For every node, compute h(n), an estimate of remaining cost to the goal.",
+      "Verify h(n) never exceeds the true optimal cost h*(n)—this is the admissibility check.",
+      "Combine with g(n), cost so far, into f(n) = g(n) + h(n) to rank which node to expand next.",
+      "Because h(n) is a lower bound, the algorithm cannot be tricked into committing to a path that later reveals hidden costs exceeding an unexplored alternative."
+    ],
+    "whyItMatters": "Without admissibility, informed search algorithms like A* can miss optimal solutions; with it, they gain a provable optimality guarantee. This tradeoff—slightly slower exploration for perfect results—makes admissible heuristics essential when correctness matters more than raw speed.",
+    "misconceptions": [
+      "Admissible does not mean accurate: a heuristic that always returns 0 is admissible but useless for guidance.",
+      "Admissibility does not guarantee efficiency; an admissible heuristic may expand many more nodes than a slightly inadmissible one.",
+      "Admissibility alone does not prevent redundant work—consistency is needed to guarantee no node is expanded twice."
+    ],
+    "sources": [
+      {
+        "title": "Wikipedia: Admissible heuristic",
+        "url": "https://en.wikipedia.org/wiki/Admissible_heuristic"
+      }
+    ]
+  },
   "related": [
     "computational-heuristic-intelligence",
     "constructive-heuristic",

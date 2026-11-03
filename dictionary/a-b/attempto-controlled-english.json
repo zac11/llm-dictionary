@@ -5,7 +5,103 @@
   "type": "concept",
   "definition": "Attempto Controlled English (ACE) is a controlled natural language, i.e.",
   "details": "a subset of standard English with a restricted syntax and restricted semantics described by a small set of construction and interpretation rules. It has been under development at the University of Zurich since 1995. In 2013, ACE version 6.7 was announced. ACE can serve as knowledge representation, specification, and query language, and is intended for professionals who want to use formal notations and formal methods, but may not be familiar with them. Though ACE appears perfectly natural—it can be read and understood by any speaker of English—it is in fact a formal language. ACE and its related tools have been used in the fields of software specifications, theorem proving, proof assistants, text summaries, ontologies, rules, querying, medical documentation and planning. Here are some simple examples: Every woman is a human. A woman is a human. A man tries-on a new tie. If the tie pleases his wife then the man buys it. ACE construction rules require that each noun be introduced by a determiner (a, every, no, some, at least 5, ...). Regarding the list of examples above, ACE interpretation rules decide that (1) is interpreted as universally quantified, while (2) is interpreted as existentially quantified. Sentences like \"Women are human\" do not follow ACE syntax and are consequently not valid. Interpretation rules resolve the anaphoric references in (3): the tie and it of the second sentence refer to a new tie of the first sentence, while his and the man of the second sentence refer to a man of the first sentence. Thus an ACE text is a coherent entity of anaphorically linked sentences. The Attempto Parsing Engine (APE) translates ACE texts unambiguously into discourse representation structures (DRS) that use a variant of the language of first-order logic. A DRS can be further translated into other formal languages, for instance AceRules with various semantics, OWL, and SWRL. Translating an ACE text into (a fragment of) first-order logic allows users to reason about the text, for instance to verify, to validate, and to query it.",
-  "story": "Picture a translator at the United Nations, listening to one language and whispering the meaning into another in real time. It figures out meaning by noticing which words like to travel together. It does not memorize a rulebook; it absorbs a library. Meaning lives in company — a word is known by the words it keeps. And that is Attempto Controlled English — teaching a machine to read between the lines.",
+  "explainer": {
+    "lead": "Attempto Controlled English (ACE) is a carefully restricted form of English that people can read naturally but software can interpret without ambiguity. It lets professionals write specifications, knowledge, and queries in sentences rather than having to learn a formal notation first.",
+    "tiers": {
+      "eli5": "ACE is like English with a very strict rulebook, similar to a recipe that uses only exact instructions so nobody has to guess what to do. You can read the sentences normally, but a computer can also turn them into precise instructions. That makes it useful when guessing could cause mistakes.",
+      "practitioner": "ACE is used to author software specifications, rules, ontologies, queries, and other texts that need formal interpretation. The Attempto Parsing Engine (APE) translates valid ACE into discourse representation structures, which can then be converted to formats including AceRules, OWL, and SWRL for reasoning or querying. Writers must follow its construction rules—for example, introducing each noun with a determiner—and cannot assume that any ordinary English sentence will be accepted.",
+      "paperLevel": "ACE is a controlled natural language: a subset of standard English with restricted syntax and semantics defined by construction and interpretation rules. APE maps ACE texts unambiguously to discourse representation structures using a variant of first-order logic; interpretation rules handle quantification and anaphoric links across sentences. Its precision comes at the cost of restricted expressiveness, so texts outside its syntax, such as \"Women are human,\" are not valid ACE."
+    },
+    "example": "\"Every woman is a human\" receives a universal interpretation, whereas \"A woman is a human\" receives an existential one. In \"A man tries-on a new tie. If the tie pleases his wife then the man buys it,\" ACE links \"the tie\" and \"it\" to the new tie, and \"his\" and \"the man\" to the man introduced earlier.",
+    "usedIn": [
+      {
+        "name": "Software specifications",
+        "detail": "Requirements can be written as readable ACE sentences and translated into formal representations.",
+        "url": ""
+      },
+      {
+        "name": "Theorem proving and proof assistants",
+        "detail": "Formal translations support verification and reasoning about a text.",
+        "url": ""
+      },
+      {
+        "name": "Ontologies and querying",
+        "detail": "ACE can express knowledge and queries, with translations available to OWL and SWRL.",
+        "url": ""
+      },
+      {
+        "name": "Medical documentation and planning",
+        "detail": "ACE and its related tools have been applied in both fields.",
+        "url": ""
+      }
+    ],
+    "intuition": "ACE keeps English readable while removing the freedom that often makes ordinary sentences ambiguous. A small set of rules determines what may be written and exactly what each accepted sentence means.",
+    "howItWorks": [
+      "Write sentences using ACE's restricted vocabulary of constructions, including a determiner before each noun.",
+      "Apply interpretation rules to determine meanings such as universal or existential quantification.",
+      "Resolve references across sentences so that words like \"it\" and repeated noun phrases point to the intended earlier entities.",
+      "Use APE to translate the complete ACE text unambiguously into a discourse representation structure.",
+      "Translate that structure into another formal language when needed, then use it for verification, validation, reasoning, or querying."
+    ],
+    "whyItMatters": "ACE offers a bridge between natural-language documents and formal methods, making precise knowledge representation accessible to people who may not know formal notations. Because each accepted text has an unambiguous formal translation, software can reason about what was written rather than merely process its words.",
+    "misconceptions": [
+      "ACE is not simply any clear or grammatical English; sentences that break its construction rules are invalid.",
+      "Its natural appearance does not make it informal: accepted ACE texts have formally defined meanings.",
+      "A discourse representation structure is not limited to one final use; it can be translated into several formal languages."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "ace",
+          "label": "ACE text",
+          "note": "Readable sentences following construction rules"
+        },
+        {
+          "id": "ape",
+          "label": "APE parser",
+          "note": "Applies interpretation rules and resolves references"
+        },
+        {
+          "id": "drs",
+          "label": "DRS",
+          "note": "Unambiguous representation in a first-order logic variant"
+        },
+        {
+          "id": "targets",
+          "label": "Formal languages",
+          "note": "Targets include AceRules, OWL, and SWRL"
+        },
+        {
+          "id": "reasoning",
+          "label": "Formal reasoning",
+          "note": "Supports verification, validation, and querying"
+        }
+      ],
+      "edges": [
+        {
+          "from": "ace",
+          "to": "ape",
+          "label": "parsed by"
+        },
+        {
+          "from": "ape",
+          "to": "drs",
+          "label": "translates to"
+        },
+        {
+          "from": "drs",
+          "to": "targets",
+          "label": "converted to"
+        },
+        {
+          "from": "drs",
+          "to": "reasoning",
+          "label": "enables"
+        }
+      ],
+      "caption": "ACE moves from readable controlled English to an unambiguous formal representation and then to reasoning or other formal languages."
+    }
+  },
   "related": [
     "controlled-natural-language",
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",

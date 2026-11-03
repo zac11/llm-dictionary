@@ -9,7 +9,124 @@
   ],
   "definition": "A system in which a language model repeatedly reasons about a goal, chooses an action (such as a tool call or search), and observes the result.",
   "details": "Agents pair a model with a loop of perception, reasoning and action so it can complete multi-step tasks rather than producing a single answer. ReAct interleaves “reasoning traces” with actions and observations, which improves factuality and lets models answer and act in one framework. Agent frameworks commonly add memory, planning and a set of tools the model can invoke.",
-  "story": "Picture hiring a brilliant new assistant on their first morning — smart, motivated, but with no idea how anything in your office actually works. It plans a little, acts a little, looks at the result, and then decides what to do next. It is the difference between a search engine and a helper who actually finishes the task. It is a loop of look, act, and learn — the same way you cook from a recipe you have never tried: add, taste, correct. And that habit of checking, acting, then checking again is AI Agent.",
+  "explainer": {
+    "lead": "An AI agent is a program that doesn't just answer your question and stop—it keeps going, choosing actions, seeing what happens, and adjusting until it finishes a job. Think of it as a language model with a to-do list and the ability to use tools, rather than a chatbot that gives one reply and waits.",
+    "tiers": {
+      "eli5": "Imagine you ask a kid to plan a birthday party. Instead of just telling you 'buy cake and balloons,' they actually call the bakery, check prices, find out the balloons are sold out, switch to streamers, and keep going until the party is ready. An AI agent works like that kid: it thinks, acts, sees what happened, and thinks again—looping until the task is done.",
+      "practitioner": "In practice, you wrap an LLM in a loop: prompt it to reason about the task, parse its response for tool calls (like web search, code execution, or API requests), execute those calls, feed the results back as observations, and repeat. Common patterns include ReAct for reasoning-action interleaving, and frameworks like LangChain or custom harnesses that manage memory, tool schemas, and state. Pitfalls include infinite loops, fragile parsing of model outputs, and over-reliance on the model's self-correction when it gets stuck.",
+      "paperLevel": "An AI agent can be formalized as a system implementing a loop of perception, reasoning, and action: at each timestep t, the agent observes state o_t, generates a reasoning trace r_t and action a_t via policy π_θ(r_t, a_t | o_t, history), executes a_t to produce observation o_{t+1}, and appends to working memory. The ReAct framework (Yao et al., 2022) interleaves reasoning traces with actions to improve factuality and handle multi-hop tasks. Key limitations include compounding errors over long trajectories, brittleness in tool-use parsing, and the lack of guaranteed convergence or correctness proofs for LLM-driven control flow."
+    },
+    "example": "A user asks an agent to 'schedule a team meeting next Tuesday that works for everyone.' The agent reasons it needs to check calendars, queries each team member's calendar tool, observes that Tuesday 2pm has a conflict for two people, reasons about alternatives, checks Thursday 10am, finds it free, drafts an invite, asks the user to confirm, and upon approval sends it. Each step involved a real tool call and observation, not a single guess.",
+    "usedIn": [
+      {
+        "name": "OpenAI Operator",
+        "detail": "A web browser agent that navigates sites and completes tasks like booking travel",
+        "url": ""
+      },
+      {
+        "name": "Cursor",
+        "detail": "A coding agent that writes, edits, and debugs code across multiple files",
+        "url": ""
+      },
+      {
+        "name": "Salesforce Agentforce",
+        "detail": "Deployed by the IRS and city of Kyle, Texas for customer service and case routing",
+        "url": ""
+      },
+      {
+        "name": "OpenAI Deep Research",
+        "detail": "A research agent that queries and synthesizes information across sources",
+        "url": ""
+      }
+    ],
+    "intuition": "A calculator gives you an answer. A GPS gives you directions. An AI agent is more like a self-driving car: it senses where it is, decides what to do, acts, and keeps adjusting until it reaches the destination.",
+    "howItWorks": [
+      "You give the agent a goal, such as 'find me a flight under $500 to Tokyo next week.'",
+      "The agent reasons about what it needs to know, then chooses an action—perhaps searching a travel site.",
+      "It observes the result: prices, times, availability. If the flight is $600, it reasons again and tries a different date or airline.",
+      "The loop repeats—reason, act, observe—until the goal is satisfied or a limit is reached.",
+      "Memory holds the conversation and past observations so the agent doesn't repeat itself or lose context."
+    ],
+    "whyItMatters": "Agents extend AI from passive assistants to active problem-solvers that can handle messy, multi-step real-world tasks—research, coding, logistics, customer service—where the path to the solution isn't known in advance and requires adaptation.",
+    "misconceptions": [
+      "Agents are not just chatbots with extra prompts; they have a control loop with real tool execution and state.",
+      "They are not fully autonomous in the way humans are; most current systems still need human oversight, approval for risky actions, or have limited scope.",
+      "More agents don't always mean better results; unorchestrated multi-agent systems can conflict or duplicate work."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "goal",
+          "label": "User goal",
+          "note": "The task or question the user provides"
+        },
+        {
+          "id": "reason",
+          "label": "LLM reasons",
+          "note": "Generates reasoning trace and decides next action"
+        },
+        {
+          "id": "act",
+          "label": "Tool call",
+          "note": "Executes search, API, code, or other external action"
+        },
+        {
+          "id": "observe",
+          "label": "Observation",
+          "note": "Result from tool returns to agent"
+        },
+        {
+          "id": "memory",
+          "label": "Memory store",
+          "note": "Keeps history of reasoning, actions, and observations"
+        },
+        {
+          "id": "output",
+          "label": "Final answer",
+          "note": "Delivered when goal is satisfied or limit reached"
+        }
+      ],
+      "edges": [
+        {
+          "from": "goal",
+          "to": "reason",
+          "label": "prompts"
+        },
+        {
+          "from": "reason",
+          "to": "act",
+          "label": "chooses"
+        },
+        {
+          "from": "act",
+          "to": "observe",
+          "label": "produces"
+        },
+        {
+          "from": "observe",
+          "to": "reason",
+          "label": "feeds back"
+        },
+        {
+          "from": "memory",
+          "to": "reason",
+          "label": "provides context"
+        },
+        {
+          "from": "reason",
+          "to": "output",
+          "label": "when done"
+        }
+      ],
+      "caption": "The agent loop: reasoning drives tool use, observations feed back into memory, and the cycle continues until the goal is met."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: AI agent",
+        "url": "https://en.wikipedia.org/wiki/AI_agent"
+      }
+    ]
+  },
   "related": [
     "cline-ai-agent",
     "goose-ai-agent",

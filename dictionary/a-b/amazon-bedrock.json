@@ -2,10 +2,127 @@
   "term": "Amazon Bedrock",
   "letter": "A",
   "category": "Artificial intelligence",
-  "type": "concept",
+  "type": "tool",
   "definition": "Amazon Bedrock is a cloud computing service provided by Amazon Web Services (AWS) for building generative artificial intelligence applications.",
   "details": "Launched in 2023, the platform provides a unified API to access foundation models (FMs) from several AI companies, alongside related tools. Bedrock is a serverless computing service which competes with similar enterprise AI platforms such as Microsoft Foundry and Google Cloud Platform.",
-  "story": "Imagine a sketch artist who starts with static and, stroke by stroke, sharpens it into a face. The result feels creative because it is memory, reshuffled at speed. Given a starting line, the machine imagines what comes next — a word, a note, a patch of a picture. The model dreams a little, then cleans up the dream. That next-word, next-stroke magic is Amazon Bedrock.",
+  "explainer": {
+    "lead": "Amazon Bedrock is an AWS service for building generative AI applications with foundation models from several AI companies through one API. It also provides managed tools for retrieving private information, applying safety controls, and connecting models to external systems.",
+    "tiers": {
+      "eli5": "Bedrock is like one universal remote for several different AI brains. An app can ask one of them to write, chat, or answer questions, while extra tools help it look up private documents and follow safety rules.",
+      "practitioner": "Applications call Bedrock's unified API to use foundation models without running a model server. Knowledge Bases provides a managed RAG workflow over private data in Amazon S3, while Guardrails applies content filters and personally identifiable information redaction across models. AI agents can be added when a model must interact with external systems.",
+      "paperLevel": "Amazon Bedrock is a serverless cloud service that exposes foundation models from multiple providers through a unified API for generative AI application development. Its managed components include retrieval-augmented generation over private Amazon S3 data, cross-model Guardrails, and agents for interaction with external systems."
+    },
+    "example": "A company builds an assistant that answers questions from private documents stored in Amazon S3. Knowledge Bases retrieves relevant facts for the selected foundation model, and Guardrails filters content and redacts personally identifiable information before the application returns the answer.",
+    "usedIn": [
+      {
+        "name": "Generative AI applications",
+        "detail": "Developers use the unified API to build applications around foundation models from several AI companies.",
+        "url": ""
+      },
+      {
+        "name": "Private-document question answering",
+        "detail": "Knowledge Bases supports retrieval-augmented generation using private data stored in Amazon S3.",
+        "url": ""
+      },
+      {
+        "name": "PartyRock",
+        "detail": "Amazon's no-code environment turns natural-language descriptions into widgets for prompts, chat, image generation, and document tasks.",
+        "url": ""
+      }
+    ],
+    "intuition": "Bedrock puts model access and common application machinery behind one managed AWS service. Instead of integrating each foundation model separately, a developer uses a shared API and adds retrieval, guardrails, or agents as needed.",
+    "howItWorks": [
+      "Choose a foundation model available through Bedrock.",
+      "Send requests through the unified API.",
+      "Optionally connect private S3 data through Knowledge Bases.",
+      "Apply Guardrails for content filtering and PII redaction.",
+      "Use agents when the model must interact with external systems."
+    ],
+    "whyItMatters": "A common API reduces the integration work involved in using models from different providers. Managed retrieval and safety features also address two recurring needs in enterprise generative AI: grounding answers in private data and controlling sensitive or unwanted content.",
+    "misconceptions": [
+      "Bedrock is a service for accessing models, not a single foundation model.",
+      "Knowledge Bases supplies private facts through retrieval; it is not described as model training.",
+      "PartyRock is a separate no-code application-building environment launched by Amazon."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "app",
+          "label": "AI application",
+          "note": "Sends generative AI requests"
+        },
+        {
+          "id": "api",
+          "label": "Unified API",
+          "note": "Common Bedrock access point"
+        },
+        {
+          "id": "models",
+          "label": "Foundation models",
+          "note": "Models from several companies"
+        },
+        {
+          "id": "kb",
+          "label": "Knowledge Bases",
+          "note": "Managed RAG workflow"
+        },
+        {
+          "id": "s3",
+          "label": "Amazon S3",
+          "note": "Stores private source data"
+        },
+        {
+          "id": "guardrails",
+          "label": "Guardrails",
+          "note": "Filters content and redacts PII"
+        },
+        {
+          "id": "agents",
+          "label": "AI agents",
+          "note": "Interact with external systems"
+        }
+      ],
+      "edges": [
+        {
+          "from": "app",
+          "to": "api",
+          "label": "requests"
+        },
+        {
+          "from": "api",
+          "to": "models",
+          "label": "model access"
+        },
+        {
+          "from": "s3",
+          "to": "kb",
+          "label": "private data"
+        },
+        {
+          "from": "kb",
+          "to": "models",
+          "label": "retrieved facts"
+        },
+        {
+          "from": "guardrails",
+          "to": "models",
+          "label": "safety controls"
+        },
+        {
+          "from": "models",
+          "to": "agents",
+          "label": "actions"
+        }
+      ],
+      "caption": "Bedrock connects an application to foundation models, with optional private-data retrieval, cross-model guardrails, and agents."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Amazon Bedrock",
+        "url": "https://en.wikipedia.org/wiki/Amazon_Bedrock"
+      }
+    ]
+  },
   "related": [
     "a-i-insight-forums",
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",

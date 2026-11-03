@@ -5,7 +5,129 @@
   "type": "concept",
   "definition": "Affinity analysis falls under the umbrella term of data mining which uncovers meaningful correlations between different entities according to their co-occurrence in a data set.",
   "details": "In almost all systems and processes, the application of affinity analysis can extract significant knowledge about the unexpected trends . In fact, affinity analysis takes advantages of studying attributes that go together which helps uncover the hidden patterns in a big data through generating association rules. Association rules mining procedure is two-fold: first, it finds all frequent attributes in a data set and, then generates association rules satisfying some predefined criteria, support and confidence, to identify the most important relationships in the frequent itemset. The first step in the process is to count the co-occurrence of attributes in the data set. Next, a subset is created called the frequent itemset. The association rules mining takes the form of if a condition or feature (A) is present then another condition or feature (B) exists. The first condition or feature (A) is called antecedent and the latter (B) is known as consequent. This process is repeated until no additional frequent itemsets are found. There are two important metrics for performing the association rules mining technique: support and confidence. Also, a priori algorithm is used to reduce the search space for the problem. The support metric in the association rule learning algorithm is defined as the frequency of the antecedent or consequent appearing together in a data set. Moreover, confidence is expressed as the reliability of the association rules determined by the ratio of the data records containing both A and B. The minimum threshold for support and confidence are inputs to the model. Considering all the above-mentioned definitions, affinity analysis can develop rules that will predict the occurrence of an event based on the occurrence of other events. This data mining method has been explored in different fields including disease diagnosis, market basket analysis, retail industry, higher education, and financial analysis. In retail, affinity analysis is used to perform market basket analysis, in which retailers seek to understand the purchase behavior of customers. This information can then be used for purposes of cross-selling and up-selling, in addition to influencing sales promotions, loyalty programs, store design, and discount plans.",
-  "story": "Think of a historian sorting through boxes of letters, building a picture of an era one sentence at a time. Every machine is shaped by what it was shown, so someone has to choose that material with care. The examples a machine reads become the world it believes in. The words a model reads become the world it believes in. That care with the raw material is Affinity analysis.",
+  "explainer": {
+    "lead": "Affinity analysis is a data mining technique that discovers which things tend to appear together—like diapers and beer in a shopping cart, or symptoms that co-occur in medical records. It turns these co-occurrence patterns into actionable rules that predict one thing from another.",
+    "tiers": {
+      "eli5": "Imagine you're tracking what your friends always bring to a picnic. You notice that whenever someone brings hot dogs, they almost always bring buns too. Affinity analysis is like being that observant friend, but for huge piles of data. It spots 'things that go together' so stores can put related items near each other, or doctors can spot symptom combinations that mean a disease might be developing.",
+      "practitioner": "In practice, you run the Apriori algorithm or similar frequent-itemset miners over transactional data—sales receipts, clickstreams, electronic health records. You set minimum support and confidence thresholds to filter noise. Typical pitfalls: sparse data produces weak rules; setting thresholds too low floods you with trivial associations; the classic 'diapers and beer' story is apocryphal and often misused as proof of concept. Modern implementations use FP-growth or vertical mining for scalability beyond the basic Apriori approach.",
+      "paperLevel": "Affinity analysis generates association rules of the form A → B from a dataset of transactions, where A and B are itemsets. The Apriori algorithm employs the downward-closure property (all subsets of a frequent itemset must be frequent) to prune the search space. Formally, support(A → B) = P(A ∪ B) and confidence(A → B) = P(B | A) = support(A ∪ B) / support(A)."
+    },
+    "example": "A supermarket analyzes 10,000 receipts and finds that shampoo and conditioner appear together in 800 transactions (support = 8%). Of the 1,000 transactions with shampoo, 800 also have conditioner (confidence = 80%). The rule 'shampoo → conditioner' is strong. But putting both on promotion together would not boost revenue much, since buyers already link them; promoting just shampoo would more likely drive conditioner sales.",
+    "usedIn": [
+      {
+        "name": "Amazon.com",
+        "detail": "Recommends products with 'customers who bought A also bought B' based on purchase history and collaborative purchase patterns.",
+        "url": ""
+      },
+      {
+        "name": "Family Dollar",
+        "detail": "Uses market basket analysis to guide stocking decisions as it shifts toward low-margin consumable goods.",
+        "url": ""
+      },
+      {
+        "name": "Clinical diagnosis",
+        "detail": "Mines patient records for symptom co-occurrence to flag early-stage tumors or cancers and identify correlated diseases.",
+        "url": ""
+      },
+      {
+        "name": "Retail market basket analysis",
+        "detail": "Drives cross-selling, store layout, loyalty programs, and coordinated promotions by understanding purchase behavior.",
+        "url": ""
+      }
+    ],
+    "intuition": "If two things keep showing up together across many observations, there's probably a meaningful link between them—even if we don't yet know why. Affinity analysis systematically finds these links and measures how strong they are.",
+    "howItWorks": [
+      "Count how often each individual attribute appears in the dataset.",
+      "Find frequent itemsets: groups of attributes that co-occur at least as often as the minimum support threshold.",
+      "Generate candidate association rules from these frequent itemsets.",
+      "Filter rules by confidence: the proportion of transactions containing A that also contain B must exceed the minimum confidence threshold.",
+      "Repeat and prune using the Apriori principle until no new frequent itemsets can be found."
+    ],
+    "whyItMatters": "Without affinity analysis, organizations drown in transaction data but miss the hidden structure. It transforms raw co-occurrence into interpretable rules that directly inform pricing, placement, recommendations, and even medical intervention—turning 'what happened' into 'what to do next.'",
+    "misconceptions": [
+      "Correlation implies causation: the rule A → B only says they co-occur, not that A causes B.",
+      "The 'diapers and beer' story is a proven fact: it is explicitly described as an apocryphal urban legend used for teaching.",
+      "High confidence alone makes a rule useful: a rule with high confidence can still be trivial if B is extremely common overall."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "raw-data",
+          "label": "Raw transactions",
+          "note": "Receipts, records, clickstreams"
+        },
+        {
+          "id": "count",
+          "label": "Count co-occurrences",
+          "note": "Tally attribute pairs and groups"
+        },
+        {
+          "id": "frequent",
+          "label": "Frequent itemsets",
+          "note": "Groups passing support threshold"
+        },
+        {
+          "id": "rules",
+          "label": "Candidate rules",
+          "note": "If A then B propositions"
+        },
+        {
+          "id": "filter",
+          "label": "Filter by confidence",
+          "note": "Keep reliable predictions"
+        },
+        {
+          "id": "action",
+          "label": "Actionable rules",
+          "note": "Cross-sell, diagnose, redesign"
+        }
+      ],
+      "edges": [
+        {
+          "from": "raw-data",
+          "to": "count",
+          "label": "scan"
+        },
+        {
+          "from": "count",
+          "to": "frequent",
+          "label": "prune"
+        },
+        {
+          "from": "frequent",
+          "to": "rules",
+          "label": "generate"
+        },
+        {
+          "from": "rules",
+          "to": "filter",
+          "label": "score"
+        },
+        {
+          "from": "filter",
+          "to": "action",
+          "label": "deploy"
+        }
+      ],
+      "caption": "The flow from raw transaction data to actionable association rules, with pruning at each stage to control combinatorial explosion."
+    },
+    "image": {
+      "src": "https://upload.wikimedia.org/wikipedia/commons/4/4a/AffinityAnalysis.png",
+      "alt": "Affinity analysis — Market research and business management technique",
+      "width": 640,
+      "height": 537,
+      "credit": "DataCamp",
+      "license": "CC0",
+      "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "page": "https://commons.wikimedia.org/wiki/File:AffinityAnalysis.png"
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Affinity analysis",
+        "url": "https://en.wikipedia.org/wiki/Affinity_analysis"
+      }
+    ]
+  },
   "related": [
     "archetypal-analysis",
     "cluster-analysis",

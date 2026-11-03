@@ -5,7 +5,92 @@
   "type": "concept",
   "definition": "JSGF stands for Java Speech Grammar Format or the JSpeech Grammar Format (in a W3C Note).",
   "details": "Developed by Sun Microsystems, it is a textual representation of grammars for use in speech recognition for technologies like XHTML+Voice. JSGF adopts the style and conventions of the Java programming language in addition to use of traditional grammar notations. The Speech Recognition Grammar Specification was derived from this specification.",
-  "story": "Imagine learning a language by reading every book in the library and noticing, over time, which words travel together. It does not memorize a rulebook; it absorbs a library. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It is fluency built from pattern, not from memorized rules. And that is JSGF — teaching a machine to read between the lines.",
+  "explainer": {
+    "lead": "JSGF is a text format for telling a speech recognizer which words and phrases it should expect. It gives developers a compact way to describe valid speech, and it later informed the Speech Recognition Grammar Specification.",
+    "tiers": {
+      "eli5": "Imagine teaching a listening robot by handing it a menu of things people are allowed to say. JSGF is a way of writing that menu, such as offering only “coffee” or “tea.” The robot then knows to listen for those choices instead of every possible sentence.",
+      "practitioner": "Use JSGF to write textual grammars for speech-recognition applications, including systems using XHTML+Voice. Its Java-style conventions and traditional grammar notation define the wording a recognizer should expect; do not confuse writing the grammar with implementing the recognizer itself.",
+      "paperLevel": "JSGF (Java Speech Grammar Format, or JSpeech Grammar Format in a W3C Note) is a textual representation of recognition grammars, combining Java programming-language conventions with traditional grammar notation. Developed by Sun Microsystems, it specifies expected spoken forms rather than a recognition algorithm; the Speech Recognition Grammar Specification was derived from it."
+    },
+    "example": "A rule such as public <drink> = coffee | tea; defines a drink choice. Under that rule, the spoken word “tea” matches, while “hot chocolate” does not.",
+    "usedIn": [
+      {
+        "name": "Speech recognition",
+        "detail": "Describes the words and phrases a recognizer should expect.",
+        "url": ""
+      },
+      {
+        "name": "XHTML+Voice",
+        "detail": "Uses textual grammars to support spoken interaction.",
+        "url": ""
+      }
+    ],
+    "intuition": "A JSGF grammar is like a phrasebook for a recognizer: it describes acceptable utterances in advance, narrowing what the system needs to listen for.",
+    "howItWorks": [
+      "Write the grammar as text using JSGF conventions.",
+      "Define rules for the words or phrases speakers may say.",
+      "Provide the grammar to a speech-recognition application.",
+      "Use those rules to guide recognition of spoken input."
+    ],
+    "whyItMatters": "JSGF provided a readable, text-based way to specify recognition grammars using familiar Java-style conventions. Its influence also extends through the Speech Recognition Grammar Specification, which was derived from it.",
+    "misconceptions": [
+      "JSGF is a grammar notation, not a speech-recognition engine.",
+      "It borrows Java style and conventions but is not ordinary Java program code.",
+      "JSGF and the Speech Recognition Grammar Specification are not the same specification; the latter was derived from the former."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "grammar-author",
+          "label": "Grammar author",
+          "note": "Defines expected spoken wording."
+        },
+        {
+          "id": "jsgf-text",
+          "label": "JSGF grammar",
+          "note": "Textual rules for acceptable phrases."
+        },
+        {
+          "id": "recognizer",
+          "label": "Speech recognizer",
+          "note": "Uses the grammar to guide recognition."
+        },
+        {
+          "id": "spoken-input",
+          "label": "Spoken input",
+          "note": "The speaker's words enter the system."
+        },
+        {
+          "id": "recognized-phrase",
+          "label": "Recognized phrase",
+          "note": "Speech is matched against expected forms."
+        }
+      ],
+      "edges": [
+        {
+          "from": "grammar-author",
+          "to": "jsgf-text",
+          "label": "writes"
+        },
+        {
+          "from": "jsgf-text",
+          "to": "recognizer",
+          "label": "constrains"
+        },
+        {
+          "from": "spoken-input",
+          "to": "recognizer",
+          "label": "audio"
+        },
+        {
+          "from": "recognizer",
+          "to": "recognized-phrase",
+          "label": "outputs"
+        }
+      ],
+      "caption": "A JSGF grammar supplies expected wording to a recognizer, which applies it to spoken input."
+    }
+  },
   "related": [
     "apptek",
     "callminer",

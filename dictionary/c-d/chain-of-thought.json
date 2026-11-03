@@ -11,7 +11,82 @@
   ],
   "definition": "Prompting a model to “think step by step” by showing intermediate reasoning, which markedly improves performance on arithmetic and logic.",
   "details": "Chain-of-thought prompting appends a few worked examples that contain explicit reasoning steps, or simply asks the model to reason before answering. It unlocks substantial gains on tasks where a single leap to the answer fails, and is one of the simplest high-impact prompting techniques for large models.",
-  "story": "Imagine a mathematician who writes every step on paper, reads it back, crosses out a bad line, and starts that line over. Slowing down to think often beats answering fast. Instead of blurting out an answer, the machine talks its way through the problem one step at a time. More time spent reconsidering can be worth more than a bigger model. That loop of draft, check, and revise is Chain-of-Thought.",
+  "explainer": {
+    "lead": "Chain-of-thought prompting asks an AI model to show its intermediate reasoning instead of jumping straight to an answer. This simple change can make a large difference on arithmetic and logic problems, where the answer depends on several connected steps.",
+    "tiers": {
+      "eli5": "Imagine solving a puzzle out loud instead of shouting the final answer. You might say what you know, work through each small step, and then give the result. Chain-of-thought prompting asks an AI to do something similar, which can help it solve harder problems.",
+      "practitioner": "Apply it by asking the model to reason before answering, or by including a few worked examples with explicit intermediate steps. It is especially useful for arithmetic and logic tasks where direct answers are unreliable. Check the reasoning and final answer rather than assuming that a plausible-looking chain is correct.",
+      "paperLevel": "Chain-of-thought prompting conditions a model on a question and an explicit sequence of intermediate reasoning steps before the final answer: question → reasoning steps → answer. It can be induced through a small set of worked examples or a direct instruction to reason before answering. Its clearest benefit is on multi-step arithmetic and logic tasks; a coherent chain does not by itself establish that the answer is correct."
+    },
+    "example": "For “A shop has 3 boxes with 12 apples each, and sells 7 apples. How many remain?”, the model might answer: “There are 3 × 12 = 36 apples. After selling 7, there are 36 − 7 = 29. Answer: 29 apples.”",
+    "usedIn": [
+      {
+        "name": "Arithmetic problem solving",
+        "detail": "Breaks calculations into intermediate steps before producing the result.",
+        "url": ""
+      },
+      {
+        "name": "Logic problem solving",
+        "detail": "Makes the sequence of deductions explicit instead of requesting an immediate conclusion.",
+        "url": ""
+      }
+    ],
+    "intuition": "Some problems are easier when divided into small, connected steps. Asking for those steps gives the model a chance to build the answer gradually rather than guess it in one leap.",
+    "howItWorks": [
+      "Give the model a problem that needs intermediate reasoning.",
+      "Add a few worked examples showing their reasoning steps, or ask it to reason before answering.",
+      "The model generates a sequence of intermediate steps.",
+      "It uses that sequence to produce a final answer."
+    ],
+    "whyItMatters": "It is a simple prompting technique that can substantially improve performance on tasks where a direct leap to the answer often fails. It requires no change to the model itself.",
+    "misconceptions": [
+      "It is not a new model or a change to the model’s internal design.",
+      "A detailed reasoning chain does not guarantee a correct answer.",
+      "It does not always require worked examples; a direct request to reason can also be used."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "problem",
+          "label": "Problem",
+          "note": "An arithmetic or logic question."
+        },
+        {
+          "id": "prompt",
+          "label": "CoT prompt",
+          "note": "Worked examples or a request to reason."
+        },
+        {
+          "id": "steps",
+          "label": "Reasoning steps",
+          "note": "Explicit intermediate calculations or deductions."
+        },
+        {
+          "id": "answer",
+          "label": "Final answer",
+          "note": "The result produced after the reasoning."
+        }
+      ],
+      "edges": [
+        {
+          "from": "problem",
+          "to": "prompt",
+          "label": "question"
+        },
+        {
+          "from": "prompt",
+          "to": "steps",
+          "label": "elicits"
+        },
+        {
+          "from": "steps",
+          "to": "answer",
+          "label": "supports"
+        }
+      ],
+      "caption": "Chain-of-thought prompting inserts explicit intermediate reasoning between the question and the answer."
+    }
+  },
   "related": [
     "prompt-engineering",
     "tree-of-thoughts",

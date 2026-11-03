@@ -5,7 +5,114 @@
   "type": "concept",
   "definition": "In artificial intelligence (AI), particularly machine learning, ablation is the removal of a component of an AI system.",
   "details": "An ablation study aims to determine the contribution of a component to an AI system by removing the component, and then analyzing the resultant performance of the system. The term is an analogy with biology (removal of components of an organism), and is particularly used in the analysis of artificial neural networks by analogy with ablative brain surgery. Other analogies include other neurological systems such as that of Drosophila, and the vertebrate brain. Ablation studies require that a system exhibit graceful degradation: the system must continue to function even when certain components are missing or degraded. According to some researchers, ablation studies have been deemed a convenient technique in investigating artificial intelligence and its durability to structural damages. It has also been used, for example, to study how and which knowledge structures of a model of cognition in Newell's Soar contribute to cognition. Ablation studies damage or remove certain components in a controlled setting to investigate all possible outcomes of system failure; this characterizes how each action impacts overall system performance and capability. The ablation process can be used to test ",
-  "story": "Imagine a factory floor where each workstation can glance at every other workstation before doing its part. It is the blueprint that makes everything else possible. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. Structure decides what the model can even express — the blueprint before the bricks. That blueprint is Ablation (artificial intelligence).",
+  "explainer": {
+    "lead": "Ablation is how AI researchers figure out which parts of a complex system actually matter. By surgically removing pieces and watching what breaks, they turn black-box models into understandable machines.",
+    "tiers": {
+      "eli5": "Imagine a car that suddenly won't start. To find the problem, a mechanic might remove the battery, then the starter motor, one at a time, to see which part actually makes the difference. Ablation does the same thing for AI — researchers take out pieces of a neural network to learn which parts are doing the real work.",
+      "practitioner": "In practice, ablation studies are run by training a full model to convergence, then re-training with specific components disabled — layers removed, attention heads masked, or features zeroed out. Common settings include comparing against a full baseline on the same validation set, reporting delta metrics rather than absolute scores. Pitfalls include failing to control for capacity reduction (a smaller model may underperform simply because it has fewer parameters, not because the removed component was critical) and running only single-seed experiments, which can misattribute noise to component importance.",
+      "paperLevel": "Given a system S with components C = {c₁, ..., cₙ}, an ablation study evaluates S_{-cᵢ} for each cᵢ ∈ C, where S_{-cᵢ} denotes S with cᵢ removed. The contribution of cᵢ is quantified as perf(S) − perf(S_{-cᵢ}). Originating with Allen Newell's 1974 tutorial on speech recognition (published 1975), the method assumes graceful degradation: S_{-cᵢ} must remain evaluable. A known limit is that interactions between components are not captured by single ablations; pairwise or higher-order ablations are combinatorially expensive."
+    },
+    "example": "A team builds a sentiment classifier with three inputs: word embeddings, part-of-speech tags, and syntactic parse features. The full model reaches 89% accuracy. They ablate each input: removing embeddings drops accuracy to 62%, removing POS tags drops it to 87%, and removing parse features drops it to 88%. The embeddings are load-bearing; the parser is nearly decorative. The team saves inference cost by dropping the parser.",
+    "usedIn": [
+      {
+        "name": "Speech recognition",
+        "detail": "Newell's original application, testing which knowledge sources contributed to understanding spoken language",
+        "url": ""
+      },
+      {
+        "name": "Object detection",
+        "detail": "Evaluating whether specific feature pyramid layers or anchor designs actually improve mAP",
+        "url": ""
+      },
+      {
+        "name": "Robot control",
+        "detail": "Determining which sensory inputs or motor primitives are essential for task completion",
+        "url": ""
+      },
+      {
+        "name": "LLM uncensoring (abliteration)",
+        "detail": "Modifying internal functions to eliminate refusal behaviors while preserving other capabilities",
+        "url": ""
+      }
+    ],
+    "intuition": "You can't trust what you haven't tested. A model may appear to use attention mechanisms, but only ablation reveals whether they are load-bearing or decorative.",
+    "howItWorks": [
+      "Establish a full baseline by training or evaluating the complete system with all components in place.",
+      "Select one component to remove — a layer, a feature, a module, or a training signal.",
+      "Run the system again with that component disabled, keeping all other settings identical.",
+      "Compare performance against the baseline to measure the component's marginal contribution.",
+      "Repeat for each component of interest, and optionally test combinations for interaction effects."
+    ],
+    "whyItMatters": "Without ablation, researchers optimize systems they do not understand, adding complexity that may not translate to real gains. It is a primary tool for scientific accountability in empirical AI.",
+    "misconceptions": [
+      "Ablation shows causation, not just correlation — but it only tests necessity, not sufficiency; a component may matter only in combination with others.",
+      "A small performance drop means a component is unimportant — but some critical components provide redundancy or robustness that only matters under distribution shift.",
+      "Ablation is only for neural networks — but Newell coined it for symbolic systems like Soar, and it applies to any modular system."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "full",
+          "label": "Full system",
+          "note": "Baseline with all components"
+        },
+        {
+          "id": "select",
+          "label": "Select component",
+          "note": "Choose one piece to remove"
+        },
+        {
+          "id": "remove",
+          "label": "Ablated system",
+          "note": "Same system minus one component"
+        },
+        {
+          "id": "eval",
+          "label": "Evaluate both",
+          "note": "Run same benchmark"
+        },
+        {
+          "id": "compare",
+          "label": "Compare scores",
+          "note": "Measure performance gap"
+        }
+      ],
+      "edges": [
+        {
+          "from": "full",
+          "to": "select",
+          "label": "baseline recorded"
+        },
+        {
+          "from": "select",
+          "to": "remove",
+          "label": "component disabled"
+        },
+        {
+          "from": "remove",
+          "to": "eval",
+          "label": "same test data"
+        },
+        {
+          "from": "full",
+          "to": "eval",
+          "label": "same test data"
+        },
+        {
+          "from": "eval",
+          "to": "compare",
+          "label": "delta = contribution"
+        }
+      ],
+      "caption": "The ablation loop: establish baseline, remove one component, evaluate both versions, and compare to isolate contribution."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Ablation (artificial intelligence)",
+        "url": "https://en.wikipedia.org/wiki/Ablation_(artificial_intelligence)"
+      }
+    ]
+  },
   "related": [
     "artificial-intelligence",
     "artificial-intelligence-system",

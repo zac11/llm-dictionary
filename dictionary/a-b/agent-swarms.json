@@ -5,7 +5,128 @@
   "type": "concept",
   "definition": "Multiple AI agents working in parallel or in collaboration to complete a task faster or more robustly than a single agent.",
   "details": "A swarm splits work across specialist or duplicate agents, then combines their results — polling several models for consensus, exploring many solution branches at once, or dividing a large job into sub-tasks. The pattern trades compute for coverage and resilience.",
-  "story": "Think of a chess player who never commits to a move blindly — they consider the board, try an action, watch what changes, and only then decide what is next. The machine stops just answering one question and starts getting a job done, step by step, checking its work along the way. It plans a little, acts a little, looks at the result, and then decides what to do next. The model stops being a one-shot answer machine and becomes a coworker that checks its own work. That loop of reason, act, and observe is Agent Swarms.",
+  "explainer": {
+    "lead": "Agent swarms are a way to get AI systems to tackle hard problems by throwing teamwork at them. Instead of hoping one smart agent can figure everything out, you run many agents at once and let their combined efforts produce better answers.",
+    "tiers": {
+      "eli5": "Imagine you're trying to solve a really hard jigsaw puzzle. Instead of one person working alone, you get twenty friends to each work on a corner at the same time, then you put all the finished pieces together. An agent swarm does the same thing with AI programs — many little brains working together to finish a job faster and more carefully than one brain could.",
+      "practitioner": "In practice, agent swarms are implemented with orchestration frameworks that spawn multiple LLM or tool-calling instances in parallel. Common patterns include: majority voting across model outputs for consensus, map-reduce decomposition where sub-agents handle chunks of a large task, or search swarms that explore different reasoning paths simultaneously. Pitfalls include coordination overhead, redundant compute costs, and failure modes where errors compound rather than cancel if agents share the same biases.",
+      "paperLevel": "Agent swarms instantiate ensemble methods at the agent level, generalizing from model ensembles (e.g., bagging, boosting) to multi-agent systems with potentially heterogeneous capabilities. The formal structure is a set of agents A = {a₁, ..., aₙ} with a coordination function f: O₁ × ... × Oₙ → O that maps individual outputs to a collective result. No originating work is named in the sources."
+    },
+    "example": "A software team wants to fix a bug. The swarm launches ten coding agents, each with a slightly different approach: one searches the codebase for similar past bugs, one writes a unit test to reproduce the error, three generate alternative patches using different prompting strategies, two review the patches for security issues, and three verify patches against the test suite. The coordinator selects the patch that passes the most verification checks and presents it to the human developer.",
+    "usedIn": [
+      {
+        "name": "Multi-model consensus systems",
+        "detail": "Polling several LLMs and taking the majority vote to improve answer reliability",
+        "url": ""
+      },
+      {
+        "name": "Parallel code generation",
+        "detail": "Generating multiple solution candidates simultaneously and selecting the one that passes tests",
+        "url": ""
+      },
+      {
+        "name": "Distributed research agents",
+        "detail": "Dividing web search and synthesis across specialist sub-agents to cover more sources",
+        "url": ""
+      }
+    ],
+    "intuition": "One agent can get stuck or make a mistake; many agents working on the same problem in different ways make it far more likely that at least one path succeeds.",
+    "howItWorks": [
+      "A coordinator breaks the overall task into pieces or creates multiple copies of the same task",
+      "Each agent in the swarm works on its assigned piece or variant independently and in parallel",
+      "Agents may be identical copies or specialists with different tools or prompts",
+      "Their individual outputs are gathered by a combiner function",
+      "The combiner produces the final result through voting, merging, or selecting the best output"
+    ],
+    "whyItMatters": "Swarms turn abundant, cheap compute into higher reliability and broader exploration of solution spaces, which matters when single-agent failures are costly and no single model has decisive advantages.",
+    "misconceptions": [
+      "More agents always mean better results — coordination overhead and correlated errors can degrade performance",
+      "Swarms are only for large tasks — they also help on small tasks where consensus or redundancy improves accuracy",
+      "All agents must be different — homogeneous swarms of identical agents can still help through statistical aggregation"
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "coord",
+          "label": "Coordinator",
+          "note": "Splits task and assigns to agents"
+        },
+        {
+          "id": "agent-a",
+          "label": "Agent A",
+          "note": "Works on sub-task or variant 1"
+        },
+        {
+          "id": "agent-b",
+          "label": "Agent B",
+          "note": "Works on sub-task or variant 2"
+        },
+        {
+          "id": "agent-c",
+          "label": "Agent C",
+          "note": "Works on sub-task or variant 3"
+        },
+        {
+          "id": "gather",
+          "label": "Gather outputs",
+          "note": "Collects all agent results"
+        },
+        {
+          "id": "combine",
+          "label": "Combiner",
+          "note": "Votes, merges, or selects best"
+        },
+        {
+          "id": "output",
+          "label": "Final result",
+          "note": "Delivered answer or artifact"
+        }
+      ],
+      "edges": [
+        {
+          "from": "coord",
+          "to": "agent-a",
+          "label": "assign"
+        },
+        {
+          "from": "coord",
+          "to": "agent-b",
+          "label": "assign"
+        },
+        {
+          "from": "coord",
+          "to": "agent-c",
+          "label": "assign"
+        },
+        {
+          "from": "agent-a",
+          "to": "gather",
+          "label": "output"
+        },
+        {
+          "from": "agent-b",
+          "to": "gather",
+          "label": "output"
+        },
+        {
+          "from": "agent-c",
+          "to": "gather",
+          "label": "output"
+        },
+        {
+          "from": "gather",
+          "to": "combine",
+          "label": "aggregate"
+        },
+        {
+          "from": "combine",
+          "to": "output",
+          "label": "produce"
+        }
+      ],
+      "caption": "A coordinator distributes work to parallel agents, then combines their outputs into a single result."
+    }
+  },
   "related": [
     "ai-agent",
     "agentic-ai",

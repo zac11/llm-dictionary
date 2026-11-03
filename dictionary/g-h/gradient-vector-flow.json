@@ -5,7 +5,103 @@
   "type": "concept",
   "definition": "Gradient vector flow (GVF), a computer vision framework introduced by Chenyang Xu and Jerry L.",
   "details": "Prince, is the vector field that is produced by a process that smooths and diffuses an input vector field. It is usually used to create a vector field from images that points to object edges from a distance. It is widely used in image analysis and computer vision applications for object tracking, shape recognition, segmentation, and edge detection. In particular, it is commonly used in conjunction with active contour model.",
-  "story": "Imagine an art restorer who can spot a single cracked tile in a vast mosaic. What your eyes do without thinking, the machine does one careful layer at a time. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. The model looks the way you look at a crowd and finds the one face you know. That pixel-to-meaning climb is Gradient vector flow.",
+  "explainer": {
+    "lead": "Gradient vector flow (GVF) turns image-derived vectors into a smooth field that points toward object edges, even when those edges are some distance away. It matters because it gives active contour models guidance they can follow toward a boundary.",
+    "tiers": {
+      "eli5": "Imagine placing tiny arrows on a picture, all trying to show the way to an object's outline. GVF spreads and smooths those arrows so they can guide something toward the outline from farther away. A flexible curve can then follow the arrows to find the object's shape.",
+      "practitioner": "Compute GVF by smoothing and diffusing an image-derived input vector field, then use the resulting field to guide an active contour. Its useful property is that it points toward object edges from a distance, supporting tasks such as segmentation and tracking. GVF supplies the guidance field; it is not the contour or the final segmentation itself.",
+      "paperLevel": "GVF is the vector field produced by smoothing and diffusing an input vector field, typically to create image-based vectors that point toward object edges from a distance. Chenyang Xu and Jerry L. Prince introduced the framework, which is commonly used with active contour models."
+    },
+    "example": "To outline a dark coin in a photograph, first derive an input vector field from the image. GVF smooths and spreads that field so locations around the coin contain directions toward its rim. An active contour can then follow those directions until it reaches the coin's boundary.",
+    "usedIn": [
+      {
+        "name": "Image segmentation",
+        "detail": "Guides active contours toward object boundaries.",
+        "url": ""
+      },
+      {
+        "name": "Object tracking",
+        "detail": "Provides edge-directed vector fields for following objects in images.",
+        "url": ""
+      },
+      {
+        "name": "Shape recognition",
+        "detail": "Helps image-analysis methods reach and describe object outlines.",
+        "url": ""
+      },
+      {
+        "name": "Edge detection",
+        "detail": "Creates a field that directs attention toward edges from surrounding locations.",
+        "url": ""
+      }
+    ],
+    "intuition": "A nearby arrow can point to an edge, but its influence may be very local. GVF spreads that directional information through a smooth vector field, so points farther from the edge still receive useful guidance.",
+    "howItWorks": [
+      "Start with an image and an input vector field derived from it.",
+      "Smooth and diffuse the input vectors through the field.",
+      "Obtain a GVF field whose vectors point toward object edges from a distance.",
+      "Use those vectors as guidance, commonly for an active contour model.",
+      "Let the contour follow the field toward the object boundary."
+    ],
+    "whyItMatters": "GVF makes edge information useful beyond the immediate neighborhood of an edge. That makes it valuable for active contours and other image-analysis tasks that need to find object boundaries from a distance.",
+    "misconceptions": [
+      "GVF is a vector field, not an object contour or a finished segmentation.",
+      "It does more than copy an input field: it produces a new field through smoothing and diffusion.",
+      "It is often paired with an active contour model, but the two are not the same thing."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "image",
+          "label": "Input image",
+          "note": "Contains the object edges of interest."
+        },
+        {
+          "id": "input-field",
+          "label": "Input vectors",
+          "note": "Image-derived directional information."
+        },
+        {
+          "id": "diffusion",
+          "label": "Smooth and diffuse",
+          "note": "Spreads and smooths the vector information."
+        },
+        {
+          "id": "gvf",
+          "label": "GVF field",
+          "note": "Points toward edges from a distance."
+        },
+        {
+          "id": "contour",
+          "label": "Active contour",
+          "note": "Follows the field toward the boundary."
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "input-field",
+          "label": "derived from"
+        },
+        {
+          "from": "input-field",
+          "to": "diffusion",
+          "label": ""
+        },
+        {
+          "from": "diffusion",
+          "to": "gvf",
+          "label": "produces"
+        },
+        {
+          "from": "gvf",
+          "to": "contour",
+          "label": "guides"
+        }
+      ],
+      "caption": "GVF diffuses image-derived vectors into a field that can guide an active contour toward object edges."
+    }
+  },
   "related": [
     "boundary-vector-field",
     "accord-net",

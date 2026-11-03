@@ -5,7 +5,41 @@
   "type": "concept",
   "definition": "A point in a model's loss landscape where the loss is lower than at all nearby points, but not necessarily the lowest possible loss overall (the global minimum).",
   "details": "In high-dimensional deep learning loss landscapes, research suggests that poor local minima are less of a practical problem than once feared, with saddle points and landscape geometry often mattering more for optimization difficulty.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. And that is Local Minimum — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "A local minimum is a low spot in a model’s loss landscape: moving a little in any direction makes the loss worse, even though a much better solution may exist farther away. It helps explain why optimization can stall without having found the best possible model.",
+    "tiers": {
+      "eli5": "Imagine walking over hills in thick fog and trying to reach the lowest ground. You might reach the bottom of a small dip where every nearby step goes uphill, while a much deeper valley lies beyond the fog. That small dip is a local minimum, not necessarily the lowest point overall.",
+      "practitioner": "During model training, a local minimum is a parameter setting where small changes cannot reduce the loss. A stall in training should not automatically be blamed on a poor local minimum: in high-dimensional deep learning, saddle points and the shape of the landscape can be bigger obstacles. Checking the loss and how it responds to further optimization is more useful than assuming the lowest possible loss has been reached.",
+      "paperLevel": "For a loss function L, a point x* is a local minimum if there exists epsilon > 0 such that L(x) >= L(x*) for every x with ||x - x*|| < epsilon. It is a global minimum only if L(x) >= L(x*) for every x in the domain. In high-dimensional deep learning, research suggests that poor local minima are less problematic in practice than once feared, with saddle points and landscape geometry often contributing more to optimization difficulty."
+    },
+    "example": "Suppose a model has loss 2 at one parameter setting, and every nearby setting has loss greater than 2. That setting is a local minimum; if another distant setting has loss 0.5, the first setting is not the global minimum.",
+    "usedIn": [
+      {
+        "name": "Neural network training",
+        "detail": "The idea describes parameter settings where small updates cannot further reduce the training loss.",
+        "url": ""
+      },
+      {
+        "name": "Deep learning optimization",
+        "detail": "Local minima are considered alongside saddle points and landscape geometry when analyzing why training is difficult.",
+        "url": ""
+      }
+    ],
+    "intuition": "Think of a hilly landscape where height represents loss. A local minimum is the bottom of any dip, while the global minimum is the bottom of the deepest dip in the entire landscape.",
+    "howItWorks": [
+      "Treat each possible setting of a model’s parameters as a point in a landscape.",
+      "Use the loss at that point as the landscape’s height.",
+      "Compare one point’s loss with the loss at all sufficiently nearby points.",
+      "If none of those nearby points has lower loss, the point is a local minimum.",
+      "Check the entire landscape, not just the neighborhood, to determine whether it is also the global minimum."
+    ],
+    "whyItMatters": "The distinction prevents a locally good solution from being mistaken for the best possible one. It also frames optimization difficulty more accurately: in deep learning, saddle points and landscape geometry may matter more than getting trapped in poor local minima.",
+    "misconceptions": [
+      "A local minimum is not necessarily the lowest-loss point overall.",
+      "Stopping at a local minimum does not by itself mean the model is useless; its loss may still be acceptable.",
+      "Slow or stalled deep learning training should not automatically be attributed to a poor local minimum."
+    ]
+  },
   "related": [
     "bias-variance-tradeoff",
     "convex-optimization",

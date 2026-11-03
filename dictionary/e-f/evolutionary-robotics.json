@@ -5,7 +5,118 @@
   "type": "concept",
   "definition": "Evolutionary robotics is an embodied approach to Artificial Intelligence (AI) in which robots are automatically designed using Darwinian principles of natural selection.",
   "details": "The design of a robot, or a subsystem of a robot such as a neural controller, is optimized against a behavioral goal (e.g. run as fast as possible). Usually, designs are evaluated in simulations as fabricating thousands or millions of designs and testing them in the real world is prohibitively expensive in terms of time, money, and safety. An evolutionary robotics experiment starts with a population of randomly generated robot designs. The worst performing designs are discarded and replaced with mutations and/or combinations of the better designs. This evolutionary algorithm continues until a prespecified amount of time elapses or some target performance metric is surpassed. Evolutionary robotics methods are particularly useful for engineering machines that must operate in environments in which humans have limited intuition (nanoscale, space, etc.). Evolved simulated robots can also be used as scientific tools to generate new hypotheses in biology and cognitive science, and to test old hypothesis that require experiments that have proven difficult or impossible to carry out in reality.",
-  "story": "Picture an engineer at a cluttered workbench, turning a clever idea over in their hands until it finally clicks. At its heart it is a simple notion, once you strip away the fancy name. A small key that opens a much bigger door. It is one of those ideas that feels obvious only after someone shows it to you. And that idea, made concrete, is Evolutionary robotics.",
+  "explainer": {
+    "lead": "Evolutionary robotics lets a search process design robots instead of relying entirely on human engineers. It can find bodies or controllers suited to tasks and environments where human design intuition is limited.",
+    "tiers": {
+      "eli5": "Imagine making lots of slightly different toy running robots and keeping the ones that run best. You then make new robots by changing or mixing those winners, and repeat until one meets your goal. Most of this testing happens inside a computer so you do not have to build millions of real toys.",
+      "practitioner": "An engineer defines a behavioral fitness goal, represents candidate robot designs or neural controllers, and evolves a population, usually through simulation. Selection, mutation, and recombination produce successive generations until a time or performance stopping condition is met. Physical fabrication makes large-scale real-world evaluation impractical, and simulated success does not remove the need to validate a chosen design in reality.",
+      "paperLevel": "Given a design space D and behavioral objective f, evolutionary robotics seeks d* = arg max_{d in D} f(d), where d may describe a complete robot or a subsystem such as a neural controller. An evolutionary algorithm evaluates a population, removes poor candidates, and generates replacements through mutation and/or recombination. Its main practical constraint is evaluation cost: real-world fabrication and testing are expensive in time, money, and safety, so experiments usually rely on simulation."
+    },
+    "example": "To evolve a fast-running robot, start with many random simulated designs and measure how fast each one runs. Remove the slowest designs, create new candidates by changing or combining the faster ones, and repeat until a candidate beats the chosen speed target.",
+    "usedIn": [
+      {
+        "name": "Space robotics",
+        "detail": "A setting where evolved designs may help because human engineering intuition about the operating environment is limited.",
+        "url": ""
+      },
+      {
+        "name": "Nanoscale machines",
+        "detail": "A field where evolutionary search can explore designs for conditions that are difficult for humans to reason about directly.",
+        "url": ""
+      },
+      {
+        "name": "Biology",
+        "detail": "Evolved simulated robots can generate hypotheses and test ideas whose real-world experiments are difficult or impossible.",
+        "url": ""
+      },
+      {
+        "name": "Cognitive science",
+        "detail": "Simulated evolved robots can serve as tools for developing and testing scientific hypotheses.",
+        "url": ""
+      }
+    ],
+    "intuition": "Rather than specifying every detail of a robot, specify what good behavior looks like and let variation and selection search for a design that achieves it. The approach applies Darwinian principles to complete robots or subsystems such as neural controllers.",
+    "howItWorks": [
+      "Choose a behavioral goal, such as running as fast as possible.",
+      "Generate an initial population of random robot designs.",
+      "Evaluate the designs, usually in simulation.",
+      "Discard the worst performers and create replacements by mutating and/or combining better designs.",
+      "Repeat until a preset time limit passes or a target performance level is exceeded."
+    ],
+    "whyItMatters": "It automates robot design for environments where human intuition is weak, including nanoscale and space settings. It also gives biology and cognitive science a way to explore hypotheses through simulated embodied experiments.",
+    "misconceptions": [
+      "It does not require building and testing every candidate as a physical robot; evaluation usually happens in simulation.",
+      "It is not limited to designing an entire robot body; a subsystem such as a neural controller can be evolved instead.",
+      "The process is goal-directed through its performance measure, but individual candidate designs still begin randomly and change through evolutionary operations."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "goal",
+          "label": "Behavioral goal",
+          "note": "Defines target performance"
+        },
+        {
+          "id": "population",
+          "label": "Random designs",
+          "note": "Initial candidate population"
+        },
+        {
+          "id": "simulation",
+          "label": "Simulated evaluation",
+          "note": "Measures candidate behavior"
+        },
+        {
+          "id": "selection",
+          "label": "Select performers",
+          "note": "Discards the worst designs"
+        },
+        {
+          "id": "variation",
+          "label": "Mutate or combine",
+          "note": "Creates replacement designs"
+        },
+        {
+          "id": "stop",
+          "label": "Stopping condition",
+          "note": "Checks time or performance"
+        }
+      ],
+      "edges": [
+        {
+          "from": "goal",
+          "to": "simulation",
+          "label": "fitness target"
+        },
+        {
+          "from": "population",
+          "to": "simulation",
+          "label": "candidates"
+        },
+        {
+          "from": "simulation",
+          "to": "selection",
+          "label": "performance"
+        },
+        {
+          "from": "selection",
+          "to": "variation",
+          "label": "better designs"
+        },
+        {
+          "from": "variation",
+          "to": "simulation",
+          "label": "next generation"
+        },
+        {
+          "from": "simulation",
+          "to": "stop",
+          "label": "results"
+        }
+      ],
+      "caption": "Candidate robot designs cycle through simulated evaluation, selection, and variation until a stopping condition is reached."
+    }
+  },
   "related": [
     "robotics",
     "afghan-girls-robotics-team",

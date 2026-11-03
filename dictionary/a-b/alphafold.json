@@ -5,7 +5,133 @@
   "type": "concept",
   "definition": "AlphaFold is an artificial intelligence (AI) program developed by DeepMind, a subsidiary of Alphabet, which performs predictions of protein structure.",
   "details": "It is designed using deep learning techniques. AlphaFold 1 (2018) placed first in the overall rankings of the 13th Critical Assessment of Structure Prediction (CASP) in December 2018. It was particularly successful at predicting the most accurate structures for targets rated as most difficult by the competition organizers, where no existing template structures were available from proteins with partially similar sequences. AlphaFold 2 (2020) repeated this placement in the CASP14 competition in November 2020. It achieved a level of accuracy much higher than any other entry. It scored above 90 on CASP's global distance test (GDT) for approximately two-thirds of the proteins, a test measuring the similarity between a computationally predicted structure and the experimentally determined structure, where 100 represents a complete match. The inclusion of metagenomic data has improved the quality of the prediction of multiple sequence alignments. One of the biggest sources of the training data was the custom-built Big Fantastic Database of 65,983,866 protein families, represented as multiple sequence alignments and Hidden Markov models, covering 2,204,359,010 protein sequences from referen",
-  "story": "Think of a referee whose job is to be completely honest about who touched the ball last. Before trusting a machine, someone has to measure how good it really is — fairly and honestly. It is the exam that separates “it sounds good” from “it actually is good”. What gets measured is what actually gets better. That shared ruler is AlphaFold.",
+  "explainer": {
+    "lead": "AlphaFold is DeepMind’s deep-learning system for predicting a protein’s three-dimensional shape from biological sequence data. That shape helps researchers understand protein function without relying entirely on slow, expensive experiments.",
+    "tiers": {
+      "eli5": "A protein is like a long string of beads that folds itself into a particular shape, and that shape helps determine what it does. AlphaFold studies many known examples to make a good prediction of how a new string will fold. It is like learning to predict the finished paper animal from a crease pattern after seeing many other folded creations.",
+      "practitioner": "AlphaFold 2 was released with open-source software and a searchable database of species proteomes on 15 July 2021; AlphaFold-Multimer added training on protein complexes, while AlphaFold 3 covers complexes involving DNA, RNA, ligands, and ions. Predictions should be checked against the task rather than treated as experimental structures: roughly one-third of AlphaFold 2’s CASP14 predictions were noted by some researchers as insufficiently accurate. Its outputs also do not explain the physical mechanism or rules by which proteins fold.",
+      "paperLevel": "AlphaFold learns a mapping from an amino-acid sequence and evolutionary sequence-alignment information to a predicted three-dimensional protein structure. AlphaFold 1 estimated probability distributions over inter-residue distances; AlphaFold 2 replaced its separate modules with an end-to-end differentiable network using attention and transformer-based refinement, followed by a small AMBER energy-minimization adjustment. At CASP14, AlphaFold 2 scored above 90 GDT for approximately two-thirds of targets, but some researchers judged about one-third of its predictions insufficiently accurate. It predicts structures without solving the underlying protein-folding mechanism."
+    },
+    "example": "At CASP14 in November 2020, AlphaFold 2 received amino-acid targets and predicted their structures without first knowing the experimental answers. For approximately two-thirds of the proteins, its predictions scored above 90 on the global distance test, where 100 means a complete match with the experimentally determined structure.",
+    "usedIn": [
+      {
+        "name": "Structural biology",
+        "detail": "Predicting three-dimensional protein shapes to help researchers investigate biological function.",
+        "url": ""
+      },
+      {
+        "name": "Species proteome database",
+        "detail": "A searchable database released alongside the AlphaFold 2 paper and open-source software in July 2021.",
+        "url": ""
+      },
+      {
+        "name": "Protein-complex modelling",
+        "detail": "AlphaFold-Multimer added protein complexes to its training data for predicting protein–protein interactions.",
+        "url": ""
+      },
+      {
+        "name": "Biomolecular interaction prediction",
+        "detail": "AlphaFold 3 predicts complexes formed by proteins with DNA, RNA, ligands, and ions.",
+        "url": ""
+      }
+    ],
+    "intuition": "Related protein sequences contain clues about which amino acids may sit near one another after folding. AlphaFold learns to turn those clues and other sequence information into a three-dimensional structure prediction.",
+    "howItWorks": [
+      "Start with the protein’s amino-acid sequence and related sequences gathered into an alignment.",
+      "Use learned attention-based networks to refine information about relationships between residues and aligned sequences.",
+      "Pass the refined information to a structure-prediction network and iterate its prediction.",
+      "Apply a final AMBER-based energy-minimization step that slightly adjusts local geometry."
+    ],
+    "whyItMatters": "Experimental structure determination can be expensive and time-consuming, while hundreds of millions of proteins are known. AlphaFold made substantially more accurate computational predictions, earning first place at CASP13 and CASP14 and contributing to the 2024 Nobel Prize in Chemistry awarded for protein structure prediction.",
+    "misconceptions": [
+      "AlphaFold does not reveal the general physical mechanism or rules of protein folding.",
+      "A predicted structure is not automatically as reliable as an experimentally determined one.",
+      "AlphaFold 3 is not limited to individual proteins; it also predicts complexes with several other kinds of molecules and ions."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "sequence",
+          "label": "Protein sequence",
+          "note": "The amino-acid chain to be modelled."
+        },
+        {
+          "id": "alignment",
+          "label": "Sequence alignment",
+          "note": "Related sequences supply evolutionary clues."
+        },
+        {
+          "id": "attention",
+          "label": "Attention refinement",
+          "note": "Iteratively updates residue and sequence relationships."
+        },
+        {
+          "id": "structure",
+          "label": "Structure module",
+          "note": "Turns refined information into a predicted shape."
+        },
+        {
+          "id": "amber",
+          "label": "AMBER refinement",
+          "note": "Slightly adjusts local physical geometry."
+        },
+        {
+          "id": "prediction",
+          "label": "Predicted structure",
+          "note": "The final three-dimensional protein model."
+        }
+      ],
+      "edges": [
+        {
+          "from": "sequence",
+          "to": "alignment",
+          "label": "related sequences"
+        },
+        {
+          "from": "alignment",
+          "to": "attention",
+          "label": ""
+        },
+        {
+          "from": "sequence",
+          "to": "attention",
+          "label": ""
+        },
+        {
+          "from": "attention",
+          "to": "structure",
+          "label": ""
+        },
+        {
+          "from": "structure",
+          "to": "amber",
+          "label": ""
+        },
+        {
+          "from": "amber",
+          "to": "prediction",
+          "label": ""
+        }
+      ],
+      "caption": "A simplified AlphaFold 2 flow from sequence information to a refined three-dimensional prediction."
+    },
+    "image": {
+      "src": "https://upload.wikimedia.org/wikipedia/commons/e/ee/T1044-alphafold3-layey-by-layer.gif",
+      "alt": "AlphaFold — Artificial intelligence program by DeepMind",
+      "width": 640,
+      "height": 465,
+      "credit": "Kathryn Tunyasuvunakool, Jonas Adler, Zachary Wu, Tim Green, Michal Zielinski, Augustin Žídek, Alex Bridgland, Andrew Cowie, Clemens Meyer, Agata Laydon, Sameer Velanka *, Gerard J Kleywegt *, Alex Bateman *, Richard Evans, Alexander Pritzel, Michael Figurnov, Olaf Ronneberger, Russ Bates, Simon A. A. Kohl, Anna Potapenko, Andrew J Ballard, Bernardino Romera-Paredes, Stanislav Nikolov, Rishub Jain, Ellen Clancy, David Reiman, Stig Petersen, Andrew Senior, Koray Kavukcuoglu, Ewan Birney *, Pushmeet Kohli, John Jumper, Demis Hassabis",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:T1044-alphafold3-layey-by-layer.gif"
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: AlphaFold",
+        "url": "https://en.wikipedia.org/wiki/AlphaFold"
+      }
+    ]
+  },
   "related": [
     "a-r-d-prasad",
     "abeba-birhane",

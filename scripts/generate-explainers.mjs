@@ -41,6 +41,8 @@ const CONCURRENCY = Math.max(1, Number(option('concurrency', '3')) || 3);
 const FORCE = flag('force');
 const DRY_RUN = flag('dry-run');
 const ALL = flag('all');
+const MAX_ATTEMPTS = 6;
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 function loadEntries() {
   const out = [];
@@ -123,7 +125,7 @@ async function main() {
       console.log(`\n=== ${entry.slug} ===\n${messages[1].content}`);
       return;
     }
-    for (let attempt = 1; attempt <= 2; attempt++) {
+    for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
       try {
         const reply = await complete(config, messages);
         const { type, explainer, issues } = parseExplainerReply(reply, entry, wiki);
@@ -135,10 +137,13 @@ async function main() {
         console.log(`  ✓ ${entry.slug} (${type})`);
         return;
       } catch (error) {
-        if (attempt === 2) {
+        const rateLimited = /^LLM 429/.test(error.message);
+        if (attempt === MAX_ATTEMPTS || (!rateLimited && attempt >= 2)) {
           failed++;
           console.log(`  ✗ ${entry.slug}: ${error.message}`);
+          return;
         }
+        if (rateLimited) await sleep(2000 * attempt + Math.random() * 2000);
       }
     }
   };

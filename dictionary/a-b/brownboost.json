@@ -5,7 +5,76 @@
   "type": "algorithm",
   "definition": "BrownBoost is a boosting algorithm that may be robust to noisy datasets.",
   "details": "BrownBoost is an adaptive version of the boost by majority algorithm. As is the case for all boosting algorithms, BrownBoost is used in conjunction with other machine learning methods. BrownBoost was introduced by Yoav Freund in 2001.",
-  "story": "Think of a historian sorting through boxes of letters, building a picture of an era one sentence at a time. Every machine is shaped by what it was shown, so someone has to choose that material with care. The examples a machine reads become the world it believes in. The words a model reads become the world it believes in. That care with the raw material is BrownBoost.",
+  "explainer": {
+    "lead": "BrownBoost is a boosting algorithm designed to work alongside other machine learning methods. It adapts the boost-by-majority approach and may remain robust when a training dataset contains noise.",
+    "tiers": {
+      "eli5": "Imagine a team practising with a quiz whose answer sheet has a few mistakes. BrownBoost is an adaptive way to combine the team’s answers so that those mistakes may cause less trouble.",
+      "practitioner": "BrownBoost is applied with another machine learning method acting as the underlying learner, rather than on its own. It is a candidate boosting approach for noisy datasets, although its robustness is not guaranteed.",
+      "paperLevel": "BrownBoost, introduced by Yoav Freund in 2001, is an adaptive version of the boost-by-majority algorithm. Its defining motivation is possible robustness to noisy datasets, and it operates in conjunction with other machine learning methods."
+    },
+    "example": "Suppose a classifier is trained on 100 labelled examples, 10 of which have incorrect labels. BrownBoost can be used with that classifier’s learning method to produce a boosted predictor, potentially reducing the disruption caused by the noisy labels.",
+    "goal": "Build a boosted predictor using other machine learning methods, with possible robustness to noise in the training data.",
+    "inputs": [
+      "A training dataset, possibly noisy",
+      "Another machine learning method"
+    ],
+    "outputs": [
+      "A boosted predictor"
+    ],
+    "steps": [
+      "Provide the training dataset.",
+      "Apply the accompanying machine learning method.",
+      "Adapt the boost-by-majority process.",
+      "Produce the boosted predictor."
+    ],
+    "tradeoffs": [
+      "May tolerate noisy datasets",
+      "Robustness is not assured",
+      "Requires another learning method"
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data",
+          "label": "Training data",
+          "note": "Examples may contain noise"
+        },
+        {
+          "id": "learner",
+          "label": "Learning method",
+          "note": "The accompanying machine learning method"
+        },
+        {
+          "id": "boost",
+          "label": "BrownBoost",
+          "note": "Adapts boost by majority"
+        },
+        {
+          "id": "predictor",
+          "label": "Boosted predictor",
+          "note": "The resulting predictor"
+        }
+      ],
+      "edges": [
+        {
+          "from": "data",
+          "to": "learner",
+          "label": "trains"
+        },
+        {
+          "from": "learner",
+          "to": "boost",
+          "label": "boosts"
+        },
+        {
+          "from": "boost",
+          "to": "predictor",
+          "label": "produces"
+        }
+      ],
+      "caption": "BrownBoost works with another learning method to turn possibly noisy training data into a boosted predictor."
+    }
+  },
   "related": [
     "a-r-d-prasad",
     "abeba-birhane",

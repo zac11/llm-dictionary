@@ -5,7 +5,129 @@
   "type": "concept",
   "definition": "AI-assisted software development is the use of artificial intelligence (AI) to augment software development.",
   "details": "It uses large language models (LLMs), AI agents, and other AI technologies to assist software developers. It helps in a range of tasks of the software development life cycle, from code generation to debugging, editing, testing, UI design, understanding the code, and documentation. Agentic coding denotes the use of AI agents for software development.",
-  "story": "Think of a referee whose job is to be completely honest about who touched the ball last. Before trusting a machine, someone has to measure how good it really is — fairly and honestly. It is the exam that separates “it sounds good” from “it actually is good”. What gets measured is what actually gets better. That shared ruler is AI-assisted software development.",
+  "explainer": {
+    "lead": "AI-assisted software development gives programmers a fast collaborator for drafting, completing, checking, and explaining code. It can speed up delivery, but the resulting software still needs careful testing and human review because faster output does not guarantee correct or secure code.",
+    "tiers": {
+      "eli5": "Imagine a helper that can quickly draft instructions for a computer when you describe what you want. It can also spot possible mistakes and explain confusing instructions, much like a study partner. You still have to check its work, because something that looks right may not actually work or may leave a door open for attackers.",
+      "practitioner": "Engineers use LLM-powered IDE features or extensions for contextual line completions, code generation from prompts or comments, debugging, static analysis, testing, and documentation; AI agents can take on broader development tasks. Treat outputs as untrusted changes and validate them with automated tests, static analysis, and human review, while also considering confidentiality, security, ownership, and accountability. A September 2024 report from the German Federal Office for Information Security warned that assistants used without careful oversight can produce major vulnerabilities or incorrect solutions about 50% of the time.",
+      "paperLevel": "A simple process model is developer intent + code context -> LLM or AI agent -> candidate code or edits -> automated and human validation. Code-generation research often measures functional correctness by whether a generated program passes automated test cases; known limits include incorrect or insecure output, new attack and confidential-data exfiltration vectors, disputed ownership and responsibility, and possible erosion of developers' review skills."
+    },
+    "example": "A developer asks an IDE assistant to write a function that validates email addresses and adds tests for valid and invalid inputs. The assistant drafts both, but a test exposes an edge case; the developer requests a correction, runs the tests and static analysis again, and reviews the final change before accepting it.",
+    "usedIn": [
+      {
+        "name": "Google",
+        "detail": "About a quarter of its code was AI-generated in fall 2024, rising to about half by the following fall.",
+        "url": ""
+      },
+      {
+        "name": "Microsoft",
+        "detail": "In April 2025, AI wrote between 20% and 30% of the code for some projects.",
+        "url": ""
+      },
+      {
+        "name": "Integrated development environments",
+        "detail": "Code-generation tools can appear as IDE features or extensions, including contextual code-completion suggestions.",
+        "url": ""
+      }
+    ],
+    "intuition": "Think of the AI as a tireless drafting assistant that turns intent and surrounding code into suggestions, rather than as an authority that produces finished software. Its speed is most useful when paired with checks that catch plausible-looking mistakes.",
+    "howItWorks": [
+      "A developer supplies a prompt, comment, docstring, or partially written code as context.",
+      "An LLM or AI agent proposes source code, a localized completion, an edit, a fix, or documentation.",
+      "The developer or agent runs tests and other checks, such as static analysis, to assess the result.",
+      "Follow-up prompts and edits refine the output where necessary.",
+      "A human reviews the change before accepting it, checking correctness, security, maintainability, and accountability."
+    ],
+    "whyItMatters": "AI assistance covers much of the software development life cycle and can sometimes increase delivery speed. Its benefits must be weighed against the extra quality control and security work needed to manage incorrect code, vulnerabilities, and unclear responsibility.",
+    "misconceptions": [
+      "AI-generated code is not automatically correct or secure merely because it runs or looks plausible.",
+      "Vibe coding is only one style of AI assistance, and it can involve accepting generated code without thorough review.",
+      "Productivity gains are not free: testing, static analysis, human review, and security controls add necessary work."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "intent",
+          "label": "Developer intent",
+          "note": "Prompt, comment, docstring, or task"
+        },
+        {
+          "id": "context",
+          "label": "Code context",
+          "note": "Partial code and surrounding project information"
+        },
+        {
+          "id": "ai",
+          "label": "LLM or agent",
+          "note": "Generates code, edits, fixes, or documentation"
+        },
+        {
+          "id": "candidate",
+          "label": "Candidate change",
+          "note": "Proposed output for the codebase"
+        },
+        {
+          "id": "checks",
+          "label": "Automated checks",
+          "note": "Tests and static analysis assess the change"
+        },
+        {
+          "id": "review",
+          "label": "Human review",
+          "note": "Checks quality, security, and maintainability"
+        },
+        {
+          "id": "accepted",
+          "label": "Accepted software",
+          "note": "Validated change incorporated by developers"
+        }
+      ],
+      "edges": [
+        {
+          "from": "intent",
+          "to": "ai",
+          "label": "task"
+        },
+        {
+          "from": "context",
+          "to": "ai",
+          "label": "code"
+        },
+        {
+          "from": "ai",
+          "to": "candidate",
+          "label": "proposal"
+        },
+        {
+          "from": "candidate",
+          "to": "checks",
+          "label": ""
+        },
+        {
+          "from": "checks",
+          "to": "review",
+          "label": "results"
+        },
+        {
+          "from": "review",
+          "to": "accepted",
+          "label": "approval"
+        },
+        {
+          "from": "review",
+          "to": "ai",
+          "label": "follow-up"
+        }
+      ],
+      "caption": "AI proposes a change from intent and code context, while automated checks and human review govern acceptance and refinement."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: AI-assisted software development",
+        "url": "https://en.wikipedia.org/wiki/AI-assisted_software_development"
+      }
+    ]
+  },
   "related": [
     "nasa-ai-assisted-air-quality-monitoring-project",
     "ai-alignment",

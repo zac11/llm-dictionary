@@ -5,7 +5,102 @@
   "type": "concept",
   "definition": "Geometric feature learning is a technique combining machine learning and computer vision to solve visual tasks.",
   "details": "The main goal of this method is to find a set of representative features of geometric form to represent an object by collecting geometric features from images and learning them using efficient machine learning methods. Humans solve visual tasks and can give fast response to the environment by extracting perceptual information from what they see. Researchers simulate humans' ability of recognizing objects to solve computer vision problems. For example, M. Mata et al.(2002) applied feature learning techniques to the mobile robot navigation tasks in order to avoid obstacles. They used genetic algorithms for learning features and recognizing objects (figures). Geometric feature learning methods can not only solve recognition problems but also predict subsequent actions by analyzing a set of sequential input sensory images, usually some extracting features of images. Through learning, some hypothesis of the next action are given and according to the probability of each hypothesis give a most probable action. This technique is widely used in the area of artificial intelligence.",
-  "story": "Think of a referee whose job is to be completely honest about who touched the ball last. Before trusting a machine, someone has to measure how good it really is — fairly and honestly. It is the exam that separates “it sounds good” from “it actually is good”. What gets measured is what actually gets better. That shared ruler is Geometric feature learning.",
+  "explainer": {
+    "lead": "Geometric feature learning teaches machines to describe objects using shapes and other geometric details found in images. These descriptions can support object recognition and help a system choose what to do next.",
+    "tiers": {
+      "eli5": "It is like recognizing a bicycle from its wheels, frame, and handlebars rather than memorizing every picture of a bicycle. A computer collects useful shape clues from images and learns which ones matter. It can then recognize things or use a series of pictures to help decide its next move.",
+      "practitioner": "Extract geometric features from images, then learn a representative set for recognition or action selection. For mobile robot navigation, genetic algorithms have been used to learn features and recognize objects. For sequential sensory images, generate candidate next actions and select the most probable one; useful results depend on features that represent the relevant geometry well.",
+      "paperLevel": "In plain-text notation, learn z = f(x), where x contains image measurements and z is a representative set of geometric features, then use z for recognition or to estimate candidate actions. For sequential images, the action can be selected as a* = argmax_a P(a | z_1, ..., z_T). M. Mata et al. (2002) applied genetic algorithms to feature learning and object recognition for mobile robot obstacle avoidance."
+    },
+    "example": "M. Mata et al. (2002) used genetic algorithms to learn features and recognize objects in a mobile robot navigation task. The learned visual information helped the robot avoid obstacles.",
+    "usedIn": [
+      {
+        "name": "Mobile robot navigation",
+        "detail": "Learning geometric features to recognize objects and avoid obstacles.",
+        "url": ""
+      },
+      {
+        "name": "Object recognition",
+        "detail": "Representing objects through geometric features learned from images.",
+        "url": ""
+      },
+      {
+        "name": "Sequential action prediction",
+        "detail": "Analyzing successive sensory images and choosing the most probable next action.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of treating an image as an undifferentiated collection of pixels, describe an object by its geometric form. Learning which geometric features are representative gives a machine a compact basis for recognizing objects and responding to what it sees.",
+    "howItWorks": [
+      "Collect images or sequential sensory images.",
+      "Extract features describing geometric form.",
+      "Learn a representative feature set with machine learning.",
+      "Use the features to recognize objects or form action hypotheses.",
+      "For action selection, choose the most probable hypothesis."
+    ],
+    "whyItMatters": "It connects geometric descriptions of visual scenes with learned recognition and decision-making. This lets the same general approach support both identifying objects and predicting subsequent actions.",
+    "misconceptions": [
+      "It is not limited to recognizing objects; it can also support next-action selection.",
+      "It does not use every image feature indiscriminately; its goal is a representative set of geometric features."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "images",
+          "label": "Sensory images",
+          "note": "Single images or a sequence"
+        },
+        {
+          "id": "features",
+          "label": "Geometric features",
+          "note": "Descriptions of geometric form"
+        },
+        {
+          "id": "learning",
+          "label": "Feature learning",
+          "note": "Selects a representative set"
+        },
+        {
+          "id": "hypotheses",
+          "label": "Action hypotheses",
+          "note": "Candidate next actions with probabilities"
+        },
+        {
+          "id": "output",
+          "label": "Recognition or action",
+          "note": "An object identity or most probable action"
+        }
+      ],
+      "edges": [
+        {
+          "from": "images",
+          "to": "features",
+          "label": "extract"
+        },
+        {
+          "from": "features",
+          "to": "learning",
+          "label": "learn"
+        },
+        {
+          "from": "learning",
+          "to": "output",
+          "label": "recognize"
+        },
+        {
+          "from": "learning",
+          "to": "hypotheses",
+          "label": "predict"
+        },
+        {
+          "from": "hypotheses",
+          "to": "output",
+          "label": "select"
+        }
+      ],
+      "caption": "Geometric features are learned from images and used for recognition or probabilistic action selection."
+    }
+  },
   "related": [
     "feature-machine-learning",
     "action-model-learning",

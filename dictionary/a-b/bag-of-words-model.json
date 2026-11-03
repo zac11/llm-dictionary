@@ -5,7 +5,103 @@
   "type": "concept",
   "definition": "The bag-of-words (BoW) model is a model of text which uses an unordered collection (a \"bag\") of words.",
   "details": "It is used in natural language processing and information retrieval (IR). It disregards word order (and thus most of syntax or grammar) but captures multiplicity. The bag-of-words model is commonly used in methods of document classification where, for example, the (frequency of) occurrence of each word is used as a feature for training a classifier. It has also been used for computer vision. An early reference to \"bag of words\" in a linguistic context can be found in Zellig Harris's 1954 article on Distributional Structure.",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. That is Bag-of-words model — a small key that opens a big door.",
+  "explainer": {
+    "lead": "Bag of words turns text into word counts, ignoring the order the words appeared in. This gives machine-learning systems a simple numerical way to compare and classify documents, at the cost of losing most grammar and sentence structure.",
+    "tiers": {
+      "eli5": "Imagine emptying a sentence into a bag and counting how many copies of each word you find. Two sentences with the same words look identical, even if their word order makes them mean different things. The counts can still help a computer sort documents by what they talk about.",
+      "practitioner": "Build a vocabulary, convert each document into word-occurrence or word-frequency features, and train a classifier on those vectors. The representation is straightforward for document classification and retrieval, but it discards word order and most syntax. Words outside the chosen vocabulary cannot be represented directly.",
+      "paperLevel": "For vocabulary V = {w1, ..., wn}, represent document d by x(d) = (c(w1, d), ..., c(wn, d)), where c(wi, d) is the number of occurrences of wi in d; frequencies may be used instead. The representation preserves multiplicity but is invariant under word reordering and therefore loses most syntactic information. An early linguistic reference to “bag of words” appears in Zellig Harris’s 1954 article “Distributional Structure.”"
+    },
+    "example": "For “the cat sat on the mat,” the word “the” has count 2, while “cat,” “sat,” “on,” and “mat” each have count 1. Every other vocabulary word has count 0, and rearranging the sentence would leave these counts unchanged.",
+    "usedIn": [
+      {
+        "name": "Document classification",
+        "detail": "Word occurrences or frequencies become features for training a classifier.",
+        "url": ""
+      },
+      {
+        "name": "Natural language processing",
+        "detail": "Text is represented as an unordered collection of words while retaining repeated occurrences.",
+        "url": ""
+      },
+      {
+        "name": "Information retrieval",
+        "detail": "Documents are represented through the words they contain rather than their word order.",
+        "url": ""
+      },
+      {
+        "name": "Computer vision",
+        "detail": "The bag-of-words approach has also been applied beyond text.",
+        "url": ""
+      }
+    ],
+    "intuition": "Treat a document as a collection of words rather than a sequence. Keep track of which words appear and how often, but throw away their positions.",
+    "howItWorks": [
+      "Choose the words that will make up the vocabulary.",
+      "Read a document and collect its words without preserving their order.",
+      "Count each vocabulary word’s occurrences in the document.",
+      "Arrange those counts or frequencies into a numerical feature vector.",
+      "Use the vectors for tasks such as training a document classifier."
+    ],
+    "whyItMatters": "It provides a simple bridge from text to numerical features that classifiers can use. It captures repeated words, which a mere checklist of present or absent words would miss.",
+    "misconceptions": [
+      "It does not preserve sentence order: reordering a document leaves its representation unchanged.",
+      "It is not just a set of unique words: multiplicity is retained through counts or frequencies.",
+      "It does not capture most syntax or grammar."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "document",
+          "label": "Input document",
+          "note": "Text in its original word order"
+        },
+        {
+          "id": "words",
+          "label": "Word collection",
+          "note": "Words extracted from the document"
+        },
+        {
+          "id": "counts",
+          "label": "Word counts",
+          "note": "Occurrences counted without positions"
+        },
+        {
+          "id": "vector",
+          "label": "Feature vector",
+          "note": "Counts or frequencies in vocabulary order"
+        },
+        {
+          "id": "classifier",
+          "label": "Document classifier",
+          "note": "Learns from the numerical features"
+        }
+      ],
+      "edges": [
+        {
+          "from": "document",
+          "to": "words",
+          "label": "extract"
+        },
+        {
+          "from": "words",
+          "to": "counts",
+          "label": "count"
+        },
+        {
+          "from": "counts",
+          "to": "vector",
+          "label": "encode"
+        },
+        {
+          "from": "vector",
+          "to": "classifier",
+          "label": "train"
+        }
+      ],
+      "caption": "Bag of words converts ordered text into unordered word counts, then numerical features for tasks such as document classification."
+    }
+  },
   "related": [
     "acoustic-model",
     "action-model-learning",

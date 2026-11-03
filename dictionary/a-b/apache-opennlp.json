@@ -5,7 +5,143 @@
   "type": "tool",
   "definition": "The Apache OpenNLP library is a machine learning based toolkit for the processing of natural language text.",
   "details": "It supports the most common NLP tasks, such as language detection, tokenization, sentence segmentation, part-of-speech tagging, named entity extraction, chunking, parsing and coreference resolution. These tasks are usually required to build more advanced text processing services.",
-  "story": "Think of a grammar teacher who never memorized a rule but can still tell you when a sentence sounds wrong. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It figures out meaning by noticing which words like to travel together. The machine learns to read between the lines by reading an impossible number of lines. That pattern-earned fluency is Apache OpenNLP.",
+  "explainer": {
+    "lead": "Apache OpenNLP is a machine-learning toolkit for turning natural-language text into useful linguistic information. It provides common building blocks such as tokenization, named entity extraction, and parsing, which can be combined to create more advanced text-processing services.",
+    "tiers": {
+      "eli5": "Apache OpenNLP is like a set of tools that helps a computer take a sentence apart and understand its pieces. It can split text into sentences and words, label words by their grammatical roles, find names, and work out how parts of the text relate to one another.",
+      "practitioner": "An engineer can use OpenNLP for individual NLP tasks or chain several tasks into a text-processing pipeline, such as sentence segmentation followed by tokenization and part-of-speech tagging. Its scope also includes language detection, named entity extraction, chunking, parsing, and coreference resolution. The tasks should be selected to suit the service being built rather than treated as one mandatory, fixed pipeline.",
+      "paperLevel": "OpenNLP can be described as a machine-learning-based toolkit T for mapping natural-language text to task-dependent linguistic representations. Its supported task set includes language detection, tokenization, sentence segmentation, part-of-speech tagging, named entity extraction, chunking, parsing, and coreference resolution. It addresses these common processing tasks as components for more advanced services, rather than defining a single end-to-end application."
+    },
+    "example": "Given a short English document, a developer could segment it into sentences, tokenize each sentence into words, assign part-of-speech tags, and extract named entities. Those results provide structured information about the document for a more advanced text-processing service.",
+    "usedIn": [
+      {
+        "name": "Advanced text-processing services",
+        "detail": "Its NLP tasks supply common processing steps needed to build these services.",
+        "url": ""
+      },
+      {
+        "name": "Information extraction",
+        "detail": "Named entity extraction identifies entities in natural-language text.",
+        "url": ""
+      },
+      {
+        "name": "Linguistic text analysis",
+        "detail": "Tokenization, part-of-speech tagging, chunking, and parsing expose grammatical structure.",
+        "url": ""
+      }
+    ],
+    "intuition": "Raw text is difficult for software to use directly, so OpenNLP applies machine-learning-based processing to identify its sentences, words, entities, and grammatical relationships. Those outputs can then serve as building blocks for more advanced text-processing services.",
+    "howItWorks": [
+      "Provide natural-language text to the toolkit.",
+      "Apply a supported task, such as language detection or sentence segmentation.",
+      "Use further tasks, including tokenization, tagging, entity extraction, chunking, or parsing, as needed.",
+      "Combine the resulting linguistic information in a more advanced text-processing service."
+    ],
+    "whyItMatters": "OpenNLP brings several frequently required NLP operations into one toolkit. This makes it possible to assemble the underlying language-processing steps needed by more advanced services.",
+    "misconceptions": [
+      "It is a toolkit of NLP tasks, not a single algorithm for one task.",
+      "It supplies processing building blocks rather than a complete advanced text-processing service.",
+      "Its supported tasks can be selected as needed; they are not one mandatory sequence."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "text",
+          "label": "Natural-language text",
+          "note": "The input to the toolkit."
+        },
+        {
+          "id": "detect",
+          "label": "Language detection",
+          "note": "Processes the text's language."
+        },
+        {
+          "id": "segment",
+          "label": "Sentence segmentation",
+          "note": "Identifies sentence boundaries."
+        },
+        {
+          "id": "tokenize",
+          "label": "Tokenization",
+          "note": "Splits text into tokens."
+        },
+        {
+          "id": "tag",
+          "label": "Tagging and chunking",
+          "note": "Adds part-of-speech and chunk information."
+        },
+        {
+          "id": "entities",
+          "label": "Named entity extraction",
+          "note": "Extracts named entities."
+        },
+        {
+          "id": "structure",
+          "label": "Parsing and coreference",
+          "note": "Processes grammatical and reference relationships."
+        },
+        {
+          "id": "service",
+          "label": "Text-processing service",
+          "note": "Uses selected linguistic outputs."
+        }
+      ],
+      "edges": [
+        {
+          "from": "text",
+          "to": "detect",
+          "label": "input"
+        },
+        {
+          "from": "text",
+          "to": "segment",
+          "label": "input"
+        },
+        {
+          "from": "segment",
+          "to": "tokenize",
+          "label": "sentences"
+        },
+        {
+          "from": "tokenize",
+          "to": "tag",
+          "label": "tokens"
+        },
+        {
+          "from": "tokenize",
+          "to": "entities",
+          "label": "tokens"
+        },
+        {
+          "from": "tokenize",
+          "to": "structure",
+          "label": "tokens"
+        },
+        {
+          "from": "tag",
+          "to": "service",
+          "label": "annotations"
+        },
+        {
+          "from": "entities",
+          "to": "service",
+          "label": "entities"
+        },
+        {
+          "from": "structure",
+          "to": "service",
+          "label": "relationships"
+        }
+      ],
+      "caption": "OpenNLP offers task components whose outputs can support more advanced services; tasks are selected as needed rather than always run in this exact order."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Apache OpenNLP",
+        "url": "https://en.wikipedia.org/wiki/Apache_OpenNLP"
+      }
+    ]
+  },
   "related": [
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",
     "accelerated-linear-algebra",

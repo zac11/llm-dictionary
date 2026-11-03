@@ -5,7 +5,141 @@
   "type": "architecture",
   "definition": "AlexNet is a convolutional neural network architecture developed for image classification tasks, notably achieving prominence through its performance in the ImageNet Large Scale Visual Recognition Challenge (ILSVRC).",
   "details": "It classifies images into 1,000 distinct object categories and is regarded as the first widely recognized application of deep convolutional networks in large-scale visual recognition. Developed in 2012 by Alex Krizhevsky in collaboration with Ilya Sutskever and his Ph.D. advisor Geoffrey Hinton at the University of Toronto, the model contains 60 million parameters and 650,000 neurons. The original paper's primary result was that the depth of the model was essential for its high performance, which was computationally expensive, but made feasible due to the utilization of graphics processing units (GPUs) during training. The three formed team SuperVision and submitted AlexNet in the ImageNet Large Scale Visual Recognition Challenge on September 30, 2012. The network achieved a top-5 error rate of 15.3% to win the contest, more than 10.8% points better than the runner-up. The architecture influenced a large number of subsequent work in deep learning, especially in applying neural networks to computer vision.",
-  "story": "Picture a child pointing at pictures in a book — cat, car, cloud — learning to see by seeing a thousand examples. It turns a picture into an understanding: this is a cat, that is a stop sign. What your eyes do without thinking, the machine does one careful layer at a time. It is eyes made of arithmetic — pixels become edges, edges become shapes, shapes become meaning. That pixel-to-meaning climb is AlexNet.",
+  "explainer": {
+    "lead": "AlexNet showed in 2012 that a deep neural network could learn visual features directly from a very large image collection. Its decisive ImageNet victory made GPU-trained neural networks a central approach to computer vision.",
+    "tiers": {
+      "eli5": "AlexNet is a computer system that learned to sort pictures into 1,000 kinds of objects. Think of it as an assembly line that gradually turns a picture's pixels into a guess about what the picture shows. Its big contest win showed that this learning approach could work much better than many earlier methods.",
+      "practitioner": "An implementation takes normalized 224×224 RGB crops, applies ReLU activations and dropout with probability 0.5, and averages predictions over ten test-time crops and reflections. The original trained for 90 epochs over five to six days on two Nvidia GTX 580 GPUs, using batch size 128, momentum 0.9, weight decay 0.0005, and manual learning-rate reductions. Its 60 million parameters and two-GPU split reflect the memory limits of that hardware, and the winning ILSVRC system was an ensemble of seven networks rather than one AlexNet.",
+      "paperLevel": "The architecture is (CONV → RN → MP)^2 → (CONV^3 → MP) → (FC → DO)^2 → Linear → softmax, with ReLU on convolutional and fully connected layers, local response normalization, max-pooling, and dropout probability 0.5. It contains eight learned layers, 60 million parameters, and 650,000 neurons, and the original work identified depth as essential to its performance. The network except its last layer was split across two 3GB GPUs because it did not fit on one; the competition result also depended on a seven-network ensemble and ten-view test-time averaging."
+    },
+    "usedIn": [
+      {
+        "name": "ILSVRC 2012",
+        "detail": "An ensemble of seven AlexNets won with a 15.3% top-5 error rate.",
+        "url": ""
+      },
+      {
+        "name": "Image classification",
+        "detail": "The network predicts probabilities for 1,000 object categories.",
+        "url": ""
+      },
+      {
+        "name": "Computer vision research",
+        "detail": "Its success encouraged later work on neural networks that learn visual features from data.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Five convolutional layers",
+        "detail": "These ReLU-activated layers process the image; layers 3, 4, and 5 connect directly without intervening pooling or normalization."
+      },
+      {
+        "name": "Pooling and normalization",
+        "detail": "Max-pooling follows the convolutional groups, while local response normalization is used in the early processing stages."
+      },
+      {
+        "name": "Two fully connected layers",
+        "detail": "These ReLU-activated layers use dropout with probability 0.5 during training."
+      },
+      {
+        "name": "Classification output",
+        "detail": "A final linear layer and softmax produce probabilities for 1,000 categories."
+      },
+      {
+        "name": "Two-GPU arrangement",
+        "detail": "Except for the last layer, the network was split into two copies because one GTX 580 had insufficient memory."
+      }
+    ],
+    "flow": [
+      "An ImageNet image is resized and cropped; training uses random 224×224 patches and horizontal reflections.",
+      "The patch passes through five convolutional layers, with ReLU, normalization, and max-pooling in the arrangement defined by the architecture.",
+      "Two fully connected ReLU layers process the resulting representation, with dropout applied during training.",
+      "A linear layer and softmax produce a probability distribution over 1,000 object categories.",
+      "At test time, probabilities from five patches and their horizontal reflections—ten views in total—are averaged."
+    ],
+    "origin": "Alex Krizhevsky developed AlexNet in 2012 with Ilya Sutskever and Geoffrey Hinton at the University of Toronto, extending Krizhevsky's cuda-convnet for multi-GPU training. As team SuperVision, they submitted it to the ImageNet Large Scale Visual Recognition Challenge on September 30, 2012.",
+    "lineage": "Earlier CNNs included Kunihiko Fukushima's 1980 neocognitron and Yann LeCun and colleagues' 1989 LeNet-5, which had an essentially similar architecture at a smaller scale; GPU-trained CNNs by researchers including Dan Cireșan also preceded it. AlexNet helped make learned features dominant in computer vision and influenced extensive subsequent deep-learning work.",
+    "whyItMatters": "AlexNet combined a large labeled dataset, a deep network, and GPU computation to outperform the ILSVRC runner-up by more than 10.8 percentage points in top-5 error. Its result demonstrated the practical value of learning visual features directly from data at large scale.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Image patches",
+          "note": "Normalized 224×224 image crops"
+        },
+        {
+          "id": "conv12",
+          "label": "Conv layers 1–2",
+          "note": "ReLU, response normalization, max-pooling"
+        },
+        {
+          "id": "conv345",
+          "label": "Conv layers 3–5",
+          "note": "Direct connections, then max-pooling"
+        },
+        {
+          "id": "fc",
+          "label": "Fully connected ×2",
+          "note": "ReLU with dropout during training"
+        },
+        {
+          "id": "softmax",
+          "label": "Linear + softmax",
+          "note": "Probabilities for 1,000 categories"
+        },
+        {
+          "id": "average",
+          "label": "Average ten views",
+          "note": "Test-time crops and reflections"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "conv12",
+          "label": "pixels"
+        },
+        {
+          "from": "conv12",
+          "to": "conv345",
+          "label": "features"
+        },
+        {
+          "from": "conv345",
+          "to": "fc",
+          "label": "features"
+        },
+        {
+          "from": "fc",
+          "to": "softmax",
+          "label": "representation"
+        },
+        {
+          "from": "softmax",
+          "to": "average",
+          "label": "probabilities"
+        }
+      ],
+      "caption": "Image data moves through AlexNet's convolutional and fully connected stages, with ten-view averaging used at test time."
+    },
+    "image": {
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ad/AlexNet_block_diagram.svg/960px-AlexNet_block_diagram.svg.png",
+      "alt": "AlexNet — Influential 2012 deep convolutional neural network",
+      "width": 640,
+      "height": 955,
+      "credit": "Zhang, Aston and Lipton, Zachary C. and Li, Mu and Smola, Alexander J.",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:AlexNet_block_diagram.svg"
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: AlexNet",
+        "url": "https://en.wikipedia.org/wiki/AlexNet"
+      }
+    ]
+  },
   "related": [
     "adobe-firefly",
     "akool",

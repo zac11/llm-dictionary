@@ -5,7 +5,123 @@
   "type": "concept",
   "definition": "An area of computer vision is active vision, sometimes also called active computer vision.",
   "details": "An active vision system is one that can manipulate the viewpoint of the camera(s) in order to investigate the environment and get better information from it.",
-  "story": "Picture walking through a crowd and instantly picking out a familiar face without reading a single name tag. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. It turns a picture into an understanding: this is a cat, that is a stop sign. Sight, for a machine, is a long climb from raw light to a name. That pixel-to-meaning climb is Active vision.",
+  "explainer": {
+    "lead": "Active vision is the idea that a camera shouldn't just passively record the world—it should move, zoom, and refocus to actively seek out better information. This turns a fixed sensor into a curious investigator that can work around blind spots, clutter, and limited resolution.",
+    "tiers": {
+      "eli5": "Imagine trying to find your friend in a crowded playground while standing perfectly still with binoculars glued to your eyes. You'd miss a lot! Active vision is like being allowed to walk around, turn your head, and zoom in on clues—your eyes (or camera) get to explore instead of just stare.",
+      "practitioner": "Active vision systems typically use pan-tilt-zoom (PTZ) cameras or robot-mounted sensors controlled by feedback loops. Common implementations include Kalman-filter-based tracking with zoom optimization, master/slave camera networks where a wide-view camera guides a high-resolution foveal camera, and visual servoing for robotic manipulation. Key pitfalls include the computational cost of multi-camera coordination, latency in control loops, and the need for accurate camera calibration to project data between sensors.",
+      "paperLevel": "Active vision formalizes visual perception as a closed-loop control problem where sensor motion a(t) is selected to minimize uncertainty in state estimation or maximize task performance. The framework originated with Aloimonos et al. in the late 1980s, who introduced the first general formulation for improving perceptual quality through viewpoint manipulation. The controlled active vision framework of Papanikolopoulos combines stochastic control with multi-window tracking and confidence measures, with Lyapunov-based designs for stability in applications such as interactive MRI segmentation."
+    },
+    "example": "A master/slave surveillance system monitors a parking lot. The static master camera watches the entire lot at low resolution and detects a person walking. It tracks the person's position and passes coordinates to a PTZ slave camera, which pans, tilts, and zooms to capture a high-resolution face image for identification—all without human operator control.",
+    "usedIn": [
+      {
+        "name": "Autonomous vehicles",
+        "detail": "DARPA Grand Challenge teams combined LIDAR with active vision to guide driverless vehicles off-road",
+        "url": ""
+      },
+      {
+        "name": "Surveillance systems",
+        "detail": "PTZ cameras track faces or moving targets with autonomous or master/slave control",
+        "url": ""
+      },
+      {
+        "name": "Robotic manipulation",
+        "detail": "Visual servoing around 3-D objects using controlled sensor motion",
+        "url": ""
+      },
+      {
+        "name": "Medical imaging",
+        "detail": "Interactive MRI segmentation coupling human input with Lyapunov-controlled gradient flows",
+        "url": ""
+      }
+    ],
+    "intuition": "A static camera is like reading a book with your head locked in a vise—you see only what happens to fall on the page in front of you. Active vision frees your head to move: you lean closer for detail, tilt to avoid glare, and scan to find the next paragraph. The sensor becomes a participant, not a spectator.",
+    "howItWorks": [
+      "A camera or sensor array is mounted on actuators (pan-tilt, zoom, mobile robot, or wearable rig) that can change viewpoint on command.",
+      "The system continuously analyzes its current view to detect problems: occlusions, motion blur, low resolution, or uncertainty in tracking.",
+      "It computes a desired camera motion or parameter change—zoom in, pan left, move closer—to reduce that uncertainty or reveal hidden information.",
+      "The actuators execute the motion, and the new view feeds back into the analysis loop, repeating until the task goal is met."
+    ],
+    "whyItMatters": "Active vision turns hardware limitations into solvable control problems. Instead of demanding perfect sensors and unlimited resolution, it asks: what is the minimum movement needed to get the information we need? This makes systems cheaper, more robust to occlusion, and more efficient with computation by focusing resources only where they matter.",
+    "misconceptions": [
+      "Active vision is not just 'cameras that move'—the movement must be purposeful, driven by feedback from the visual task, not random or pre-programmed scanning.",
+      "It is not the same as simply having many static cameras; the key is closed-loop control where sensing directly influences the next viewpoint.",
+      "It does not eliminate the need for good base sensors; a poorly calibrated or low-quality camera cannot be saved by motion alone."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "scene",
+          "label": "3-D scene",
+          "note": "The physical environment being observed"
+        },
+        {
+          "id": "camera",
+          "label": "Active camera",
+          "note": "PTZ, mobile, or wearable sensor with actuators"
+        },
+        {
+          "id": "image",
+          "label": "Captured image",
+          "note": "Current view with possible problems"
+        },
+        {
+          "id": "analyze",
+          "label": "Analyze view",
+          "note": "Detect occlusion, blur, or uncertainty"
+        },
+        {
+          "id": "plan",
+          "label": "Plan motion",
+          "note": "Compute viewpoint change to improve information"
+        },
+        {
+          "id": "actuate",
+          "label": "Actuate",
+          "note": "Move camera to new viewpoint"
+        }
+      ],
+      "edges": [
+        {
+          "from": "scene",
+          "to": "camera",
+          "label": "light / geometry"
+        },
+        {
+          "from": "camera",
+          "to": "image",
+          "label": "captures"
+        },
+        {
+          "from": "image",
+          "to": "analyze",
+          "label": "feeds"
+        },
+        {
+          "from": "analyze",
+          "to": "plan",
+          "label": "triggers"
+        },
+        {
+          "from": "plan",
+          "to": "actuate",
+          "label": "commands"
+        },
+        {
+          "from": "actuate",
+          "to": "camera",
+          "label": "moves"
+        }
+      ],
+      "caption": "The active vision loop: the camera's own output drives the next motion, creating a closed cycle of perception and action."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Active vision",
+        "url": "https://en.wikipedia.org/wiki/Active_vision"
+      }
+    ]
+  },
   "related": [
     "active-appearance-model",
     "active-contour-model",

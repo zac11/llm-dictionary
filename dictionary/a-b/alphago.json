@@ -5,7 +5,119 @@
   "type": "concept",
   "definition": "AlphaGo is a computer program that plays the board game Go.",
   "details": "It was developed by the London-based DeepMind Technologies, an acquired subsidiary of Google. Subsequent versions of AlphaGo became increasingly powerful, including a version that competed under the name Master. After retiring from competitive play, AlphaGo Master was succeeded by an even more powerful version known as AlphaGo Zero, which was completely self-taught without learning from human games. AlphaGo Zero was then generalized into a program known as AlphaZero, which played additional games, including chess and shogi. AlphaZero has in turn been succeeded by a program known as MuZero which learns without being taught the rules. AlphaGo and its successors use a Monte Carlo tree search algorithm to find its moves based on knowledge previously acquired by machine learning, specifically by an artificial neural network (a deep learning method) by extensive training, both from human and computer play. A neural network is trained to identify the best moves and the winning percentages of these moves. This neural network improves the strength of the tree search, resulting in stronger move selection in the next iteration. In October 2015, in a match against Fan Hui, the original AlphaGo",
-  "story": "Picture an engineer at a cluttered workbench, turning a clever idea over in their hands until it finally clicks. At its heart it is a simple notion, once you strip away the fancy name. A small key that opens a much bigger door. It is one of those ideas that feels obvious only after someone shows it to you. That is AlphaGo — a small key that opens a big door.",
+  "explainer": {
+    "lead": "AlphaGo is DeepMind’s Go-playing program, whose 2016 victory over Lee Sedol showed that neural networks combined with search could master a game long resistant to conventional computer methods. Its importance extends beyond Go: its successors learned without human games, played chess and shogi, and eventually learned without being taught the rules.",
+    "tiers": {
+      "eli5": "Imagine learning a board game by studying many matches, then thinking several turns ahead while trusting your sense of which moves look promising. AlphaGo played Go this way, using both learned judgment and a search through possible continuations. In 2016, it won four games to one against Lee Sedol, one of the world’s best players.",
+      "practitioner": "AlphaGo is best understood as learned move priors and position evaluation coupled to Monte Carlo tree search, not as a standalone neural network. A comparable system requires extensive game-based training and search at every turn; large AlphaGo configurations used substantial CPU and GPU resources. Its fourth-game loss to Lee Sedol also illustrates that a strong learned search system can still fail on an unexpected continuation.",
+      "paperLevel": "AlphaGo combines deep policy and value networks with Monte Carlo tree search: the networks identify promising moves and estimate winning chances, while search uses those estimates to select a move. Training draws on human and computer play, with the network strengthening search and improved play feeding further learning. DeepMind published the algorithms in Nature on 27 January 2016; the system remained fallible, notably mishandling the continuation after Lee Sedol’s 78th move in game four."
+    },
+    "example": "In the March 2016 five-game match in Seoul, AlphaGo won the first three games against 9-dan professional Lee Sedol. Lee won game four with his celebrated 78th move, but AlphaGo won game five, taking the match 4–1 and receiving an honorary 9-dan from the Korea Baduk Association.",
+    "usedIn": [
+      {
+        "name": "Professional Go matches",
+        "detail": "AlphaGo defeated Fan Hui 5–0 in October 2015 and Lee Sedol 4–1 in March 2016, then its Master version beat Ke Jie in 2017.",
+        "url": ""
+      },
+      {
+        "name": "Online Go servers",
+        "detail": "Playing as Magister and then Master on Tygem and FoxGo, AlphaGo Master reached a 60–0 online record against professional players.",
+        "url": ""
+      },
+      {
+        "name": "DeepMind successor programs",
+        "detail": "AlphaGo Zero removed learning from human games, AlphaZero extended the approach to chess and shogi, and MuZero learned without being taught the rules.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of relying only on hand-written Go rules or exhaustively examining every continuation, AlphaGo learned which moves and positions looked promising, then concentrated its search there. The learned judgment and the search reinforced each other.",
+    "howItWorks": [
+      "Train neural networks extensively using human and computer play.",
+      "Use the networks to identify strong candidate moves and estimate their winning chances.",
+      "Run Monte Carlo tree search from the current board position, guided by those estimates.",
+      "Select the move favored by the search.",
+      "Use further play and training to improve the networks and subsequent searches."
+    ],
+    "whyItMatters": "Go’s enormous branching factor and difficult-to-define position evaluation had frustrated traditional game-playing AI. AlphaGo’s victories demonstrated a practical combination of deep learning and tree search, and its successor line broadened that approach beyond Go.",
+    "misconceptions": [
+      "AlphaGo did not win every game: Lee Sedol defeated it in game four of their 2016 match.",
+      "AlphaGo, AlphaGo Master, AlphaGo Zero, AlphaZero, and MuZero are related but distinct programs or versions.",
+      "It did not play using a neural network alone; Monte Carlo tree search was central to move selection."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "games",
+          "label": "Game experience",
+          "note": "Human and computer play provide training experience."
+        },
+        {
+          "id": "training",
+          "label": "Network training",
+          "note": "Extensive training learns move quality and winning chances."
+        },
+        {
+          "id": "networks",
+          "label": "Policy and value",
+          "note": "Networks propose moves and evaluate positions."
+        },
+        {
+          "id": "search",
+          "label": "Tree search",
+          "note": "Monte Carlo tree search explores promising continuations."
+        },
+        {
+          "id": "move",
+          "label": "Selected move",
+          "note": "The search result determines the next play."
+        },
+        {
+          "id": "newplay",
+          "label": "Further play",
+          "note": "Additional computer play strengthens later iterations."
+        }
+      ],
+      "edges": [
+        {
+          "from": "games",
+          "to": "training",
+          "label": "training data"
+        },
+        {
+          "from": "training",
+          "to": "networks",
+          "label": "learned estimates"
+        },
+        {
+          "from": "networks",
+          "to": "search",
+          "label": "move guidance"
+        },
+        {
+          "from": "search",
+          "to": "move",
+          "label": "best choice"
+        },
+        {
+          "from": "move",
+          "to": "newplay",
+          "label": "game outcome"
+        },
+        {
+          "from": "newplay",
+          "to": "training",
+          "label": "more experience"
+        }
+      ],
+      "caption": "AlphaGo’s learning supplies move and position estimates to tree search, while further play provides experience for stronger later play."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: AlphaGo",
+        "url": "https://en.wikipedia.org/wiki/AlphaGo"
+      }
+    ]
+  },
   "related": [
     "alphago-zero",
     "a-r-d-prasad",
