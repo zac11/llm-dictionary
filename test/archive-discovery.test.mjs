@@ -9,6 +9,7 @@ import {
   recentlyAdded,
   shouldShowWelcome,
   termOfDay,
+  termEmbedSnippet,
   writeWelcomeSession,
   writeWelcomeState,
   WELCOME_KEY,
@@ -42,6 +43,31 @@ test('termOfDay rotates on adjacent dates and returns null for empty input', () 
   const day2 = new Date('2026-10-01T00:00:00Z');
   assert.notEqual(termOfDay(list, day1).slug, termOfDay(list, day2).slug);
   assert.equal(termOfDay([], day1), null);
+});
+
+test('termOfDay walks terms in addedAt order, one per day', () => {
+  const list = [
+    { slug: 'newest', addedAt: '2026-10-02' },
+    { slug: 'older', addedAt: '2026-09-01' },
+    { slug: 'undated', addedAt: '' },
+  ];
+  const day = Date.UTC(2026, 9, 1) / 86400000;
+  const picks = [0, 1, 2].map((offset) => termOfDay(list, new Date((day + offset) * 86400000)).slug);
+  const order = ['undated', 'older', 'newest'];
+  const start = order.indexOf(picks[0]);
+  assert.deepEqual(picks, [0, 1, 2].map((i) => order[(start + i) % 3]));
+});
+
+test('termEmbedSnippet escapes content and links back to the term page', () => {
+  const html = termEmbedSnippet(
+    { slug: 'a-b', term: 'A <b>', definition: 'Quote "x" & y' },
+    { origin: 'https://example.org', date: new Date('2026-11-03T08:00:00Z') }
+  );
+  assert.ok(html.includes('A &lt;b&gt;'));
+  assert.ok(html.includes('Quote &quot;x&quot; &amp; y'));
+  assert.ok(html.includes('href="https://example.org/term/a-b/"'));
+  assert.ok(html.includes('Term of the day · 2026-11-03'));
+  assert.equal(termEmbedSnippet(null), '');
 });
 
 // ---------- recentlyAdded ----------

@@ -273,6 +273,42 @@ export function tokenizeText(value, { minLength = 2, stopwords = STOPWORDS } = {
 
 const includesPhrase = (value, phrase) => ` ${value} `.includes(` ${phrase} `);
 
+/** Levenshtein distance, giving up (returning max + 1) once it exceeds `max`. */
+export function editDistance(a, b, max = Infinity) {
+  if (a === b) return 0;
+  if (Math.abs(a.length - b.length) > max) return max + 1;
+  let prev = Array.from({ length: b.length + 1 }, (_, j) => j);
+  for (let i = 1; i <= a.length; i++) {
+    const row = [i];
+    let best = i;
+    for (let j = 1; j <= b.length; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      row[j] = Math.min(prev[j] + 1, row[j - 1] + 1, prev[j - 1] + cost);
+      if (row[j] < best) best = row[j];
+    }
+    if (best > max) return max + 1;
+    prev = row;
+  }
+  return prev[b.length];
+}
+
+/** Typos tolerated per query token: none for short words, one, then two for long ones. */
+const typoBudget = (token) => (token.length >= 8 ? 2 : token.length >= 4 ? 1 : 0);
+
+// Tokenized text per entry, built on first search and reused per keystroke.
+const searchTokenCache = new WeakMap();
+function searchTokens(entry) {
+  let cached = searchTokenCache.get(entry);
+  if (!cached) {
+    cached = {
+      definition: new Set(tokenizeText(entry.definition || '')),
+      details: new Set(tokenizeText(entry.details || '')),
+    };
+    searchTokenCache.set(entry, cached);
+  }
+  return cached;
+}
+
 export function rankSearchEntries(query, entries) {
   const normalizedQuery = normalizeGraphLabel(query);
   if (!normalizedQuery) return [];
@@ -295,11 +331,42 @@ export function rankSearchEntries(query, entries) {
         const nameTokens = new Set(tokenizeText(`${canonical} ${aliases.join(' ')}`));
         const overlap = queryTokens.filter((token) => nameTokens.has(token)).length;
         if (overlap === queryTokens.length) score = 500 + Math.round((overlap / nameTokens.size) * 100);
+        else {
+          // Prefix tolerance: "transf lang" still finds the name, then typo tolerance: "transfomer".
+          const names = [...nameTokens];
+          const canonicalTokens = tokenizeText(canonical);
+          const coverage = Math.min(1, queryTokens.length / nameTokens.size);
+          if (queryTokens.every((token) => nameTokens.has(token) || (token.length >= 3 && names.some((name) => name.startsWith(token))))) {
+            score = 475 + Math.round(coverage * 20);
+          } else {
+            // Closest name token per query token; closer, canonical, fuller matches rank higher (310–470).
+            let distance = 0;
+            let canonicalOnly = true;
+            const fuzzy = queryTokens.every((token) => {
+              const budget = nameTokens.has(token) ? 0 : typoBudget(token);
+              const closest = (list) => Math.min(...list.map((name) => editDistance(token, name, budget)));
+              const inCanonical = canonicalTokens.length ? closest(canonicalTokens) : budget + 1;
+              const best = Math.min(inCanonical, closest(names));
+              if (best > budget) return false;
+              if (inCanonical > best) canonicalOnly = false;
+              distance += best;
+              return true;
+            });
+            if (fuzzy) score = Math.max(310, 400 + (canonicalOnly ? 30 : 0) + Math.round(coverage * 40) - 15 * distance);
+          }
+        }
       }
 
       if (!score && category) {
         if (category === normalizedQuery) score = 300;
         else if (category.startsWith(normalizedQuery) || includesPhrase(category, normalizedQuery)) score = 220;
+      }
+
+      if (!score && queryTokens.length) {
+        // Body text ranks below every name, alias and category match.
+        const tokens = searchTokens(entry);
+        if (queryTokens.every((token) => tokens.definition.has(token))) score = 180;
+        else if (queryTokens.every((token) => tokens.definition.has(token) || tokens.details.has(token))) score = 150;
       }
 
       if (!score && queryTokens.length) {

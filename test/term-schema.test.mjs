@@ -12,6 +12,7 @@ import {
   normalizeTermType,
   rangeFolderForLetter,
   rankSearchEntries,
+  editDistance,
   slugifyTerm,
   validateTerm,
 } from '../src/term-schema.js';
@@ -277,6 +278,28 @@ test('validateTerm accepts a well-formed person profile', () => {
   };
   const codes = validateTerm(normalizeTerm(raw), { raw }).map((issue) => issue.code);
   assert.deepEqual(codes, []);
+});
+
+test('rankSearchEntries tolerates typos and prefixes, and ranks body text last', () => {
+  const entries = [
+    { term: 'Transformer', aka: [], category: 'Architecture', definition: 'A neural network built on attention.', details: '' },
+    { term: 'Attention', aka: [], category: 'Mechanism', definition: 'Weights inputs by relevance.', details: 'Core of the transformer.' },
+    { term: 'Language Model', aka: [], category: 'NLP', definition: 'Predicts the next token.', details: '' },
+  ];
+  const names = (query) => rankSearchEntries(query, entries).map(({ entry }) => entry.term);
+  assert.deepEqual(names('transfomer'), ['Transformer']);
+  assert.equal(names('langu mod')[0], 'Language Model');
+  assert.deepEqual(names('attention'), ['Attention', 'Transformer']);
+  assert.deepEqual(names('next token'), ['Language Model']);
+  assert.deepEqual(names('xyzzy'), []);
+  const scores = rankSearchEntries('attention', entries).map(({ score }) => score);
+  assert.ok(scores[0] > scores[1] && scores[1] < 300);
+});
+
+test('editDistance stops early once past the budget', () => {
+  assert.equal(editDistance('kitten', 'sitting'), 3);
+  assert.equal(editDistance('kitten', 'sitting', 1), 2);
+  assert.equal(editDistance('same', 'same', 0), 0);
 });
 
 test('rankSearchEntries prioritizes exact, prefix, and whole-word term matches', () => {

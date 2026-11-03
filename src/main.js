@@ -458,6 +458,7 @@ async function applyLocation() {
   if (view === 'term') openTermRitual(slug);
   else if (view === 'volume') openVolumeRitual(folder);
   else if (view === 'paths') openPage(() => ui.openCollections());
+  else if (view === 'today') archiveHome.openTermOfDay();
   else if (view === 'path') openPage(() => ui.openCollection(slug) || ui.openCollections());
 }
 

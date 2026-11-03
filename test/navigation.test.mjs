@@ -5,6 +5,7 @@ import { parseAppLocation } from '../src/navigation.js';
 test('parseAppLocation maps learning-path links', () => {
   assert.deepEqual(parseAppLocation({ search: '?path=rag-from-scratch' }), { view: 'path', slug: 'rag-from-scratch', folder: null });
   assert.deepEqual(parseAppLocation({ search: '?view=paths' }), { view: 'paths', slug: null, folder: null });
+  assert.deepEqual(parseAppLocation({ search: '?view=today' }), { view: 'today', slug: null, folder: null });
 });
 
 test('parseAppLocation maps deep-link and query forms to their views', () => {
