@@ -37,4 +37,4 @@ Paste the JSON for each term. Each file lives at
 
 - [ ] `npm run graph:check` passes (slugs, letter folders, related targets)
 - [ ] Category and citation look right
-- [ ] Optionally generate a story (`npm run stories`)
+- [ ] Generate its explainer (`node scripts/generate-explainers.mjs --only <slug>`)

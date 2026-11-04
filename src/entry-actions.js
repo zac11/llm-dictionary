@@ -6,7 +6,7 @@ import { entryPresentation } from './term-schema.js';
 import { EXPLAINER_LAYOUTS } from './explainer.js';
 
 const SECOND_PAGE = {
-  story: { title: 'In a story', cue: 'Flip to the story', counter: 'story' },
+  story: { title: 'How it works', cue: 'See how it works', counter: 'explainer' },
   profile: { title: 'Profile', cue: 'Show the profile', counter: 'profile' },
   coverage: { title: 'Coverage', cue: 'See the coverage', counter: 'coverage' },
 };
@@ -14,8 +14,8 @@ const SECOND_PAGE = {
 /**
  * The second spread an entry carries, plus its copy. An entry with an
  * `explainer` reads through its type's layout (how it works, anatomy, their
- * work …); without one, a concept keeps its story, a person shows a profile and
- * an event shows coverage.
+ * work …); without one, a concept has no second spread, a person shows a
+ * profile and an event shows coverage.
  */
 export function entrySecondPage(term) {
   if (term && term.explainer && EXPLAINER_LAYOUTS[term.explainer.layout]) {
@@ -31,7 +31,7 @@ export function entrySecondPage(term) {
 export function hasSecondPage(term) {
   if (!term) return false;
   const { presentation } = entrySecondPage(term);
-  return presentation === 'story' ? Boolean(term.story) : true;
+  return presentation !== 'story';
 }
 
 const searchUrl = (base, term) => `${base}${encodeURIComponent(String(term || '').trim())}`;

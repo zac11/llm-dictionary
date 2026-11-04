@@ -115,6 +115,7 @@ async function main() {
   console.log(`${queue.length} entries to write${DRY_RUN ? ' (dry run)' : ''}`);
   let written = 0;
   let failed = 0;
+  let rateLimitedRetries = 0;
   const retyped = [];
   const weak = [];
 
@@ -134,7 +135,7 @@ async function main() {
         written++;
         if (type !== entry.type) retyped.push(`${entry.slug}: ${entry.type} -> ${type}`);
         if (issues.length) weak.push(`${entry.slug}: ${issues.join('; ')}`);
-        console.log(`  ✓ ${entry.slug} (${type})`);
+        console.log(`  ✓ ${entry.slug} (${type})${rateLimitedRetries ? ` [429 retries so far: ${rateLimitedRetries}]` : ''}`);
         return;
       } catch (error) {
         const rateLimited = /^LLM 429/.test(error.message);
@@ -143,7 +144,10 @@ async function main() {
           console.log(`  ✗ ${entry.slug}: ${error.message}`);
           return;
         }
-        if (rateLimited) await sleep(2000 * attempt + Math.random() * 2000);
+        if (rateLimited) {
+          rateLimitedRetries++;
+          await sleep(2000 * attempt + Math.random() * 2000);
+        }
       }
     }
   };
@@ -156,7 +160,7 @@ async function main() {
   );
 
   if (DRY_RUN) return;
-  console.log(`\nwritten: ${written}, failed: ${failed}`);
+  console.log(`\nwritten: ${written}, failed: ${failed}, rate-limited retries: ${rateLimitedRetries}`);
   if (retyped.length) console.log(`\nretyped (${retyped.length}):\n  ${retyped.join('\n  ')}`);
   if (weak.length) console.log(`\nneeds a look (${weak.length}):\n  ${weak.join('\n  ')}`);
 }
