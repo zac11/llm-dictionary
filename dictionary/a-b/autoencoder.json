@@ -5,7 +5,107 @@
   "type": "architecture",
   "definition": "A neural network trained to compress input data into a lower-dimensional representation and then reconstruct the original input from it.",
   "details": "Autoencoders are used for dimensionality reduction, denoising, and as building blocks for more advanced generative architectures like VAEs.",
-  "story": "Picture an architect laying out a building where every room has to know which other rooms matter to it. The layout decides what the machine can even attempt, before it learns a single thing. It is the blueprint that makes everything else possible. It is the difference between a row of isolated cubicles and one big room where everyone can hear each other. That blueprint is Autoencoder.",
+  "explainer": {
+    "lead": "An autoencoder learns to squeeze data into a compact code and then rebuild the data from that code. This makes it useful for reducing dimensions, removing noise, and learning representations that can support more advanced generative models.",
+    "tiers": {
+      "eli5": "Imagine shrinking a detailed drawing into a short set of instructions, then using only those instructions to draw it again. An autoencoder practices both jobs until the new drawing looks much like the original. The short instructions keep important patterns while leaving less room for every detail.",
+      "practitioner": "Train the encoder and decoder together by comparing each reconstruction with its target, using a bottleneck smaller than the input. For denoising, provide corrupted inputs and train toward clean targets. A small code can discard information needed for accurate reconstruction, so check reconstruction quality rather than assuming compression preserves everything.",
+      "paperLevel": "An encoder f_theta maps input x to a lower-dimensional code z = f_theta(x), and a decoder g_phi produces x_hat = g_phi(z). Training minimizes a reconstruction loss L(x, x_hat), with corrupted inputs and clean targets used for denoising. The bottleneck forces selective compression, so information absent from z cannot be recovered reliably by the decoder."
+    },
+    "example": "A grayscale image containing 784 pixel values can be encoded into 32 numbers, then decoded back into 784 values. Training adjusts both networks so the reconstructed image resembles the original, while the 32-number code provides a much smaller representation.",
+    "usedIn": [
+      {
+        "name": "Dimensionality reduction",
+        "detail": "The learned code represents high-dimensional input with fewer numbers.",
+        "url": ""
+      },
+      {
+        "name": "Denoising",
+        "detail": "The network learns to reconstruct clean data from corrupted input.",
+        "url": ""
+      },
+      {
+        "name": "Generative architectures",
+        "detail": "Autoencoder ideas provide building blocks for variational autoencoders.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Encoder",
+        "detail": "Transforms the input into a lower-dimensional representation."
+      },
+      {
+        "name": "Code",
+        "detail": "The compact intermediate representation, also called the bottleneck."
+      },
+      {
+        "name": "Decoder",
+        "detail": "Reconstructs an output in the original input's form from the code."
+      }
+    ],
+    "flow": [
+      "Input data enters the encoder.",
+      "The encoder compresses it into a lower-dimensional code.",
+      "The decoder reads only that code.",
+      "The decoder produces a reconstruction of the input.",
+      "Reconstruction error guides training of the encoder and decoder."
+    ],
+    "lineage": "Autoencoders serve as building blocks for more advanced generative architectures, including variational autoencoders.",
+    "whyItMatters": "The architecture learns compact representations without requiring a separate hand-designed compression rule. The same encode-and-reconstruct structure supports both dimensionality reduction and denoising.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input data",
+          "note": "The original or corrupted example."
+        },
+        {
+          "id": "encoder",
+          "label": "Encoder",
+          "note": "Compresses the input."
+        },
+        {
+          "id": "code",
+          "label": "Compact code",
+          "note": "A lower-dimensional representation."
+        },
+        {
+          "id": "decoder",
+          "label": "Decoder",
+          "note": "Rebuilds data from the code."
+        },
+        {
+          "id": "output",
+          "label": "Reconstruction",
+          "note": "Compared with the training target."
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "encoder",
+          "label": "data"
+        },
+        {
+          "from": "encoder",
+          "to": "code",
+          "label": "compresses"
+        },
+        {
+          "from": "code",
+          "to": "decoder",
+          "label": "representation"
+        },
+        {
+          "from": "decoder",
+          "to": "output",
+          "label": "rebuilds"
+        }
+      ],
+      "caption": "Data passes through an encoder, a compact code, and a decoder before reconstruction error guides training."
+    }
+  },
   "related": [
     "sparse-autoencoder",
     "variational-autoencoder",

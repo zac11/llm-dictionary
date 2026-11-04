@@ -5,6 +5,128 @@
   "type": "concept",
   "definition": "Designing AI products for multiple languages, locales, and cultures — extending i18n to models, data, and evaluation.",
   "details": "Designing AI products for multiple languages, locales, and cultures — extending i18n to models, data, and evaluation.",
+  "explainer": {
+    "lead": "An AI product can be translated perfectly and still give awkward, confusing, or inappropriate answers in another place. AI internationalization means designing the whole product—model behavior, data, interface, and testing—to work well across languages, locales, and cultures.",
+    "tiers": {
+      "eli5": "Imagine a board game translated into another language, but the jokes make no sense and the instructions use unfamiliar measurements. Making an AI product work in many places is similar: you change more than the words so people can understand it and feel comfortable using it. You also test it with each group instead of assuming one version works everywhere.",
+      "practitioner": "Engineers apply it across the stack: locale-aware interfaces and formatting, appropriate model behavior, representative language and cultural data, and evaluation for each target setting. Typical settings include language or locale routing, localized prompts and content, multilingual test suites, and review by speakers of the target language. Pitfalls include treating translation as sufficient, hiding weak locales inside average scores, and overlooking culturally sensitive failures.",
+      "paperLevel": "In plain-text notation, for targets t = (language, locale, culture), AI internationalization can be written as p_t = Adapt(p, model_t, data_t, evaluation_t): each target receives suitable model behavior, data handling, and evaluation rather than only translated text. The concept does not prescribe an architecture or metric, and its coverage is limited to the languages, locales, and cultural settings actually represented and tested."
+    },
+    "example": "A customer-support assistant is expanded from English to Japanese in Japan and Spanish in Mexico. When asked to reschedule an appointment, it answers in the appropriate language and level of politeness, follows local date and time conventions, and passes separate correctness and cultural-appropriateness tests for each market instead of relying only on English tests.",
+    "usedIn": [
+      {
+        "name": "Multilingual chat assistants",
+        "detail": "Adapting answers, tone, and evaluation for different languages and cultural settings.",
+        "url": ""
+      },
+      {
+        "name": "Customer support",
+        "detail": "Serving customers in their language while respecting local formats and expectations.",
+        "url": ""
+      },
+      {
+        "name": "Voice interfaces",
+        "detail": "Supporting speech interaction and appropriate responses across languages and locales.",
+        "url": ""
+      },
+      {
+        "name": "Search and recommendation",
+        "detail": "Evaluating whether results remain useful and appropriate for users in different places.",
+        "url": ""
+      }
+    ],
+    "intuition": "Translation changes the words; internationalization changes the assumptions behind the product. The goal is for people in each target setting to receive behavior that is understandable, usable, and appropriate, not merely a converted version of the original interface.",
+    "howItWorks": [
+      "Identify the target languages, locales, and cultural contexts.",
+      "Adapt the interface, content, and model behavior for those targets.",
+      "Provide data that covers the relevant languages, variations, and situations.",
+      "Evaluate quality and appropriateness separately for each target.",
+      "Use failures and user feedback to improve the product and its tests."
+    ],
+    "whyItMatters": "It helps prevent a product from appearing multilingual while working poorly for many of its users. Separate design and evaluation can reveal problems that translated text and overall average scores would miss.",
+    "misconceptions": [
+      "Translating the interface does not by itself internationalize the model, data, or evaluation.",
+      "A model that supports many languages is not automatically suitable for every locale or culture.",
+      "Language and locale are not interchangeable: people sharing a language may need different formats, context, and behavior."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "targets",
+          "label": "Target requirements",
+          "note": "Languages, locales, and cultural contexts"
+        },
+        {
+          "id": "design",
+          "label": "Product design",
+          "note": "Interface, content, and model behavior"
+        },
+        {
+          "id": "data",
+          "label": "Representative data",
+          "note": "Relevant languages and situations"
+        },
+        {
+          "id": "system",
+          "label": "Adapted AI product",
+          "note": "Behavior tailored to each target"
+        },
+        {
+          "id": "evaluation",
+          "label": "Per-target evaluation",
+          "note": "Correctness, usability, and appropriateness"
+        },
+        {
+          "id": "feedback",
+          "label": "Release feedback",
+          "note": "Failures and user responses"
+        }
+      ],
+      "edges": [
+        {
+          "from": "targets",
+          "to": "design",
+          "label": "requirements"
+        },
+        {
+          "from": "targets",
+          "to": "data",
+          "label": "coverage"
+        },
+        {
+          "from": "design",
+          "to": "system",
+          "label": ""
+        },
+        {
+          "from": "data",
+          "to": "system",
+          "label": ""
+        },
+        {
+          "from": "system",
+          "to": "evaluation",
+          "label": "outputs"
+        },
+        {
+          "from": "targets",
+          "to": "evaluation",
+          "label": "criteria"
+        },
+        {
+          "from": "evaluation",
+          "to": "feedback",
+          "label": "results"
+        },
+        {
+          "from": "feedback",
+          "to": "design",
+          "label": "improvements"
+        }
+      ],
+      "caption": "Internationalization is a feedback loop spanning requirements, product behavior, data, and evaluation."
+    }
+  },
   "citation": {
     "title": "AI Starter Guide",
     "authors": [],

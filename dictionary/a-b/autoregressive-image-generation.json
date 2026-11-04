@@ -5,6 +5,113 @@
   "type": "concept",
   "definition": "Generating images as next-token prediction over discrete visual tokens from a VQ tokenizer, the pre-diffusion paradigm revived by unified any-to-any models that emit text and image tokens from one transformer.",
   "details": "Generating images as next-token prediction over discrete visual tokens from a VQ tokenizer, the pre-diffusion paradigm revived by unified any-to-any models that emit text and image tokens from one transformer. The architectural bet that one autoregressive backbone can own all modalities.",
+  "explainer": {
+    "lead": "Autoregressive image generation creates a picture one discrete visual token at a time, with each prediction conditioned on the tokens already produced. It matters because the same next-token transformer used for text can also emit images, allowing one backbone to handle multiple modalities.",
+    "tiers": {
+      "eli5": "Imagine making a picture from a set of tiny puzzle pieces, choosing one piece at a time while looking at all the pieces you have already placed. A special codebook turns pictures into pieces a computer can predict, then turns the finished sequence back into a picture. This lets the same kind of machine that writes words one by one also make images one piece at a time.",
+      "practitioner": "Encode training images into discrete codes with a VQ tokenizer, then train a transformer to predict each code from its predecessors, optionally conditioning on text tokens. At inference, sample or otherwise select codes sequentially and pass the completed sequence to the VQ decoder. A unified any-to-any setup places text and image tokens in the same transformer workflow; image codes still need decoding rather than being interpreted as pixels.",
+      "paperLevel": "Given a VQ-encoded image x = (x_1, ..., x_T), autoregressive generation factorizes its distribution as p(x) = product over t of p(x_t | x_1, ..., x_(t-1)); text or other tokens can be added as conditioning context. The transformer operates over the discrete visual representation, and the resulting codes are decoded into an image."
+    },
+    "example": "Given the prompt “a red apple on a table,” a unified model first reads the text tokens, then predicts illustrative visual codes such as 42, 17, 9, and 5 in order. Each prediction can attend to the prompt and earlier codes, and the VQ decoder turns the finished code sequence into the apple image.",
+    "usedIn": [
+      {
+        "name": "Unified any-to-any models",
+        "detail": "A single transformer can emit text tokens and image tokens, sharing one autoregressive backbone across modalities.",
+        "url": ""
+      },
+      {
+        "name": "Image generation",
+        "detail": "Pictures are produced as sequences of discrete visual codes and then reconstructed with a VQ decoder.",
+        "url": ""
+      }
+    ],
+    "intuition": "Treat an image less like a canvas to be painted all at once and more like a sentence to be continued. Once a VQ tokenizer gives the image a discrete vocabulary, the familiar next-token prediction problem can produce pictures as well as text.",
+    "howItWorks": [
+      "Use a VQ tokenizer to represent an image as an ordered sequence of discrete visual tokens.",
+      "Train a transformer to predict each visual token from the tokens before it.",
+      "For conditional generation, provide text or other modality tokens as context to the same transformer.",
+      "Generate the visual sequence token by token, feeding each new token back into the model.",
+      "Decode the completed visual tokens with the VQ decoder to obtain the image."
+    ],
+    "whyItMatters": "It offers a direct way to bring image generation into the next-token framework used for language. The larger architectural bet is that one autoregressive backbone can own all modalities instead of requiring a separate image generator.",
+    "misconceptions": [
+      "It is not diffusion: it predicts discrete tokens sequentially rather than generating through a denoising process.",
+      "The model does not have to predict raw pixels; the tokens come from a VQ tokenizer.",
+      "Autoregressive image generation does not require a unified text-and-image model, although that is one important use."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "image",
+          "label": "Training image",
+          "note": "The picture to represent discretely"
+        },
+        {
+          "id": "tokenizer",
+          "label": "VQ tokenizer",
+          "note": "Maps the image to visual codes"
+        },
+        {
+          "id": "tokens",
+          "label": "Visual tokens",
+          "note": "An ordered discrete sequence"
+        },
+        {
+          "id": "prompt",
+          "label": "Text prompt",
+          "note": "Optional conditioning tokens"
+        },
+        {
+          "id": "transformer",
+          "label": "Autoregressive transformer",
+          "note": "Predicts each next visual token"
+        },
+        {
+          "id": "decoder",
+          "label": "VQ decoder",
+          "note": "Reconstructs pixels from codes"
+        },
+        {
+          "id": "output",
+          "label": "Generated image",
+          "note": "The decoded final picture"
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "tokenizer",
+          "label": "encode"
+        },
+        {
+          "from": "tokenizer",
+          "to": "tokens",
+          "label": "codes"
+        },
+        {
+          "from": "tokens",
+          "to": "transformer",
+          "label": "next-token"
+        },
+        {
+          "from": "prompt",
+          "to": "transformer",
+          "label": "condition"
+        },
+        {
+          "from": "transformer",
+          "to": "decoder",
+          "label": "predicted codes"
+        },
+        {
+          "from": "decoder",
+          "to": "output",
+          "label": "decode"
+        }
+      ],
+      "caption": "A VQ representation turns image generation into next-token prediction; an optional text prompt conditions the same transformer."
+    }
+  },
   "related": [
     "next-token-prediction",
     "token",

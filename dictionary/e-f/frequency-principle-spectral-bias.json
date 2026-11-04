@@ -5,7 +5,96 @@
   "type": "concept",
   "definition": "The frequency principle/spectral bias is a phenomenon observed in the study of artificial neural networks (ANNs), specifically deep neural networks (DNNs).",
   "details": "It describes the tendency of deep neural networks to fit target functions from low to high frequencies during the training process. This phenomenon is referred to as the frequency principle (F-Principle) by Zhi-Qin John Xu et al. or spectral bias by Nasim Rahaman et al. The F-Principle can be robustly observed in DNNs, regardless of overparametrization. A key mechanism of the F-Principle is that the regularity of the activation function translates into the decay rate of the loss function in the frequency domain. The discovery of the frequency principle has inspired the design of DNNs that can quickly learn high-frequency functions. This has applications in scientific computing, image classification, and point cloud fitting problems. Furthermore, it provides a means to comprehend phenomena in practical applications and has inspired numerous studies on deep learning from the frequency perspective.",
-  "story": "Imagine a new medicine that works brilliantly in the lab but still has to be tested on real people before anyone takes it. Think of it as the quiet rule that a tool should be useful without being dangerous. The idea is simple: before something powerful is let loose, someone checks that it will not do real harm to real people. Rules and red-teaming are the brakes that make the speed trustworthy. And that is Frequency principle/spectral bias — the reason we can move fast without breaking things, or people.",
+  "explainer": {
+    "lead": "Deep neural networks often learn the broad, smooth patterns in a target before they learn its rapid, fine-grained changes. This low-to-high-frequency learning tendency helps explain training behavior and guides the design of networks for tasks with intricate detail.",
+    "tiers": {
+      "eli5": "Imagine copying a drawing of a furry cat: you might first sketch its smooth outline and only later add the tiny hairs. Deep neural networks often learn similarly, getting the big, smooth patterns right before the small, quickly changing details.",
+      "practitioner": "When training a DNN, expect low-frequency structure to be fitted before high-frequency detail, and inspect training from that perspective when fine features are slow to appear. The principle has motivated designs for learning high-frequency functions more quickly; do not assume that slow early progress on those details means the final target cannot be learned.",
+      "paperLevel": "The frequency principle, named by Zhi-Qin John Xu et al., and spectral bias, named by Nasim Rahaman et al., describe DNNs fitting target functions from low to high frequencies during training. It can be observed robustly regardless of overparametrization. A key mechanism is that activation-function regularity translates into the decay rate of the loss function in the frequency domain."
+    },
+    "example": "If a target curve is a smooth arch with small rapid ripples added on top, a DNN following this principle first fits the arch. As training continues, it increasingly reproduces the ripples rather than capturing all their fine variation at the start.",
+    "usedIn": [
+      {
+        "name": "Scientific computing",
+        "detail": "Informs DNN designs intended to learn high-frequency functions quickly.",
+        "url": ""
+      },
+      {
+        "name": "Image classification",
+        "detail": "Provides a frequency-based perspective on learning fine image structure.",
+        "url": ""
+      },
+      {
+        "name": "Point cloud fitting",
+        "detail": "Motivates networks that can capture high-frequency shape detail.",
+        "url": ""
+      }
+    ],
+    "intuition": "A network typically captures a target’s smooth, slowly varying structure before its rapidly varying detail. Frequency describes how quickly a function changes, so learning proceeds broadly from simple large-scale patterns toward finer variation.",
+    "howItWorks": [
+      "Training begins with a target function containing low- and high-frequency components.",
+      "The DNN fits the low-frequency, slowly varying components first.",
+      "It then progressively fits higher-frequency, rapidly varying components.",
+      "Activation-function regularity helps determine how the loss decays in the frequency domain."
+    ],
+    "whyItMatters": "It offers a way to understand practical training behavior and has inspired frequency-perspective research and DNN designs that learn high-frequency functions more quickly. Those designs are relevant to scientific computing, image classification, and point cloud fitting.",
+    "misconceptions": [
+      "It does not say that DNNs can never learn high-frequency functions; it describes their order of fitting during training.",
+      "It is not limited to overparametrized DNNs, since it can be observed regardless of overparametrization."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "target",
+          "label": "Target function",
+          "note": "Contains slow and rapid variation."
+        },
+        {
+          "id": "training",
+          "label": "DNN training",
+          "note": "Progressively fits the target."
+        },
+        {
+          "id": "low",
+          "label": "Low frequencies",
+          "note": "Smooth structure is fitted first."
+        },
+        {
+          "id": "high",
+          "label": "High frequencies",
+          "note": "Rapid detail is fitted later."
+        },
+        {
+          "id": "fit",
+          "label": "Fitted function",
+          "note": "Combines broad structure and detail."
+        }
+      ],
+      "edges": [
+        {
+          "from": "target",
+          "to": "training",
+          "label": "guides"
+        },
+        {
+          "from": "training",
+          "to": "low",
+          "label": "first"
+        },
+        {
+          "from": "low",
+          "to": "high",
+          "label": "then"
+        },
+        {
+          "from": "high",
+          "to": "fit",
+          "label": "completes"
+        }
+      ],
+      "caption": "The characteristic progression from fitting smooth, low-frequency structure to fitting rapid, high-frequency detail."
+    }
+  },
   "related": [
     "ablation-artificial-intelligence",
     "adaline",

@@ -8,6 +8,91 @@
   ],
   "definition": "A structured output layer that scores entire label sequences, enforcing transition consistency (no Inside tag without a Begin).",
   "details": "A structured output layer that scores entire label sequences, enforcing transition consistency (no Inside tag without a Begin). The classical companion to BiLSTM and BERT encoders for sequence labeling, and still a strong choice when label structure matters.",
+  "explainer": {
+    "lead": "A Conditional Random Field, or CRF, helps a sequence-labeling system choose tags that make sense together, not just individually. It is useful when some tag sequences are inconsistent, such as an Inside tag appearing without a preceding Begin tag.",
+    "tiers": {
+      "eli5": "Imagine giving every word in a sentence a label, like putting runners in the right order for a relay. A CRF checks the whole line of labels, so it can reject combinations that break the rules. The text understanding comes from another model; the CRF helps make the final labels consistent.",
+      "practitioner": "Use a CRF as the output layer of a BiLSTM or BERT encoder when label transitions matter. The encoder supplies evidence for each token, while the CRF scores complete label sequences and decoding selects a high-scoring consistent sequence. Do not expect the CRF to replace the encoder or fix weak token representations.",
+      "paperLevel": "For tokens x and a candidate label sequence y, a CRF defines P(y | x) = exp(score(x, y)) / sum over y' of exp(score(x, y')), with sequence scores incorporating label evidence and transitions between adjacent labels. This contrasts with making an independent label decision at every position. Its role is structured output modeling; representations of the input are supplied separately, for example by BiLSTM or BERT encoders."
+    },
+    "example": "For “Ada Lovelace lived in London,” the sequence “B-PER I-PER O O B-LOC” is consistent. A sequence ending in “O I-LOC” would place an Inside-location tag without a preceding Begin-location tag, so the CRF penalizes that transition.",
+    "usedIn": [
+      {
+        "name": "Named entity recognition",
+        "detail": "Enforces Begin–Inside tagging consistency while labeling entity spans in token sequences.",
+        "url": ""
+      },
+      {
+        "name": "BiLSTM and BERT labeling pipelines",
+        "detail": "Serves as a structured output layer above encoders that provide token representations.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of asking only which label fits each word, a CRF asks which entire sequence of labels fits best. Transition scores let neighboring labels constrain one another, capturing rules such as Inside following Begin.",
+    "howItWorks": [
+      "An encoder produces evidence about possible labels for each token.",
+      "The CRF combines that evidence with scores for transitions between adjacent labels.",
+      "It assigns one score to each complete candidate label sequence.",
+      "Decoding chooses a high-scoring sequence that respects label-transition consistency."
+    ],
+    "whyItMatters": "Independent token decisions can produce locally plausible but structurally invalid output. A CRF makes label structure part of sequence scoring, which is valuable when valid spans and transitions matter.",
+    "misconceptions": [
+      "A CRF is not a text encoder: BiLSTM or BERT can supply the token representations.",
+      "It does not judge each label in isolation: its defining role is to score labels jointly as a sequence."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "tokens",
+          "label": "Input tokens",
+          "note": "The word sequence to label."
+        },
+        {
+          "id": "encoder",
+          "label": "BiLSTM or BERT",
+          "note": "Builds token representations."
+        },
+        {
+          "id": "label-scores",
+          "label": "Label evidence",
+          "note": "Scores candidate labels at each position."
+        },
+        {
+          "id": "crf",
+          "label": "CRF sequence scorer",
+          "note": "Adds transition consistency across labels."
+        },
+        {
+          "id": "output",
+          "label": "Label sequence",
+          "note": "A jointly selected structured output."
+        }
+      ],
+      "edges": [
+        {
+          "from": "tokens",
+          "to": "encoder",
+          "label": "encodes"
+        },
+        {
+          "from": "encoder",
+          "to": "label-scores",
+          "label": "represents"
+        },
+        {
+          "from": "label-scores",
+          "to": "crf",
+          "label": "feeds"
+        },
+        {
+          "from": "crf",
+          "to": "output",
+          "label": "decodes"
+        }
+      ],
+      "caption": "The encoder supplies token evidence; the CRF scores complete label sequences using that evidence and transition consistency."
+    }
+  },
   "related": [
     "sequence-labeling",
     "structured-output"

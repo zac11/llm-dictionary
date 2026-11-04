@@ -2,10 +2,126 @@
   "term": "AlphaStar (software)",
   "letter": "A",
   "category": "Machine learning",
-  "type": "concept",
+  "type": "tool",
   "definition": "AlphaStar is an artificial intelligence (AI) software developed by DeepMind for playing the video game StarCraft II.",
   "details": "It was unveiled to the public by name in January 2019. AlphaStar attained \"Grandmaster\" status in August 2019, considered a milestone for AI in video games at the time.",
-  "story": "Imagine a driving test that every new model has to pass before it is allowed on the road. It is the exam that separates “it sounds good” from “it actually is good”. A fair scoreboard keeps everyone honest. It is the exam that keeps everyone honest. And that, done honestly, is AlphaStar (software).",
+  "explainer": {
+    "lead": "AlphaStar is DeepMind's AI system for playing StarCraft II, a fast strategy game where players cannot see everything their opponent is doing. It learned from human games and then improved through matches against other AI agents, eventually reaching Grandmaster level in August 2019.",
+    "tiers": {
+      "eli5": "Learning StarCraft II is like learning a complicated board game while parts of the board are hidden and the clock never stops. AlphaStar first copied good human players, then practised against computer opponents, including opponents designed to find its weaknesses. In August 2019, it reached Grandmaster level, placing it among the top 0.2% of human players on the European ladder.",
+      "practitioner": "Treat AlphaStar as a research training recipe rather than an off-the-shelf StarCraft bot: initialise from human-versus-human replays, then apply deep reinforcement learning through agent-versus-agent play, with exploiter agents probing weaknesses. Evaluation settings matter greatly; the early version used direct API control, a global view, and uneven bursts of actions, while the later version was retrained under more realistic constraints. DeepMind and Blizzard's development tools and historical game data supported this line of bot research.",
+      "paperLevel": "AlphaStar is a StarCraft II policy trained in two stages: π0 = Imitate(best-player human-versus-human games), followed by π = DeepRL(agent self-play + exploiter agents). Imitation addresses the exploration problem before reinforcement learning, while exploiters expose weaknesses in the main agents. The constrained system reached Grandmaster level on the full game, but StarCraft was not solved and AlphaStar was not close to world-champion level; the earlier demonstration also had interface and action-allocation advantages over humans."
+    },
+    "example": "In December 2018, AlphaStar beat professional player Grzegorz \"MaNa\" Komincz 5-0, but critics noted its global view and precise, bursty API actions. After DeepMind retrained it under more realistic constraints, it lost the rematch; the constrained version later competed anonymously on the European ladder and reached Grandmaster level in August 2019.",
+    "usedIn": [
+      {
+        "name": "StarCraft II European multiplayer ladder",
+        "detail": "From July 2019, the constrained AlphaStar anonymously played opted-in users in public 1v1 matches, reaching Grandmaster level by the end of August.",
+        "url": ""
+      },
+      {
+        "name": "Professional StarCraft II evaluation",
+        "detail": "AlphaStar defeated Grzegorz \"MaNa\" Komincz 5-0 in December 2018, then lost a rematch after being retrained with more realistic constraints.",
+        "url": ""
+      },
+      {
+        "name": "Real-time AI research",
+        "detail": "It served as a demonstration of learning under real-time play, partial observability, and a large and varied action space.",
+        "url": ""
+      }
+    ],
+    "intuition": "StarCraft II offers too many possible actions for an agent to discover good play reliably by random exploration alone. AlphaStar therefore starts by imitating strong human play, then uses reinforcement learning and specially designed opponents to improve beyond that starting point.",
+    "howItWorks": [
+      "Learn an initial policy by imitating the best players in a database of human-versus-human games.",
+      "Let the main agents play one another and improve through deep reinforcement learning.",
+      "Train exploiter agents to find and expose weaknesses in the main agents.",
+      "Evaluate the constrained system through the StarCraft II interface and public 1v1 ladder."
+    ],
+    "whyItMatters": "AlphaStar was a milestone because it handled the full StarCraft II game rather than only isolated tasks, combining real-time decisions with hidden information and a huge action space. Its Grandmaster result placed it among the top 0.2% of human ladder players, though it did not establish world-champion-level play.",
+    "misconceptions": [
+      "The first 5-0 victory was not achieved under the same practical constraints as human play.",
+      "Reaching Grandmaster did not mean StarCraft II had been solved.",
+      "AlphaStar did not learn from scratch; it began by imitating strong human games."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "replays",
+          "label": "Human games",
+          "note": "Human-versus-human matches provide expert behaviour."
+        },
+        {
+          "id": "imitation",
+          "label": "Imitation learning",
+          "note": "Builds an initial policy and eases exploration."
+        },
+        {
+          "id": "main",
+          "label": "Main agents",
+          "note": "Improve through deep reinforcement learning."
+        },
+        {
+          "id": "exploiters",
+          "label": "Exploiter agents",
+          "note": "Probe the main agents for weaknesses."
+        },
+        {
+          "id": "starcraft",
+          "label": "StarCraft II",
+          "note": "Provides matches, observations, and outcomes."
+        },
+        {
+          "id": "ladder",
+          "label": "European ladder",
+          "note": "Constrained anonymous play reached Grandmaster."
+        }
+      ],
+      "edges": [
+        {
+          "from": "replays",
+          "to": "imitation",
+          "label": "expert moves"
+        },
+        {
+          "from": "imitation",
+          "to": "main",
+          "label": "initial policy"
+        },
+        {
+          "from": "main",
+          "to": "starcraft",
+          "label": "actions"
+        },
+        {
+          "from": "exploiters",
+          "to": "starcraft",
+          "label": "challenge games"
+        },
+        {
+          "from": "starcraft",
+          "to": "main",
+          "label": "learning feedback"
+        },
+        {
+          "from": "starcraft",
+          "to": "exploiters",
+          "label": "weaknesses"
+        },
+        {
+          "from": "main",
+          "to": "ladder",
+          "label": "evaluation"
+        }
+      ],
+      "caption": "AlphaStar bootstraps from human play, improves through agent matches and exploitation, and is evaluated under constrained StarCraft II conditions."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: AlphaStar (software)",
+        "url": "https://en.wikipedia.org/wiki/AlphaStar_(software)"
+      }
+    ]
+  },
   "related": [
     "data-version-control-software",
     "mallet-software-project",

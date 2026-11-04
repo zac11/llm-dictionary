@@ -5,7 +5,92 @@
   "type": "concept",
   "definition": "Brown clustering is a hard hierarchical agglomerative clustering problem based on distributional information proposed by Peter Brown, William A.",
   "details": "Brown, Vincent Della Pietra, Peter V. de Souza, Jennifer Lai, and Robert Mercer. The method, which is based on bigram language models, is typically applied to text, grouping words into clusters that are assumed to be semantically related by virtue of their having been embedded in similar contexts.",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. And that idea, made concrete, is Brown clustering.",
+  "explainer": {
+    "lead": "Brown clustering groups words that appear in similar surroundings, such as words that often follow or precede the same other words. It produces a hierarchy of hard clusters, offering a way to organize vocabulary using patterns in text rather than hand-written word categories.",
+    "tiers": {
+      "eli5": "Imagine sorting words by looking at the company they keep. If “cat” and “dog” often appear after “feed the” and before “slept,” they may belong in the same group. Brown clustering repeatedly brings similar words or groups together, building a family tree of word groups.",
+      "practitioner": "Apply it to text by collecting bigram context statistics and using the agglomerative procedure to build hard word clusters. The result is hierarchical, so a useful clustering level must be selected for the downstream task. Similar contexts do not guarantee similar meanings, and each word receives a hard cluster assignment rather than multiple memberships.",
+      "paperLevel": "Brown clustering is a hard hierarchical agglomerative clustering problem over words, using distributional information derived from bigram language models. Its merges form a hierarchy whose clusters are interpreted as semantically related because their members occur in similar contexts. The assumption is heuristic: contextual similarity need not imply semantic similarity, and hard clustering cannot represent overlapping word senses."
+    },
+    "example": "Suppose a corpus contains “feed the cat,” “feed the dog,” “the cat slept,” and “the dog slept.” Because “cat” and “dog” share these neighboring-word contexts, the method can place them in the same cluster, then combine that cluster with others as the hierarchy grows.",
+    "usedIn": [
+      {
+        "name": "Natural language processing",
+        "detail": "Grouping words in text according to the contexts in which they occur.",
+        "url": ""
+      },
+      {
+        "name": "Bigram language modeling",
+        "detail": "Using adjacent-word statistics as the distributional basis for constructing word clusters.",
+        "url": ""
+      }
+    ],
+    "intuition": "Words used in similar contexts often have something in common. Brown clustering turns that idea into a bottom-up grouping process, joining words and clusters to form a hierarchy.",
+    "howItWorks": [
+      "Collect information about words and their immediate neighbors in text.",
+      "Represent this distributional information using bigram language models.",
+      "Agglomeratively merge words or groups into hard clusters.",
+      "Continue merging to produce a hierarchy of word clusters."
+    ],
+    "whyItMatters": "It provides an automatic way to organize words from their observed usage, without manually assigning every word to a category. Its hierarchical output also preserves relationships between small word groups and larger ones.",
+    "misconceptions": [
+      "It is not soft clustering: word assignments are hard.",
+      "It does not produce only a flat partition; it builds a hierarchy.",
+      "Shared contexts suggest semantic relatedness but do not guarantee it."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "text",
+          "label": "Text corpus",
+          "note": "Provides word sequences."
+        },
+        {
+          "id": "bigrams",
+          "label": "Bigram statistics",
+          "note": "Records adjacent-word contexts."
+        },
+        {
+          "id": "model",
+          "label": "Bigram model",
+          "note": "Represents distributional information."
+        },
+        {
+          "id": "merges",
+          "label": "Agglomerative merges",
+          "note": "Joins words and groups."
+        },
+        {
+          "id": "hierarchy",
+          "label": "Cluster hierarchy",
+          "note": "Contains hard word clusters."
+        }
+      ],
+      "edges": [
+        {
+          "from": "text",
+          "to": "bigrams",
+          "label": "context counts"
+        },
+        {
+          "from": "bigrams",
+          "to": "model",
+          "label": ""
+        },
+        {
+          "from": "model",
+          "to": "merges",
+          "label": "guides"
+        },
+        {
+          "from": "merges",
+          "to": "hierarchy",
+          "label": ""
+        }
+      ],
+      "caption": "Brown clustering builds a hierarchy of hard word clusters from bigram-based distributional information."
+    }
+  },
   "related": [
     "clustering",
     "automatic-clustering-algorithms",

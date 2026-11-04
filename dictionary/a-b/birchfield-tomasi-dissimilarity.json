@@ -5,7 +5,93 @@
   "type": "concept",
   "definition": "In computer vision, the Birchfield–Tomasi dissimilarity is a pixelwise image dissimilarity measure that is robust with respect to sampling effects.",
   "details": "In the comparison of two image elements, it fits the intensity of one pixel to the linearly interpolated intensity around a corresponding pixel on the other image. It is used as a dissimilarity measure in stereo matching, where one-dimensional search for correspondences is performed to recover a dense disparity map from a stereo image pair.",
-  "story": "Imagine an art restorer who can spot a single cracked tile in a vast mosaic. What your eyes do without thinking, the machine does one careful layer at a time. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. The model looks the way you look at a crowd and finds the one face you know. And that is Birchfield–Tomasi dissimilarity — giving a machine the gift of sight.",
+  "explainer": {
+    "lead": "Birchfield–Tomasi dissimilarity compares a pixel in one image with a candidate location in another without relying only on intensities sampled exactly at pixel centers. This makes the comparison less sensitive to sampling effects, which is useful when matching pixels across a stereo image pair.",
+    "tiers": {
+      "eli5": "Imagine matching two photos made of tiny square dots, but the same spot lands between dots in the second photo. Instead of forcing it to match just one dot, this method checks a smoothly estimated shade between nearby dots. That helps it recognize a good match even when the two photo grids do not line up perfectly.",
+      "practitioner": "Use it as a local matching cost when comparing a pixel with candidate correspondences in another image, including during the one-dimensional search in stereo matching. Fit the pixel intensity against linearly interpolated intensities around each candidate rather than comparing only the sampled center value. Its sampling robustness does not turn it into a complete stereo matcher or guarantee robustness to every other image change.",
+      "paperLevel": "Let a be the intensity of one pixel and R(t) be linearly interpolated intensity near its candidate correspondence in the other image; the dissimilarity uses the best fit between a and R(t), rather than only the difference at the candidate's sampled center. These pixelwise scores support correspondence search and dense disparity recovery from a stereo pair. The measure specifically addresses sampling effects and remains a local intensity comparison."
+    },
+    "example": "Suppose the first pixel has intensity 100, while two neighboring samples around its candidate location in the second image have intensities 80 and 120. Their linearly interpolated midpoint is 100, so the fit can be exact even though neither individual sample equals 100; a direct center-only comparison could therefore suggest a worse match.",
+    "usedIn": [
+      {
+        "name": "Stereo matching",
+        "detail": "Scores candidate pixel correspondences during a one-dimensional search across a stereo pair.",
+        "url": ""
+      },
+      {
+        "name": "Dense disparity recovery",
+        "detail": "Provides local dissimilarity scores used while recovering a dense disparity map.",
+        "url": ""
+      }
+    ],
+    "intuition": "A point that appears at a pixel center in one image may fall between pixel centers in the other. Comparing against interpolated nearby intensities lets the match reflect that possibility instead of penalizing the sampling grid.",
+    "howItWorks": [
+      "Select a pixel and its intensity in the first image.",
+      "Choose a candidate corresponding location in the second image.",
+      "Linearly interpolate intensities around that candidate location.",
+      "Fit the first pixel's intensity to those interpolated values to obtain its dissimilarity.",
+      "Repeat the comparison for candidates along the one-dimensional stereo search."
+    ],
+    "whyItMatters": "It reduces a sampling-related source of mismatch in pixelwise image comparison. In stereo matching, that provides a more suitable local score for finding correspondences and recovering dense disparity.",
+    "misconceptions": [
+      "It is a pixelwise dissimilarity score, not a complete stereo-matching algorithm.",
+      "It compares against interpolated intensities, not necessarily a whole image patch.",
+      "Robustness to sampling effects does not imply robustness to all appearance changes."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "pixel",
+          "label": "First pixel",
+          "note": "Provides the intensity to match."
+        },
+        {
+          "id": "candidate",
+          "label": "Candidate location",
+          "note": "A possible correspondence in the second image."
+        },
+        {
+          "id": "interpolation",
+          "label": "Linear interpolation",
+          "note": "Estimates intensities around the candidate."
+        },
+        {
+          "id": "fit",
+          "label": "Intensity fit",
+          "note": "Fits the first pixel to interpolated values."
+        },
+        {
+          "id": "score",
+          "label": "Dissimilarity score",
+          "note": "Scores the candidate correspondence."
+        }
+      ],
+      "edges": [
+        {
+          "from": "pixel",
+          "to": "fit",
+          "label": "intensity"
+        },
+        {
+          "from": "candidate",
+          "to": "interpolation",
+          "label": "nearby samples"
+        },
+        {
+          "from": "interpolation",
+          "to": "fit",
+          "label": "estimates"
+        },
+        {
+          "from": "fit",
+          "to": "score",
+          "label": "comparison"
+        }
+      ],
+      "caption": "A pixel is compared with interpolated intensities around a candidate correspondence to produce a sampling-robust dissimilarity score."
+    }
+  },
   "related": [
     "kanade-lucas-tomasi-feature-tracker",
     "accord-net",

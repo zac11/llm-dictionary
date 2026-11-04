@@ -8,6 +8,108 @@
   ],
   "definition": "A base model is the raw pretrained network: a text continuator with no instruction-following behavior.",
   "details": "A base model is the raw pretrained network: a text continuator with no instruction-following behavior. An instruct/chat model is the same network after post-training (SFT + preference optimization) that follows instructions, uses chat formatting, and refuses harmful requests. Confusing the two is a common deployment mistake.",
+  "explainer": {
+    "lead": "A language model can be good at continuing text without being good at doing what a user asks. The distinction between base and instruct models explains why, and helps prevent the wrong version from being deployed as a chat assistant.",
+    "tiers": {
+      "eli5": "A base model is like someone who has read lots of stories and tries to guess what words come next. An instruct model gets extra practice listening to requests, answering in a conversation, and turning down harmful ones. That is why asking the first kind to follow directions can feel confusing, while the second kind usually answers more like a helper.",
+      "practitioner": "Use an instruct or chat model when an application expects instruction following, chat formatting, and refusals of harmful requests; a base model is the raw text continuator. Do not assume that the pretrained and post-trained variants are interchangeable in deployment, even when they share the same underlying network.",
+      "paperLevel": "Let B denote the raw pretrained network, which performs text continuation without instruction-following behavior. Post-training produces I = PostTrain(B), using supervised fine-tuning (SFT) and preference optimization, so that I follows instructions, uses chat formatting, and refuses harmful requests. The stated distinction concerns behavior added through post-training, not a different underlying network."
+    },
+    "example": "Given “Write a two-line birthday message for Ana,” a base model may simply continue the text rather than treat it as a request. After SFT and preference optimization, the instruct version responds with a two-line birthday message in chat form instead.",
+    "usedIn": [
+      {
+        "name": "Chat assistants",
+        "detail": "Instruct models provide instruction following, conversational formatting, and refusals of harmful requests.",
+        "url": ""
+      },
+      {
+        "name": "Text continuation",
+        "detail": "Base models serve as raw pretrained networks that continue text.",
+        "url": ""
+      },
+      {
+        "name": "Model deployment",
+        "detail": "Teams must distinguish the variants to avoid shipping a text continuator where a chat model is expected.",
+        "url": ""
+      }
+    ],
+    "intuition": "Pretraining produces a network that continues text; it does not by itself produce instruction-following behavior. Post-training turns that same network into an instruct or chat model with conversational behavior.",
+    "howItWorks": [
+      "Start with the raw pretrained network, called the base model.",
+      "Treat its behavior as text continuation rather than instruction following.",
+      "Apply post-training with supervised fine-tuning and preference optimization.",
+      "The resulting instruct model follows instructions and uses chat formatting.",
+      "It also refuses harmful requests, making its deployment behavior different from the base model's."
+    ],
+    "whyItMatters": "Choosing the wrong variant can produce a deployment that continues text when users expect helpful, formatted answers. Recognizing that the instruct model is a post-trained version of the same network clarifies both its capabilities and its origin.",
+    "misconceptions": [
+      "A base model is not an instruction-following chat assistant; it is a text continuator.",
+      "An instruct model is not necessarily a different underlying network; it can be the same network after post-training.",
+      "The two variants are not interchangeable in deployment, because their behavior differs."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "base",
+          "label": "Base model",
+          "note": "Raw pretrained text continuator"
+        },
+        {
+          "id": "continuation",
+          "label": "Text continuation",
+          "note": "No instruction-following behavior"
+        },
+        {
+          "id": "posttrain",
+          "label": "Post-training",
+          "note": "SFT plus preference optimization"
+        },
+        {
+          "id": "instruct",
+          "label": "Instruct model",
+          "note": "Same network after post-training"
+        },
+        {
+          "id": "chat",
+          "label": "Chat response",
+          "note": "Follows instructions and uses chat formatting"
+        },
+        {
+          "id": "refusal",
+          "label": "Harmful request",
+          "note": "The instruct model refuses it"
+        }
+      ],
+      "edges": [
+        {
+          "from": "base",
+          "to": "continuation",
+          "label": ""
+        },
+        {
+          "from": "base",
+          "to": "posttrain",
+          "label": "same network"
+        },
+        {
+          "from": "posttrain",
+          "to": "instruct",
+          "label": ""
+        },
+        {
+          "from": "instruct",
+          "to": "chat",
+          "label": ""
+        },
+        {
+          "from": "refusal",
+          "to": "instruct",
+          "label": "is refused by"
+        }
+      ],
+      "caption": "A base model continues text, while post-training turns the same network into an instruct model with chat behavior and harmful-request refusals."
+    }
+  },
   "related": [
     "foundation-model",
     "instruction-tuning"

@@ -255,9 +255,10 @@ export const EXPLAINER_TIERS = [
 /** `{ eli5, practitioner, paperLevel }` with only the filled levels, or null. */
 export function normalizeTiers(value) {
   const source = isRecord(value) ? value : {};
+  const nested = isRecord(source.tiers) ? source.tiers : {};
   const out = {};
   for (const [field] of EXPLAINER_TIERS) {
-    const tier = text(source[field]);
+    const tier = text(source[field]) || text(nested[field]);
     if (tier) out[field] = tier;
   }
   return Object.keys(out).length ? out : null;

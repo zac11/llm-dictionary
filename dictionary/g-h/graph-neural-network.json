@@ -8,7 +8,114 @@
   ],
   "definition": "A neural network architecture designed to operate directly on graph-structured data by passing and aggregating information between connected nodes.",
   "details": "GNNs are used in applications ranging from molecule property prediction to recommendation systems and knowledge graph reasoning.",
-  "story": "Picture an architect laying out a building where every room has to know which other rooms matter to it. The layout decides what the machine can even attempt, before it learns a single thing. It is the blueprint that makes everything else possible. It is the difference between a row of isolated cubicles and one big room where everyone can hear each other. That blueprint is Graph Neural Network.",
+  "explainer": {
+    "lead": "A graph neural network, or GNN, learns from things and the connections between them at the same time. This makes it useful when relationships are central to the problem, such as bonds in a molecule or links in a knowledge graph.",
+    "tiers": {
+      "eli5": "Imagine a group of friends passing notes: each person reads the notes from their friends, then updates what they know. A GNN does something similar, with points passing information along the lines that connect them. After several rounds, it can use what the points have learned to answer a question about one point or the whole group.",
+      "practitioner": "Represent each example as nodes and edges, then choose how each node aggregates and updates information from its neighbors. Pool the resulting node representations for graph-level predictions, or use individual node representations for node-level tasks. Graphs can vary in size and connectivity, so batching and very large neighborhoods need practical attention.",
+      "paperLevel": "For a graph G = (V, E), a typical layer computes h_v^(l+1) = UPDATE(h_v^l, AGGREGATE({h_u^l : u in N(v)})), where N(v) contains the neighbors of node v. Stacking layers passes information through successively wider neighborhoods, and a readout can combine node states for graph-level prediction. The exact result depends on the aggregation, update rule, and graph structure."
+    },
+    "example": "For a molecule, represent each atom as a node and each bond as an edge. After atoms aggregate information from their bonded neighbors, combine the atom representations to predict a molecular property such as solubility.",
+    "usedIn": [
+      {
+        "name": "Molecule property prediction",
+        "detail": "Atoms can be nodes and bonds can be edges, with the network predicting a property of the whole molecule.",
+        "url": ""
+      },
+      {
+        "name": "Recommendation systems",
+        "detail": "Connections between users and items provide a graph from which relevant recommendations can be learned.",
+        "url": ""
+      },
+      {
+        "name": "Knowledge graph reasoning",
+        "detail": "Entities and their relationships form a graph that a GNN can use to combine connected information.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Graph input",
+        "detail": "Nodes represent entities, while edges represent the connections between them."
+      },
+      {
+        "name": "Neighbor messages",
+        "detail": "Connected nodes make information available to one another along edges."
+      },
+      {
+        "name": "Aggregation",
+        "detail": "Each node combines the information received from its neighborhood."
+      },
+      {
+        "name": "Node update",
+        "detail": "A neural network updates each node’s representation using its previous state and aggregated information."
+      },
+      {
+        "name": "Prediction readout",
+        "detail": "The learned representations are used individually or combined to produce the requested output."
+      }
+    ],
+    "flow": [
+      "Start with nodes, edges, and their input features.",
+      "Pass information from each node to its connected neighbors.",
+      "Aggregate each node’s received information and update its representation.",
+      "Repeat the message-passing process for additional layers if needed.",
+      "Use a node representation or a pooled graph representation for prediction."
+    ],
+    "whyItMatters": "Many datasets are relational rather than simple tables or grids. GNNs provide a direct way to learn from both entity features and the connections that give those entities context.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "graph",
+          "label": "Graph input",
+          "note": "Nodes, edges, and features"
+        },
+        {
+          "id": "messages",
+          "label": "Neighbor messages",
+          "note": "Information travels along edges"
+        },
+        {
+          "id": "aggregate",
+          "label": "Aggregate",
+          "note": "Combine each neighborhood"
+        },
+        {
+          "id": "update",
+          "label": "Update nodes",
+          "note": "Compute new representations"
+        },
+        {
+          "id": "readout",
+          "label": "Prediction readout",
+          "note": "Produce a node or graph output"
+        }
+      ],
+      "edges": [
+        {
+          "from": "graph",
+          "to": "messages",
+          "label": "connected data"
+        },
+        {
+          "from": "messages",
+          "to": "aggregate",
+          "label": "neighbor states"
+        },
+        {
+          "from": "aggregate",
+          "to": "update",
+          "label": "combined state"
+        },
+        {
+          "from": "update",
+          "to": "readout",
+          "label": "representations"
+        }
+      ],
+      "caption": "A GNN repeatedly aggregates connected information, updates node representations, and turns them into predictions."
+    }
+  },
   "related": [
     "neural-network",
     "convolutional-neural-network",

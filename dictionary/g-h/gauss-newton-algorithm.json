@@ -5,7 +5,109 @@
   "type": "algorithm",
   "definition": "The Gauss–Newton algorithm is used to solve non-linear least squares problems, which is equivalent to minimizing a sum of squared function values.",
   "details": "It is an extension of Newton's method for finding a minimum of a non-linear function. Since a sum of squares must be nonnegative, the algorithm can be viewed as using Newton's method to iteratively approximate zeroes of the components of the sum, and thus minimizing the sum. In this sense, the algorithm is also an effective method for solving overdetermined systems of equations. It has the advantage that second derivatives, which can be challenging to compute, are not required. Non-linear least squares problems arise, for instance, in non-linear regression, where parameters in a model are sought such that the model is in good agreement with available observations. The method is named after the mathematicians Carl Friedrich Gauss and Isaac Newton, and first appeared in Gauss's 1809 work Theoria motus corporum coelestium in sectionibus conicis solem ambientum.",
-  "story": "Think of a lightbulb moment: the idea was always there, but someone had to point a finger at it. Behind the jargon is an idea you could explain to a friend over coffee. At its heart it is a simple notion, once you strip away the fancy name. Once you see it, you cannot unsee it. And that idea, made concrete, is Gauss–Newton algorithm.",
+  "explainer": {
+    "lead": "Gauss–Newton is an iterative way to adjust a model’s parameters so that its predictions closely match observations. It is built for non-linear least squares: problems where the goal is to make a sum of squared errors as small as possible, without calculating second derivatives.",
+    "tiers": {
+      "eli5": "Imagine adjusting a curve so it passes as close as possible to a set of dots. Gauss–Newton measures how far the curve is from each dot, makes a simple straight-line guess about how changing the settings will help, and then improves the settings again and again.",
+      "practitioner": "Use it for non-linear regression when you can provide residuals, their Jacobian with respect to the parameters, and a starting parameter vector. Each iteration solves a linearized least-squares problem for an update; check the squared-residual objective and apply a stopping rule rather than assuming a fixed number of iterations is enough. Avoiding second derivatives does not avoid derivatives altogether, and the method is specialized to sums of squares rather than arbitrary loss functions.",
+      "paperLevel": "For residuals r(theta), Gauss–Newton minimizes S(theta) = sum_i r_i(theta)^2. With Jacobian J at theta_k, it chooses a step by minimizing ||r(theta_k) + J delta||^2, giving delta = -(J^T J)^(-1) J^T r(theta_k) when the inverse exists, then sets theta_(k+1) = theta_k + delta. The method uses first rather than second derivatives and first appeared in Gauss’s 1809 Theoria motus corporum coelestium in sectionibus conicis solem ambientum."
+    },
+    "example": "Fit y = theta*x to the observations (x, y) = (1, 1) and (2, 3), starting at theta = 0. The residuals are theta - 1 and 2*theta - 3, and the Jacobian entries are 1 and 2; the linearized update solves 5*delta = 7, so delta = 1.4. After one step, theta = 1.4, the residuals are 0.4 and -0.2, and the squared-error sum is 0.20.",
+    "usedIn": [
+      {
+        "name": "Non-linear regression",
+        "detail": "Fits model parameters so that predictions agree closely with observed data.",
+        "url": ""
+      },
+      {
+        "name": "Overdetermined equation solving",
+        "detail": "Finds an approximate solution when there are more equations than unknowns by minimizing squared equation errors.",
+        "url": ""
+      }
+    ],
+    "goal": "Find parameter values that minimize a sum of squared residuals, equivalently solving a non-linear least-squares problem.",
+    "inputs": [
+      "A parameterized model or residual functions",
+      "Observations to compare with predictions",
+      "An initial parameter estimate",
+      "First derivatives of the residuals",
+      "A stopping rule"
+    ],
+    "outputs": [
+      "An updated parameter estimate",
+      "The residuals and their squared sum at that estimate"
+    ],
+    "steps": [
+      "Start with an initial guess for the parameters.",
+      "Evaluate each residual: the difference between a prediction and its observation.",
+      "Calculate the Jacobian, containing the residuals’ first derivatives with respect to the parameters.",
+      "Approximate the residuals linearly and solve the resulting linear least-squares problem for a parameter update.",
+      "Apply the update and repeat until the stopping rule is met."
+    ],
+    "tradeoffs": [
+      "It avoids second derivatives, which can be challenging to compute.",
+      "It still requires first-derivative information for the residuals.",
+      "It applies specifically to objectives expressed as sums of squares.",
+      "It generally needs several iterative updates and an initial estimate."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data",
+          "label": "Model and observations",
+          "note": "Current parameters, predictions, and target values"
+        },
+        {
+          "id": "residuals",
+          "label": "Residuals and Jacobian",
+          "note": "Errors and their first derivatives"
+        },
+        {
+          "id": "linearize",
+          "label": "Linearized least squares",
+          "note": "Approximate residuals near current parameters"
+        },
+        {
+          "id": "update",
+          "label": "Parameter update",
+          "note": "Solve for and apply a step"
+        },
+        {
+          "id": "stop",
+          "label": "Stopping check",
+          "note": "Repeat or return the current estimate"
+        }
+      ],
+      "edges": [
+        {
+          "from": "data",
+          "to": "residuals",
+          "label": "evaluate"
+        },
+        {
+          "from": "residuals",
+          "to": "linearize",
+          "label": "approximate"
+        },
+        {
+          "from": "linearize",
+          "to": "update",
+          "label": "step"
+        },
+        {
+          "from": "update",
+          "to": "stop",
+          "label": "parameters"
+        },
+        {
+          "from": "stop",
+          "to": "data",
+          "label": "repeat"
+        }
+      ],
+      "caption": "Each Gauss–Newton iteration linearizes the residuals, computes a least-squares update, and reevaluates the model."
+    }
+  },
   "related": [
     "actor-critic-algorithm",
     "algorithm-imed",

@@ -5,7 +5,106 @@
   "type": "concept",
   "definition": "Classifier chains is a machine learning method for problem transformation in multi-label classification.",
   "details": "It combines the computational efficiency of the binary relevance method while still being able to take the label dependencies into account for classification.",
-  "story": "Think of a historian sorting through boxes of letters, building a picture of an era one sentence at a time. Every machine is shaped by what it was shown, so someone has to choose that material with care. The examples a machine reads become the world it believes in. The words a model reads become the world it believes in. And that is Classifier chains — the unglamorous work everything else stands on.",
+  "explainer": {
+    "lead": "Classifier chains handle cases where one item can receive several labels at once. They predict the labels in sequence, letting each prediction inform the next while keeping the efficiency of training a separate binary classifier for each label.",
+    "tiers": {
+      "eli5": "Imagine deciding which stickers belong on a photo, one sticker at a time. After choosing the first sticker, you use that decision to help choose the next one, instead of treating every sticker as a separate question. This can capture connections between labels without making every decision completely independent.",
+      "practitioner": "Choose a label order and train one binary classifier per label, appending the true earlier labels to each classifier's inputs. At prediction time, feed in the labels predicted earlier in the chain. Label order matters, and an early mistake can affect later predictions.",
+      "paperLevel": "For a label ordering pi, classifier chains represent p(y | x) as the product over k of p(y_pi(k) | x, y_pi(1), ..., y_pi(k-1)). Each factor is learned by a binary classifier, using earlier true labels during training and earlier predicted labels during inference. The method retains binary relevance's computational efficiency while modeling label dependencies, but its predictions depend on the ordering and can propagate earlier errors."
+    },
+    "example": "Suppose a photo can receive the labels beach, ocean, and sunset. The chain first predicts beach = yes from the photo, then predicts ocean using both the photo and that beach decision, and finally predicts sunset using the photo and both earlier decisions; if the last two predictions are yes and no, the output is {beach, ocean}.",
+    "intuition": "Labels can offer clues about one another, so predicting them together can be more useful than answering each label question in isolation. Classifier chains pass earlier label decisions along a sequence, adding dependency information without abandoning simple binary classifiers.",
+    "howItWorks": [
+      "Arrange the possible labels in a chosen order.",
+      "Train the first binary classifier to predict the first label from the input features.",
+      "Train each later classifier from the features plus the true labels that precede it.",
+      "At prediction time, move along the chain and supply each classifier with the labels predicted so far.",
+      "Collect all the binary predictions as the final multi-label result."
+    ],
+    "whyItMatters": "The method bridges independent binary classification and dependency-aware multi-label classification. It can account for relationships between labels while preserving the computational efficiency associated with binary relevance.",
+    "misconceptions": [
+      "It is not the same as binary relevance: later classifiers also receive earlier label information.",
+      "It does not turn the problem into one single-label choice; several labels can still be predicted.",
+      "The chain's ordering is part of the method, not an irrelevant bookkeeping detail."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input features",
+          "note": "The item to be labeled"
+        },
+        {
+          "id": "label1",
+          "label": "First classifier",
+          "note": "Predicts the first label"
+        },
+        {
+          "id": "label2",
+          "label": "Second classifier",
+          "note": "Uses features and label one"
+        },
+        {
+          "id": "label3",
+          "label": "Third classifier",
+          "note": "Uses features and earlier labels"
+        },
+        {
+          "id": "output",
+          "label": "Multi-label output",
+          "note": "Combines the chain's predictions"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "label1",
+          "label": "features"
+        },
+        {
+          "from": "input",
+          "to": "label2",
+          "label": "features"
+        },
+        {
+          "from": "input",
+          "to": "label3",
+          "label": "features"
+        },
+        {
+          "from": "label1",
+          "to": "label2",
+          "label": "prediction"
+        },
+        {
+          "from": "label1",
+          "to": "label3",
+          "label": "prediction"
+        },
+        {
+          "from": "label2",
+          "to": "label3",
+          "label": "prediction"
+        },
+        {
+          "from": "label1",
+          "to": "output",
+          "label": ""
+        },
+        {
+          "from": "label2",
+          "to": "output",
+          "label": ""
+        },
+        {
+          "from": "label3",
+          "to": "output",
+          "label": ""
+        }
+      ],
+      "caption": "Each classifier receives the input features, and later classifiers also receive labels predicted earlier in the chain."
+    }
+  },
   "related": [
     "associative-classifier",
     "learning-classifier-system",

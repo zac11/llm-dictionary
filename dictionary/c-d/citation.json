@@ -5,6 +5,103 @@
   "type": "concept",
   "definition": "Linking each claim in the answer to its supporting source span.",
   "details": "Linking each claim in the answer to its supporting source span. Turns the model's output from an assertion into a checkable document; essential in legal, medical, and enterprise deployments.",
+  "explainer": {
+    "lead": "A citation connects a statement in a generated answer to the exact passage said to support it. This gives readers a direct way to check the answer instead of simply trusting the model.",
+    "tiers": {
+      "eli5": "It is like adding a note beside each sentence in your homework that shows exactly where you found the information. Your teacher can open that passage and check whether you understood it correctly.",
+      "practitioner": "In a RAG answer, attach claim-level references to the relevant retrieved source spans and let users inspect those passages. Common pitfalls are citing a whole answer with one generic link, or attaching a related passage that does not actually support the claim.",
+      "paperLevel": "For an answer decomposed into claims c1, ..., cn and source spans p1, ..., pm, citation provides a mapping from each claim to the span intended to support it. The mapping makes verification possible, but does not itself guarantee support, correctness, or complete claim coverage."
+    },
+    "example": "An answer states, \"Refunds are available within 30 days,\" and links that sentence to the source span, \"Customers may request a refund within 30 days of purchase.\" A reader can immediately check that the passage supports the claim.",
+    "usedIn": [
+      {
+        "name": "Legal deployments",
+        "detail": "Readers can check individual statements against the cited legal source passage.",
+        "url": ""
+      },
+      {
+        "name": "Medical deployments",
+        "detail": "Claims can be traced to their supporting passages for closer scrutiny.",
+        "url": ""
+      },
+      {
+        "name": "Enterprise deployments",
+        "detail": "Generated answers become checkable against supporting organizational sources.",
+        "url": ""
+      }
+    ],
+    "intuition": "An answer is easier to trust when each claim comes with directions to the evidence behind it. Citation turns unsupported-looking assertions into statements a reader can inspect.",
+    "howItWorks": [
+      "Generate an answer from retrieved sources.",
+      "Separate the answer into individual claims.",
+      "Identify the source span supporting each claim.",
+      "Attach a citation linking the claim to that span.",
+      "Let the reader compare the claim with its evidence."
+    ],
+    "whyItMatters": "Citations make generated answers checkable rather than requiring blind acceptance. This is especially important in legal, medical, and enterprise settings, where unsupported claims can have serious consequences.",
+    "misconceptions": [
+      "A citation does not prove that the cited span actually supports the claim.",
+      "One source link for an entire answer is not the same as claim-level citation.",
+      "Citing a source does not guarantee that every claim in the answer is covered."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "sources",
+          "label": "Retrieved sources",
+          "note": "Passages available to the model"
+        },
+        {
+          "id": "answer",
+          "label": "Generated answer",
+          "note": "Text containing individual claims"
+        },
+        {
+          "id": "claims",
+          "label": "Individual claims",
+          "note": "Statements that can be checked"
+        },
+        {
+          "id": "citations",
+          "label": "Citation links",
+          "note": "Mappings from claims to source spans"
+        },
+        {
+          "id": "reader",
+          "label": "Reader verification",
+          "note": "Comparison of each claim with its evidence"
+        }
+      ],
+      "edges": [
+        {
+          "from": "sources",
+          "to": "answer",
+          "label": "grounding"
+        },
+        {
+          "from": "answer",
+          "to": "claims",
+          "label": "contains"
+        },
+        {
+          "from": "claims",
+          "to": "citations",
+          "label": "linked by"
+        },
+        {
+          "from": "citations",
+          "to": "sources",
+          "label": "point to"
+        },
+        {
+          "from": "citations",
+          "to": "reader",
+          "label": "enable"
+        }
+      ],
+      "caption": "Citations connect individual answer claims back to the source spans readers can inspect."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

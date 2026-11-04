@@ -5,7 +5,111 @@
   "type": "concept",
   "definition": "In machine learning, ensemble averaging is the process of creating multiple models (typically artificial neural networks) and combining them to produce a desired output, as opposed to creating just one model.",
   "details": "Ensembles of models often outperform individual models, as the various errors of the ensemble constituents \"average out\".",
-  "story": "Think of a historian sorting through boxes of letters, building a picture of an era one sentence at a time. Every machine is shaped by what it was shown, so someone has to choose that material with care. The examples a machine reads become the world it believes in. The words a model reads become the world it believes in. That care with the raw material is Ensemble averaging (machine learning).",
+  "explainer": {
+    "lead": "Ensemble averaging combines the outputs of several machine-learning models instead of relying on one. Their different errors can partly average out, so the combined result often performs better than an individual model.",
+    "tiers": {
+      "eli5": "Imagine asking several friends to estimate how many sweets are in a jar. Their guesses may be too high or too low in different ways, so averaging them can give a better answer than trusting just one friend. Ensemble averaging does something similar with computer models.",
+      "practitioner": "Train or otherwise obtain multiple models, typically neural networks, run each on the same input, and average their outputs. This adds the cost of maintaining and running several models, and improvement is not guaranteed.",
+      "paperLevel": "For M models producing outputs f_m(x) on input x, simple ensemble averaging gives y_hat = (1/M) * sum_{m=1}^{M} f_m(x). The combined predictor can outperform its constituents when their various errors average out, but the sources provide no guarantee of improvement."
+    },
+    "example": "Suppose three models predict numeric outputs of 0.7, 0.9, and 0.8 for the same input. Their ensemble average is (0.7 + 0.9 + 0.8) / 3 = 0.8, which becomes the combined output.",
+    "usedIn": [
+      {
+        "name": "Neural network prediction",
+        "detail": "Multiple neural networks can produce outputs that are combined into one prediction.",
+        "url": ""
+      },
+      {
+        "name": "Machine-learning model development",
+        "detail": "Several models can be used together when a single model's errors are undesirable.",
+        "url": ""
+      }
+    ],
+    "intuition": "Different models can make different mistakes on the same input. Averaging their outputs can soften those individual mistakes and produce a more useful combined result.",
+    "howItWorks": [
+      "Create multiple models, typically artificial neural networks.",
+      "Give every model the same input.",
+      "Collect each model's output.",
+      "Average the outputs to produce the ensemble's result."
+    ],
+    "whyItMatters": "It offers a straightforward way to combine models, and ensembles often outperform individual models because constituent errors can average out.",
+    "misconceptions": [
+      "It is not one model producing several outputs; it uses multiple models.",
+      "Combining models does not guarantee better performance, although ensembles often outperform individual models."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Shared input",
+          "note": "The same example enters every model."
+        },
+        {
+          "id": "model-a",
+          "label": "Model one",
+          "note": "Produces its own output."
+        },
+        {
+          "id": "model-b",
+          "label": "Model two",
+          "note": "Produces a separate output."
+        },
+        {
+          "id": "model-c",
+          "label": "Model three",
+          "note": "Produces another output."
+        },
+        {
+          "id": "average",
+          "label": "Average outputs",
+          "note": "Combines the model outputs."
+        },
+        {
+          "id": "result",
+          "label": "Ensemble result",
+          "note": "The desired combined output."
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "model-a",
+          "label": ""
+        },
+        {
+          "from": "input",
+          "to": "model-b",
+          "label": ""
+        },
+        {
+          "from": "input",
+          "to": "model-c",
+          "label": ""
+        },
+        {
+          "from": "model-a",
+          "to": "average",
+          "label": "output"
+        },
+        {
+          "from": "model-b",
+          "to": "average",
+          "label": "output"
+        },
+        {
+          "from": "model-c",
+          "to": "average",
+          "label": "output"
+        },
+        {
+          "from": "average",
+          "to": "result",
+          "label": ""
+        }
+      ],
+      "caption": "Several models process the same input, and their outputs are averaged into one result."
+    }
+  },
   "related": [
     "machine-learning",
     "active-learning-machine-learning",

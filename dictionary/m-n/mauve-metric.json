@@ -5,7 +5,90 @@
   "type": "metric",
   "definition": "MAUVE is a metric for automatically evaluating the quality of open-ended text generation and other generative models.",
   "details": "Developed by researchers at the University of Washington, Allen Institute for AI, and Stanford University, it was first introduced at NeurIPS 2021, where it received and Outstanding Paper Award. Unlike earlier metrics such as BLEU or ROUGE, which rely on n-gram overlap between a candidate and a reference, MAUVE measures how close the distribution of generated text is to the distribution of human-written text in a high-dimensional embedding space. In 2023, the metric was extended to support the evaluation of computer vision applications (comparing favorably to the Fréchet Inception Distance).",
-  "story": "Picture a scoreboard at a science fair: you need a fair, agreed way to tell who actually won. A fair scoreboard keeps everyone honest. Before trusting a machine, someone has to measure how good it really is — fairly and honestly. A good metric is a ruler that does not bend when you lean on it. That shared ruler is MAUVE (metric).",
+  "explainer": {
+    "lead": "MAUVE evaluates a generative model by comparing the overall distribution of its outputs with human-written text, rather than checking whether individual phrases match. It is useful for open-ended generation, where many different outputs can be good.",
+    "tiers": {
+      "eli5": "Imagine judging a robot storyteller by comparing a big pile of its stories with a pile written by people. MAUVE turns the writing into points in a mathematical space and checks whether the two piles have similar shapes. This avoids requiring the robot to copy exact words from a model answer.",
+      "practitioner": "Use MAUVE to compare a collection of generated text with human-written text after mapping both into a high-dimensional embedding space. Unlike BLEU or ROUGE, it does not depend on n-gram overlap with references, so it suits open-ended generation. A 2023 extension also supports computer-vision evaluation.",
+      "paperLevel": "MAUVE compares the distribution of generated samples with the distribution of human-written samples in a high-dimensional embedding space. Introduced at NeurIPS 2021, where it received an Outstanding Paper Award, it was extended to computer vision in 2023 and compared favorably with Fréchet Inception Distance."
+    },
+    "example": "Suppose 1,000 stories from Generator A and 1,000 stories from Generator B are each compared with a collection of human stories. If A's embedded distribution is closer to the human distribution than B's, MAUVE identifies A as the better match; it does not require either generator to reuse the human stories' exact phrases.",
+    "usedIn": [
+      {
+        "name": "Open-ended text generation",
+        "detail": "Evaluates how closely the distribution of generated text matches human-written text.",
+        "url": ""
+      },
+      {
+        "name": "Computer vision",
+        "detail": "The 2023 extension evaluates generative vision models and compared favorably with Fréchet Inception Distance.",
+        "url": ""
+      }
+    ],
+    "measures": "MAUVE measures distributional similarity: how close generated text is, as a collection, to human-written text in a high-dimensional embedding space.",
+    "howScored": [
+      "Collect generated text and human-written text.",
+      "Represent both collections in a high-dimensional embedding space.",
+      "Compare the two distributions to produce the MAUVE evaluation."
+    ],
+    "typicalResults": "The metric was introduced for generative-model evaluation at NeurIPS 2021. Its 2023 computer-vision extension compared favorably with Fréchet Inception Distance.",
+    "caveats": [
+      "It compares distributions rather than scoring n-gram overlap with a reference.",
+      "Text evaluation requires collections of generated and human-written text represented in an embedding space."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "generated",
+          "label": "Generated text",
+          "note": "A collection of model outputs"
+        },
+        {
+          "id": "human",
+          "label": "Human-written text",
+          "note": "The comparison collection"
+        },
+        {
+          "id": "embeddings",
+          "label": "Embedding space",
+          "note": "High-dimensional representations"
+        },
+        {
+          "id": "compare",
+          "label": "Compare distributions",
+          "note": "Measures distributional closeness"
+        },
+        {
+          "id": "score",
+          "label": "MAUVE result",
+          "note": "The generation-quality evaluation"
+        }
+      ],
+      "edges": [
+        {
+          "from": "generated",
+          "to": "embeddings",
+          "label": ""
+        },
+        {
+          "from": "human",
+          "to": "embeddings",
+          "label": ""
+        },
+        {
+          "from": "embeddings",
+          "to": "compare",
+          "label": ""
+        },
+        {
+          "from": "compare",
+          "to": "score",
+          "label": ""
+        }
+      ],
+      "caption": "MAUVE embeds generated and human-written collections, then compares their distributions."
+    }
+  },
   "related": [
     "rouge-metric",
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",

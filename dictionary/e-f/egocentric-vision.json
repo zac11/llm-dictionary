@@ -5,7 +5,122 @@
   "type": "concept",
   "definition": "Egocentric vision or first-person vision is a sub-field of computer vision that entails analyzing images and videos captured by a wearable camera, which is typically worn on the head or on the chest and naturally approximates the visual field of the camera wearer.",
   "details": "Consequently, visual data capture the part of the scene on which the user focuses to carry out the task at hand and offer a valuable perspective to understand the user's activities and their context in a naturalistic setting. The wearable camera looking forwards is often supplemented with a camera looking inward at the user's eye and able to measure a user's eye gaze, which is useful to reveal attention and to better understand the user's activity and intentions.",
-  "story": "Picture walking through a crowd and instantly picking out a familiar face without reading a single name tag. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. It turns a picture into an understanding: this is a cat, that is a stop sign. Sight, for a machine, is a long climb from raw light to a name. And that is Egocentric vision — giving a machine the gift of sight.",
+  "explainer": {
+    "lead": "Egocentric vision studies images and video from a camera worn on the head or chest, close to the wearer’s own point of view. This perspective helps reveal what a person is doing, what their surroundings are like, and, with an eye-facing camera, where their attention is directed.",
+    "tiers": {
+      "eli5": "Imagine wearing a tiny camera on your hat while you build a model airplane. It records the pieces and tools in front of you, much as you see them while working. A second camera can watch your eyes to help show which part you are paying attention to.",
+      "practitioner": "A typical setup combines forward-facing head- or chest-mounted video with analysis of the wearer’s activity and context; an inward-facing eye camera can add gaze measurements for attention and intention analysis. The forward view approximates the wearer’s visual field rather than capturing the whole environment, and it should not be treated as a direct gaze measurement without the eye-facing stream.",
+      "paperLevel": "Egocentric vision analyzes a frame sequence I_t captured by a wearable camera whose forward view approximates the wearer’s visual field, with the goal of understanding activity and context in a naturalistic setting. An optional inward-facing camera supplies gaze measurements g_t, which can be used to study attention and intentions. The recorded scene is shaped by the wearer’s current task and focus, so it is a selective view rather than complete environmental coverage."
+    },
+    "example": "While a person prepares vegetables, a head-mounted camera records their hands, knife, and cutting board from a first-person perspective. An inward-facing camera measures whether their gaze is on the knife or the vegetables, helping an analysis system relate their cutting actions to their attention.",
+    "usedIn": [
+      {
+        "name": "Activity recognition",
+        "detail": "Using first-person video to understand the actions a wearer performs during a task.",
+        "url": ""
+      },
+      {
+        "name": "Attention analysis",
+        "detail": "Combining an inward-facing eye camera with the forward view to study what draws the wearer’s gaze.",
+        "url": ""
+      },
+      {
+        "name": "Intention understanding",
+        "detail": "Using gaze and task-focused visual evidence to better understand what the wearer may be trying to do.",
+        "url": ""
+      },
+      {
+        "name": "Naturalistic context studies",
+        "detail": "Examining a person’s activities and surroundings as they carry out tasks in everyday settings.",
+        "url": ""
+      }
+    ],
+    "intuition": "A wearable camera sees the task from near the wearer’s viewpoint, concentrating on the part of the scene they are engaging with. Adding a view of the wearer’s eye helps connect that visual evidence with attention.",
+    "howItWorks": [
+      "Place a forward-facing camera on the wearer’s head or chest.",
+      "Capture images or video that approximate the wearer’s visual field during a task.",
+      "Optionally record the wearer’s eye with an inward-facing camera to measure gaze.",
+      "Analyze the visual data, and gaze when available, to understand activity, context, attention, and intentions."
+    ],
+    "whyItMatters": "The viewpoint naturally emphasizes the objects and scene regions involved in the wearer’s current task. That makes it useful for studying activities and context as they occur, while gaze can add evidence about attention and intentions.",
+    "misconceptions": [
+      "It is not simply any first-person-looking footage: the defining setup uses a wearable camera approximating the wearer’s visual field.",
+      "The forward camera does not directly measure eye gaze; that requires an additional inward-facing eye camera.",
+      "The view does not show everything around the wearer, but mainly the scene region relevant to the task at hand."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "task",
+          "label": "Wearer and task",
+          "note": "Activity shapes what appears in view"
+        },
+        {
+          "id": "forward",
+          "label": "Forward camera",
+          "note": "Worn on head or chest"
+        },
+        {
+          "id": "video",
+          "label": "First-person video",
+          "note": "Approximates the wearer’s visual field"
+        },
+        {
+          "id": "eye",
+          "label": "Wearer’s eye",
+          "note": "Provides signals of visual attention"
+        },
+        {
+          "id": "inward",
+          "label": "Inward camera",
+          "note": "Optional eye-facing camera"
+        },
+        {
+          "id": "gaze",
+          "label": "Gaze measurements",
+          "note": "Indicate where attention is directed"
+        },
+        {
+          "id": "analysis",
+          "label": "Vision analysis",
+          "note": "Studies activity, context, attention, and intentions"
+        }
+      ],
+      "edges": [
+        {
+          "from": "task",
+          "to": "forward",
+          "label": "scene view"
+        },
+        {
+          "from": "forward",
+          "to": "video",
+          "label": "captures"
+        },
+        {
+          "from": "video",
+          "to": "analysis",
+          "label": "visual data"
+        },
+        {
+          "from": "eye",
+          "to": "inward",
+          "label": "observed by"
+        },
+        {
+          "from": "inward",
+          "to": "gaze",
+          "label": "measures"
+        },
+        {
+          "from": "gaze",
+          "to": "analysis",
+          "label": "attention cues"
+        }
+      ],
+      "caption": "A forward wearable camera supplies task-focused video, while an optional eye-facing camera adds gaze measurements to the analysis."
+    }
+  },
   "related": [
     "active-vision",
     "bag-of-words-model-in-computer-vision",

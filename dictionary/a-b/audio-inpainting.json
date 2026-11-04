@@ -5,7 +5,88 @@
   "type": "concept",
   "definition": "Audio inpainting (also known as audio interpolation) is an audio restoration task which deals with the reconstruction of missing or corrupted portions of a digital audio signal.",
   "details": "Inpainting techniques are employed when parts of the audio have been lost due to various factors such as transmission errors, data corruption or errors during recording. The goal of audio inpainting is to fill in the gaps (i.e., the missing portions) in the audio signal seamlessly, making the reconstructed portions indistinguishable from the original content and avoiding the introduction of audible distortions or alterations. Many techniques have been proposed to solve the audio inpainting problem and this is usually achieved by analyzing the temporal and spectral information surrounding each missing portion of the considered audio signal. Classic methods employ statistical models or digital signal processing algorithms to predict and synthesize the missing or damaged sections. Recent solutions, instead, take advantage of deep learning models, thanks to the growing trend of exploiting data-driven methods in the context of audio restoration. Depending on the extent of the lost information, the inpainting task can be divided in three categories. Short inpainting refers to the reconstruction of few milliseconds (approximately less than 10) of missing signal, that occurs in the case of short distortions such as clicks or clipping. In this case, the goal of the reconstruction is to recover the lost information exactly. In long inpainting instead, with gaps in the order of hundreds of milliseconds or even seconds, this goal becomes unrealistic, since restoration techniques cannot rely on local information. Therefore, besides providing a coherent reconstruction, the algorithms need to generate new information that has to be semantically compatible with the surrounding context (i.e., the audio signal surrounding the gaps). The case of medium duration gaps lays between short and long inpainting. It refers to the reconstruction of tens of millisecond of missing data, a scale where the non-stationary characteristic of audio already becomes important.",
-  "story": "Think of a lightbulb moment: the idea was always there, but someone had to point a finger at it. Behind the jargon is an idea you could explain to a friend over coffee. At its heart it is a simple notion, once you strip away the fancy name. Once you see it, you cannot unsee it. That is Audio inpainting — a small key that opens a big door.",
+  "explainer": {
+    "lead": "Audio inpainting repairs holes in a recording by reconstructing the sound that belongs in them. It matters because dropouts, clicks, and corrupted data can make speech or music unpleasant or difficult to understand, while a good repair avoids drawing attention to itself.",
+    "tiers": {
+      "eli5": "Imagine a colouring book with a small piece torn out: you can use the picture around the hole to draw a fitting replacement. Audio inpainting does something similar for sound, using the audio before and after a gap to fill it smoothly. A tiny hole may be repaired almost exactly, but a very long one requires inventing a plausible continuation rather than recovering the original sound.",
+      "practitioner": "Audio inpainting is applied to dropouts and damaged regions caused by recording errors, transmission errors, or data corruption. Classic approaches use statistical models or digital signal processing, while newer systems use deep learning and temporal and spectral context. Repairs should be checked for audible boundaries and distortions; exact recovery becomes unrealistic for gaps lasting hundreds of milliseconds or seconds.",
+      "paperLevel": "Given an audio signal with missing samples x_g and surrounding observed context x_c, audio inpainting estimates a replacement x_g_hat from x_c so that the completed signal is coherent and free of audible restoration artefacts. Short inpainting concerns gaps of approximately less than 10 ms and aims at exact recovery; medium gaps span tens of milliseconds, where non-stationarity is important. Long gaps of hundreds of milliseconds or seconds require semantically compatible new content because local context is insufficient to recover the original."
+    },
+    "example": "Suppose a speech recording has a 200 ms gap caused by a transmission error. Because this is long inpainting, the system cannot expect to recover the exact lost waveform; instead, it uses the surrounding speech to generate a coherent, context-compatible fill without a noticeable break.",
+    "usedIn": [
+      {
+        "name": "Digital audio transmission",
+        "detail": "Reconstructs portions of a signal lost through transmission errors.",
+        "url": ""
+      },
+      {
+        "name": "Recording restoration",
+        "detail": "Repairs short damage such as clicks or clipping, as well as longer corrupted sections.",
+        "url": ""
+      },
+      {
+        "name": "Corrupted audio recovery",
+        "detail": "Fills gaps introduced by data corruption while aiming to avoid audible alterations.",
+        "url": ""
+      }
+    ],
+    "intuition": "The sound surrounding a gap provides clues about how the missing passage should continue. Inpainting uses those clues to join the two sides naturally, but a longer gap leaves more uncertainty about what was originally there.",
+    "howItWorks": [
+      "Identify the missing or corrupted portion of the digital audio signal.",
+      "Analyse temporal and spectral information in the audio around the gap.",
+      "Predict or generate replacement samples using statistical, signal-processing, or deep-learning methods.",
+      "Insert the reconstruction so that it connects coherently with the surrounding audio.",
+      "Check that the repair does not introduce audible distortions or obvious transitions."
+    ],
+    "whyItMatters": "It can make damaged audio usable and listenable again without leaving silence, abrupt jumps, or conspicuous artefacts. The gap length determines whether the goal is exact reconstruction or a plausible new continuation.",
+    "misconceptions": [
+      "Long gaps can always be restored exactly: once local information is insufficient, reconstruction can only provide a coherent and semantically compatible continuation.",
+      "Every gap is the same problem: short, medium, and long gaps differ greatly in duration and reconstruction goals.",
+      "Inpainting simply inserts silence: it synthesizes replacement audio intended to fit the surrounding signal."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "damaged",
+          "label": "Damaged audio",
+          "note": "Contains a missing or corrupted gap."
+        },
+        {
+          "id": "context",
+          "label": "Context analysis",
+          "note": "Examines surrounding temporal and spectral information."
+        },
+        {
+          "id": "reconstruct",
+          "label": "Gap reconstruction",
+          "note": "Predicts or generates replacement audio."
+        },
+        {
+          "id": "restored",
+          "label": "Restored audio",
+          "note": "Combines the repair with the original context."
+        }
+      ],
+      "edges": [
+        {
+          "from": "damaged",
+          "to": "context",
+          "label": "surrounding audio"
+        },
+        {
+          "from": "context",
+          "to": "reconstruct",
+          "label": "signal clues"
+        },
+        {
+          "from": "reconstruct",
+          "to": "restored",
+          "label": "gap fill"
+        }
+      ],
+      "caption": "Audio inpainting uses the context around a gap to generate a coherent replacement."
+    }
+  },
   "related": [
     "audio-mining",
     "audio-visual-speech-recognition",

@@ -5,6 +5,97 @@
   "type": "concept",
   "definition": "Labeling each utterance in a conversation with its communicative function — question, statement, request, acknowledgment.",
   "details": "Labeling each utterance in a conversation with its communicative function — question, statement, request, acknowledgment. Dialog acts structure downstream analysis and dialogue-system policy learning.",
+  "explainer": {
+    "lead": "Dialog act classification identifies what each utterance is doing in a conversation, such as asking a question, making a request, or acknowledging something. These labels give dialogue systems a structured view of the exchange for analysis and policy learning.",
+    "tiers": {
+      "eli5": "It is like adding a note beside every line in a conversation to explain its job: asking, telling, requesting, or acknowledging. That helps a computer understand not just the words, but what each speaker is trying to do.",
+      "practitioner": "An utterance classifier produces a dialog-act label for each turn, often using the utterance together with conversational context. The labels can feed downstream analysis or the state representation used for dialogue-policy learning. A key pitfall is treating every utterance in isolation, since wording alone may not determine its communicative function.",
+      "paperLevel": "Given utterance u_i and its conversational context c_i, learn a mapping f(u_i, c_i) -> y_i, where y_i is a dialog act such as question, statement, request, or acknowledgment. The resulting sequence of acts structures downstream analysis and dialogue-system policy learning. Communicative function is not determined by surface wording alone, so context and ambiguous utterances remain important considerations."
+    },
+    "example": "In the exchange “Could you send the file?” — “Here it is.” — “Thanks,” the classifier labels the first utterance a request, the second a statement, and the third an acknowledgment.",
+    "usedIn": [
+      {
+        "name": "Dialogue systems",
+        "detail": "Dialog-act labels help structure the conversation and support policy learning.",
+        "url": ""
+      },
+      {
+        "name": "Conversational analysis",
+        "detail": "Utterances can be organized by communicative functions such as questions and requests.",
+        "url": ""
+      },
+      {
+        "name": "Task-oriented assistants",
+        "detail": "Requests and acknowledgments can be distinguished when interpreting a multi-turn exchange.",
+        "url": ""
+      }
+    ],
+    "intuition": "The same words can carry different conversational purposes, so understanding a dialogue means identifying the action performed by each utterance, not only its content.",
+    "howItWorks": [
+      "Take one utterance from the conversation.",
+      "Consider its wording and conversational context.",
+      "Assign a communicative-function label, such as question or request.",
+      "Pass the labeled turns to downstream analysis or policy learning."
+    ],
+    "whyItMatters": "Dialog acts turn a sequence of utterances into a sequence of communicative actions. That structure supports downstream conversation analysis and helps dialogue-system policies learn from what speakers are trying to accomplish.",
+    "misconceptions": [
+      "A dialog act is not merely the topic or content of an utterance.",
+      "A question mark alone does not capture every question or request.",
+      "Classifying an utterance does not by itself decide the system’s next response."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "utterance",
+          "label": "Current utterance",
+          "note": "One turn from the conversation"
+        },
+        {
+          "id": "context",
+          "label": "Conversation context",
+          "note": "Surrounding turns help clarify function"
+        },
+        {
+          "id": "classifier",
+          "label": "Act classifier",
+          "note": "Maps the utterance to a label"
+        },
+        {
+          "id": "act",
+          "label": "Dialog act",
+          "note": "Question, statement, request, or acknowledgment"
+        },
+        {
+          "id": "downstream",
+          "label": "Downstream processing",
+          "note": "Conversation analysis or policy learning"
+        }
+      ],
+      "edges": [
+        {
+          "from": "utterance",
+          "to": "classifier",
+          "label": "wording"
+        },
+        {
+          "from": "context",
+          "to": "classifier",
+          "label": "context"
+        },
+        {
+          "from": "classifier",
+          "to": "act",
+          "label": "predicts"
+        },
+        {
+          "from": "act",
+          "to": "downstream",
+          "label": "structures"
+        }
+      ],
+      "caption": "An utterance and its context are classified into a dialog act for downstream use."
+    }
+  },
   "citation": {
     "title": "Dialog Act Classification",
     "authors": [],

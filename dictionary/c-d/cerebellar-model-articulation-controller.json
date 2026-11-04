@@ -2,10 +2,129 @@
   "term": "Cerebellar model articulation controller",
   "letter": "C",
   "category": "Artificial neural networks",
-  "type": "concept",
+  "type": "architecture",
   "definition": "The cerebellar model articulation controller (CMAC) is a type of neural network based on a model of the mammalian cerebellum.",
   "details": "It is also known as the cerebellar model articulation controller. It is a type of associative memory. The CMAC was first proposed as a function modeler for robotic controllers by James Albus in 1975 (hence the name), but has been extensively used in reinforcement learning and also as for automated classification in the machine learning community. The CMAC is an extension of the perceptron model. It computes a function for n {\\displaystyle n} input dimensions. The input space is divided up into hyper-rectangles, each of which is associated with a memory cell. The contents of the memory cells are the weights, which are adjusted during training. Usually, more than one quantisation of input space is used, so that any point in input space is associated with a number of hyper-rectangles, and therefore with a number of memory cells. The output of a CMAC is the algebraic sum of the weights in all the memory cells activated by the input point. A change of value of the input point results in a change in the set of activated hyper-rectangles, and therefore a change in the set of memory cells participating in the CMAC output. The CMAC output is therefore stored in a distributed fashion, such t",
-  "story": "Imagine a factory floor where each workstation can glance at every other workstation before doing its part. It is the blueprint that makes everything else possible. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. Structure decides what the model can even express — the blueprint before the bricks. And that shape of the machine — Cerebellar model articulation controller — is what makes everything else possible.",
+  "explainer": {
+    "lead": "The cerebellar model articulation controller (CMAC) is a neural network that computes an output by adding the weights of memory cells activated by an input. Its outputs are stored in a distributed way across those cells, and training adjusts their weights.",
+    "tiers": {
+      "eli5": "Imagine a floor covered by several different grids of tiles. Each spot on the floor activates one tile in every grid, and each tile has a cubby containing a number. To get an answer, you add the numbers from all the activated cubbies; learning means changing those numbers.",
+      "practitioner": "To use CMAC, quantise the input space into hyper-rectangles, usually with more than one quantisation, and sum the learned weights in all cells activated by each input. It has been applied to robotic controllers, reinforcement learning, and automated classification. A change in input can change the active-cell set, so the output is not a single-cell lookup.",
+      "paperLevel": "For an n-dimensional input space, each quantisation partitions the space into hyper-rectangles associated with memory cells. If A(x) is the set of cells activated by input x across all quantisations, then CMAC(x) = Σ_{i ∈ A(x)} w_i, where the weights w_i are adjusted during training. James Albus proposed CMAC in 1975 as a function modeler for robotic controllers; it extends the perceptron model and stores outputs in a distributed fashion."
+    },
+    "example": "Suppose an input point activates three memory cells with weights 0.4, 0.2, and 0.1; the CMAC output is 0.7. Moving the input changes the activated hyper-rectangles, so a different set of cell weights is summed.",
+    "usedIn": [
+      {
+        "name": "Robotic control",
+        "detail": "Albus originally proposed CMAC as a function modeler for robotic controllers.",
+        "url": ""
+      },
+      {
+        "name": "Reinforcement learning",
+        "detail": "CMAC has been extensively used as a function modeler in reinforcement learning.",
+        "url": ""
+      },
+      {
+        "name": "Automated classification",
+        "detail": "The machine learning community has also used CMAC for automated classification.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "An n-dimensional input space",
+        "detail": ""
+      },
+      {
+        "name": "One or more hyper-rectangle quantisations",
+        "detail": ""
+      },
+      {
+        "name": "Memory cells linked to hyper-rectangles",
+        "detail": ""
+      },
+      {
+        "name": "Trainable weights stored in the cells",
+        "detail": ""
+      },
+      {
+        "name": "An algebraic sum producing the output",
+        "detail": ""
+      }
+    ],
+    "flow": [
+      "Receive a point in the input space.",
+      "Find its hyper-rectangle in each quantisation.",
+      "Activate the associated memory cells.",
+      "Retrieve the weight from each activated cell.",
+      "Add those weights to produce the output."
+    ],
+    "origin": "James Albus first proposed CMAC in 1975 as a function modeler for robotic controllers. It is based on a model of the mammalian cerebellum.",
+    "lineage": "CMAC is an extension of the perceptron model and a type of associative memory.",
+    "whyItMatters": "CMAC provides a distributed way to represent a function over an input space using activated memory cells and adjustable weights. Its applications extend from its original robotic-control setting to reinforcement learning and automated classification.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input point",
+          "note": "A point in n-dimensional input space."
+        },
+        {
+          "id": "quantise",
+          "label": "Space quantisations",
+          "note": "Several divisions into hyper-rectangles."
+        },
+        {
+          "id": "rectangles",
+          "label": "Activated hyper-rectangles",
+          "note": "The regions containing the input point."
+        },
+        {
+          "id": "cells",
+          "label": "Memory cells",
+          "note": "Cells associated with those regions."
+        },
+        {
+          "id": "weights",
+          "label": "Active weights",
+          "note": "Trainable values read from activated cells."
+        },
+        {
+          "id": "output",
+          "label": "CMAC output",
+          "note": "The algebraic sum of all active weights."
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "quantise",
+          "label": "locates"
+        },
+        {
+          "from": "quantise",
+          "to": "rectangles",
+          "label": "selects"
+        },
+        {
+          "from": "rectangles",
+          "to": "cells",
+          "label": "activates"
+        },
+        {
+          "from": "cells",
+          "to": "weights",
+          "label": "provides"
+        },
+        {
+          "from": "weights",
+          "to": "output",
+          "label": "summed"
+        }
+      ],
+      "caption": "An input activates cells through several quantisations, and their weights are summed to form the output."
+    }
+  },
   "related": [
     "dehaene-changeux-model",
     "ablation-artificial-intelligence",

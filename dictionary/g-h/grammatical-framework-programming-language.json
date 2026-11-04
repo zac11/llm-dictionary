@@ -5,7 +5,113 @@
   "type": "tool",
   "definition": "Grammatical Framework (GF) is a programming language for writing grammars of natural languages.",
   "details": "GF is capable of parsing and generating texts in several languages simultaneously while working from a language-independent representation of meaning. Grammars written in GF can be compiled into a platform independent format and then used from different programming languages including C and Java, C#, Python and Haskell. A companion to GF is the GF Resource Grammar Library, a reusable library for dealing with the morphology and syntax of a growing number of natural languages. Both GF itself and the GF Resource Grammar Library are open-source. Typologically, GF is a functional programming language. Mathematically, it is a type-theoretic formal system (a logical framework to be precise) based on Martin-Löf's intuitionistic type theory, with additional judgments tailored specifically to the domain of linguistics.",
-  "story": "Imagine learning a language by reading every book in the library and noticing, over time, which words travel together. It does not memorize a rulebook; it absorbs a library. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It is fluency built from pattern, not from memorized rules. And that is Grammatical Framework (programming language) — teaching a machine to read between the lines.",
+  "explainer": {
+    "lead": "Grammatical Framework, or GF, is an open-source programming language for describing how natural languages work. It lets developers connect several languages to one shared representation of meaning, so the same grammar-based system can both understand and produce text.",
+    "tiers": {
+      "eli5": "Imagine writing one idea on a card, then giving the card to friends who each know a different language. GF works a bit like that: the idea stays the same, while separate grammar rules turn it into words for each language. It can also run backwards, taking a sentence apart to recover the idea on the card.",
+      "practitioner": "An engineer defines an abstract syntax for meanings and concrete grammars that map those meanings into particular languages. GF grammars can be compiled into a platform-independent format and used from C, Java, C#, Python, or Haskell, with the Resource Grammar Library supplying reusable morphology and syntax. This is grammar engineering rather than model training: adding or improving language support requires suitable grammatical rules.",
+      "paperLevel": "GF is a functional programming language and a type-theoretic logical framework based on Martin-Löf's intuitionistic type theory, extended with judgments specific to linguistics. In schematic terms, an abstract representation A is shared across languages, while each concrete grammar C_L supports generation A -> C_L and parsing C_L -> A. Its multilingual reach depends on the available concrete grammars and resource-library coverage."
+    },
+    "example": "An application can represent the meaning 'the cat sleeps' once, then use an English concrete grammar to generate \"The cat sleeps\" and a Swedish one to generate \"Katten sover.\" The same mappings can be used in reverse to parse either sentence back into the shared meaning.",
+    "usedIn": [
+      {
+        "name": "Multilingual language tools",
+        "detail": "Parsing and generating text in several languages from a shared representation of meaning.",
+        "url": ""
+      },
+      {
+        "name": "Grammar engineering",
+        "detail": "Reusing morphology and syntax through the GF Resource Grammar Library.",
+        "url": ""
+      },
+      {
+        "name": "Cross-platform software",
+        "detail": "Embedding compiled GF grammars in applications written in C, Java, C#, Python, or Haskell.",
+        "url": ""
+      }
+    ],
+    "intuition": "Separate what a sentence means from how a particular language expresses it. One abstract grammar captures the meaning, while concrete grammars supply each language's words and grammatical forms.",
+    "howItWorks": [
+      "Define language-independent meanings in an abstract grammar.",
+      "Write concrete grammars that express those meanings in individual natural languages.",
+      "Reuse morphology and syntax from the GF Resource Grammar Library where available.",
+      "Compile the grammars into a platform-independent format for parsing or generation.",
+      "Call the compiled grammar from a host application in a supported programming language."
+    ],
+    "whyItMatters": "GF keeps multilingual parsing and generation consistent by tying every supported language to the same meaning representation. Its reusable library and open-source implementation also reduce the need to rebuild basic grammatical machinery for each application.",
+    "misconceptions": [
+      "GF is not a learned machine-translation model; it follows explicitly written grammars.",
+      "A shared meaning representation does not eliminate the need for language-specific grammar rules.",
+      "The Resource Grammar Library is a companion library for GF, not a separate programming language."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "library",
+          "label": "Resource library",
+          "note": "Reusable morphology and syntax"
+        },
+        {
+          "id": "grammar",
+          "label": "GF grammars",
+          "note": "Abstract meanings and concrete rules"
+        },
+        {
+          "id": "compiled",
+          "label": "Compiled grammar",
+          "note": "Platform-independent grammar format"
+        },
+        {
+          "id": "meaning",
+          "label": "Shared meaning",
+          "note": "Language-independent representation"
+        },
+        {
+          "id": "texts",
+          "label": "Multilingual text",
+          "note": "Sentences in supported languages"
+        },
+        {
+          "id": "app",
+          "label": "Host application",
+          "note": "Uses GF from a supported language"
+        }
+      ],
+      "edges": [
+        {
+          "from": "library",
+          "to": "grammar",
+          "label": "reuses"
+        },
+        {
+          "from": "grammar",
+          "to": "compiled",
+          "label": "compiles"
+        },
+        {
+          "from": "meaning",
+          "to": "compiled",
+          "label": "generation"
+        },
+        {
+          "from": "compiled",
+          "to": "texts",
+          "label": "produces"
+        },
+        {
+          "from": "texts",
+          "to": "meaning",
+          "label": "parsing"
+        },
+        {
+          "from": "app",
+          "to": "compiled",
+          "label": "calls"
+        }
+      ],
+      "caption": "GF connects shared meanings and multilingual text through compiled abstract and concrete grammars."
+    }
+  },
   "related": [
     "natural-language-programming",
     "argumentation-framework",

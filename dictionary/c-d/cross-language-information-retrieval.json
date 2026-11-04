@@ -5,7 +5,98 @@
   "type": "concept",
   "definition": "Cross-language information retrieval (CLIR) is a subfield of information retrieval dealing with retrieving information written in a language different from the language of the user's query.",
   "details": "The term \"cross-language information retrieval\" has many synonyms, of which the following are perhaps the most frequent: cross-lingual information retrieval, translingual information retrieval, multilingual information retrieval. The term \"multilingual information retrieval\" refers more generally both to technology for retrieval of multilingual collections and to technology which has been moved to handle material in one language to another. The term Multilingual Information Retrieval (MLIR) involves the study of systems that accept queries for information in various languages and return objects (text, and other media) of various languages, translated into the user's language. Cross-language information retrieval refers more specifically to the use case where users formulate their information need in one language and the system retrieves relevant documents in another. To do so, most CLIR systems use various translation techniques. CLIR techniques can be classified into different categories based on different translation resources: Dictionary-based CLIR techniques Parallel corpora based CLIR techniques Comparable corpora based CLIR techniques Machine translator based CLIR techniques CLIR systems have improved so much that the most accurate multi-lingual and cross-lingual adhoc information retrieval systems today are nearly as effective as monolingual systems. Other related information access tasks, such as media monitoring, information filtering and routing, sentiment analysis, and information extraction require more sophisticated models and typically more processing and analysis of the information items of interest. Much of that processing needs to be aware of the specifics of the target languages it is deployed in. Mostly, the various mechanisms of variation in human language pose coverage challenges for information retrieval systems: texts in a collection may treat a topic of interest but use terms or expressions which do not match the expression of information need given by the user. This can be true even in a mono-lingual case, but this is especially true in cross-lingual information retrieval, where users may know the target language only to some extent. The benefits of CLIR technology for users with poor to moderate competence in the target language has been found to be greater than for those who are fluent. Specific technologies in place for CLIR services include morphological analysis to handle inflection, decompounding or compound splitting to handle compound terms, and translations mechanisms to translate a query from one language to another. The first workshop on CLIR was held in Zürich during the SIGIR-96 conference. Workshops have been held yearly since 2000 at the meetings of the Cross Language Evaluation Forum (CLEF). Researchers also convene at the annual Text Retrieval Conference (TREC) to discuss their findings regarding different systems and methods of information retrieval, and the conference has served as a point of reference for the CLIR subfield. Early CLIR experiments were conducted at TREC-6, held at the National Institute of Standards and Technology (NIST) on November 19–21, 1997. Google Search had a cross-language search feature that was removed in 2013.",
-  "story": "Think of a grammar teacher who never memorized a rule but can still tell you when a sentence sounds wrong. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It figures out meaning by noticing which words like to travel together. The machine learns to read between the lines by reading an impossible number of lines. That pattern-earned fluency is Cross-language information retrieval.",
+  "explainer": {
+    "lead": "Cross-language information retrieval lets you search in one language and find useful documents written in another. It matters because relevant information is not limited to the languages you can read or search confidently.",
+    "tiers": {
+      "eli5": "Imagine asking a librarian for books about volcanoes in English, and the librarian also finds helpful books written in Spanish. Cross-language information retrieval gives a computer a similar ability to understand your request and look beyond its original language. It can be especially helpful when you know only a little of the other language.",
+      "practitioner": "A typical system processes the query with morphological analysis and compound splitting, then translates it using dictionaries, parallel or comparable corpora, or machine translation before retrieval. Inflection, compound terms, and differing expressions of the same topic can reduce coverage, while language-specific processing may be needed for further analysis. The strongest multilingual and cross-lingual ad hoc systems approach monolingual effectiveness, but related tasks such as filtering and information extraction require more sophisticated models.",
+      "paperLevel": "Formally, given a query q expressed in language Lq and documents D written in language Ld, where Lq differs from Ld, CLIR seeks documents d in D relevant to q. Translation resources divide approaches into dictionary-based, parallel-corpus-based, comparable-corpus-based, and machine-translator-based methods. Language variation remains a coverage challenge, and processing for tasks beyond ad hoc retrieval often needs to account for the specifics of each target language."
+    },
+    "example": "A user enters an English query about renewable energy, and the system translates the query before searching a collection of German documents. It can then return relevant German documents even though their wording does not directly match the English query.",
+    "usedIn": [
+      {
+        "name": "Google Search",
+        "detail": "Offered a cross-language search feature until its removal in 2013.",
+        "url": ""
+      },
+      {
+        "name": "Media monitoring",
+        "detail": "A related information-access setting where multilingual material may require additional language-aware processing.",
+        "url": ""
+      },
+      {
+        "name": "Information retrieval research",
+        "detail": "CLIR systems and methods have been evaluated and discussed at TREC and CLEF meetings.",
+        "url": ""
+      }
+    ],
+    "intuition": "A language mismatch should not prevent a relevant document from being found. CLIR bridges that mismatch, usually by translating the user's query so it can be matched against documents in another language.",
+    "howItWorks": [
+      "The user expresses an information need in one language.",
+      "The system processes linguistic features such as inflection and compound terms.",
+      "It translates the query using a dictionary, corpora, or machine translation.",
+      "The translated query is matched against documents in another language.",
+      "Relevant documents are returned to the user."
+    ],
+    "whyItMatters": "CLIR widens access to information across language boundaries and helps users whose target-language skills are poor or moderate. Those users have been found to benefit more from the technology than fluent users.",
+    "misconceptions": [
+      "CLIR and multilingual information retrieval are not identical: CLIR specifically concerns queries and documents in different languages.",
+      "CLIR is not useful only to fluent speakers; users with limited target-language competence can benefit greatly.",
+      "Near-monolingual performance in ad hoc retrieval does not mean every multilingual information-access task is equally solved."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "query",
+          "label": "User query",
+          "note": "Information need in the user's language"
+        },
+        {
+          "id": "analysis",
+          "label": "Language processing",
+          "note": "Handles inflection and compound terms"
+        },
+        {
+          "id": "translation",
+          "label": "Query translation",
+          "note": "Uses dictionaries, corpora, or machine translation"
+        },
+        {
+          "id": "retrieval",
+          "label": "Document matching",
+          "note": "Searches material in another language"
+        },
+        {
+          "id": "results",
+          "label": "Relevant documents",
+          "note": "Results written in the target language"
+        }
+      ],
+      "edges": [
+        {
+          "from": "query",
+          "to": "analysis",
+          "label": ""
+        },
+        {
+          "from": "analysis",
+          "to": "translation",
+          "label": ""
+        },
+        {
+          "from": "translation",
+          "to": "retrieval",
+          "label": "translated query"
+        },
+        {
+          "from": "retrieval",
+          "to": "results",
+          "label": ""
+        }
+      ],
+      "caption": "A typical CLIR flow bridges the language gap by processing and translating the query before document retrieval."
+    }
+  },
   "related": [
     "information-retrieval",
     "legal-information-retrieval",

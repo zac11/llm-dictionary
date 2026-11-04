@@ -5,7 +5,98 @@
   "type": "concept",
   "definition": "Competitive learning is a form of unsupervised learning in artificial neural networks, in which nodes compete for the right to respond to a subset of the input data.",
   "details": "A variant of Hebbian learning, competitive learning works by increasing the specialization of each node in the network. It is well suited to finding clusters within data. Models and algorithms based on the principle of competitive learning include vector quantization and self-organizing maps (Kohonen maps).",
-  "story": "Imagine a factory floor where each workstation can glance at every other workstation before doing its part. It is the blueprint that makes everything else possible. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. Structure decides what the model can even express — the blueprint before the bricks. And that shape of the machine — Competitive learning — is what makes everything else possible.",
+  "explainer": {
+    "lead": "Competitive learning lets the nodes of a neural network divide up unlabeled data instead of all trying to handle everything. This makes it useful for discovering clusters and underlies techniques such as vector quantization and self-organizing maps.",
+    "tiers": {
+      "eli5": "Imagine a group of helpers answering different kinds of questions: whoever is best suited to a question gets to answer it and becomes even better at that kind. Over time, the helpers develop different specialties, so similar questions naturally end up with the same helper.",
+      "practitioner": "Use competitive learning when the goal is to find structure in unlabeled data, particularly clusters. Vector quantization and self-organizing maps are models and algorithms based on this principle; check that nodes specialize on different input subsets rather than treating the process as supervised classification.",
+      "paperLevel": "Competitive learning is an unsupervised variant of Hebbian learning in which nodes compete for the right to respond to a subset X' of the input data X, and learning increases each node's specialization. Its natural target is cluster structure; vector quantization and self-organizing maps (Kohonen maps) instantiate the principle."
+    },
+    "example": "Imagine unlabeled measurements from three kinds of flowers. As measurements arrive, different nodes win the right to respond and become more specialized; after training, each tends to handle one cluster, so a new measurement can be associated with the node whose specialty it resembles.",
+    "usedIn": [
+      {
+        "name": "Cluster analysis",
+        "detail": "Finding groups within data without requiring labeled examples.",
+        "url": ""
+      },
+      {
+        "name": "Vector quantization",
+        "detail": "A model family based on the competitive-learning principle.",
+        "url": ""
+      },
+      {
+        "name": "Self-organizing maps",
+        "detail": "Also called Kohonen maps, these apply competition to specialize nodes on different inputs.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of letting every node learn every input equally, give the right to respond to a competing node and make it more specialized. Repeated over many inputs, this encourages different nodes to handle different parts of the data.",
+    "howItWorks": [
+      "Present the network with unlabeled input data.",
+      "Let its nodes compete for the right to respond.",
+      "Allow the responding node to learn from that input subset.",
+      "Increase specialization so different nodes handle different inputs.",
+      "Use the resulting specializations to reveal clusters."
+    ],
+    "whyItMatters": "It provides a way to discover groups in data without labels by turning network nodes into specialists. The same principle connects neural learning with vector quantization and self-organizing maps.",
+    "misconceptions": [
+      "It is not supervised learning: the nodes are not given class labels.",
+      "The goal is not for every node to respond to everything, but for nodes to specialize.",
+      "It is related to Hebbian learning, but adds competition between nodes."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "inputs",
+          "label": "Unlabeled inputs",
+          "note": "Data presented to the network"
+        },
+        {
+          "id": "competition",
+          "label": "Node competition",
+          "note": "Nodes seek the right to respond"
+        },
+        {
+          "id": "winner",
+          "label": "Responding node",
+          "note": "One node handles the input subset"
+        },
+        {
+          "id": "specialization",
+          "label": "Increased specialization",
+          "note": "Learning sharpens the node's specialty"
+        },
+        {
+          "id": "clusters",
+          "label": "Data clusters",
+          "note": "Different nodes cover different groups"
+        }
+      ],
+      "edges": [
+        {
+          "from": "inputs",
+          "to": "competition",
+          "label": "presented to"
+        },
+        {
+          "from": "competition",
+          "to": "winner",
+          "label": "selects"
+        },
+        {
+          "from": "winner",
+          "to": "specialization",
+          "label": "learns"
+        },
+        {
+          "from": "specialization",
+          "to": "clusters",
+          "label": "reveals"
+        }
+      ],
+      "caption": "Competition routes input subsets to nodes, whose growing specialization exposes clusters."
+    }
+  },
   "related": [
     "contrastive-hebbian-learning",
     "extreme-learning-machine",

@@ -5,6 +5,112 @@
   "type": "concept",
   "definition": "Recovering the hierarchical phrase structure of a sentence — noun phrases, verb phrases, and clauses — as a tree.",
   "details": "Recovering the hierarchical phrase structure of a sentence — noun phrases, verb phrases, and clauses — as a tree. It was a foundational NLP task that exposed syntactic structure to downstream systems.",
+  "explainer": {
+    "lead": "Constituency parsing turns a sentence into a tree showing which words belong together as phrases and how those phrases fit inside larger ones. This gives downstream language systems an explicit view of sentence structure rather than just a sequence of words.",
+    "tiers": {
+      "eli5": "Think of a sentence as a set of nesting boxes: a few words make a small box, several boxes make a bigger one, and the whole sentence is the largest box. Constituency parsing draws those boxes as a tree, with labels for parts such as noun phrases and verb phrases.",
+      "practitioner": "A parser takes a tokenized sentence and returns labeled, nested brackets or an equivalent tree for use by downstream NLP components. Keep tokenization consistent with the parser, and remember that an incorrect phrase boundary can propagate into any system consuming the parse. Ambiguous sentences and text unlike the parser's usual input can also produce unreliable trees.",
+      "paperLevel": "Given a sentence w1...wn, constituency parsing produces a rooted tree T whose ordered leaves are the words and whose internal nodes carry constituent labels such as NP, VP, and clause labels. The tree represents recursive bracketing, so a VP may contain an NP while both sit beneath a sentence-level node. A central limitation is syntactic ambiguity: more than one tree may be plausible, and outputs depend on the chosen syntactic representation."
+    },
+    "example": "For “The cat chased the mouse,” one parse is [S [NP The cat] [VP chased [NP the mouse]]]. “The cat” is the subject noun phrase, while the verb phrase contains the verb “chased” and the object noun phrase “the mouse.”",
+    "usedIn": [
+      {
+        "name": "Downstream NLP systems",
+        "detail": "Provides explicit syntactic structure that other language-processing components can consume.",
+        "url": ""
+      },
+      {
+        "name": "Linguistic analysis",
+        "detail": "Represents noun phrases, verb phrases, and clauses in a form that can be inspected and compared.",
+        "url": ""
+      }
+    ],
+    "intuition": "Words in a sentence combine into groups, and those groups combine into larger groups. Constituency parsing makes this nesting explicit by labeling each group and arranging the whole sentence as a tree.",
+    "howItWorks": [
+      "Place the sentence's words in order as the leaves of the tree.",
+      "Group words that form a phrase and label the group, for example as a noun phrase or verb phrase.",
+      "Nest smaller phrases inside larger phrases or clauses according to their syntactic structure.",
+      "Return the resulting labeled tree, with a root covering the complete sentence."
+    ],
+    "whyItMatters": "It exposes hierarchical syntax in a machine-readable form, allowing downstream systems to use phrase and clause boundaries instead of treating a sentence as an unstructured word sequence. It was a foundational NLP task for this reason.",
+    "misconceptions": [
+      "It is not dependency parsing: constituency parsing groups words into nested phrases, while dependency parsing represents relationships between words.",
+      "A constituent label describes syntactic grouping, not the full meaning of the phrase.",
+      "The task does not guarantee a single obvious tree, because some sentences are syntactically ambiguous."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "s",
+          "label": "Sentence S",
+          "note": "Root covering the full sentence"
+        },
+        {
+          "id": "subject",
+          "label": "Subject NP",
+          "note": "First noun phrase"
+        },
+        {
+          "id": "subject-words",
+          "label": "The cat",
+          "note": "Words inside the subject"
+        },
+        {
+          "id": "vp",
+          "label": "Verb phrase VP",
+          "note": "Predicate of the sentence"
+        },
+        {
+          "id": "verb",
+          "label": "chased",
+          "note": "Main verb"
+        },
+        {
+          "id": "object",
+          "label": "Object NP",
+          "note": "Noun phrase inside the VP"
+        },
+        {
+          "id": "object-words",
+          "label": "the mouse",
+          "note": "Words inside the object"
+        }
+      ],
+      "edges": [
+        {
+          "from": "s",
+          "to": "subject",
+          "label": ""
+        },
+        {
+          "from": "subject",
+          "to": "subject-words",
+          "label": ""
+        },
+        {
+          "from": "s",
+          "to": "vp",
+          "label": ""
+        },
+        {
+          "from": "vp",
+          "to": "verb",
+          "label": ""
+        },
+        {
+          "from": "vp",
+          "to": "object",
+          "label": ""
+        },
+        {
+          "from": "object",
+          "to": "object-words",
+          "label": ""
+        }
+      ],
+      "caption": "A constituency tree nests phrases inside larger phrases, ending in the sentence's words."
+    }
+  },
   "citation": {
     "title": "Constituency Parsing",
     "authors": [],

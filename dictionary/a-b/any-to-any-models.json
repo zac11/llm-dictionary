@@ -8,6 +8,102 @@
   ],
   "definition": "Unified models accepting and producing multiple modalities natively (text, image, audio in and out) within one architecture and token stream, replacing pipelines of specialized models (GPT-4o-class, Gemini-class).",
   "details": "Unified models accepting and producing multiple modalities natively (text, image, audio in and out) within one architecture and token stream, replacing pipelines of specialized models (GPT-4o-class, Gemini-class).",
+  "explainer": {
+    "lead": "An any-to-any model handles several kinds of media through one system, rather than passing a request through separate speech, vision, and language models. It can make interactions feel more direct because the same model can receive text, images, or audio and respond in those forms.",
+    "tiers": {
+      "eli5": "Imagine one helper who can listen, look, read, speak, write, and make pictures, instead of a team passing notes to one another. You could show the helper a photo while asking a question out loud, and it could answer with speech or text. Everything happens inside one helper rather than through a chain of specialists.",
+      "practitioner": "Use an any-to-any model as a single multimodal system instead of chaining recognizers, generators, and other specialists. GPT-4o-class and Gemini-class systems are the reference points given for this approach. When integrating one, distinguish supported input modalities from supported output modalities; accepting an image does not by itself mean the model can generate images or audio.",
+      "paperLevel": "An any-to-any model can be written as f: (X_text, X_image, X_audio) -> (Y_text, Y_image, Y_audio), with inputs and outputs handled natively within one architecture and token stream. This contrasts with a pipeline in which separate specialized models transform and pass intermediate representations between stages."
+    },
+    "example": "A user uploads a photo of a bicycle and asks aloud how to adjust its seat. An any-to-any model can process the image and speech together, then provide a spoken explanation and written steps without requiring a separate speech-to-text and text-to-speech pipeline.",
+    "usedIn": [
+      {
+        "name": "GPT-4o-class models",
+        "detail": "A class of unified systems associated with native text, image, and audio input and output.",
+        "url": ""
+      },
+      {
+        "name": "Gemini-class models",
+        "detail": "A class of unified multimodal systems used as another example of the any-to-any approach.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of translating every request through a relay of specialist models, give one model all the available media and let it produce the requested kind of response. The shared architecture and token stream are what make it unified rather than merely a bundle of tools.",
+    "howItWorks": [
+      "Receive one or more inputs, such as text, an image, or audio.",
+      "Represent the inputs within the model's shared token stream.",
+      "Process them together in one architecture instead of handing them between specialist pipelines.",
+      "Generate a response in a supported modality, such as text, an image, or audio."
+    ],
+    "whyItMatters": "A unified model can connect information across modalities without explicit handoffs between specialized components. This offers a simpler way to build interactions where people naturally mix speaking, showing, reading, and listening.",
+    "misconceptions": [
+      "Multimodal input alone is not enough: an image-captioning system that only outputs text is not any-to-any.",
+      "Connecting separate specialist models with an orchestrator creates a pipeline, not one unified any-to-any architecture.",
+      "The name does not mean literally every possible modality; the defining examples here concern text, image, and audio."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "text-in",
+          "label": "Text input",
+          "note": "Written prompts or context"
+        },
+        {
+          "id": "image-in",
+          "label": "Image input",
+          "note": "Visual information"
+        },
+        {
+          "id": "audio-in",
+          "label": "Audio input",
+          "note": "Spoken or other audio"
+        },
+        {
+          "id": "shared-stream",
+          "label": "Shared token stream",
+          "note": "A common processing stream"
+        },
+        {
+          "id": "unified-model",
+          "label": "Unified architecture",
+          "note": "One model processes the modalities"
+        },
+        {
+          "id": "outputs",
+          "label": "Multimodal outputs",
+          "note": "Text, image, or audio responses"
+        }
+      ],
+      "edges": [
+        {
+          "from": "text-in",
+          "to": "shared-stream",
+          "label": ""
+        },
+        {
+          "from": "image-in",
+          "to": "shared-stream",
+          "label": ""
+        },
+        {
+          "from": "audio-in",
+          "to": "shared-stream",
+          "label": ""
+        },
+        {
+          "from": "shared-stream",
+          "to": "unified-model",
+          "label": "tokens"
+        },
+        {
+          "from": "unified-model",
+          "to": "outputs",
+          "label": "generates"
+        }
+      ],
+      "caption": "Multiple input modalities enter one shared architecture, which can produce multiple output modalities."
+    }
+  },
   "related": [
     "token"
   ],

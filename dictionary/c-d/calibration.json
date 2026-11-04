@@ -5,7 +5,41 @@
   "type": "concept",
   "definition": "The property of a model's confidence scores accurately reflecting the true probability of correctness — for example, among predictions the model is 70% confident in, about 70% should actually be correct.",
   "details": "Calibration is important for trustworthy AI systems, since poorly calibrated models may express high confidence in incorrect answers (contributing to convincing hallucinations) or low confidence in correct ones.",
-  "story": "Imagine a driving test that every new model has to pass before it is allowed on the road. It is the exam that separates “it sounds good” from “it actually is good”. A fair scoreboard keeps everyone honest. It is the exam that keeps everyone honest. And that, done honestly, is Calibration.",
+  "explainer": {
+    "lead": "Calibration is about whether a model's confidence deserves to be trusted. A well-calibrated model is uncertain roughly as often as it should be, rather than sounding sure when it is likely to be wrong.",
+    "tiers": {
+      "eli5": "Imagine a friend who says they are 70% sure about each of ten answers. If about seven answers are right, their confidence is well matched to reality. If only two are right, they are much too sure of themselves; a model can have the same problem.",
+      "practitioner": "To assess calibration, group predictions with similar confidence scores and compare each group's average confidence with its observed fraction of correct answers. Pay particular attention to high-confidence errors, which can make incorrect outputs persuasive, and to correct predictions made with unnecessarily low confidence.",
+      "paperLevel": "Let C be a model's reported confidence and Y indicate whether its prediction is correct. Calibration requires P(Y = 1 | C = c) = c, so predictions assigned confidence c are correct with frequency c. Calibration concerns confidence rather than accuracy alone: it does not require every prediction to be correct."
+    },
+    "example": "Suppose a model makes 100 predictions, each with 70% confidence. If about 70 are correct, those scores are well calibrated; if only 40 are correct, the model is overconfident for that group.",
+    "usedIn": [
+      {
+        "name": "Trustworthy AI systems",
+        "detail": "Confidence scores can be checked against observed correctness to reveal overconfidence or underconfidence.",
+        "url": ""
+      },
+      {
+        "name": "Language model outputs",
+        "detail": "Poor calibration can make incorrect answers appear highly confident, contributing to convincing hallucinations.",
+        "url": ""
+      }
+    ],
+    "intuition": "A confidence score is useful when it behaves like a real probability. Across many predictions made with the same confidence, that confidence should match the proportion that turn out to be correct.",
+    "howItWorks": [
+      "Collect predictions together with their confidence scores.",
+      "Record whether each prediction was actually correct.",
+      "Group predictions that have similar confidence scores.",
+      "Compare each group's average confidence with its fraction of correct predictions.",
+      "Matching values indicate good calibration; large gaps reveal overconfidence or underconfidence."
+    ],
+    "whyItMatters": "Calibration helps people judge how much trust to place in a model's stated confidence. Without it, incorrect answers may appear convincing because they carry high confidence, while correct answers may be undervalued because their confidence is too low.",
+    "misconceptions": [
+      "High accuracy does not automatically mean good calibration.",
+      "A calibrated model is not correct all the time; its confidence simply matches how often it is correct.",
+      "Expressing less confidence is not always better, because correct predictions can also be underconfident."
+    ]
+  },
   "related": [
     "a-b-testing",
     "ablation-study",

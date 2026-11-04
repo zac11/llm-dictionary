@@ -5,6 +5,133 @@
   "type": "concept",
   "definition": "The sociolinguistic situation where a community uses two varieties in strict functional distribution: MSA for formal writing, dialect for speech.",
   "details": "The sociolinguistic situation where a community uses two varieties in strict functional distribution: MSA for formal writing, dialect for speech. For AI systems this means training distributions (mostly MSA text) systematically mismatch usage distributions (mostly dialectal speech and chat).",
+  "explainer": {
+    "lead": "Diglossia is the split between the language variety a community uses for formal writing and the one it uses for everyday speech. In Arabic, this creates a practical AI problem: models trained mainly on Modern Standard Arabic text may meet users speaking or chatting in dialect.",
+    "tiers": {
+      "eli5": "Imagine wearing a formal uniform for school certificates but comfortable clothes with friends and family. Arabic can work a bit like that, with Modern Standard Arabic for formal writing and dialect for everyday talking. An AI taught mostly from the formal writing may struggle to understand the everyday conversations.",
+      "practitioner": "Treat the choice between MSA and dialect as a data and evaluation decision, not just a linguistic label. Check whether training corpora, test sets, and actual user inputs represent the same variety; strong MSA text results may not transfer to dialectal speech or chat. Dialectal input should be handled as expected usage rather than automatically treated as noisy MSA.",
+      "paperLevel": "Let H denote MSA and L a dialect, with H assigned to formal writing and L to speech. Arabic NLP commonly faces P_train(x) concentrated on H while P_use(x) is concentrated on dialectal speech and chat, so training and deployment distributions systematically mismatch; H-domain performance is therefore not a direct estimate of L-domain performance."
+    },
+    "example": "An Arabic assistant is trained mainly on formal MSA documents and performs well on a formal writing test. Users then speak to it in dialect and send dialectal chat messages, so its training experience does not closely match the inputs it must handle.",
+    "usedIn": [
+      {
+        "name": "Arabic language modeling",
+        "detail": "Corpus selection can overrepresent formal MSA writing relative to everyday language use.",
+        "url": ""
+      },
+      {
+        "name": "Arabic speech recognition",
+        "detail": "Spoken dialect input can differ from the mostly MSA text distribution used for training.",
+        "url": ""
+      },
+      {
+        "name": "Conversational AI",
+        "detail": "Dialectal chat is a deployment setting where formal-text training may not match user language.",
+        "url": ""
+      }
+    ],
+    "intuition": "A community reserves each variety for particular situations rather than choosing freely between them. Arabic AI systems can consequently learn one side of that split and then be used on the other.",
+    "howItWorks": [
+      "The community uses MSA for formal writing.",
+      "It uses dialect for everyday speech.",
+      "Training text is drawn mostly from MSA.",
+      "Deployed systems encounter mostly dialectal speech and chat.",
+      "The training and usage distributions therefore mismatch."
+    ],
+    "whyItMatters": "It explains why strong results on formal Arabic text can coexist with poor handling of everyday Arabic. Matching training and evaluation data to the intended variety is essential for systems meant for speech or chat.",
+    "misconceptions": [
+      "Diglossia does not mean people switch varieties randomly; their functions are strictly distributed.",
+      "Dialectal speech is not simply incorrect MSA.",
+      "Good performance on MSA text does not guarantee good performance on dialectal input."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "community",
+          "label": "Arabic community",
+          "note": "Assigns varieties to different functions."
+        },
+        {
+          "id": "msa",
+          "label": "MSA variety",
+          "note": "Used for formal purposes."
+        },
+        {
+          "id": "dialect",
+          "label": "Dialect variety",
+          "note": "Used for everyday communication."
+        },
+        {
+          "id": "writing",
+          "label": "Formal writing",
+          "note": "The main textual source described here."
+        },
+        {
+          "id": "speech",
+          "label": "Speech and chat",
+          "note": "The main everyday usage setting."
+        },
+        {
+          "id": "training",
+          "label": "Training distribution",
+          "note": "Mostly MSA text."
+        },
+        {
+          "id": "usage",
+          "label": "Usage distribution",
+          "note": "Mostly dialectal input."
+        },
+        {
+          "id": "mismatch",
+          "label": "Distribution mismatch",
+          "note": "Training differs from deployment."
+        }
+      ],
+      "edges": [
+        {
+          "from": "community",
+          "to": "msa",
+          "label": "formal use"
+        },
+        {
+          "from": "community",
+          "to": "dialect",
+          "label": "everyday use"
+        },
+        {
+          "from": "msa",
+          "to": "writing",
+          "label": ""
+        },
+        {
+          "from": "dialect",
+          "to": "speech",
+          "label": ""
+        },
+        {
+          "from": "writing",
+          "to": "training",
+          "label": ""
+        },
+        {
+          "from": "speech",
+          "to": "usage",
+          "label": ""
+        },
+        {
+          "from": "training",
+          "to": "mismatch",
+          "label": ""
+        },
+        {
+          "from": "usage",
+          "to": "mismatch",
+          "label": ""
+        }
+      ],
+      "caption": "Functional separation in Arabic becomes an AI distribution mismatch when MSA writing dominates training and dialect dominates use."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

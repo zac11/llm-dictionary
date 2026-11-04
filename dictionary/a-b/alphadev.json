@@ -5,7 +5,113 @@
   "type": "concept",
   "definition": "AlphaDev is an artificial intelligence system developed by Google DeepMind to discover enhanced computer science algorithms using reinforcement learning.",
   "details": "AlphaDev is based on AlphaZero, a system that mastered the games of chess, shogi and go by self-play. AlphaDev applies the same approach to finding faster algorithms for fundamental tasks such as sorting and hashing.",
-  "story": "Picture training a puppy: no long lectures, just treats for the right move and patience for the wrong one. It learns the way a child learns to walk: wobble, fall, adjust, repeat. Instead of being told the rules, it discovers them by living with the consequences. It is trial and error with a memory: actions that pay off get repeated, actions that hurt get dropped. That learn-by-reward loop is AlphaDev.",
+  "explainer": {
+    "lead": "AlphaDev treats the search for faster computer algorithms as a game, learning to build correct, low-latency assembly programs one instruction at a time. Its discoveries have improved real C++ sorting and hashing libraries, showing how reinforcement learning can contribute to low-level software optimization.",
+    "tiers": {
+      "eli5": "Imagine building a tiny recipe for a computer, one instruction at a time, and earning points when the recipe is both correct and quick. AlphaDev plays this building game many times and learns which instruction choices work well. It found better ways to do familiar jobs such as sorting a few items and hashing data.",
+      "practitioner": "AlphaDev’s outputs have been applied in LLVM libc++ sorting, Abseil hashing, and protobuf VarInt deserialization rather than as a general-purpose code-generation tool. It searches in assembly and uses learned correctness and latency estimates during training, measuring actual latency for fewer than 0.002% of generated programs. Direct latency optimization is expensive, and the reported sorting gains depend on sequence length, data type, and CPU architecture.",
+      "paperLevel": "AlphaDev extends AlphaZero to program synthesis: state s is a partial assembly program, action a appends one instruction, and reward R = f(correctness, latency). A Transformer encodes the instruction sequence while a multilayer perceptron encodes CPU state; a neural network guides search, with supervised estimators approximating correctness and latency. The work was introduced by Google DeepMind in Nature on June 7, 2023, and its known costs include expensive direct latency evaluation, addressed partly through proxy objectives and selective measurement."
+    },
+    "example": "For VarSort4, which sorts up to four elements, AlphaDev found a correct algorithm 29 assembly instructions shorter than the human benchmark. It approached the problem by constructing and evaluating assembly programs rather than starting from that human-written routine.",
+    "usedIn": [
+      {
+        "name": "LLVM libc++ sorting library",
+        "detail": "Discovered sorting routines improved short-sequence performance by up to 70% and sequences over 250,000 elements by about 1.7%.",
+        "url": ""
+      },
+      {
+        "name": "Abseil",
+        "detail": "An AlphaDev hashing algorithm for inputs from 9 to 16 bytes was added to this open-source C++ library.",
+        "url": ""
+      },
+      {
+        "name": "Protocol Buffers",
+        "detail": "An optimized VarInt deserialization function ran approximately three times faster than the human benchmark for single-valued inputs.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of asking a person to invent every improvement, AlphaDev searches the space of small assembly programs as though they were positions in a game. Programs that remain correct and run faster provide the learning signal.",
+    "howItWorks": [
+      "Represent the current partial assembly program and its CPU state with a Transformer and a multilayer perceptron.",
+      "Use a neural network to guide the choice of the next instruction to append.",
+      "Continue building the program while checking whether it performs the required task correctly.",
+      "Score candidates using correctness and latency, relying mostly on learned estimates to avoid frequent timing measurements.",
+      "Learn from the search experience and synthetic demonstrations, then translate successful low-level discoveries into usable library code."
+    ],
+    "whyItMatters": "Sorting, hashing, and deserialization are basic operations repeated at enormous scale, so even small improvements can matter widely. AlphaDev also demonstrates that reinforcement learning can discover concrete algorithmic improvements, not merely optimize parameters within a fixed human design.",
+    "misconceptions": [
+      "AlphaDev is not a general replacement for programmers or a system that rewrites arbitrary applications; the described work targets specific low-level algorithms.",
+      "Its search does not directly measure the latency of every candidate, because doing so would be prohibitively expensive."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "program",
+          "label": "Partial assembly",
+          "note": "Instructions generated so far"
+        },
+        {
+          "id": "encoding",
+          "label": "Program encoding",
+          "note": "Transformer plus CPU-state encoder"
+        },
+        {
+          "id": "search",
+          "label": "Guided search",
+          "note": "Neural network chooses promising moves"
+        },
+        {
+          "id": "instruction",
+          "label": "Append instruction",
+          "note": "One action extends the program"
+        },
+        {
+          "id": "reward",
+          "label": "Correctness reward",
+          "note": "Correctness and estimated latency score candidates"
+        }
+      ],
+      "edges": [
+        {
+          "from": "program",
+          "to": "encoding",
+          "label": "state"
+        },
+        {
+          "from": "encoding",
+          "to": "search",
+          "label": "features"
+        },
+        {
+          "from": "search",
+          "to": "instruction",
+          "label": "next move"
+        },
+        {
+          "from": "instruction",
+          "to": "program",
+          "label": "extends"
+        },
+        {
+          "from": "program",
+          "to": "reward",
+          "label": "evaluates"
+        },
+        {
+          "from": "reward",
+          "to": "search",
+          "label": "learning signal"
+        }
+      ],
+      "caption": "AlphaDev repeatedly extends an assembly program, evaluates candidates, and uses the resulting feedback to improve its search."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: AlphaDev",
+        "url": "https://en.wikipedia.org/wiki/AlphaDev"
+      }
+    ]
+  },
   "related": [
     "a-r-d-prasad",
     "abeba-birhane",

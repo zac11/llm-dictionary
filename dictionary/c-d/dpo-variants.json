@@ -5,6 +5,91 @@
   "type": "concept",
   "definition": "The family of refinements: IPO fixes DPO's overfitting to preferences, KTO learns from single thumbs-up/down labels instead of pairs, ORPO folds preference optimization into SFT in one stage, SimPO removes the reference model.",
   "details": "The family of refinements: IPO fixes DPO's overfitting to preferences, KTO learns from single thumbs-up/down labels instead of pairs, ORPO folds preference optimization into SFT in one stage, SimPO removes the reference model. Selection is largely empirical per dataset.",
+  "explainer": {
+    "lead": "DPO variants are different ways to adjust a language model using feedback about its answers. They change what feedback is needed, whether preference tuning is combined with supervised fine-tuning, and whether a separate reference model is required.",
+    "tiers": {
+      "eli5": "Imagine teaching someone to give better answers by showing which answers people like. These methods teach that lesson in different ways: some compare two answers, some need only one thumbs-up or thumbs-down, and some combine steps or need less extra equipment.",
+      "practitioner": "Choose among these variants during alignment and post-training according to the available feedback and training setup: IPO targets preference overfitting, KTO accepts single binary labels, ORPO combines preference optimization with SFT, and SimPO removes the reference model. Selection is largely empirical for each dataset, so a variant should not be assumed to win universally.",
+      "paperLevel": "The variants modify the DPO training setup along distinct axes: IPO addresses overfitting to preferences; KTO replaces paired preferences with individual desirable or undesirable labels; ORPO integrates preference optimization into SFT in one stage; SimPO eliminates the reference model. Their relative performance is dataset-dependent and is established empirically rather than by a universal ordering."
+    },
+    "example": "Suppose one model answer receives a thumbs-down but there is no paired alternative. KTO can learn directly from that single label; ORPO instead suits a setup where preference optimization is folded into SFT, while SimPO suits a setup that avoids maintaining a reference model.",
+    "usedIn": [
+      {
+        "name": "Language-model alignment",
+        "detail": "Refining model behavior from preference or binary feedback.",
+        "url": ""
+      },
+      {
+        "name": "Language-model post-training",
+        "detail": "Adapting the optimization stage to the available labels and training pipeline.",
+        "url": ""
+      }
+    ],
+    "intuition": "There is more than one practical way to turn feedback into better model behavior. Each variant relaxes or changes a different part of DPO rather than offering one universally superior replacement.",
+    "howItWorks": [
+      "Start with the goal of aligning a model using feedback on its answers.",
+      "Use IPO when the concern is DPO overfitting to preferences.",
+      "Use KTO for individual thumbs-up or thumbs-down labels, ORPO to combine preference optimization with SFT, or SimPO to avoid a reference model.",
+      "Compare variants empirically on the dataset being used."
+    ],
+    "whyItMatters": "The variants let alignment pipelines accommodate different feedback formats and training constraints. They also provide a targeted response to preference overfitting through IPO.",
+    "misconceptions": [
+      "All DPO variants require pairs of preferred and rejected answers; KTO uses single binary labels.",
+      "One variant is always best; selection is largely empirical for each dataset."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "dpo",
+          "label": "DPO baseline",
+          "note": "Preference-based alignment starting point"
+        },
+        {
+          "id": "ipo",
+          "label": "IPO",
+          "note": "Targets preference overfitting"
+        },
+        {
+          "id": "kto",
+          "label": "KTO",
+          "note": "Uses single binary labels"
+        },
+        {
+          "id": "orpo",
+          "label": "ORPO",
+          "note": "Combines optimization with SFT"
+        },
+        {
+          "id": "simpo",
+          "label": "SimPO",
+          "note": "Removes the reference model"
+        }
+      ],
+      "edges": [
+        {
+          "from": "dpo",
+          "to": "ipo",
+          "label": "overfitting fix"
+        },
+        {
+          "from": "dpo",
+          "to": "kto",
+          "label": "new labels"
+        },
+        {
+          "from": "dpo",
+          "to": "orpo",
+          "label": "one stage"
+        },
+        {
+          "from": "dpo",
+          "to": "simpo",
+          "label": "no reference"
+        }
+      ],
+      "caption": "Each variant changes a different part of the DPO training setup."
+    }
+  },
   "related": [
     "overfitting"
   ],

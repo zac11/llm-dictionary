@@ -5,6 +5,96 @@
   "type": "concept",
   "definition": "Assigning semantic labels to every point or voxel in a 3D scene, extending 2D segmentation to LiDAR and RGB-D data.",
   "details": "Assigning semantic labels to every point or voxel in a 3D scene, extending 2D segmentation to LiDAR and RGB-D data.",
+  "explainer": {
+    "lead": "3D semantic segmentation gives every point or small volume in a three-dimensional scene a meaning, such as road, car, or wall. It turns raw LiDAR or RGB-D measurements into a labeled scene that other systems can reason about.",
+    "tiers": {
+      "eli5": "Imagine a 3D picture made of tiny dots or building blocks, and you color each one by what it belongs to: blue for road, red for cars, and green for trees. The computer is doing that coloring for the whole scene, not just drawing a box around an object.",
+      "practitioner": "A model consumes a LiDAR point cloud or RGB-D scene and predicts one semantic class per point or voxel, using either point-based or voxel-based representations. Useful checks include whether labels remain aligned with the original coordinates and whether predictions are evaluated per point or per voxel, since the representations differ.",
+      "paperLevel": "Given a 3D scene S represented as points P = {p_1, ..., p_n} or voxels V, learn a mapping f such that f(p_i) = c_i or f(v_j) = c_j, where each c belongs to a fixed semantic label set C. The output therefore assigns a class to every input element rather than only detecting or classifying whole objects."
+    },
+    "example": "For a LiDAR scan beside a road, the model labels ground points as road, points on a nearby car as vehicle, points on a person as pedestrian, and points on trunks and leaves as vegetation. Every point receives one of these labels, producing a semantic 3D map of the scan.",
+    "usedIn": [
+      {
+        "name": "Autonomous driving",
+        "detail": "LiDAR scenes can be labeled into categories such as road, vehicles, and pedestrians.",
+        "url": ""
+      },
+      {
+        "name": "Robotics",
+        "detail": "Labeled 3D surroundings can distinguish surfaces and objects in a robot's environment.",
+        "url": ""
+      },
+      {
+        "name": "Indoor scene understanding",
+        "detail": "RGB-D data can be segmented into semantic regions such as walls, floors, and furniture.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of asking only what appears in a scene, the task asks what every small piece of the scene is. The result is a dense 3D label map aligned with the points or voxels.",
+    "howItWorks": [
+      "Capture a 3D scene as LiDAR points or RGB-D measurements.",
+      "Represent the scene as individual points or divide it into voxels.",
+      "Use a model to predict a semantic class for each point or voxel.",
+      "Combine the predictions into a fully labeled 3D scene."
+    ],
+    "whyItMatters": "It provides fine-grained scene structure in three dimensions, preserving where each semantic region is rather than reducing the scene to object boxes or a single category. This makes LiDAR and RGB-D data easier for downstream systems to interpret.",
+    "misconceptions": [
+      "It is not the same as 3D object detection: detection locates objects, while semantic segmentation labels every point or voxel.",
+      "It does not necessarily separate individual objects: two cars can both receive the vehicle label without receiving different instance identities."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "sensor",
+          "label": "3D sensor data",
+          "note": "LiDAR points or RGB-D measurements"
+        },
+        {
+          "id": "representation",
+          "label": "Scene representation",
+          "note": "Points or volumetric voxels"
+        },
+        {
+          "id": "model",
+          "label": "Segmentation model",
+          "note": "Predicts semantic classes"
+        },
+        {
+          "id": "labels",
+          "label": "Dense labels",
+          "note": "One class per point or voxel"
+        },
+        {
+          "id": "scene",
+          "label": "Labeled 3D scene",
+          "note": "Semantics aligned with scene geometry"
+        }
+      ],
+      "edges": [
+        {
+          "from": "sensor",
+          "to": "representation",
+          "label": "3D measurements"
+        },
+        {
+          "from": "representation",
+          "to": "model",
+          "label": "scene features"
+        },
+        {
+          "from": "model",
+          "to": "labels",
+          "label": "class predictions"
+        },
+        {
+          "from": "labels",
+          "to": "scene",
+          "label": "labeled geometry"
+        }
+      ],
+      "caption": "3D measurements are represented as points or voxels, then assigned dense semantic labels."
+    }
+  },
   "citation": {
     "title": "3D Semantic Segmentation",
     "authors": [],

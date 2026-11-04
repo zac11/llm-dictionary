@@ -5,6 +5,101 @@
   "type": "concept",
   "definition": "Given audio and its known transcript, computing precise time stamps for each word or phoneme.",
   "details": "Given audio and its known transcript, computing precise time stamps for each word or phoneme. The tool behind subtitle timing, TTS dataset preparation, pronunciation scoring, and dubbing.",
+  "explainer": {
+    "lead": "Forced alignment matches a recording to text that is already known, working out when each word or phoneme starts and ends. It provides the precise timing needed for subtitles, speech datasets, pronunciation scoring, and dubbing.",
+    "tiers": {
+      "eli5": "Imagine following the lyrics while listening to a song and pointing to each word exactly when it is sung. Forced alignment does that automatically, noting the start and finish time of every word or tiny speech sound.",
+      "practitioner": "Use forced alignment when both audio and a matching reference transcript are available, producing word- or phoneme-level intervals for subtitles, TTS data preparation, pronunciation scoring, or dubbing. Check that the transcript faithfully matches the recording and inspect the resulting intervals before using them downstream. Alignment does not replace transcription or automatically validate pronunciation quality.",
+      "paperLevel": "Given audio A and transcript tokens t_1,...,t_n, forced alignment estimates a start and end time (s_i,e_i) for each word or phoneme while preserving transcript order. It solves an alignment problem rather than a transcription problem, and discrepancies between the audio and transcript can undermine the result."
+    },
+    "example": "For a clip of someone saying “Hello world,” the output might mark “Hello” from 0.20 to 0.72 seconds and “world” from 0.78 to 1.35 seconds. A subtitle system can then display the text over the corresponding part of the recording.",
+    "usedIn": [
+      {
+        "name": "Subtitle timing",
+        "detail": "Places known subtitle text at the times its words are spoken.",
+        "url": ""
+      },
+      {
+        "name": "TTS dataset preparation",
+        "detail": "Adds word- or phoneme-level time labels to recorded speech and its transcript.",
+        "url": ""
+      },
+      {
+        "name": "Pronunciation scoring",
+        "detail": "Aligns speech with the expected transcript to support pronunciation assessment.",
+        "url": ""
+      },
+      {
+        "name": "Dubbing",
+        "detail": "Provides precise dialogue timing for matching speech to recorded or translated text.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of asking what was said, forced alignment asks when each already-known word or speech sound was said.",
+    "howItWorks": [
+      "Take the audio and its known transcript as inputs.",
+      "Match the spoken audio against the transcript in its original order.",
+      "Locate the start and end of each word or phoneme.",
+      "Return the transcript with precise time stamps."
+    ],
+    "whyItMatters": "Precise timing turns an audio-and-text pair into material that can be synchronized, segmented, and analysed at the word or phoneme level.",
+    "misconceptions": [
+      "It is not speech recognition: the transcript is supplied rather than discovered.",
+      "It does not write or translate subtitles; it times text that already exists."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "audio",
+          "label": "Recorded audio",
+          "note": "Speech with unknown token timings"
+        },
+        {
+          "id": "transcript",
+          "label": "Known transcript",
+          "note": "Words in their spoken order"
+        },
+        {
+          "id": "alignment",
+          "label": "Forced alignment",
+          "note": "Matches speech sounds to transcript tokens"
+        },
+        {
+          "id": "words",
+          "label": "Timed words",
+          "note": "Start and end times per word"
+        },
+        {
+          "id": "phonemes",
+          "label": "Timed phonemes",
+          "note": "Start and end times per phoneme"
+        }
+      ],
+      "edges": [
+        {
+          "from": "audio",
+          "to": "alignment",
+          "label": "speech"
+        },
+        {
+          "from": "transcript",
+          "to": "alignment",
+          "label": "text"
+        },
+        {
+          "from": "alignment",
+          "to": "words",
+          "label": "word level"
+        },
+        {
+          "from": "alignment",
+          "to": "phonemes",
+          "label": "phoneme level"
+        }
+      ],
+      "caption": "Audio and a known transcript are aligned to produce timed words or phonemes."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

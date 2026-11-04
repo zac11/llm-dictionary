@@ -5,7 +5,102 @@
   "type": "concept",
   "definition": "In machine learning (ML), boosting is an ensemble learning method that combines a set of less accurate models (called \"weak learners\") to create a single, highly accurate model (a \"strong learner\").",
   "details": "Unlike other ensemble methods that build models in parallel (such as bagging), boosting algorithms build models sequentially. Each new model in the sequence is trained to correct the errors made by its predecessors. This iterative process allows the overall model to improve its accuracy, particularly by reducing bias. Boosting is a popular and effective technique used in supervised learning for both classification and regression tasks. The theoretical foundation for boosting came from a question posed by Kearns and Valiant (1988, 1989): \"Can a set of weak learners create a single strong learner?\" A weak learner is defined as a classifier that performs only slightly better than random guessing, whereas a strong learner is a classifier that is highly correlated with the true classification. Robert Schapire's affirmative answer to this question in a 1990 paper led to the development of practical boosting algorithms. The first such algorithm was developed by Schapire, with Freund and Schapire later developing AdaBoost, which remains a foundational example of boosting.",
-  "story": "Picture an engineer at a cluttered workbench, turning a clever idea over in their hands until it finally clicks. At its heart it is a simple notion, once you strip away the fancy name. A small key that opens a much bigger door. It is one of those ideas that feels obvious only after someone shows it to you. That is Boosting (machine learning) — a small key that opens a big door.",
+  "explainer": {
+    "lead": "Boosting turns a series of modest predictors into one much more accurate predictor by making each new model address mistakes left by earlier ones. It matters because this simple sequential strategy can substantially improve supervised classification and regression, especially by reducing bias.",
+    "tiers": {
+      "eli5": "Imagine a team taking a quiz together. The first person answers as well as they can, the next person concentrates on the questions they got wrong, and later teammates keep fixing remaining mistakes. Boosting does this with simple computer models, combining them into one much better answerer.",
+      "practitioner": "Boosting is applied by training weak learners sequentially rather than independently, with each learner targeting the errors of the current ensemble. It can be used for supervised classification or regression and is particularly associated with reducing bias. Unlike bagging, its models cannot simply be built in parallel because each stage depends on the preceding results.",
+      "paperLevel": "Given labelled examples, boosting constructs weak learners h_1, ..., h_T sequentially and combines them into a strong learner F, with each new learner chosen to correct errors made by its predecessors. A weak classifier performs only slightly better than random guessing, while a strong classifier is highly correlated with the true classification. Kearns and Valiant posed the underlying question in 1988 and 1989, and Robert Schapire answered it affirmatively in a 1990 paper. Schapire developed the first boosting algorithm, and Freund and Schapire later developed the foundational AdaBoost algorithm."
+    },
+    "example": "For email spam classification, an initial weak learner might use a simple rule but misclassify some promotional newsletters as spam. The next learner is trained to address those mistakes, and later learners continue correcting remaining errors; their combined output forms the final spam classifier.",
+    "usedIn": [
+      {
+        "name": "Supervised classification",
+        "detail": "Combines weak classifiers into a more accurate classifier.",
+        "url": ""
+      },
+      {
+        "name": "Supervised regression",
+        "detail": "Improves predictions through sequential correction of earlier errors.",
+        "url": ""
+      }
+    ],
+    "intuition": "A weak learner need not be good on its own; it only has to do slightly better than random guessing. Boosting repeatedly learns from what the current ensemble gets wrong, so many limited models can collectively become highly accurate.",
+    "howItWorks": [
+      "Train an initial weak learner on the labelled examples.",
+      "Identify errors made by the current combined model.",
+      "Train the next weak learner to correct those errors.",
+      "Repeat sequentially, then combine the learners into a strong learner."
+    ],
+    "whyItMatters": "Boosting shows that models only slightly better than random guessing can be combined into a highly accurate learner. Its sequential error-correction process provides an effective way to reduce bias in supervised learning.",
+    "misconceptions": [
+      "Weak learners are not useless; they perform slightly better than random guessing.",
+      "Boosting is sequential, unlike parallel ensemble methods such as bagging.",
+      "Boosting is not limited to classification; it also applies to regression."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data",
+          "label": "Labelled examples",
+          "note": "Training data for supervised learning"
+        },
+        {
+          "id": "learner1",
+          "label": "First weak learner",
+          "note": "Makes the initial predictions"
+        },
+        {
+          "id": "errors",
+          "label": "Current errors",
+          "note": "Mistakes left by earlier learners"
+        },
+        {
+          "id": "learner2",
+          "label": "Next weak learner",
+          "note": "Trained to correct those mistakes"
+        },
+        {
+          "id": "repeat",
+          "label": "Further learners",
+          "note": "Sequential correction continues"
+        },
+        {
+          "id": "strong",
+          "label": "Strong learner",
+          "note": "Combined, highly accurate model"
+        }
+      ],
+      "edges": [
+        {
+          "from": "data",
+          "to": "learner1",
+          "label": ""
+        },
+        {
+          "from": "learner1",
+          "to": "errors",
+          "label": "mistakes"
+        },
+        {
+          "from": "errors",
+          "to": "learner2",
+          "label": "guides training"
+        },
+        {
+          "from": "learner2",
+          "to": "repeat",
+          "label": "repeat"
+        },
+        {
+          "from": "repeat",
+          "to": "strong",
+          "label": "combine"
+        }
+      ],
+      "caption": "Each new weak learner addresses errors from the preceding sequence, and the learners are combined into a strong learner."
+    }
+  },
   "related": [
     "machine-learning",
     "australian-institute-for-machine-learning",

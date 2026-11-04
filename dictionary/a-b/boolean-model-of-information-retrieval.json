@@ -5,7 +5,92 @@
   "type": "concept",
   "definition": "The (standard) Boolean model of information retrieval (BIR) is a classical information retrieval (IR) model where documents are retrieved based on whether they satisfy the conditions of a query that uses Boolean logic.",
   "details": "As the first and most-adopted information retrieval model, it treats each document as a set of words, or terms. A user's query uses logical operators like AND, OR, and NOT to create a rule for retrieval. The system then returns all documents that match the rule.",
-  "story": "Picture a scoreboard at a science fair: you need a fair, agreed way to tell who actually won. A fair scoreboard keeps everyone honest. Before trusting a machine, someone has to measure how good it really is — fairly and honestly. A good metric is a ruler that does not bend when you lean on it. And that, done honestly, is Boolean model of information retrieval.",
+  "explainer": {
+    "lead": "The Boolean model retrieves documents by treating a search as a precise logical rule. It matters because AND, OR, and NOT give users direct control over which documents match, although every result is simply a match rather than a ranked suggestion.",
+    "tiers": {
+      "eli5": "Imagine picking books with a rule such as “about cats AND dogs, but NOT puppies.” Every book either follows the rule or does not, and all the ones that follow it are returned.",
+      "practitioner": "Apply it when users need explicit inclusion, exclusion, and alternative terms: AND narrows a query, OR broadens it, and NOT excludes matches. Because documents either satisfy the query or do not, a broad query can produce many results without an ordering.",
+      "paperLevel": "Let each document d be a set of terms and let q be a Boolean expression over terms using AND, OR, and NOT. The retrieved set is R(q) = {d in D : d satisfies q}; the model gives a binary match decision and no relevance ordering within that set."
+    },
+    "example": "For the query “climate AND cities NOT coastal,” a document containing both “climate” and “cities” but not “coastal” is returned. A document mentioning only “climate,” or one that also contains “coastal,” is not returned.",
+    "usedIn": [
+      {
+        "name": "Information retrieval",
+        "detail": "A classical model for selecting documents that satisfy logical search conditions.",
+        "url": ""
+      },
+      {
+        "name": "Term-based document collections",
+        "detail": "Documents are treated as sets of words or terms and tested against a Boolean rule.",
+        "url": ""
+      }
+    ],
+    "intuition": "Search becomes a yes-or-no test: a document is returned if its terms satisfy the query, and left out otherwise.",
+    "howItWorks": [
+      "Represent each document as a set of words or terms.",
+      "Write a query using terms connected by AND, OR, and NOT.",
+      "Test each document against the query's logical conditions.",
+      "Return every document that satisfies the rule."
+    ],
+    "whyItMatters": "As the first and most-adopted information retrieval model, it established a simple, precise way to express document selection with Boolean logic.",
+    "misconceptions": [
+      "A matching document is not ranked as better than another matching document.",
+      "AND requires all connected conditions; OR accepts alternatives.",
+      "NOT excludes matching documents rather than merely giving them less importance."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "documents",
+          "label": "Document collection",
+          "note": "The documents available for retrieval."
+        },
+        {
+          "id": "terms",
+          "label": "Document term sets",
+          "note": "Each document becomes a set of terms."
+        },
+        {
+          "id": "query",
+          "label": "Boolean query",
+          "note": "Terms combined with AND, OR, and NOT."
+        },
+        {
+          "id": "match",
+          "label": "Rule matching",
+          "note": "Each term set is tested against the query."
+        },
+        {
+          "id": "results",
+          "label": "Matching documents",
+          "note": "All documents satisfying the rule are returned."
+        }
+      ],
+      "edges": [
+        {
+          "from": "documents",
+          "to": "terms",
+          "label": "represented as"
+        },
+        {
+          "from": "terms",
+          "to": "match",
+          "label": ""
+        },
+        {
+          "from": "query",
+          "to": "match",
+          "label": ""
+        },
+        {
+          "from": "match",
+          "to": "results",
+          "label": "all matches"
+        }
+      ],
+      "caption": "Documents and a Boolean query feed a yes-or-no matching step that returns every match."
+    }
+  },
   "related": [
     "information-retrieval",
     "adversarial-information-retrieval",

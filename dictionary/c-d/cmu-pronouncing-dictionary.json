@@ -5,7 +5,112 @@
   "type": "concept",
   "definition": "The CMU Pronouncing Dictionary (also known as CMUdict) is an open-source pronouncing dictionary originally created by the Speech Group at Carnegie Mellon University (CMU) for use in speech recognition research.",
   "details": "CMUdict provides a mapping orthographic/phonetic for English words in their North American pronunciations. It is commonly used to generate representations for speech recognition (ASR), e.g. the CMU Sphinx system, and speech synthesis (TTS), e.g. the Festival system. CMUdict can be used as a training corpus for building statistical grapheme-to-phoneme (g2p) models that will generate pronunciations for words not yet included in the dictionary. The most recent release is 0.7b; it contains over 134,000 entries. An interactive lookup version is available.",
-  "story": "Picture a translator at the United Nations, listening to one language and whispering the meaning into another in real time. It figures out meaning by noticing which words like to travel together. It does not memorize a rulebook; it absorbs a library. Meaning lives in company — a word is known by the words it keeps. That pattern-earned fluency is CMU Pronouncing Dictionary.",
+  "explainer": {
+    "lead": "CMUdict is a shared word-to-sound reference that helps computers connect written English with North American speech. It gives speech systems ready-made pronunciations and provides examples for learning how to pronounce words the dictionary does not contain.",
+    "tiers": {
+      "eli5": "CMUdict is like a giant cheat sheet that tells a computer how to say written words. A talking computer can look up a word instead of guessing its sounds from the spelling. People can also use those examples to teach a computer how to say new words.",
+      "practitioner": "Use CMUdict as an orthography-to-phoneme lookup for North American English in ASR systems such as CMU Sphinx or TTS systems such as Festival. It can also serve as training data for a statistical grapheme-to-phoneme model. The main practical issue is coverage: unlisted words need generated pronunciations, and the dictionary's North American pronunciations may not suit every locale.",
+      "paperLevel": "CMUdict can be represented as a mapping D: w -> p, where w is an English orthographic form and p is its North American phonetic pronunciation. Release 0.7b contains over 134,000 entries. Direct lookup is limited to listed entries, while a statistical g2p model trained on D can generalize to unseen words without guaranteeing a correct pronunciation."
+    },
+    "example": "In Festival, a listed English word can be looked up in CMUdict and its North American pronunciation passed to the speech synthesizer. If the word is absent, a g2p model trained on the dictionary can generate a candidate pronunciation instead.",
+    "usedIn": [
+      {
+        "name": "CMU Sphinx",
+        "detail": "Uses dictionary pronunciations as representations for automatic speech recognition.",
+        "url": ""
+      },
+      {
+        "name": "Festival",
+        "detail": "Uses word pronunciations when generating synthetic speech.",
+        "url": ""
+      },
+      {
+        "name": "Grapheme-to-phoneme modeling",
+        "detail": "Uses the dictionary as training data to predict pronunciations for unlisted words.",
+        "url": ""
+      }
+    ],
+    "intuition": "English spelling alone does not give a speech system a reliable sequence of sounds. CMUdict supplies that missing link by pairing written words with their North American pronunciations.",
+    "howItWorks": [
+      "Start with a written English word.",
+      "Look up its pronunciation in CMUdict.",
+      "Pass the resulting phonetic representation to an ASR or TTS system.",
+      "For an unlisted word, use a statistical g2p model trained on dictionary entries to generate a pronunciation."
+    ],
+    "whyItMatters": "It provides a common, open-source resource for two central speech tasks: recognizing spoken words and synthesizing written words. Its entries also make it possible to learn pronunciation patterns beyond the dictionary's fixed vocabulary.",
+    "misconceptions": [
+      "It is a pronouncing dictionary, not a complete speech recognizer or synthesizer.",
+      "It records North American pronunciations rather than every variety of English.",
+      "A g2p model can predict pronunciations for missing words, but its predictions are not guaranteed to be correct."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "word",
+          "label": "Written word",
+          "note": "English text in orthographic form"
+        },
+        {
+          "id": "dict",
+          "label": "CMUdict lookup",
+          "note": "Maps listed words to pronunciations"
+        },
+        {
+          "id": "phones",
+          "label": "Phonetic form",
+          "note": "North American pronunciation representation"
+        },
+        {
+          "id": "speech",
+          "label": "ASR or TTS",
+          "note": "CMU Sphinx or Festival"
+        },
+        {
+          "id": "g2p",
+          "label": "G2P model",
+          "note": "Trained on dictionary entries"
+        },
+        {
+          "id": "unseen",
+          "label": "Unlisted word",
+          "note": "Receives a generated pronunciation"
+        }
+      ],
+      "edges": [
+        {
+          "from": "word",
+          "to": "dict",
+          "label": "lookup"
+        },
+        {
+          "from": "dict",
+          "to": "phones",
+          "label": "returns"
+        },
+        {
+          "from": "phones",
+          "to": "speech",
+          "label": "input"
+        },
+        {
+          "from": "dict",
+          "to": "g2p",
+          "label": "training data"
+        },
+        {
+          "from": "unseen",
+          "to": "g2p",
+          "label": "new word"
+        },
+        {
+          "from": "g2p",
+          "to": "phones",
+          "label": "predicts"
+        }
+      ],
+      "caption": "CMUdict supplies pronunciations directly for listed words and training examples for generating pronunciations of unlisted words."
+    }
+  },
   "related": [
     "machine-readable-dictionary",
     "morphological-dictionary",

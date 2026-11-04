@@ -5,7 +5,98 @@
   "type": "concept",
   "definition": "EigenMoments is a set of orthogonal, noise robust, invariant to rotation, scaling and translation and distribution sensitive moments.",
   "details": "Their application can be found in signal processing and computer vision as descriptors of the signal or image. The descriptors can later be used for classification purposes. It is obtained by performing orthogonalization, via eigen analysis on geometric moments.",
-  "story": "Picture a child pointing at pictures in a book — cat, car, cloud — learning to see by seeing a thousand examples. It turns a picture into an understanding: this is a cat, that is a stop sign. What your eyes do without thinking, the machine does one careful layer at a time. It is eyes made of arithmetic — pixels become edges, edges become shapes, shapes become meaning. That pixel-to-meaning climb is Eigenmoments.",
+  "explainer": {
+    "lead": "EigenMoments summarize a signal or image as descriptors that can support tasks such as classification. They are built to remain stable under rotation, scaling, and translation while resisting noise and retaining sensitivity to the underlying distribution.",
+    "tiers": {
+      "eli5": "Imagine describing a shape with a handful of useful clues instead of remembering every dot in its picture. EigenMoments rearrange those clues so they do not repeat one another, and the description is designed to stay steady if the shape turns, changes size, or moves. A computer can then use that description to help decide what it is looking at.",
+      "practitioner": "Compute geometric moments for the signal or image, orthogonalize them through eigen analysis, and pass the resulting EigenMoments to a classifier. The descriptors provide rotation, scale, and translation invariance, noise robustness, and sensitivity to distribution. They are not a classifier themselves, so downstream training and evaluation are still required.",
+      "paperLevel": "Let m denote the geometric moments of a signal or image; EigenMoments are obtained by orthogonalizing m through eigen analysis. The resulting descriptors are orthogonal, robust to noise, invariant to rotation, scaling, and translation, and sensitive to distribution, and they can serve as inputs to classification."
+    },
+    "example": "Suppose a vision system is classifying leaf images. It computes geometric moments for a leaf image, converts them into EigenMoments through eigen analysis, and supplies those descriptors to its classifier; rotating, resizing, or shifting the leaf is not intended to change the invariant description.",
+    "usedIn": [
+      {
+        "name": "Signal processing",
+        "detail": "Uses EigenMoments as signal descriptors that can support later classification.",
+        "url": ""
+      },
+      {
+        "name": "Computer vision",
+        "detail": "Uses them as image descriptors invariant to rotation, scaling, and translation.",
+        "url": ""
+      },
+      {
+        "name": "Classification pipelines",
+        "detail": "Supplies the descriptors to a downstream classifier rather than performing classification directly.",
+        "url": ""
+      }
+    ],
+    "intuition": "Geometric moments capture useful information about a signal or image, and eigen analysis reorganizes them into an orthogonal set of descriptors. The aim is a description that remains stable under common geometric changes and noise without losing sensitivity to the distribution.",
+    "howItWorks": [
+      "Start with a signal or image.",
+      "Compute its geometric moments.",
+      "Apply eigen analysis to orthogonalize those moments.",
+      "Use the resulting EigenMoments as descriptors.",
+      "Pass the descriptors to a classifier when classification is needed."
+    ],
+    "whyItMatters": "EigenMoments combine several useful descriptor properties: orthogonality, noise robustness, geometric invariance, and sensitivity to distribution. This makes them suitable for representing signals and images before classification.",
+    "misconceptions": [
+      "They are descriptors, not a complete classification method.",
+      "Geometric invariance does not mean insensitivity to distribution; distribution sensitivity is part of their design.",
+      "Their orthogonality comes from eigen analysis, not from raw geometric moments alone."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Signal or image",
+          "note": "The input to be described."
+        },
+        {
+          "id": "moments",
+          "label": "Geometric moments",
+          "note": "Moment-based measurements of the input."
+        },
+        {
+          "id": "eigen",
+          "label": "Eigen analysis",
+          "note": "Orthogonalizes the geometric moments."
+        },
+        {
+          "id": "descriptors",
+          "label": "EigenMoments",
+          "note": "Orthogonal, robust, invariant descriptors."
+        },
+        {
+          "id": "classifier",
+          "label": "Classifier",
+          "note": "Uses the descriptors for classification."
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "moments",
+          "label": "compute"
+        },
+        {
+          "from": "moments",
+          "to": "eigen",
+          "label": "analyze"
+        },
+        {
+          "from": "eigen",
+          "to": "descriptors",
+          "label": "produce"
+        },
+        {
+          "from": "descriptors",
+          "to": "classifier",
+          "label": "describe"
+        }
+      ],
+      "caption": "EigenMoments are derived from geometric moments and can then feed a classifier."
+    }
+  },
   "related": [
     "accord-net",
     "active-appearance-model",

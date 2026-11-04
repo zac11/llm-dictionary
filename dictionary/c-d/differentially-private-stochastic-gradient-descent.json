@@ -2,10 +2,109 @@
   "term": "Differentially private stochastic gradient descent",
   "letter": "D",
   "category": "Artificial Intelligence",
-  "type": "concept",
+  "type": "algorithm",
   "definition": "Differentially private stochastic gradient descent (DP-SGD) is an algorithmic technique for learning and a refined analysis of privacy costs within the framework of differential privacy.",
   "details": "DP-SGD was introduced by Abadi et al. at the 2016 ACM Conference on Computer and Communications Security, where it addresses a fundamental challenge—the privacy-utility trade-off. Stronger privacy requires more noise or larger privacy budgets, which can reduce model accuracy. DP-SGD has become a de facto standard for privacy-preserving learning from large datasets. It is used in domains with sensitive data, including healthcare and cybersecurity. DP-SGD has been shown to demonstrate that deep neural networks with non-convex objectives can be trained under a modest privacy budget, at a manageable cost in software complexity and model quality. A non-convex objective is one that may have multiple local minima, making optimization more challenging than with convex objectives. Existing approaches require large privacy budgets to train and incur high overheads in computational resources. A privacy budget refers to the total amount of privacy loss allowed over the entire training process. DP-SGD follows the same steps as standard stochastic gradient descent (SGD) but clips the gradients' norm to a threshold before adding Gaussian noise. Gaussian noise is a type of random noise drawn from a normal distribution. Differential privacy is formally defined using the parameters (ε, δ), which bound the privacy loss of any algorithm. DP-SGD tracks privacy loss by a method called the moments accountant. Current implementations use a method called Rényi differential privacy, which provides an even tighter privacy accounting than the original moments accountant. The moments accountant tracks the privacy loss as a random variable at each step. Another privacy-preserving training method is Private Aggregation of Teacher Ensembles (PATE), which uses an ensemble of teacher models to label public data. A teacher model is a model trained on private data that is used to label or provide guidance to another model (the student model).",
-  "story": "Think of a hiker descending a foggy hill in the dark, taking small steps and feeling for the steepest way down. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. It is the same loop you use to learn anything: try, miss, correct, try again. Skill, for a model, is just error pushed down until it is small enough to ignore. And that is Differentially private stochastic gradient descent — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "Differentially private stochastic gradient descent, or DP-SGD, trains a model while limiting how much the training process can reveal about private data. It matters because it makes privacy-preserving deep learning practical without requiring an unusually large privacy budget or excessive loss of model quality.",
+    "tiers": {
+      "eli5": "Imagine a class learning from everyone's private answers without letting anyone's answer stand out. DP-SGD trims each answer so none is too loud, then mixes in random static before using them to teach the class. This makes learning from sensitive information safer, although too much static can make the lessons less accurate.",
+      "practitioner": "Run training much like standard SGD, but clip gradient norms to a chosen threshold and add Gaussian noise before each model update. Track cumulative privacy loss with the moments accountant or Rényi differential privacy, which current implementations use for tighter accounting. The main pitfalls are accuracy loss from stronger privacy protection and exhausting the privacy budget over the full training run.",
+      "paperLevel": "For clipping threshold C, a gradient g is clipped as g / max(1, ||g|| / C), and Gaussian noise is added before the SGD update. Privacy is expressed with (ε, δ), while the moments accountant tracks privacy loss as a random variable at each step; Rényi differential privacy provides tighter accounting. Abadi et al. introduced DP-SGD at the 2016 ACM Conference on Computer and Communications Security, showing that non-convex deep neural networks could be trained with a modest privacy budget. Its central limitation remains the privacy-utility trade-off: stronger protection can require noise that reduces accuracy."
+    },
+    "example": "A hospital trains a neural network on sensitive patient data. For each training step, DP-SGD clips the gradients so no gradient can have an excessive norm, adds Gaussian noise, and then updates the network. Throughout training, the privacy accountant tracks the accumulated loss against the hospital's allowed privacy budget.",
+    "usedIn": [
+      {
+        "name": "Healthcare",
+        "detail": "Training models on sensitive health data while limiting privacy loss.",
+        "url": ""
+      },
+      {
+        "name": "Cybersecurity",
+        "detail": "Learning from sensitive security-related datasets with differential privacy.",
+        "url": ""
+      }
+    ],
+    "goal": "Train a machine-learning model from private data while bounding the total privacy loss over training. It aims to preserve useful model quality under a controlled privacy budget.",
+    "inputs": [
+      "The inputs include private training data, model gradients, a gradient-norm clipping threshold, and Gaussian noise. Privacy accounting uses the differential-privacy parameters ε and δ."
+    ],
+    "outputs": [
+      "The outputs are a trained model and an account of the privacy loss accumulated during training. The privacy budget describes the total privacy loss allowed across the whole process."
+    ],
+    "steps": [
+      "Select training examples as in standard stochastic gradient descent.",
+      "Compute the gradients used to update the model.",
+      "Clip each gradient's norm to the chosen threshold.",
+      "Add Gaussian noise drawn from a normal distribution.",
+      "Update the model and track the accumulated privacy loss."
+    ],
+    "tradeoffs": [
+      "Stronger privacy protection can require more noise, which may reduce model accuracy. DP-SGD demonstrates that non-convex deep networks can be trained with a modest privacy budget and manageable costs in software complexity and model quality, but the privacy-utility trade-off remains."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "minibatch",
+          "label": "Private minibatch",
+          "note": "Sensitive training examples enter an SGD step."
+        },
+        {
+          "id": "gradients",
+          "label": "Compute gradients",
+          "note": "Gradients describe the proposed model update."
+        },
+        {
+          "id": "clip",
+          "label": "Clip gradient norms",
+          "note": "Each gradient is bounded by a threshold."
+        },
+        {
+          "id": "noise",
+          "label": "Add Gaussian noise",
+          "note": "Random noise is added to the clipped gradients."
+        },
+        {
+          "id": "update",
+          "label": "Update model",
+          "note": "The noisy gradients drive the training update."
+        },
+        {
+          "id": "accountant",
+          "label": "Track privacy loss",
+          "note": "Accounting accumulates privacy cost across steps."
+        }
+      ],
+      "edges": [
+        {
+          "from": "minibatch",
+          "to": "gradients",
+          "label": ""
+        },
+        {
+          "from": "gradients",
+          "to": "clip",
+          "label": ""
+        },
+        {
+          "from": "clip",
+          "to": "noise",
+          "label": "clipped gradients"
+        },
+        {
+          "from": "noise",
+          "to": "update",
+          "label": "noisy gradients"
+        },
+        {
+          "from": "update",
+          "to": "accountant",
+          "label": "step cost"
+        }
+      ],
+      "caption": "DP-SGD modifies each SGD update by clipping gradients and adding noise, while separately accounting for cumulative privacy loss."
+    }
+  },
   "related": [
     "stochastic-gradient-descent",
     "gradient-descent",

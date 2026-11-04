@@ -8,6 +8,92 @@
   ],
   "definition": "Restoring the short-vowel and gemination marks (حَرَكات) that written Arabic omits.",
   "details": "Restoring the short-vowel and gemination marks (حَرَكات) that written Arabic omits. Undiacritized words are massively ambiguous (علم: knowledge / flag / he-taught / it-was-known), making diacritization a task in itself and a critical front-end for TTS, where wrong diacritics mean wrong pronunciation.",
+  "explainer": {
+    "lead": "Diacritization restores the small pronunciation marks that ordinary written Arabic usually leaves out. It matters because the same written word can have several meanings and pronunciations, so a speech system needs the right marks to say it correctly.",
+    "tiers": {
+      "eli5": "Arabic writing often leaves out little marks that tell you how to pronounce a word, a bit like a recipe that leaves out important cooking instructions. Diacritization puts those instructions back. Without them, one written word can mean several different things, such as knowledge, a flag, or someone teaching.",
+      "practitioner": "Diacritization is applied to undiacritized Arabic text when the omitted short-vowel and gemination marks are needed, especially as a front-end to text-to-speech. Treat it as a disambiguation problem rather than simple text cleanup: one surface form can support several readings. An incorrect choice propagates directly into incorrect TTS pronunciation.",
+      "paperLevel": "Given an undiacritized Arabic string x, diacritization produces a string y that restores the omitted short-vowel and gemination marks (حَرَكات). Its central difficulty is massive surface-form ambiguity: علم can correspond to knowledge, flag, he-taught, or it-was-known. Errors are especially consequential in TTS because incorrect diacritics produce incorrect pronunciation."
+    },
+    "example": "For the written string علم, diacritization must choose among the readings knowledge, flag, he-taught, and it-was-known. A TTS system then pronounces the selected reading; choosing the wrong diacritics makes it say the word incorrectly.",
+    "usedIn": [
+      {
+        "name": "Arabic text-to-speech",
+        "detail": "Restores pronunciation marks before speech synthesis; wrong marks lead to wrong pronunciation.",
+        "url": ""
+      },
+      {
+        "name": "Arabic language processing",
+        "detail": "Resolves some of the ambiguity created when written Arabic omits short vowels and gemination.",
+        "url": ""
+      }
+    ],
+    "intuition": "Written Arabic often gives the consonantal text while leaving readers to recover short vowels and gemination. Diacritization makes that missing pronunciation information explicit, choosing among the possible readings of the same written form.",
+    "howItWorks": [
+      "Start with Arabic text whose short-vowel and gemination marks are omitted.",
+      "Identify words whose undiacritized forms permit multiple readings.",
+      "Restore the appropriate حَرَكات for each word.",
+      "Pass the diacritized text to applications such as TTS, which use it to determine pronunciation."
+    ],
+    "whyItMatters": "Without diacritization, highly ambiguous written forms can hide both meaning and pronunciation. It is therefore a task in its own right and a critical front-end for Arabic TTS.",
+    "misconceptions": [
+      "It is not translation: the Arabic text remains Arabic, while omitted pronunciation marks are restored.",
+      "It is not merely decorative formatting: in TTS, the restored marks directly affect pronunciation.",
+      "The same undiacritized word cannot always be assigned one universal reading; علم alone has several possible interpretations."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Undiacritized Arabic",
+          "note": "Short-vowel and gemination marks are omitted."
+        },
+        {
+          "id": "ambiguity",
+          "label": "Possible readings",
+          "note": "One written form can support several meanings."
+        },
+        {
+          "id": "restore",
+          "label": "Diacritization",
+          "note": "Restore the appropriate حَرَكات."
+        },
+        {
+          "id": "output",
+          "label": "Diacritized text",
+          "note": "Pronunciation information is now explicit."
+        },
+        {
+          "id": "tts",
+          "label": "Arabic TTS",
+          "note": "Uses the marks to produce pronunciation."
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "ambiguity",
+          "label": ""
+        },
+        {
+          "from": "ambiguity",
+          "to": "restore",
+          "label": "choose reading"
+        },
+        {
+          "from": "restore",
+          "to": "output",
+          "label": ""
+        },
+        {
+          "from": "output",
+          "to": "tts",
+          "label": ""
+        }
+      ],
+      "caption": "Diacritization turns an ambiguous written form into explicitly pronounced text for downstream use."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

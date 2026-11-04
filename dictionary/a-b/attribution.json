@@ -5,6 +5,108 @@
   "type": "concept",
   "definition": "Linking each claim in the answer to its supporting source span.",
   "details": "Linking each claim in the answer to its supporting source span. Turns the model's output from an assertion into a checkable document; essential in legal, medical, and enterprise deployments.",
+  "explainer": {
+    "lead": "Attribution in retrieval-augmented generation connects individual claims in an answer to the exact passages that support them. This lets readers check the evidence instead of simply trusting the model.",
+    "tiers": {
+      "eli5": "It is like adding a note beside each sentence in a school report that shows exactly where you found it. If an answer says a shop closes at six, the note points to the sentence on the shop's sign saying so. You can then check the claim yourself.",
+      "practitioner": "Apply attribution at claim level, linking each generated statement to the supporting span in the retrieved context rather than only citing a whole document. Review links for coverage and relevance: a citation can sit next to a claim without actually supporting it, and several claims grouped under one citation can hide an unsupported statement.",
+      "paperLevel": "For an answer A containing claims c1, ..., cn and retrieved source spans S = {s1, ..., sm}, attribution maps each claim ci to a supporting span sj, or a set of spans. A(ci) = sj records the evidence link; it does not by itself prove that sj entails ci or that the generated answer is correct."
+    },
+    "example": "A retrieved passage says, \"The contract expires on 30 June 2026.\" The answer states, \"The contract expires on 30 June 2026 [1],\" where [1] opens that exact sentence rather than merely naming the whole contract.",
+    "usedIn": [
+      {
+        "name": "Legal deployments",
+        "detail": "Readers can trace statements in a generated response back to the supporting passages.",
+        "url": ""
+      },
+      {
+        "name": "Medical deployments",
+        "detail": "Claims can be presented with links to their supporting source text for checking.",
+        "url": ""
+      },
+      {
+        "name": "Enterprise deployments",
+        "detail": "Answers become checkable documents whose statements can be compared with the retrieved evidence.",
+        "url": ""
+      }
+    ],
+    "intuition": "A bare answer asks for trust; an attributed answer shows its receipts. The useful unit is the individual claim, each paired with the passage that backs it.",
+    "howItWorks": [
+      "Retrieve the source material used to prepare the answer.",
+      "Generate the answer and identify its individual claims.",
+      "Find the source span supporting each claim.",
+      "Attach a link or citation from the claim to that exact span.",
+      "Present the claims and links together so a reader can verify them."
+    ],
+    "whyItMatters": "Attribution turns generated text into a document whose claims can be inspected against their evidence. That checkability is essential in legal, medical, and enterprise settings.",
+    "misconceptions": [
+      "Attribution is not the same as listing the documents retrieved for an answer.",
+      "A nearby citation does not guarantee that its source actually supports the claim.",
+      "Attribution makes an answer checkable, not automatically accurate."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "sources",
+          "label": "Retrieved sources",
+          "note": "Source material supplied to the model"
+        },
+        {
+          "id": "answer",
+          "label": "Generated answer",
+          "note": "Text produced from the retrieved material"
+        },
+        {
+          "id": "claims",
+          "label": "Individual claims",
+          "note": "Statements separated for evidence linking"
+        },
+        {
+          "id": "spans",
+          "label": "Supporting spans",
+          "note": "Exact passages linked to the claims"
+        },
+        {
+          "id": "checkable",
+          "label": "Checkable response",
+          "note": "Claims presented with their evidence links"
+        }
+      ],
+      "edges": [
+        {
+          "from": "sources",
+          "to": "answer",
+          "label": "context"
+        },
+        {
+          "from": "answer",
+          "to": "claims",
+          "label": "split into"
+        },
+        {
+          "from": "sources",
+          "to": "spans",
+          "label": "supply"
+        },
+        {
+          "from": "claims",
+          "to": "spans",
+          "label": "linked to"
+        },
+        {
+          "from": "claims",
+          "to": "checkable",
+          "label": ""
+        },
+        {
+          "from": "spans",
+          "to": "checkable",
+          "label": "evidence"
+        }
+      ],
+      "caption": "Each answer claim is linked back to an exact supporting passage in the retrieved sources."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

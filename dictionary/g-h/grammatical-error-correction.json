@@ -8,6 +8,88 @@
   ],
   "definition": "Detecting and correcting grammar, usage, and orthography errors, usually as edit-tagging or seq2seq rewriting.",
   "details": "Detecting and correcting grammar, usage, and orthography errors, usually as edit-tagging or seq2seq rewriting. The engine of writing assistants; for Arabic, the QALB shared tasks and the language's rich morphology make it a distinct and underserved subfield.",
+  "explainer": {
+    "lead": "Grammatical Error Correction (GEC) automatically finds and fixes mistakes in grammar, word usage, spelling, and other aspects of written form. It is the underlying task behind writing assistants, helping turn an error-filled sentence into a clearer, correct version.",
+    "tiers": {
+      "eli5": "GEC is like a careful proofreader for a computer. It reads a sentence, notices words or word forms that are wrong, and rewrites them while keeping the intended message. For example, it can change “She go home” to “She goes home.”",
+      "practitioner": "A GEC system can either predict edit operations, such as replacing or inserting words, or use a sequence-to-sequence model to rewrite the whole input. The main design choices include how to represent corrections and how to avoid changing text that is already correct. Arabic needs particular care because its rich morphology creates a distinct, underserved correction setting, addressed in part by the QALB shared tasks.",
+      "paperLevel": "Given an input text x that may contain grammar, usage, or orthography errors, GEC learns a correction f(x) = y, where y is the corrected text. Edit-tagging formulates y through a sequence of predicted edits, while sequence-to-sequence rewriting generates y directly. Arabic GEC is shaped by the language's rich morphology and has been studied through the QALB shared tasks."
+    },
+    "example": "Given “She go to school every day,” the system identifies the incorrect verb form and outputs “She goes to school every day.”",
+    "usedIn": [
+      {
+        "name": "Writing assistants",
+        "detail": "Detect and propose corrections for grammar, usage, and orthography errors in drafted text.",
+        "url": ""
+      },
+      {
+        "name": "Arabic writing support",
+        "detail": "Correct Arabic text while handling challenges created by the language's rich morphology.",
+        "url": ""
+      },
+      {
+        "name": "Shared-task evaluation",
+        "detail": "The QALB shared tasks provide a setting for studying Arabic grammatical error correction.",
+        "url": ""
+      }
+    ],
+    "intuition": "Treat correction as transforming imperfect writing into a corrected version: either mark the edits needed or generate the revised text directly.",
+    "howItWorks": [
+      "Read text that may contain grammar, usage, or orthography errors.",
+      "Identify which words, forms, or passages need correction.",
+      "Represent the correction as edit tags or as a sequence-to-sequence rewriting problem.",
+      "Apply the predicted edits or generate the rewritten text.",
+      "Return the corrected version."
+    ],
+    "whyItMatters": "GEC powers the correction capabilities of writing assistants and supports better written communication. It is also a distinct research challenge for Arabic, where rich morphology and comparatively limited attention make progress especially important.",
+    "misconceptions": [
+      "GEC is not only spell-checking; it also covers grammar and word usage.",
+      "Edit-tagging and sequence-to-sequence rewriting are different ways to produce corrections, not different goals.",
+      "Arabic GEC is not simply a direct reuse of correction for other languages because its rich morphology matters."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Error-filled text",
+          "note": "Text with possible grammar, usage, or orthography errors."
+        },
+        {
+          "id": "detect",
+          "label": "Error detection",
+          "note": "Identify text that needs correction."
+        },
+        {
+          "id": "correct",
+          "label": "Correction model",
+          "note": "Predict edit tags or rewrite the sequence."
+        },
+        {
+          "id": "output",
+          "label": "Corrected text",
+          "note": "Return the revised writing."
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "detect",
+          "label": ""
+        },
+        {
+          "from": "detect",
+          "to": "correct",
+          "label": "error locations"
+        },
+        {
+          "from": "correct",
+          "to": "output",
+          "label": "edits or rewrite"
+        }
+      ],
+      "caption": "GEC turns imperfect text into corrected text through either predicted edits or full sequence rewriting."
+    }
+  },
   "related": [
     "sequence-to-sequence"
   ],

@@ -5,7 +5,99 @@
   "type": "algorithm",
   "definition": "The Harris corner detector is a corner detection operator that is commonly used in computer vision algorithms to extract corners and infer features of an image.",
   "details": "It was first introduced by Chris Harris and Mike Stephens in 1988 upon the improvement of Moravec's corner detector. Compared to its predecessor, Harris' corner detector takes the differential of the corner score into account with reference to direction directly, instead of using shifting patches for every 45 degree angles, and has been proved to be more accurate in distinguishing between edges and corners. Since then, it has been improved and adopted in many algorithms to preprocess images for subsequent applications.",
-  "story": "Picture a child pointing at pictures in a book — cat, car, cloud — learning to see by seeing a thousand examples. It turns a picture into an understanding: this is a cat, that is a stop sign. What your eyes do without thinking, the machine does one careful layer at a time. It is eyes made of arithmetic — pixels become edges, edges become shapes, shapes become meaning. And that is Harris corner detector — giving a machine the gift of sight.",
+  "explainer": {
+    "lead": "The Harris corner detector finds points in an image where corners occur, turning them into useful features for later computer vision steps. Introduced by Chris Harris and Mike Stephens in 1988, it improved on Moravec’s detector by considering direction directly and distinguishing corners from edges more accurately.",
+    "tiers": {
+      "eli5": "Imagine looking at a drawing and marking every place where two lines meet to make a sharp turn. This algorithm does something similar with pictures, helping a computer notice useful points rather than treating every straight edge as special.",
+      "practitioner": "Use it as an early image-processing step when a pipeline needs corner locations or corner-based features. It evaluates the corner score with respect to direction instead of shifting patches at every 45-degree angle, as Moravec’s detector did. Its output can then feed subsequent application-specific stages.",
+      "paperLevel": "The detector evaluates directional variation in a corner score to distinguish corners from edges. Chris Harris and Mike Stephens introduced it in 1988 as an improvement on Moravec’s corner detector, replacing shifts of patches at 45-degree intervals with direct consideration of direction. The stated improvement is greater accuracy in separating edges from corners."
+    },
+    "example": "For an image of an L-shaped block, the detector examines directional corner-score changes across the image. A straight side is treated as an edge, while the inner and outer bends produce corner responses; those detected bends can then be passed to a later image-analysis stage.",
+    "usedIn": [
+      {
+        "name": "Computer vision algorithms",
+        "detail": "Extracts corners and supports feature inference from images.",
+        "url": ""
+      },
+      {
+        "name": "Image preprocessing pipelines",
+        "detail": "Detects corner features before subsequent application-specific processing.",
+        "url": ""
+      }
+    ],
+    "goal": "Locate corners in an image while distinguishing them from edges, producing features that later algorithms can use.",
+    "inputs": [
+      "An image to analyze",
+      "Image locations where corner scores are assessed"
+    ],
+    "outputs": [
+      "Detected corner locations",
+      "Corner-based features for subsequent processing"
+    ],
+    "steps": [
+      "Take the image as input.",
+      "Evaluate the corner score with respect to direction.",
+      "Use that directional response to distinguish corners from edges.",
+      "Return the detected corners for feature extraction or later processing."
+    ],
+    "tradeoffs": [
+      "More accurate than Moravec’s detector at distinguishing edges from corners.",
+      "Considers direction directly rather than shifting patches every 45 degrees.",
+      "Provides corners and features, not a complete application-specific image analysis."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "image",
+          "label": "Input image",
+          "note": "The picture to analyze"
+        },
+        {
+          "id": "score",
+          "label": "Corner score",
+          "note": "Assessed at image locations"
+        },
+        {
+          "id": "direction",
+          "label": "Directional response",
+          "note": "Direction considered directly"
+        },
+        {
+          "id": "classify",
+          "label": "Edge or corner",
+          "note": "Separates the two responses"
+        },
+        {
+          "id": "corners",
+          "label": "Detected corners",
+          "note": "Features for later stages"
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "score",
+          "label": ""
+        },
+        {
+          "from": "score",
+          "to": "direction",
+          "label": "variation"
+        },
+        {
+          "from": "direction",
+          "to": "classify",
+          "label": ""
+        },
+        {
+          "from": "classify",
+          "to": "corners",
+          "label": "corner responses"
+        }
+      ],
+      "caption": "The detector turns directional corner-score responses into detected corners for subsequent image processing."
+    }
+  },
   "related": [
     "harris-affine-region-detector",
     "corner-detection",

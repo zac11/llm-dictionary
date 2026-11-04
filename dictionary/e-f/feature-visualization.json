@@ -5,7 +5,103 @@
   "type": "concept",
   "definition": "A technique for understanding what a neural network unit has learned by generating or finding inputs that maximally activate it.",
   "details": "Feature visualization is a classic interpretability technique from computer vision, producing images that reveal the visual patterns a given neuron or channel has come to detect.",
-  "story": "Think of a jazz musician who has heard so many solos that a new one simply falls out of their fingers. Given a starting line, the machine imagines what comes next — a word, a note, a patch of a picture. It makes new things by recombining everything it has ever seen. Creation, here, is memory recombined at speed. That next-word, next-stroke magic is Feature Visualization.",
+  "explainer": {
+    "lead": "Feature visualization turns a neural network's internal activity into something people can inspect. By finding or generating an input that strongly activates one unit, it offers a clue about the visual pattern that unit has learned to detect.",
+    "tiers": {
+      "eli5": "Imagine trying to discover a friend's favorite picture by showing them pictures and watching how excited they get. Feature visualization does this with one tiny part of a neural network, changing a picture until that part reacts as strongly as possible. The result can hint at what the part notices, such as a curve or texture.",
+      "practitioner": "In computer vision, select a neuron or channel and either search a dataset for its strongest activations or optimize an image to increase its activation. Gradient-based image optimization is a common setting, and the resulting picture should be inspected alongside activating natural examples. Highly activating synthetic images can be unnatural, and strong activation alone does not establish that a unit represents only one concept.",
+      "paperLevel": "For a unit u with activation a_u(x), feature visualization seeks x* = arg max_x a_u(x), either by optimizing x or by selecting from available inputs. In vision networks, the resulting image provides evidence about patterns associated with that unit. A maximally activating input need not resemble natural data, characterize the unit's full response distribution, or explain the network's overall behavior."
+    },
+    "example": "Suppose a channel in an image network responds strongly to curved edges. Starting with a plain image and repeatedly changing its pixels to raise that channel's activation could produce an image dominated by arc-like curves, suggesting that curvature is part of what the channel detects.",
+    "usedIn": [
+      {
+        "name": "Computer vision research",
+        "detail": "Inspecting visual patterns associated with individual neurons or channels.",
+        "url": ""
+      },
+      {
+        "name": "Neural network debugging",
+        "detail": "Checking whether internal units respond to plausible or unexpected patterns.",
+        "url": ""
+      },
+      {
+        "name": "Interpretability education",
+        "detail": "Making hidden visual features concrete through generated images.",
+        "url": ""
+      }
+    ],
+    "intuition": "A unit's activation is like a reaction to an input: by finding what produces the biggest reaction, we get a visible clue about what it responds to. The image is evidence about the unit, not a complete explanation of it.",
+    "howItWorks": [
+      "Choose a neuron or channel in a vision network.",
+      "Start with an image, or prepare a collection of candidate inputs.",
+      "Measure how strongly the chosen unit activates.",
+      "Change the image to increase activation, or keep the highest-activating candidates.",
+      "Inspect the resulting visual patterns."
+    ],
+    "whyItMatters": "It gives researchers a direct way to inspect otherwise hidden visual features inside a network. Those clues can support hypotheses about what a unit detects, which can then be checked with additional inputs.",
+    "misconceptions": [
+      "The generated image is not necessarily an example from the training data.",
+      "One unit's preferred pattern does not explain the whole network's decision.",
+      "Strong activation does not prove that the unit detects only one concept."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "unit",
+          "label": "Chosen unit",
+          "note": "A neuron or channel to inspect."
+        },
+        {
+          "id": "image",
+          "label": "Candidate image",
+          "note": "An input being tested or changed."
+        },
+        {
+          "id": "activation",
+          "label": "Unit activation",
+          "note": "How strongly the unit responds."
+        },
+        {
+          "id": "update",
+          "label": "Image update",
+          "note": "Changes intended to raise activation."
+        },
+        {
+          "id": "pattern",
+          "label": "Visual pattern",
+          "note": "The resulting clue about the unit."
+        }
+      ],
+      "edges": [
+        {
+          "from": "unit",
+          "to": "activation",
+          "label": "selected response"
+        },
+        {
+          "from": "image",
+          "to": "activation",
+          "label": "produces"
+        },
+        {
+          "from": "activation",
+          "to": "update",
+          "label": "guides"
+        },
+        {
+          "from": "update",
+          "to": "image",
+          "label": "revises"
+        },
+        {
+          "from": "image",
+          "to": "pattern",
+          "label": "reveals"
+        }
+      ],
+      "caption": "An image is iteratively revised using the chosen unit's activation, yielding a pattern to inspect."
+    }
+  },
   "related": [
     "attention-visualization",
     "circuit-in-interpretability",

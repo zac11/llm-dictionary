@@ -5,7 +5,96 @@
   "type": "concept",
   "definition": "A distributed training approach where a model is trained across many decentralized devices or servers holding local data samples, without directly sharing that raw data.",
   "details": "Federated learning is used in privacy-sensitive settings (such as training on data from mobile devices) since it allows model improvement without centralizing sensitive raw user data.",
-  "story": "Imagine teaching a friend to shoot a basketball. They miss, and you walk them backwards through the shot — elbow, wrist, release — to find what needs fixing. It is the same loop you use to learn anything: try, miss, correct, try again. Underneath all the magic is a patient process of small improvements. It is learning from every miss instead of repeating the same mistake. That steady, miss-by-miss improvement is Federated Learning.",
+  "explainer": {
+    "lead": "Federated learning lets many devices or servers help train a shared model while keeping their raw data local. It matters when the data is sensitive or spread across many places, because improving the model does not require gathering that data in one central store.",
+    "tiers": {
+      "eli5": "Imagine a class improving one shared story without anyone handing over their private notebook. Each student practices using their own notebook, then shares only general suggestions for improving the story. Federated learning does something similar with devices and a shared computer model.",
+      "practitioner": "Use federated learning when training data is distributed across devices or servers and raw samples should remain local. A central process coordinates a shared model while participants train on their local data and contribute updates. Engineering must account for this distributed coordination, and keeping raw data local should not be confused with centralizing no model information at all.",
+      "paperLevel": "Let participants k = 1...K hold local datasets D_k. Training seeks a shared parameter vector w using computations on each D_k, while raw samples in D_k are not directly exchanged with the other participants or the coordinating server. The approach is distributed across decentralized devices or servers rather than based on a single centralized training dataset."
+    },
+    "example": "Suppose many phones are helping improve a text-prediction model. Each phone trains the model on its own locally held typing examples and sends back a model update, not the raw messages. The updates help improve the shared model, which can then be sent back to the phones.",
+    "usedIn": [
+      {
+        "name": "Mobile-device model training",
+        "detail": "Models can improve using data held on users' mobile devices without centralizing the raw user data.",
+        "url": ""
+      },
+      {
+        "name": "Privacy-sensitive machine learning",
+        "detail": "Distributed devices or servers can contribute to training while sensitive local samples stay where they are held.",
+        "url": ""
+      }
+    ],
+    "intuition": "Bring the training process to the data instead of bringing all the data to the training process. Each participant learns from its own samples, and their contributions are combined into a shared model.",
+    "howItWorks": [
+      "A shared model is made available to participating devices or servers.",
+      "Each participant trains using its own local data samples.",
+      "Participants contribute model updates rather than directly sharing their raw data.",
+      "The contributions are used to improve the shared model for further training."
+    ],
+    "whyItMatters": "It enables model improvement in settings where sensitive raw user data should not be gathered centrally. It also provides a way to train across data naturally distributed among many devices or servers.",
+    "misconceptions": [
+      "It does not mean that no information leaves a device: participants contribute model updates, just not the raw samples.",
+      "It is not training a separate unrelated model for every device; the participants work toward a shared model."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "server",
+          "label": "Shared model",
+          "note": "Coordinates training across participants"
+        },
+        {
+          "id": "phone-a",
+          "label": "Phone A",
+          "note": "Trains using local raw data"
+        },
+        {
+          "id": "phone-b",
+          "label": "Phone B",
+          "note": "Trains using local raw data"
+        },
+        {
+          "id": "server-b",
+          "label": "Server B",
+          "note": "Trains using local raw data"
+        }
+      ],
+      "edges": [
+        {
+          "from": "server",
+          "to": "phone-a",
+          "label": "model"
+        },
+        {
+          "from": "server",
+          "to": "phone-b",
+          "label": "model"
+        },
+        {
+          "from": "server",
+          "to": "server-b",
+          "label": "model"
+        },
+        {
+          "from": "phone-a",
+          "to": "server",
+          "label": "update"
+        },
+        {
+          "from": "phone-b",
+          "to": "server",
+          "label": "update"
+        },
+        {
+          "from": "server-b",
+          "to": "server",
+          "label": "update"
+        }
+      ],
+      "caption": "Participants receive the shared model and return updates; their raw local data is not directly shared."
+    }
+  },
   "related": [
     "end-to-end-learning",
     "reinforcement-learning",

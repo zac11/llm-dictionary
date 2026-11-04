@@ -2,10 +2,113 @@
   "term": "Fashion-MNIST",
   "letter": "F",
   "category": "Computer vision",
-  "type": "concept",
+  "type": "dataset",
   "definition": "Fashion-MNIST is a large, freely available dataset of fashion images that is commonly used for training and testing machine learning systems.",
   "details": "Fashion-MNIST was intended to serve as a replacement for the original MNIST database for benchmarking machine learning algorithms, as it shares the same image size, data format and the structure of training and testing splits. It was created by Han Xiao, the founder of Jina AI. The dataset contains 60,000 28x28 grayscale images of fashion products from 10 categories from a dataset of Zalando article images, with 6,000 images per category. The training set consists of 60,000 images and the test set consists of 10,000 images. The dataset is commonly included in standard machine learning libraries.",
-  "story": "Imagine an art restorer who can spot a single cracked tile in a vast mosaic. What your eyes do without thinking, the machine does one careful layer at a time. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. The model looks the way you look at a crowd and finds the one face you know. And that is Fashion-MNIST — giving a machine the gift of sight.",
+  "explainer": {
+    "lead": "Fashion-MNIST is a free collection of small grayscale fashion images for training and testing image classifiers. It mirrors MNIST’s image size, format, and data splits, making it easy to substitute into existing machine-learning experiments.",
+    "tiers": {
+      "eli5": "Imagine a huge stack of tiny black-and-white pictures of clothes, sorted into ten kinds of fashion items. You can show most of the pictures to a computer so it learns to recognize them, then use a separate stack to quiz it. Fashion-MNIST gives everyone the same learning pictures and quiz pictures.",
+      "practitioner": "Use its 60,000 training images to fit a classifier and its 10,000 test images for evaluation, with 28x28 grayscale inputs throughout. Its MNIST-compatible format and availability in standard machine-learning libraries make it convenient for benchmarking, but do not assume that MNIST-like inputs imply MNIST-like task difficulty.",
+      "paperLevel": "Fashion-MNIST consists of D_train with 60,000 examples and D_test with 10,000 examples, where each image is 28x28 grayscale and belongs to one of 10 fashion categories; the training set has 6,000 images per category. Created by Han Xiao from Zalando article images, it was designed as an MNIST replacement with the same image size, data format, and split structure. Its scope is limited to this fixed collection of small, single-channel fashion images."
+    },
+    "example": "A researcher trains an image classifier on all 60,000 training images, then runs it on the 10,000-image test set. For each test image, the predicted fashion category is compared with its actual category to evaluate the classifier.",
+    "usedIn": [
+      {
+        "name": "Machine-learning algorithm benchmarking",
+        "detail": "Provides a common training and test set for comparing image classifiers.",
+        "url": ""
+      },
+      {
+        "name": "Standard machine-learning libraries",
+        "detail": "Commonly included as a ready-to-use dataset for experiments and examples.",
+        "url": ""
+      },
+      {
+        "name": "Image-classifier development",
+        "detail": "Used to train models on fashion images and test them on separate examples.",
+        "url": ""
+      }
+    ],
+    "measures": "It supports evaluation of how well a machine-learning system assigns 28x28 grayscale fashion images to 10 product categories. A fixed training set and test set give different experiments a shared basis for comparison.",
+    "howScored": [
+      "Train a classifier on the 60,000-image training set.",
+      "Predict a category for each image in the 10,000-image test set.",
+      "Compare those predictions with the test images’ categories using the evaluation metric chosen for the experiment."
+    ],
+    "caveats": [
+      "Matching MNIST’s image size and data format does not make the two datasets identical in content or difficulty.",
+      "It covers 10 fashion categories rather than general-purpose object recognition.",
+      "The dataset supplies train and test splits, not a single mandatory evaluation metric."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "zalando",
+          "label": "Zalando article images",
+          "note": "Source fashion-product imagery"
+        },
+        {
+          "id": "dataset",
+          "label": "Fashion-MNIST",
+          "note": "70,000 grayscale images across 10 categories"
+        },
+        {
+          "id": "train",
+          "label": "Training split",
+          "note": "60,000 images, with 6,000 per category"
+        },
+        {
+          "id": "classifier",
+          "label": "Image classifier",
+          "note": "Learns from 28x28 training images"
+        },
+        {
+          "id": "test",
+          "label": "Test split",
+          "note": "10,000 separate images"
+        },
+        {
+          "id": "evaluation",
+          "label": "Prediction evaluation",
+          "note": "Compare predicted and actual categories"
+        }
+      ],
+      "edges": [
+        {
+          "from": "zalando",
+          "to": "dataset",
+          "label": "source"
+        },
+        {
+          "from": "dataset",
+          "to": "train",
+          "label": "60,000"
+        },
+        {
+          "from": "dataset",
+          "to": "test",
+          "label": "10,000"
+        },
+        {
+          "from": "train",
+          "to": "classifier",
+          "label": "training"
+        },
+        {
+          "from": "classifier",
+          "to": "evaluation",
+          "label": "predictions"
+        },
+        {
+          "from": "test",
+          "to": "evaluation",
+          "label": "test images"
+        }
+      ],
+      "caption": "Fashion-MNIST separates model training from evaluation through fixed training and test splits."
+    }
+  },
   "related": [
     "mnist-database",
     "accord-net",

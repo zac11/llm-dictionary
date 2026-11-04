@@ -8,7 +8,97 @@
   ],
   "definition": "A technique that normalizes the inputs of each layer within a mini-batch to stabilize and accelerate training.",
   "details": "Batch normalization reduces internal covariate shift, allows higher learning rates, and often acts as a mild regularizer, though it has largely been supplemented or replaced by layer normalization in transformer architectures.",
-  "story": "Picture an architect laying out a building where every room has to know which other rooms matter to it. The layout decides what the machine can even attempt, before it learns a single thing. It is the blueprint that makes everything else possible. It is the difference between a row of isolated cubicles and one big room where everyone can hear each other. And that shape of the machine — Batch Normalization — is what makes everything else possible.",
+  "explainer": {
+    "lead": "Batch normalization, or BatchNorm, keeps a neural network’s layer inputs on a steadier scale by normalizing them within each mini-batch. This can make training faster and more stable, and it can allow higher learning rates.",
+    "tiers": {
+      "eli5": "Imagine each runner in a relay race handing over a baton at a wildly different height, making every handoff awkward. Batch normalization is like adjusting the batons to a consistent height before passing them on. This helps the whole team train more smoothly.",
+      "practitioner": "Apply BatchNorm to layer inputs using statistics computed from the current mini-batch. It can support higher learning rates and provide mild regularization, but layer normalization is now more common in transformer architectures.",
+      "paperLevel": "For a mini-batch B, compute its mean mu_B and standard deviation sigma_B, then normalize each activation as x_hat = (x - mu_B) / sigma_B. Batch normalization was introduced to reduce internal covariate shift; its regularizing effect is mild, and layer normalization has largely supplemented or replaced it in transformers."
+    },
+    "example": "Suppose two layer inputs in a mini-batch are 2 and 4. Their mean is 3 and their standard deviation is 1, so BatchNorm transforms them into -1 and 1 before they enter the layer.",
+    "usedIn": [
+      {
+        "name": "Layered neural networks",
+        "detail": "Normalizes each layer’s inputs within a mini-batch to stabilize and accelerate training.",
+        "url": ""
+      },
+      {
+        "name": "Transformer architectures",
+        "detail": "Batch normalization has largely been supplemented or replaced by layer normalization in these models.",
+        "url": ""
+      }
+    ],
+    "intuition": "A network is easier to train when each layer receives inputs on a reasonably consistent scale. BatchNorm uses the current mini-batch to recenter and rescale those inputs, reducing the shifting distributions known as internal covariate shift.",
+    "howItWorks": [
+      "Take the inputs to a layer for the examples in one mini-batch.",
+      "Calculate the mini-batch’s mean and spread.",
+      "Subtract the mean and divide by the spread to normalize the values.",
+      "Pass the normalized inputs into the layer and continue training."
+    ],
+    "whyItMatters": "By reducing internal covariate shift, BatchNorm can stabilize training, speed it up, and permit higher learning rates. Its mild regularizing effect can also be useful, although it is not its main purpose.",
+    "misconceptions": [
+      "It normalizes within a mini-batch, not across the entire dataset at once.",
+      "Its mild regularization is a side benefit, not its defining goal.",
+      "It is not the standard normalization choice for modern transformers, where layer normalization is more common."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "batch",
+          "label": "Mini-batch activations",
+          "note": "Values heading toward a layer"
+        },
+        {
+          "id": "stats",
+          "label": "Batch statistics",
+          "note": "Mean and spread"
+        },
+        {
+          "id": "normalize",
+          "label": "Normalize values",
+          "note": "Recenter and rescale"
+        },
+        {
+          "id": "layer",
+          "label": "Layer inputs",
+          "note": "Steadier activation scale"
+        },
+        {
+          "id": "training",
+          "label": "Network training",
+          "note": "More stable optimization"
+        }
+      ],
+      "edges": [
+        {
+          "from": "batch",
+          "to": "stats",
+          "label": "summarize"
+        },
+        {
+          "from": "batch",
+          "to": "normalize",
+          "label": "activations"
+        },
+        {
+          "from": "stats",
+          "to": "normalize",
+          "label": "mean, spread"
+        },
+        {
+          "from": "normalize",
+          "to": "layer",
+          "label": "normalized"
+        },
+        {
+          "from": "layer",
+          "to": "training",
+          "label": "supports"
+        }
+      ],
+      "caption": "BatchNorm uses each mini-batch’s statistics to normalize activations before they enter a layer."
+    }
+  },
   "related": [
     "layer-normalization",
     "activation-function",

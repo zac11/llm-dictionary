@@ -5,6 +5,87 @@
   "type": "concept",
   "definition": "Recovering the 3D geometry of a scene or object from images — multi-view stereo, NeRF, and Gaussian splatting all address this task.",
   "details": "Recovering the 3D geometry of a scene or object from images — multi-view stereo, NeRF, and Gaussian splatting all address this task.",
+  "explainer": {
+    "lead": "3D reconstruction turns flat images into a description of the shape and layout of an object or scene. It makes it possible to inspect, measure, and view something from angles that were not captured directly.",
+    "tiers": {
+      "eli5": "Imagine walking around a statue and taking pictures from different sides. A computer can compare those pictures to work out where the statue sticks out, curves in, and sits in space, then build a three-dimensional version. The result is like a digital sculpture you can turn around on a screen.",
+      "practitioner": "Engineers choose an approach such as multi-view stereo, NeRF, or Gaussian splatting according to the available views and the output they need. Reliable capture requires useful viewpoint variation, while occluded or sparsely observed surfaces remain difficult to recover. Outputs should be checked for geometric errors rather than judged only by how convincing rendered views look.",
+      "paperLevel": "Given images I_1, ..., I_n of a scene, 3D reconstruction seeks a geometric representation G that explains their observed appearance and spatial relationships. Multi-view stereo, NeRF, and Gaussian splatting are different approaches to this task and may represent the scene differently. The problem is under-constrained where surfaces are occluded or insufficiently observed, so image evidence alone may not determine a unique geometry."
+    },
+    "example": "A person photographs a statue from its front, sides, and back. A reconstruction method uses the changing views to estimate its shape, producing a digital model whose base, arms, and head can be examined in three dimensions.",
+    "usedIn": [
+      {
+        "name": "3D scanning",
+        "detail": "Builds digital geometry of physical objects from captured images.",
+        "url": ""
+      },
+      {
+        "name": "Scene digitization",
+        "detail": "Creates three-dimensional representations of real places for viewing from new positions.",
+        "url": ""
+      },
+      {
+        "name": "Computer vision research",
+        "detail": "Provides the common task addressed by multi-view stereo, NeRF, and Gaussian splatting.",
+        "url": ""
+      }
+    ],
+    "intuition": "The same point appears differently when seen from different positions, and those changes provide clues about depth. Combining evidence across views lets a system estimate a shape that is consistent with the images.",
+    "howItWorks": [
+      "Capture one or more images of the object or scene.",
+      "Relate visual evidence across the available views.",
+      "Estimate geometry using multi-view stereo, NeRF, or Gaussian splatting.",
+      "Produce a 3D representation that can be inspected or rendered."
+    ],
+    "whyItMatters": "It bridges ordinary image capture and three-dimensional understanding, allowing real objects and scenes to become digital geometry. The choice of method affects both the representation produced and how well unseen or weakly observed areas are handled.",
+    "misconceptions": [
+      "A single photograph does not uniquely determine complete 3D geometry.",
+      "Multi-view stereo, NeRF, and Gaussian splatting do not all produce the same kind of representation.",
+      "A convincing rendered view does not guarantee accurate geometry everywhere."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "images",
+          "label": "Input images",
+          "note": "Views of an object or scene"
+        },
+        {
+          "id": "evidence",
+          "label": "Cross-view evidence",
+          "note": "Visual relationships across views"
+        },
+        {
+          "id": "method",
+          "label": "Reconstruction method",
+          "note": "Multi-view stereo, NeRF, or Gaussian splatting"
+        },
+        {
+          "id": "geometry",
+          "label": "3D representation",
+          "note": "Recovered scene or object geometry"
+        }
+      ],
+      "edges": [
+        {
+          "from": "images",
+          "to": "evidence",
+          "label": "compare"
+        },
+        {
+          "from": "evidence",
+          "to": "method",
+          "label": "inform"
+        },
+        {
+          "from": "method",
+          "to": "geometry",
+          "label": "recover"
+        }
+      ],
+      "caption": "Different reconstruction methods turn evidence from images into a three-dimensional representation."
+    }
+  },
   "citation": {
     "title": "3D Reconstruction",
     "authors": [],

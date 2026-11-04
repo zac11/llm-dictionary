@@ -2,10 +2,89 @@
   "term": "Feature Selection Toolbox",
   "letter": "F",
   "category": "Machine learning",
-  "type": "concept",
+  "type": "tool",
   "definition": "Feature Selection Toolbox (FST) is software primarily for feature selection in the machine learning domain, written in C++, developed at the Institute of Information Theory and Automation (UTIA), of the Czech Academy of Sciences.",
   "details": "Feature Selection Toolbox (FST) is software primarily for feature selection in the machine learning domain, written in C++, developed at the Institute of Information Theory and Automation (UTIA), of the Czech Academy of Sciences.",
-  "story": "Picture a scoreboard at a science fair: you need a fair, agreed way to tell who actually won. A fair scoreboard keeps everyone honest. Before trusting a machine, someone has to measure how good it really is — fairly and honestly. A good metric is a ruler that does not bend when you lean on it. That shared ruler is Feature Selection Toolbox.",
+  "explainer": {
+    "lead": "Feature Selection Toolbox (FST) is C++ software for choosing a useful subset of features before applying machine-learning methods. This can make data easier to work with by setting aside measurements that are unnecessary for the task.",
+    "tiers": {
+      "eli5": "Imagine describing animals using a huge checklist that includes both useful clues and irrelevant facts. FST is a tool for picking a smaller checklist, such as keeping size and fur type while leaving out facts that do not help identify the animal. The aim is to give a learning program fewer, more useful clues to work with.",
+      "practitioner": "FST is used in C++ machine-learning work to select features from a larger candidate set. Apply it before the downstream learning step, and evaluate the resulting subset on data kept separate from the selection process. Selecting fewer features does not by itself guarantee better predictions.",
+      "paperLevel": "Given d candidate features, feature selection seeks a subset S of {1, ..., d} that is useful for a learning task, typically with |S| < d. FST is software for performing this selection; restricting the inputs to S changes the representation supplied to subsequent learning methods."
+    },
+    "example": "Suppose each training example has 100 numeric measurements and FST selects 20 of them. Each example is then represented by those 20 values rather than all 100, and the downstream machine-learning method receives only this reduced input.",
+    "usedIn": [
+      {
+        "name": "Machine learning",
+        "detail": "Choosing a subset of input features for a learning task.",
+        "url": ""
+      },
+      {
+        "name": "C++ software projects",
+        "detail": "Providing feature-selection software in a C++ implementation.",
+        "url": ""
+      },
+      {
+        "name": "Feature-selection research",
+        "detail": "Supporting work focused on reducing large candidate feature sets.",
+        "url": ""
+      }
+    ],
+    "intuition": "A dataset may contain many possible measurements, but not all of them need to be passed to a learning method. Feature selection chooses which inputs to keep, producing a smaller representation of each example.",
+    "howItWorks": [
+      "Start with examples described by a set of candidate features.",
+      "Use FST to perform feature selection on that set.",
+      "Keep the selected features and discard the others from the representation.",
+      "Use the reduced feature set in the subsequent machine-learning task."
+    ],
+    "whyItMatters": "The toolbox addresses the practical problem of working with more candidate features than a task may require. It provides a dedicated way to reduce the inputs before further machine-learning processing.",
+    "misconceptions": [
+      "FST is feature-selection software, not a complete machine-learning system.",
+      "Selecting fewer features does not automatically improve predictive performance."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "examples",
+          "label": "Input examples",
+          "note": "Data with candidate features"
+        },
+        {
+          "id": "fst",
+          "label": "FST selection",
+          "note": "Chooses a feature subset"
+        },
+        {
+          "id": "subset",
+          "label": "Reduced features",
+          "note": "Only selected inputs remain"
+        },
+        {
+          "id": "learning",
+          "label": "Learning task",
+          "note": "Uses the reduced representation"
+        }
+      ],
+      "edges": [
+        {
+          "from": "examples",
+          "to": "fst",
+          "label": "features"
+        },
+        {
+          "from": "fst",
+          "to": "subset",
+          "label": "selection"
+        },
+        {
+          "from": "subset",
+          "to": "learning",
+          "label": "inputs"
+        }
+      ],
+      "caption": "FST sits between the original candidate features and the downstream learning task."
+    }
+  },
   "related": [
     "feature-selection",
     "minimum-redundancy-feature-selection",

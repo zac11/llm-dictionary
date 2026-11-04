@@ -2,10 +2,92 @@
   "term": "Golden-section search",
   "letter": "G",
   "category": "Artificial Intelligence",
-  "type": "concept",
+  "type": "algorithm",
   "definition": "The golden-section search is a technique for finding an extremum (minimum or maximum) of a function inside a specified interval.",
   "details": "For a strictly unimodal function with an extremum inside the interval, it will find that extremum, while for an interval containing multiple extrema (possibly including the interval boundaries), it will converge to one of them. If the only extremum on the interval is on a boundary of the interval, it will converge to that boundary point. The method operates by successively narrowing the range of values on the specified interval, which makes it relatively slow, but very robust. The technique derives its name from the fact that the algorithm maintains the function values for four points whose three interval widths are in the ratio φ:1:φ, where φ is the golden ratio. These ratios are maintained for each iteration and are maximally efficient. Excepting boundary points, when searching for a minimum, the central point is always less than or equal to the outer points, assuring that a minimum is contained between the outer points. The converse is true when searching for a maximum. The algorithm is the limit of Fibonacci search (also described below) for many function evaluations. Fibonacci search and golden-section search were discovered by Kiefer (1953) (see also Avriel and Wilde (1966)).",
-  "story": "Picture an engineer at a cluttered workbench, turning a clever idea over in their hands until it finally clicks. At its heart it is a simple notion, once you strip away the fancy name. A small key that opens a much bigger door. It is one of those ideas that feels obvious only after someone shows it to you. That is Golden-section search — a small key that opens a big door.",
+  "explainer": {
+    "lead": "Golden-section search finds a minimum or maximum of a function within a chosen interval by repeatedly shrinking that interval. It is slower than some alternatives, but its simple, robust procedure makes it useful when reliability matters more than speed.",
+    "tiers": {
+      "eli5": "Imagine hiding a toy somewhere along a straight path and getting clues that let you rule out part of the path each time. Golden-section search uses carefully spaced checkpoints so the remaining path keeps shrinking until you are close to the toy. Its checkpoints follow the golden ratio, which is how the method got its name.",
+      "practitioner": "Use it to locate an extremum of a scalar function on a specified interval, especially when the function is strictly unimodal. Each iteration narrows the search range while preserving the golden-ratio spacing, so convergence is robust but relatively slow. Intervals with several extrema converge to only one of them, and a sole boundary extremum leads to convergence at that boundary.",
+      "paperLevel": "Given a strictly unimodal function on an interval, golden-section search locates its extremum by maintaining four points whose three interval widths have ratio φ:1:φ, where φ is the golden ratio. For minimization, the central point remains less than or equal to the outer points, excepting boundary cases, ensuring a minimum lies between the outer points. The method is the many-evaluation limit of Fibonacci search; both were discovered by Kiefer (1953)."
+    },
+    "example": "To minimize f(x) = (x - 2)^2 on [0, 5], the search compares its interior points and repeatedly discards portions of the interval. Because the minimum is at x = 2, the retained interval closes around 2.",
+    "goal": "Find a minimum or maximum of a function inside a specified interval by successively narrowing the range that can contain it.",
+    "inputs": [
+      "A function to evaluate and an interval in which to search. Strict unimodality guarantees convergence to the interval's extremum."
+    ],
+    "outputs": [
+      "A narrowed interval and an approximation to one extremum. If the only extremum lies on a boundary, the search converges to that boundary point."
+    ],
+    "steps": [
+      "Choose the search interval and whether to minimize or maximize.",
+      "Evaluate and compare points arranged with golden-ratio interval widths.",
+      "Discard the side that cannot contain the desired extremum.",
+      "Repeat the narrowing while preserving the φ:1:φ spacing.",
+      "Stop when the remaining interval is small enough."
+    ],
+    "tradeoffs": [
+      "The method is very robust and reuses its carefully spaced comparisons efficiently, but repeated interval narrowing makes it relatively slow. On an interval containing multiple extrema, it converges to one of them rather than guaranteeing a particular global choice."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "interval",
+          "label": "Search interval",
+          "note": "Function and starting bounds"
+        },
+        {
+          "id": "points",
+          "label": "Golden-ratio points",
+          "note": "Four points with φ:1:φ widths"
+        },
+        {
+          "id": "compare",
+          "label": "Compare values",
+          "note": "Identify which side to discard"
+        },
+        {
+          "id": "narrow",
+          "label": "Narrow interval",
+          "note": "Retain the region containing an extremum"
+        },
+        {
+          "id": "result",
+          "label": "Extremum estimate",
+          "note": "Result after sufficient narrowing"
+        }
+      ],
+      "edges": [
+        {
+          "from": "interval",
+          "to": "points",
+          "label": "evaluate"
+        },
+        {
+          "from": "points",
+          "to": "compare",
+          "label": ""
+        },
+        {
+          "from": "compare",
+          "to": "narrow",
+          "label": "discard side"
+        },
+        {
+          "from": "narrow",
+          "to": "points",
+          "label": "repeat"
+        },
+        {
+          "from": "narrow",
+          "to": "result",
+          "label": "converged"
+        }
+      ],
+      "caption": "Golden-section search repeatedly compares golden-ratio-spaced points and narrows the interval around an extremum."
+    }
+  },
   "related": [
     "backtracking-line-search",
     "guided-local-search",

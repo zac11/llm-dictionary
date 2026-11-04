@@ -5,7 +5,112 @@
   "type": "concept",
   "definition": "Agent mining is a research field that combines two areas of computer science: multiagent systems and data mining.",
   "details": "It explores how intelligent computer agents can work together to discover, analyze, and learn from large amounts of data more effectively than traditional methods.",
-  "story": "Imagine handing a to-do list to a very clever intern who refuses to guess: before each step, they look around, check the result, and adjust. It is the difference between a search engine and a helper who actually finishes the task. The machine stops just answering one question and starts getting a job done, step by step, checking its work along the way. It is a loop of look, act, and learn — the same way you cook from a recipe you have never tried: add, taste, correct. And that habit of checking, acting, then checking again is Agent mining.",
+  "explainer": {
+    "lead": "Agent mining is the idea that many small, smart programs working as a team can dig through data better than one big program working alone. It matters because modern datasets are too large and scattered for single machines or monolithic algorithms to handle well.",
+    "tiers": {
+      "eli5": "Imagine you and your friends are searching a huge library for every book about dinosaurs. Instead of one person checking every shelf, each friend takes a different section, shares what they find, and together you build a complete list much faster. Agent mining works the same way: little computer helpers called agents split up, search, and share what they learn.",
+      "practitioner": "Agent mining is applied in distributed systems where data or computation cannot be centralized, such as sensor networks, federated learning setups, or multi-robot exploration. Typical implementations use frameworks like JADE or custom agent platforms with integrated data mining libraries. A common pitfall is underestimating communication overhead: agents must share enough information to coordinate without flooding the network with messages.",
+      "paperLevel": "Agent mining is defined as the intersection of multiagent systems (MAS) and data mining (DM), formally concerned with bidirectional enhancement: agents improving data mining processes through distribution and autonomy, and data mining improving agent intelligence through knowledge discovery. The field traces to early work on agent-based knowledge discovery, agent-based distributed data mining, and agent-based distributed machine learning. A persistent challenge is designing interaction protocols that balance local autonomy with global convergence guarantees."
+    },
+    "example": "A bank wants to detect fraud across millions of transactions in ten countries. Instead of sending all data to one server, agent mining deploys one agent per country. Each agent learns local fraud patterns from its regional transactions, then shares suspicious pattern signatures with a coordinating agent. The coordinator spots global fraud rings that no single country could see, and feeds back refined detection rules so local agents improve without exposing sensitive customer data.",
+    "usedIn": [
+      {
+        "name": "Distributed sensor networks",
+        "detail": "Autonomous agents at each sensor node analyze local readings and share summaries for global pattern detection without centralizing raw data.",
+        "url": ""
+      },
+      {
+        "name": "Multi-robot exploration",
+        "detail": "Robot agents map unknown environments collaboratively, each mining its own sensor stream while coordinating to avoid redundant coverage.",
+        "url": ""
+      },
+      {
+        "name": "Federated learning systems",
+        "detail": "Client agents train local models on private data and share only model updates, with coordinating agents mining these updates for global model improvement.",
+        "url": ""
+      }
+    ],
+    "intuition": "Traditional data mining is like one detective with a magnifying glass. Agent mining is like a team of detectives who each specialize, search different neighborhoods, call each other with leads, and crack the case together.",
+    "howItWorks": [
+      "A problem is split into smaller tasks and distributed to multiple software agents, each with its own data slice or specialty.",
+      "Each agent independently applies data mining or machine learning to its local information.",
+      "Agents communicate intermediate results, hypotheses, or models to coordinate and avoid duplicate work.",
+      "A higher-level process integrates the agents' findings into a unified result, which may then refine what each agent does next."
+    ],
+    "whyItMatters": "Agent mining matters because data is increasingly distributed, private, and too large to move. It enables analysis that respects geographic boundaries, organizational silos, and communication limits while still producing coherent insights.",
+    "misconceptions": [
+      "Agent mining is just running data mining on multiple computers. The agent aspect adds autonomy, negotiation, and coordination, not just parallel execution.",
+      "Agents must share all their raw data to collaborate. Effective agent mining often shares only models, patterns, or summaries to preserve privacy and bandwidth."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data-source",
+          "label": "Data sources",
+          "note": "Distributed datasets across locations or systems"
+        },
+        {
+          "id": "local-agent",
+          "label": "Local agents",
+          "note": "Each mines its own data slice independently"
+        },
+        {
+          "id": "coord-agent",
+          "label": "Coordinator agent",
+          "note": "Integrates findings and resolves conflicts"
+        },
+        {
+          "id": "shared-kb",
+          "label": "Shared knowledge",
+          "note": "Patterns, models, and hypotheses exchanged"
+        },
+        {
+          "id": "result",
+          "label": "Unified result",
+          "note": "Global model or combined insight"
+        }
+      ],
+      "edges": [
+        {
+          "from": "data-source",
+          "to": "local-agent",
+          "label": "local data"
+        },
+        {
+          "from": "local-agent",
+          "to": "shared-kb",
+          "label": "patterns, models"
+        },
+        {
+          "from": "shared-kb",
+          "to": "coord-agent",
+          "label": "aggregated input"
+        },
+        {
+          "from": "coord-agent",
+          "to": "shared-kb",
+          "label": "refined rules"
+        },
+        {
+          "from": "shared-kb",
+          "to": "local-agent",
+          "label": "feedback"
+        },
+        {
+          "from": "coord-agent",
+          "to": "result",
+          "label": "final output"
+        }
+      ],
+      "caption": "Local agents mine distributed data and exchange knowledge through a shared layer, while a coordinator integrates their work and feeds back improvements."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Agent mining",
+        "url": "https://en.wikipedia.org/wiki/Agent_mining"
+      }
+    ]
+  },
   "related": [
     "agent-experience",
     "agent-harness",

@@ -2,10 +2,126 @@
   "term": "Barzilai–Borwein method",
   "letter": "B",
   "category": "Artificial Intelligence",
-  "type": "concept",
+  "type": "algorithm",
   "definition": "The Barzilai–Borwein method is an iterative gradient descent method for unconstrained optimization using either of two step sizes derived from the linear trend of the most recent two iterates.",
   "details": "This method, and modifications, are globally convergent under mild conditions, and perform competitively with conjugate gradient methods for many problems. Not depending on the objective itself, it can also solve some systems of linear and non-linear equations.",
-  "story": "Imagine teaching a friend to shoot a basketball. They miss, and you walk them backwards through the shot — elbow, wrist, release — to find what needs fixing. It is the same loop you use to learn anything: try, miss, correct, try again. Underneath all the magic is a patient process of small improvements. It is learning from every miss instead of repeating the same mistake. That steady, miss-by-miss improvement is Barzilai–Borwein method.",
+  "explainer": {
+    "lead": "The Barzilai–Borwein method is a gradient-based algorithm for finding a minimum without constraints. It adjusts its step size from the last two positions and gradients, often making it competitive with conjugate gradient methods.",
+    "tiers": {
+      "eli5": "Imagine walking downhill in fog and trying to reach the bottom. Instead of always taking the same-sized step, you look at your last two steps to judge how steep the ground is becoming, then choose a better stride. The Barzilai–Borwein method uses that idea to search for the lowest point.",
+      "practitioner": "Use it as an iterative first-order solver for unconstrained optimization, retaining the previous iterate and gradient to calculate either BB step size. It can be competitive with conjugate gradient methods and can also be applied to some linear and nonlinear systems. It is not derivative-free, and an initial step is needed before the two-iterate trend becomes available.",
+      "paperLevel": "For an unconstrained differentiable objective, let g_k be the gradient at x_k, s_(k-1) = x_k - x_(k-1), and y_(k-1) = g_k - g_(k-1). The update is x_(k+1) = x_k - alpha_k g_k, using either alpha_k = (s^T y)/(y^T y) or alpha_k = (s^T s)/(s^T y). The method and its modifications are globally convergent under mild conditions, though the supplied description does not specify those conditions or a universal performance advantage."
+    },
+    "example": "For f(x) = (x - 3)^2, the gradient is g(x) = 2(x - 3). Starting with x_0 = 0 and x_1 = 4 gives g_0 = -6, g_1 = 2, s = 4, and y = 8. Both BB formulas give alpha = 0.5, so x_2 = 4 - 0.5 × 2 = 3, which is the minimum; this immediate finish is specific to the example.",
+    "usedIn": [
+      {
+        "name": "Unconstrained numerical optimization",
+        "detail": "Iteratively minimizes an objective using gradients and BB step sizes.",
+        "url": ""
+      },
+      {
+        "name": "Linear equation solving",
+        "detail": "Can solve some systems of linear equations without relying directly on an objective function.",
+        "url": ""
+      },
+      {
+        "name": "Nonlinear equation solving",
+        "detail": "Can also be applied to some systems of nonlinear equations.",
+        "url": ""
+      }
+    ],
+    "goal": "Find an approximate minimizer of an unconstrained objective by taking gradient-descent steps whose lengths are inferred from recent progress.",
+    "inputs": [
+      "An initial point",
+      "Gradient evaluations",
+      "The current and previous iterates",
+      "An initial step size"
+    ],
+    "outputs": [
+      "The algorithm produces a sequence of iterates intended to approach a minimum. Its step sizes can also support solving some linear and nonlinear systems."
+    ],
+    "steps": [
+      "Evaluate the gradient g_k at the current point x_k.",
+      "Form s = x_k - x_(k-1) and y = g_k - g_(k-1).",
+      "Choose either BB step size: alpha = (s^T y)/(y^T y) or alpha = (s^T s)/(s^T y).",
+      "Update the point with x_(k+1) = x_k - alpha g_k.",
+      "Repeat, using each new pair of iterates and gradients to choose the next step."
+    ],
+    "tradeoffs": [
+      "Uses only recent gradient and iterate differences",
+      "Offers two alternative step-size formulas",
+      "Globally convergent under mild conditions, including for modifications",
+      "Competitive with conjugate gradients on many problems",
+      "Requires gradients rather than being derivative-free"
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "iterate",
+          "label": "Current iterate",
+          "note": "Point x_k in the search"
+        },
+        {
+          "id": "gradient",
+          "label": "Current gradient",
+          "note": "Local downhill direction g_k"
+        },
+        {
+          "id": "differences",
+          "label": "Recent differences",
+          "note": "Changes s and y since the previous iterate"
+        },
+        {
+          "id": "stepsize",
+          "label": "BB step size",
+          "note": "One of two scalar choices alpha"
+        },
+        {
+          "id": "next",
+          "label": "Next iterate",
+          "note": "x_k minus alpha times g_k"
+        }
+      ],
+      "edges": [
+        {
+          "from": "iterate",
+          "to": "gradient",
+          "label": "evaluate"
+        },
+        {
+          "from": "iterate",
+          "to": "differences",
+          "label": "compare"
+        },
+        {
+          "from": "gradient",
+          "to": "differences",
+          "label": "compare"
+        },
+        {
+          "from": "differences",
+          "to": "stepsize",
+          "label": "estimate"
+        },
+        {
+          "from": "gradient",
+          "to": "next",
+          "label": "direction"
+        },
+        {
+          "from": "stepsize",
+          "to": "next",
+          "label": "scale"
+        },
+        {
+          "from": "next",
+          "to": "iterate",
+          "label": "repeat"
+        }
+      ],
+      "caption": "Each iteration combines recent changes with the current gradient to choose and take the next step."
+    }
+  },
   "related": [
     "active-set-method",
     "augmented-lagrangian-method",

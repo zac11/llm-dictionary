@@ -5,7 +5,92 @@
   "type": "concept",
   "definition": "A generation strategy that produces multiple candidate outputs for the same prompt and selects the best one according to some scoring criterion.",
   "details": "Best-of-N sampling trades additional inference compute for improved output quality, and is often combined with a reward model or verifier to automatically select the most promising candidate from the generated set.",
-  "story": "Think of a jazz musician who has heard so many solos that a new one simply falls out of their fingers. Given a starting line, the machine imagines what comes next — a word, a note, a patch of a picture. It makes new things by recombining everything it has ever seen. Creation, here, is memory recombined at speed. That next-word, next-stroke magic is Best-of-N Sampling.",
+  "explainer": {
+    "lead": "Best-of-N sampling gives a model several chances to answer the same prompt, then keeps the candidate with the highest score. It can improve the final output without changing the model, at the cost of running generation multiple times.",
+    "tiers": {
+      "eli5": "Imagine asking someone to draw four pictures instead of one, then choosing the nicest. Best-of-N sampling does that with computer-generated answers: it makes several, scores them, and shows you the winner. Making more pictures takes more work, but gives you a better chance of finding a good one.",
+      "practitioner": "Generate N candidates for one prompt and rank them with a reward model, verifier, or another scoring criterion. The main tuning choice is N: larger values increase inference compute while providing more candidates to choose from. Selection quality depends on the scorer, so a high-scoring output is not necessarily the genuinely best output.",
+      "paperLevel": "Given candidates x_1, ..., x_N generated for the same prompt and a scoring function s, Best-of-N returns x_hat = x_k where k = argmax_i s(x_i). It trades roughly N candidate generations for more selective output quality. Its effectiveness is bounded by both candidate diversity and the scorer's ability to identify good outputs."
+    },
+    "example": "For the prompt “Explain photosynthesis to a child,” generate four answers. A reward model scores each for the selection criterion, and the system returns the highest-scoring answer instead of simply keeping the first one generated.",
+    "usedIn": [
+      {
+        "name": "Reward-model-guided generation",
+        "detail": "A reward model scores the candidates and selects the most promising one.",
+        "url": ""
+      },
+      {
+        "name": "Verifier-guided generation",
+        "detail": "A verifier automatically evaluates the generated set to choose the final output.",
+        "url": ""
+      }
+    ],
+    "intuition": "A single sample may be mediocre, so generate several alternatives and let a scorer choose among them. You are improving selection rather than retraining the generator.",
+    "howItWorks": [
+      "Start with one prompt and a candidate count N.",
+      "Generate N separate candidate outputs.",
+      "Score every candidate with a reward model, verifier, or other criterion.",
+      "Return the candidate with the highest score."
+    ],
+    "whyItMatters": "It offers a straightforward way to spend extra inference compute for a better-selected answer. Automatic scoring also makes the approach practical when manually reviewing every candidate would be too slow.",
+    "misconceptions": [
+      "It does not retrain or otherwise change the generating model.",
+      "The selected output is best according to the scorer, not guaranteed to be correct.",
+      "Increasing N adds candidate-generation compute and does not guarantee improvement."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "prompt",
+          "label": "Input prompt",
+          "note": "One request shared by all candidates"
+        },
+        {
+          "id": "generator",
+          "label": "Generate N",
+          "note": "Produce multiple candidate outputs"
+        },
+        {
+          "id": "candidates",
+          "label": "Candidate set",
+          "note": "N alternatives for the same prompt"
+        },
+        {
+          "id": "scorer",
+          "label": "Score candidates",
+          "note": "Apply a reward model or verifier"
+        },
+        {
+          "id": "output",
+          "label": "Best output",
+          "note": "Return the highest-scoring candidate"
+        }
+      ],
+      "edges": [
+        {
+          "from": "prompt",
+          "to": "generator",
+          "label": ""
+        },
+        {
+          "from": "generator",
+          "to": "candidates",
+          "label": "N outputs"
+        },
+        {
+          "from": "candidates",
+          "to": "scorer",
+          "label": ""
+        },
+        {
+          "from": "scorer",
+          "to": "output",
+          "label": "highest score"
+        }
+      ],
+      "caption": "Best-of-N samples several candidates, scores them, and selects one."
+    }
+  },
   "related": [
     "temperature",
     "top-k-sampling",

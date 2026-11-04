@@ -5,7 +5,117 @@
   "type": "concept",
   "definition": "Hard negative mining, also referred to as hard negative sampling, is a family of techniques in machine learning for selecting or constructing negative samples more difficult to distinguish from a corresponding positive example with respect to uniformly-sampled negatives, leading to a more informative training signal for discriminative classifiers and similarity models.",
   "details": "The technique is used when the pool of possible negative examples is far larger than the set of positives and most randomly chosen negatives are easy to classify by the model, contributing little to learning. Concentrating training on the small fraction of difficult negatives is intended to provide stronger gradient signal and faster convergence than uniform sampling. Hard negative mining originated in object detection in the 1990s, where it was referred to as bootstrapping (not to be confused with statistical bootstrap resampling), and was later formalized for support vector machine models. Closely related ideas appear in deep metric learning, information retrieval, recommender systems, self-supervised contrastive learning, and vision-language models. Surveys distinguish hard negative mining from the broader practice of negative sampling, in which negatives are drawn at random or in proportion to frequency rather than by difficulty.",
-  "story": "Think of a jazz musician who has heard so many solos that a new one simply falls out of their fingers. Given a starting line, the machine imagines what comes next — a word, a note, a patch of a picture. It makes new things by recombining everything it has ever seen. Creation, here, is memory recombined at speed. And that is Hard negative mining — making something new out of everything it has ever seen.",
+  "explainer": {
+    "lead": "Hard negative mining trains a model on the negative examples it finds most confusing, rather than treating every negative as equally useful. This gives classifiers and similarity models a stronger learning signal when most possible negatives are already easy to reject.",
+    "tiers": {
+      "eli5": "Imagine learning to spot bicycles in photos. Pictures of empty roads are easy, so looking at thousands more will not teach you much; pictures with bike-shaped signs or confusing shadows are more useful. Hard negative mining means spending more practice time on those tricky non-bicycles.",
+      "practitioner": "Use the current classifier or similarity model to identify negatives that look most like the positive examples, then emphasize those negatives in subsequent training instead of sampling uniformly. It is applied in object detection, deep metric learning, information retrieval, recommender systems, contrastive learning, and vision-language models. Difficulty-based selection should not be confused with random or frequency-based negative sampling, and the older object-detection term “bootstrapping” does not mean statistical bootstrap resampling.",
+      "paperLevel": "Given a positive example x+ and a candidate negative pool N, hard negative mining selects or constructs x- in N that are harder than uniformly sampled negatives under the current discriminative or similarity model. Training then concentrates on these examples to obtain a more informative gradient signal and faster convergence when easy negatives dominate N. The approach originated as “bootstrapping” in object detection in the 1990s and was later formalized for support vector machines."
+    },
+    "example": "A face detector is initially trained with positive face images and randomly chosen background patches. If it then mistakes a rocky texture for a face, that patch is mined as a hard negative and added to training, teaching the detector to reject that particular kind of confusion.",
+    "usedIn": [
+      {
+        "name": "Object detection",
+        "detail": "Confusing background regions are collected as negatives and used to improve the detector.",
+        "url": ""
+      },
+      {
+        "name": "Deep metric learning",
+        "detail": "Difficult dissimilar examples help shape similarity models.",
+        "url": ""
+      },
+      {
+        "name": "Information retrieval",
+        "detail": "Hard non-relevant candidates provide a more informative training signal.",
+        "url": ""
+      },
+      {
+        "name": "Recommender systems",
+        "detail": "Difficult negative items are emphasized instead of relying only on random negatives.",
+        "url": ""
+      }
+    ],
+    "intuition": "Once a model can easily reject most negatives, repeatedly training on them adds little new information. The few negatives that remain easily confused with positives reveal much more about what the model still needs to learn.",
+    "howItWorks": [
+      "Start with positive examples and a large pool of possible negatives.",
+      "Use the current model to assess how difficult the candidate negatives are.",
+      "Select or construct negatives that are unusually hard to distinguish from the positives.",
+      "Train on those hard negatives together with the corresponding positive examples.",
+      "Repeat as the model improves and different negatives become difficult."
+    ],
+    "whyItMatters": "When negatives vastly outnumber positives, uniform sampling mostly produces examples the model already handles well. Focusing on difficult negatives can provide stronger gradients and faster convergence for discriminative classifiers and similarity models.",
+    "misconceptions": [
+      "It is not the same as all negative sampling: ordinary negative sampling can be random or frequency-based, without considering difficulty.",
+      "In early object detection, “bootstrapping” referred to hard negative mining, not statistical bootstrap resampling."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "positive",
+          "label": "Positive example",
+          "note": "The target the negative must not resemble too closely."
+        },
+        {
+          "id": "pool",
+          "label": "Negative pool",
+          "note": "A large collection of candidate negatives."
+        },
+        {
+          "id": "model",
+          "label": "Current model",
+          "note": "Assesses which candidates are difficult."
+        },
+        {
+          "id": "hard",
+          "label": "Hard negatives",
+          "note": "The confusing candidates selected for training."
+        },
+        {
+          "id": "training",
+          "label": "Focused training",
+          "note": "Learns from positives and selected negatives."
+        },
+        {
+          "id": "updated",
+          "label": "Updated model",
+          "note": "Can identify difficult negatives in the next round."
+        }
+      ],
+      "edges": [
+        {
+          "from": "pool",
+          "to": "model",
+          "label": "candidates"
+        },
+        {
+          "from": "model",
+          "to": "hard",
+          "label": "selects"
+        },
+        {
+          "from": "hard",
+          "to": "training",
+          "label": ""
+        },
+        {
+          "from": "positive",
+          "to": "training",
+          "label": ""
+        },
+        {
+          "from": "training",
+          "to": "updated",
+          "label": ""
+        },
+        {
+          "from": "updated",
+          "to": "model",
+          "label": "next round"
+        }
+      ],
+      "caption": "The model selects its most confusing negatives, trains on them with positive examples, and repeats."
+    }
+  },
   "related": [
     "data-mining-extensions",
     "non-negative-matrix-factorization",

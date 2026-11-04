@@ -5,7 +5,150 @@
   "type": "model",
   "definition": "Claude Mythos is a series of large language models developed by Anthropic.",
   "details": "It is the most powerful series of models in the Claude family. The first model in the series was Claude Mythos Preview. Anthropic did not release the model to the public, citing the model's ability to find software vulnerabilities. Access to Claude Mythos was provided to some companies in the context of Project Glasswing to scan for security vulnerabilities in critical software. The public had mixed reactions to the announcement of Claude Mythos Preview. In June 2026, Anthropic publicly released Claude Fable 5, a \"Mythos-class\" model made available for general use with a set of safeguards, alongside Claude Mythos 5, a restricted-access version of the same underlying model with those safeguards lifted in some areas. According to Anthropic, the two models are identical apart from their safeguards; when Fable 5's classifiers flag a request relating to cybersecurity, biology and chemistry, or model distillation, the response is instead handled by the less capable Claude Opus. Mythos 5.1 and Fable 5.1 were released in September 2026. According to industry estimates reported by the Financial Times, Mythos has approximately 8 trillion parameters, while Fable 5 has approximately 5 trillion",
-  "story": "Picture a translator at the United Nations, listening to one language and whispering the meaning into another in real time. It figures out meaning by noticing which words like to travel together. It does not memorize a rulebook; it absorbs a library. Meaning lives in company — a word is known by the words it keeps. That pattern-earned fluency is Claude Mythos.",
+  "explainer": {
+    "lead": "Claude Mythos is Anthropic's most powerful series of Claude language models, built to find and help fix software security vulnerabilities. Anthropic initially withheld it from public release because those same capabilities could be misused, later pairing restricted Mythos versions with safeguarded Fable versions for wider use.",
+    "tiers": {
+      "eli5": "Claude Mythos is like a very skilled locksmith that can spot weak locks in computer programs. That can help people fix the locks, but it could also help someone break in, so Anthropic first let only selected organizations use it. Fable is the more carefully supervised version, while Mythos has fewer restrictions.",
+      "practitioner": "Mythos has been applied to vulnerability discovery, exploitation, and remediation through restricted programs such as Project Glasswing and the Cyber Verification Program. Fable 5 uses classifiers for cybersecurity, biology and chemistry, and model-distillation requests; flagged requests are handled by the less capable Claude Opus instead. Treat vulnerability counts and exploit-success claims cautiously: independent reviewers questioned their verification and showed that results could depend heavily on two particularly exploitable bugs.",
+      "paperLevel": "Claude Mythos is a series of large language models for software-vulnerability work, with Mythos 5 and Fable 5 described by Anthropic as the same underlying model under different safeguard configurations. Industry estimates reported by the Financial Times put Mythos at approximately 8 trillion parameters and Fable 5 at approximately 5 trillion. Known evaluation limits include a lack of independent verification for some headline claims, simulated rather than full Firefox environments in one test, and a drop in full code execution from 72.4% to below 5% after removing the two most exploitable bugs."
+    },
+    "usedIn": [
+      {
+        "name": "Project Glasswing",
+        "detail": "Selected companies and organizations used Mythos to find and fix vulnerabilities in critical software.",
+        "url": ""
+      },
+      {
+        "name": "Firefox security",
+        "detail": "Mozilla reported finding and patching 271 Firefox vulnerabilities with Mythos Preview.",
+        "url": ""
+      },
+      {
+        "name": "UK AI Security Institute cyber range",
+        "detail": "Mythos ranked highest in the institute's test, ahead of Claude Opus 4.6.",
+        "url": ""
+      },
+      {
+        "name": "Apple M5 security research",
+        "detail": "Calif.io employees said they used Mythos to create a memory-corruption exploit affecting Apple M5 chips.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Mythos Preview",
+        "detail": "The first model, designed to find and fix software vulnerabilities and initially denied public release."
+      },
+      {
+        "name": "Mythos 5 and 5.1",
+        "detail": "Restricted-access versions with safeguards lifted in some areas."
+      },
+      {
+        "name": "Fable 5 and 5.1",
+        "detail": "Safeguarded Mythos-class counterparts intended for broader use."
+      },
+      {
+        "name": "Fable safety classifiers",
+        "detail": "Flag requests involving cybersecurity, biology and chemistry, or model distillation."
+      },
+      {
+        "name": "Claude Opus fallback",
+        "detail": "Handles requests flagged by Fable 5's classifiers using a less capable model."
+      }
+    ],
+    "flow": [
+      "A general user's request goes to Fable 5 and its safety classifiers.",
+      "A flagged cybersecurity, biology and chemistry, or model-distillation request is passed to Claude Opus.",
+      "An approved restricted user can instead work with Mythos, where safeguards are lifted in some areas.",
+      "In security work, the model helps identify and exploit weaknesses so that software vulnerabilities can be fixed."
+    ],
+    "origin": "The name became public through leaked blog-post drafts on March 26, 2026, and Anthropic disclosed Mythos on April 7. It launched Project Glasswing rather than planning a public release, giving selected organizations access for vulnerability scanning.",
+    "lineage": "Mythos Preview was followed on June 9, 2026 by Mythos 5 and the safeguarded Fable 5. Anthropic released Mythos 5.1 and Fable 5.1 on September 1, 2026.",
+    "whyItMatters": "Mythos brought unusually capable automated vulnerability discovery into real security work while prompting government, financial, and industry concern about misuse. Its restricted rollout and disputed capability claims also show why access controls and independent testing matter for powerful security models.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "general-user",
+          "label": "General user",
+          "note": "Sends a request to Fable."
+        },
+        {
+          "id": "fable",
+          "label": "Fable 5",
+          "note": "Public Mythos-class version with safeguards."
+        },
+        {
+          "id": "classifiers",
+          "label": "Safety classifiers",
+          "note": "Check three sensitive request areas."
+        },
+        {
+          "id": "opus",
+          "label": "Claude Opus",
+          "note": "Handles flagged requests."
+        },
+        {
+          "id": "output",
+          "label": "Model response",
+          "note": "Returns the permitted response."
+        },
+        {
+          "id": "restricted-user",
+          "label": "Restricted user",
+          "note": "Has approved Mythos access."
+        },
+        {
+          "id": "mythos",
+          "label": "Mythos 5",
+          "note": "Same underlying model with fewer safeguards."
+        }
+      ],
+      "edges": [
+        {
+          "from": "general-user",
+          "to": "fable",
+          "label": ""
+        },
+        {
+          "from": "fable",
+          "to": "classifiers",
+          "label": "checks request"
+        },
+        {
+          "from": "classifiers",
+          "to": "opus",
+          "label": "flagged"
+        },
+        {
+          "from": "classifiers",
+          "to": "output",
+          "label": "unflagged"
+        },
+        {
+          "from": "opus",
+          "to": "output",
+          "label": ""
+        },
+        {
+          "from": "restricted-user",
+          "to": "mythos",
+          "label": ""
+        },
+        {
+          "from": "mythos",
+          "to": "output",
+          "label": ""
+        }
+      ],
+      "caption": "Fable and Mythos share an underlying model but route requests under different safeguard and access arrangements."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Claude Mythos",
+        "url": "https://en.wikipedia.org/wiki/Claude_Mythos"
+      }
+    ]
+  },
   "related": [
     "claude-ai",
     "ai-tiger",

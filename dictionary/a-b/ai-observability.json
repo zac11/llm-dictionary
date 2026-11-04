@@ -5,7 +5,124 @@
   "type": "concept",
   "definition": "AI observability is the practice of collecting and analyzing telemetry, data such as logs, metrics, and traces that a system automatically records as it runs, from artificial intelligence systems deployed in production, in order to understand how they behave and how well they perform in terms of accuracy, cost, and safety.",
   "details": "It applies the idea of observability, which comes from control theory and software engineering, to systems based on machine learning models, and in particular to large language models (LLMs) and autonomous agents. In control theory, observability is a measure of how well the internal state of a system can be inferred from its external outputs. AI observability is often distinguished from conventional monitoring. Where monitoring relies on predefined metrics, thresholds, and alerts to signal that a problem has occurred, observability aims to provide enough context to understand why it occurred. The distinction matters for AI systems in particular, because a system can appear healthy by standard infrastructure measures, such as latency or error rate, while still producing answers that are wrong, irrelevant, or unsafe. One of the signals that AI observability tracks is the change in a model's behavior over time, a phenomenon studied in machine learning under the name of concept drift. AI observability is closely related to MLOps (machine learning operations), and it is sometimes treated as one of its parts. When it is applied specifically to language models or to agent-based systems, it is also called LLM observability or agent observability.",
-  "story": "Picture a parachute packed by a second pair of hands: nobody plans to need it, but everyone is glad it was checked. The idea is simple: before something powerful is let loose, someone checks that it will not do real harm to real people. It is the habit of asking, before every launch, what could go wrong — and then doing something about it. Caution is not the enemy of progress — it is the reason progress gets to keep going. And that is AI observability — the reason we can move fast without breaking things, or people.",
+  "explainer": {
+    "lead": "AI observability is a way to understand what an AI system is doing after it goes live, including whether its answers are useful, safe, and affordable. It matters because a chatbot or agent can run quickly and without technical errors while quietly giving wrong or harmful answers.",
+    "tiers": {
+      "eli5": "Imagine a robot helper that answers questions and does jobs for you. Checking that it is switched on and working quickly is not enough: you also need to look at its answers, the steps it took, and whether its behavior is getting worse. AI observability is like keeping a clear activity diary for the robot so you can spot problems and work out why they happened.",
+      "practitioner": "Engineers trace requests through model, retrieval, tool, and agent steps, and combine structured logs with metrics for latency, errors, tokens, and cost. They also record prompts and responses where appropriate, run synthetic prompts after updates, and use automated evaluation or human review for quality and safety; OpenTelemetry, MLflow, Prometheus, and Grafana can play roles in this pipeline. A common pitfall is treating healthy infrastructure metrics as evidence of good answers, while another is relying on fixed alerts instead of retaining enough context to investigate unexpected behavior.",
+      "paperLevel": "Given telemetry T from a production AI system, including logs, metrics, traces, and behavioral signals, AI observability seeks to infer its behavior and performance with respect to accuracy, cost, and safety. It extends the control-theory notion introduced by Rudolf E. Kálmán in 1960, although probabilistic model outputs mean that normal operation does not imply desirable behavior. Output quality often cannot be checked by conventional code, and OpenTelemetry's generative-AI semantic conventions were still under active development and not marked stable as of 2026."
+    },
+    "example": "After a customer-support chatbot's prompt is updated, its latency and error rate stay normal, but repeated test prompts show that answers have become irrelevant. Engineers inspect the stored prompt-response pairs and end-to-end traces, compare evaluations before and after the update, and check each retrieval and model step to identify where the regression appeared. They can then address the cause rather than merely responding to a generic alert.",
+    "usedIn": [
+      {
+        "name": "OpenTelemetry",
+        "detail": "Defines semantic conventions for recording model calls, token usage, tool and agent calls, and evaluation scores.",
+        "url": ""
+      },
+      {
+        "name": "MLflow",
+        "detail": "An open-source project oriented toward machine-learning workloads, including tracing and evaluating LLM applications.",
+        "url": ""
+      },
+      {
+        "name": "Prometheus",
+        "detail": "A general-purpose metrics backend to which AI-specific observability components can export data.",
+        "url": ""
+      },
+      {
+        "name": "Grafana",
+        "detail": "A general-purpose visualization backend commonly used to display observability data.",
+        "url": ""
+      }
+    ],
+    "intuition": "Monitoring tells you when a known warning light turns on; observability preserves enough evidence to investigate surprises. For AI, that evidence must cover the meaning and quality of outputs as well as whether the software is running.",
+    "howItWorks": [
+      "Collect logs, metrics, and traces from the running AI system.",
+      "Add prompts, responses, token costs, output quality, safety signals, and model drift.",
+      "Trace each request through pipelines, model calls, tools, and agent steps.",
+      "Use anomaly detection, repeated test prompts, automated evaluation, and human review to find problems.",
+      "Correlate the signals to locate the step or change that caused undesirable behavior."
+    ],
+    "whyItMatters": "It makes failures visible that ordinary infrastructure checks miss, including hallucinations, unsafe content, policy violations, drift, and unexpected token expense. For agents, step-level traces can also reveal which action or intermediate result caused a bad final outcome.",
+    "misconceptions": [
+      "Low latency and few errors do not mean an AI system is answering correctly.",
+      "Observability is not just a larger collection of predefined alerts; it supports open-ended investigation.",
+      "Agent evaluation before deployment is not the same as observing correct behavior after deployment."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "ai-system",
+          "label": "Production AI system",
+          "note": "Models, pipelines, and agents handle requests."
+        },
+        {
+          "id": "telemetry",
+          "label": "Telemetry collection",
+          "note": "Logs, metrics, traces, prompts, and responses are recorded."
+        },
+        {
+          "id": "behavior",
+          "label": "Behavioral signals",
+          "note": "Quality, safety, cost, and drift are assessed."
+        },
+        {
+          "id": "analysis",
+          "label": "Detection and evaluation",
+          "note": "Anomalies, test prompts, automated judges, and reviewers surface issues."
+        },
+        {
+          "id": "investigation",
+          "label": "Cause investigation",
+          "note": "Correlated signals locate the failing step or change."
+        }
+      ],
+      "edges": [
+        {
+          "from": "ai-system",
+          "to": "telemetry",
+          "label": "runtime data"
+        },
+        {
+          "from": "telemetry",
+          "to": "behavior",
+          "label": "AI context"
+        },
+        {
+          "from": "telemetry",
+          "to": "analysis",
+          "label": ""
+        },
+        {
+          "from": "behavior",
+          "to": "analysis",
+          "label": ""
+        },
+        {
+          "from": "analysis",
+          "to": "investigation",
+          "label": "evidence"
+        }
+      ],
+      "caption": "AI observability combines conventional telemetry with behavioral evidence, then uses evaluation and correlation to explain production problems."
+    },
+    "image": {
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/35/Ai_observability_diagram.png/960px-Ai_observability_diagram.png",
+      "alt": "AI observability — Collecting and analyzing telemetry from AI systems in production",
+      "width": 640,
+      "height": 414,
+      "credit": "Martinimarcello00",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Ai_observability_diagram.png"
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: AI observability",
+        "url": "https://en.wikipedia.org/wiki/AI_observability"
+      }
+    ]
+  },
   "related": [
     "ai-alignment",
     "ai-anthropomorphism",

@@ -5,7 +5,103 @@
   "type": "concept",
   "definition": "A Bayesian Confidence Propagation Neural Network (BCPNN) is an artificial neural network inspired by Bayes' theorem, which regards neural computation and processing as probabilistic inference.",
   "details": "Neural unit activations represent probability (\"confidence\") in the presence of input features or categories, synaptic weights are based on estimated correlations and the spread of activation corresponds to calculating posterior probabilities. It was originally proposed by Anders Lansner and Örjan Ekeberg at KTH Royal Institute of Technology. This probabilistic neural network model can also be run in generative mode to produce spontaneous activations and temporal sequences. The basic model is a feedforward neural network comprising neural units with continuous activation, having a bias representing prior, and being connected by Bayesian weights in the form of point-wise mutual information. The original network has been extended to a modular structure of minicolumns and hypercolumns, representing discrete coded features or attributes. The units can also be connected as a recurrent neural network (losing the strict interpretation of their activations as probabilities) but becoming a possible abstract model of biological neural networks and associative memory. BCPNN has been used for machine learning classification and data mining, for example for discovery of adverse drug reactions. ",
-  "story": "Think of an orchestra warming up: no single instrument carries the piece, but together they make the sound. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. The layout decides what the machine can even attempt, before it learns a single thing. The shape of the machine is half the idea. That blueprint is BCPNN.",
+  "explainer": {
+    "lead": "A Bayesian Confidence Propagation Neural Network treats neural activity as confidence: units represent how likely features or categories are, and connections carry evidence about how they relate. It offers a probabilistic way to build classifiers, discover patterns in data, and model associative memory.",
+    "tiers": {
+      "eli5": "Imagine trying to guess what animal is in a picture from clues such as fur, whiskers, and a tail. Each clue changes how confident you are, and stronger clues count for more. BCPNN is a network that combines clues in this way, using probabilities to decide what is most likely.",
+      "practitioner": "BCPNN can be used for classification and data mining, with unit activations representing confidence and Bayesian weights derived from estimated correlations. Its basic form is feedforward, while recurrent and modular variants support associative-memory models and representations using minicolumns and hypercolumns. It can also run generatively, although recurrence means activations no longer have a strict probability interpretation.",
+      "paperLevel": "BCPNN frames neural computation as probabilistic inference: unit activation represents confidence, a bias encodes the prior, and synaptic weights use point-wise mutual information so propagation computes posterior probabilities. Originally proposed by Anders Lansner and Örjan Ekeberg at KTH Royal Institute of Technology, it has been extended with minicolumns, hypercolumns, recurrence, and generative dynamics. Recurrent versions lose the strict interpretation of activations as probabilities."
+    },
+    "example": "For adverse drug reaction discovery, a unit can represent confidence in a particular reaction while other units represent a drug and observed findings. The prior is carried by the reaction unit's bias, and learned correlation-based weights determine how strongly the evidence changes its activation, yielding an updated posterior confidence rather than an unexplained score.",
+    "usedIn": [
+      {
+        "name": "Machine learning classification",
+        "detail": "Combines feature evidence to estimate confidence in possible categories.",
+        "url": ""
+      },
+      {
+        "name": "Data mining",
+        "detail": "Uses estimated correlations to discover relationships in data.",
+        "url": ""
+      },
+      {
+        "name": "Adverse drug reaction discovery",
+        "detail": "Has been applied to identifying possible adverse reactions to drugs.",
+        "url": ""
+      },
+      {
+        "name": "Associative memory research",
+        "detail": "Recurrent versions serve as abstract models of biological neural networks and memory.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of treating a neuron as producing only a yes-or-no response, BCPNN treats its activation as confidence in a feature or category. Connections express how strongly observations and conclusions are associated, allowing the network to update its beliefs from evidence.",
+    "howItWorks": [
+      "Represent each input feature or category with a neural unit whose continuous activation expresses confidence.",
+      "Give each unit a bias that represents its prior probability before new evidence arrives.",
+      "Estimate correlations between units and encode them as Bayesian weights using point-wise mutual information.",
+      "Propagate activation through the feedforward network to calculate posterior probabilities.",
+      "Optionally use modular or recurrent connections for discrete attributes, associative memory, spontaneous activity, or temporal sequences."
+    ],
+    "whyItMatters": "BCPNN connects neural-network computation with explicit probabilistic reasoning, making priors, evidence, and posterior confidence central to the model. The same framework also extends beyond classification to generative sequences and abstract models of biological associative memory.",
+    "misconceptions": [
+      "Its weights are not arbitrary learned strengths: in the basic model they encode point-wise mutual information.",
+      "Activation is not strictly a probability in every variant; recurrence removes that strict interpretation.",
+      "It is not limited to classification, because it can also generate spontaneous activations and temporal sequences."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "features",
+          "label": "Input features",
+          "note": "Observed features activate neural units."
+        },
+        {
+          "id": "priors",
+          "label": "Prior biases",
+          "note": "Unit biases encode prior probabilities."
+        },
+        {
+          "id": "weights",
+          "label": "Bayesian weights",
+          "note": "Point-wise mutual information encodes correlations."
+        },
+        {
+          "id": "categories",
+          "label": "Category units",
+          "note": "Continuous activations represent confidence."
+        },
+        {
+          "id": "posteriors",
+          "label": "Posterior confidence",
+          "note": "Propagation combines priors with evidence."
+        }
+      ],
+      "edges": [
+        {
+          "from": "features",
+          "to": "weights",
+          "label": "evidence"
+        },
+        {
+          "from": "weights",
+          "to": "categories",
+          "label": "correlations"
+        },
+        {
+          "from": "priors",
+          "to": "categories",
+          "label": "priors"
+        },
+        {
+          "from": "categories",
+          "to": "posteriors",
+          "label": "inference"
+        }
+      ],
+      "caption": "The feedforward BCPNN combines prior biases and correlation-based weights to turn feature evidence into posterior confidence."
+    }
+  },
   "related": [
     "ablation-artificial-intelligence",
     "adaline",

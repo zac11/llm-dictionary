@@ -5,6 +5,91 @@
   "type": "concept",
   "definition": "Modeling structure above the sentence: how spans connect rhetorically, what makes a text coherent rather than a bag of sentences.",
   "details": "Modeling structure above the sentence: how spans connect rhetorically, what makes a text coherent rather than a bag of sentences. Increasingly relevant as generation gets long-form, where coherence failures, not grammar, are the visible defects.",
+  "explainer": {
+    "lead": "Discourse and coherence concern how sentences work together to form an understandable text, not just whether each sentence is correct on its own. They matter especially in long-form generation, where fluent prose can still ramble, contradict itself, or lose its point.",
+    "tiers": {
+      "eli5": "A good paragraph is like a trail of stepping stones: each sentence should help you reach the next one. If the sentences jump between unrelated ideas, the paragraph feels confusing even when every sentence sounds fine. Discourse is about how the ideas connect, and coherence is about whether the whole path makes sense.",
+      "practitioner": "In long-form generation, discourse analysis can be applied by identifying text spans, predicting rhetorical links between them, and checking whether the overall sequence stays on topic and follows a clear progression. A common pitfall is evaluating only sentence-level fluency: locally polished output can still contain abrupt shifts, repetition, or unsupported continuations.",
+      "paperLevel": "For a text T = (s1, ..., sn), discourse modeling represents relations between spans of T, while coherence modeling captures whether those spans form a well-organized whole. The task operates above sentence syntax and semantics, and becomes especially visible in long-form generation, where grammar can remain intact while global coherence fails."
+    },
+    "example": "Consider: “Nora missed the bus. Consequently, she arrived late. She cycles to work.” The first two sentences connect clearly through cause and result, but the third introduces cycling without explaining its relevance; adding “To avoid another delay, she now cycles to work” restores the connection.",
+    "usedIn": [
+      {
+        "name": "Long-form text generation",
+        "detail": "Checks whether generated passages maintain clear connections and organization as they grow.",
+        "url": ""
+      },
+      {
+        "name": "Generated-text evaluation",
+        "detail": "Helps distinguish coherent documents from collections of individually fluent sentences.",
+        "url": ""
+      }
+    ],
+    "intuition": "A coherent text guides the reader through connected ideas. Discourse describes those connections, such as explanation or contrast, while coherence describes how well the complete text hangs together.",
+    "howItWorks": [
+      "Divide the text into sentence-sized or smaller spans.",
+      "Identify how neighboring or distant spans relate rhetorically.",
+      "Check whether the sequence of ideas follows an understandable progression.",
+      "Flag abrupt shifts, disconnected passages, or other breaks in the overall structure."
+    ],
+    "whyItMatters": "As generated text becomes longer, readers notice broken argument flow and disconnected ideas more than isolated grammatical mistakes. Modeling discourse and coherence therefore targets defects that sentence-level checks can miss.",
+    "misconceptions": [
+      "Grammatical sentences do not automatically form a coherent text.",
+      "Coherence is more than staying on the same topic; the ideas also need meaningful connections and organization."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "text",
+          "label": "Input text",
+          "note": "A sequence of sentences or passages."
+        },
+        {
+          "id": "spans",
+          "label": "Text spans",
+          "note": "Units whose connections will be examined."
+        },
+        {
+          "id": "relations",
+          "label": "Rhetorical relations",
+          "note": "Links describing how spans fit together."
+        },
+        {
+          "id": "coherence",
+          "label": "Coherence assessment",
+          "note": "Judgment of the text's overall organization."
+        },
+        {
+          "id": "defects",
+          "label": "Coherence defects",
+          "note": "Disconnected or poorly organized passages."
+        }
+      ],
+      "edges": [
+        {
+          "from": "text",
+          "to": "spans",
+          "label": "segment"
+        },
+        {
+          "from": "spans",
+          "to": "relations",
+          "label": "connect"
+        },
+        {
+          "from": "relations",
+          "to": "coherence",
+          "label": "inform"
+        },
+        {
+          "from": "coherence",
+          "to": "defects",
+          "label": "reveal"
+        }
+      ],
+      "caption": "Discourse modeling connects text spans, providing evidence for assessing coherence across the whole text."
+    }
+  },
   "related": [
     "coherence"
   ],

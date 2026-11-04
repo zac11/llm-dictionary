@@ -5,7 +5,81 @@
   "type": "dataset",
   "definition": "Concepticon is an open-source online lexical database of linguistic concept lists (word lists).",
   "details": "It links concept labels (i.e., word list glosses) in concept lists (i.e., word lists) to concept sets (i.e., standardized word meanings). It is part of the Cross-Linguistic Linked Data (CLLD) project, which is hosted by the Max Planck Institute for the Science of Human History in Jena, Germany. Version 1.0 was released in 2016.",
-  "story": "Think of a grammar teacher who never memorized a rule but can still tell you when a sentence sounds wrong. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It figures out meaning by noticing which words like to travel together. The machine learns to read between the lines by reading an impossible number of lines. That pattern-earned fluency is Concepticon.",
+  "explainer": {
+    "lead": "Concepticon is an open-source collection of linguistic word lists whose labels are connected to standardized meanings. This helps researchers compare lists that use different wording for the same concept; version 1.0 was released in 2016 as part of the Cross-Linguistic Linked Data project.",
+    "tiers": {
+      "eli5": "Imagine several people making lists of words, but one writes a short label while another uses a longer description for the same idea. Concepticon acts like a shared index that connects those labels to standard meanings. That makes the lists easier to compare without relying only on exact spelling.",
+      "practitioner": "Use Concepticon as a normalization layer when combining lexical concept lists: map each word-list gloss to a standardized concept set, then compare lists through those sets rather than raw label strings. Preserve the original glosses and check ambiguous labels so that the intended meaning remains auditable.",
+      "paperLevel": "Formally, Concepticon links a gloss g occurring in a concept list L to a standardized concept set C: (L, g) -> C. It is an open-source lexical database within the Cross-Linguistic Linked Data project, hosted by the Max Planck Institute for the Science of Human History in Jena, Germany. It provides semantic normalization rather than a numerical evaluation, and cross-list comparability depends on the correctness of the gloss-to-concept-set links."
+    },
+    "example": "If a word list uses the gloss \"hand\", Concepticon links that label to the standardized concept set representing the intended body-part meaning. Another list can then be compared through that concept set instead of assuming that matching label strings are sufficient.",
+    "usedIn": [
+      {
+        "name": "Cross-Linguistic Linked Data (CLLD)",
+        "detail": "Concepticon is part of this project, hosted by the Max Planck Institute for the Science of Human History in Jena, Germany.",
+        "url": ""
+      },
+      {
+        "name": "Cross-linguistic lexical data",
+        "detail": "Concept lists can be aligned by linking their word-list glosses to shared standardized concept sets.",
+        "url": ""
+      }
+    ],
+    "measures": "Concepticon does not measure a model or assign a performance score. It records how gloss labels in linguistic concept lists correspond to standardized word meanings called concept sets.",
+    "howScored": [
+      "There is no accuracy, loss, or leaderboard score.",
+      "Each concept list contributes gloss labels that are linked to concept sets.",
+      "The resulting links support comparison of meanings across different word lists."
+    ],
+    "formula": "There is no scoring formula; the basic relation is (concept list, gloss label) -> standardized concept set.",
+    "typicalResults": "The result is a network of concept lists, gloss labels, and standardized concept sets that makes meanings easier to compare. There are no typical accuracy values or benchmark rankings.",
+    "caveats": [
+      "A gloss may be ambiguous, so its link to a concept set determines the intended meaning.",
+      "Concepticon standardizes meanings; it does not itself evaluate translation quality or model performance."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "lists",
+          "label": "Concept lists",
+          "note": "Linguistic word lists collected by Concepticon."
+        },
+        {
+          "id": "glosses",
+          "label": "Gloss labels",
+          "note": "The labels used for entries in each list."
+        },
+        {
+          "id": "sets",
+          "label": "Concept sets",
+          "note": "Standardized word meanings linked to the glosses."
+        },
+        {
+          "id": "comparison",
+          "label": "Cross-list comparison",
+          "note": "Shared meanings allow lists to be aligned."
+        }
+      ],
+      "edges": [
+        {
+          "from": "lists",
+          "to": "glosses",
+          "label": "contain"
+        },
+        {
+          "from": "glosses",
+          "to": "sets",
+          "label": "linked to"
+        },
+        {
+          "from": "sets",
+          "to": "comparison",
+          "label": "enable"
+        }
+      ],
+      "caption": "Concepticon connects word-list glosses to standardized concept sets, enabling comparison across lists."
+    }
+  },
   "related": [
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",
     "accelerated-linear-algebra",

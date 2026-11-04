@@ -5,7 +5,87 @@
   "type": "concept",
   "definition": "Elastic maps provide a tool for nonlinear dimensionality reduction.",
   "details": "By their construction, they are a system of elastic springs embedded in the data space. This system approximates a low-dimensional manifold. The elastic coefficients of this system allow the switch from completely unstructured k-means clustering (zero elasticity) to the estimators located closely to linear PCA manifolds (for high bending and low stretching modules). With some intermediate values of the elasticity coefficients, this system effectively approximates non-linear principal manifolds. This approach is based on a mechanical analogy between principal manifolds, that are passing through \"the middle\" of the data distribution, and elastic membranes and plates. The method was developed by A.N. Gorban, A.Y. Zinovyev and A.A. Pitenko in 1996–1998.",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. That is Elastic map — a small key that opens a big door.",
+  "explainer": {
+    "lead": "An elastic map fits a flexible, low-dimensional surface through the middle of a cloud of data. It can reveal curved structure that a straight-line method would miss, while adjustable stiffness lets the fit range from loose clusters to an almost flat surface.",
+    "tiers": {
+      "eli5": "Imagine laying a stretchy net over a swarm of points. Its springs let it bend to follow the swarm, but making it stiffer stops it from wiggling too much. The finished net gives a simpler picture of complicated data.",
+      "practitioner": "Use elastic maps when you want a low-dimensional manifold rather than only flat projections or disconnected clusters. Tune the elastic coefficients: zero elasticity gives unstructured k-means clustering, while high bending and low stretching moduli give estimates close to linear PCA manifolds. Intermediate settings allow curved principal manifolds, so the coefficients are a central modeling choice.",
+      "paperLevel": "An elastic map is a system of elastic springs embedded in the data space that approximates a low-dimensional principal manifold passing through the middle of the data distribution. Its mechanical analogy is an elastic membrane or plate, with bending and stretching coefficients controlling the fit: zero elasticity recovers unstructured k-means clustering, high bending with low stretching approaches linear PCA manifolds, and intermediate values approximate nonlinear principal manifolds. The method was developed by A.N. Gorban, A.Y. Zinovyev and A.A. Pitenko in 1996–1998."
+    },
+    "example": "For a point cloud arranged along a curve, intermediate elasticity lets the spring system bend into a curved low-dimensional manifold that follows the points. Raising bending resistance while keeping stretching resistance low pushes the estimate toward a flatter, PCA-like manifold instead.",
+    "usedIn": [
+      {
+        "name": "Nonlinear dimensionality reduction",
+        "detail": "Approximates a low-dimensional manifold that follows curved data structure.",
+        "url": ""
+      },
+      {
+        "name": "Clustering",
+        "detail": "At zero elasticity, the construction corresponds to completely unstructured k-means clustering.",
+        "url": ""
+      },
+      {
+        "name": "Principal-manifold estimation",
+        "detail": "Intermediate elasticity settings fit nonlinear manifolds through the middle of a data distribution.",
+        "url": ""
+      }
+    ],
+    "intuition": "Think of the manifold as a springy sheet placed among the data points. Stretching and bending resistance determine whether it behaves like separate cluster centers, a nearly flat PCA-like surface, or something curved in between.",
+    "howItWorks": [
+      "Embed a system of elastic springs in the data space.",
+      "Use the spring system to approximate a low-dimensional manifold through the middle of the data distribution.",
+      "Set the bending and stretching coefficients to control how freely the manifold can deform.",
+      "Choose zero elasticity for k-means-like clustering, high bending with low stretching for a near-linear PCA-like fit, or intermediate values for a nonlinear manifold."
+    ],
+    "whyItMatters": "Elastic maps connect clustering, linear dimensionality reduction and nonlinear manifold fitting in one construction. The elasticity coefficients provide a direct way to move among these behaviors.",
+    "misconceptions": [
+      "An elastic map is not always nonlinear; suitable elasticity settings make it behave like k-means or approach a linear PCA manifold.",
+      "The springs are a mechanical analogy for fitting the manifold, not physical springs present in the data.",
+      "A principal manifold is intended to pass through the middle of the data distribution, not merely connect arbitrary points."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data",
+          "label": "Data distribution",
+          "note": "Points embedded in the data space"
+        },
+        {
+          "id": "coefficients",
+          "label": "Elastic coefficients",
+          "note": "Control bending and stretching"
+        },
+        {
+          "id": "springs",
+          "label": "Spring system",
+          "note": "Deforms according to its elasticity"
+        },
+        {
+          "id": "manifold",
+          "label": "Principal manifold",
+          "note": "Low-dimensional fit through the data"
+        }
+      ],
+      "edges": [
+        {
+          "from": "coefficients",
+          "to": "springs",
+          "label": "controls"
+        },
+        {
+          "from": "data",
+          "to": "springs",
+          "label": "shapes fit"
+        },
+        {
+          "from": "springs",
+          "to": "manifold",
+          "label": "approximates"
+        }
+      ],
+      "caption": "Elastic coefficients govern a spring system that approximates a low-dimensional manifold through the data distribution."
+    }
+  },
   "related": [
     "lre-map",
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",

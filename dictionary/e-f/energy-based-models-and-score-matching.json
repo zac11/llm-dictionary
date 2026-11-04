@@ -5,6 +5,82 @@
   "type": "concept",
   "definition": "Modeling unnormalized densities via an energy function, trained with tricks like score matching that avoid the intractable normalizer.",
   "details": "Modeling unnormalized densities via an energy function, trained with tricks like score matching that avoid the intractable normalizer. Score matching's central object, the gradient of log density, is exactly what diffusion models learn, tying this classical thread directly to modern generative AI.",
+  "explainer": {
+    "lead": "Energy-based models describe how likely different data points are by assigning them energies, without first calculating a normalizing constant. Score matching trains these models through the gradient of the log density—the same central object learned by diffusion models.",
+    "tiers": {
+      "eli5": "Imagine a landscape where low valleys mean a good fit to the data and high hills mean a poor fit. Instead of working out the exact chance of every possible location, the model learns which way the ground slopes. Diffusion models use this same idea of following slopes.",
+      "practitioner": "Parameterize an energy Eθ(x) and train its negative gradient to match the data's log-density gradient using score matching. This avoids computing the normalizer, but the resulting score is not a normalized probability and the energy alone does not provide Zθ. The learned score is also the key object used in diffusion models.",
+      "paperLevel": "Write pθ(x) = exp(-Eθ(x))/Zθ, where Zθ = ∫ exp(-Eθ(x)) dx may be intractable. The score is sθ(x) = ∇x log pθ(x) = -∇x Eθ(x), so score matching can fit sθ without evaluating Zθ. An unnormalized energy model does not directly supply normalized probabilities."
+    },
+    "example": "Let Eθ(x) = (x - 2)^2/2. Then the score is -dEθ/dx = -(x - 2), so at x = 4 the score is -2, pointing toward lower energy at x = 2. This gradient can be modeled without calculating the normalizing constant.",
+    "usedIn": [
+      {
+        "name": "Diffusion models",
+        "detail": "They learn the gradient of the log density, directly connecting score matching to modern generative AI.",
+        "url": ""
+      },
+      {
+        "name": "Unnormalized density modeling",
+        "detail": "Energy functions represent densities while score matching avoids their intractable normalizers.",
+        "url": ""
+      }
+    ],
+    "intuition": "An energy function turns the modeling problem into a landscape: lower energy corresponds to higher unnormalized density. Learning the landscape's slopes is enough to capture the score, even when the total probability normalizer cannot be computed.",
+    "howItWorks": [
+      "Define an energy function Eθ(x) for each data point x.",
+      "Interpret the density as proportional to exp(-Eθ(x)), leaving its normalizer unevaluated.",
+      "Take the negative gradient of the energy to obtain the model's score.",
+      "Use score matching to train that score against the gradient of the data's log density."
+    ],
+    "whyItMatters": "Score matching makes energy-based density modeling possible without evaluating an intractable normalizer. Its score is exactly what diffusion models learn, linking this classical approach to modern generative AI.",
+    "misconceptions": [
+      "An energy value is not itself a probability; normalization is still needed for normalized probabilities.",
+      "The score is the gradient of the log density, not the density or its normalizer.",
+      "Score matching and diffusion models are connected through the score, rather than being unrelated techniques."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data",
+          "label": "Data point",
+          "note": "Input x to the model"
+        },
+        {
+          "id": "energy",
+          "label": "Energy function",
+          "note": "Assigns Eθ(x) without a normalizer"
+        },
+        {
+          "id": "score",
+          "label": "Log-density gradient",
+          "note": "Computed as -∇x Eθ(x)"
+        },
+        {
+          "id": "matching",
+          "label": "Score matching",
+          "note": "Trains the score without computing Zθ"
+        }
+      ],
+      "edges": [
+        {
+          "from": "data",
+          "to": "energy",
+          "label": ""
+        },
+        {
+          "from": "energy",
+          "to": "score",
+          "label": "differentiate"
+        },
+        {
+          "from": "score",
+          "to": "matching",
+          "label": "train"
+        }
+      ],
+      "caption": "Energy-based modeling bypasses the normalizer by training the energy's gradient through score matching."
+    }
+  },
   "related": [
     "generative-ai"
   ],

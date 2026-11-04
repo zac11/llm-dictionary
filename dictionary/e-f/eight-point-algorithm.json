@@ -5,7 +5,99 @@
   "type": "algorithm",
   "definition": "The eight-point algorithm is an algorithm used in computer vision to estimate the essential matrix or the fundamental matrix related to a stereo camera pair from a set of corresponding image points.",
   "details": "It was introduced by Christopher Longuet-Higgins in 1981 for the case of the essential matrix. In theory, this algorithm can be used also for the fundamental matrix, but in practice the normalized eight-point algorithm, described by Richard Hartley in 1997, is better suited for this case. The algorithm's name derives from the fact that it estimates the essential matrix or the fundamental matrix from a set of eight (or more) corresponding image points. However, variations of the algorithm can be used for fewer than eight points.",
-  "story": "Picture walking through a crowd and instantly picking out a familiar face without reading a single name tag. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. It turns a picture into an understanding: this is a cat, that is a stop sign. Sight, for a machine, is a long climb from raw light to a name. And that is Eight-point algorithm — giving a machine the gift of sight.",
+  "explainer": {
+    "lead": "The eight-point algorithm uses matching points in two camera views to estimate a matrix that describes their geometric relationship. It gives computer-vision systems a way to work with stereo image pairs.",
+    "tiers": {
+      "eli5": "Imagine taking two photos of the same toy from slightly different spots and marking the same eight dots in both photos. The algorithm uses those pairs of dots to work out a mathematical description of how the two views relate. Its name comes from the eight matching points it normally uses.",
+      "practitioner": "Provide at least eight corresponding image points and use the algorithm to estimate either the essential matrix or the fundamental matrix for a stereo pair. For practical fundamental-matrix estimation, prefer Hartley's normalized eight-point algorithm; variants can handle fewer than eight points.",
+      "paperLevel": "Given eight or more point correspondences from a stereo camera pair, the algorithm estimates the essential matrix E or, in principle, the fundamental matrix F. Christopher Longuet-Higgins introduced it for the essential matrix in 1981. Richard Hartley described the normalized eight-point algorithm in 1997, which is better suited in practice to estimating F; variants can use fewer than eight points."
+    },
+    "example": "Two stereo cameras photograph a box, and eight visible corners are matched between the images. The algorithm uses those eight correspondences to estimate a matrix relating the two camera views.",
+    "usedIn": [
+      {
+        "name": "Stereo vision",
+        "detail": "Estimating a matrix that relates corresponding points in a stereo camera pair.",
+        "url": ""
+      },
+      {
+        "name": "Computer vision",
+        "detail": "Recovering essential or fundamental-matrix estimates from matched image points.",
+        "url": ""
+      }
+    ],
+    "goal": "Estimate the essential or fundamental matrix relating a stereo camera pair from corresponding image points.",
+    "inputs": [
+      "Eight or more corresponding image points",
+      "The two views from a stereo camera pair"
+    ],
+    "outputs": [
+      "An estimated essential matrix",
+      "Or an estimated fundamental matrix"
+    ],
+    "steps": [
+      "Find matching points across the two views.",
+      "Collect at least eight point correspondences.",
+      "Estimate the essential or fundamental matrix from those correspondences.",
+      "For practical fundamental-matrix estimation, use the normalized variant."
+    ],
+    "tradeoffs": [
+      "The standard form needs at least eight correspondences.",
+      "Variants can work with fewer than eight points.",
+      "The normalized variant is preferable in practice for the fundamental matrix."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "views",
+          "label": "Stereo views",
+          "note": "Two images of the same scene"
+        },
+        {
+          "id": "matches",
+          "label": "Point matches",
+          "note": "Eight or more correspondences"
+        },
+        {
+          "id": "estimate",
+          "label": "Eight-point estimation",
+          "note": "Computes a matrix from the matches"
+        },
+        {
+          "id": "essential",
+          "label": "Essential matrix",
+          "note": "The case introduced in 1981"
+        },
+        {
+          "id": "fundamental",
+          "label": "Fundamental matrix",
+          "note": "Normalization is preferable in practice"
+        }
+      ],
+      "edges": [
+        {
+          "from": "views",
+          "to": "matches",
+          "label": "correspond"
+        },
+        {
+          "from": "matches",
+          "to": "estimate",
+          "label": "input"
+        },
+        {
+          "from": "estimate",
+          "to": "essential",
+          "label": ""
+        },
+        {
+          "from": "estimate",
+          "to": "fundamental",
+          "label": ""
+        }
+      ],
+      "caption": "Matched points from two stereo views feed the estimation procedure, which produces the chosen matrix."
+    }
+  },
   "related": [
     "condensation-algorithm",
     "landmark-point",

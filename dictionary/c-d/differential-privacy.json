@@ -5,7 +5,92 @@
   "type": "concept",
   "definition": "A mathematical framework for quantifying and limiting the privacy risk to individuals whose data is used in training or analysis, typically by adding calibrated noise.",
   "details": "Differential privacy provides formal guarantees that the presence or absence of any single individual's data has limited effect on a model's output, helping protect against training-data extraction or membership-inference attacks.",
-  "story": "Picture a parachute packed by a second pair of hands: nobody plans to need it, but everyone is glad it was checked. The idea is simple: before something powerful is let loose, someone checks that it will not do real harm to real people. It is the habit of asking, before every launch, what could go wrong — and then doing something about it. Caution is not the enemy of progress — it is the reason progress gets to keep going. And that is Differential Privacy — the reason we can move fast without breaking things, or people.",
+  "explainer": {
+    "lead": "Differential privacy limits what an analysis or trained model can reveal about any one person whose data was included. It does this by ensuring that results stay similarly likely whether that person's record is present or absent, usually through carefully calibrated random noise.",
+    "tiers": {
+      "eli5": "Imagine a survey that adds a little randomness before sharing its answers, like reporting a fuzzy count instead of an exact one. The overall answer is still useful, but your own answer cannot be picked out with confidence. Removing you from the group would barely change what an outsider is likely to see.",
+      "practitioner": "Apply a randomized mechanism to a query or training procedure, and evaluate neighboring datasets that differ by one individual's record. Set the privacy parameter epsilon and calibrate noise to that requirement; smaller epsilon gives a stronger guarantee but generally requires more noise. Track privacy loss across repeated queries or training steps, and do not treat noise added without a formal privacy accounting as differential privacy.",
+      "paperLevel": "For neighboring datasets D and D', differing in one individual's data, a randomized mechanism M is epsilon-differentially private when P[M(D) in S] <= exp(epsilon) * P[M(D') in S] for every output set S. The guarantee bounds how much one record can shift output probabilities, rather than promising that no information is ever released. Utility depends on noise calibration, and privacy loss must be accounted for across repeated analyses."
+    },
+    "example": "Suppose a service wants to publish how many of 1,000 users selected an option. Instead of releasing the exact count, it uses a randomized mechanism that adds calibrated noise, so the published count might be 643 rather than 640. Removing one user's record would leave the distribution of possible published counts nearly unchanged, while the noisy count still estimates overall popularity.",
+    "usedIn": [
+      {
+        "name": "Machine-learning training",
+        "detail": "Limits the influence of any one training record, helping reduce exposure to training-data extraction and membership-inference attacks.",
+        "url": ""
+      },
+      {
+        "name": "Statistical data analysis",
+        "detail": "Releases randomized aggregate results while bounding the privacy risk to people represented in the underlying data.",
+        "url": ""
+      }
+    ],
+    "intuition": "A useful result should describe a group without depending too much on any single member. Differential privacy turns that idea into a measurable guarantee by making outputs similarly likely with or without any one person's record.",
+    "howItWorks": [
+      "Define neighboring datasets that differ only by one individual's data.",
+      "Choose a privacy parameter that bounds how much that individual may change output probabilities.",
+      "Use a randomized computation, typically adding noise calibrated to the analysis.",
+      "Release the noisy result or model while accounting for privacy used across repeated computations."
+    ],
+    "whyItMatters": "Models and aggregate statistics can leak clues about the people behind their data. Differential privacy provides a formal limit on individual-level risk, including protection against attempts to determine membership or extract training data.",
+    "misconceptions": [
+      "Adding arbitrary noise is not enough; the noise and privacy guarantee must be formally calibrated.",
+      "It does not make every output perfectly accurate or make reidentification absolutely impossible.",
+      "It protects individual contributions, not the confidentiality of the released aggregate result itself."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "dataset",
+          "label": "Private dataset",
+          "note": "Contains individual records"
+        },
+        {
+          "id": "neighbors",
+          "label": "Neighboring datasets",
+          "note": "Differ by one person's data"
+        },
+        {
+          "id": "mechanism",
+          "label": "Randomized mechanism",
+          "note": "Adds calibrated randomness"
+        },
+        {
+          "id": "budget",
+          "label": "Privacy accounting",
+          "note": "Tracks loss across computations"
+        },
+        {
+          "id": "output",
+          "label": "Noisy result",
+          "note": "Statistic or trained model"
+        }
+      ],
+      "edges": [
+        {
+          "from": "dataset",
+          "to": "neighbors",
+          "label": "one record varies"
+        },
+        {
+          "from": "neighbors",
+          "to": "mechanism",
+          "label": "bounded difference"
+        },
+        {
+          "from": "mechanism",
+          "to": "budget",
+          "label": "privacy cost"
+        },
+        {
+          "from": "mechanism",
+          "to": "output",
+          "label": "releases"
+        }
+      ],
+      "caption": "A randomized mechanism limits how much one person's record can affect released outputs."
+    }
+  },
   "related": [
     "bias-in-ml",
     "bias-mitigation",

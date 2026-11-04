@@ -5,7 +5,97 @@
   "type": "concept",
   "definition": "The event calculus is a logical theory for representing and reasoning about events and about the way in which they change the state of some real or artificial world.",
   "details": "It deals both with action events, which are performed by agents, and with external events, which are outside the control of any agent. The event calculus represents the state of the world at any time by the set of all the facts (called fluents) that hold at the time. Events initiate and terminate fluents: The event calculus differs from most other approaches for reasoning about change by reifying time, associating events with the time at which they happen, and associating fluents with the times at which they hold. The original version of the event calculus, introduced by Robert Kowalski and Marek Sergot in 1986, was formulated as a logic program and developed for representing narratives and database updates. Kave Eshghi showed how to use the event calculus for planning, by using abduction to generate hypothetical actions to achieve a desired state of affairs. It was extended by Murray Shanahan and Rob Miller in the 1990s and reformulated in first-order logic with circumscription. These and later extensions have been used to formalize non-deterministic actions, concurrent actions, actions with delayed effects, gradual changes, actions with duration, continuous change, and non-inerti",
-  "story": "Imagine a mathematician who writes every step on paper, reads it back, crosses out a bad line, and starts that line over. Slowing down to think often beats answering fast. Instead of blurting out an answer, the machine talks its way through the problem one step at a time. More time spent reconsidering can be worth more than a bigger model. That loop of draft, check, and revise is Event calculus.",
+  "explainer": {
+    "lead": "Event calculus is a way to describe what happens, when it happens, and how those happenings change a situation. It helps a computer reason from a sequence of events to the facts that are true at any particular time.",
+    "tiers": {
+      "eli5": "Imagine tracking a light in a story: switching it on makes 'the light is on' true, and switching it off makes that fact stop being true. Event calculus gives a computer a careful way to keep track of events like these and what is true before, after, and between them.",
+      "practitioner": "An engineer encodes events, their occurrence times, and rules saying which fluents they initiate or terminate, using either a logic-programming formulation or first-order logic with circumscription. For planning, abduction can propose hypothetical actions that would achieve a desired state; care is needed to distinguish agent actions from external events and to model effects such as delay, duration, or concurrency explicitly.",
+      "paperLevel": "The core representation reifies time: Happens(e,t) records an event occurrence, while Initiates(e,f,t) and Terminates(e,f,t) describe its effect on fluent f, whose truth at a time is represented by HoldsAt(f,t). Robert Kowalski and Marek Sergot introduced the original logic-program version in 1986; later work by Murray Shanahan and Rob Miller used first-order logic with circumscription, and extensions address phenomena including non-deterministic, concurrent, delayed, durative, gradual, and continuous change."
+    },
+    "example": "A robot opens a door at 10:00, so the fluent Open(door) holds from then; at 10:05, an external gust closes it, terminating that fluent. Asking about the state at 10:03 gives an open door, while asking at 10:06 gives a door for which Open(door) no longer holds.",
+    "usedIn": [
+      {
+        "name": "Narrative representation",
+        "detail": "Represents the events in a narrative and the facts that hold as it unfolds.",
+        "url": ""
+      },
+      {
+        "name": "Database updates",
+        "detail": "Reasons about how update events change the state represented by a database.",
+        "url": ""
+      },
+      {
+        "name": "Planning",
+        "detail": "Uses abduction to generate hypothetical actions for reaching a desired state.",
+        "url": ""
+      }
+    ],
+    "intuition": "Think of the world as a changing set of time-stamped facts rather than one fixed snapshot. Events act as the turning points: they start some facts, called fluents, and end others.",
+    "howItWorks": [
+      "Describe action events performed by agents and external events beyond any agent's control.",
+      "Associate each event with the time at which it happens.",
+      "Specify which fluents each event initiates or terminates.",
+      "Use those rules to determine the set of fluents holding at any requested time."
+    ],
+    "whyItMatters": "It provides a common logical basis for reasoning about narratives, updates, and plans without treating change as an unexplained jump between snapshots. Its explicit treatment of time also supports extensions for overlapping, delayed, gradual, and continuous changes.",
+    "misconceptions": [
+      "Events are not only deliberate actions; external events are included too.",
+      "A fluent is not a permanently true fact, but one associated with the times at which it holds.",
+      "The original event calculus is not the same as its later first-order-logic formulation with circumscription."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "events",
+          "label": "Events",
+          "note": "Agent actions and external happenings"
+        },
+        {
+          "id": "times",
+          "label": "Occurrence times",
+          "note": "When each event happens"
+        },
+        {
+          "id": "effects",
+          "label": "Effect rules",
+          "note": "Which fluents events initiate or terminate"
+        },
+        {
+          "id": "fluents",
+          "label": "Timed fluents",
+          "note": "Facts associated with times"
+        },
+        {
+          "id": "state",
+          "label": "World state",
+          "note": "All fluents holding at a chosen time"
+        }
+      ],
+      "edges": [
+        {
+          "from": "events",
+          "to": "times",
+          "label": "happen at"
+        },
+        {
+          "from": "events",
+          "to": "effects",
+          "label": "trigger"
+        },
+        {
+          "from": "effects",
+          "to": "fluents",
+          "label": "start or end"
+        },
+        {
+          "from": "fluents",
+          "to": "state",
+          "label": "determine"
+        }
+      ],
+      "caption": "Time-stamped events initiate and terminate fluents, which together describe the world at any chosen time."
+    }
+  },
   "related": [
     "abductive-reasoning",
     "abox",

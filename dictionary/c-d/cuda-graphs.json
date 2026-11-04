@@ -5,6 +5,97 @@
   "type": "concept",
   "definition": "Capturing a fixed sequence of GPU kernel launches and replaying it with near-zero CPU overhead.",
   "details": "Capturing a fixed sequence of GPU kernel launches and replaying it with near-zero CPU overhead. Matters most in LLM decode loops, where thousands of small per-token launches otherwise leave the GPU waiting on the CPU.",
+  "explainer": {
+    "lead": "CUDA Graphs let a program record a fixed run of GPU work once, then launch that whole run again without repeating the usual CPU work for every small operation. This is especially useful when an AI model generates text one token at a time and the GPU would otherwise spend time waiting for its next instruction.",
+    "tiers": {
+      "eli5": "Imagine giving someone a long list of tiny chores again and again. Instead, you could record the list once and simply say, “Do the list,” each time. CUDA Graphs do that for a computer’s graphics processor, saving time when the same small jobs repeat, such as while generating text.",
+      "practitioner": "Use CUDA Graphs for a stable decode step whose kernel-launch sequence does not change: capture that sequence, then replay the graph on each iteration. The main benefit is lower CPU launch overhead for workloads made of many small kernels. If the sequence changes, the captured graph no longer describes it, and graph replay does not reduce the GPU work itself.",
+      "paperLevel": "For a fixed launch sequence S = (k1, k2, ..., kn), capture produces a graph G representing S, and replay(G) executes that sequence with near-zero CPU launch overhead. The main limitation is that S is fixed; the approach reduces launch overhead, not the cost of the kernels, and is most valuable when many small launches leave the GPU waiting on the CPU."
+    },
+    "example": "An LLM generates 1,000 tokens using the same small sequence of GPU operations for every token. Instead of issuing every tiny launch afresh 1,000 times, the program captures the per-token sequence once and replays that graph for each token, cutting CPU launch overhead while leaving the actual GPU computations unchanged.",
+    "usedIn": [
+      {
+        "name": "LLM decoding",
+        "detail": "Replaying the fixed work for each token-generation step reduces repeated CPU launch overhead.",
+        "url": ""
+      },
+      {
+        "name": "Small-kernel GPU workloads",
+        "detail": "Repeated sequences of small GPU operations benefit when individual launches would otherwise leave the GPU waiting.",
+        "url": ""
+      }
+    ],
+    "intuition": "It is like replacing a long checklist you read out every time with a single recorded routine: the work stays the same, but issuing it becomes much cheaper.",
+    "howItWorks": [
+      "Run or describe a fixed sequence of GPU kernel launches while capturing it.",
+      "Store that sequence as a reusable graph.",
+      "On each later iteration, submit one graph replay instead of issuing every launch separately.",
+      "The GPU executes the captured kernels with much less CPU involvement."
+    ],
+    "whyItMatters": "In LLM decode loops, thousands of small per-token launches can make the CPU the bottleneck and leave the GPU idle between operations. Replaying a captured sequence keeps that launch overhead from dominating each step.",
+    "misconceptions": [
+      "It does not make the individual GPU computations faster; it reduces the CPU cost of launching them.",
+      "It is not a general solution for arbitrary changing workloads, because the captured launch sequence is fixed.",
+      "It is most useful when launch overhead is significant, not when a few long-running kernels already keep the GPU busy."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "launch-sequence",
+          "label": "Kernel launch sequence",
+          "note": "A fixed series of small GPU operations."
+        },
+        {
+          "id": "capture",
+          "label": "Capture graph",
+          "note": "Record the sequence once for reuse."
+        },
+        {
+          "id": "replay",
+          "label": "Replay graph",
+          "note": "Submit the whole sequence with little CPU overhead."
+        },
+        {
+          "id": "gpu",
+          "label": "GPU kernels",
+          "note": "Execute the same captured computations."
+        },
+        {
+          "id": "tokens",
+          "label": "Generated tokens",
+          "note": "Repeat the replay for each decode step."
+        }
+      ],
+      "edges": [
+        {
+          "from": "launch-sequence",
+          "to": "capture",
+          "label": "record once"
+        },
+        {
+          "from": "capture",
+          "to": "replay",
+          "label": "reuse"
+        },
+        {
+          "from": "replay",
+          "to": "gpu",
+          "label": "launch"
+        },
+        {
+          "from": "gpu",
+          "to": "tokens",
+          "label": "decode"
+        },
+        {
+          "from": "tokens",
+          "to": "replay",
+          "label": "next token"
+        }
+      ],
+      "caption": "A fixed decode-step launch sequence is captured once, then replayed for successive tokens."
+    }
+  },
   "related": [
     "token"
   ],

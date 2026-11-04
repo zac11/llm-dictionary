@@ -5,7 +5,119 @@
   "type": "concept",
   "definition": "Agent verification is an activity to gain assurances that purposeful artificial constructs act in accordance with their specifications.",
   "details": "While primitive forms of inorganic agents have been used in manufacturing for centuries, the study of artificial agents did not begin until the mid 20th century. Foundational work on such agents was closely bound with the emergence of artificial intelligence as an academic discipline. Early agents deployed for industrial control systems and in computing were often controlled by quite simple logic however, not involving artificial intelligence as such. When deployed as part of a multi-agent system, even such simple agents could require special agent orientated testing methods, as their collective behaviour was challenging to verify with traditional testing techniques. Difficulties in providing assurances that agents will not behave in dangerous ways became more prevalent after the introduction of LLM agents, especially after the rapid acceleration of their deployment in 2025. The verification of agent behaviour can be conducted by formal or informal methods. Informal verification requires less mathematical skill. But when agents are part of systems where errors have significant risks — such as danger to human life, environmental damage or major financial loss — formal verification is preferred. Both regulators and system designers themselves like formal verification as it provides a high degree of mathematical certainty. It is not however always possible to formally test all aspects of an agent based system's behaviour, especially where newer LLM based agents are concerned, due in part to their high degree of autonomy. Accordingly, agent verification for low impact deployments might be carried out only with informal methods, while for high impact deployments, it may be performed with a mix of formal and informal techniques.",
-  "story": "Picture hiring a brilliant new assistant on their first morning — smart, motivated, but with no idea how anything in your office actually works. It plans a little, acts a little, looks at the result, and then decides what to do next. It is the difference between a search engine and a helper who actually finishes the task. The model stops being a one-shot answer machine and becomes a coworker that checks its own work. That loop of reason, act, and observe is Agent verification.",
+  "explainer": {
+    "lead": "Agent verification is how we check that artificial agents—software that acts on its own—actually do what they're supposed to do. As these agents gain more autonomy, especially with large language models, the stakes of getting this wrong keep rising.",
+    "tiers": {
+      "eli5": "Imagine you have a robot helper that you tell to clean your room. Agent verification is like checking that it really cleans your room and doesn't, say, throw away your homework or paint the walls. The fancier and more independent the robot gets, the harder it is to be sure it'll behave—so grown-ups use math and careful testing to check.",
+      "practitioner": "Agent verification is applied when deploying autonomous systems, particularly in multi-agent systems or LLM-based agents where emergent behavior complicates traditional testing. Common formal methods include model checking (most frequent per a 2018 review of 231 studies) and theorem proving using tools like Isabelle; informal methods include simulation and testing. Pitfalls include the intractability of formally verifying LLM agents due to their infinite domains and high autonomy, and the temptation to skip formal verification for seemingly low-risk deployments that later scale.",
+      "paperLevel": "Agent verification is the activity of gaining assurance that purposeful artificial constructs act in accordance with their specifications, distinct from validation which concerns whether specifications meet real-world needs. Foundational work traces to mid-20th century cybernetics and AI; Oliver Selfridge's 1958 Pandemonium paper established early agent-oriented architecture. For pre-LLM agents, model checking with computation tree logic dominated, complemented by theorem proving. LLM agents introduce verification challenges due to neural networks' infinite domains and expanded action spaces via tool use (e.g., OpenAI's function-calling API, Anthropic's 2024 Model Context Protocol). Known limits: formal verification cannot always cover all behaviors, especially for highly autonomous LLM agents."
+    },
+    "example": "A warehouse uses multiple robots to move packages. Each robot follows simple rules: avoid obstacles, pick up packages, deliver to designated zones. Individually, each robot is easy to test. But when fifty robots share space, emergent behaviors appear—deadlocks, traffic jams, or collisions—that no single robot's code predicts. Agent verification here uses model checking to mathematically prove that no matter how the robots interact, they never collide, and simulation to catch practical issues like battery-depletion patterns the formal model missed.",
+    "usedIn": [
+      {
+        "name": "Industrial control systems",
+        "detail": "Agents monitoring chemical plants or robotics, where verification prevents fires, botched medical operations, or aircraft crashes",
+        "url": ""
+      },
+      {
+        "name": "LLM agent deployments",
+        "detail": "Post-2024 MCP rollout, startups in Europe and US verify agents with broad tool access and contextual awareness",
+        "url": ""
+      },
+      {
+        "name": "Digital infrastructure monitoring",
+        "detail": "Software agents checking computer licensing, where informal verification often suffices",
+        "url": ""
+      }
+    ],
+    "intuition": "You wouldn't trust a self-driving car without knowing it stops at red lights. Agent verification is that trust-building process—for any software that makes its own decisions.",
+    "howItWorks": [
+      "Define what the agent is supposed to do: its specification, including allowed actions and goals.",
+      "Choose a verification approach based on risk: informal methods for low-stakes agents, formal mathematical methods for high-stakes ones.",
+      "Apply testing, simulation, model checking, or theorem proving to check behavior against the specification.",
+      "For multi-agent systems, verify collective behavior, which can emerge unpredictably from simple individual rules.",
+      "Document limitations and residual risks, especially for LLM agents where full formal coverage may be impossible."
+    ],
+    "whyItMatters": "As agents move from thermostats to LLMs that can browse the web, execute code, and make financial transactions, the gap between intended and actual behavior widens. Verification is the main defense against agents causing harm through autonomy we don't fully understand.",
+    "misconceptions": [
+      "Verification and validation are the same thing—verification checks the agent against its specification; validation checks if the specification itself is what users actually need.",
+      "Formal verification guarantees total safety—it provides mathematical certainty about specified properties, but not all properties can be specified or checked, especially for LLM agents.",
+      "Simple agents don't need verification—even primitive agents in multi-agent systems can produce complex emergent behaviors that traditional testing misses."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "spec",
+          "label": "Specification",
+          "note": "Defines intended agent behavior"
+        },
+        {
+          "id": "agent",
+          "label": "Agent system",
+          "note": "Single or multi-agent deployment"
+        },
+        {
+          "id": "risk",
+          "label": "Risk assessment",
+          "note": "Determines verification rigor needed"
+        },
+        {
+          "id": "informal",
+          "label": "Informal methods",
+          "note": "Testing, simulation for low-risk cases"
+        },
+        {
+          "id": "formal",
+          "label": "Formal methods",
+          "note": "Model checking, theorem proving for high-risk cases"
+        },
+        {
+          "id": "assurance",
+          "label": "Assurance output",
+          "note": "Documented confidence in behavior"
+        }
+      ],
+      "edges": [
+        {
+          "from": "spec",
+          "to": "agent",
+          "label": "constrains"
+        },
+        {
+          "from": "agent",
+          "to": "risk",
+          "label": "evaluated by"
+        },
+        {
+          "from": "risk",
+          "to": "informal",
+          "label": "low impact"
+        },
+        {
+          "from": "risk",
+          "to": "formal",
+          "label": "high impact"
+        },
+        {
+          "from": "informal",
+          "to": "assurance",
+          "label": "yields"
+        },
+        {
+          "from": "formal",
+          "to": "assurance",
+          "label": "yields"
+        }
+      ],
+      "caption": "Agent verification flow: specification drives assessment, risk level selects method, both paths produce assurance."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Agent verification",
+        "url": "https://en.wikipedia.org/wiki/Agent_verification"
+      }
+    ]
+  },
   "related": [
     "agent-experience",
     "agent-harness",

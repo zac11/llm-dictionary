@@ -5,7 +5,87 @@
   "type": "algorithm",
   "definition": "Constructing skill trees (CST) is a hierarchical reinforcement learning algorithm which can build skill trees from a set of sample solution trajectories obtained from demonstration.",
   "details": "CST uses an incremental MAP (maximum a posteriori) change point detection algorithm to segment each demonstration trajectory into skills and integrate the results into a skill tree. CST was introduced by George Konidaris, Scott Kuindersma, Andrew Barto and Roderic Grupen in 2010.",
-  "story": "Picture a gambler who slowly learns which slot machines pay out, not by reading a manual but by pulling the lever. The machine is not handed the answers — it tries things, earns a reward or a miss, and slowly figures out what works. It learns the way a child learns to walk: wobble, fall, adjust, repeat. The learner writes its own textbook from consequences. That learn-by-reward loop is Constructing skill trees.",
+  "explainer": {
+    "lead": "Constructing skill trees turns demonstrations of complete solutions into smaller, reusable skills arranged in a hierarchy. It matters because a learner can work with meaningful stages of a task rather than treating every demonstration as one long sequence.",
+    "tiers": {
+      "eli5": "Imagine learning to bake by watching someone do the whole recipe. Constructing skill trees spots where one stage ends and another begins, such as mixing and then baking, and organizes those stages into a tree. The learner can then use the stages as separate skills.",
+      "practitioner": "Provide a set of sample solution trajectories obtained from demonstration. CST applies incremental MAP change point detection to segment each trajectory into skills, then integrates those results into a skill tree. The method therefore depends on having solution demonstrations and on the detected change points producing useful skill boundaries.",
+      "paperLevel": "Given demonstration trajectories D = {tau_i}, CST segments each tau_i using an incremental maximum a posteriori change point detection algorithm, interprets the resulting segments as skills, and integrates them into a hierarchical skill tree. It was introduced by George Konidaris, Scott Kuindersma, Andrew Barto, and Roderic Grupen in 2010. Its construction process requires sample solution trajectories rather than starting without demonstrations."
+    },
+    "example": "Suppose several demonstrations show a robot arm opening a drawer. Change point detection can divide each trajectory into stages such as reaching the handle, grasping it, and pulling; CST then integrates these demonstrated stages into a skill tree.",
+    "goal": "Build a hierarchical skill tree by dividing demonstrated solution trajectories into individual skills.",
+    "inputs": [
+      "Sample solution trajectories",
+      "Demonstrations of the task"
+    ],
+    "outputs": [
+      "Trajectory segments representing skills",
+      "An integrated hierarchical skill tree"
+    ],
+    "steps": [
+      "Collect sample solution trajectories from demonstration.",
+      "Run incremental MAP change point detection on each trajectory.",
+      "Use the resulting segments as skills.",
+      "Integrate the skills into a skill tree."
+    ],
+    "tradeoffs": [
+      "Creates reusable skills from complete demonstrations.",
+      "Requires sample solution trajectories.",
+      "Skill boundaries depend on change point detection."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "demos",
+          "label": "Demonstration trajectories",
+          "note": "Sample solutions to the task"
+        },
+        {
+          "id": "detection",
+          "label": "Change point detection",
+          "note": "Incremental MAP segmentation"
+        },
+        {
+          "id": "skills",
+          "label": "Skill segments",
+          "note": "Trajectory pieces between change points"
+        },
+        {
+          "id": "integration",
+          "label": "Tree integration",
+          "note": "Combines segmentation results"
+        },
+        {
+          "id": "tree",
+          "label": "Skill tree",
+          "note": "Hierarchical output"
+        }
+      ],
+      "edges": [
+        {
+          "from": "demos",
+          "to": "detection",
+          "label": "trajectories"
+        },
+        {
+          "from": "detection",
+          "to": "skills",
+          "label": "segments"
+        },
+        {
+          "from": "skills",
+          "to": "integration",
+          "label": "skills"
+        },
+        {
+          "from": "integration",
+          "to": "tree",
+          "label": ""
+        }
+      ],
+      "caption": "CST segments demonstration trajectories and integrates the resulting skills into a tree."
+    }
+  },
   "related": [
     "grafting-decision-trees",
     "skill-chaining",

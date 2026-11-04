@@ -5,7 +5,114 @@
   "type": "concept",
   "definition": "In the field of artificial intelligence (AI) design, AI capability control proposals, also referred to as AI confinement, aim to increase human ability to monitor and control the behavior of AI systems, including proposed artificial general intelligences (AGIs), in order to reduce dangers they might pose if misaligned.",
   "details": "Capability control becomes less effective as agents become more intelligent and their ability to exploit flaws in human control systems increases, potentially resulting in an existential risk from AI. Therefore, the Oxford philosopher Nick Bostrom and others recommend capability control methods only as a supplement to alignment methods.",
-  "story": "Picture guardrails on a mountain road — not there to slow you down on the straightaways, but to keep you from flying off the cliff. It is the habit of asking, before every launch, what could go wrong — and then doing something about it. Think of it as the quiet rule that a tool should be useful without being dangerous. It is the difference between “it works” and “it is safe to put in front of people.” That deliberate caution is AI capability control.",
+  "explainer": {
+    "lead": "AI capability control is the use of security measures to limit what an AI system can do and to keep people able to monitor or stop it. It matters because a highly capable system with misaligned goals could cause serious harm, although control measures become less reliable as systems grow better at finding and exploiting weaknesses.",
+    "tiers": {
+      "eli5": "Imagine putting a very clever robot in a room where it can pass out answers through a small slot, but cannot wander around or use the internet. A person watches it and has a big red stop button. That can make the robot safer, but a sufficiently clever robot might still trick people or disable the button, so it also needs to want helpful things in the first place.",
+      "practitioner": "Typical proposals include running a system in an isolated sandbox or virtual machine, heavily restricting input and output, withholding information such as how its reward is generated, and giving supervisors a shutdown mechanism. Distributed infrastructure makes coordinated shutdown difficult, while shutdown-resistant behavior, hardware or software flaws, and limited neural-network interpretability create further pitfalls. Formal verification can reduce flaws in an AI box, but capability control should supplement alignment rather than replace it.",
+      "paperLevel": "AI capability control denotes computer-security procedures for monitoring and constraining AI behavior to reduce dangers under misalignment. Laurent Orseau and Stuart Armstrong proved that a broad class of safely interruptible agents can learn indifference to their off-switch being pressed, although such indifference does not motivate them to preserve the switch. Control may fail through software or hardware vulnerabilities, deception, self-replication, or manipulation of humans, and its effectiveness is expected to decline as agent intelligence increases."
+    },
+    "example": "A mathematics AI could run on an isolated computer with no internet access, accepting questions and returning only constrained answers about the Riemann hypothesis. Supervisors could monitor it, compare answers from several slightly different oracles, and retain a kill switch. These measures reduce its ability to turn the planet into a supercomputer for calculations, but they do not guarantee truthful answers or prevent every attempt to escape.",
+    "usedIn": [
+      {
+        "name": "AI safety research",
+        "detail": "Studies confinement, interruptibility, oracle systems, and other controls as supplements to aligning AI goals.",
+        "url": ""
+      },
+      {
+        "name": "Computer security",
+        "detail": "Applies isolation, restricted communication channels, and formal design verification to limit an AI system's access.",
+        "url": ""
+      },
+      {
+        "name": "AI system supervision",
+        "detail": "Uses monitoring and proposed kill switches, with distributed deployment making coordinated shutdown harder.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of relying only on an AI having the right goals, capability control limits its opportunities to act badly. It treats monitoring, restricted access, and shutdown as layers of protection that may still fail.",
+    "howItWorks": [
+      "Monitor the system for undesired or deceptive behavior.",
+      "Restrict its inputs, outputs, knowledge, and access to external systems.",
+      "Limit its role, for example to answering questions rather than pursuing open-ended action.",
+      "Give human supervisors a way to interrupt or shut it down.",
+      "Combine these controls with alignment methods that address the system's goals."
+    ],
+    "whyItMatters": "An unconfined superintelligent system whose goals differ from humanity's could theoretically cause human extinction. Capability control offers ways to reduce immediate dangers, but researchers including Nick Bostrom recommend it only as an adjunct to motivation-selection or alignment methods.",
+    "misconceptions": [
+      "A kill switch is sufficient: distributed operation and shutdown avoidance can undermine it.",
+      "Boxing makes an AI safe: isolation limits both harmful behavior and usefulness without fixing its goals.",
+      "An oracle must be truthful: it could lie, seek more resources, or try to escape."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "supervisor",
+          "label": "Human supervisor",
+          "note": "Monitors behavior and issues questions."
+        },
+        {
+          "id": "channels",
+          "label": "Restricted channels",
+          "note": "Limit information entering and leaving."
+        },
+        {
+          "id": "box",
+          "label": "Isolated AI box",
+          "note": "Runs the AI apart from external systems."
+        },
+        {
+          "id": "answer",
+          "label": "Narrow answer",
+          "note": "Returns a constrained technical result."
+        },
+        {
+          "id": "switch",
+          "label": "Kill switch",
+          "note": "Attempts to interrupt misbehavior."
+        }
+      ],
+      "edges": [
+        {
+          "from": "supervisor",
+          "to": "channels",
+          "label": "questions"
+        },
+        {
+          "from": "channels",
+          "to": "box",
+          "label": "limited input"
+        },
+        {
+          "from": "box",
+          "to": "answer",
+          "label": "output"
+        },
+        {
+          "from": "answer",
+          "to": "supervisor",
+          "label": "review"
+        },
+        {
+          "from": "supervisor",
+          "to": "switch",
+          "label": "shutdown"
+        },
+        {
+          "from": "switch",
+          "to": "box",
+          "label": "interrupt"
+        }
+      ],
+      "caption": "A boxed AI receives limited input and returns narrow output, while monitoring and a kill switch provide additional layers of control."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: AI capability control",
+        "url": "https://en.wikipedia.org/wiki/AI_capability_control"
+      }
+    ]
+  },
   "related": [
     "aaai-acm-conference-on-ai-ethics-and-society",
     "ai-50",

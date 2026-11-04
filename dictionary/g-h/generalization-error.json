@@ -5,7 +5,97 @@
   "type": "concept",
   "definition": "For supervised learning applications in machine learning and statistical learning theory, generalization error (also known as the out-of-sample error or the risk) is a measure of how accurately an algorithm is able to predict outcomes for previously unseen data.",
   "details": "As learning algorithms are evaluated on finite samples, the evaluation of a learning algorithm may be sensitive to sampling error. As a result, measurements of prediction error on the current data may not provide much information about the algorithm's predictive ability on new, unseen data. The generalization error can be minimized by avoiding overfitting in the learning algorithm. The performance of machine learning algorithms is commonly visualized by learning curve plots that show estimates of the generalization error throughout the learning process.",
-  "story": "Picture a librarian organizing a million slips of paper so that any one of them can be found in a heartbeat. The examples a machine reads become the world it believes in. Better ingredients make a better meal, and the same is true here. Garbage in, garbage out — and the reverse: clean, representative data makes the model quietly brilliant. That care with the raw material is Generalization error.",
+  "explainer": {
+    "lead": "Generalization error tells you how badly a trained model is expected to perform on data it has not seen before. It matters because strong results on the available examples do not necessarily mean the model will make reliable predictions in real use.",
+    "tiers": {
+      "eli5": "Imagine practicing for a quiz by memorizing the answers to ten example questions. You might get those questions perfect but struggle with new ones. Generalization error is like your expected rate of mistakes on fresh questions, rather than on the ones you already practiced.",
+      "practitioner": "Generalization error is estimated with data kept separate from training, commonly using a validation or test split and cross-validation during model selection. Learning curves help compare training and estimated out-of-sample performance as training progresses or more data becomes available. A large gap can indicate overfitting, while small finite evaluation samples can make estimates noisy.",
+      "paperLevel": "For a predictor f and loss L, the generalization error, or risk, is R(f) = E_(x,y)~D[L(f(x), y)], where D is the data distribution. A finite-sample estimate is (1/n) sum_i L(f(x_i), y_i), computed on unseen examples. Because D is unknown and evaluation samples are finite, this estimate is subject to sampling error."
+    },
+    "example": "Suppose a spam classifier makes mistakes on 1% of its training emails but on 12% of a separate set of new emails. The 12% held-out error estimates its generalization error, and the large gap suggests that the classifier may have overfitted the training sample.",
+    "usedIn": [
+      {
+        "name": "Supervised classification",
+        "detail": "Assesses how accurately a classifier is expected to label previously unseen examples.",
+        "url": ""
+      },
+      {
+        "name": "Supervised regression",
+        "detail": "Assesses prediction loss on new outcomes rather than only on the training sample.",
+        "url": ""
+      },
+      {
+        "name": "Model evaluation",
+        "detail": "Guides held-out evaluation and learning-curve analysis, including checks for overfitting.",
+        "url": ""
+      }
+    ],
+    "intuition": "A model should learn patterns that carry over to new cases, not just peculiarities of its training examples. Generalization error captures that distinction by measuring predictive performance on previously unseen data.",
+    "howItWorks": [
+      "Train a supervised learning algorithm on a finite sample.",
+      "Measure its loss on examples not used to fit it.",
+      "Use that out-of-sample loss as an estimate of generalization error.",
+      "Account for sampling error, since a finite evaluation set can give a noisy estimate.",
+      "Reduce overfitting to help improve performance on new data."
+    ],
+    "whyItMatters": "It separates apparent skill on known examples from useful predictive ability on new cases. Monitoring it helps reveal overfitting and makes finite-sample evaluations easier to interpret.",
+    "misconceptions": [
+      "Low training error is not the same as low generalization error.",
+      "A held-out error measurement is an estimate, not an exact value of the true generalization error."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "train",
+          "label": "Training sample",
+          "note": "Finite labeled data"
+        },
+        {
+          "id": "learn",
+          "label": "Learning algorithm",
+          "note": "Fits a predictor"
+        },
+        {
+          "id": "model",
+          "label": "Trained predictor",
+          "note": "Makes new predictions"
+        },
+        {
+          "id": "unseen",
+          "label": "Unseen examples",
+          "note": "Separate from training"
+        },
+        {
+          "id": "risk",
+          "label": "Generalization error",
+          "note": "Expected out-of-sample loss"
+        }
+      ],
+      "edges": [
+        {
+          "from": "train",
+          "to": "learn",
+          "label": "fits on"
+        },
+        {
+          "from": "learn",
+          "to": "model",
+          "label": "produces"
+        },
+        {
+          "from": "unseen",
+          "to": "model",
+          "label": "inputs"
+        },
+        {
+          "from": "model",
+          "to": "risk",
+          "label": "loss on new data"
+        }
+      ],
+      "caption": "Generalization error concerns the trained predictor's loss on unseen data, not its fit to the training sample."
+    }
+  },
   "related": [
     "error-driven-learning",
     "mean-squared-error",

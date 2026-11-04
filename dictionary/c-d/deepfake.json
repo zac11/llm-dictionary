@@ -5,7 +5,118 @@
   "type": "concept",
   "definition": "Synthetic media, typically video or audio, generated or manipulated using AI to convincingly depict a real person saying or doing something they did not actually say or do.",
   "details": "Deepfakes raise significant concerns around misinformation, fraud, and consent, and have motivated research into both detection techniques and provenance/watermarking approaches for authenticating genuine media.",
-  "story": "Imagine a new medicine that works brilliantly in the lab but still has to be tested on real people before anyone takes it. Think of it as the quiet rule that a tool should be useful without being dangerous. The idea is simple: before something powerful is let loose, someone checks that it will not do real harm to real people. Rules and red-teaming are the brakes that make the speed trustworthy. That deliberate caution is Deepfake.",
+  "explainer": {
+    "lead": "Deepfakes make fabricated pictures, videos, and voices look or sound authentic. They can support creative effects and research, but also give scams, harassment, and political misinformation a powerful way to borrow someone's identity.",
+    "tiers": {
+      "eli5": "Imagine a digital puppet that can copy a person's face or voice after studying recordings of them. Someone can then make the puppet appear to say or do things the real person never did. That is why a convincing clip still needs to be checked before you believe or share it.",
+      "practitioner": "Practitioners work on either synthesis or image forensics: GANs, autoencoders, and facial-recognition techniques can generate or alter media, while detectors aim to identify manipulation. Video systems require attention to training-data requirements, identity leakage, occlusions, and flicker or jitter across frames. A result that looks convincing on one identity may fail when applied to an unseen identity.",
+      "paperLevel": "A deepfake can be represented as m = G(s, d), where an AI-based generator or editor G combines source media s with driving content d to produce an image, video, or audio artifact depicting words, actions, or identities not present in the original recording. Early automated facial reanimation includes Christoph Bregler's 1997 Video Rewrite, while GANs in the mid-2010s enabled substantially improved visual fidelity. Known limits include heavy or paired training-data requirements, identity leakage, occlusion artifacts, and temporal incoherence."
+    },
+    "example": "Face2Face, published in 2016, takes ordinary camera footage of one person's face and changes their expressions to mimic another person's in real time. The resulting video can make the target appear to smile, frown, or react in ways they never actually did.",
+    "usedIn": [
+      {
+        "name": "Video Rewrite",
+        "detail": "Published in 1997, it automatically altered footage of a speaker so their mouth matched a different audio track.",
+        "url": ""
+      },
+      {
+        "name": "Face2Face",
+        "detail": "Published in 2016, it transferred facial expressions between people in real time using an ordinary, non-depth camera.",
+        "url": ""
+      },
+      {
+        "name": "Synthesizing Obama",
+        "detail": "Published in 2017, it generated photorealistic mouth shapes from audio in footage of Barack Obama.",
+        "url": ""
+      },
+      {
+        "name": "Cinema and video art",
+        "detail": "Artists have used deepfakes to recast familiar film scenes and explore performance, gender, and race.",
+        "url": ""
+      }
+    ],
+    "intuition": "A deepfake works like a learned digital impersonation: a model extracts patterns from recordings, then synthesizes new media that follows those patterns. The result can preserve a person's appearance or voice while changing what they appear to say or do.",
+    "howItWorks": [
+      "Collect source images, video, or audio containing the appearance or voice to be reproduced.",
+      "Train a model to learn relationships between facial features, expressions, speech sounds, and mouth shapes.",
+      "Supply driving content, such as another person's expressions or a separate audio track.",
+      "Generate and combine new frames or audio into media that appears authentic."
+    ],
+    "whyItMatters": "Deepfakes can enable fraud, nonconsensual sexual content, bullying, hoaxes, and disinformation, including interference with elections. Their spread has made detection, media authentication, and research into why people share them important complements to technical work on synthesis.",
+    "misconceptions": [
+      "Not every edited image or video is a deepfake; the term centers on AI-generated or AI-manipulated synthetic media.",
+      "Deepfakes can depict fictional people as well as real ones, and not every use is malicious.",
+      "A realistic result is not evidence of authenticity, and automated detection is not a guaranteed verdict."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "source",
+          "label": "Source media",
+          "note": "Images, video, or audio of a subject"
+        },
+        {
+          "id": "driver",
+          "label": "Driving content",
+          "note": "New speech or another person's expressions"
+        },
+        {
+          "id": "model",
+          "label": "AI synthesis model",
+          "note": "Learns and reproduces visual or audio patterns"
+        },
+        {
+          "id": "output",
+          "label": "Deepfake media",
+          "note": "Synthetic depiction presented as a coherent artifact"
+        },
+        {
+          "id": "detector",
+          "label": "Forensic detector",
+          "note": "Analyzes media for signs of manipulation"
+        }
+      ],
+      "edges": [
+        {
+          "from": "source",
+          "to": "model",
+          "label": "training data"
+        },
+        {
+          "from": "driver",
+          "to": "model",
+          "label": "guides output"
+        },
+        {
+          "from": "model",
+          "to": "output",
+          "label": "generates"
+        },
+        {
+          "from": "output",
+          "to": "detector",
+          "label": "analysis"
+        }
+      ],
+      "caption": "A synthesis model combines learned source-media patterns with driving content; forensic analysis is a separate attempt to identify the resulting manipulation."
+    },
+    "image": {
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9c/Dictators_-_Kim_Jong-Un_by_RepresentUs.webm/960px--Dictators_-_Kim_Jong-Un_by_RepresentUs.webm.jpg",
+      "alt": "Deepfake — Realistic artificially generated media",
+      "width": 640,
+      "height": 360,
+      "credit": "RepresentUs",
+      "license": "CC BY 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Dictators_-_Kim_Jong-Un_by_RepresentUs.webm"
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Deepfake",
+        "url": "https://en.wikipedia.org/wiki/Deepfake"
+      }
+    ]
+  },
   "related": [
     "bias-in-ml",
     "bias-mitigation",

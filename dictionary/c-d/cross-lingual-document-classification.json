@@ -5,6 +5,81 @@
   "type": "concept",
   "definition": "Assigning category labels to documents written in different languages, often transferring a classifier trained on one language to others.",
   "details": "Assigning category labels to documents written in different languages, often transferring a classifier trained on one language to others. It relies on cross-lingual embeddings or multilingual models so that label knowledge learned in a high-resource language generalizes to low-resource ones.",
+  "explainer": {
+    "lead": "Cross-lingual document classification lets a system sort documents by topic or category even when they are written in different languages. It can reuse labels learned from a language with plenty of training data to classify documents in languages with much less.",
+    "tiers": {
+      "eli5": "Imagine learning to sort picture cards into boxes using English instructions, then sorting similar cards with Spanish instructions. The pictures and boxes stay meaningful even though the words change. This approach helps computers sort documents in languages where there are not many labeled examples to learn from.",
+      "practitioner": "A typical setup trains a classifier on labeled documents in a high-resource language, using cross-lingual embeddings or a multilingual model to represent text. The classifier is then applied to documents in other languages, including low-resource ones. Its usefulness depends on whether the shared representations preserve the information needed for the labels and whether knowledge transfers well to the target language.",
+      "paperLevel": "Given labeled source-language documents D_s = {(x_i, y_i)}, the goal is to learn a predictor f that assigns the correct label y to a document x written in target language t. This is often done by mapping source- and target-language text into a shared representation space and training the label predictor there. The central limitation is that transfer depends on label knowledge generalizing across languages, rather than on labeled target-language data being available."
+    },
+    "example": "Train a classifier on English news articles labeled “sports” or “politics.” A Spanish article about a football match is encoded with the same multilingual model, and the classifier labels it “sports” without requiring a separate set of labeled Spanish articles.",
+    "intuition": "Documents about the same topic can share a useful meaning-based representation even when their words come from different languages. A classifier can learn category boundaries in that shared space instead of starting over for every language.",
+    "howItWorks": [
+      "Collect labeled documents in a high-resource source language.",
+      "Represent their text with cross-lingual embeddings or a multilingual model.",
+      "Train a classifier to map those representations to category labels.",
+      "Represent target-language documents in the same shared space.",
+      "Apply the classifier to predict their categories."
+    ],
+    "whyItMatters": "It reduces the need to create labeled training data separately for every language. That is especially valuable for low-resource languages, where such data may be scarce.",
+    "misconceptions": [
+      "It does not necessarily translate each document before classifying it.",
+      "It is not language identification: the output is a document category, not the document’s language.",
+      "Training in one language does not guarantee equally accurate classification in every other language."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "source",
+          "label": "Labeled source documents",
+          "note": "High-resource language with category labels"
+        },
+        {
+          "id": "encoder",
+          "label": "Shared text representations",
+          "note": "Cross-lingual embeddings or a multilingual model"
+        },
+        {
+          "id": "classifier",
+          "label": "Category classifier",
+          "note": "Learns labels from source-language examples"
+        },
+        {
+          "id": "target",
+          "label": "Target-language document",
+          "note": "Encoded in the same representation space"
+        },
+        {
+          "id": "label",
+          "label": "Predicted category",
+          "note": "A label transferred to the target document"
+        }
+      ],
+      "edges": [
+        {
+          "from": "source",
+          "to": "encoder",
+          "label": "encode"
+        },
+        {
+          "from": "encoder",
+          "to": "classifier",
+          "label": "train"
+        },
+        {
+          "from": "target",
+          "to": "encoder",
+          "label": "encode"
+        },
+        {
+          "from": "classifier",
+          "to": "label",
+          "label": "predict"
+        }
+      ],
+      "caption": "A shared representation space lets label knowledge learned in one language transfer to documents in another."
+    }
+  },
   "citation": {
     "title": "Cross-Lingual Document Classification",
     "authors": [],

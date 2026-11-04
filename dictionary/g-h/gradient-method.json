@@ -5,7 +5,119 @@
   "type": "algorithm",
   "definition": "In optimization, a gradient method is an algorithm to solve problems of the form min x ∈ R n f ( x ) {\\displaystyle \\min _{x\\in \\mathbb {R} ^{n}}\\;f(x)} with the search directions defined by the gradient of the function at the current point.",
   "details": "Examples of gradient methods are the gradient descent and the conjugate gradient.",
-  "story": "Imagine teaching a friend to shoot a basketball. They miss, and you walk them backwards through the shot — elbow, wrist, release — to find what needs fixing. It is the same loop you use to learn anything: try, miss, correct, try again. Underneath all the magic is a patient process of small improvements. It is learning from every miss instead of repeating the same mistake. And that is Gradient method — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "A gradient method minimizes a function by using its gradient at the current point to guide the search. It turns information about local slope into a sequence of updated points, aiming to end at a low function value.",
+    "tiers": {
+      "eli5": "Imagine walking downhill in thick fog and using the slope beneath your feet to decide where to go next. A gradient method does something similar with a mathematical function: it checks the slope, moves, and checks again. Different methods use that slope clue in different ways.",
+      "practitioner": "Provide the objective function, its gradient, and a starting point, then apply the chosen method's direction and update rules until a stopping test is met. Gradient descent is one option, but conjugate gradient also belongs to this family, so their updates should not be treated as identical. Step-size and stopping choices need care because they directly control the updates and when the search ends.",
+      "paperLevel": "The problem is min_{x in R^n} f(x). A gradient method defines its search directions using the gradient of f at the current point; gradient descent and conjugate gradient are examples. The family is therefore characterized by gradient-based direction construction rather than by one universal update formula."
+    },
+    "example": "For f(x) = x^2, the gradient is 2x. Using gradient descent from x0 = 4 with step size 0.25 gives x1 = 4 - 0.25 * 8 = 2, reducing f from 16 to 4.",
+    "usedIn": [
+      {
+        "name": "Mathematical optimization",
+        "detail": "Searches for a point that minimizes a real-valued function of n variables.",
+        "url": ""
+      },
+      {
+        "name": "Machine learning",
+        "detail": "Gradient descent can be used to reduce a model's objective function through repeated parameter updates.",
+        "url": ""
+      }
+    ],
+    "goal": "Find an approximate solution to min_{x in R^n} f(x), using gradients at visited points to determine search directions.",
+    "inputs": [
+      "Objective function f",
+      "Gradient of f",
+      "Starting point x0",
+      "Direction and update rules",
+      "Step-size and stopping rules"
+    ],
+    "outputs": [
+      "Final candidate point",
+      "Function value at that point"
+    ],
+    "steps": [
+      "Choose a starting point.",
+      "Evaluate the gradient there.",
+      "Construct a gradient-based search direction.",
+      "Choose a step and update the point.",
+      "Stop if the test passes; otherwise repeat."
+    ],
+    "tradeoffs": [
+      "The gradient must be available to evaluate.",
+      "Different gradient methods use different direction rules.",
+      "Step-size choices affect each update.",
+      "The stopping rule determines when the approximate answer is returned."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "start",
+          "label": "Starting point",
+          "note": "Choose x0."
+        },
+        {
+          "id": "gradient",
+          "label": "Current gradient",
+          "note": "Evaluate the gradient at the current point."
+        },
+        {
+          "id": "direction",
+          "label": "Search direction",
+          "note": "Build a direction from gradient information."
+        },
+        {
+          "id": "update",
+          "label": "Point update",
+          "note": "Move using the selected step."
+        },
+        {
+          "id": "stop",
+          "label": "Stopping test",
+          "note": "Decide whether to finish or iterate."
+        },
+        {
+          "id": "result",
+          "label": "Candidate minimum",
+          "note": "Return the final point and its function value."
+        }
+      ],
+      "edges": [
+        {
+          "from": "start",
+          "to": "gradient",
+          "label": "evaluate"
+        },
+        {
+          "from": "gradient",
+          "to": "direction",
+          "label": "guides"
+        },
+        {
+          "from": "direction",
+          "to": "update",
+          "label": "step"
+        },
+        {
+          "from": "update",
+          "to": "stop",
+          "label": "test"
+        },
+        {
+          "from": "stop",
+          "to": "gradient",
+          "label": "continue"
+        },
+        {
+          "from": "stop",
+          "to": "result",
+          "label": "finish"
+        }
+      ],
+      "caption": "A gradient method repeatedly evaluates a gradient, constructs a search direction, updates the point, and checks whether to stop."
+    }
+  },
   "related": [
     "derivation-of-the-conjugate-gradient-method",
     "nonlinear-conjugate-gradient-method",

@@ -5,7 +5,119 @@
   "type": "algorithm",
   "definition": "Gaussian adaptation (GA), also called normal or natural adaptation (NA) is an evolutionary algorithm designed for the maximization of manufacturing yield due to statistical deviation of component values of signal processing systems.",
   "details": "In short, GA is a stochastic adaptive process where a number of samples of an n-dimensional vector x[xT = (x1, x2, ..., xn)] are taken from a multivariate Gaussian distribution, N(m, M), having mean m and moment matrix M. The samples are tested for fail or pass. The first- and second-order moments of the Gaussian restricted to the pass samples are m* and M*. The outcome of x as a pass sample is determined by a function s(x), 0 < s(x) < q ≤ 1, such that s(x) is the probability that x will be selected as a pass sample. The average probability of finding pass samples (yield) is P ( m ) = ∫ s ( x ) N ( x − m ) d x {\\displaystyle P(m)=\\int s(x)N(x-m)\\,dx} Then the theorem of GA states: For any s(x) and for any value of P < q, there always exist a Gaussian p. d. f. [ probability density function ] that is adapted for maximum dispersion. The necessary conditions for a local optimum are m = m* and M proportional to M*. The dual problem is also solved: P is maximized while keeping the dispersion constant (Kjellström, 1991). Proofs of the theorem may be found in the papers by Kjellström, 1970, and Kjellström & Taxén, 1981. Since dispersion is defined as the exponential of entropy/disorder/av",
-  "story": "Think of a lightbulb moment: the idea was always there, but someone had to point a finger at it. Behind the jargon is an idea you could explain to a friend over coffee. At its heart it is a simple notion, once you strip away the fancy name. Once you see it, you cannot unsee it. And that idea, made concrete, is Gaussian adaptation.",
+  "explainer": {
+    "lead": "Gaussian adaptation is an evolutionary method for designing signal-processing systems that still work when component values vary during manufacturing. It repeatedly samples designs, keeps the ones that pass, and adjusts a Gaussian distribution to improve yield or spread the acceptable designs more widely.",
+    "tiers": {
+      "eli5": "Imagine making many copies of an electronic gadget whose parts are never exactly the values printed on their labels. You test lots of slightly different combinations, learn from the ones that work, and then try new combinations around those successes. Gaussian adaptation helps the factory make more working gadgets without demanding perfect parts.",
+      "practitioner": "Apply GA by sampling an n-dimensional component vector from N(m, M), testing each sample with the pass-selection function s(x), and estimating the first- and second-order moments of the passing samples. Update toward m = m* and M proportional to M*, repeating either to increase dispersion at a target yield or to maximize yield at fixed dispersion. Repeated sampling and testing are required, and the stated optimum conditions are local rather than a general global guarantee.",
+      "paperLevel": "GA samples x from a multivariate Gaussian N(m, M), with pass selection defined by s(x), where 0 < s(x) < q <= 1, and yield P(m) = integral s(x)N(x-m) dx. For any s(x) and P < q, the theorem asserts an adapted Gaussian with maximum dispersion; necessary conditions for a local optimum are m = m* and M proportional to M*. The dual problem maximizes P while holding dispersion constant. Kjellström (1991) presents this formulation, with proofs cited to Kjellström (1970) and Kjellström & Taxén (1981)."
+    },
+    "example": "For a two-component design, let x = (R, C) represent resistance and capacitance. If 100 sampled pairs are tested and 40 pass, GA computes m* and M* from those 40 pairs, then moves m toward m* and makes M proportional to M*. Further rounds seek greater dispersion at the target yield, or greater yield at unchanged dispersion.",
+    "usedIn": [
+      {
+        "name": "Signal-processing manufacturing",
+        "detail": "Maximizing yield when manufactured component values deviate statistically.",
+        "url": ""
+      },
+      {
+        "name": "Component-yield optimization",
+        "detail": "Adapting the mean and spread of candidate component-value vectors using pass samples.",
+        "url": ""
+      }
+    ],
+    "goal": "Adapt a Gaussian search distribution so a signal-processing design achieves high manufacturing yield despite statistical component variation. It can maximize dispersion at a chosen yield or maximize yield while keeping dispersion constant.",
+    "inputs": [
+      "Component vectors x in n dimensions",
+      "Gaussian mean m and moment matrix M",
+      "Pass-selection function s(x)",
+      "Target yield or fixed dispersion"
+    ],
+    "outputs": [
+      "Adapted Gaussian parameters m and M",
+      "Manufacturing yield P(m)",
+      "Maximum-dispersion or maximum-yield setting"
+    ],
+    "steps": [
+      "Start with a multivariate Gaussian N(m, M).",
+      "Sample component vectors x from that distribution.",
+      "Test samples and retain passes according to s(x).",
+      "Compute pass-sample moments m* and M*.",
+      "Adapt m and M, then repeat for the chosen objective."
+    ],
+    "tradeoffs": [
+      "Requires repeated sampling and pass/fail testing.",
+      "The search is modeled by a multivariate Gaussian.",
+      "The optimum conditions are local, not a global guarantee.",
+      "Yield and dispersion form two alternative objectives."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "gaussian",
+          "label": "Gaussian distribution",
+          "note": "Current mean m and moment matrix M"
+        },
+        {
+          "id": "samples",
+          "label": "Component samples",
+          "note": "Vectors x drawn in n dimensions"
+        },
+        {
+          "id": "test",
+          "label": "Pass selection",
+          "note": "Samples tested through s(x)"
+        },
+        {
+          "id": "moments",
+          "label": "Pass moments",
+          "note": "Estimate m* and M* from passes"
+        },
+        {
+          "id": "adapt",
+          "label": "Adapt parameters",
+          "note": "Update the Gaussian search distribution"
+        },
+        {
+          "id": "yield",
+          "label": "Yield objective",
+          "note": "Increase dispersion or maximize P"
+        }
+      ],
+      "edges": [
+        {
+          "from": "gaussian",
+          "to": "samples",
+          "label": "draw x"
+        },
+        {
+          "from": "samples",
+          "to": "test",
+          "label": "evaluate"
+        },
+        {
+          "from": "test",
+          "to": "moments",
+          "label": "passes"
+        },
+        {
+          "from": "moments",
+          "to": "adapt",
+          "label": "m*, M*"
+        },
+        {
+          "from": "adapt",
+          "to": "gaussian",
+          "label": "repeat"
+        },
+        {
+          "from": "adapt",
+          "to": "yield",
+          "label": "optimize"
+        }
+      ],
+      "caption": "GA cycles between Gaussian sampling, pass selection, moment estimation, and parameter adaptation."
+    }
+  },
   "related": [
     "a-r-d-prasad",
     "abeba-birhane",

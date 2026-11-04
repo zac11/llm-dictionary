@@ -5,7 +5,46 @@
   "type": "concept",
   "definition": "The set of problems that arise when analyzing or modeling data in high-dimensional spaces, where data becomes increasingly sparse and distances become less meaningful.",
   "details": "The curse of dimensionality motivates techniques like dimensionality reduction and regularization, and helps explain why naive distance-based methods can struggle as the number of input features grows very large.",
-  "story": "Think of a historian sorting through boxes of letters, building a picture of an era one sentence at a time. Every machine is shaped by what it was shown, so someone has to choose that material with care. The examples a machine reads become the world it believes in. The words a model reads become the world it believes in. And that is Curse of Dimensionality — the unglamorous work everything else stands on.",
+  "explainer": {
+    "lead": "Adding more features to data can make analysis harder rather than richer: observations spread thinly through the space, and distances between them become less useful. This matters for anyone building models or using nearest-neighbour-style methods, because a very large feature set can undermine simple intuitions about similarity.",
+    "tiers": {
+      "eli5": "Imagine trying to find your closest friend in a room, then in a huge building with thousands of rooms: everyone becomes spread out, and 'close' stops being so helpful. Data can behave similarly when each item has a huge number of features. That is why people often try to use fewer, more useful features or constrain their models.",
+      "practitioner": "Treat very high-dimensional feature spaces as a warning sign for naive distance-based analysis and modelling. Dimensionality reduction can make the representation more manageable, while regularization can constrain models when features are numerous. Check whether distances still support the intended similarity comparisons rather than assuming that adding features always improves results.",
+      "paperLevel": "For observations x_i in R^d, the curse of dimensionality describes the difficulties that emerge as d grows: data become increasingly sparse and distance-based notions of proximity become less meaningful. It motivates dimensionality reduction and regularization, and its practical severity depends on how the analysis or model uses the high-dimensional representation."
+    },
+    "example": "Suppose a nearest-neighbour method compares items using 2 features and gives useful matches. Expanding each item to 1,000 features can leave the available observations sparsely distributed and make the distances less informative, so the nearest reported match may no longer provide the same useful notion of similarity.",
+    "usedIn": [
+      {
+        "name": "Machine learning",
+        "detail": "Motivates dimensionality reduction and regularization when models face very large feature sets.",
+        "url": ""
+      },
+      {
+        "name": "Nearest-neighbour analysis",
+        "detail": "Explains why distance-based similarity search can struggle as the number of input features grows.",
+        "url": ""
+      },
+      {
+        "name": "High-dimensional data analysis",
+        "detail": "Guides caution when interpreting sparse observations and distances in large feature spaces.",
+        "url": ""
+      }
+    ],
+    "intuition": "A space with many dimensions has room for observations to become extremely spread out. When that happens, nearby points are harder to come by and a distance measurement may no longer capture a useful notion of similarity.",
+    "howItWorks": [
+      "Represent each observation using d input features, so it is a point in a d-dimensional space.",
+      "Increase d while working with high-dimensional observations.",
+      "Observe that the data become increasingly sparse across the space.",
+      "Use distances cautiously, because they become less meaningful for comparing observations.",
+      "Address the problem with dimensionality reduction or regularization where appropriate."
+    ],
+    "whyItMatters": "It explains why simply adding features can hurt distance-based methods and complicate modelling. It also provides the motivation for dimensionality reduction and regularization.",
+    "misconceptions": [
+      "More features do not automatically mean better analysis; very large feature sets can create sparsity and distance problems.",
+      "The issue is not just computational size: it also concerns data sparsity and the meaning of distances.",
+      "Dimensionality reduction and regularization are responses to the problem, not guarantees that every high-dimensional method will fail without them."
+    ]
+  },
   "related": [
     "bias-variance-tradeoff",
     "convex-optimization",

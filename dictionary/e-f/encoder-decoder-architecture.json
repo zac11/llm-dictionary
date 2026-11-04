@@ -2,10 +2,105 @@
   "term": "Encoder-Decoder Architecture",
   "letter": "E",
   "category": "Architecture",
-  "type": "concept",
+  "type": "architecture",
   "definition": "A model design where an encoder processes an input sequence into a representation, and a decoder generates an output sequence from that representation.",
   "details": "This architecture underlies many sequence-to-sequence tasks like machine translation and summarization; the original transformer paper used this design, though many modern LLMs use decoder-only variants instead.",
-  "story": "Think of a jazz musician who has heard so many solos that a new one simply falls out of their fingers. Given a starting line, the machine imagines what comes next — a word, a note, a patch of a picture. It makes new things by recombining everything it has ever seen. Creation, here, is memory recombined at speed. That next-word, next-stroke magic is Encoder-Decoder Architecture.",
+  "explainer": {
+    "lead": "Encoder-decoder architecture splits sequence processing into two jobs: building a representation of the input and generating an output from it. This makes it a natural fit for machine translation and summarization, and the original transformer paper used this design.",
+    "tiers": {
+      "eli5": "Imagine one person reading a story and making notes, then another person using those notes to tell a shorter version. The reader is the encoder, and the storyteller is the decoder. Together, they turn one sequence into another, such as a sentence in one language into a sentence in a different language.",
+      "practitioner": "Use this design when a model must consume an input sequence and generate a related output sequence, as in translation or summarization. The key interface is the representation passed from the encoder to the decoder. Do not assume every transformer-based system has both parts: many modern LLMs use decoder-only variants.",
+      "paperLevel": "For input sequence x and output sequence y, the design can be written as h = Encoder(x), followed by y = Decoder(h), where h is the intermediate representation. The original transformer paper used this encoder-decoder design, while many modern LLMs use decoder-only variants instead."
+    },
+    "example": "For translation, the encoder processes the English sentence \"The cat sits\" into a representation. The decoder then generates the French output \"Le chat est assis.\"",
+    "usedIn": [
+      {
+        "name": "Machine translation",
+        "detail": "The encoder processes a sentence in the source language, and the decoder generates its translation.",
+        "url": ""
+      },
+      {
+        "name": "Summarization",
+        "detail": "The encoder processes the input text, and the decoder generates a shorter output sequence.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Encoder: processes the input sequence.",
+        "detail": ""
+      },
+      {
+        "name": "Representation: carries information from the encoder to the decoder.",
+        "detail": ""
+      },
+      {
+        "name": "Decoder: generates the output sequence from that representation.",
+        "detail": ""
+      }
+    ],
+    "flow": [
+      "Provide an input sequence to the encoder.",
+      "The encoder processes it into an intermediate representation.",
+      "Pass that representation to the decoder.",
+      "The decoder generates the output sequence."
+    ],
+    "origin": "The original transformer paper used an encoder-decoder design.",
+    "lineage": "Although this design underlies many sequence-to-sequence tasks, many modern LLMs use decoder-only variants instead.",
+    "whyItMatters": "Separating input processing from output generation provides a clear structure for sequence-to-sequence tasks. It connects one model design to applications such as translation and summarization.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input sequence",
+          "note": "Text to be processed"
+        },
+        {
+          "id": "encoder",
+          "label": "Encoder",
+          "note": "Processes the input"
+        },
+        {
+          "id": "representation",
+          "label": "Representation",
+          "note": "Encoded input information"
+        },
+        {
+          "id": "decoder",
+          "label": "Decoder",
+          "note": "Generates from the representation"
+        },
+        {
+          "id": "output",
+          "label": "Output sequence",
+          "note": "Generated result"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "encoder",
+          "label": "input"
+        },
+        {
+          "from": "encoder",
+          "to": "representation",
+          "label": "encodes"
+        },
+        {
+          "from": "representation",
+          "to": "decoder",
+          "label": "conditions"
+        },
+        {
+          "from": "decoder",
+          "to": "output",
+          "label": "generates"
+        }
+      ],
+      "caption": "The encoder turns an input sequence into a representation, which the decoder uses to generate an output sequence."
+    }
+  },
   "related": [
     "bert",
     "bi-encoder",

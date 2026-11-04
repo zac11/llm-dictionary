@@ -5,7 +5,113 @@
   "type": "concept",
   "definition": "Techniques applied during data collection, training, or post-processing aimed at reducing unfair or discriminatory patterns in a model's outputs.",
   "details": "Bias mitigation approaches range from curating more representative training data to algorithmic interventions during training or inference, though eliminating bias entirely remains a significant and unresolved challenge.",
-  "story": "Imagine a new medicine that works brilliantly in the lab but still has to be tested on real people before anyone takes it. Think of it as the quiet rule that a tool should be useful without being dangerous. The idea is simple: before something powerful is let loose, someone checks that it will not do real harm to real people. Rules and red-teaming are the brakes that make the speed trustworthy. That deliberate caution is Bias Mitigation.",
+  "explainer": {
+    "lead": "Bias mitigation is the practice of changing data, training, or outputs so a model treats people less unfairly. It matters because a useful model can still repeat discriminatory patterns, and reducing those patterns usually requires checking both accuracy and outcomes across groups.",
+    "tiers": {
+      "eli5": "Imagine a robot judging a drawing contest after seeing mostly drawings by one group of children; it might start favoring that group without anyone telling it to. Bias mitigation means giving it a fairer mix of examples, teaching it more carefully, or checking and adjusting its choices. The aim is fairer decisions, though making the robot perfectly fair is very hard.",
+      "practitioner": "Apply it where bias enters the pipeline: curate more representative data, intervene during training, or adjust outputs during post-processing. Evaluate outcomes across relevant groups alongside overall performance, and keep monitoring after deployment. A fix can shift rather than remove disparities, so do not treat a single intervention or metric as proof that the system is unbiased.",
+      "paperLevel": "For model f, mitigation transforms the training data, learning procedure, or post-processing so that disparities in f's outputs across groups are reduced. Interventions may occur during data collection, training, or inference, and can involve trade-offs with other performance goals. Complete elimination of bias remains an unresolved challenge."
+    },
+    "example": "A hiring model consistently ranks equally qualified candidates from one group below those from another. The team curates more representative training data, tests an intervention during training, and compares the resulting rankings across groups before deciding whether post-processing is also needed.",
+    "usedIn": [
+      {
+        "name": "Hiring systems",
+        "detail": "Checking and reducing discriminatory patterns in model-assisted screening or ranking.",
+        "url": ""
+      },
+      {
+        "name": "Credit decisioning",
+        "detail": "Reviewing training data and model outputs for unfair differences between groups.",
+        "url": ""
+      },
+      {
+        "name": "Healthcare models",
+        "detail": "Improving data representation and examining predictions for inequitable outcomes.",
+        "url": ""
+      },
+      {
+        "name": "Content moderation",
+        "detail": "Auditing and adjusting outputs when moderation decisions unfairly affect particular groups.",
+        "url": ""
+      }
+    ],
+    "intuition": "A model can learn unfair patterns from what it is shown and from how it is optimized. Bias mitigation intervenes at those points, or corrects outputs afterward, instead of assuming the model will become fair on its own.",
+    "howItWorks": [
+      "Identify unfair or discriminatory patterns in the data or outputs.",
+      "Curate training data to improve representation.",
+      "Apply an algorithmic intervention during training when needed.",
+      "Alternatively, adjust outputs through post-processing at inference.",
+      "Re-evaluate outcomes, because mitigation does not guarantee that bias is gone."
+    ],
+    "whyItMatters": "Without mitigation, models can carry unfair patterns into decisions that affect people's opportunities and treatment. Careful intervention can reduce those harms, while repeated evaluation helps reveal whether disparities remain.",
+    "misconceptions": [
+      "More data alone does not guarantee representative data or fair outputs.",
+      "Bias mitigation reduces unfair patterns; it does not prove that all bias has been eliminated.",
+      "A post-processing adjustment cannot by itself explain or fix every problem in the underlying data and training process."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "collect",
+          "label": "Data collection",
+          "note": "Curate more representative examples."
+        },
+        {
+          "id": "data",
+          "label": "Training data",
+          "note": "Examples used for learning."
+        },
+        {
+          "id": "train",
+          "label": "Model training",
+          "note": "Apply algorithmic interventions."
+        },
+        {
+          "id": "model",
+          "label": "Trained model",
+          "note": "Produces candidate outputs."
+        },
+        {
+          "id": "post",
+          "label": "Post-processing",
+          "note": "Adjust outputs at inference."
+        },
+        {
+          "id": "check",
+          "label": "Outcome evaluation",
+          "note": "Check outputs for remaining disparities."
+        }
+      ],
+      "edges": [
+        {
+          "from": "collect",
+          "to": "data",
+          "label": "curated examples"
+        },
+        {
+          "from": "data",
+          "to": "train",
+          "label": ""
+        },
+        {
+          "from": "train",
+          "to": "model",
+          "label": ""
+        },
+        {
+          "from": "model",
+          "to": "post",
+          "label": "outputs"
+        },
+        {
+          "from": "post",
+          "to": "check",
+          "label": "adjusted outputs"
+        }
+      ],
+      "caption": "Mitigation can enter during data collection, training, or post-processing, followed by evaluation of the resulting outcomes."
+    }
+  },
   "related": [
     "bias-in-ml",
     "deepfake",

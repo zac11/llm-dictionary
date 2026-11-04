@@ -5,7 +5,92 @@
   "type": "concept",
   "definition": "Distributed Language Translation (Esperanto: Distribuita Lingvo-Tradukado, DLT) was a project to develop an interlingual machine translation system for twelve European languages.",
   "details": "It ran between 1985 and 1990. The distinctive feature of DLT was the use of [a version of] Esperanto as an intermediate language (IL) and the idea that translation could be divided into two stages: from L1 into IL and then from IL into L2. The intermediate translation could be transmitted over a network to any number of workstations which would take care of the translation from IL into the desired language. Since the IL format would have been disambiguated at the source, it could itself serve as a source for further translation without human intervention. — Job M. van Zuijlen (one of the DLT researchers) DLT was undertaken by the Dutch software house BSO (now part of Atos Origin) in Utrecht in cooperation with the now defunct Dutch airplane manufacturer Fokker and the Universal Esperanto Association. Modern statistic-based and context-based translation programs are able to produce a better translation. A prototype application of DLT in technical translation (through 'AECMA Simplified English', in collaboration with Dutch aircraft manufacturer Fokker) achieved an accuracy rate of around 95 percent. Not only the specific technical vocabulary was checked, but also narrow and broad con",
-  "story": "Picture a translator at the United Nations, listening to one language and whispering the meaning into another in real time. It figures out meaning by noticing which words like to travel together. It does not memorize a rulebook; it absorbs a library. Meaning lives in company — a word is known by the words it keeps. And that is Distributed Language Translation — teaching a machine to read between the lines.",
+  "explainer": {
+    "lead": "Distributed Language Translation was a 1985–1990 project that explored translating many languages through one shared intermediate language: a version of Esperanto. Its network-based design separated the difficult work of understanding a source text from the work of producing translations in multiple target languages.",
+    "tiers": {
+      "eli5": "Imagine one person turning a message into a specially clear secret code, then sending that code to friends who each turn it into their own language. DLT used a version of Esperanto as that code, so every pair of languages did not need its own translator. The first step also cleared up ambiguities so later translations could happen without a person checking the message again.",
+      "practitioner": "DLT split translation into a source-side analysis stage, L1 → IL, and independent target-side generation stages, IL → L2, with the disambiguated intermediate representation distributed over a network. Its prototype for technical translation used AECMA Simplified English with Fokker and reached roughly 95% accuracy in that constrained setting, not as a general result for unrestricted text. Modern statistical and context-based translation systems can produce better translations.",
+      "paperLevel": "DLT was an interlingual machine-translation architecture for twelve European languages, formalized as L1 → IL → L2, where IL was a version of Esperanto disambiguated at the source. Once encoded, the IL could be transmitted to multiple workstations and serve directly as input for further target-language generation without human intervention. The project ran from 1985 to 1990 through BSO in Utrecht with Fokker and the Universal Esperanto Association; its reported prototype accuracy was limited to a technical-translation application using AECMA Simplified English."
+    },
+    "example": "A constrained aircraft-maintenance sentence written in AECMA Simplified English could be analyzed and disambiguated at the source workstation, then encoded in DLT's Esperanto-based intermediate language. That single intermediate text could be sent to several workstations, each generating the required European target language without repeating the source-side analysis.",
+    "usedIn": [
+      {
+        "name": "DLT technical-translation prototype",
+        "detail": "A prototype using AECMA Simplified English, developed with Fokker, achieved approximately 95% accuracy.",
+        "url": ""
+      },
+      {
+        "name": "Multilingual network translation",
+        "detail": "The design allowed one disambiguated intermediate translation to be sent to multiple workstations for generation into different target languages.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of building a separate translator for every language pair, translate everything into one precise bridge language and then out into each destination language. DLT also made this division practical across a network: one workstation handled the ambiguous source text, while others handled delivery into target languages.",
+    "howItWorks": [
+      "Prepare the source-language text, with the technical prototype using AECMA Simplified English.",
+      "Translate and disambiguate it at the source into a version of Esperanto used as the intermediate language.",
+      "Transmit that intermediate translation over a network to one or more workstations.",
+      "Have each workstation translate the intermediate representation into its desired target language without further human intervention."
+    ],
+    "whyItMatters": "DLT shows how an interlingua can reduce multilingual translation to source-to-intermediate and intermediate-to-target components while distributing the work across machines. Its technical prototype also demonstrated the value of constrained input: controlled English helped it reach around 95% accuracy in that application.",
+    "misconceptions": [
+      "It was not a system of direct translators for every possible pair of the twelve languages; translation passed through the intermediate language.",
+      "The roughly 95% accuracy applied to a constrained technical-translation prototype, not to unrestricted translation across all twelve languages.",
+      "Its intermediate language was a version of Esperanto adapted for the system, rather than simply ordinary Esperanto text."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "source",
+          "label": "Source text",
+          "note": "Text in the original language, L1"
+        },
+        {
+          "id": "analysis",
+          "label": "Source workstation",
+          "note": "Translates and disambiguates the input"
+        },
+        {
+          "id": "interlingua",
+          "label": "Esperanto IL",
+          "note": "Unambiguous intermediate translation"
+        },
+        {
+          "id": "network",
+          "label": "Network distribution",
+          "note": "Sends one IL text to multiple destinations"
+        },
+        {
+          "id": "targets",
+          "label": "Target workstations",
+          "note": "Generate the desired languages, L2"
+        }
+      ],
+      "edges": [
+        {
+          "from": "source",
+          "to": "analysis",
+          "label": "L1 input"
+        },
+        {
+          "from": "analysis",
+          "to": "interlingua",
+          "label": "L1 to IL"
+        },
+        {
+          "from": "interlingua",
+          "to": "network",
+          "label": "disambiguated"
+        },
+        {
+          "from": "network",
+          "to": "targets",
+          "label": "IL to L2"
+        }
+      ],
+      "caption": "DLT performed source-side analysis once, then distributed the disambiguated intermediate text for independent target-language generation."
+    }
+  },
   "related": [
     "an-gsq-16-automatic-language-translator",
     "arabic-machine-translation",

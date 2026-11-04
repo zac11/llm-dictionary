@@ -5,6 +5,87 @@
   "type": "concept",
   "definition": "Pushing matrix multiplications down to 8-bit floating point on modern accelerators (H100/B200 class) for further speedups, with careful scaling to preserve stability.",
   "details": "Pushing matrix multiplications down to 8-bit floating point on modern accelerators (H100/B200 class) for further speedups, with careful scaling to preserve stability. Used in DeepSeek-V3 and increasingly in frontier training.",
+  "explainer": {
+    "lead": "FP8 training performs key matrix multiplications with 8-bit floating-point numbers to make large-model training faster on suitable accelerators. The catch is that the smaller number format needs careful scaling so that training remains stable.",
+    "tiers": {
+      "eli5": "Imagine speeding through a huge stack of arithmetic by using shorter numbers instead of very detailed ones. FP8 training uses this idea for important calculations in AI training, with special scaling to stop the shorter numbers from causing problems. It is like zooming a set of measurements into a useful range before writing them down with less detail.",
+      "practitioner": "On H100/B200-class accelerators, apply FP8 to matrix-multiplication operands and use scaling to keep values suitable for the format. Poor scaling can undermine stability, so speed gains should not come at the expense of reliable training. DeepSeek-V3 provides a concrete example of its use in large-model training.",
+      "paperLevel": "For matrices A and B, the core operation uses scaled FP8 representations A_hat and B_hat, approximately computing A_hat B_hat in 8-bit floating point and applying the corresponding scaling to interpret the result. The central limitation is numerical: without careful scaling, the reduced representation can destabilize optimization. The approach targets modern H100/B200-class accelerators rather than guaranteeing the same benefit on arbitrary hardware."
+    },
+    "example": "During a DeepSeek-V3-style training step, a layer's input and weight matrices are scaled before their multiplication runs in FP8 on an H100/B200-class accelerator. The scaled result then feeds the rest of the training computation, with the scaling scheme used to avoid destabilizing optimization.",
+    "usedIn": [
+      {
+        "name": "DeepSeek-V3",
+        "detail": "A named large-model training effort that used FP8 training.",
+        "url": ""
+      },
+      {
+        "name": "Frontier model training",
+        "detail": "FP8 is increasingly used to accelerate training at this scale.",
+        "url": ""
+      },
+      {
+        "name": "H100/B200-class accelerators",
+        "detail": "Modern hardware targeted by these 8-bit matrix multiplications.",
+        "url": ""
+      }
+    ],
+    "intuition": "Use a more compact number format for the heavy matrix arithmetic, gaining speed on hardware built to support it. Scaling acts as a safeguard, keeping the values manageable despite the reduced precision.",
+    "howItWorks": [
+      "Prepare the matrices involved in a training multiplication.",
+      "Scale their values so they can be represented suitably in FP8.",
+      "Run the matrix multiplication in 8-bit floating point on a supported accelerator.",
+      "Account for the scaling and continue training while preserving stability."
+    ],
+    "whyItMatters": "It offers further training speedups beyond higher-precision matrix multiplication when suitable hardware is available. That makes it useful for DeepSeek-V3 and, increasingly, frontier training where faster computation is especially valuable.",
+    "misconceptions": [
+      "It does not mean every value and operation in the model must use FP8; the focus here is matrix multiplication.",
+      "Switching to 8 bits is not enough by itself: careful scaling is needed to preserve stable training.",
+      "The speedup is tied to capable modern accelerators, not an automatic benefit on all hardware."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "matrices",
+          "label": "Training matrices",
+          "note": "Inputs to a matrix multiplication"
+        },
+        {
+          "id": "scale",
+          "label": "Careful scaling",
+          "note": "Keeps FP8 values manageable"
+        },
+        {
+          "id": "fp8",
+          "label": "FP8 multiplication",
+          "note": "Runs on H100/B200-class hardware"
+        },
+        {
+          "id": "update",
+          "label": "Training continues",
+          "note": "Faster arithmetic with stability preserved"
+        }
+      ],
+      "edges": [
+        {
+          "from": "matrices",
+          "to": "scale",
+          "label": "values"
+        },
+        {
+          "from": "scale",
+          "to": "fp8",
+          "label": "scaled operands"
+        },
+        {
+          "from": "fp8",
+          "to": "update",
+          "label": "result"
+        }
+      ],
+      "caption": "FP8 accelerates the matrix-multiplication stage while scaling protects training stability."
+    }
+  },
   "related": [
     "deepseek",
     "accelerators"

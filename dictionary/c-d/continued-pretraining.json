@@ -8,6 +8,92 @@
   ],
   "definition": "Additional pretraining of an existing model on targeted data: a new domain (legal, medical), a new language, or long-context extension.",
   "details": "Additional pretraining of an existing model on targeted data: a new domain (legal, medical), a new language, or long-context extension. The middle ground between pretraining from scratch and light fine-tuning, and the standard route to strong domain or language adaptation (highly relevant for Arabic-focused models).",
+  "explainer": {
+    "lead": "Continued pretraining gives an existing model a second, targeted round of pretraining instead of starting over. It helps the model adapt to a specialized domain, another language, or longer contexts.",
+    "tiers": {
+      "eli5": "Imagine a student who already knows how to read, then spends extra time studying medical books or practicing Arabic. Continued pretraining does something similar for a model: it builds on what the model already learned while giving it focused new experience.",
+      "practitioner": "An engineer starts from an existing model checkpoint and runs another pretraining phase on data chosen for the target domain, language, or context length. The targeted phase should match the adaptation goal; it is a more substantial intervention than light fine-tuning, without training a model from scratch.",
+      "paperLevel": "Let M0 be an existing pretrained model and D a targeted dataset; continued pretraining updates M0 on D to produce an adapted model M1. D may represent a specialized domain, a new language, or data used for long-context extension. The approach occupies the middle ground between pretraining from scratch and light fine-tuning."
+    },
+    "example": "A team takes a general pretrained language model and continues pretraining it on a targeted collection of legal material. The result is a legally adapted model, produced without pretraining a new model from scratch.",
+    "usedIn": [
+      {
+        "name": "Legal AI",
+        "detail": "Adapting an existing model with legal-domain data.",
+        "url": ""
+      },
+      {
+        "name": "Medical AI",
+        "detail": "Targeting pretraining toward medical-domain material.",
+        "url": ""
+      },
+      {
+        "name": "Arabic-focused language models",
+        "detail": "Using additional pretraining for stronger Arabic language adaptation.",
+        "url": ""
+      },
+      {
+        "name": "Long-context language models",
+        "detail": "Extending an existing model to handle longer contexts.",
+        "url": ""
+      }
+    ],
+    "intuition": "Keep the broad abilities learned during the original pretraining, then add a focused training phase for what the model still needs. This avoids both starting from zero and relying only on light fine-tuning.",
+    "howItWorks": [
+      "Start with an existing pretrained model.",
+      "Choose data for the target domain, language, or context length.",
+      "Continue pretraining the model on that targeted data.",
+      "Use the resulting adapted model for the intended specialization."
+    ],
+    "whyItMatters": "It provides a standard route to strong domain or language adaptation while preserving the starting point of an existing model. It is especially relevant for Arabic-focused models and also supports long-context extension.",
+    "misconceptions": [
+      "It is not pretraining a model from scratch.",
+      "It is not the same as light fine-tuning.",
+      "It is not limited to domains; it can also target languages or longer contexts."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "base",
+          "label": "Pretrained model",
+          "note": "The existing starting model"
+        },
+        {
+          "id": "data",
+          "label": "Targeted data",
+          "note": "Domain, language, or long-context data"
+        },
+        {
+          "id": "training",
+          "label": "Continued pretraining",
+          "note": "Additional pretraining on the targeted data"
+        },
+        {
+          "id": "adapted",
+          "label": "Adapted model",
+          "note": "The model after targeted adaptation"
+        }
+      ],
+      "edges": [
+        {
+          "from": "base",
+          "to": "training",
+          "label": "starting point"
+        },
+        {
+          "from": "data",
+          "to": "training",
+          "label": "training data"
+        },
+        {
+          "from": "training",
+          "to": "adapted",
+          "label": "produces"
+        }
+      ],
+      "caption": "An existing model and targeted data feed into additional pretraining, producing an adapted model."
+    }
+  },
   "related": [
     "fine-tuning",
     "pretraining"

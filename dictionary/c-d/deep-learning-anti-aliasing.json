@@ -5,7 +5,93 @@
   "type": "concept",
   "definition": "Deep Learning Anti-Aliasing (DLAA) is a form of spatial anti-aliasing developed by Nvidia.",
   "details": "DLAA depends on and requires Tensor Cores available in Nvidia RTX cards. DLAA is similar to Deep Learning Super Sampling (DLSS) in its anti-aliasing method, with one important differentiation being that the goal of DLSS is to increase performance at the cost of image quality, whereas the main priority of DLAA is improving image quality at the cost of performance (irrelevant of resolution upscaling or downscaling). DLAA is similar to temporal anti-aliasing (TAA) in that they are both spatial anti-aliasing solutions relying on past frame data. Compared to TAA, DLAA is substantially better when it comes to shimmering, flickering, and handling small meshes like wires.",
-  "story": "Picture a scoreboard at a science fair: you need a fair, agreed way to tell who actually won. A fair scoreboard keeps everyone honest. Before trusting a machine, someone has to measure how good it really is — fairly and honestly. A good metric is a ruler that does not bend when you lean on it. That shared ruler is Deep Learning Anti-Aliasing.",
+  "explainer": {
+    "lead": "Deep Learning Anti-Aliasing (DLAA) is Nvidia’s method for smoothing jagged or unstable edges in rendered images using AI hardware in RTX graphics cards. It favors cleaner images over higher performance, making it especially useful for shimmering, flickering, and thin objects such as wires.",
+    "tiers": {
+      "eli5": "Imagine drawing a picture one frame at a time, but skinny things like wires keep sparkling or wiggling as the picture moves. DLAA looks at earlier pictures and uses special computer hardware to make the new picture look steadier. It spends extra computing effort to make the picture nicer rather than faster.",
+      "practitioner": "DLAA applies learned anti-aliasing to a rendered frame sequence and requires Tensor Cores on Nvidia RTX hardware. Choose it when image stability and quality matter more than rendering performance, particularly where TAA struggles with shimmering or small meshes. Unlike DLSS, its purpose is not a performance gain through upscaling or downscaling.",
+      "paperLevel": "DLAA: current rendered frame + past-frame data -> spatially anti-aliased current frame, using deep-learning inference on Nvidia Tensor Cores. It follows TAA’s temporal approach but targets fewer shimmering and flickering artifacts and better handling of small meshes. Its constraints are the Nvidia RTX hardware requirement and a performance cost in exchange for image quality."
+    },
+    "example": "In a moving 3D view with thin wire fences, TAA may leave the wires shimmering or flickering. DLAA uses past-frame data to keep those wires more stable and improve the image, while consuming performance that could otherwise support faster rendering.",
+    "usedIn": [
+      {
+        "name": "Nvidia RTX graphics",
+        "detail": "DLAA runs using the Tensor Cores required from Nvidia RTX cards.",
+        "url": ""
+      },
+      {
+        "name": "Real-time 3D rendering",
+        "detail": "It improves edge stability across frames, including scenes with shimmering, flickering, or thin meshes.",
+        "url": ""
+      }
+    ],
+    "intuition": "A single rendered frame does not contain everything needed to make moving edges look stable. By combining past-frame information with deep-learning processing, DLAA smooths those edges while prioritizing image quality over speed.",
+    "howItWorks": [
+      "Render the current frame in the 3D scene.",
+      "Retain information from earlier frames.",
+      "Use Nvidia RTX Tensor Cores to apply DLAA’s learned anti-aliasing method.",
+      "Combine current and past-frame information to reduce unstable edges and artifacts.",
+      "Output a cleaner frame, accepting additional rendering cost."
+    ],
+    "whyItMatters": "Temporal artifacts can make detailed scenes look unstable even when individual frames appear sharp. DLAA offers a quality-first alternative to TAA and DLSS, with particularly strong benefits for shimmering, flickering, and small meshes.",
+    "misconceptions": [
+      "DLAA is not simply DLSS under another name: DLSS prioritizes performance, while DLAA prioritizes image quality.",
+      "DLAA is not primarily a resolution-upscaling or downscaling technique.",
+      "It does not run on every graphics card; it requires Tensor Cores on Nvidia RTX cards."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "current",
+          "label": "Current frame",
+          "note": "The newly rendered image."
+        },
+        {
+          "id": "history",
+          "label": "Past frames",
+          "note": "Earlier image information retained for temporal processing."
+        },
+        {
+          "id": "dlaa",
+          "label": "DLAA processing",
+          "note": "Deep-learning anti-aliasing using both inputs."
+        },
+        {
+          "id": "tensor",
+          "label": "RTX Tensor Cores",
+          "note": "Required Nvidia hardware for DLAA."
+        },
+        {
+          "id": "output",
+          "label": "Cleaned frame",
+          "note": "A higher-quality image with reduced edge artifacts."
+        }
+      ],
+      "edges": [
+        {
+          "from": "current",
+          "to": "dlaa",
+          "label": ""
+        },
+        {
+          "from": "history",
+          "to": "dlaa",
+          "label": "temporal data"
+        },
+        {
+          "from": "tensor",
+          "to": "dlaa",
+          "label": "accelerates"
+        },
+        {
+          "from": "dlaa",
+          "to": "output",
+          "label": ""
+        }
+      ],
+      "caption": "DLAA combines the current frame with past-frame data on Nvidia RTX Tensor Cores to produce a cleaner image."
+    }
+  },
   "related": [
     "deep-learning",
     "deep-learning-in-photoacoustic-imaging",

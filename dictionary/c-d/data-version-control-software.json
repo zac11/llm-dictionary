@@ -2,10 +2,100 @@
   "term": "Data Version Control (software)",
   "letter": "D",
   "category": "Machine learning",
-  "type": "concept",
+  "type": "tool",
   "definition": "DVC is a free and open-source, platform-agnostic version system for data, machine learning models, and experiments.",
   "details": "It is designed to make ML models shareable, experiments reproducible, and to track versions of models, data, and pipelines. DVC works on top of Git repositories and cloud storage. The first (beta) version of DVC 0.6 was launched in May 2017. In May 2020, DVC 1.0 was publicly released by Iterative.ai. In November 2025, lakeFS announced its acquisition of DVC.",
-  "story": "Think of a historian sorting through boxes of letters, building a picture of an era one sentence at a time. Every machine is shaped by what it was shown, so someone has to choose that material with care. The examples a machine reads become the world it believes in. The words a model reads become the world it believes in. That care with the raw material is Data Version Control (software).",
+  "explainer": {
+    "lead": "DVC, short for Data Version Control, helps machine learning teams keep track of which data, model, pipeline, and experiment versions belong together. This makes models easier to share and experiments easier to reproduce, using Git repositories and cloud storage as its foundation.",
+    "tiers": {
+      "eli5": "Imagine taking a labeled snapshot of a school project every time you change its materials, instructions, or finished poster. DVC does something similar for machine learning projects, so people can find the matching pieces of an earlier experiment instead of guessing which ones were used.",
+      "practitioner": "Use DVC on top of a Git repository with cloud storage to version datasets, trained models, pipelines, and experiments. Its practical role is to keep matching versions identifiable so teammates can share models and reproduce runs. Do not treat it as a replacement for Git or as a tool for data files alone.",
+      "paperLevel": "DVC can be viewed as maintaining a versioned state V = (D, M, P, E), where D denotes data, M models, P pipelines, and E experiments, on top of Git repositories and cloud storage. It is a platform-agnostic system for reproducibility and sharing, not a machine learning training method. Beta version 0.6 launched in May 2017, followed by the public release of DVC 1.0 by Iterative.ai in May 2020."
+    },
+    "example": "A team trains a model with one dataset version, then changes the dataset and retrains it. DVC tracks the two data and model versions together with their pipelines and experiments, allowing a teammate to identify the matching pieces behind each result.",
+    "usedIn": [
+      {
+        "name": "Machine learning projects",
+        "detail": "Tracking connected versions of data, models, pipelines, and experiments.",
+        "url": ""
+      },
+      {
+        "name": "Git repositories",
+        "detail": "Providing the repository foundation on which DVC operates.",
+        "url": ""
+      },
+      {
+        "name": "Cloud storage workflows",
+        "detail": "Supporting DVC's storage-based approach to versioned machine learning work.",
+        "url": ""
+      }
+    ],
+    "intuition": "A machine learning result is hard to reproduce if you know the code version but not the matching data, model, or pipeline. DVC extends version control across those pieces so an experiment can be treated as a coherent, traceable state.",
+    "howItWorks": [
+      "Start with a project using a Git repository and cloud storage.",
+      "Add DVC to track versions of the project's data and machine learning models.",
+      "Track the pipelines and experiments that connect those artifacts.",
+      "Use the recorded versions to share models and reproduce experiments."
+    ],
+    "whyItMatters": "Without consistent versioning, a reported model result may be difficult to recreate or share because its data and pipeline have changed. DVC is designed to preserve those relationships, supporting reproducible experiments and shareable models.",
+    "misconceptions": [
+      "DVC does not replace Git; it works on top of Git repositories.",
+      "DVC is not only for datasets; it also tracks models, pipelines, and experiments.",
+      "DVC is a version-control system, not a machine learning model or training algorithm."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data",
+          "label": "Data and models",
+          "note": "Artifacts whose versions are tracked"
+        },
+        {
+          "id": "pipelines",
+          "label": "Pipelines and experiments",
+          "note": "Machine learning work connected to those artifacts"
+        },
+        {
+          "id": "dvc",
+          "label": "DVC",
+          "note": "Tracks coherent project versions"
+        },
+        {
+          "id": "git",
+          "label": "Git repository",
+          "note": "Repository foundation for DVC"
+        },
+        {
+          "id": "cloud",
+          "label": "Cloud storage",
+          "note": "Storage foundation used with DVC"
+        }
+      ],
+      "edges": [
+        {
+          "from": "data",
+          "to": "dvc",
+          "label": "versioned by"
+        },
+        {
+          "from": "pipelines",
+          "to": "dvc",
+          "label": "tracked by"
+        },
+        {
+          "from": "dvc",
+          "to": "git",
+          "label": "works on"
+        },
+        {
+          "from": "dvc",
+          "to": "cloud",
+          "label": "works with"
+        }
+      ],
+      "caption": "DVC connects versioned machine learning artifacts and experiments with Git repositories and cloud storage."
+    }
+  },
   "related": [
     "data",
     "alphastar-software",

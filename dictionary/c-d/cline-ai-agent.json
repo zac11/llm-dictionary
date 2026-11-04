@@ -2,10 +2,111 @@
   "term": "Cline (AI agent)",
   "letter": "C",
   "category": "Artificial Intelligence",
-  "type": "concept",
+  "type": "tool",
   "definition": "Cline is an open-source AI coding agent that operates through IDE extensions and a command-line interface.",
   "details": "It can inspect and modify source code, execute terminal commands, run tests, and perform other software development tasks from natural-language instructions. Cline supports models from multiple providers, including Anthropic, OpenAI, and Google, as well as locally hosted models through Ollama, LM Studio, and Atomic Chat.",
-  "story": "Picture hiring a brilliant new assistant on their first morning — smart, motivated, but with no idea how anything in your office actually works. It plans a little, acts a little, looks at the result, and then decides what to do next. It is the difference between a search engine and a helper who actually finishes the task. It is a loop of look, act, and learn — the same way you cook from a recipe you have never tried: add, taste, correct. And that habit of checking, acting, then checking again is Cline (AI agent).",
+  "explainer": {
+    "lead": "Cline is an open-source coding agent that turns natural-language requests into actions on a software project. It can read and edit code, run terminal commands, and execute tests through an IDE extension or command-line interface, making it a practical assistant for everyday development work.",
+    "tiers": {
+      "eli5": "Imagine a helper sitting at your computer while you build something with instructions. You can ask it to read the instructions, change them, and run checks to see whether the project still works. It can be useful, but you should check what it changed rather than assuming every change is right.",
+      "practitioner": "Use Cline through its IDE extension or CLI, with a model from Anthropic, OpenAI, or Google, or a local model served through Ollama, LM Studio, or Atomic Chat. A typical task combines repository inspection, targeted edits, terminal commands, and test runs from one natural-language request. Review the resulting code and command output carefully: a completed test run is evidence to inspect, not a guarantee that the whole task is correct.",
+      "paperLevel": "Cline can be represented as an agent A that maps a natural-language instruction i and development context c to actions a, where a may inspect code, modify code, execute a terminal command, or run tests. Its interface is an IDE extension or CLI, while its reasoning backend is a selectable hosted or locally served language model. Capabilities therefore depend on the chosen model and environment, and successful command or test execution alone does not establish correctness."
+    },
+    "example": "A developer asks Cline to fix a failing function. Cline inspects the relevant source file, edits the function, runs the project's tests through the terminal, and returns the code changes and test output for the developer to review.",
+    "usedIn": [
+      {
+        "name": "IDE-based software development",
+        "detail": "The IDE extension lets developers request code inspection and modification within their development workflow.",
+        "url": ""
+      },
+      {
+        "name": "Command-line development",
+        "detail": "The CLI supports coding tasks alongside terminal commands and test execution.",
+        "url": ""
+      },
+      {
+        "name": "Local-model coding setups",
+        "detail": "Cline can use locally hosted models through Ollama, LM Studio, or Atomic Chat.",
+        "url": ""
+      },
+      {
+        "name": "Multi-provider model workflows",
+        "detail": "It supports models from Anthropic, OpenAI, and Google rather than requiring one provider.",
+        "url": ""
+      }
+    ],
+    "intuition": "Cline connects a language model to the practical tools of software development. Instead of only suggesting code in a chat, it can act on a project and observe the results of commands and tests.",
+    "howItWorks": [
+      "The developer describes a coding task in natural language.",
+      "Cline sends the task and relevant development context to a selected language model.",
+      "It inspects or modifies source code and can execute terminal commands.",
+      "It runs tests or other development commands and observes their output.",
+      "The developer reviews the changes and results before relying on them."
+    ],
+    "whyItMatters": "Cline links natural-language assistance with concrete development actions, reducing the need to manually transfer suggestions between a chat interface, editor, and terminal. Its support for multiple providers and local models also gives developers flexibility in how the agent is powered.",
+    "misconceptions": [
+      "Cline is a coding agent, not a single language model; it uses models from several providers or local hosting tools.",
+      "Open-source Cline does not have to use a locally hosted model.",
+      "Running tests does not by itself prove that every code change is correct."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "developer",
+          "label": "Developer request",
+          "note": "A coding task in natural language"
+        },
+        {
+          "id": "cline",
+          "label": "Cline agent",
+          "note": "IDE extension or command-line interface"
+        },
+        {
+          "id": "model",
+          "label": "Language model",
+          "note": "Hosted by a provider or served locally"
+        },
+        {
+          "id": "environment",
+          "label": "Development environment",
+          "note": "Source code, terminal, and tests"
+        },
+        {
+          "id": "results",
+          "label": "Changes and results",
+          "note": "Code edits plus command and test output"
+        }
+      ],
+      "edges": [
+        {
+          "from": "developer",
+          "to": "cline",
+          "label": "task"
+        },
+        {
+          "from": "cline",
+          "to": "model",
+          "label": "task context"
+        },
+        {
+          "from": "model",
+          "to": "cline",
+          "label": "next action"
+        },
+        {
+          "from": "cline",
+          "to": "environment",
+          "label": "inspect edit run"
+        },
+        {
+          "from": "environment",
+          "to": "results",
+          "label": "output"
+        }
+      ],
+      "caption": "Cline connects a developer's request and a selected language model to actions in the development environment."
+    }
+  },
   "related": [
     "ai-agent",
     "goose-ai-agent",

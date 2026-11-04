@@ -5,7 +5,102 @@
   "type": "concept",
   "definition": "GLOH (Gradient Location and Orientation Histogram) is a robust image descriptor that can be used in computer vision tasks.",
   "details": "It is a SIFT-like descriptor that considers more spatial regions for the histograms. An intermediate vector is computed from 17 location and 16 orientation bins, for a total of 272-dimensions. Principal components analysis (PCA) is then used to reduce the vector size to 128 (same size as SIFT descriptor vector).",
-  "story": "Imagine an art restorer who can spot a single cracked tile in a vast mosaic. What your eyes do without thinking, the machine does one careful layer at a time. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. The model looks the way you look at a crowd and finds the one face you know. And that is GLOH — giving a machine the gift of sight.",
+  "explainer": {
+    "lead": "GLOH describes an image patch by recording where its gradients occur and which directions they point. It expands the spatial histogram layout used by SIFT, then compresses the result into a 128-number descriptor for computer vision tasks.",
+    "tiers": {
+      "eli5": "Imagine describing a small piece of a photo by noting where its edges are and which way they lean. GLOH sorts those notes into 272 boxes, then squeezes them into a list of 128 numbers. That list acts like a compact description of the picture patch.",
+      "practitioner": "Compute gradient histograms over 17 location bins with 16 orientation bins each, producing a 272-dimensional intermediate vector. Apply the PCA projection to obtain the final 128-dimensional descriptor, matching SIFT's output length. Keep the intermediate and final sizes distinct, and retain the PCA step rather than treating the raw histogram vector as the finished descriptor.",
+      "paperLevel": "GLOH forms v in R^272 by concatenating gradient-orientation histograms over 17 location bins and 16 orientation bins, since 17 × 16 = 272. PCA then maps v to a descriptor d in R^128, giving the same dimensionality as SIFT while using more spatial regions for the histograms."
+    },
+    "example": "For one image patch, GLOH distributes its gradient information across 17 spatial regions and 16 orientation categories per region. The resulting 272 histogram values are passed through PCA, leaving a vector of 128 numbers that describes that patch.",
+    "usedIn": [
+      {
+        "name": "Computer vision",
+        "detail": "Provides a robust descriptor of local image content for vision tasks.",
+        "url": ""
+      },
+      {
+        "name": "SIFT-style feature pipelines",
+        "detail": "Serves as a SIFT-like alternative with more spatial histogram regions and the same 128-dimensional output size.",
+        "url": ""
+      }
+    ],
+    "intuition": "An image patch can be summarized by both the directions of its gradients and their spatial arrangement. GLOH captures this arrangement with a finer spatial histogram layout, then uses PCA to keep the descriptor compact.",
+    "howItWorks": [
+      "Take an image patch and examine its gradients.",
+      "Divide the description into 17 location bins.",
+      "Use 16 orientation bins for each location, yielding 17 × 16 = 272 values.",
+      "Apply PCA to the 272-dimensional vector.",
+      "Return the resulting 128-dimensional descriptor."
+    ],
+    "whyItMatters": "GLOH shows how a richer spatial histogram can be used without making the final descriptor longer than SIFT's. Its 272-dimensional intermediate representation is reduced to a practical 128-dimensional vector.",
+    "misconceptions": [
+      "GLOH's final descriptor is not 272-dimensional; 272 is the size before PCA.",
+      "GLOH is not unrelated to SIFT: it is SIFT-like and produces a descriptor of the same 128-value length."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "patch",
+          "label": "Image patch",
+          "note": "Local image content to describe"
+        },
+        {
+          "id": "gradients",
+          "label": "Image gradients",
+          "note": "Gradient locations and orientations"
+        },
+        {
+          "id": "histogram",
+          "label": "Spatial histograms",
+          "note": "17 location bins and 16 orientation bins"
+        },
+        {
+          "id": "vector272",
+          "label": "272-value vector",
+          "note": "Intermediate histogram representation"
+        },
+        {
+          "id": "pca",
+          "label": "PCA reduction",
+          "note": "Compresses the intermediate vector"
+        },
+        {
+          "id": "descriptor128",
+          "label": "128-value descriptor",
+          "note": "Final GLOH representation"
+        }
+      ],
+      "edges": [
+        {
+          "from": "patch",
+          "to": "gradients",
+          "label": ""
+        },
+        {
+          "from": "gradients",
+          "to": "histogram",
+          "label": ""
+        },
+        {
+          "from": "histogram",
+          "to": "vector272",
+          "label": "17 × 16"
+        },
+        {
+          "from": "vector272",
+          "to": "pca",
+          "label": ""
+        },
+        {
+          "from": "pca",
+          "to": "descriptor128",
+          "label": ""
+        }
+      ],
+      "caption": "GLOH builds a 272-dimensional location-and-orientation histogram, then reduces it with PCA to 128 dimensions."
+    }
+  },
   "related": [
     "accord-net",
     "active-appearance-model",

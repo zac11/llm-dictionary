@@ -5,7 +5,91 @@
   "type": "concept",
   "definition": "DreamBooth is a deep learning generation model used to personalize existing text-to-image models by fine-tuning.",
   "details": "It was developed by researchers from Google Research and Boston University in 2022. Originally developed using Google's own Imagen text-to-image model, DreamBooth implementations can be applied to other text-to-image models, where it can allow the model to generate more fine-tuned and personalized outputs after training on three to five images of a subject.",
-  "story": "Imagine an art restorer who can spot a single cracked tile in a vast mosaic. What your eyes do without thinking, the machine does one careful layer at a time. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. The model looks the way you look at a crowd and finds the one face you know. That pixel-to-meaning climb is DreamBooth.",
+  "explainer": {
+    "lead": "DreamBooth is a way to teach an existing text-to-image model about a particular subject by fine-tuning it on three to five images. This lets the model produce more personalized pictures without training a new generator from scratch.",
+    "tiers": {
+      "eli5": "Imagine showing an artist a few photos of your dog so they can draw that dog, rather than just any dog. DreamBooth does something similar for an image-making computer program: after seeing three to five pictures of a subject, it can make new pictures personalized to that subject.",
+      "practitioner": "Use DreamBooth as a fine-tuning stage on an existing text-to-image model, supplying three to five images of the target subject. It was originally implemented with Google's Imagen, but implementations can be applied to other text-to-image models; the result is a personalized model rather than a generator trained from scratch.",
+      "paperLevel": "Given a pretrained text-to-image model M and three to five images of a subject S, DreamBooth fine-tunes M to produce a personalized model M_S for generating images of S from text. Developed by researchers from Google Research and Boston University in 2022, it was originally developed using Google's Imagen model and can also be implemented for other text-to-image models."
+    },
+    "example": "To generate pictures of your own dog, provide three to five photos of that dog and fine-tune an existing text-to-image model with DreamBooth. The personalized model can then generate new images of your specific dog rather than only generic dogs.",
+    "usedIn": [
+      {
+        "name": "Google Imagen",
+        "detail": "DreamBooth was originally developed using Google's Imagen text-to-image model.",
+        "url": ""
+      },
+      {
+        "name": "Personalized image generation",
+        "detail": "Fine-tuning on a few subject images enables more fine-tuned and personalized text-to-image outputs.",
+        "url": ""
+      }
+    ],
+    "intuition": "A general text-to-image model may know what a dog, person, or object looks like without knowing your particular subject. DreamBooth adapts that existing knowledge using only a handful of subject images.",
+    "howItWorks": [
+      "Start with an existing text-to-image model.",
+      "Collect three to five images of the chosen subject.",
+      "Fine-tune the model with DreamBooth instead of training a new model from scratch.",
+      "Use the resulting personalized model to generate images of that subject from text."
+    ],
+    "whyItMatters": "It makes subject-specific image generation possible with just three to five images. Because it adapts an existing model, it avoids building a personalized text-to-image generator from scratch.",
+    "misconceptions": [
+      "DreamBooth fine-tunes an existing text-to-image model; it does not train one from scratch.",
+      "It is not limited to Imagen: implementations can be applied to other text-to-image models."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "subject-images",
+          "label": "Subject images",
+          "note": "Three to five images"
+        },
+        {
+          "id": "base-model",
+          "label": "Text-to-image model",
+          "note": "Existing generation model"
+        },
+        {
+          "id": "dreambooth",
+          "label": "DreamBooth fine-tuning",
+          "note": "Personalizes the model"
+        },
+        {
+          "id": "personalized-model",
+          "label": "Personalized model",
+          "note": "Adapted to the subject"
+        },
+        {
+          "id": "images",
+          "label": "Generated images",
+          "note": "Personalized text-to-image outputs"
+        }
+      ],
+      "edges": [
+        {
+          "from": "subject-images",
+          "to": "dreambooth",
+          "label": "training images"
+        },
+        {
+          "from": "base-model",
+          "to": "dreambooth",
+          "label": "starting model"
+        },
+        {
+          "from": "dreambooth",
+          "to": "personalized-model",
+          "label": "fine-tunes"
+        },
+        {
+          "from": "personalized-model",
+          "to": "images",
+          "label": "generates"
+        }
+      ],
+      "caption": "DreamBooth uses a few subject images to fine-tune an existing text-to-image model."
+    }
+  },
   "related": [
     "a-r-d-prasad",
     "abeba-birhane",

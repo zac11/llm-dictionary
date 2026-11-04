@@ -5,6 +5,78 @@
   "type": "benchmark",
   "definition": "Beyond the Imitation Game Benchmark, a benchmark for measuring the performance of language models across a diverse set of tasks.",
   "details": "Beyond the Imitation Game Benchmark, a benchmark for measuring the performance of language models across a diverse set of tasks.",
+  "explainer": {
+    "lead": "BIG-Bench, short for Beyond the Imitation Game Benchmark, evaluates language models on a diverse set of tasks. It gives researchers and engineers a way to look beyond one narrow test and examine performance across many kinds of challenges.",
+    "tiers": {
+      "eli5": "BIG-Bench is like a school quiz with many different kinds of questions instead of just spelling or just maths. A language model tries the tasks, and its answers show what it can do well and where it struggles.",
+      "practitioner": "Use BIG-Bench as an evaluation setting for comparing language-model behaviour across diverse tasks. Keep the task selection, prompts, and response-judging procedure consistent when comparing runs, and retain task-level results so that a summary does not hide weak areas. Do not assume a single accuracy or aggregation rule without defining one.",
+      "paperLevel": "BIG-Bench is formally described as a benchmark that measures language-model performance over a diverse task set. Its evaluation object is task performance rather than one prescribed scalar formula; any aggregate score must therefore state its scoring and aggregation convention. Breadth of tasks does not imply uniform performance on every task or downstream application."
+    },
+    "example": "Suppose an illustrative evaluation contains two tasks, and a model produces one correct response and one incorrect response. Its record for this toy example is 1/2 = 50% correct; this demonstrates the arithmetic, not a prescribed BIG-Bench-wide scoring formula.",
+    "usedIn": [
+      {
+        "name": "Language model evaluation",
+        "detail": "Examines model performance across a diverse set of tasks rather than one narrow test.",
+        "url": ""
+      },
+      {
+        "name": "Language model comparison",
+        "detail": "Provides a shared benchmark setting for examining how different models handle the same evaluation tasks.",
+        "url": ""
+      }
+    ],
+    "measures": "BIG-Bench measures the performance of language models across a diverse set of tasks. Its focus is breadth of evaluated behaviour, not performance on just one application.",
+    "howScored": [
+      "Present the language model with tasks from the benchmark.",
+      "Evaluate its responses and record performance across those tasks."
+    ],
+    "caveats": [
+      "Do not assume that results on diverse tasks combine into one universal score.",
+      "Benchmark performance does not guarantee strong performance on every task or application."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "model",
+          "label": "Language model",
+          "note": "The system being evaluated."
+        },
+        {
+          "id": "tasks",
+          "label": "Diverse tasks",
+          "note": "The benchmark's varied evaluation challenges."
+        },
+        {
+          "id": "responses",
+          "label": "Model responses",
+          "note": "Outputs produced for the tasks."
+        },
+        {
+          "id": "results",
+          "label": "Performance results",
+          "note": "Evaluated outcomes across the tasks."
+        }
+      ],
+      "edges": [
+        {
+          "from": "model",
+          "to": "tasks",
+          "label": "attempts"
+        },
+        {
+          "from": "tasks",
+          "to": "responses",
+          "label": "elicits"
+        },
+        {
+          "from": "responses",
+          "to": "results",
+          "label": "evaluated as"
+        }
+      ],
+      "caption": "A language model attempts diverse tasks, and its responses are evaluated to measure performance."
+    }
+  },
   "related": [
     "benchmark"
   ],

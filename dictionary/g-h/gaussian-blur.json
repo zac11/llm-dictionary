@@ -5,7 +5,97 @@
   "type": "concept",
   "definition": "In image processing, a Gaussian blur (also known as Gaussian smoothing) is the result of blurring an image by a Gaussian function (named after mathematician and scientist Carl Friedrich Gauss).",
   "details": "It is a widely used effect in graphics software, typically to reduce image noise and reduce definition. The visual effect of this blurring technique is a smooth blur resembling that of viewing the image through a translucent screen, distinctly different from the bokeh effect produced by an out-of-focus lens or the shadow of an object under usual illumination. Gaussian smoothing is also used as a pre-processing stage in computer vision algorithms in order to enhance image structures at different scales—see scale space representation and scale space implementation.",
-  "story": "Picture a child pointing at pictures in a book — cat, car, cloud — learning to see by seeing a thousand examples. It turns a picture into an understanding: this is a cat, that is a stop sign. What your eyes do without thinking, the machine does one careful layer at a time. It is eyes made of arithmetic — pixels become edges, edges become shapes, shapes become meaning. That pixel-to-meaning climb is Gaussian blur.",
+  "explainer": {
+    "lead": "Gaussian blur smooths an image by blending each pixel with its neighbors using a Gaussian function. It is a common way to suppress image noise, although it also softens fine detail. In computer vision, it can prepare images for analysis at different scales.",
+    "tiers": {
+      "eli5": "Imagine gently smudging a speckled drawing so tiny random dots become less noticeable. Gaussian blur does something similar, giving nearby parts of the picture more influence than parts farther away. The picture becomes smoother, but small details and sharp edges become softer too.",
+      "practitioner": "Apply Gaussian blur as a convolution with a Gaussian kernel, commonly before other image-processing or computer-vision stages. The sigma setting controls the amount of smoothing, and the kernel must be large enough to represent that smoothing. Increasing it can suppress noise, but can also erase small structures and shift the balance between denoising and detail loss.",
+      "paperLevel": "Gaussian smoothing convolves an image I with a Gaussian kernel; in two dimensions, G(x, y) = 1/(2*pi*sigma^2) * exp(-(x^2 + y^2)/(2*sigma^2)), and the result is I * G. The scale parameter sigma controls the spatial extent of smoothing. Its noise reduction comes at the cost of reduced definition, while repeated or varied smoothing supports the construction of scale-space representations."
+    },
+    "example": "For a grayscale photograph containing isolated bright noise specks, apply a Gaussian kernel with a chosen sigma. Each speck is averaged with its surrounding pixels, with the closest pixels carrying the greatest weight, so the speck becomes less prominent while edges and fine textures also soften.",
+    "usedIn": [
+      {
+        "name": "Graphics software",
+        "detail": "Provides a smooth blur effect for reducing image noise and definition.",
+        "url": ""
+      },
+      {
+        "name": "Computer vision",
+        "detail": "Used as a preprocessing stage before further image analysis.",
+        "url": ""
+      },
+      {
+        "name": "Scale-space analysis",
+        "detail": "Helps enhance and represent image structures at different scales.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of keeping every pixel exactly as it is, Gaussian blur mixes it with nearby pixels. Close neighbors contribute most and distant ones contribute less, following the bell-shaped Gaussian function. The result looks smooth, somewhat like viewing the image through a translucent screen.",
+    "howItWorks": [
+      "Start with an input image and choose a smoothing scale, sigma.",
+      "Build Gaussian weights that decrease with distance from the center pixel.",
+      "Replace each pixel with a weighted combination of its neighbors.",
+      "Use the smoothed image directly or as preprocessing for later analysis."
+    ],
+    "whyItMatters": "Gaussian blur offers a simple, widely used way to reduce noise and create smoother images. Its role in scale-space preprocessing also makes it useful for examining image structures at different scales rather than only at the original resolution.",
+    "misconceptions": [
+      "It is not the bokeh produced by an out-of-focus lens.",
+      "It does not reproduce the shadow of an object under ordinary illumination.",
+      "It reduces definition as well as noise, so it does not preserve every fine detail."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input image",
+          "note": "Pixels may contain noise and fine detail."
+        },
+        {
+          "id": "kernel",
+          "label": "Gaussian weights",
+          "note": "Sigma controls the spatial smoothing scale."
+        },
+        {
+          "id": "convolution",
+          "label": "Weighted averaging",
+          "note": "Nearby pixels contribute more than distant pixels."
+        },
+        {
+          "id": "output",
+          "label": "Smoothed image",
+          "note": "Noise and definition are both reduced."
+        },
+        {
+          "id": "vision",
+          "label": "Vision processing",
+          "note": "Later stages can examine structures across scales."
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "convolution",
+          "label": "pixels"
+        },
+        {
+          "from": "kernel",
+          "to": "convolution",
+          "label": "weights"
+        },
+        {
+          "from": "convolution",
+          "to": "output",
+          "label": ""
+        },
+        {
+          "from": "output",
+          "to": "vision",
+          "label": "preprocessing"
+        }
+      ],
+      "caption": "A Gaussian kernel weights neighboring pixels during convolution, producing a smoothed image for display or further processing."
+    }
+  },
   "related": [
     "accord-net",
     "active-appearance-model",

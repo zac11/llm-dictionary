@@ -5,7 +5,107 @@
   "type": "algorithm",
   "definition": "In computer science and operations research, Fernandez’s bound (FB) is a lower-bounding technique used in exact algorithms for multiprocessor scheduling problems, particularly within branch-and-bound frameworks.",
   "details": "It provides tighter lower bounds than some earlier methods (e.g., Hu's bound). Using Big O notation, a naïve computation of the bound requires O(n3) time, as it examines O(n2) task combinations, each taking O(n) time in the worst case. Efficient implementations reduce the complexity to O(n2).",
-  "story": "Picture an engineer at a cluttered workbench, turning a clever idea over in their hands until it finally clicks. At its heart it is a simple notion, once you strip away the fancy name. A small key that opens a much bigger door. It is one of those ideas that feels obvious only after someone shows it to you. That is Fernandez's bound — a small key that opens a big door.",
+  "explainer": {
+    "lead": "Fernandez’s bound helps an exact scheduling algorithm estimate how good a multiprocessor schedule could possibly be from a partial solution. A stronger estimate lets branch-and-bound discard more hopeless options without risking the optimal answer.",
+    "tiers": {
+      "eli5": "Imagine dividing chores among several people and trying every possible way to assign them. Fernandez’s bound is like a careful estimate saying, “Even in the best case, this plan cannot finish sooner than this time.” If you already have a plan that finishes sooner, you can stop exploring that estimate’s branch.",
+      "practitioner": "Evaluate the bound at branch-and-bound nodes for multiprocessor scheduling, then compare it with the best complete schedule found so far. It can provide tighter bounds than Hu’s bound, but it is only a lower bound, not proof that an achievable schedule meets that value. A naïve implementation takes O(n^3) time; efficient implementations reduce this to O(n^2).",
+      "paperLevel": "For a scheduling subproblem S with n tasks, let FB(S) denote Fernandez’s lower bound on the optimal value attainable within S; branch-and-bound can discard S when this bound cannot improve on the incumbent. The bound can be tighter than Hu’s bound. Direct evaluation examines O(n^2) task combinations at O(n) worst-case cost each, giving O(n^3), while efficient implementations achieve O(n^2)."
+    },
+    "example": "Suppose a partial assignment has Fernandez’s bound 18, meaning no completion of that branch can have a value below 18, while Hu’s bound gives only 16. If the search already holds a complete schedule with value 17, the branch can be pruned immediately; with only the weaker bound of 16, that conclusion would not follow.",
+    "usedIn": [
+      {
+        "name": "Exact multiprocessor scheduling",
+        "detail": "Supplies lower bounds while searching for an optimal schedule.",
+        "url": ""
+      },
+      {
+        "name": "Branch-and-bound solvers",
+        "detail": "Helps prune subproblems that cannot improve the incumbent.",
+        "url": ""
+      },
+      {
+        "name": "Operations research",
+        "detail": "Supports exact optimization of task assignments across processors.",
+        "url": ""
+      }
+    ],
+    "goal": "Compute a lower bound for a multiprocessor scheduling subproblem so exact search can safely prune branches that cannot beat the best known schedule.",
+    "inputs": [
+      "The tasks in the current scheduling subproblem",
+      "Any partial scheduling decisions at the branch-and-bound node",
+      "The best complete schedule found so far, for the pruning comparison"
+    ],
+    "outputs": [
+      "A numerical lower bound for the subproblem",
+      "A keep-or-prune decision when compared with the incumbent"
+    ],
+    "steps": [
+      "Select the current scheduling subproblem.",
+      "Examine the task combinations required by Fernandez’s bound.",
+      "Compute the lower bound from those combinations.",
+      "Compare the bound with the best complete schedule found so far.",
+      "Prune the branch if it cannot improve that schedule; otherwise continue searching."
+    ],
+    "tradeoffs": [
+      "Tighter bounds can remove more search branches.",
+      "The bound does not itself construct an optimal schedule.",
+      "Naïve evaluation costs O(n^3) time.",
+      "Efficient evaluation reduces the cost to O(n^2)."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "subproblem",
+          "label": "Scheduling subproblem",
+          "note": "Tasks and partial decisions enter."
+        },
+        {
+          "id": "combinations",
+          "label": "Task combinations",
+          "note": "The required combinations are examined."
+        },
+        {
+          "id": "bound",
+          "label": "Fernandez’s bound",
+          "note": "Produces a lower bound."
+        },
+        {
+          "id": "compare",
+          "label": "Compare incumbent",
+          "note": "Checks against the best complete schedule."
+        },
+        {
+          "id": "decision",
+          "label": "Prune or explore",
+          "note": "Discards hopeless branches or continues."
+        }
+      ],
+      "edges": [
+        {
+          "from": "subproblem",
+          "to": "combinations",
+          "label": "tasks"
+        },
+        {
+          "from": "combinations",
+          "to": "bound",
+          "label": "evaluation"
+        },
+        {
+          "from": "bound",
+          "to": "compare",
+          "label": "lower bound"
+        },
+        {
+          "from": "compare",
+          "to": "decision",
+          "label": "result"
+        }
+      ],
+      "caption": "Fernandez’s bound turns a scheduling subproblem into a lower bound that guides branch-and-bound pruning."
+    }
+  },
   "related": [
     "branch-and-bound",
     "kullback-leibler-upper-confidence-bound",

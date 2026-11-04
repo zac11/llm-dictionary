@@ -5,7 +5,81 @@
   "type": "concept",
   "definition": "Document Structuring is a subtask of Natural language generation, which involves deciding the order and grouping (for example into paragraphs) of sentences in a generated text.",
   "details": "It is closely related to the Content determination NLG task.",
-  "story": "Think of a jazz musician who has heard so many solos that a new one simply falls out of their fingers. Given a starting line, the machine imagines what comes next — a word, a note, a patch of a picture. It makes new things by recombining everything it has ever seen. Creation, here, is memory recombined at speed. And that is Document structuring — making something new out of everything it has ever seen.",
+  "explainer": {
+    "lead": "Document structuring is the part of natural language generation that turns chosen material into a readable sequence. It decides which sentences come first and where paragraph breaks belong, helping generated text feel organized rather than like a pile of facts.",
+    "tiers": {
+      "eli5": "Imagine telling a friend about your day using a handful of notes. You would put the notes in a sensible order and group related ones together, instead of reading them out randomly. Document structuring is how a text-generating system makes those choices about sentence order and paragraphs.",
+      "practitioner": "Apply document structuring to the material selected for generation by ordering its sentences and grouping related sentences into units such as paragraphs. It is closely related to content determination, but the tasks are different: content determination chooses what to say, while document structuring organizes it. A useful check is whether each transition follows naturally and each paragraph stays focused.",
+      "paperLevel": "Given a set S of sentences selected for a generated text, document structuring produces a linear ordering of S and a partition of that ordering into discourse groups, such as paragraphs. It is a subtask of natural language generation and is closely related to, but distinct from, content determination."
+    },
+    "example": "For a weather update, the selected sentences are \"Drivers should allow extra time,\" \"Rain is expected tonight,\" and \"Temperatures will fall.\" A structured version puts the weather sentences together in one paragraph—\"Rain is expected tonight. Temperatures will fall.\"—and places \"Drivers should allow extra time\" afterward as travel advice.",
+    "usedIn": [
+      {
+        "name": "Natural language generation",
+        "detail": "Organizes selected material into coherent multi-sentence output.",
+        "url": ""
+      },
+      {
+        "name": "Multi-paragraph text generation",
+        "detail": "Determines sentence sequence and where related sentences should be grouped into paragraphs.",
+        "url": ""
+      }
+    ],
+    "intuition": "Choosing the right facts does not automatically make a readable document. Document structuring supplies the order and grouping that let readers follow the text.",
+    "howItWorks": [
+      "Start with the sentences selected for the generated text.",
+      "Arrange the sentences in a coherent order.",
+      "Group related sentences into units such as paragraphs.",
+      "Pass the organized text forward as the generated document."
+    ],
+    "whyItMatters": "Sensible ordering and paragraph grouping make generated text easier to follow. Without them, even well-chosen sentences can appear disconnected or repetitive.",
+    "misconceptions": [
+      "It is not content determination: it organizes selected material rather than choosing what information to include.",
+      "It is more than inserting paragraph breaks; sentence ordering is also part of the task."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "selected",
+          "label": "Selected sentences",
+          "note": "Material chosen for the text"
+        },
+        {
+          "id": "order",
+          "label": "Sentence ordering",
+          "note": "Decides what comes first"
+        },
+        {
+          "id": "group",
+          "label": "Paragraph grouping",
+          "note": "Groups related sentences"
+        },
+        {
+          "id": "document",
+          "label": "Structured document",
+          "note": "Ordered, grouped generated text"
+        }
+      ],
+      "edges": [
+        {
+          "from": "selected",
+          "to": "order",
+          "label": "sentences"
+        },
+        {
+          "from": "order",
+          "to": "group",
+          "label": "sequence"
+        },
+        {
+          "from": "group",
+          "to": "document",
+          "label": "structure"
+        }
+      ],
+      "caption": "Document structuring orders selected sentences and groups them into a readable document."
+    }
+  },
   "related": [
     "document-classification",
     "document-term-matrix",

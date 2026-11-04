@@ -5,6 +5,101 @@
   "type": "concept",
   "definition": "Learning task after task without catastrophically forgetting earlier ones, via replayed old examples (rehearsal), penalties on weights important to prior tasks (EWC), or parameter isolation.",
   "details": "Learning task after task without catastrophically forgetting earlier ones, via replayed old examples (rehearsal), penalties on weights important to prior tasks (EWC), or parameter isolation. The research framing behind the practical question of how deployed models absorb new knowledge over time (see Catastrophic Forgetting, Continued Pretraining).",
+  "explainer": {
+    "lead": "Continual learning is about teaching a model a sequence of tasks without letting each new lesson erase the earlier ones. It provides research strategies for keeping deployed models useful as they absorb new knowledge over time.",
+    "tiers": {
+      "eli5": "Imagine learning to ride a bike, then learning to swim without forgetting how to ride. Continual learning tries to give models that same ability, using reminders of old lessons, protection for important parts, or separate parts for different tasks.",
+      "practitioner": "Train on tasks sequentially while testing whether performance on earlier tasks survives each update. Typical approaches mix replayed old examples into training, add EWC penalties for changing weights important to prior tasks, or isolate parameters; the main pitfall is treating ordinary fine-tuning or continued pretraining as automatically continual learning.",
+      "paperLevel": "Given a sequence of tasks T1, T2, ..., Tk, continual learning seeks to learn each new task while avoiding catastrophic forgetting of earlier tasks. The main approaches named here are rehearsal through replayed examples, EWC-style penalties on weights important to prior tasks, and parameter isolation. The central limit is catastrophic forgetting when acquiring later tasks damages earlier performance."
+    },
+    "example": "A model first learns to distinguish cats from dogs and then trains on bird classification. With rehearsal, some cat-and-dog examples are mixed into the bird training data, and the updated model is tested on both the new birds and the original animals.",
+    "usedIn": [
+      {
+        "name": "Machine learning research",
+        "detail": "Studies sequential task learning and ways to limit catastrophic forgetting.",
+        "url": ""
+      },
+      {
+        "name": "Deployed model updates",
+        "detail": "Frames the practical problem of adding knowledge over time without losing earlier capabilities.",
+        "url": ""
+      }
+    ],
+    "intuition": "A new task should add to what a model knows rather than overwrite it. Continual learning protects earlier knowledge while leaving room for further learning.",
+    "howItWorks": [
+      "Present the model with tasks one after another.",
+      "Replay some earlier examples during later training, known as rehearsal.",
+      "Alternatively, penalize changes to weights important for prior tasks with EWC, or isolate parameters between tasks.",
+      "Check earlier tasks again to see whether catastrophic forgetting has occurred."
+    ],
+    "whyItMatters": "Models updated over time can otherwise lose capabilities they previously had. Continual learning makes retaining earlier tasks an explicit part of training and evaluation.",
+    "misconceptions": [
+      "Learning tasks sequentially is not enough by itself: ordinary fine-tuning can still cause catastrophic forgetting.",
+      "Continued pretraining is related to absorbing new knowledge, but it is not automatically a complete continual-learning method."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "tasks",
+          "label": "Sequential tasks",
+          "note": "Earlier and new training tasks"
+        },
+        {
+          "id": "replay",
+          "label": "Replay examples",
+          "note": "Rehearse earlier data"
+        },
+        {
+          "id": "ewc",
+          "label": "EWC penalties",
+          "note": "Protect important weights"
+        },
+        {
+          "id": "isolation",
+          "label": "Parameter isolation",
+          "note": "Separate task parameters"
+        },
+        {
+          "id": "model",
+          "label": "Updated model",
+          "note": "Learns the new task"
+        },
+        {
+          "id": "check",
+          "label": "Earlier-task check",
+          "note": "Tests for forgetting"
+        }
+      ],
+      "edges": [
+        {
+          "from": "tasks",
+          "to": "model",
+          "label": "training"
+        },
+        {
+          "from": "replay",
+          "to": "model",
+          "label": "strategy"
+        },
+        {
+          "from": "ewc",
+          "to": "model",
+          "label": "strategy"
+        },
+        {
+          "from": "isolation",
+          "to": "model",
+          "label": "strategy"
+        },
+        {
+          "from": "model",
+          "to": "check",
+          "label": "evaluation"
+        }
+      ],
+      "caption": "Sequential training can use rehearsal, EWC penalties, or parameter isolation, followed by checks on earlier tasks."
+    }
+  },
   "related": [
     "catastrophic-forgetting",
     "pretraining",

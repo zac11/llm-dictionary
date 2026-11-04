@@ -5,6 +5,102 @@
   "type": "concept",
   "definition": "Determining which earlier decisions caused a later outcome.",
   "details": "Determining which earlier decisions caused a later outcome. The deep difficulty of RL, and acute in LLM reasoning: which of 3,000 generated tokens made the proof correct? Process reward models and step-level advantages are attempts to answer it.",
+  "explainer": {
+    "lead": "Credit assignment is the problem of tracing a later result back to the earlier choices that helped produce it. It matters because learning is much harder when a system receives only a final success or failure and must work out which of its many actions deserve the credit or blame.",
+    "tiers": {
+      "eli5": "Imagine baking a cake with many steps, then discovering that it tastes wonderful. Which steps made it turn out well: the ingredients, the mixing, or the oven time? Learning systems face the same puzzle when they make many choices before finding out whether they succeeded.",
+      "practitioner": "In reinforcement learning, credit assignment distributes information from a delayed outcome across earlier state-action decisions. In LLM reasoning, process reward models and step-level advantages are used to estimate which reasoning steps helped, rather than treating every generated token equally. A final outcome alone can leave useful steps unrewarded after a failure or reward unhelpful steps after a lucky success.",
+      "paperLevel": "Given a trajectory of decisions and a later outcome R, credit assignment estimates each earlier decision's contribution to R. The difficulty grows with long horizons and delayed outcomes, and a successful result does not establish that every preceding step was useful. Process reward models and step-level advantages provide finer-grained estimates, but they do not by themselves identify the true causal contribution of each token."
+    },
+    "example": "An LLM generates 3,000 tokens while constructing a proof, and the final proof is judged correct. Credit assignment asks which tokens or steps actually made it correct; a process reward model can score individual steps, while step-level advantages can indicate which steps appear better than expected.",
+    "usedIn": [
+      {
+        "name": "Reinforcement learning",
+        "detail": "Connecting delayed outcomes to earlier actions so an agent can improve its decisions.",
+        "url": ""
+      },
+      {
+        "name": "LLM mathematical reasoning",
+        "detail": "Identifying which generated reasoning steps contributed to a correct proof or answer.",
+        "url": ""
+      }
+    ],
+    "intuition": "A final reward says how things ended, not which choices made them end that way. Credit assignment is the attempt to send a useful learning signal back to the decisions responsible.",
+    "howItWorks": [
+      "Record the sequence of earlier decisions.",
+      "Observe the later outcome or reward.",
+      "Estimate how much each decision contributed.",
+      "Strengthen helpful decisions and discourage harmful ones."
+    ],
+    "whyItMatters": "It is a central difficulty in reinforcement learning because long chains of decisions can separate actions from their consequences. Better step-level credit can make LLM reasoning training more informative than relying only on the final verdict.",
+    "misconceptions": [
+      "A correct outcome does not mean every earlier step was correct.",
+      "Credit assignment estimates contributions; it does not automatically prove causation.",
+      "It is not the same as merely giving the final reward to every step."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "decisions",
+          "label": "Earlier decisions",
+          "note": "Actions or generated reasoning steps"
+        },
+        {
+          "id": "trajectory",
+          "label": "Decision sequence",
+          "note": "A long chain leading to a result"
+        },
+        {
+          "id": "outcome",
+          "label": "Later outcome",
+          "note": "Success, failure, or final reward"
+        },
+        {
+          "id": "estimator",
+          "label": "Credit estimator",
+          "note": "Process rewards or step-level advantages"
+        },
+        {
+          "id": "updates",
+          "label": "Decision updates",
+          "note": "Credit or blame returned to earlier steps"
+        }
+      ],
+      "edges": [
+        {
+          "from": "decisions",
+          "to": "trajectory",
+          "label": ""
+        },
+        {
+          "from": "trajectory",
+          "to": "outcome",
+          "label": ""
+        },
+        {
+          "from": "outcome",
+          "to": "estimator",
+          "label": "outcome signal"
+        },
+        {
+          "from": "trajectory",
+          "to": "estimator",
+          "label": "step history"
+        },
+        {
+          "from": "estimator",
+          "to": "updates",
+          "label": "credit estimates"
+        },
+        {
+          "from": "updates",
+          "to": "decisions",
+          "label": "learning"
+        }
+      ],
+      "caption": "A later outcome is combined with the decision history to estimate which earlier steps deserve credit or blame."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

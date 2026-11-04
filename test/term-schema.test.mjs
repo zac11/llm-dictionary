@@ -250,7 +250,7 @@ test('validateTerm warns when a type and its second-spread data disagree', () =>
     story: 'A small key that opens a bigger door.',
   };
   const personCodes = validateTerm(normalizeTerm(storyOnPerson), { raw: storyOnPerson }).map((issue) => issue.code);
-  assert.ok(personCodes.includes('unexpected-story'));
+  assert.ok(personCodes.includes('retired-story'));
 
   const coverageOnConcept = {
     term: 'Mixture of Experts',

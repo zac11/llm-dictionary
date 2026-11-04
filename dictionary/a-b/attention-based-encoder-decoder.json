@@ -8,6 +8,103 @@
   ],
   "definition": "ASR as sequence-to-sequence translation: an encoder digests the full utterance, a decoder generates the transcript with cross-attention.",
   "details": "ASR as sequence-to-sequence translation: an encoder digests the full utterance, a decoder generates the transcript with cross-attention. Highest accuracy on complete utterances and robust to noise and accents (Whisper's recipe: massive weak supervision across languages), but inherently offline and prone to hallucinating text on silence or music.",
+  "explainer": {
+    "lead": "Attention-based encoder-decoder speech recognition turns a complete recording into text in two stages: one part processes the audio, and another writes the transcript while repeatedly consulting that processed audio. This approach can be accurate and robust, but it normally waits for the whole utterance and may invent words during silence or music.",
+    "tiers": {
+      "eli5": "Imagine listening to a whole spoken sentence before writing it down. As you write each word, you think back to the sounds you heard to decide what fits. This works well for complete recordings, but it is not made for writing instantly while someone is still talking.",
+      "practitioner": "Use this approach for offline transcription of complete utterances, including multilingual, noisy, or accented speech. Whisper is a prominent example, trained with massive weak supervision across languages. Watch for plausible but fabricated transcript text on silence or music, and do not assume the architecture supports incremental streaming output.",
+      "paperLevel": "Given acoustic input X = (x_1, ..., x_T), an encoder produces representations H = Encoder(X). A decoder autoregressively models p(y | X) = product_t p(y_t | y_<t, H), using cross-attention over H at each output step. Processing the complete utterance supports strong offline accuracy, but makes the approach inherently offline; silence and music can trigger hallucinated text."
+    },
+    "example": "For a recording of someone saying \"Turn left at the station,\" the encoder first processes the entire utterance. The decoder might generate \"Turn,\" then \"left,\" using cross-attention at every step to focus on the audio evidence, until it produces the full sentence.",
+    "usedIn": [
+      {
+        "name": "Whisper",
+        "detail": "Uses this style of speech recognition, with massive weak supervision across languages.",
+        "url": ""
+      },
+      {
+        "name": "Offline transcription",
+        "detail": "Fits complete recordings where the transcript is generated after the utterance is available.",
+        "url": ""
+      },
+      {
+        "name": "Multilingual speech recognition",
+        "detail": "Whisper's training recipe combines this approach with weak supervision across languages.",
+        "url": ""
+      },
+      {
+        "name": "Noisy or accented speech",
+        "detail": "The approach is noted for robust recognition under these conditions.",
+        "url": ""
+      }
+    ],
+    "intuition": "Treat speech recognition like translation: first build a useful representation of the entire utterance, then generate the transcript one token at a time. Cross-attention lets each decoding step draw on the relevant parts of that audio representation.",
+    "howItWorks": [
+      "Take in the complete spoken utterance.",
+      "Encode its audio sequence into internal representations.",
+      "Start the decoder with the transcript generated so far.",
+      "At each step, use cross-attention to consult the encoder representations.",
+      "Generate the next transcript token and continue until the transcript is complete."
+    ],
+    "whyItMatters": "It reframes speech recognition as sequence-to-sequence generation and can deliver high accuracy on complete utterances, with robustness to noise and accents. Whisper shows how massive weak supervision across languages can extend this recipe, while its offline behavior and hallucination risk define important limits.",
+    "misconceptions": [
+      "It is not naturally a streaming method: the encoder expects the complete utterance.",
+      "A fluent transcript is not guaranteed to be faithful; silence or music can produce hallucinated text.",
+      "Whisper's broad training recipe is not the same thing as the encoder-decoder mechanism itself."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "audio",
+          "label": "Complete utterance",
+          "note": "The full spoken input"
+        },
+        {
+          "id": "encoder",
+          "label": "Audio encoder",
+          "note": "Builds representations of the audio"
+        },
+        {
+          "id": "representations",
+          "label": "Audio representations",
+          "note": "Encoded evidence for decoding"
+        },
+        {
+          "id": "decoder",
+          "label": "Attentive decoder",
+          "note": "Generates tokens using cross-attention"
+        },
+        {
+          "id": "transcript",
+          "label": "Generated transcript",
+          "note": "Text produced token by token"
+        }
+      ],
+      "edges": [
+        {
+          "from": "audio",
+          "to": "encoder",
+          "label": "audio sequence"
+        },
+        {
+          "from": "encoder",
+          "to": "representations",
+          "label": ""
+        },
+        {
+          "from": "representations",
+          "to": "decoder",
+          "label": "cross-attention"
+        },
+        {
+          "from": "decoder",
+          "to": "transcript",
+          "label": "next tokens"
+        }
+      ],
+      "caption": "The encoder processes the full utterance, then the decoder writes the transcript while attending to the encoded audio."
+    }
+  },
   "related": [
     "attention",
     "sequence-to-sequence",

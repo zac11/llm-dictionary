@@ -8,6 +8,107 @@
   ],
   "definition": "The standard subjective quality measures for synthesized speech: absolute 1-5 naturalness ratings (MOS) or side-by-side comparative ratings (CMOS).",
   "details": "The standard subjective quality measures for synthesized speech: absolute 1-5 naturalness ratings (MOS) or side-by-side comparative ratings (CMOS). Human MOS remains the gold standard; neural predictors (UTMOS-style) approximate it cheaply at scale.",
+  "explainer": {
+    "lead": "MOS and CMOS are ways of asking people how good synthesized speech sounds. MOS collects absolute naturalness ratings on a 1–5 scale, while CMOS uses side-by-side comparisons, giving speech researchers a human quality measure that automated predictions only approximate.",
+    "tiers": {
+      "eli5": "Imagine several people making robot voices and asking you to judge them. With MOS, you give each voice a naturalness score from 1 to 5; with CMOS, you listen to voices next to each other and compare them. Averaging people’s judgments gives a better picture than relying on one person’s ears.",
+      "practitioner": "Use human MOS for absolute 1–5 naturalness evaluation and CMOS when listeners compare synthesized speech side by side. UTMOS-style neural predictors can approximate human MOS cheaply at scale, but their predictions should not be treated as the human gold standard.",
+      "paperLevel": "MOS is the mean of listeners’ absolute naturalness ratings on a 1–5 scale: MOS = (r1 + r2 + ... + rn) / n. CMOS instead uses comparative ratings collected from side-by-side listening. Human MOS remains the gold standard; UTMOS-style neural predictors are scalable approximations with that fundamental limitation."
+    },
+    "example": "Listeners give synthesized voice A naturalness ratings of 4, 5, and 4, producing a MOS of 4.33. In a separate side-by-side CMOS test, they compare voice A with voice B and provide comparative ratings rather than judging either voice only in isolation.",
+    "usedIn": [
+      {
+        "name": "Synthesized-speech evaluation",
+        "detail": "Listeners provide absolute MOS naturalness ratings or comparative CMOS judgments.",
+        "url": ""
+      },
+      {
+        "name": "UTMOS-style quality prediction",
+        "detail": "Neural models approximate human MOS to estimate speech quality cheaply at scale.",
+        "url": ""
+      }
+    ],
+    "intuition": "The most direct way to judge whether synthetic speech sounds natural is to ask people to listen and rate it. MOS summarizes isolated ratings, whereas CMOS captures comparisons between alternatives.",
+    "howItWorks": [
+      "Prepare synthesized speech samples for listeners to hear.",
+      "For MOS, ask each listener to rate a sample’s naturalness from 1 to 5.",
+      "Average the collected ratings to obtain the MOS.",
+      "For CMOS, present samples side by side and collect comparative ratings.",
+      "Optionally use a UTMOS-style neural predictor to approximate MOS when human evaluation at scale would be costly."
+    ],
+    "whyItMatters": "These measures connect speech-quality evaluation to human perception instead of relying solely on automated estimates. Human MOS is the gold standard, while neural prediction makes large-scale approximation cheaper.",
+    "misconceptions": [
+      "MOS and CMOS are not the same procedure: MOS uses absolute 1–5 ratings, while CMOS uses side-by-side comparative ratings.",
+      "A neural MOS prediction is not itself human MOS; it is an approximation of the gold standard."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "speech",
+          "label": "Synthesized speech",
+          "note": "Samples prepared for evaluation"
+        },
+        {
+          "id": "listeners",
+          "label": "Human listeners",
+          "note": "People judge perceived quality"
+        },
+        {
+          "id": "mos-test",
+          "label": "Absolute ratings",
+          "note": "Naturalness scored from 1 to 5"
+        },
+        {
+          "id": "cmos-test",
+          "label": "Side-by-side ratings",
+          "note": "Samples judged comparatively"
+        },
+        {
+          "id": "scores",
+          "label": "MOS or CMOS",
+          "note": "Subjective quality results"
+        },
+        {
+          "id": "predictor",
+          "label": "Neural predictor",
+          "note": "UTMOS-style scalable approximation"
+        }
+      ],
+      "edges": [
+        {
+          "from": "speech",
+          "to": "listeners",
+          "label": "audio"
+        },
+        {
+          "from": "listeners",
+          "to": "mos-test",
+          "label": ""
+        },
+        {
+          "from": "listeners",
+          "to": "cmos-test",
+          "label": ""
+        },
+        {
+          "from": "mos-test",
+          "to": "scores",
+          "label": ""
+        },
+        {
+          "from": "cmos-test",
+          "to": "scores",
+          "label": ""
+        },
+        {
+          "from": "speech",
+          "to": "predictor",
+          "label": "audio"
+        }
+      ],
+      "caption": "Human listening produces absolute MOS or comparative CMOS judgments; a neural predictor offers a cheaper MOS approximation."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

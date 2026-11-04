@@ -5,7 +5,109 @@
   "type": "concept",
   "definition": "Backward induction is the process of determining a sequence of optimal choices by reasoning from the endpoint of a problem or situation back to its beginning using individual events or actions.",
   "details": "Backward induction involves examining the final point in a series of decisions and identifying the optimal process or action required to arrive at that point. This process continues backward until the best action for every possible point along the sequence is determined. Backward induction was first utilized in 1875 by Arthur Cayley, who discovered the method while attempting to solve the secretary problem. In dynamic programming, a method of mathematical optimization, backward induction is used for solving the Bellman equation. In the related fields of automated planning and scheduling and automated theorem proving, the method is called backward search or backward chaining. In chess, it is called retrograde analysis. In game theory, a variant of backward induction is used to compute subgame perfect equilibria in sequential games. The difference is that optimization problems involve one decision maker who chooses what to do at each point of time. In contrast, game theory problems involve the interacting decision of several players. In this situation, it may still be possible to apply a generalization of backward induction, since it may be possible to determine what the second-to-la",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. That steady, miss-by-miss improvement is Backward induction.",
+  "explainer": {
+    "lead": "Backward induction solves a sequence of decisions by starting at the end and working toward the present. Once the best final action is known, it becomes easier to choose the best action one step earlier, and so on until the whole plan is optimal.",
+    "tiers": {
+      "eli5": "Imagine trying to find the best route through a maze by starting at the finish and walking backward. At each junction, you keep the turn that leads to the best result, then move to the junction before it. When you reach the start, you know which choice to make first and every choice after that.",
+      "practitioner": "In dynamic programming, backward induction solves the Bellman equation by computing values from the terminal period toward the initial state. It also appears as backward search or backward chaining in automated planning and theorem proving, and as a way to compute subgame perfect equilibria in sequential games. A key pitfall is treating a multi-player game like a single-agent optimization problem: earlier choices must account for other players’ rational responses.",
+      "paperLevel": "For a finite sequential problem, set the terminal values first, then recursively evaluate V_t(s) = max_a [immediate payoff at (s,a) + expected V_{t+1}(s')], retaining the maximizing action at each decision point. Arthur Cayley first used the method in 1875 while working on the secretary problem. In extensive-form games, the variant selects payoff-maximizing actions from the final subgames backward to obtain a subgame perfect equilibrium; John von Neumann and Oskar Morgenstern proposed it for zero-sum, two-person games in Theory of Games and Economic Behaviour (1944)."
+    },
+    "example": "Over ten yearly job offers, a good job pays $100 per year and a bad job pays $44, each with equal probability, and an accepted job is kept for the remaining years. At t=10 either offer beats earning $0; at t=9 a bad job pays $88, beating the $72 expected from rejecting; at t=8 it pays only $132, below the $144 expected from waiting. Continuing backward shows that bad offers should be accepted only at t=9 or t=10.",
+    "usedIn": [
+      {
+        "name": "Dynamic programming",
+        "detail": "Solves the Bellman equation by propagating optimal values from the endpoint to earlier decisions.",
+        "url": ""
+      },
+      {
+        "name": "Automated planning and theorem proving",
+        "detail": "Uses the same reasoning under the names backward search or backward chaining.",
+        "url": ""
+      },
+      {
+        "name": "Game theory",
+        "detail": "Computes subgame perfect equilibria in sequential games by solving later subgames first.",
+        "url": ""
+      },
+      {
+        "name": "Chess",
+        "detail": "Applies the approach under the name retrograde analysis.",
+        "url": ""
+      }
+    ],
+    "intuition": "A choice is only as good as the future it makes possible. By deciding what should happen at the end first, each earlier choice can be judged using an already-known best continuation rather than guesswork.",
+    "howItWorks": [
+      "Start at the final decision point and compare the available outcomes.",
+      "Select the optimal final action and record its value.",
+      "Move one step earlier and evaluate each action using those known future values.",
+      "Repeat until the starting point is reached, keeping the best action at every point.",
+      "Read the recorded choices forward to obtain the optimal sequence."
+    ],
+    "whyItMatters": "It turns a long sequence of interdependent choices into a series of manageable comparisons. The same principle connects optimal-stopping problems, dynamic programming, automated reasoning, and the analysis of sequential games.",
+    "misconceptions": [
+      "It does not begin with the first choice and merely imagine the future; it computes from the endpoint backward.",
+      "Single-agent optimization and multi-player games differ: game-theoretic backward induction must account for other players’ choices.",
+      "Backward search, backward chaining, and retrograde analysis are field-specific names for related reasoning, not unrelated ideas."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "end",
+          "label": "Final outcomes",
+          "note": "Compare the payoffs available at the endpoint."
+        },
+        {
+          "id": "last",
+          "label": "Best last action",
+          "note": "Record the optimal choice and its value."
+        },
+        {
+          "id": "previous",
+          "label": "Previous decision",
+          "note": "Evaluate actions using the known continuation values."
+        },
+        {
+          "id": "repeat",
+          "label": "Earlier decisions",
+          "note": "Repeat the comparison while moving backward."
+        },
+        {
+          "id": "start",
+          "label": "Initial choice",
+          "note": "Recover the full optimal sequence from the recorded actions."
+        }
+      ],
+      "edges": [
+        {
+          "from": "end",
+          "to": "last",
+          "label": "optimize"
+        },
+        {
+          "from": "last",
+          "to": "previous",
+          "label": "value"
+        },
+        {
+          "from": "previous",
+          "to": "repeat",
+          "label": "back up"
+        },
+        {
+          "from": "repeat",
+          "to": "start",
+          "label": "reach start"
+        }
+      ],
+      "caption": "Backward induction passes optimal values from the endpoint toward the initial decision."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Backward induction",
+        "url": "https://en.wikipedia.org/wiki/Backward_induction"
+      }
+    ]
+  },
   "related": [
     "automatic-basis-function-construction",
     "bellman-equation",

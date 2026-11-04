@@ -5,7 +5,151 @@
   "type": "algorithm",
   "definition": "An active appearance model (AAM) is a computer vision algorithm for matching a statistical model of object shape and appearance to a new image.",
   "details": "They are built during a training phase. A set of images, together with coordinates of landmarks that appear in all of the images, is provided to the training supervisor. The model was first introduced by Edwards, Cootes and Taylor in the context of face analysis at the 3rd International Conference on Face and Gesture Recognition, 1998. Cootes, Edwards and Taylor further described the approach as a general method in computer vision at the European Conference on Computer Vision in the same year. The approach is widely used for matching and tracking faces and for medical image interpretation. The algorithm uses the difference between the current estimate of appearance and the target image to drive an optimization process. By taking advantage of the least squares techniques, it can match to new images very swiftly. It is related to the active shape model (ASM). One disadvantage of ASM is that it only uses shape constraints (together with some information about the image structure near the landmarks), and does not take advantage of all the available information – the texture across the target object. This can be modelled using an AAM.",
-  "story": "Imagine an art restorer who can spot a single cracked tile in a vast mosaic. What your eyes do without thinking, the machine does one careful layer at a time. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. The model looks the way you look at a crowd and finds the one face you know. That pixel-to-meaning climb is Active appearance model.",
+  "explainer": {
+    "lead": "An active appearance model is a way to teach a computer to recognize and fit a deformable object by learning both its outline and its surface texture at once. It became a foundational technique for making machines understand faces and medical scans with speed and precision.",
+    "tiers": {
+      "eli5": "Imagine you have a rubber mask of your favorite cartoon character. An active appearance model is like having a smart mask that can stretch and squish to match any photo of that character. It learns not just the shape of the face, but also the colors and patterns, so it can find the character even when the photo is taken from a weird angle or the lighting changes.",
+      "practitioner": "AAMs are typically applied when you need fast, constrained fitting of deformable objects with known shape variation. They work well in controlled settings with consistent lighting and limited pose variation, but struggle with large illumination changes or occlusions. Implementation usually involves building a combined shape-texture PCA space and using precomputed least-squares regression for iterative updates. Modern pipelines often prefer deep learning alternatives, but AAMs remain useful for real-time embedded systems or as initialization for finer methods.",
+      "paperLevel": "An AAM represents object appearance by a combined linear model of shape s = s̄ + P_s b_s and texture A(x) = Ā(x) + P_a b_a, where shape and appearance parameters b_s, b_a are coupled through a single latent vector c controlling both. The model is fitted by minimizing ||I(W(x;p)) - A(x)||² over shape parameters p and appearance coefficients, using least-squares techniques for efficient convergence. Edwards, Cootes and Taylor introduced this at FG 1998 and ECCV 1998. Known limitations include sensitivity to initialization, difficulty with unseen illumination conditions, and the assumption of linear subspaces for shape and texture variation."
+    },
+    "example": "A radiologist wants to automatically outline the left ventricle in cardiac MRI slices. From 200 manually traced training images, an AAM learns that the ventricle's shape varies mostly between systole and diastole, and its texture changes from bright blood pool to darker myocardium. Given a new patient's MRI, the model starts with an average ventricle shape, warps the image to match, compares pixel intensities, and in 10 iterations converges to a precise outline that a doctor can verify, running in under 50 milliseconds per slice.",
+    "usedIn": [
+      {
+        "name": "Face tracking and analysis",
+        "detail": "Real-time fitting to video sequences for expression recognition and avatar animation",
+        "url": ""
+      },
+      {
+        "name": "Medical image interpretation",
+        "detail": "Segmenting and analyzing organs in MRI, CT, and ultrasound where anatomical shape priors improve robustness",
+        "url": ""
+      }
+    ],
+    "goal": "To find the optimal shape and appearance parameters that make a statistical model align with a target image, using both boundary landmarks and internal texture.",
+    "inputs": [
+      "A trained statistical model combining shape and texture variation from annotated training images",
+      "A new target image containing the object to be matched",
+      "Initial estimate of shape parameters (often from detector or previous frame)"
+    ],
+    "outputs": [
+      "Fitted shape parameters describing the object's boundary landmark positions",
+      "Appearance parameters describing the object's texture",
+      "Final reconstructed image of the model overlaid on the target"
+    ],
+    "steps": [
+      "Build training model: Collect images with labeled landmarks, align shapes with Procrustes analysis, compute shape and texture PCA models, then combine into a single appearance parameter space",
+      "Initialize: Place the mean shape roughly on the target image using a detector or manual placement",
+      "Warp texture: Sample pixel intensities from the target image into the model's reference frame using current shape estimate",
+      "Compute error: Calculate difference between warped target texture and current model texture estimate",
+      "Predict update: Use precomputed least-squares regression matrix to map texture error to parameter updates",
+      "Apply update: Adjust shape and appearance parameters, project back to valid model space if needed",
+      "Iterate: Repeat from step 3 until convergence or maximum iterations reached"
+    ],
+    "tradeoffs": [
+      "Fast convergence due to precomputed least-squares regression, but requires good initialization near the true solution",
+      "Captures full texture information unlike ASM, yet assumes linear subspaces that may not model complex real-world variation",
+      "Works well for constrained domains with representative training data, but degrades with strong lighting changes, occlusions, or unseen poses",
+      "Compact and interpretable model, though modern deep methods generally outperform on accuracy with enough data"
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "training",
+          "label": "Training images",
+          "note": "Labeled with landmark coordinates"
+        },
+        {
+          "id": "shape-pca",
+          "label": "Shape model",
+          "note": "PCA of aligned landmark sets"
+        },
+        {
+          "id": "texture-pca",
+          "label": "Texture model",
+          "note": "PCA of shape-normalized intensities"
+        },
+        {
+          "id": "combined",
+          "label": "Combined AAM",
+          "note": "Coupled shape-appearance parameters"
+        },
+        {
+          "id": "target",
+          "label": "Target image",
+          "note": "New image to fit"
+        },
+        {
+          "id": "warp",
+          "label": "Warped texture",
+          "note": "Image sampled into model frame"
+        },
+        {
+          "id": "error",
+          "label": "Texture error",
+          "note": "Difference from current model"
+        },
+        {
+          "id": "update",
+          "label": "Parameter update",
+          "note": "Least-squares prediction of change"
+        }
+      ],
+      "edges": [
+        {
+          "from": "training",
+          "to": "shape-pca",
+          "label": "landmarks"
+        },
+        {
+          "from": "training",
+          "to": "texture-pca",
+          "label": "normalized images"
+        },
+        {
+          "from": "shape-pca",
+          "to": "combined",
+          "label": "shape params"
+        },
+        {
+          "from": "texture-pca",
+          "to": "combined",
+          "label": "texture params"
+        },
+        {
+          "from": "combined",
+          "to": "warp",
+          "label": "current estimate"
+        },
+        {
+          "from": "target",
+          "to": "warp",
+          "label": "shape warp"
+        },
+        {
+          "from": "warp",
+          "to": "error",
+          "label": "subtract model"
+        },
+        {
+          "from": "error",
+          "to": "update",
+          "label": "regress"
+        },
+        {
+          "from": "update",
+          "to": "combined",
+          "label": "refine"
+        }
+      ],
+      "caption": "The AAM training pipeline builds coupled shape and texture models, then iteratively warps, compares, and updates to fit new images."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Active appearance model",
+        "url": "https://en.wikipedia.org/wiki/Active_appearance_model"
+      }
+    ]
+  },
   "related": [
     "active-contour-model",
     "active-vision",

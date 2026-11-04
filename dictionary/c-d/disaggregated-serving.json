@@ -5,6 +5,87 @@
   "type": "concept",
   "definition": "Running prefill and decode on separate GPU pools connected by KV-cache transfer, so each phase scales on the hardware profile it actually needs.",
   "details": "Running prefill and decode on separate GPU pools connected by KV-cache transfer, so each phase scales on the hardware profile it actually needs. An increasingly standard architecture for large-scale deployments.",
+  "explainer": {
+    "lead": "Disaggregated serving splits language-model inference into two stages running on separate GPU pools: preparing the prompt and generating the response. This lets each stage scale independently instead of forcing both to share the same hardware configuration.",
+    "tiers": {
+      "eli5": "Imagine one group of workers reads a long question and writes helpful notes, while another group uses those notes to write the answer. The two groups can grow separately depending on whether there is more reading or more writing to do. The notes are passed between them so no one has to read the question again.",
+      "practitioner": "Deploy prefill and decode workers as separate GPU pools, with KV-cache transfer connecting them. Scale each pool according to its own demand and hardware needs, while accounting for cache-transfer cost and balancing work between the pools.",
+      "paperLevel": "For a request x, a prefill pool computes its KV cache K; K is transferred to a decode pool, which generates subsequent tokens using K. The pools can be scaled independently, but the architecture depends on KV-cache transfer and coordination between the two stages."
+    },
+    "example": "A service receives a batch of long prompts. Its prefill pool processes them and sends the resulting KV caches to the decode pool, which generates the replies; if prompt volume later doubles, prefill capacity can be increased without equally expanding decode capacity.",
+    "usedIn": [
+      {
+        "name": "Large-scale LLM deployments",
+        "detail": "Prefill and decode capacity can be scaled separately to match the demands of each phase.",
+        "url": ""
+      }
+    ],
+    "intuition": "Prefill and decode have different hardware needs, so coupling them on the same GPUs can make scaling awkward. Separating them allows each phase to use and scale the hardware profile that suits it.",
+    "howItWorks": [
+      "A request arrives and is assigned to the prefill GPU pool.",
+      "Prefill processes the prompt and produces its KV cache.",
+      "The KV cache is transferred to the decode GPU pool.",
+      "Decode uses that cache to generate the response tokens.",
+      "Each GPU pool is scaled independently according to its workload."
+    ],
+    "whyItMatters": "Independent scaling can match resources more closely to the work each phase performs. This is increasingly useful in large-scale deployments, where prefill and decode demands need not grow at the same rate.",
+    "misconceptions": [
+      "It does not split the model into two different models; it separates two phases of serving the same model.",
+      "It does not remove the KV cache: that cache must be transferred between the GPU pools."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "request",
+          "label": "Incoming request",
+          "note": "A prompt enters the serving system."
+        },
+        {
+          "id": "prefill",
+          "label": "Prefill GPU pool",
+          "note": "Processes the prompt independently of decode."
+        },
+        {
+          "id": "cache",
+          "label": "KV-cache transfer",
+          "note": "Carries prompt state between the pools."
+        },
+        {
+          "id": "decode",
+          "label": "Decode GPU pool",
+          "note": "Generates response tokens using the cache."
+        },
+        {
+          "id": "response",
+          "label": "Response tokens",
+          "note": "The generated output leaves the system."
+        }
+      ],
+      "edges": [
+        {
+          "from": "request",
+          "to": "prefill",
+          "label": "prompt"
+        },
+        {
+          "from": "prefill",
+          "to": "cache",
+          "label": "KV cache"
+        },
+        {
+          "from": "cache",
+          "to": "decode",
+          "label": "cache state"
+        },
+        {
+          "from": "decode",
+          "to": "response",
+          "label": "tokens"
+        }
+      ],
+      "caption": "Prefill and decode run in separate GPU pools, connected by transfer of the prompt's KV cache."
+    }
+  },
   "related": [
     "kv-cache"
   ],

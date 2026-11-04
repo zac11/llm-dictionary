@@ -5,7 +5,108 @@
   "type": "concept",
   "definition": "The practice of constraining a model's generation process in real time (e.g., via grammar constraints or filters) to ensure outputs conform to required formats or safety criteria.",
   "details": "Guarded generation techniques include constrained decoding for structured output formats and real-time content filtering, helping ensure outputs are both well-formed and policy-compliant as they are generated.",
-  "story": "Imagine a new medicine that works brilliantly in the lab but still has to be tested on real people before anyone takes it. Think of it as the quiet rule that a tool should be useful without being dangerous. The idea is simple: before something powerful is let loose, someone checks that it will not do real harm to real people. Rules and red-teaming are the brakes that make the speed trustworthy. That deliberate caution is Guarded Generation.",
+  "explainer": {
+    "lead": "Guarded generation checks and steers a model's output while it is being written, rather than waiting until the response is complete. It helps applications receive correctly structured data and reduces the chance of publishing content that breaks safety rules.",
+    "tiers": {
+      "eli5": "Imagine filling out a form while someone guides your pencil: some spaces only allow numbers, and certain words are not allowed. Guarded generation does something similar for an AI, guiding each part of its answer so it fits the required shape and follows the rules. This happens during writing, not just afterward.",
+      "practitioner": "Apply constrained decoding when an API or downstream parser requires structured output, and add real-time content filtering where generated text must meet safety policies. Grammar or format rules handle well-formedness, while filters handle policy compliance; neither role should be assumed to cover the other. Test the complete generation path, including cases where an output is blocked or cannot satisfy the constraints.",
+      "paperLevel": "At decoding step t, constrained generation restricts the next-token choice to an allowed set A_t determined by the required grammar or format, rather than the model's full vocabulary. A parallel real-time filter enforces content-policy predicates on the emerging output. These mechanisms constrain form and permitted content, but do not by themselves establish factual correctness."
+    },
+    "example": "An application requests a weather result as JSON with a \"city\" string and a \"temperature_c\" number. Constrained decoding prevents missing fields, extra prose, or a word where the number belongs, producing {\"city\":\"Lisbon\",\"temperature_c\":21}; real-time filtering separately checks the generated content against safety rules.",
+    "usedIn": [
+      {
+        "name": "Structured data extraction",
+        "detail": "Constrains responses to formats that downstream software can parse.",
+        "url": ""
+      },
+      {
+        "name": "Public-facing chatbots",
+        "detail": "Filters generated content in real time to enforce safety policies.",
+        "url": ""
+      },
+      {
+        "name": "AI-powered APIs",
+        "detail": "Produces schema-conforming responses while applying output safeguards.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of generating freely and fixing problems later, guarded generation puts guardrails directly in the generation path. Format constraints keep the output parseable, while content filters check policy compliance as the answer emerges.",
+    "howItWorks": [
+      "Define the required output format or grammar.",
+      "Define the content policies the response must satisfy.",
+      "Restrict decoding to tokens that keep the format valid.",
+      "Filter the emerging content for policy violations.",
+      "Return output that passes the applicable checks."
+    ],
+    "whyItMatters": "Well-formed output prevents avoidable parsing failures in software that consumes model responses. Real-time safety checks also help stop policy-violating content from being treated as an acceptable final answer.",
+    "misconceptions": [
+      "It is not only a final review after generation.",
+      "Valid formatting does not guarantee factual accuracy.",
+      "Format constraints and safety filters serve different purposes."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "prompt",
+          "label": "User prompt",
+          "note": "Requests the desired answer."
+        },
+        {
+          "id": "format",
+          "label": "Format rules",
+          "note": "Specify a grammar or structure."
+        },
+        {
+          "id": "decoder",
+          "label": "Constrained decoding",
+          "note": "Allows only format-valid continuations."
+        },
+        {
+          "id": "draft",
+          "label": "Emerging output",
+          "note": "Carries the structured response as it forms."
+        },
+        {
+          "id": "filter",
+          "label": "Real-time filter",
+          "note": "Checks content against safety policies."
+        },
+        {
+          "id": "result",
+          "label": "Guarded result",
+          "note": "Provides compliant output to the application."
+        }
+      ],
+      "edges": [
+        {
+          "from": "prompt",
+          "to": "decoder",
+          "label": ""
+        },
+        {
+          "from": "format",
+          "to": "decoder",
+          "label": "constrains"
+        },
+        {
+          "from": "decoder",
+          "to": "draft",
+          "label": ""
+        },
+        {
+          "from": "draft",
+          "to": "filter",
+          "label": ""
+        },
+        {
+          "from": "filter",
+          "to": "result",
+          "label": "passes checks"
+        }
+      ],
+      "caption": "Format rules steer decoding while a separate filter checks the emerging content."
+    }
+  },
   "related": [
     "adversarial-example",
     "ai-safety",

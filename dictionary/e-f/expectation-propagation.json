@@ -5,7 +5,82 @@
   "type": "concept",
   "definition": "Expectation propagation (EP) is a technique in Bayesian machine learning.",
   "details": "EP finds approximations to a probability distribution. It uses an iterative approach that uses the factorization structure of the target distribution. It differs from other Bayesian approximation approaches such as variational Bayesian methods. More specifically, suppose we wish to approximate an intractable probability distribution p ( x ) {\\displaystyle p(\\mathbf {x} )} with a tractable distribution q ( x ) {\\displaystyle q(\\mathbf {x} )} . Expectation propagation achieves this approximation by minimizing the Kullback–Leibler divergence K L ( p | | q ) {\\displaystyle \\mathrm {KL} (p||q)} . Variational Bayesian methods minimize K L ( q | | p ) {\\displaystyle \\mathrm {KL} (q||p)} instead. If q ( x ) {\\displaystyle q(\\mathbf {x} )} is a Gaussian N ( x | μ , Σ ) {\\displaystyle {\\mathcal {N}}(\\mathbf {x} |\\mu ,\\Sigma )} , then K L ( p | | q ) {\\displaystyle \\mathrm {KL} (p||q)} is minimized with μ {\\displaystyle \\mu } and Σ {\\displaystyle \\Sigma } being equal to the mean of p ( x ) {\\displaystyle p(\\mathbf {x} )} and the covariance of p ( x ) {\\displaystyle p(\\mathbf {x} )} , respectively; this is called moment matching.",
-  "story": "Think of a lightbulb moment: the idea was always there, but someone had to point a finger at it. Behind the jargon is an idea you could explain to a friend over coffee. At its heart it is a simple notion, once you strip away the fancy name. Once you see it, you cannot unsee it. And that idea, made concrete, is Expectation propagation.",
+  "explainer": {
+    "lead": "Expectation propagation is a Bayesian technique for replacing a probability distribution that is too difficult to work with by a simpler, tractable one. It uses the target distribution's factorization to improve the approximation iteratively, making complicated probabilistic calculations more manageable.",
+    "tiers": {
+      "eli5": "Imagine trying to copy a very detailed picture using only a simple shape. Expectation propagation keeps adjusting that shape so it becomes a useful stand-in for the picture. It uses clues from the picture's separate parts and, when the stand-in is a bell curve, tries to give it the same center and spread as the original.",
+      "practitioner": "Use EP when a Bayesian target distribution p(x) is intractable but has factorization structure that an iterative approximation can exploit. For a Gaussian q(x), its KL(p||q) objective leads to moment matching: set q's mean and covariance to those of p. Do not confuse this with variational Bayes, which minimizes KL(q||p), and remember that q remains an approximation rather than the exact target.",
+      "paperLevel": "Expectation propagation approximates an intractable distribution p(x) with a tractable distribution q(x), minimizing KL(p||q) through an iterative procedure that exploits the factorization of p. This contrasts with variational Bayesian methods, which minimize KL(q||p). If q(x) = N(x | mu, Sigma), minimization gives mu = mean of p(x) and Sigma = covariance of p(x), known as moment matching."
+    },
+    "example": "Suppose p(x) is intractable but has mean 2 and variance 4, and q(x) is chosen to be Gaussian. Minimizing KL(p||q) gives q(x) = N(x | 2, 4): the Gaussian approximation has mean 2 and variance 4. EP reaches this kind of tractable approximation through an iterative procedure guided by the target's factorization.",
+    "usedIn": [
+      {
+        "name": "Bayesian machine learning",
+        "detail": "Provides tractable approximations to probability distributions that are otherwise intractable.",
+        "url": ""
+      },
+      {
+        "name": "Probabilistic modeling",
+        "detail": "Uses a target distribution's factorization structure to construct and iteratively refine an approximation.",
+        "url": ""
+      }
+    ],
+    "intuition": "A complicated probability distribution can often be replaced by a simpler one that is easier to calculate with. EP builds that stand-in by working iteratively with the target's factors, rather than treating the distribution as an unstructured whole.",
+    "howItWorks": [
+      "Start with an intractable target distribution p(x) and choose a tractable approximating distribution q(x).",
+      "Use the factorization structure of p(x) to organize the approximation process.",
+      "Iteratively refine q(x) to reduce KL(p||q).",
+      "If q(x) is Gaussian, match its mean and covariance to those of p(x)."
+    ],
+    "whyItMatters": "EP turns an intractable probabilistic calculation into one involving a simpler distribution. Its use of factorization and its particular choice of KL divergence distinguish it from variational Bayesian approximation.",
+    "misconceptions": [
+      "EP does not generally recover the exact target distribution; it constructs a tractable approximation.",
+      "EP and variational Bayes use opposite KL-divergence directions: KL(p||q) versus KL(q||p).",
+      "Moment matching here refers specifically to matching a Gaussian approximation's mean and covariance to those of p(x)."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "target",
+          "label": "Target distribution",
+          "note": "Intractable p(x) with factorization structure."
+        },
+        {
+          "id": "iterate",
+          "label": "Iterative refinement",
+          "note": "Uses the target's factors to improve q(x)."
+        },
+        {
+          "id": "objective",
+          "label": "KL objective",
+          "note": "Minimizes KL(p||q)."
+        },
+        {
+          "id": "approx",
+          "label": "Tractable approximation",
+          "note": "A simpler q(x), optionally Gaussian."
+        }
+      ],
+      "edges": [
+        {
+          "from": "target",
+          "to": "iterate",
+          "label": "factors"
+        },
+        {
+          "from": "iterate",
+          "to": "objective",
+          "label": "refines"
+        },
+        {
+          "from": "objective",
+          "to": "approx",
+          "label": "produces"
+        }
+      ],
+      "caption": "EP uses the target's factorization in an iterative approximation process driven by KL(p||q)."
+    }
+  },
   "related": [
     "expectation-maximization-algorithm",
     "ordered-subset-expectation-maximization",

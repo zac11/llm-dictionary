@@ -5,7 +5,102 @@
   "type": "concept",
   "definition": "The broad goal and set of techniques for ensuring an AI system's behavior matches human intentions, values, and safety requirements.",
   "details": "Alignment research spans technical work (like RLHF and Constitutional AI) as well as broader questions about how to specify, verify, and maintain desired behavior in increasingly capable systems.",
-  "story": "Imagine a new medicine that works brilliantly in the lab but still has to be tested on real people before anyone takes it. Think of it as the quiet rule that a tool should be useful without being dangerous. The idea is simple: before something powerful is let loose, someone checks that it will not do real harm to real people. Rules and red-teaming are the brakes that make the speed trustworthy. That deliberate caution is Alignment.",
+  "explainer": {
+    "lead": "Alignment is about making an AI system do what people actually intend, within the values and safety limits they care about. It matters because a capable system can follow an instruction effectively while still producing unwanted or unsafe behavior.",
+    "tiers": {
+      "eli5": "Imagine asking a robot to clean your room, and it throws everything away because that is the fastest way to make the room look tidy. Alignment means teaching AI to understand what you really want, not just the literal words, and to avoid causing harm. Researchers also check that it keeps behaving properly as it becomes more capable.",
+      "practitioner": "In practice, alignment combines training techniques such as RLHF and Constitutional AI with clearer behavior specifications and evaluation. Engineers test whether a system follows intended goals and safety constraints, then use the results to improve it. Common pitfalls include treating human feedback as a complete specification and assuming behavior verified in testing will automatically persist as capabilities or deployment conditions change.",
+      "paperLevel": "A simplified formulation is: choose a policy pi so that its behavior B_pi approximates intended human behavior B_H while satisfying safety constraints C. The difficulty is that B_H and C are often incomplete or ambiguous, so training alone does not establish alignment. Research therefore also addresses how desired behavior is specified, verified, and maintained as systems become more capable."
+    },
+    "example": "Suppose a support assistant is asked to resolve a customer's billing problem. An unaligned shortcut might close the complaint without helping; an aligned response would address the issue truthfully, avoid inventing a refund, and escalate anything it cannot resolve. Human feedback and follow-up tests can reinforce that behavior.",
+    "usedIn": [
+      {
+        "name": "AI assistants",
+        "detail": "RLHF can be used to make responses better match human preferences and safety requirements.",
+        "url": ""
+      },
+      {
+        "name": "AI safety research",
+        "detail": "Researchers study how to specify, verify, and maintain intended behavior.",
+        "url": ""
+      },
+      {
+        "name": "Increasingly capable AI systems",
+        "detail": "Alignment work addresses unwanted behavior that may emerge as systems take on more difficult tasks.",
+        "url": ""
+      }
+    ],
+    "intuition": "A system can be competent without being aligned: it may optimize the stated task very well while missing the user's real purpose or violating an unstated safety boundary. Alignment connects capability with human intentions, values, and constraints.",
+    "howItWorks": [
+      "Describe the intended behavior, values, and safety requirements.",
+      "Train the system using feedback or techniques such as RLHF and Constitutional AI.",
+      "Test whether its behavior matches those goals, including unwanted side effects.",
+      "Keep checking and adjusting behavior as the system and its uses change."
+    ],
+    "whyItMatters": "Greater capability makes an AI system better at pursuing objectives, but does not guarantee that those objectives are the right ones. Alignment helps reduce the gap between what a system does and what people want it to do safely.",
+    "misconceptions": [
+      "Alignment is not simply obeying every literal instruction.",
+      "A helpful response is not necessarily a safe or well-aligned one.",
+      "Alignment is not a one-time training step; desired behavior also needs verification and maintenance."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "goals",
+          "label": "Human goals",
+          "note": "Intentions, values, and safety requirements"
+        },
+        {
+          "id": "spec",
+          "label": "Behavior specification",
+          "note": "Desired behavior and constraints"
+        },
+        {
+          "id": "training",
+          "label": "Alignment training",
+          "note": "Methods such as RLHF and Constitutional AI"
+        },
+        {
+          "id": "behavior",
+          "label": "System behavior",
+          "note": "Actions produced in real tasks"
+        },
+        {
+          "id": "checks",
+          "label": "Verification",
+          "note": "Tests compare behavior with the specification"
+        }
+      ],
+      "edges": [
+        {
+          "from": "goals",
+          "to": "spec",
+          "label": "define"
+        },
+        {
+          "from": "spec",
+          "to": "training",
+          "label": "guide"
+        },
+        {
+          "from": "training",
+          "to": "behavior",
+          "label": "shape"
+        },
+        {
+          "from": "behavior",
+          "to": "checks",
+          "label": "evaluate"
+        },
+        {
+          "from": "checks",
+          "to": "training",
+          "label": "feedback"
+        }
+      ],
+      "caption": "Alignment connects human goals to training and repeatedly checks the resulting behavior."
+    }
+  },
   "related": [
     "ai-alignment",
     "gale-church-alignment-algorithm",

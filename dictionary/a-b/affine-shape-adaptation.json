@@ -5,7 +5,129 @@
   "type": "concept",
   "definition": "Affine shape adaptation is a methodology for iteratively adapting the shape of the smoothing kernels in an affine group of smoothing kernels to the local image structure in neighbourhood region of a specific image point.",
   "details": "Equivalently, affine shape adaptation can be accomplished by iteratively warping a local image patch with affine transformations while applying a rotationally symmetric filter to the warped image patches. Provided that this iterative process converges, the resulting fixed point will be affine invariant. In the area of computer vision, this idea has been used for defining affine invariant interest point operators as well as affine invariant texture analysis methods.",
-  "story": "Imagine an art restorer who can spot a single cracked tile in a vast mosaic. What your eyes do without thinking, the machine does one careful layer at a time. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. The model looks the way you look at a crowd and finds the one face you know. That pixel-to-meaning climb is Affine shape adaptation.",
+  "explainer": {
+    "lead": "Affine shape adaptation is a technique that makes computer vision features robust to perspective distortions by iteratively reshaping smoothing filters to match local image structure. It lets algorithms recognize the same corner or blob even when a photograph is taken from an angle, stretched, or skewed.",
+    "tiers": {
+      "eli5": "Imagine you're looking at a coin from straight on, then from the side. The coin looks like a circle first, then an oval. Affine shape adaptation is like training a computer to \"squish\" its view back to a circle before checking what's there, so it recognizes the same object either way. It keeps warping and checking until the view stops changing — that's how it knows it's found the right shape.",
+      "practitioner": "Apply affine shape adaptation when you need interest points stable under viewpoint change, not just scale and rotation. Start with a scale-space feature detector (Laplacian or Harris with automatic scale selection), then iterate: estimate the local second-moment matrix, update the affine shape matrix Σ_t, and re-filter until convergence. The fixed point gives you an affine-covariant frame for descriptors like SIFT or Harris-Affine. Pitfall: convergence isn't guaranteed in uniform or degenerate regions, and the iterative warping adds cost over fixed-scale detectors.",
+      "paperLevel": "Given an image I_L, define the affine Gaussian scale-space L(x̄; Σ_t) = ∫ I_L(x-ξ) g(ξ̄; Σ_t) dξ̄ with non-uniform kernel g(x̄; Σ) = (1/(2π√det Σ_t)) exp(-x̄^T Σ_t^{-1} x̄ / 2). Under affine transformation η = Bξ, the representations satisfy L(ξ̄, Σ_L) = R(η̄, Σ_R) iff Σ_R = B Σ_L B^T. The affine-adapted second-moment matrix μ_L(x̄; Σ_t, Σ_s) = g(x̄-ξ̄; Σ_s) [∇L)(∇L)^T] closes the adaptation loop. Originating work: Lindeberg (1994, section 15.3) and Lindeberg & Gårding (1997)."
+    },
+    "example": "A building corner appears in two photos: one taken straight-on, one from far to the side. In the slanted photo, the corner's edges converge and the local patch is compressed horizontally. Affine shape adaptation measures this compression via the second-moment matrix, iteratively stretching the smoothing kernel wider horizontally. After three iterations, the kernel shape stabilizes; the resulting affine frame lets a descriptor match the corner across both images despite the 60-degree viewpoint difference.",
+    "usedIn": [
+      {
+        "name": "Harris-Affine and Hessian-Affine detectors",
+        "detail": "Interest point detectors that combine affine shape adaptation with corner and blob detection for wide-baseline stereo matching",
+        "url": ""
+      },
+      {
+        "name": "Affine-SIFT (ASIFT)",
+        "detail": "Extends SIFT by simulating all affine distortions, using affine-adapted frames as a core component",
+        "url": ""
+      },
+      {
+        "name": "Texture analysis methods",
+        "detail": "Affine-invariant classification of materials and surfaces under varying camera angles",
+        "url": ""
+      }
+    ],
+    "intuition": "A regular Gaussian blur treats every direction equally, like a perfectly round spotlight. But a slanted surface in a photo gets stretched unevenly. Affine shape adaptation deforms the spotlight into an ellipse that matches the local stretch, then keeps adjusting until the ellipse aligns with the true shape of the image patch.",
+    "howItWorks": [
+      "Detect an initial interest point using a scale-invariant operator like the Laplacian or Harris detector.",
+      "Compute the local second-moment matrix μ from image gradients in a window around the point.",
+      "Derive an affine shape matrix Σ_t from μ that captures the local anisotropy (stretch and skew).",
+      "Apply a Gaussian kernel shaped by Σ_t to the image patch, or equivalently warp the patch affinely and use a round filter.",
+      "Iterate: recompute μ from the newly filtered patch, update Σ_t, and stop when Σ_t converges to a fixed point."
+    ],
+    "whyItMatters": "Without affine adaptation, feature detectors fail when cameras view surfaces obliquely — a common case in robotics, augmented reality, and 3D reconstruction. It extends invariance from similarity transformations (translation, rotation, uniform scale) to the full affine group, enabling reliable matching across dramatic viewpoint changes.",
+    "misconceptions": [
+      "It guarantees convergence for any image patch — in reality, uniform or edge-free regions lack structure to anchor the iteration.",
+      "It is the same as affine-covariant detection — shape adaptation finds the local affine frame; a separate detector still identifies where to apply it.",
+      "It requires explicit 3D scene understanding — the method works purely from 2D image statistics without depth or pose estimation."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input image patch",
+          "note": "Local region around detected point"
+        },
+        {
+          "id": "moment",
+          "label": "Second-moment matrix μ",
+          "note": "Measures local gradient distribution"
+        },
+        {
+          "id": "shape",
+          "label": "Affine shape Σ_t",
+          "note": "Ellipse matching local anisotropy"
+        },
+        {
+          "id": "filter",
+          "label": "Affine Gaussian filter",
+          "note": "Non-uniform smoothing kernel"
+        },
+        {
+          "id": "warp",
+          "label": "Warped patch",
+          "note": "Equivalent: affine-transformed image"
+        },
+        {
+          "id": "check",
+          "label": "Convergence test",
+          "note": "Has Σ_t stabilized?"
+        },
+        {
+          "id": "output",
+          "label": "Affine-invariant frame",
+          "note": "Fixed point for descriptor computation"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "moment",
+          "label": "gradients"
+        },
+        {
+          "from": "moment",
+          "to": "shape",
+          "label": "decompose"
+        },
+        {
+          "from": "shape",
+          "to": "filter",
+          "label": "parametrizes"
+        },
+        {
+          "from": "filter",
+          "to": "warp",
+          "label": "smoothes"
+        },
+        {
+          "from": "warp",
+          "to": "check",
+          "label": "evaluate"
+        },
+        {
+          "from": "check",
+          "to": "moment",
+          "label": "no: iterate"
+        },
+        {
+          "from": "check",
+          "to": "output",
+          "label": "yes: done"
+        }
+      ],
+      "caption": "Iterative loop of affine shape adaptation: measure local structure, update kernel shape, filter, and repeat until the affine matrix converges."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Affine shape adaptation",
+        "url": "https://en.wikipedia.org/wiki/Affine_shape_adaptation"
+      }
+    ]
+  },
   "related": [
     "harris-affine-region-detector",
     "hessian-affine-region-detector",

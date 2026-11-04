@@ -5,7 +5,86 @@
   "type": "concept",
   "definition": "In applied mathematics, multimodal optimization deals with optimization tasks that involve finding all or most of the multiple (at least locally optimal) solutions of a problem, as opposed to a single best solution.",
   "details": "Evolutionary multimodal optimization is a branch of evolutionary computation, which is closely related to machine learning. Wong provides a short survey, wherein the chapter of Shir and the book of Preuss cover the topic in more detail.",
-  "story": "Think of a hiker descending a foggy hill in the dark, taking small steps and feeling for the steepest way down. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. It is the same loop you use to learn anything: try, miss, correct, try again. Skill, for a model, is just error pushed down until it is small enough to ignore. And that is Evolutionary multimodal optimization — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "Evolutionary multimodal optimization uses evolutionary search to find all or most of a problem's locally optimal solutions, not just one best answer. It matters when several good solutions are worth knowing about and choosing among.",
+    "tiers": {
+      "eli5": "Imagine exploring a landscape with several mountain peaks instead of only looking for the tallest one. You want a map showing all or most of the peaks, because each peak is a good answer in its own area. Evolutionary multimodal optimization searches for that collection of good answers.",
+      "practitioner": "Use this approach when the required output is a set of locally optimal candidates rather than a single optimum. A common pitfall is stopping once the best candidate is found, which misses the multimodal goal; success instead depends on recovering all or most of the local optima.",
+      "paperLevel": "For an objective f, the goal is to return a set S containing all or most locally optimal solutions x, rather than only one element of arg max f(x). Wong provides a short survey, while the chapter of Shir and the book of Preuss treat the topic in more detail."
+    },
+    "example": "Suppose a problem has three parameter settings, A, B, and C, each better than the nearby settings around it. A single-best-solution search might return only A, while evolutionary multimodal optimization seeks the set {A, B, C}, even if A has the highest overall objective value.",
+    "usedIn": [
+      {
+        "name": "Applied mathematics",
+        "detail": "Frames optimization tasks where multiple locally optimal solutions must be found.",
+        "url": ""
+      },
+      {
+        "name": "Evolutionary computation",
+        "detail": "Provides the broader field of which evolutionary multimodal optimization is a branch.",
+        "url": ""
+      },
+      {
+        "name": "Machine learning",
+        "detail": "A closely related field, rather than the field that exclusively contains the topic.",
+        "url": ""
+      }
+    ],
+    "intuition": "A single best solution can hide other solutions that are optimal within their own regions. Multimodal optimization aims to uncover that wider set of answers.",
+    "howItWorks": [
+      "Define an optimization problem that may have several locally optimal solutions.",
+      "Search with an evolutionary approach instead of pursuing only one final answer.",
+      "Identify solutions that are locally optimal in different parts of the problem.",
+      "Return all or most of those solutions as a set."
+    ],
+    "whyItMatters": "It reveals multiple good answers when restricting the result to one optimum would discard useful solutions. This changes the goal from winning a single comparison to covering the problem's local optima.",
+    "misconceptions": [
+      "It does not mean finding only the single globally best solution.",
+      "It is not itself a machine-learning model; it is a branch of evolutionary computation closely related to machine learning."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "problem",
+          "label": "Optimization problem",
+          "note": "May contain several local optima."
+        },
+        {
+          "id": "search",
+          "label": "Evolutionary search",
+          "note": "Explores candidate solutions."
+        },
+        {
+          "id": "optima",
+          "label": "Local optima",
+          "note": "Good solutions within their own regions."
+        },
+        {
+          "id": "result",
+          "label": "Solution set",
+          "note": "Contains all or most identified optima."
+        }
+      ],
+      "edges": [
+        {
+          "from": "problem",
+          "to": "search",
+          "label": "candidates"
+        },
+        {
+          "from": "search",
+          "to": "optima",
+          "label": "identifies"
+        },
+        {
+          "from": "optima",
+          "to": "result",
+          "label": "collected"
+        }
+      ],
+      "caption": "The search produces a set of local optima rather than stopping at one best solution."
+    }
+  },
   "related": [
     "quadratic-unconstrained-binary-optimization",
     "a-r-d-prasad",

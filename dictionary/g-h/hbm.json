@@ -5,6 +5,93 @@
   "type": "concept",
   "definition": "The on-accelerator high-bandwidth memory holding weights, activations, and KV cache.",
   "details": "The on-accelerator high-bandwidth memory holding weights, activations, and KV cache. The binding constraint of LLM work: a 70B model in 16-bit needs ~140 GB for weights alone, before a single token of cache. Memory math (weights + cache + activations vs. available HBM) is the first calculation of every deployment.",
+  "explainer": {
+    "lead": "HBM is the fast memory on an AI accelerator where a model’s weights, activations, and KV cache live while it works. Its limited capacity often decides whether a language model can run at all, so checking memory requirements is an essential first step in deployment.",
+    "tiers": {
+      "eli5": "Imagine a robot building something on a small workbench: its instruction book, partly finished work, and notes must all fit on the bench. HBM is that workbench for an AI model, and a bigger model needs more room before it can even begin answering.",
+      "practitioner": "Before deploying an LLM, add the memory needed for weights, the KV cache, and activations, then compare the total with the accelerator’s available HBM. A common pitfall is budgeting only for weights: cache and activations consume additional space, and the KV cache grows as tokens are processed.",
+      "paperLevel": "A simplified feasibility condition is M_weights + M_KV + M_activations <= M_HBM. For 16-bit weights, M_weights = 2P bytes for P parameters; thus P = 70 billion requires about 140 GB for weights alone, leaving the cache and activations as additional constraints."
+    },
+    "example": "A 70B-parameter model using 16-bit weights needs about 140 GB for those weights alone. Its KV cache and activations require still more HBM, so 140 GB is only the starting point of the deployment calculation.",
+    "usedIn": [
+      {
+        "name": "Large language model inference",
+        "detail": "HBM holds the model weights and activations, along with the KV cache used while generating tokens.",
+        "url": ""
+      },
+      {
+        "name": "LLM deployment planning",
+        "detail": "Engineers compare weights, cache, and activation requirements with available HBM before choosing whether a model fits.",
+        "url": ""
+      }
+    ],
+    "intuition": "Think of HBM as the accelerator’s working space: the model must keep several kinds of data there at once, not just its weights. Even when the weights fit, the remaining data can make the total requirement too large.",
+    "howItWorks": [
+      "Load the model’s weights into the accelerator’s HBM.",
+      "Use additional HBM for activations produced while the model computes.",
+      "Store the KV cache in HBM as tokens are processed.",
+      "Add these memory requirements and compare the total with available HBM.",
+      "If the total exceeds capacity, the model cannot be deployed in that configuration as planned."
+    ],
+    "whyItMatters": "HBM capacity can be the binding constraint on LLM work, determining whether weights, activations, and cache fit together. Checking this first prevents deployment plans from failing over a basic resource limit.",
+    "misconceptions": [
+      "The weights’ memory requirement is not the model’s total memory requirement.",
+      "A model fitting in HBM with an empty KV cache does not mean every later workload will fit.",
+      "HBM capacity and memory bandwidth are different constraints."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "weights",
+          "label": "Model weights",
+          "note": "The model’s stored parameters"
+        },
+        {
+          "id": "activations",
+          "label": "Activations",
+          "note": "Data produced during computation"
+        },
+        {
+          "id": "kv-cache",
+          "label": "KV cache",
+          "note": "Additional token-processing state"
+        },
+        {
+          "id": "hbm",
+          "label": "Accelerator HBM",
+          "note": "Shared on-accelerator memory"
+        },
+        {
+          "id": "compute",
+          "label": "Accelerator compute",
+          "note": "Uses data held in HBM"
+        }
+      ],
+      "edges": [
+        {
+          "from": "weights",
+          "to": "hbm",
+          "label": "stored in"
+        },
+        {
+          "from": "activations",
+          "to": "hbm",
+          "label": "stored in"
+        },
+        {
+          "from": "kv-cache",
+          "to": "hbm",
+          "label": "stored in"
+        },
+        {
+          "from": "hbm",
+          "to": "compute",
+          "label": "supplies"
+        }
+      ],
+      "caption": "Weights, activations, and the KV cache all compete for the same HBM, which supplies data to the accelerator’s computation."
+    }
+  },
   "related": [
     "kv-cache",
     "token",

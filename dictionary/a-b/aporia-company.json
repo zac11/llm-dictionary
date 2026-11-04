@@ -5,7 +5,98 @@
   "type": "tool",
   "definition": "Aporia is a machine learning observability platform based in Tel Aviv, Israel.",
   "details": "The company has a US office located in San Jose, California. Aporia has developed software for monitoring and controlling undetected defects and failures used by other companies to detect and report anomalies, and warn in the early stages of faults.",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. That is Aporia (company) — a small key that opens a big door.",
+  "explainer": {
+    "lead": "Aporia is a platform for watching machine learning models after they are put into use. It helps teams spot anomalous behaviour and receive early warnings about defects or failures before those problems develop further.",
+    "tiers": {
+      "eli5": "A machine learning model can start making strange decisions without anyone noticing, a bit like a bicycle developing a loose wheel while you ride. Aporia acts like a lookout, checking the information coming from the model and raising an alert when something looks wrong. This gives people a chance to investigate early.",
+      "practitioner": "Teams use Aporia to monitor models in production by connecting it to an existing data source. Direct Data Connectors monitor the full dataset without sampling or duplicating the data, while deployment into a customer's AWS environment supports monitoring across model platforms. An anomaly alert is an early-warning signal for investigation, not by itself an explanation of the underlying fault.",
+      "paperLevel": "Aporia is machine learning observability infrastructure rather than a learning algorithm: it monitors deployed models and their data to detect and report anomalies and provide early warning of faults. Its Direct Data Connectors operate on a preferred data source without sampling or data duplication, and its architecture can be deployed within a customer's AWS environment."
+    },
+    "example": "A team connects the data source for its demand-forecasting model to Aporia. The platform monitors the complete dataset, reports an anomalous pattern and warns the team early, giving it an opportunity to investigate before the fault develops further.",
+    "usedIn": [
+      {
+        "name": "Amazon Web Services",
+        "detail": "Aporia's architecture can be deployed in a customer's AWS environment to monitor production models regardless of platform.",
+        "url": ""
+      },
+      {
+        "name": "ClearML",
+        "detail": "Aporia partnered with the ClearML MLOps platform in November 2022 to improve ML pipeline optimization.",
+        "url": ""
+      }
+    ],
+    "intuition": "Deploying a model is not the end of looking after it: defects, failures and anomalous behaviour can remain hidden unless someone keeps watching. Aporia provides that watch layer, connecting to model data and turning suspicious changes into reports and early warnings.",
+    "howItWorks": [
+      "Connect Aporia to a preferred data source using Direct Data Connectors.",
+      "Monitor all of the connected data at once, without sampling or duplicating it.",
+      "Detect and report anomalies associated with model defects or failures.",
+      "Warn the team at an early stage so it can respond."
+    ],
+    "whyItMatters": "Undetected model problems can persist in production because they are not immediately visible to users or operators. Continuous observability makes anomalies easier to notice and gives organizations earlier warning, while avoiding data duplication removes a significant security risk for major organizations.",
+    "misconceptions": [
+      "Aporia is not itself a machine learning model; it monitors models built and operated by other organizations.",
+      "An anomaly warning does not mean the platform has identified or fixed the underlying cause.",
+      "Using Direct Data Connectors does not require copying the monitored data into a duplicate dataset."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "models",
+          "label": "Production models",
+          "note": "Machine learning models in use"
+        },
+        {
+          "id": "data",
+          "label": "Preferred data source",
+          "note": "Existing organizational data"
+        },
+        {
+          "id": "ddc",
+          "label": "Direct Data Connectors",
+          "note": "No sampling or duplication"
+        },
+        {
+          "id": "monitor",
+          "label": "Aporia monitoring",
+          "note": "Checks connected model data"
+        },
+        {
+          "id": "alerts",
+          "label": "Reports and warnings",
+          "note": "Flags anomalies and early faults"
+        }
+      ],
+      "edges": [
+        {
+          "from": "models",
+          "to": "data",
+          "label": "model data"
+        },
+        {
+          "from": "data",
+          "to": "ddc",
+          "label": "connects"
+        },
+        {
+          "from": "ddc",
+          "to": "monitor",
+          "label": "full data"
+        },
+        {
+          "from": "monitor",
+          "to": "alerts",
+          "label": "anomalies"
+        }
+      ],
+      "caption": "Aporia connects to an existing data source, monitors production model data and produces anomaly reports and early warnings."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Aporia (company)",
+        "url": "https://en.wikipedia.org/wiki/Aporia_(company)"
+      }
+    ]
+  },
   "related": [
     "bottlenose-company",
     "h-company",

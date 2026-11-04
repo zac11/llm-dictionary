@@ -5,7 +5,112 @@
   "type": "concept",
   "definition": "A feature store is a centralized repository used in machine learning to store, manage, and serve features for model training and inference.",
   "details": "It provides a unified interface for data scientists and engineers to access curated, reusable features derived from raw data, ensuring consistency between training and production environments. Feature stores typically support batch and real-time data pipelines, enabling efficient feature computation, storage, and retrieval at scale. Feature stores play a critical role in operationalizing machine learning systems by improving reproducibility, reducing data leakage, and promoting collaboration across teams. They often have features like feature versioning, metadata management, and access control that help keep data quality and governance high.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. And that is Feature store — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "A feature store is the shared home for the inputs a machine learning model uses. It keeps those inputs consistent between training and live predictions while making them easier to reuse, govern, and reproduce.",
+    "tiers": {
+      "eli5": "Think of a kitchen where ingredients are washed, chopped, and clearly labeled before anyone cooks. A feature store does something similar for a model's ingredients, called features, so practice and real predictions use the same preparations. This saves work and helps prevent teams from accidentally using different versions.",
+      "practitioner": "Teams publish curated features from batch or real-time pipelines through one interface, then retrieve them for training and inference. Versioning, metadata, and access controls support governance; a key pitfall is computing features differently in training and serving, which undermines consistency and can contribute to data leakage.",
+      "paperLevel": "A feature store is a centralized system S that stores, manages, and serves features F derived from raw data D through a common interface for training and inference. It supports scalable batch and real-time processing and may provide versioning, metadata management, and access control, with consistency, reproducibility, leakage reduction, reuse, and governance as operational goals."
+    },
+    "example": "For a fraud model, raw transactions can be turned into a feature such as a card's total purchases over the last 30 days. The store saves that feature for training and serves the same definition during inference, so both environments use comparable inputs.",
+    "usedIn": [
+      {
+        "name": "Model training",
+        "detail": "Supplies curated features and preserves consistent definitions for reproducible training.",
+        "url": ""
+      },
+      {
+        "name": "Real-time inference",
+        "detail": "Retrieves features at scale so production models receive inputs consistent with training.",
+        "url": ""
+      },
+      {
+        "name": "Machine learning operations",
+        "detail": "Supports reuse, collaboration, metadata, access control, and feature governance across teams.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of every team preparing its own version of the same model input, a feature store acts like a shared, well-labeled library. Everyone can reuse the same curated feature in training and production.",
+    "howItWorks": [
+      "Raw data enters batch or real-time pipelines.",
+      "Pipelines compute curated, reusable features.",
+      "The store manages and versions those features.",
+      "Training and inference retrieve features through one interface."
+    ],
+    "whyItMatters": "A feature store reduces duplicated feature work and helps keep training aligned with production. Its consistency, reproducibility, and governance controls make machine learning systems easier to operate across teams.",
+    "misconceptions": [
+      "It is not simply a raw-data repository; it manages curated features.",
+      "It does not replace the pipelines that compute features.",
+      "It does not train models; it supplies their inputs."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "raw",
+          "label": "Raw data",
+          "note": "Source data for features"
+        },
+        {
+          "id": "batch",
+          "label": "Batch pipelines",
+          "note": "Compute features in batches"
+        },
+        {
+          "id": "realtime",
+          "label": "Real-time pipelines",
+          "note": "Compute current features"
+        },
+        {
+          "id": "store",
+          "label": "Feature store",
+          "note": "Manages, versions, and serves"
+        },
+        {
+          "id": "training",
+          "label": "Model training",
+          "note": "Uses curated features"
+        },
+        {
+          "id": "inference",
+          "label": "Model inference",
+          "note": "Retrieves consistent features"
+        }
+      ],
+      "edges": [
+        {
+          "from": "raw",
+          "to": "batch",
+          "label": "feeds"
+        },
+        {
+          "from": "raw",
+          "to": "realtime",
+          "label": "feeds"
+        },
+        {
+          "from": "batch",
+          "to": "store",
+          "label": "features"
+        },
+        {
+          "from": "realtime",
+          "to": "store",
+          "label": "features"
+        },
+        {
+          "from": "store",
+          "to": "training",
+          "label": "serves"
+        },
+        {
+          "from": "store",
+          "to": "inference",
+          "label": "serves"
+        }
+      ],
+      "caption": "Pipelines turn raw data into features; one store then serves them to training and inference."
+    }
+  },
   "related": [
     "feature-hashing",
     "feature-importance",

@@ -706,8 +706,8 @@ export function validateTerm(term, context = {}) {
   if (term.coverage.length && presentation !== 'coverage') {
     add('warning', 'unexpected-coverage', `coverage data is unused because ${term.type} entries read as “${presentation}”.`);
   }
-  if (term.story && presentation !== 'story' && !term.explainer) {
-    add('warning', 'unexpected-story', `story is not shown for ${term.type} entries — use “${presentation}” data instead.`);
+  if (term.story) {
+    add('warning', 'retired-story', 'story vignettes are no longer shown — write a layered explainer instead.');
   }
 
   return issues;

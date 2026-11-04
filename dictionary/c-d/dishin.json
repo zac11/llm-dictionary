@@ -5,7 +5,102 @@
   "type": "concept",
   "definition": "As described in and DiShIn (Disjunctive Shared Information) is method to calculate that shared information content by complementing the value of most informative common ancestor (MICA) with their disjunctive ancestors by exploring the multiple inheritance of an ontology.",
   "details": "The shared information content of two terms in an Ontology (information science) is a popular technique to measure their semantic similarity. DiShIn re-defines the shared information content between two concepts as the average of all their disjunctive ancestors, assuming that an ancestor is disjunctive if the difference between the number of distinct paths from the concepts to it is different from that of any other more informative ancestor. In other words, a disjunctive ancestor is the most informative ancestor representing a given set of parallel interpretations. DiShIn is an improvement of GraSM in terms of computational efficiency and in the management of parallel interpretations.",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. And that idea, made concrete, is DiShIn.",
+  "explainer": {
+    "lead": "DiShIn, short for Disjunctive Shared Information, is a way to measure how much information two concepts in an ontology have in common. It looks beyond their single most informative shared ancestor, helping capture parallel interpretations created by multiple inheritance.",
+    "tiers": {
+      "eli5": "Imagine ideas arranged like a family tree, except an idea can have more than one parent. To compare two ideas, DiShIn finds the important shared relatives that represent different ways they are connected, then averages how informative those relatives are. This gives a fuller picture than looking at just one shared relative.",
+      "practitioner": "Use DiShIn when computing ontology-based semantic similarity and the graph contains multiple inheritance. After assigning information content to ancestors, identify distinct paths from both concepts, apply the disjunctive-ancestor test, and average the selected ancestors' information-content values; do not substitute a simple average over every common ancestor.",
+      "paperLevel": "For concepts c1 and c2, let D(c1,c2) be their disjunctive ancestors; DiShIn defines sharedIC(c1,c2) = (1/|D|) Σ_{a∈D} IC(a). An ancestor is disjunctive if its number of distinct paths from the concepts differs from that of every more informative ancestor. This complements MICA-based shared information and improves on GraSM in computational efficiency and the management of parallel interpretations."
+    },
+    "example": "Suppose ElectricCar and DieselCar have two ancestors selected as disjunctive: Car, with information content 4, and MotorVehicle, with information content 2. DiShIn returns (4 + 2) / 2 = 3 as their shared information content, whereas a MICA-only calculation would use just Car's value of 4.",
+    "usedIn": [
+      {
+        "name": "Ontology-based semantic similarity",
+        "detail": "Calculates shared information content between two concepts as part of comparing their meanings.",
+        "url": ""
+      },
+      {
+        "name": "Multiple-inheritance ontologies",
+        "detail": "Represents parallel interpretations when concepts have several distinct paths to shared ancestors.",
+        "url": ""
+      }
+    ],
+    "intuition": "Two concepts can be related through more than one meaningful route, so their closest shared ancestor may not tell the whole story. DiShIn selects ancestors representing distinct interpretations and combines their information content.",
+    "howItWorks": [
+      "Find the common ancestors of the two concepts in the ontology.",
+      "Count the distinct paths from the concepts to each ancestor.",
+      "Select disjunctive ancestors by comparing those path counts with more informative ancestors.",
+      "Average the information content of the selected ancestors to obtain shared information content."
+    ],
+    "whyItMatters": "Shared information content is commonly used to measure semantic similarity. By accounting for parallel interpretations while improving computational efficiency over GraSM, DiShIn better reflects relationships in ontologies with multiple inheritance.",
+    "misconceptions": [
+      "It does not average the information content of every common ancestor.",
+      "It does not discard the most informative common ancestor; it complements that value.",
+      "It calculates shared information content, not a complete semantic-similarity score by itself."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "concepts",
+          "label": "Two concepts",
+          "note": "The terms being compared"
+        },
+        {
+          "id": "ontology",
+          "label": "Ontology graph",
+          "note": "Concept relationships, including multiple inheritance"
+        },
+        {
+          "id": "paths",
+          "label": "Distinct paths",
+          "note": "Routes from both concepts to common ancestors"
+        },
+        {
+          "id": "ancestors",
+          "label": "Disjunctive ancestors",
+          "note": "Ancestors representing parallel interpretations"
+        },
+        {
+          "id": "average",
+          "label": "Average information",
+          "note": "Mean of the selected ancestors' information content"
+        },
+        {
+          "id": "score",
+          "label": "Shared information",
+          "note": "The DiShIn result"
+        }
+      ],
+      "edges": [
+        {
+          "from": "concepts",
+          "to": "ontology",
+          "label": "traverse"
+        },
+        {
+          "from": "ontology",
+          "to": "paths",
+          "label": "enumerate"
+        },
+        {
+          "from": "paths",
+          "to": "ancestors",
+          "label": "select"
+        },
+        {
+          "from": "ancestors",
+          "to": "average",
+          "label": "combine"
+        },
+        {
+          "from": "average",
+          "to": "score",
+          "label": "produces"
+        }
+      ],
+      "caption": "DiShIn uses path structure to select disjunctive ancestors, then averages their information content."
+    }
+  },
   "related": [
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",
     "accelerated-linear-algebra",

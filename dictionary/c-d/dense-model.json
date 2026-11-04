@@ -5,7 +5,82 @@
   "type": "concept",
   "definition": "A model in which all parameters are used for every input, as opposed to sparse architectures that activate only a subset.",
   "details": "Most traditional transformer language models are dense, meaning the full network is engaged for every token processed, which becomes increasingly costly to run as model size grows.",
-  "story": "Think of an orchestra warming up: no single instrument carries the piece, but together they make the sound. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. The layout decides what the machine can even attempt, before it learns a single thing. The shape of the machine is half the idea. That blueprint is Dense Model.",
+  "explainer": {
+    "lead": "A dense model uses its entire parameter set whenever it processes an input. This makes computation predictable, but running every token through the full network becomes increasingly expensive as the model grows.",
+    "tiers": {
+      "eli5": "Imagine a huge team where every member helps answer every question, even the easy ones. A dense model works like that: its whole network is used for every piece of input. As the team gets bigger, each answer takes more work.",
+      "practitioner": "In a dense transformer language model, each token is processed by the full network, so per-token computation engages all parameters. This is straightforward to reason about, but serving costs rise as model size grows. Do not confuse using all parameters per input with processing a whole sequence at once: density concerns parameter activation, not sequence length.",
+      "paperLevel": "A model with parameters theta is dense when the full parameter set participates in computing f_theta(x) for every input x. By contrast, a sparse architecture activates only a subset theta_x for a given input. Dense transformer language models therefore engage the full network for every token, with computational cost becoming more burdensome as parameter count grows."
+    },
+    "example": "When a dense transformer processes the token \"cat\", all of its parameters participate in producing that token's output. If the next token is \"sits\", the full network is engaged again; no parameter subset is skipped for either token.",
+    "usedIn": [
+      {
+        "name": "Transformer language models",
+        "detail": "Most traditional designs process every token with the full network.",
+        "url": ""
+      },
+      {
+        "name": "Token-by-token language generation",
+        "detail": "Each generated token engages all model parameters rather than a selected subset.",
+        "url": ""
+      }
+    ],
+    "intuition": "Think of switching on every machine in a factory for each item made, rather than choosing only the machines that item needs. Dense computation always uses the whole model, while sparse computation activates only part of it.",
+    "howItWorks": [
+      "An input, such as a token, enters the model.",
+      "The computation engages the model's full parameter set.",
+      "The network produces its output for that input.",
+      "The same full-network engagement repeats for subsequent tokens."
+    ],
+    "whyItMatters": "Density determines how much of a model must run for each input. For large transformer language models, engaging everything for every token can make computation increasingly costly as the model grows.",
+    "misconceptions": [
+      "Dense does not mean that every parameter has a nonzero value; it means every parameter is used in each computation.",
+      "Dense is not the opposite of large: a model can be very large and still be dense.",
+      "Density concerns which parameters are activated per input, not how many tokens are processed together."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "token",
+          "label": "Input token",
+          "note": "One token enters the model."
+        },
+        {
+          "id": "full-network",
+          "label": "Full network",
+          "note": "All parameters participate."
+        },
+        {
+          "id": "output",
+          "label": "Token output",
+          "note": "The full computation produces a result."
+        },
+        {
+          "id": "next-token",
+          "label": "Next token",
+          "note": "The process repeats with full engagement."
+        }
+      ],
+      "edges": [
+        {
+          "from": "token",
+          "to": "full-network",
+          "label": "processed by"
+        },
+        {
+          "from": "full-network",
+          "to": "output",
+          "label": "produces"
+        },
+        {
+          "from": "next-token",
+          "to": "full-network",
+          "label": "all parameters"
+        }
+      ],
+      "caption": "Every token passes through computation that engages the model's entire parameter set."
+    }
+  },
   "related": [
     "decoder-only-model",
     "embedding-model",

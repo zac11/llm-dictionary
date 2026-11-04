@@ -5,6 +5,82 @@
   "type": "concept",
   "definition": "Estimating human joint positions in absolute world coordinates rather than camera-relative ones, needed for scene-grounded human understanding.",
   "details": "Estimating human joint positions in absolute world coordinates rather than camera-relative ones, needed for scene-grounded human understanding.",
+  "explainer": {
+    "lead": "3D absolute human pose estimation places a person’s joints in a fixed world coordinate system, not just relative to the camera. This makes the pose useful for understanding where the person is within a scene.",
+    "tiers": {
+      "eli5": "Imagine describing where your friend’s elbows and knees are in a room. Saying “in front of the camera” changes meaning when the camera moves, but saying “beside the chair” keeps the description tied to the room. This task teaches computers to locate body joints using the room’s fixed frame of reference.",
+      "practitioner": "Use it when joint positions must be interpreted together with scene geometry in a shared 3D coordinate system. Check which reference frame the output uses: a camera-relative pose can look correct while remaining unsuitable for scene-grounded reasoning.",
+      "paperLevel": "Given observations of a person, estimate J = {p_j}, where p_j = (x_j, y_j, z_j) is the position of joint j in a fixed absolute world coordinate system W, rather than a camera-relative coordinate system C. The definition does not prescribe the sensing setup or the method used to obtain world coordinates."
+    },
+    "example": "A person stands beside a chair while a camera moves across the room. Camera-relative joint coordinates change with the viewpoint, but absolute coordinates keep the person’s hips, knees, and ankles at fixed world locations beside the chair.",
+    "usedIn": [
+      {
+        "name": "Scene-grounded human understanding",
+        "detail": "Places human joints in the same fixed 3D frame as the surrounding scene.",
+        "url": ""
+      },
+      {
+        "name": "Human–scene spatial analysis",
+        "detail": "Supports reasoning about where a person’s body is positioned relative to the world.",
+        "url": ""
+      }
+    ],
+    "intuition": "A camera-relative pose answers “where are the joints from the camera’s viewpoint?” An absolute pose instead answers “where are the joints in the world?”, keeping their locations anchored to the scene.",
+    "howItWorks": [
+      "Observe a person and identify the body joints to estimate.",
+      "Estimate each joint’s position in three dimensions.",
+      "Express those positions in a fixed absolute world coordinate system.",
+      "Return the world-coordinate joints for scene-grounded interpretation."
+    ],
+    "whyItMatters": "Absolute coordinates connect human pose to a persistent scene rather than to a changing camera viewpoint. That connection is essential when the person’s position must be understood in relation to the world.",
+    "misconceptions": [
+      "It is not ordinary 2D keypoint detection: the output is three-dimensional.",
+      "It is not camera-relative 3D pose with a different label: the reference frame is the key distinction.",
+      "A moving camera should not by itself move a stationary person’s absolute joint coordinates."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "observation",
+          "label": "Person observation",
+          "note": "Visual input containing the person."
+        },
+        {
+          "id": "joints",
+          "label": "3D joint estimation",
+          "note": "Estimates three-dimensional joint positions."
+        },
+        {
+          "id": "world",
+          "label": "World coordinates",
+          "note": "Expresses joints in a fixed absolute frame."
+        },
+        {
+          "id": "scene",
+          "label": "Scene-grounded pose",
+          "note": "Anchors the person’s pose to the scene."
+        }
+      ],
+      "edges": [
+        {
+          "from": "observation",
+          "to": "joints",
+          "label": "body evidence"
+        },
+        {
+          "from": "joints",
+          "to": "world",
+          "label": "joint positions"
+        },
+        {
+          "from": "world",
+          "to": "scene",
+          "label": "absolute pose"
+        }
+      ],
+      "caption": "The defining step is expressing estimated 3D joints in a fixed world coordinate system."
+    }
+  },
   "citation": {
     "title": "3D Absolute Human Pose Estimation",
     "authors": [],

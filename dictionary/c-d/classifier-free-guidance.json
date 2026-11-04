@@ -8,6 +8,106 @@
   ],
   "definition": "The sampling technique that amplifies prompt adherence by extrapolating between conditional and unconditional predictions each denoising step.",
   "details": "The sampling technique that amplifies prompt adherence by extrapolating between conditional and unconditional predictions each denoising step. The \"guidance scale\" knob every image-generation user adjusts trades fidelity to the prompt against naturalness and diversity.",
+  "explainer": {
+    "lead": "Classifier-free guidance helps a generated image follow its text prompt more closely. It does this during sampling by combining predictions made with and without the prompt, with a guidance scale controlling how strongly the prompt is emphasized.",
+    "tiers": {
+      "eli5": "Imagine an artist making two sketches: one using your instructions and one ignoring them. Comparing the sketches shows which details your instructions added, and strengthening that difference can make the final picture follow you more closely. Push too hard, though, and the picture may look less natural or less varied.",
+      "practitioner": "At each denoising step, run conditional and unconditional predictions and combine them using the guidance scale before continuing sampling. Raising the scale can improve prompt adherence, but too much emphasis can reduce naturalness and diversity, so the setting should be tuned for the desired balance.",
+      "paperLevel": "A common plain-text form is guided_prediction = unconditional_prediction + s * (conditional_prediction - unconditional_prediction), where s is the guidance scale and the combination is applied at each denoising step. Increasing s extrapolates away from the unconditional prediction toward stronger prompt conditioning. The central limitation is the trade-off between prompt fidelity and the naturalness and diversity of generated samples."
+    },
+    "example": "For the prompt “a red fox wearing a blue scarf,” a higher guidance scale can push the sampler more strongly toward those specified details than a lower scale. If the scale is pushed too far, the gain in prompt fidelity may come with less natural-looking or less varied images.",
+    "usedIn": [
+      {
+        "name": "Image generation",
+        "detail": "Applied at each denoising step to make generated images follow text prompts more closely.",
+        "url": ""
+      },
+      {
+        "name": "Image-generation interfaces",
+        "detail": "Exposed as a guidance-scale control that balances prompt fidelity against naturalness and diversity.",
+        "url": ""
+      }
+    ],
+    "intuition": "The difference between a prompt-aware prediction and a prompt-free prediction reveals the direction associated with the prompt. Classifier-free guidance amplifies that direction instead of simply accepting the prompt-aware prediction as it is.",
+    "howItWorks": [
+      "Start a denoising step with the current noisy sample.",
+      "Make one prediction using the prompt and another without it.",
+      "Subtract the unconditional prediction from the conditional one, multiply the difference by the guidance scale, and add it back to the unconditional prediction.",
+      "Use the guided prediction for the next denoising step, repeating the process throughout sampling."
+    ],
+    "whyItMatters": "It gives users a direct way to control how strictly generation follows a prompt without describing a separate classifier in the sampling procedure. Its guidance scale makes an important quality trade-off adjustable in everyday image generation.",
+    "misconceptions": [
+      "A higher guidance scale is not always better: stronger prompt adherence can cost naturalness and diversity.",
+      "It is not a single edit applied after generation; the conditional and unconditional predictions are combined at every denoising step."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "noisy",
+          "label": "Noisy sample",
+          "note": "Input to the current denoising step"
+        },
+        {
+          "id": "prompt",
+          "label": "Text prompt",
+          "note": "Conditioning information"
+        },
+        {
+          "id": "uncond",
+          "label": "Unconditional prediction",
+          "note": "Prediction made without the prompt"
+        },
+        {
+          "id": "cond",
+          "label": "Conditional prediction",
+          "note": "Prediction made with the prompt"
+        },
+        {
+          "id": "guided",
+          "label": "Guided prediction",
+          "note": "Extrapolation controlled by guidance scale"
+        },
+        {
+          "id": "next",
+          "label": "Next sample",
+          "note": "Passed to the following denoising step"
+        }
+      ],
+      "edges": [
+        {
+          "from": "noisy",
+          "to": "uncond",
+          "label": ""
+        },
+        {
+          "from": "noisy",
+          "to": "cond",
+          "label": ""
+        },
+        {
+          "from": "prompt",
+          "to": "cond",
+          "label": "conditions"
+        },
+        {
+          "from": "uncond",
+          "to": "guided",
+          "label": ""
+        },
+        {
+          "from": "cond",
+          "to": "guided",
+          "label": "difference"
+        },
+        {
+          "from": "guided",
+          "to": "next",
+          "label": "denoises"
+        }
+      ],
+      "caption": "Each denoising step combines prompt-free and prompt-aware predictions before producing the next sample."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

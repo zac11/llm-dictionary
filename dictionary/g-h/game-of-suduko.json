@@ -5,6 +5,103 @@
   "type": "concept",
   "definition": "The number-placement logic puzzle (properly spelled Sudoku) — used to test constraint reasoning and neural solvers.",
   "details": "The number-placement logic puzzle (properly spelled Sudoku) — used to test constraint reasoning and neural solvers.",
+  "explainer": {
+    "lead": "Sudoku, sometimes misspelled “Suduko,” is a logic puzzle about placing numbers without repeating them in particular rows, columns, and boxes. Its clear rules make it a useful testbed for constraint-reasoning methods and neural solvers.",
+    "tiers": {
+      "eli5": "Imagine giving every seat in a grid a number, but no row, column, or small box may contain the same number twice. You use the numbers already printed as clues, crossing out choices until only one fits. It is like solving a seating plan with several rules at once.",
+      "practitioner": "Sudoku is commonly encoded as variables for cells, fixed assignments for given clues, and all-different constraints over rows, columns, and boxes. Constraint solvers can propagate candidates and search when necessary, while neural-solver experiments may treat completed grids or individual placements as prediction targets. Pitfalls include accidentally altering given cells, omitting box constraints, and confusing a plausible learned output with a grid that satisfies every constraint.",
+      "paperLevel": "For a standard 9-by-9 instance, let x[r,c] in {1,...,9} be the digit in row r and column c, with x[r,c] fixed wherever a clue is supplied. Require all-different over each row, each column, and each 3-by-3 box; equivalently, each of these units contains every digit exactly once. A solver must return an assignment satisfying all constraints, not merely maximize the number of locally correct entries."
+    },
+    "example": "Suppose a row is missing only 2, 5, and 9. If one empty cell’s column already contains 2 and its box already contains 5, that cell must be 9; placing it removes 9 from the candidates of the other empty cells in that row.",
+    "usedIn": [
+      {
+        "name": "Constraint programming",
+        "detail": "Used to test propagation and search over row, column, and box constraints.",
+        "url": ""
+      },
+      {
+        "name": "Neural solver research",
+        "detail": "Used to evaluate whether learned models can produce or reason about constraint-satisfying grids.",
+        "url": ""
+      },
+      {
+        "name": "Optimization education",
+        "detail": "Provides a small, concrete setting for teaching feasible assignments and constraint satisfaction.",
+        "url": ""
+      }
+    ],
+    "intuition": "Every placement narrows what can go elsewhere, because rows, columns, and boxes share cells. Solving the puzzle means repeatedly using these overlapping restrictions until the entire grid is consistent.",
+    "howItWorks": [
+      "Read the given digits and keep those cells fixed.",
+      "For each empty cell, list digits not already present in its row, column, or box.",
+      "Place a digit when only one candidate remains, or search among candidates when more information is needed.",
+      "Propagate each placement to remove it from the candidates of related cells.",
+      "Finish only when every cell is filled and all three kinds of constraint hold."
+    ],
+    "whyItMatters": "Sudoku packs many interacting constraints into a compact problem with an easy-to-check answer. That makes it useful for comparing exact reasoning, search, and learned approaches without hiding errors behind a vague objective.",
+    "misconceptions": [
+      "Sudoku is not an arithmetic puzzle: the digits act as symbols, and no addition is required.",
+      "A filled grid is not automatically a solution; it must preserve every clue and satisfy every row, column, and box constraint.",
+      "The standard spelling is “Sudoku,” not “Suduko.”"
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "givens",
+          "label": "Given clues",
+          "note": "Fixed digits in the starting grid."
+        },
+        {
+          "id": "candidates",
+          "label": "Cell candidates",
+          "note": "Digits still possible for each empty cell."
+        },
+        {
+          "id": "constraints",
+          "label": "Grid constraints",
+          "note": "Rows, columns, and boxes exclude repeats."
+        },
+        {
+          "id": "placement",
+          "label": "Digit placement",
+          "note": "Select a value through propagation or search."
+        },
+        {
+          "id": "solution",
+          "label": "Checked solution",
+          "note": "A complete grid satisfying every constraint."
+        }
+      ],
+      "edges": [
+        {
+          "from": "givens",
+          "to": "candidates",
+          "label": "initialize"
+        },
+        {
+          "from": "constraints",
+          "to": "candidates",
+          "label": "eliminate"
+        },
+        {
+          "from": "candidates",
+          "to": "placement",
+          "label": "choose"
+        },
+        {
+          "from": "placement",
+          "to": "candidates",
+          "label": "propagate"
+        },
+        {
+          "from": "placement",
+          "to": "solution",
+          "label": "complete"
+        }
+      ],
+      "caption": "Placements and candidate elimination feed back into one another until the grid is complete and valid."
+    }
+  },
   "citation": {
     "title": "Game of Suduko",
     "authors": [],

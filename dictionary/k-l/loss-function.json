@@ -5,7 +5,102 @@
   "type": "concept",
   "definition": "A mathematical function that measures the difference between a model's predictions and the true targets.",
   "details": "Training is essentially the process of minimizing the loss function via optimization algorithms. Common examples include cross-entropy loss for classification and mean squared error for regression.",
-  "story": "Think of a hiker descending a foggy hill in the dark, taking small steps and feeling for the steepest way down. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. It is the same loop you use to learn anything: try, miss, correct, try again. Skill, for a model, is just error pushed down until it is small enough to ignore. And that is Loss Function — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "A loss function turns a model's mistakes into a number that training can try to reduce. It provides the feedback that guides optimization, connecting individual predictions to improvement in the model.",
+    "tiers": {
+      "eli5": "Imagine throwing a ball at a target and measuring how far away it lands. A loss function is like that measurement: the farther the model's answer is from the right answer, the bigger the penalty. Training means adjusting the model so that penalty gets smaller.",
+      "practitioner": "Choose a loss suited to the task, commonly cross-entropy for classification or mean squared error for regression. During training, an optimizer uses the loss to adjust the model's parameters; a smaller training loss alone does not establish how well the model will perform on new cases.",
+      "paperLevel": "For input x, target y, and model f_theta, a loss can be written L(theta) = D(f_theta(x), y), where D measures disagreement between prediction and target. Training seeks parameters theta that minimize this loss through optimization, with common choices including cross-entropy for classification and mean squared error for regression."
+    },
+    "example": "For a regression target of 10, suppose the model predicts 8. Using squared error for this single prediction, the loss is (8 - 10)^2 = 4; a prediction of 9 would reduce it to 1.",
+    "usedIn": [
+      {
+        "name": "Classification",
+        "detail": "Cross-entropy loss measures how model predictions differ from the true classes.",
+        "url": ""
+      },
+      {
+        "name": "Regression",
+        "detail": "Mean squared error penalizes the squared differences between numerical predictions and targets.",
+        "url": ""
+      },
+      {
+        "name": "Model training",
+        "detail": "Optimization algorithms adjust models to minimize the chosen loss.",
+        "url": ""
+      }
+    ],
+    "intuition": "A loss function acts like a score for being wrong: predictions closer to the true targets receive lower loss. Training uses that score as a signal for changing the model.",
+    "howItWorks": [
+      "The model makes a prediction for an input.",
+      "The loss function compares that prediction with the true target.",
+      "It returns a number representing the mismatch.",
+      "An optimization algorithm adjusts the model to reduce that number."
+    ],
+    "whyItMatters": "Without a loss function, training would lack a numerical objective to minimize. Its task-specific form determines which prediction errors optimization works to reduce.",
+    "misconceptions": [
+      "Lower loss means a better fit to the evaluated targets, not automatically perfect predictions.",
+      "The loss function guides training; the optimization algorithm performs the parameter updates.",
+      "Cross-entropy and mean squared error are not interchangeable defaults: they are common choices for classification and regression respectively."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input data",
+          "note": "An example supplied to the model"
+        },
+        {
+          "id": "model",
+          "label": "Model",
+          "note": "Produces a prediction using its parameters"
+        },
+        {
+          "id": "target",
+          "label": "True target",
+          "note": "The correct answer for comparison"
+        },
+        {
+          "id": "loss",
+          "label": "Loss function",
+          "note": "Converts prediction error into a number"
+        },
+        {
+          "id": "optimizer",
+          "label": "Optimizer",
+          "note": "Adjusts model parameters to reduce loss"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "model",
+          "label": ""
+        },
+        {
+          "from": "model",
+          "to": "loss",
+          "label": "prediction"
+        },
+        {
+          "from": "target",
+          "to": "loss",
+          "label": "target"
+        },
+        {
+          "from": "loss",
+          "to": "optimizer",
+          "label": "loss value"
+        },
+        {
+          "from": "optimizer",
+          "to": "model",
+          "label": "updates"
+        }
+      ],
+      "caption": "Training repeatedly compares predictions with targets and uses the resulting loss to guide model updates."
+    }
+  },
   "related": [
     "cross-entropy-loss",
     "active-learning",

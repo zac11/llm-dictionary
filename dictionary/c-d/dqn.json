@@ -5,6 +5,108 @@
   "type": "concept",
   "definition": "The classic off-policy value-based family: learn Q(s, a) and act greedily on it.",
   "details": "The classic off-policy value-based family: learn Q(s, a) and act greedily on it. DQN (Q-learning with deep networks, replay buffers, target networks) launched the deep RL era with Atari. Also known as Deep Q-Networks.",
+  "explainer": {
+    "lead": "DQN, short for Deep Q-Network, uses a deep network to estimate how good each available action is, then chooses the action with the highest estimate. It brought Q-learning, replay buffers, and target networks together in a landmark approach that launched the deep reinforcement learning era with Atari.",
+    "tiers": {
+      "eli5": "Imagine learning a video game by giving every possible move a score, then picking the move with the highest score. DQN learns those scores by practising, revisiting old experiences from a notebook, and using a steadier copy of its scorer while it learns.",
+      "practitioner": "Apply DQN by training a deep network to output Q(s, a) for the available actions and acting greedily on those values. Train with a replay buffer and a target network rather than plain Q-learning with a deep network alone. Atari is its classic setting, and confusing its value estimates with a directly learned action policy is a common pitfall.",
+      "paperLevel": "DQN approximates the action-value function Q(s, a) with a deep network and selects a* = argmax_a Q(s, a). It is an off-policy, value-based form of Q-learning that uses replay buffers and target networks."
+    },
+    "example": "In an Atari game, suppose the network estimates Q(s, left) = 1.2, Q(s, right) = 2.5, and Q(s, fire) = 0.4. DQN acts greedily and chooses right; the resulting experience can later be drawn from the replay buffer for a Q-learning update using the target network.",
+    "usedIn": [
+      {
+        "name": "Atari gameplay",
+        "detail": "The landmark setting in which DQN launched the deep reinforcement learning era.",
+        "url": ""
+      },
+      {
+        "name": "Deep reinforcement learning research",
+        "detail": "A classic off-policy, value-based approach built around learned action values.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of storing a separate rule for every situation, DQN learns a deep network that scores actions through Q(s, a). Acting greedily means simply picking the action with the highest learned score.",
+    "howItWorks": [
+      "Observe the current state s and the available actions.",
+      "Use a deep network to estimate Q(s, a) for each action.",
+      "Choose the action with the highest estimated value.",
+      "Store experiences in a replay buffer for later training.",
+      "Update the Q-network using Q-learning with a target network."
+    ],
+    "whyItMatters": "DQN established a classic way to combine Q-learning with deep networks, replay buffers, and target networks. Its Atari results marked the launch of the deep reinforcement learning era.",
+    "misconceptions": [
+      "DQN is off-policy, not on-policy.",
+      "DQN learns action values rather than directly learning a policy.",
+      "A deep network alone is not the full DQN recipe; replay buffers and target networks are central."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "state",
+          "label": "Current state",
+          "note": "The situation s supplied to the network."
+        },
+        {
+          "id": "q-network",
+          "label": "Deep Q-network",
+          "note": "Estimates Q(s, a) for available actions."
+        },
+        {
+          "id": "action",
+          "label": "Greedy action",
+          "note": "The action with the highest Q-value."
+        },
+        {
+          "id": "environment",
+          "label": "Atari environment",
+          "note": "Produces the next gameplay experience."
+        },
+        {
+          "id": "replay",
+          "label": "Replay buffer",
+          "note": "Stores experiences for later training."
+        },
+        {
+          "id": "target",
+          "label": "Target network",
+          "note": "Supplies targets for Q-learning updates."
+        }
+      ],
+      "edges": [
+        {
+          "from": "state",
+          "to": "q-network",
+          "label": "state s"
+        },
+        {
+          "from": "q-network",
+          "to": "action",
+          "label": "Q-values"
+        },
+        {
+          "from": "action",
+          "to": "environment",
+          "label": "action"
+        },
+        {
+          "from": "environment",
+          "to": "replay",
+          "label": "experience"
+        },
+        {
+          "from": "replay",
+          "to": "q-network",
+          "label": "training data"
+        },
+        {
+          "from": "target",
+          "to": "q-network",
+          "label": "Q-learning targets"
+        }
+      ],
+      "caption": "DQN scores actions, acts greedily, stores experiences, and trains its deep Q-network with replay and a target network."
+    }
+  },
   "related": [
     "q-learning"
   ],

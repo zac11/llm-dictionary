@@ -11,7 +11,98 @@
   ],
   "definition": "Language models that produce a different representation for a word or span depending on the text around it, rather than giving every word a single fixed vector.",
   "details": "Earlier embedding methods such as word2vec and GloVe assigned one vector per vocabulary item, so “bank” carried the same representation in a river bank and in a bank account. Contextual language models drop that assumption: a bidirectional encoder lets every position read the surrounding sequence, so a token's representation becomes a function of its context, and different layers encode different kinds of structure — lower layers sit closer to syntax, higher layers closer to meaning. ELMo demonstrated this with a deep bidirectional LSTM whose layer outputs were mixed per task, and BERT and GPT generalised the approach to transformers, pre-training once on large unlabelled text and then adapting per task. Separating pre-training from task-specific training became the standard recipe for modern NLP. The representations are still bounded by the context window, and the same word will be represented differently in two different passages — which is the point.",
-  "story": "Imagine learning a language by reading every book in the library and noticing, over time, which words travel together. It does not memorize a rulebook; it absorbs a library. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It is fluency built from pattern, not from memorized rules. That pattern-earned fluency is Contextual Language Models.",
+  "explainer": {
+    "lead": "Contextual language models represent a word using the passage around it, instead of assigning it one unchanging meaning. This makes them much better at handling words whose sense changes from sentence to sentence, and their pre-train-then-adapt recipe became standard in modern NLP.",
+    "tiers": {
+      "eli5": "Words are a bit like chameleons: their meaning changes with their surroundings. A contextual language model reads the nearby words before deciding how to represent one, so it can tell the bank beside a river from the bank that holds your money.",
+      "practitioner": "Use a pre-trained contextual model and adapt it to the task: ELMo mixes outputs from its layers per task, while BERT and GPT apply the approach with transformers. Choose or combine layer outputs with the task in mind, since lower layers tend to carry more syntactic information and higher layers more semantic information. Remember that representations depend on the supplied passage and remain limited by the context window.",
+      "paperLevel": "For a sequence x, a contextual representation can be written h_i = f_theta(x, i), so the vector at position i is a function of the sequence rather than a fixed lookup E[token_i]. ELMo introduced the described deep bidirectional-LSTM approach with task-specific mixtures of layer outputs; BERT and GPT generalized contextual pre-training to transformers. Representations are bounded by the available context window, and lower and higher layers tend to capture different syntactic and semantic structure."
+    },
+    "example": "The word “bank” receives one representation in “We sat on the river bank” and another in “I checked my bank account.” A fixed embedding would give it the same vector in both sentences, while a contextual model uses “river” or “account” to distinguish the two uses.",
+    "usedIn": [
+      {
+        "name": "ELMo",
+        "detail": "Uses a deep bidirectional LSTM and mixes its layer outputs separately for each task.",
+        "url": ""
+      },
+      {
+        "name": "BERT",
+        "detail": "Applies contextual pre-training with transformers before task-specific adaptation.",
+        "url": ""
+      },
+      {
+        "name": "GPT",
+        "detail": "Extends the pre-train-once, adapt-per-task approach to transformer-based language modeling.",
+        "url": ""
+      }
+    ],
+    "intuition": "A word's useful representation should include the company it keeps. Reading the surrounding sequence lets the model separate different senses and roles of the same written word.",
+    "howItWorks": [
+      "Start with a token sequence rather than a table containing one fixed vector per vocabulary item.",
+      "Process the sequence so each position's representation depends on its context; a bidirectional encoder can read both sides.",
+      "Produce token or span representations that change when the surrounding passage changes.",
+      "Use different encoder layers as different views of the sequence, with lower layers closer to syntax and higher layers closer to meaning.",
+      "Pre-train once on large unlabelled text, then adapt the representations or model to a particular task."
+    ],
+    "whyItMatters": "Contextual representations remove a major limitation of fixed word embeddings and let the same pre-trained model support many tasks. Separating large-scale pre-training from task-specific training became the standard recipe for modern NLP.",
+    "misconceptions": [
+      "They do not give every occurrence of a word one permanent vector; changing the passage changes its representation.",
+      "Contextual does not mean unlimited context: the representation is still bounded by the model's context window.",
+      "The encoder's layers are not interchangeable; they tend to encode different amounts of syntactic and semantic structure."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "sequence",
+          "label": "Input sequence",
+          "note": "Tokens and their surrounding passage."
+        },
+        {
+          "id": "encoder",
+          "label": "Contextual encoder",
+          "note": "Builds each position's state from its context."
+        },
+        {
+          "id": "layers",
+          "label": "Layer outputs",
+          "note": "Lower layers lean syntactic; higher layers lean semantic."
+        },
+        {
+          "id": "representations",
+          "label": "Contextual representations",
+          "note": "The same word can receive different vectors in different passages."
+        },
+        {
+          "id": "task",
+          "label": "Task adaptation",
+          "note": "Layers are mixed or the pre-trained model is adapted per task."
+        }
+      ],
+      "edges": [
+        {
+          "from": "sequence",
+          "to": "encoder",
+          "label": "tokens"
+        },
+        {
+          "from": "encoder",
+          "to": "layers",
+          "label": "states"
+        },
+        {
+          "from": "layers",
+          "to": "representations",
+          "label": "features"
+        },
+        {
+          "from": "representations",
+          "to": "task",
+          "label": "adapt"
+        }
+      ],
+      "caption": "A sequence is encoded into context-dependent, layer-specific representations and then adapted for a task."
+    }
+  },
   "related": [
     "elmo",
     "bert",

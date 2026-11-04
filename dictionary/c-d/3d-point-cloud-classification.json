@@ -5,6 +5,81 @@
   "type": "concept",
   "definition": "Classifying an entire 3D point cloud — e.g.",
   "details": "Classifying an entire 3D point cloud — e.g. chair vs. table in LiDAR scans — with architectures like PointNet and point transformers.",
+  "explainer": {
+    "lead": "3D point cloud classification gives a whole collection of 3D points one object label, such as chair or table. It lets software recognize what a LiDAR scan contains instead of treating the scan as an unlabeled cloud of coordinates.",
+    "tiers": {
+      "eli5": "Imagine a connect-the-dots drawing made from dots floating in space. Instead of naming each dot, the computer looks at all of them together and says, \"This is a chair\" or \"This is a table.\"",
+      "practitioner": "Use it when the desired output is one class per point cloud, with architectures such as PointNet or point transformers processing the 3D points. A common setup is classifying objects in LiDAR scans; do not confuse this single cloud-level prediction with assigning a class to every point.",
+      "paperLevel": "Given P = {p_i}_{i=1}^N, where p_i in R^3, the task is to learn f(P) -> y, with y denoting one class for the entire cloud. PointNet and point transformers are architectures used for this task, which is distinct from producing a separate output for each p_i."
+    },
+    "example": "A LiDAR scan of a chair produces a cloud of 3D points. The model processes the entire cloud and outputs \"chair\" rather than \"table,\" assigning that single label to the scan.",
+    "usedIn": [
+      {
+        "name": "LiDAR scan analysis",
+        "detail": "Recognizing scanned objects, such as distinguishing chairs from tables.",
+        "url": ""
+      },
+      {
+        "name": "Indoor object recognition",
+        "detail": "Assigning an object category to a complete 3D scan rather than labeling its individual points.",
+        "url": ""
+      }
+    ],
+    "intuition": "Individual 3D points reveal little on their own, but together they describe an object. Classification combines evidence from the whole cloud into a single category.",
+    "howItWorks": [
+      "Start with a set of 3D points representing one object.",
+      "Process the points with an architecture such as PointNet or a point transformer.",
+      "Combine information across the cloud into a representation of the whole object.",
+      "Predict one class label for that object."
+    ],
+    "whyItMatters": "It turns raw 3D measurements into object categories that software can use. This provides a direct way to recognize whole objects represented by point clouds.",
+    "misconceptions": [
+      "It does not assign a separate class to every point; it assigns one class to the entire cloud.",
+      "A point cloud is not a labeled object by itself; a classifier must infer the category from its points."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "cloud",
+          "label": "3D point cloud",
+          "note": "Points representing one scanned object"
+        },
+        {
+          "id": "model",
+          "label": "Point architecture",
+          "note": "PointNet or a point transformer"
+        },
+        {
+          "id": "features",
+          "label": "Cloud representation",
+          "note": "Information combined across the object"
+        },
+        {
+          "id": "label",
+          "label": "Object class",
+          "note": "One label, such as chair or table"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cloud",
+          "to": "model",
+          "label": "3D points"
+        },
+        {
+          "from": "model",
+          "to": "features",
+          "label": "extracts"
+        },
+        {
+          "from": "features",
+          "to": "label",
+          "label": "classifies"
+        }
+      ],
+      "caption": "A point architecture converts a complete 3D point cloud into one object-level class."
+    }
+  },
   "citation": {
     "title": "3D Point Cloud Classification",
     "authors": [],

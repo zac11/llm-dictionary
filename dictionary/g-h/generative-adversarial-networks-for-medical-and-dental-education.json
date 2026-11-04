@@ -5,7 +5,92 @@
   "type": "architecture",
   "definition": "Generative adversarial networks (GANs) were first described by Ian Goodfellow and colleagues in 2014, they consist of two competing neural networks; a generator, which produces synthetic data, and a discriminator, which attempts to distinguish synthetic from real data.",
   "details": "The two networks are trained together in a zero-sum, game-theoretic setup, with the generator progressively improving its output as it tries to \"fool\" the discriminator.",
-  "story": "Picture a novelist who has read so much that, given a first line, they cannot help but write the next one. It makes new things by recombining everything it has ever seen. The result feels creative because it is memory, reshuffled at speed. It is prediction pushed forward — each next word, or pixel, guessed from everything that came before it. That next-word, next-stroke magic is Generative adversarial networks for medical and dental education.",
+  "explainer": {
+    "lead": "A generative adversarial network, or GAN, is a pair of neural networks that learn by competing: one creates synthetic data, and the other tries to distinguish it from real data. In medical and dental education, the architecture is relevant as a way of producing synthetic data, although convincing output alone does not establish clinical accuracy or educational value.",
+    "tiers": {
+      "eli5": "Imagine an art student making practice pictures while a teacher compares them with real pictures and tries to spot the fakes. The student keeps practicing to make pictures the teacher cannot identify as fake. A GAN works like that, with one computer program making synthetic data and another judging it.",
+      "practitioner": "Train the generator and discriminator together: the generator produces synthetic samples, and the discriminator evaluates them alongside real data. Use the discriminator’s judgments to drive the adversarial training process, with the generator aiming to make its outputs harder to distinguish. A key pitfall in medical or dental education is treating outputs that fool the discriminator as clinically accurate or suitable for teaching without further validation.",
+      "paperLevel": "Let G be the generator and D the discriminator. G produces synthetic data, while D attempts to distinguish synthetic samples from real samples; the two networks are trained jointly in a zero-sum, game-theoretic setup, with G improving as it tries to fool D. Ian Goodfellow and colleagues first described GANs in 2014; adversarial success by itself does not establish clinical or educational validity."
+    },
+    "example": "In a dental teaching setup, a generator proposes a synthetic example, and the discriminator compares it with real data to judge whether it is synthetic. Through continued joint training, the generator adjusts its output to make future examples harder for the discriminator to identify.",
+    "usedIn": [
+      {
+        "name": "Medical education",
+        "detail": "An educational application area for GAN-generated synthetic data.",
+        "url": ""
+      },
+      {
+        "name": "Dental education",
+        "detail": "An educational application area in which the generator–discriminator architecture can be used to produce synthetic data.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Generator",
+        "detail": "A neural network that produces synthetic data and improves its output as it tries to fool the discriminator."
+      },
+      {
+        "name": "Discriminator",
+        "detail": "A neural network that attempts to distinguish synthetic data from real data."
+      }
+    ],
+    "flow": [
+      "The generator produces synthetic data.",
+      "The discriminator receives synthetic data and real data.",
+      "The discriminator attempts to distinguish the synthetic data from the real data.",
+      "The networks continue training together, and the generator improves its output as it tries to fool the discriminator."
+    ],
+    "origin": "Ian Goodfellow and colleagues first described generative adversarial networks in 2014. Their design introduced two competing neural networks trained together in a zero-sum, game-theoretic setup.",
+    "whyItMatters": "The architecture turns data generation into a competition, allowing the generator to improve while the discriminator becomes better at identifying synthetic output. For medical and dental education, this offers a mechanism for creating synthetic data, with educational and clinical usefulness requiring separate scrutiny.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "generator",
+          "label": "Generator",
+          "note": "Produces synthetic data."
+        },
+        {
+          "id": "synthetic",
+          "label": "Synthetic data",
+          "note": "Output created by the generator."
+        },
+        {
+          "id": "real",
+          "label": "Real data",
+          "note": "Reference data for comparison."
+        },
+        {
+          "id": "discriminator",
+          "label": "Discriminator",
+          "note": "Tries to distinguish synthetic from real data."
+        }
+      ],
+      "edges": [
+        {
+          "from": "generator",
+          "to": "synthetic",
+          "label": "produces"
+        },
+        {
+          "from": "synthetic",
+          "to": "discriminator",
+          "label": "judged"
+        },
+        {
+          "from": "real",
+          "to": "discriminator",
+          "label": "compared"
+        },
+        {
+          "from": "discriminator",
+          "to": "generator",
+          "label": "adversarial training"
+        }
+      ],
+      "caption": "The generator and discriminator train together, with synthetic and real data flowing into the discriminator and adversarial feedback driving the generator."
+    }
+  },
   "related": [
     "generative-adversarial-network",
     "adversarial-machine-learning",

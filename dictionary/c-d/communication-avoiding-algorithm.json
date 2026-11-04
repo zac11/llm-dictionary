@@ -5,7 +5,102 @@
   "type": "algorithm",
   "definition": "Communication-avoiding algorithms minimize movement of data within a memory hierarchy for improving its running-time and energy consumption.",
   "details": "These minimize the total of two costs (in terms of time and energy): arithmetic and communication. Communication, in this context refers to moving data, either between levels of memory or between multiple processors over a network. It is much more expensive than arithmetic.",
-  "story": "Imagine a chef tasting every ingredient before it goes into the pot, deciding what belongs and what would ruin the broth. Better ingredients make a better meal, and the same is true here. Every machine is shaped by what it was shown, so someone has to choose that material with care. It is the raw material; the model is only ever as good as what it was fed. And that is Communication-avoiding algorithm — the unglamorous work everything else stands on.",
+  "explainer": {
+    "lead": "A communication-avoiding algorithm reorganizes computation so that less data has to travel through memory or between processors. This matters because moving data costs much more time and energy than doing arithmetic, so reducing movement can make the whole computation cheaper.",
+    "tiers": {
+      "eli5": "Imagine cooking while your ingredients are stored in another room: walking back and forth takes much longer than mixing them. A communication-avoiding algorithm is like planning the recipe so you carry everything you need in as few trips as possible. The cooking still gets done, but with less wasted time and effort.",
+      "practitioner": "Apply this approach when organizing computation for a memory hierarchy or a multi-processor network. Account for arithmetic and data movement separately, then choose an execution plan that reduces transfers while minimizing total time and energy. A key pitfall is judging an implementation only by its arithmetic work, because communication is much more expensive.",
+      "paperLevel": "Given a computation on a memory hierarchy or multi-processor network, the objective is to minimize total cost C = C_arithmetic + C_communication, with cost measured in time and energy. Communication includes transfers between memory levels and between processors over a network. The central premise is that communication is substantially more expensive than arithmetic."
+    },
+    "example": "Suppose two execution plans perform the same arithmetic, but the first moves 100 blocks of data between memory levels while the second moves only 20. Because communication is much more expensive than arithmetic, the second plan reduces total running time and energy consumption without changing the result.",
+    "usedIn": [
+      {
+        "name": "Hierarchical-memory computing",
+        "detail": "Reduces data transfers between levels of the memory hierarchy to lower running time and energy use.",
+        "url": ""
+      },
+      {
+        "name": "Multi-processor computing",
+        "detail": "Reduces data exchanged between processors over a network while completing the required arithmetic.",
+        "url": ""
+      }
+    ],
+    "goal": "Minimize the combined time and energy cost of arithmetic and data movement, rather than optimizing arithmetic alone.",
+    "inputs": [
+      "A computation to perform",
+      "Its input data",
+      "A memory hierarchy or processor network"
+    ],
+    "outputs": [
+      "The computation's result",
+      "An execution plan with reduced data movement",
+      "Lower total time and energy cost"
+    ],
+    "steps": [
+      "Identify the required arithmetic operations.",
+      "Identify transfers between memory levels or processors.",
+      "Measure arithmetic and communication costs in time and energy.",
+      "Reorganize execution to reduce data movement.",
+      "Run the computation and produce the result."
+    ],
+    "tradeoffs": [
+      "Arithmetic savings alone may not reduce total cost.",
+      "Time and energy costs must both be considered.",
+      "Benefits depend on reducing expensive data transfers."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "computation",
+          "label": "Required computation",
+          "note": "Arithmetic operations and input data"
+        },
+        {
+          "id": "costs",
+          "label": "Cost analysis",
+          "note": "Measure arithmetic and communication"
+        },
+        {
+          "id": "plan",
+          "label": "Reorganized execution",
+          "note": "Arrange work to reduce transfers"
+        },
+        {
+          "id": "movement",
+          "label": "Reduced data movement",
+          "note": "Fewer memory or network transfers"
+        },
+        {
+          "id": "result",
+          "label": "Computed result",
+          "note": "Lower total time and energy cost"
+        }
+      ],
+      "edges": [
+        {
+          "from": "computation",
+          "to": "costs",
+          "label": "analyze"
+        },
+        {
+          "from": "costs",
+          "to": "plan",
+          "label": "optimize"
+        },
+        {
+          "from": "plan",
+          "to": "movement",
+          "label": "execute"
+        },
+        {
+          "from": "movement",
+          "to": "result",
+          "label": "produce"
+        }
+      ],
+      "caption": "The algorithm accounts for both kinds of cost, reorganizes execution to move less data, and computes the same result more cheaply."
+    }
+  },
   "related": [
     "actor-critic-algorithm",
     "algorithm-imed",

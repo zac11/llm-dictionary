@@ -8,6 +8,98 @@
   ],
   "definition": "Classifying which Arabic variety a text or utterance belongs to, at country or region granularity.",
   "details": "Classifying which Arabic variety a text or utterance belongs to, at country or region granularity. Both a product feature (routing to dialect-specific models and voices) and a data-pipeline necessity (labeling scraped corpora by dialect).",
+  "explainer": {
+    "lead": "Dialect identification (DID) assigns Arabic text or speech to a country- or region-level variety. That label can route content to dialect-specific models and voices, or organize scraped corpora so dialects are not mixed without being recorded.",
+    "tiers": {
+      "eli5": "Arabic can sound and look different depending on where people are from. Dialect identification is like sorting messages into boxes labeled by country or region. Once a message is in the right box, a computer can use the model or voice intended for that kind of Arabic.",
+      "practitioner": "Apply a classifier to each text or utterance and store its country- or region-level dialect label. Use the label to route requests to dialect-specific models or voices, or to annotate scraped corpora during data processing. Keep the label granularity consistent, and avoid assuming that a country or region label captures every local variety.",
+      "paperLevel": "Given an input x, which may be text or an utterance, dialect identification learns a mapping f(x) = y, where y is a label for an Arabic variety at country or region granularity. The output serves both downstream routing and corpus annotation. A label at this granularity does not by itself describe finer distinctions within a country or region."
+    },
+    "example": "A system receives an Arabic utterance and classifies it as Egyptian Arabic. It routes the utterance to an Egyptian-specific model and voice; in a data pipeline, the same label would be stored with the utterance in the corpus.",
+    "usedIn": [
+      {
+        "name": "Dialect-aware model routing",
+        "detail": "Sends Arabic inputs to models selected for the identified variety.",
+        "url": ""
+      },
+      {
+        "name": "Dialect-specific voice selection",
+        "detail": "Uses the identified variety to choose an appropriate voice.",
+        "url": ""
+      },
+      {
+        "name": "Arabic corpus construction",
+        "detail": "Labels scraped text by dialect so corpora retain country- or region-level information.",
+        "url": ""
+      }
+    ],
+    "intuition": "The same language can have several recognizable varieties, so treating every Arabic input alike can discard useful information. DID adds a dialect label before a system processes or stores the input.",
+    "howItWorks": [
+      "Receive an Arabic text or utterance.",
+      "Choose the required country- or region-level label set.",
+      "Classify the input as one of those Arabic varieties.",
+      "Attach the predicted dialect label to the input.",
+      "Use the label for model or voice routing, or for corpus organization."
+    ],
+    "whyItMatters": "DID connects dialect labels to practical choices about which model or voice to use. It also makes dialect information explicit in scraped corpora instead of leaving differently sourced Arabic varieties unlabeled.",
+    "misconceptions": [
+      "DID labels an Arabic variety; it does not translate the input.",
+      "Country-level and region-level labels are different granularities, not automatically interchangeable.",
+      "A country or region label does not necessarily capture every local variety within it."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Arabic input",
+          "note": "Text or an utterance"
+        },
+        {
+          "id": "classifier",
+          "label": "Dialect classifier",
+          "note": "Predicts the Arabic variety"
+        },
+        {
+          "id": "label",
+          "label": "Dialect label",
+          "note": "Country or region granularity"
+        },
+        {
+          "id": "routing",
+          "label": "Product routing",
+          "note": "Selects dialect-specific models or voices"
+        },
+        {
+          "id": "corpus",
+          "label": "Corpus annotation",
+          "note": "Labels scraped data by dialect"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "classifier",
+          "label": ""
+        },
+        {
+          "from": "classifier",
+          "to": "label",
+          "label": "prediction"
+        },
+        {
+          "from": "label",
+          "to": "routing",
+          "label": ""
+        },
+        {
+          "from": "label",
+          "to": "corpus",
+          "label": ""
+        }
+      ],
+      "caption": "A predicted dialect label supports both downstream routing and corpus annotation."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

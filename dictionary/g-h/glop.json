@@ -2,10 +2,116 @@
   "term": "GLOP",
   "letter": "G",
   "category": "Optimization algorithms and methods",
-  "type": "concept",
+  "type": "tool",
   "definition": "GLOP (the Google Linear Optimization Package) is Google's open-source linear programming solver, created by Google's Operations Research Team.",
   "details": "It is written in C++ and was released to the public as part of Google's OR-Tools software suite in 2014. GLOP uses a revised primal-dual simplex algorithm optimized for sparse matrices. It uses Markowitz pivoting to reduce matrix fill-in, steepest-edge pricing to avoid degenerate pivots, and an LU decomposition tailored for sparse matrices. Inside Google, GLOP is used to stabilize YouTube videos and outside Google, it has been used to perform fast linear relaxations for reinforcement learning.",
-  "story": "Imagine teaching a friend to shoot a basketball. They miss, and you walk them backwards through the shot — elbow, wrist, release — to find what needs fixing. It is the same loop you use to learn anything: try, miss, correct, try again. Underneath all the magic is a patient process of small improvements. It is learning from every miss instead of repeating the same mistake. And that is GLOP — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "GLOP is an open-source solver for linear programming problems: decisions with a linear goal and linear limits. Released with Google's OR-Tools in 2014, it is built to handle sparse problems efficiently, so it can turn a suitable mathematical model into an optimal set of decisions.",
+    "tiers": {
+      "eli5": "Imagine choosing how many apples and sandwiches to pack so you get the most energy without exceeding your bag's space or your budget. GLOP solves this kind of puzzle when every rule and the goal can be written with straight-line arithmetic. It repeatedly improves a possible answer until it finds the best one.",
+      "practitioner": "Use GLOP through OR-Tools when the variables, objective, and constraints are linear, particularly when the constraint matrix is sparse. Its implementation targets revised primal-dual simplex with sparse linear algebra; integer or nonlinear requirements are outside a plain linear program. In reinforcement learning, one reported use is computing fast linear relaxations rather than learning a policy directly.",
+      "paperLevel": "A linear program can be written as min c^T x subject to Ax = b with bounds on x. GLOP applies a revised primal-dual simplex algorithm, using Markowitz pivoting to reduce fill-in, steepest-edge pricing, and an LU decomposition tailored to sparse matrices. Its scope is linear optimization, not general nonlinear or mixed-integer optimization."
+    },
+    "example": "Maximize x + y subject to x <= 4, y <= 3, x + y <= 5, and x, y >= 0. GLOP can solve this small linear program and obtain an objective value of 5, for example with x = 4 and y = 1.",
+    "usedIn": [
+      {
+        "name": "Google OR-Tools",
+        "detail": "GLOP was released publicly as part of this software suite in 2014.",
+        "url": ""
+      },
+      {
+        "name": "YouTube video stabilization",
+        "detail": "Google uses GLOP internally for this application.",
+        "url": ""
+      },
+      {
+        "name": "Reinforcement learning",
+        "detail": "Outside Google, it has been used for fast linear relaxations.",
+        "url": ""
+      }
+    ],
+    "intuition": "A linear program describes the best possible choice among options constrained by linear relationships. GLOP follows the simplex approach of moving between candidate solutions while using sparse-matrix techniques to keep those calculations manageable.",
+    "howItWorks": [
+      "Represent the decision variables, linear objective, and linear constraints as a linear program.",
+      "Run revised primal-dual simplex iterations to improve candidate solutions.",
+      "Use steepest-edge pricing to guide pivot selection and avoid degenerate pivots.",
+      "Apply Markowitz pivoting and sparse LU decomposition to limit matrix fill-in and perform the linear algebra.",
+      "Return the optimal variable values and objective when the solve finishes."
+    ],
+    "whyItMatters": "GLOP provides a public, sparse-matrix-oriented linear programming solver within OR-Tools. The same solver family supports both an internal Google application, YouTube video stabilization, and external work on linear relaxations for reinforcement learning.",
+    "misconceptions": [
+      "GLOP is a solver, not a machine-learning model that learns from examples.",
+      "It is one component of OR-Tools, not the entire software suite.",
+      "A general optimization problem is not automatically a linear program; nonlinear and integer requirements need different treatment."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "problem",
+          "label": "Linear program",
+          "note": "Objective, variables, and constraints"
+        },
+        {
+          "id": "simplex",
+          "label": "Simplex iterations",
+          "note": "Revised primal-dual search"
+        },
+        {
+          "id": "pricing",
+          "label": "Steepest-edge pricing",
+          "note": "Guides pivot selection"
+        },
+        {
+          "id": "pivot",
+          "label": "Markowitz pivoting",
+          "note": "Reduces matrix fill-in"
+        },
+        {
+          "id": "lu",
+          "label": "Sparse LU",
+          "note": "Sparse-matrix factorization"
+        },
+        {
+          "id": "solution",
+          "label": "Optimal solution",
+          "note": "Decision values and objective"
+        }
+      ],
+      "edges": [
+        {
+          "from": "problem",
+          "to": "simplex",
+          "label": "model"
+        },
+        {
+          "from": "simplex",
+          "to": "pricing",
+          "label": "candidates"
+        },
+        {
+          "from": "pricing",
+          "to": "pivot",
+          "label": "selection"
+        },
+        {
+          "from": "pivot",
+          "to": "lu",
+          "label": "factor"
+        },
+        {
+          "from": "lu",
+          "to": "simplex",
+          "label": "next iterate"
+        },
+        {
+          "from": "simplex",
+          "to": "solution",
+          "label": "converged"
+        }
+      ],
+      "caption": "GLOP combines simplex iteration, pivot selection, and sparse linear algebra to solve a linear program."
+    }
+  },
   "related": [
     "automatic-basis-function-construction",
     "backward-induction",

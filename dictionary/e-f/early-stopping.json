@@ -5,7 +5,108 @@
   "type": "concept",
   "definition": "A regularization technique that halts training once performance on a validation set stops improving.",
   "details": "Early stopping prevents the model from continuing to fit noise in the training data after it has already learned the generalizable patterns.",
-  "story": "Think of a hiker descending a foggy hill in the dark, taking small steps and feeling for the steepest way down. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. It is the same loop you use to learn anything: try, miss, correct, try again. Skill, for a model, is just error pushed down until it is small enough to ignore. And that is Early Stopping — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "Early stopping ends model training when extra practice stops helping on data reserved for checking progress. It protects the patterns the model has learned from being crowded out by noise in the training examples.",
+    "tiers": {
+      "eli5": "Imagine practising spelling words while a friend quizzes you with different words. At first you get better, but eventually you may just memorize your practice sheet and stop improving on the quiz. Early stopping means noticing that moment and ending practice there.",
+      "practitioner": "During iterative training, periodically evaluate a validation metric and stop when it ceases to improve; retain the parameters from the best validation checkpoint rather than assuming the last checkpoint is best. A patience setting can tolerate several unhelpful checks before stopping, but a small or noisy validation set can still cause a poor stopping decision.",
+      "paperLevel": "Let V_t denote validation loss after training iteration t, with lower values preferred. Early stopping terminates optimization once V_t stops improving and selects parameters associated with the best observed validation loss, limiting further fitting to training noise. Its effectiveness depends on validation performance being a useful signal for generalization; noisy or unrepresentative validation measurements can stop training too early or too late."
+    },
+    "example": "A text classifier has validation accuracy values of 82%, 86%, 89%, and 90% over four checkpoints. The next three checkpoints stay at 90% and then fall to 89%, so training stops and the 90% checkpoint is kept instead of continuing to fit the training data.",
+    "usedIn": [
+      {
+        "name": "Neural network training",
+        "detail": "Validation performance can decide when repeated training updates should end.",
+        "url": ""
+      },
+      {
+        "name": "Supervised machine learning",
+        "detail": "Iterative models can use held-out performance to balance learning useful patterns against fitting training noise.",
+        "url": ""
+      }
+    ],
+    "intuition": "Training examples contain both reusable patterns and accidental noise. Validation data provides a separate check: when improvement there stalls, further training may be memorizing the training set rather than becoming more useful.",
+    "howItWorks": [
+      "Separate validation examples from the data used for training updates.",
+      "Train the model iteratively and measure validation performance at regular checkpoints.",
+      "Track the best validation result and continue only while meaningful improvement is still appearing.",
+      "Stop training when improvement ceases, optionally after allowing several checks without progress.",
+      "Use the checkpoint with the best validation performance."
+    ],
+    "whyItMatters": "It provides a simple way to reduce overfitting while avoiding training updates that no longer improve validation performance. It also links the amount of training to observed generalization rather than to a fixed iteration count alone.",
+    "misconceptions": [
+      "A falling training loss does not justify continuing when validation performance has stopped improving.",
+      "The final training checkpoint is not necessarily the best one to keep.",
+      "Stopping early is not the same as deliberately choosing an undertrained model; the goal is to stop before further fitting becomes harmful."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "train-data",
+          "label": "Training data",
+          "note": "Examples used for model updates"
+        },
+        {
+          "id": "train",
+          "label": "Update model",
+          "note": "Run the next training iterations"
+        },
+        {
+          "id": "validate",
+          "label": "Check validation",
+          "note": "Measure performance on held-out examples"
+        },
+        {
+          "id": "improved",
+          "label": "Still improving?",
+          "note": "Compare with the best earlier result"
+        },
+        {
+          "id": "best",
+          "label": "Keep best model",
+          "note": "Select the strongest validation checkpoint"
+        },
+        {
+          "id": "stop",
+          "label": "Stop training",
+          "note": "End further fitting"
+        }
+      ],
+      "edges": [
+        {
+          "from": "train-data",
+          "to": "train",
+          "label": "examples"
+        },
+        {
+          "from": "train",
+          "to": "validate",
+          "label": "checkpoint"
+        },
+        {
+          "from": "validate",
+          "to": "improved",
+          "label": "score"
+        },
+        {
+          "from": "improved",
+          "to": "train",
+          "label": "yes"
+        },
+        {
+          "from": "improved",
+          "to": "best",
+          "label": "best result"
+        },
+        {
+          "from": "improved",
+          "to": "stop",
+          "label": "no"
+        }
+      ],
+      "caption": "Training continues while validation performance improves and ends when that signal stalls."
+    }
+  },
   "related": [
     "active-learning",
     "backpropagation",

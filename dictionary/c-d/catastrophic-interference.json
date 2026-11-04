@@ -5,7 +5,92 @@
   "type": "concept",
   "definition": "Catastrophic interference, also known as catastrophic forgetting, is the tendency of an artificial neural network to abruptly and drastically forget previously learned information upon learning new information.",
   "details": "Neural networks are an important part of the connectionist approach to cognitive science. The issue of catastrophic interference when modeling human memory with connectionist models was originally brought to the attention of the scientific community by research from McCloskey and Cohen (1989), and Ratcliff (1990). It is a radical manifestation of the 'sensitivity-stability' dilemma or the 'stability-plasticity' dilemma. Specifically, these problems refer to the challenge of making an artificial neural network that is sensitive to, but not disrupted by, new information. Lookup tables and connectionist networks lie on the opposite sides of the stability plasticity spectrum. The former remains completely stable in the presence of new information but lacks the ability to generalize, i.e. infer general principles, from new inputs. On the other hand, connectionist networks like the standard backpropagation network can generalize to unseen inputs, but they are sensitive to new information. Backpropagation models can be analogized to human memory insofar as they have a similar ability to generalize, but these networks often exhibit less stability than human memory. Notably, these backpropa",
-  "story": "Picture an architect laying out a building where every room has to know which other rooms matter to it. The layout decides what the machine can even attempt, before it learns a single thing. It is the blueprint that makes everything else possible. It is the difference between a row of isolated cubicles and one big room where everyone can hear each other. And that shape of the machine — Catastrophic interference — is what makes everything else possible.",
+  "explainer": {
+    "lead": "Catastrophic interference is what happens when a neural network learns something new and abruptly loses much of what it knew before. It matters because a useful learner needs both stability, to retain old knowledge, and plasticity, to take in new information.",
+    "tiers": {
+      "eli5": "Imagine writing new notes over your old notes until you can no longer read them. A neural network can do something similar: lessons about a new task can overwrite what it learned for an earlier task. This sudden loss is also called catastrophic forgetting.",
+      "practitioner": "This is a concern when a backpropagation network is trained on new information after earlier learning. Check performance on previously learned tasks as well as the new one, since strong new-task results can hide a sharp loss of old capabilities. The underlying design challenge is retaining stability without losing sensitivity to new information.",
+      "paperLevel": "Catastrophic interference is the abrupt, drastic loss of previously acquired information in an artificial neural network following new learning. It is a radical manifestation of the stability-plasticity dilemma: connectionist networks can generalize to unseen inputs but may be disrupted by new information. McCloskey and Cohen (1989) and Ratcliff (1990) brought the issue to scientific attention in connectionist models of human memory."
+    },
+    "example": "A network first learns to recognize cats. It is then trained to recognize dogs, and although its dog recognition improves, its cat recognition abruptly collapses because the new training has disrupted the earlier learning.",
+    "usedIn": [
+      {
+        "name": "Connectionist cognitive science",
+        "detail": "A central problem when neural networks are used to model human memory.",
+        "url": ""
+      },
+      {
+        "name": "Backpropagation networks",
+        "detail": "A possible failure mode when new learning disrupts information learned earlier.",
+        "url": ""
+      }
+    ],
+    "intuition": "Learning requires changing a network, but those same changes can disturb the representations supporting earlier knowledge. Catastrophic interference is the extreme case: new learning does not merely add information, it causes a sudden collapse of old information.",
+    "howItWorks": [
+      "A network learns an initial task and stores what it has learned in its connection weights.",
+      "Training on new information changes those weights.",
+      "The changes can disrupt the settings that supported the earlier task.",
+      "Performance on the earlier task then drops sharply, even while the network learns the new information."
+    ],
+    "whyItMatters": "The problem exposes a core limitation of connectionist learning: generalization and sensitivity to new information can come with poor stability. It also limits the usefulness of backpropagation networks as straightforward models of human memory, which is generally more stable.",
+    "misconceptions": [
+      "It is not just a small or gradual decline in old performance; the forgetting is abrupt and drastic.",
+      "It is not the same as failing to generalize: connectionist networks can generalize well while still being unstable.",
+      "It does not mean new information cannot be learned; the difficulty is learning it without disrupting prior knowledge."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "old-training",
+          "label": "Initial training",
+          "note": "The network learns an earlier task."
+        },
+        {
+          "id": "old-weights",
+          "label": "Learned weights",
+          "note": "The weights support earlier knowledge."
+        },
+        {
+          "id": "new-training",
+          "label": "New training",
+          "note": "New information updates the network."
+        },
+        {
+          "id": "new-weights",
+          "label": "Updated weights",
+          "note": "Changes disrupt earlier settings."
+        },
+        {
+          "id": "forgetting",
+          "label": "Old knowledge lost",
+          "note": "Earlier performance drops sharply."
+        }
+      ],
+      "edges": [
+        {
+          "from": "old-training",
+          "to": "old-weights",
+          "label": ""
+        },
+        {
+          "from": "old-weights",
+          "to": "new-training",
+          "label": "starting point"
+        },
+        {
+          "from": "new-training",
+          "to": "new-weights",
+          "label": "updates"
+        },
+        {
+          "from": "new-weights",
+          "to": "forgetting",
+          "label": "interference"
+        }
+      ],
+      "caption": "Learning new information can change the same weights that supported earlier knowledge, producing abrupt forgetting."
+    }
+  },
   "related": [
     "ablation-artificial-intelligence",
     "adaline",

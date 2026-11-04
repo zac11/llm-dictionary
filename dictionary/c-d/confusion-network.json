@@ -5,7 +5,103 @@
   "type": "architecture",
   "definition": "A confusion network (sometimes called a word confusion network or informally known as a sausage) is a natural language processing method that combines outputs from multiple automatic speech recognition or machine translation systems.",
   "details": "Confusion networks are simple linear directed acyclic graphs with the property that each a path from the start node to the end node goes through all the other nodes. The set of words represented by edges between two nodes is called a confusion set. In machine translation, the defining characteristic of confusion networks is that they allow multiple ambiguous inputs, deferring committal translation decisions until later stages of processing. This approach is used in the open source machine translation software Moses and the proprietary translation API in IBM Bluemix Watson.",
-  "story": "Imagine a factory floor where each workstation can glance at every other workstation before doing its part. It is the blueprint that makes everything else possible. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. Structure decides what the model can even express — the blueprint before the bricks. That blueprint is Confusion network.",
+  "explainer": {
+    "lead": "A confusion network keeps several possible words in play instead of forcing a speech recognizer or translator to choose too early. It packs alternatives into a simple graph, letting a later processing stage select one complete result.",
+    "tiers": {
+      "eli5": "Imagine building a sentence from several rows of word cards, where each row offers a few possible words. You can try different combinations before picking the sentence that works best, rather than being stuck with the first guess.",
+      "practitioner": "In speech recognition or machine translation, outputs are aligned into ordered confusion sets, and downstream processing chooses a path through them. Moses uses this approach to defer ambiguous translation decisions; the main pitfall is that useful alternatives must already be present in the network, while early pruning can remove them.",
+      "paperLevel": "Formally, a confusion network is a linear directed acyclic graph in which every path from the start node to the end node passes through all other nodes. The words on edges between consecutive nodes form a confusion set, so each start-to-end path represents one complete hypothesis; its expressive range is limited to the alternatives encoded in those sets."
+    },
+    "usedIn": [
+      {
+        "name": "Automatic speech recognition",
+        "detail": "Combines competing word hypotheses from recognition systems without committing immediately to one transcript.",
+        "url": ""
+      },
+      {
+        "name": "Machine translation",
+        "detail": "Carries ambiguous input alternatives into later translation stages.",
+        "url": ""
+      },
+      {
+        "name": "Moses",
+        "detail": "The open-source machine translation software uses confusion networks.",
+        "url": ""
+      },
+      {
+        "name": "IBM Bluemix Watson translation API",
+        "detail": "The proprietary translation API uses this approach.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Start and end nodes",
+        "detail": "Mark the boundaries of every complete hypothesis represented by the network."
+      },
+      {
+        "name": "Ordered intermediate nodes",
+        "detail": "Fix the sequence of positions through which every complete path must pass."
+      },
+      {
+        "name": "Confusion sets",
+        "detail": "Groups of word-bearing edges between two nodes hold the alternatives for one position."
+      },
+      {
+        "name": "Complete paths",
+        "detail": "Each path from start to end selects one word alternative at every position."
+      }
+    ],
+    "flow": [
+      "Multiple speech-recognition or translation outputs supply alternative words.",
+      "The alternatives are placed on edges between successive nodes as confusion sets.",
+      "Later processing considers complete start-to-end paths instead of receiving one early, fixed choice.",
+      "For example, a confusion set containing “there” and “their” preserves both options until a complete path is selected."
+    ],
+    "whyItMatters": "It provides a compact way to preserve ambiguity and combine system outputs. Deferring commitments gives later stages more than one hypothesis to work with.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "start",
+          "label": "Start node",
+          "note": "Beginning of every hypothesis"
+        },
+        {
+          "id": "set-one",
+          "label": "Confusion set one",
+          "note": "Alternative words for the first position"
+        },
+        {
+          "id": "set-two",
+          "label": "Confusion set two",
+          "note": "Alternative words for the next position"
+        },
+        {
+          "id": "end",
+          "label": "End node",
+          "note": "Completes one selected path"
+        }
+      ],
+      "edges": [
+        {
+          "from": "start",
+          "to": "set-one",
+          "label": "word edges"
+        },
+        {
+          "from": "set-one",
+          "to": "set-two",
+          "label": "next position"
+        },
+        {
+          "from": "set-two",
+          "to": "end",
+          "label": "word edges"
+        }
+      ],
+      "caption": "A linear graph stores local word alternatives while each complete path represents one hypothesis."
+    }
+  },
   "related": [
     "circuit-neural-network",
     "co-occurrence-network",

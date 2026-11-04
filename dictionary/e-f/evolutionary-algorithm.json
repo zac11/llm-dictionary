@@ -5,7 +5,124 @@
   "type": "algorithm",
   "definition": "Evolutionary algorithms (EA) reproduce essential elements of biological evolution in a computer algorithm in order to solve \"difficult\" problems, at least approximately, for which no exact or satisfactory solution methods are known.",
   "details": "They are metaheuristics and population-based bio-inspired algorithms and evolutionary computation, which itself are part of the field of computational intelligence. The mechanisms of biological evolution that an EA mainly imitates are reproduction, mutation, recombination and selection. Candidate solutions to the optimization problem play the role of individuals in a population, and the fitness function determines the quality of the solutions (see also loss function). Evolution of the population then takes place after the repeated application of the above operators. Evolutionary algorithms often perform well approximating solutions to all types of problems because they ideally do not make any assumption about the underlying fitness landscape. Techniques from evolutionary algorithms applied to the modeling of biological evolution are generally limited to explorations of microevolution (microevolutionary processes) and planning models based upon cellular processes. In most real applications of EAs, computational complexity is a prohibiting factor. In fact, this computational complexity is due to fitness function evaluation. Fitness approximation is one of the solutions to overcome this difficulty. However, seemingly simple EA can solve often complex problems; therefore, there may be no direct link between algorithm complexity and problem complexity.",
-  "story": "Think of a lightbulb moment: the idea was always there, but someone had to point a finger at it. Behind the jargon is an idea you could explain to a friend over coffee. At its heart it is a simple notion, once you strip away the fancy name. Once you see it, you cannot unsee it. And that idea, made concrete, is Evolutionary algorithm.",
+  "explainer": {
+    "lead": "An evolutionary algorithm searches for answers by improving a whole population of candidate solutions, using computer versions of reproduction, mutation, recombination, and selection. It is useful for difficult problems where no exact or satisfactory method is known and a good approximate answer is enough.",
+    "tiers": {
+      "eli5": "Imagine trying many different paper airplanes instead of designing just one. You test them, keep ideas from the ones that fly best, and make new versions with small changes or combined features. Repeating this can produce a very good airplane without knowing the perfect design in advance.",
+      "practitioner": "Start with a population of candidate solutions, score each with a fitness function, and repeatedly apply reproduction, mutation, recombination, and selection. EAs are attractive when you want to avoid assumptions about the fitness landscape, but fitness evaluation can make real applications computationally expensive. Fitness approximation is one way to address that bottleneck.",
+      "paperLevel": "An EA maintains a population P_t of candidate solutions, evaluates each with a fitness function f(x), and constructs later populations through repeated reproduction, mutation, recombination, and selection. It is a population-based metaheuristic intended to approximate solutions when exact or satisfactory methods are unavailable, ideally without assumptions about the fitness landscape. Evaluation cost is a major practical limit; biological modeling uses are generally limited to microevolutionary processes and planning models based on cellular processes."
+    },
+    "example": "For a toy problem, suppose candidates are numbers and fitness rewards being close to 3. An initial population such as 0, 2, 5, and 8 is scored, with 2 and 5 performing better than 0 and 8. Reproduction, mutation, and recombination create new candidates, selection favors fitter ones, and repeating the process can move the population toward 3 without requiring an exact solving method.",
+    "usedIn": [
+      {
+        "name": "Difficult optimization problems",
+        "detail": "Searches for approximate solutions when exact or satisfactory solution methods are not known.",
+        "url": ""
+      },
+      {
+        "name": "Microevolution modeling",
+        "detail": "EA techniques can support explorations of microevolutionary processes.",
+        "url": ""
+      },
+      {
+        "name": "Cellular-process planning models",
+        "detail": "Biological modeling applications also include planning models based on cellular processes.",
+        "url": ""
+      }
+    ],
+    "goal": "Find a good approximate solution to a difficult problem by evolving a population of candidates rather than relying on an exact solution method.",
+    "inputs": [
+      "A population of candidate solutions",
+      "A fitness function",
+      "Reproduction and variation operators",
+      "A selection process"
+    ],
+    "outputs": [
+      "An evolved population",
+      "An approximate candidate solution"
+    ],
+    "steps": [
+      "Create an initial population of candidate solutions.",
+      "Evaluate each candidate with the fitness function.",
+      "Reproduce candidates and apply mutation and recombination.",
+      "Select candidates to form the next population.",
+      "Repeat evaluation, variation, and selection.",
+      "Return an approximate solution from the evolved population."
+    ],
+    "tradeoffs": [
+      "Can approximate solutions across many problem types",
+      "Ideally assumes nothing about the fitness landscape",
+      "Fitness evaluation can be computationally prohibitive",
+      "Fitness approximation can reduce evaluation difficulty"
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "population",
+          "label": "Candidate population",
+          "note": "Possible solutions act as individuals."
+        },
+        {
+          "id": "fitness",
+          "label": "Fitness evaluation",
+          "note": "Scores the quality of each candidate."
+        },
+        {
+          "id": "reproduction",
+          "label": "Reproduction",
+          "note": "Produces candidates for further variation."
+        },
+        {
+          "id": "variation",
+          "label": "Mutation and recombination",
+          "note": "Changes and combines candidate solutions."
+        },
+        {
+          "id": "selection",
+          "label": "Selection",
+          "note": "Uses fitness to form the next population."
+        },
+        {
+          "id": "answer",
+          "label": "Approximate solution",
+          "note": "A candidate is returned after repeated evolution."
+        }
+      ],
+      "edges": [
+        {
+          "from": "population",
+          "to": "fitness",
+          "label": "candidates"
+        },
+        {
+          "from": "fitness",
+          "to": "reproduction",
+          "label": "scores"
+        },
+        {
+          "from": "reproduction",
+          "to": "variation",
+          "label": ""
+        },
+        {
+          "from": "variation",
+          "to": "selection",
+          "label": ""
+        },
+        {
+          "from": "selection",
+          "to": "population",
+          "label": "next generation"
+        },
+        {
+          "from": "selection",
+          "to": "answer",
+          "label": "result"
+        }
+      ],
+      "caption": "Candidate solutions cycle through fitness evaluation, reproduction, variation, and selection until an approximate answer is returned."
+    }
+  },
   "related": [
     "actor-critic-algorithm",
     "algorithm-imed",

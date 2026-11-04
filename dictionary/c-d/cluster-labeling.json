@@ -5,7 +5,97 @@
   "type": "concept",
   "definition": "In natural language processing and information retrieval, cluster labeling is the problem of picking descriptive, human-readable labels for the clusters produced by a document clustering algorithm; standard clustering algorithms do not typically produce any such labels.",
   "details": "Cluster labeling algorithms examine the contents of the documents per cluster to find a labeling that summarize the topic of each cluster and distinguish the clusters from each other.",
-  "story": "Picture a scoreboard at a science fair: you need a fair, agreed way to tell who actually won. A fair scoreboard keeps everyone honest. Before trusting a machine, someone has to measure how good it really is — fairly and honestly. A good metric is a ruler that does not bend when you lean on it. That shared ruler is Cluster labeling.",
+  "explainer": {
+    "lead": "Document clustering can group similar texts without explaining what any group is about. Cluster labeling fills that gap by choosing short, human-readable descriptions that summarize each group and tell the groups apart.",
+    "tiers": {
+      "eli5": "Imagine sorting a pile of school worksheets into stacks without writing anything on the folders. Cluster labeling is like reading each stack and naming its folder “Space homework” or “Math practice.” The names should describe what is inside and make each stack easy to tell apart.",
+      "practitioner": "Apply cluster labeling after a document clustering algorithm has produced its groups. Inspect the documents within each cluster to choose a label that summarizes its topic while remaining distinct from the other labels. A label that fits every cluster may be accurate but is not useful for navigation or interpretation.",
+      "paperLevel": "Given documents D and a clustering C = {C1, ..., Ck}, cluster labeling seeks a human-readable label li for each Ci. Each li should summarize the documents in Ci and discriminate Ci from the other clusters; the clustering itself typically supplies no such labels."
+    },
+    "example": "Suppose clustering produces three groups: one containing articles about batteries and charging, one about phone screens, and one about mobile networks. Suitable labels could be “Phone battery life,” “Phone displays,” and “Cellular networks”; a shared label such as “Mobile phones” would summarize all three without distinguishing them.",
+    "usedIn": [
+      {
+        "name": "Document clustering",
+        "detail": "Adds readable topic descriptions to otherwise unlabeled groups of documents.",
+        "url": ""
+      },
+      {
+        "name": "Information retrieval",
+        "detail": "Helps people understand and distinguish clusters of retrieved or organized documents.",
+        "url": ""
+      },
+      {
+        "name": "Natural language processing",
+        "detail": "Uses document contents to derive descriptive labels for text clusters.",
+        "url": ""
+      }
+    ],
+    "intuition": "A cluster is a group, not an explanation. Cluster labeling reads what ended up in each group and turns that collection into a concise, useful name.",
+    "howItWorks": [
+      "Run a document clustering algorithm to obtain clusters.",
+      "Examine the contents of the documents in each cluster.",
+      "Identify wording that summarizes the cluster's topic.",
+      "Check that the proposed label distinguishes this cluster from the others.",
+      "Attach one descriptive, human-readable label to each cluster."
+    ],
+    "whyItMatters": "Readable labels make clustering results easier to inspect, compare, and use. Without them, people must open and interpret the documents in every cluster themselves.",
+    "misconceptions": [
+      "Clustering and cluster labeling are not the same task: standard clustering usually creates groups but no descriptive names.",
+      "A good cluster label must do more than describe a topic broadly; it should also distinguish that cluster from neighboring clusters."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "documents",
+          "label": "Input documents",
+          "note": "Texts without cluster labels"
+        },
+        {
+          "id": "clustering",
+          "label": "Document clustering",
+          "note": "Groups similar documents"
+        },
+        {
+          "id": "clusters",
+          "label": "Unlabeled clusters",
+          "note": "Groups with no readable names"
+        },
+        {
+          "id": "labeling",
+          "label": "Cluster labeling",
+          "note": "Examines each cluster's contents"
+        },
+        {
+          "id": "labels",
+          "label": "Descriptive labels",
+          "note": "Topic summaries that distinguish groups"
+        }
+      ],
+      "edges": [
+        {
+          "from": "documents",
+          "to": "clustering",
+          "label": "input"
+        },
+        {
+          "from": "clustering",
+          "to": "clusters",
+          "label": "groups"
+        },
+        {
+          "from": "clusters",
+          "to": "labeling",
+          "label": "contents"
+        },
+        {
+          "from": "labeling",
+          "to": "labels",
+          "label": "assigns"
+        }
+      ],
+      "caption": "Cluster labeling adds descriptive names after document clustering has formed the groups."
+    }
+  },
   "related": [
     "adversarial-information-retrieval",
     "ansi-834-enrollment-implementation-format",

@@ -5,6 +5,118 @@
   "type": "concept",
   "definition": "Training negatives that are topically close but genuinely non-matching, forcing the model to learn fine distinctions instead of easy separations.",
   "details": "Training negatives that are topically close but genuinely non-matching, forcing the model to learn fine distinctions instead of easy separations. Mining good hard negatives is where embedding training quality is won.",
+  "explainer": {
+    "lead": "Hard negatives are almost-right training examples: they share a query’s topic but do not actually answer or match it. They help embedding models learn meaningful distinctions, which leads to more accurate search and ranking.",
+    "tiers": {
+      "eli5": "Imagine learning to find your house key among a pile of keys. Keys from other houses are more useful practice than spoons, because you must notice the small differences in the teeth. Hard negatives give a computer that same kind of careful practice.",
+      "practitioner": "During embedding training, retrieve plausible candidates for each query, verify which ones are genuinely non-matching, and train on them alongside the true positive. Refresh mined negatives as the encoder improves so they remain challenging. Poorly checked mining can introduce false negatives and teach the model to reject valid matches.",
+      "paperLevel": "For query q with positive d+, define H(q) as documents d- that are topically close to q but do not satisfy it; one contrastive objective is L = -log(exp(s(q,d+)) / (exp(s(q,d+)) + sum over d- in H(q) of exp(s(q,d-)))). Mining can introduce false negatives, and a fixed negative set can become too easy as the model improves."
+    },
+    "example": "For the query “visa requirements for a business trip to Japan,” a correct Japanese business-visa guide is the positive. A Japanese tourist-visa guide and a guide to business visas for South Korea are hard negatives: both are closely related, but each fails a different requirement. Training on them teaches the model to distinguish both travel purpose and destination.",
+    "usedIn": [
+      {
+        "name": "Semantic search",
+        "detail": "Helps embeddings separate documents on the same broad topic from documents that truly satisfy the query.",
+        "url": ""
+      },
+      {
+        "name": "Retrieval-augmented generation",
+        "detail": "Improves retrieval precision so generation is supplied with passages that match the request, not merely related passages.",
+        "url": ""
+      },
+      {
+        "name": "Search result reranking",
+        "detail": "Provides training examples that teach rankers to distinguish subtle differences in intent and relevance.",
+        "url": ""
+      }
+    ],
+    "intuition": "Random irrelevant examples are usually easy to reject, so they teach little beyond broad topic separation. A plausible but wrong example forces the model to identify exactly which details make the true match different.",
+    "howItWorks": [
+      "Pair each query with a genuinely matching positive example.",
+      "Retrieve candidate examples that are topically similar to the query.",
+      "Select candidates that are close in meaning but genuinely do not match.",
+      "Train the model to score the positive above those hard negatives.",
+      "Mine fresh negatives as the model improves."
+    ],
+    "whyItMatters": "Hard negatives make training spend its effort on the fine distinctions that determine retrieval quality. Careful mining is therefore central to producing embeddings that rank the right result above convincing alternatives.",
+    "misconceptions": [
+      "A hard negative is not simply any irrelevant document; it must also be topically close.",
+      "A similar-looking document is not automatically a negative; it must genuinely fail to match.",
+      "Harder is not always better when mining mistakes turn valid matches into false negatives."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "pair",
+          "label": "Query and positive",
+          "note": "A query with its verified match."
+        },
+        {
+          "id": "pool",
+          "label": "Candidate pool",
+          "note": "Topically similar documents."
+        },
+        {
+          "id": "mine",
+          "label": "Negative mining",
+          "note": "Find close but non-matching candidates."
+        },
+        {
+          "id": "negatives",
+          "label": "Hard negatives",
+          "note": "Verified plausible wrong answers."
+        },
+        {
+          "id": "train",
+          "label": "Contrastive training",
+          "note": "Raise the positive above the negatives."
+        },
+        {
+          "id": "model",
+          "label": "Embedding model",
+          "note": "Produces finer-grained representations."
+        }
+      ],
+      "edges": [
+        {
+          "from": "pair",
+          "to": "pool",
+          "label": "retrieve similar"
+        },
+        {
+          "from": "pool",
+          "to": "mine",
+          "label": ""
+        },
+        {
+          "from": "mine",
+          "to": "negatives",
+          "label": "verify"
+        },
+        {
+          "from": "pair",
+          "to": "train",
+          "label": "positive"
+        },
+        {
+          "from": "negatives",
+          "to": "train",
+          "label": ""
+        },
+        {
+          "from": "train",
+          "to": "model",
+          "label": ""
+        },
+        {
+          "from": "model",
+          "to": "pool",
+          "label": "refresh candidates"
+        }
+      ],
+      "caption": "Topically close candidates are checked and mined into hard negatives, then used with true positives to train the embedding model."
+    }
+  },
   "related": [
     "embedding"
   ],

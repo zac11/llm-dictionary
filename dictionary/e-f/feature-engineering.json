@@ -5,7 +5,113 @@
   "type": "concept",
   "definition": "The process of selecting, transforming, or creating input variables (features) to improve a machine learning model's performance.",
   "details": "Feature engineering was central to classical machine learning pipelines; deep learning has reduced (but not eliminated) its importance by allowing models to learn useful features directly from raw data.",
-  "story": "Picture a librarian organizing a million slips of paper so that any one of them can be found in a heartbeat. The examples a machine reads become the world it believes in. Better ingredients make a better meal, and the same is true here. Garbage in, garbage out — and the reverse: clean, representative data makes the model quietly brilliant. And that is Feature Engineering — the unglamorous work everything else stands on.",
+  "explainer": {
+    "lead": "Feature engineering is the craft of turning raw data into useful inputs for a machine learning model. Good features can make patterns easier to learn, improving predictions without changing the model itself.",
+    "tiers": {
+      "eli5": "Imagine guessing how much a house costs from a messy fact sheet. Instead of giving a computer every fact unchanged, you might calculate the house's age and highlight its size and location. Choosing and reshaping clues like these helps the computer make better guesses.",
+      "practitioner": "During data preparation, practitioners select relevant variables, transform their values, and create new variables before training and evaluating a model. Features should be checked for whether they genuinely help performance, since adding more can also add noise or complexity. Deep learning can learn features from raw data, but useful input preparation and domain knowledge still matter.",
+      "paperLevel": "Given raw input x and target y, feature engineering constructs a representation z = phi(x), then trains a model f(z) to predict y. The mapping phi may select, transform, or create variables and is chosen to improve model performance. Its central role in classical machine learning is reduced, but not eliminated, when deep models learn representations directly from raw data."
+    },
+    "example": "To predict a house's sale price, start with its construction year, sale year, floor area, and location. Calculate its age as sale year minus construction year, then use age, floor area, and location as model inputs. The derived age feature expresses a useful fact more directly than the two separate dates.",
+    "usedIn": [
+      {
+        "name": "House-price prediction",
+        "detail": "Property records can be turned into features such as building age and living area.",
+        "url": ""
+      },
+      {
+        "name": "Spam filtering",
+        "detail": "Message data can be shaped into inputs that help a model distinguish spam from wanted mail.",
+        "url": ""
+      },
+      {
+        "name": "Credit scoring",
+        "detail": "Applicant information can be selected and transformed into inputs for risk predictions.",
+        "url": ""
+      },
+      {
+        "name": "Predictive maintenance",
+        "detail": "Equipment measurements can be converted into features that help models anticipate failures.",
+        "url": ""
+      }
+    ],
+    "intuition": "A model can only learn from the information it receives, so presenting that information clearly matters. Feature engineering uses human understanding to emphasize useful patterns before learning begins.",
+    "howItWorks": [
+      "Start with the raw input variables available for the prediction task.",
+      "Select variables that appear useful for the task.",
+      "Transform values into representations the model can learn from effectively.",
+      "Create new variables by deriving or combining information.",
+      "Train and evaluate the model, then revise the features if performance can be improved."
+    ],
+    "whyItMatters": "Well-designed features can expose patterns that are hard to learn from raw inputs, improving a model's performance. They were central to classical machine learning and remain useful even when deep learning automates part of the representation-learning process.",
+    "misconceptions": [
+      "Adding more features always helps; irrelevant or noisy inputs can hurt performance.",
+      "Deep learning makes feature engineering unnecessary; it reduces the need for manual feature design but does not eliminate it.",
+      "Feature engineering means only creating new variables; it also includes selecting and transforming existing ones."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "raw",
+          "label": "Raw data",
+          "note": "Original input variables"
+        },
+        {
+          "id": "select",
+          "label": "Select features",
+          "note": "Keep useful variables"
+        },
+        {
+          "id": "transform",
+          "label": "Transform values",
+          "note": "Reshape existing inputs"
+        },
+        {
+          "id": "create",
+          "label": "Create features",
+          "note": "Derive new variables"
+        },
+        {
+          "id": "model",
+          "label": "Train model",
+          "note": "Learn from engineered inputs"
+        },
+        {
+          "id": "evaluate",
+          "label": "Evaluate performance",
+          "note": "Check and revise features"
+        }
+      ],
+      "edges": [
+        {
+          "from": "raw",
+          "to": "select",
+          "label": "variables"
+        },
+        {
+          "from": "select",
+          "to": "transform",
+          "label": "selected data"
+        },
+        {
+          "from": "transform",
+          "to": "create",
+          "label": "inputs"
+        },
+        {
+          "from": "create",
+          "to": "model",
+          "label": "features"
+        },
+        {
+          "from": "model",
+          "to": "evaluate",
+          "label": "predictions"
+        }
+      ],
+      "caption": "Raw variables are selected, transformed, and expanded into features before model training and evaluation."
+    }
+  },
   "related": [
     "common-crawl",
     "data-curation",

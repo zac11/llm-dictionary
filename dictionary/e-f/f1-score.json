@@ -2,10 +2,101 @@
   "term": "F1 Score",
   "letter": "F",
   "category": "Evaluation",
-  "type": "concept",
+  "type": "metric",
   "definition": "The harmonic mean of precision and recall, used as a single summary metric for classification performance.",
   "details": "F1 score balances the trade-off between precision and recall and is especially useful for imbalanced datasets where accuracy alone can be misleading.",
-  "story": "Imagine a driving test that every new model has to pass before it is allowed on the road. It is the exam that separates “it sounds good” from “it actually is good”. A fair scoreboard keeps everyone honest. It is the exam that keeps everyone honest. And that, done honestly, is F1 Score.",
+  "explainer": {
+    "lead": "F1 score summarizes how well a classifier balances precision and recall in one number. It is especially helpful when classes are imbalanced and accuracy could make weak performance look good.",
+    "tiers": {
+      "eli5": "Imagine a robot picking ripe apples: precision asks how many of its picks really are ripe, while recall asks how many ripe apples it found. F1 combines both, so the robot does not get a great score just by picking every apple or by picking only one easy apple. It rewards finding lots of ripe apples without making lots of mistakes.",
+      "practitioner": "Use F1 to compare classifiers when both false positives and false negatives matter, particularly on imbalanced datasets. Calculate precision and recall from the same predictions, then take their harmonic mean. Inspect both component scores as well, because identical F1 values can hide different error balances.",
+      "paperLevel": "F1 = 2 * precision * recall / (precision + recall), equivalently F1 = 2TP / (2TP + FP + FN). It is the harmonic mean of precision and recall and ranges from 0 to 1. As a single summary, it does not reveal which of precision or recall is lower, and it does not replace accuracy in every evaluation setting."
+    },
+    "example": "A classifier has 8 true positives, 2 false positives, and 4 false negatives. Precision is 8 / 10 = 0.80 and recall is 8 / 12 = 0.667, giving F1 = 16 / (16 + 2 + 4) = 0.727, or about 72.7%.",
+    "usedIn": [
+      {
+        "name": "Binary classification",
+        "detail": "Summarizes a classifier's precision and recall with one score.",
+        "url": ""
+      },
+      {
+        "name": "Imbalanced classification",
+        "detail": "Helps evaluate performance when accuracy alone can be misleading.",
+        "url": ""
+      }
+    ],
+    "measures": "F1 measures classification performance through the balance between precision and recall. A high score requires both to be high.",
+    "howScored": [
+      "Count true positives, false positives, and false negatives.",
+      "Compute precision as TP / (TP + FP).",
+      "Compute recall as TP / (TP + FN).",
+      "Take the harmonic mean of precision and recall."
+    ],
+    "formula": "F1 = 2 * precision * recall / (precision + recall) = 2TP / (2TP + FP + FN).",
+    "typicalResults": "Scores range from 0 to 1, with 1 reached only when both precision and recall are perfect. A low value for either component pulls F1 down.",
+    "caveats": [
+      "F1 is not the same as accuracy.",
+      "The same F1 can come from different precision-recall balances.",
+      "A single F1 value does not show which kind of error dominates."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "predictions",
+          "label": "Classifier predictions",
+          "note": "Compared with true labels"
+        },
+        {
+          "id": "counts",
+          "label": "Error counts",
+          "note": "TP, FP, and FN"
+        },
+        {
+          "id": "precision",
+          "label": "Precision",
+          "note": "Correctness of positive predictions"
+        },
+        {
+          "id": "recall",
+          "label": "Recall",
+          "note": "Coverage of actual positives"
+        },
+        {
+          "id": "f1",
+          "label": "F1 score",
+          "note": "Harmonic mean of both"
+        }
+      ],
+      "edges": [
+        {
+          "from": "predictions",
+          "to": "counts",
+          "label": ""
+        },
+        {
+          "from": "counts",
+          "to": "precision",
+          "label": ""
+        },
+        {
+          "from": "counts",
+          "to": "recall",
+          "label": ""
+        },
+        {
+          "from": "precision",
+          "to": "f1",
+          "label": ""
+        },
+        {
+          "from": "recall",
+          "to": "f1",
+          "label": ""
+        }
+      ],
+      "caption": "F1 combines precision and recall calculated from the same classification results."
+    }
+  },
   "related": [
     "a-b-testing",
     "ablation-study",

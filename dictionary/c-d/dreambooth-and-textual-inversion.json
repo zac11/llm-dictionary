@@ -5,6 +5,109 @@
   "type": "concept",
   "definition": "The two classic personalization routes: fine-tuning the model on a few images of a subject bound to a rare token (DreamBooth), or learning only a new token embedding while freezing the model (Textual Inversion).",
   "details": "The two classic personalization routes: fine-tuning the model on a few images of a subject bound to a rare token (DreamBooth), or learning only a new token embedding while freezing the model (Textual Inversion). The ancestors of today's identity-consistent generation features.",
+  "explainer": {
+    "lead": "DreamBooth and Textual Inversion are two ways to teach an image-generation model a particular person, pet, or object from a few pictures. Both connect the subject to a special token so you can request it in new scenes, but they differ in how much of the model they change.",
+    "tiers": {
+      "eli5": "Imagine showing an artist a few photos of your dog and giving your dog a secret code word. DreamBooth gives the artist extra lessons, while Textual Inversion just teaches the artist what the code word means. Afterwards, you can use that word to ask for pictures of your dog doing new things.",
+      "practitioner": "Use DreamBooth when you can fine-tune the model on a small subject-image set bound to a rare token; use Textual Inversion when the model must remain frozen and only a new token embedding is learned. The trained token is then included in generation prompts. A common pitfall is treating the two as equivalent parameter updates: one changes model weights, while the other changes only the embedding.",
+      "paperLevel": "Let theta be the pretrained model parameters and e the embedding of a rare token associated with the subject. DreamBooth fine-tunes theta using a few subject images, whereas Textual Inversion optimizes e with theta fixed. Both require personalization training before the token can be used for subject-conditioned generation."
+    },
+    "example": "Given a few photos of your ceramic mug, you bind it to a rare token such as \"sks mug\". DreamBooth would fine-tune the model on those photos, while Textual Inversion would learn only the new token embedding; either route then lets you prompt for \"sks mug on a snowy windowsill\".",
+    "usedIn": [
+      {
+        "name": "Personalized image generation",
+        "detail": "Generating new scenes containing a specific subject learned from a few images.",
+        "url": ""
+      },
+      {
+        "name": "Identity-consistent generation",
+        "detail": "These methods are early approaches behind features that preserve a chosen subject across generated images.",
+        "url": ""
+      }
+    ],
+    "intuition": "A rare token acts like a name tag for the subject. DreamBooth teaches the whole model what that name refers to; Textual Inversion teaches only the name tag while leaving the model untouched.",
+    "howItWorks": [
+      "Collect a few images of the subject.",
+      "Associate the subject with a rare token.",
+      "Choose whether to fine-tune the model or learn only an embedding.",
+      "For DreamBooth, update the model using those images.",
+      "For Textual Inversion, freeze the model and train the token embedding.",
+      "Use the token in prompts to generate the subject."
+    ],
+    "whyItMatters": "They made subject-specific generation possible without collecting a large dataset for every new identity. They also established the two basic personalization trade-offs: updating model weights versus learning a compact token representation.",
+    "misconceptions": [
+      "Textual Inversion does not fine-tune the whole model.",
+      "DreamBooth changes more than a token embedding.",
+      "A rare token has no subject meaning until it is trained."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "images",
+          "label": "Few subject images",
+          "note": "Examples of one person, pet, or object."
+        },
+        {
+          "id": "token",
+          "label": "Rare token",
+          "note": "A text tag bound to the subject."
+        },
+        {
+          "id": "dreambooth",
+          "label": "DreamBooth",
+          "note": "Fine-tunes the model on the images."
+        },
+        {
+          "id": "inversion",
+          "label": "Textual Inversion",
+          "note": "Learns an embedding with the model frozen."
+        },
+        {
+          "id": "personalized",
+          "label": "Personalized generator",
+          "note": "The token now carries the learned subject association."
+        },
+        {
+          "id": "output",
+          "label": "New subject scenes",
+          "note": "Prompts place the subject in new generated images."
+        }
+      ],
+      "edges": [
+        {
+          "from": "images",
+          "to": "token",
+          "label": "bind subject"
+        },
+        {
+          "from": "token",
+          "to": "dreambooth",
+          "label": ""
+        },
+        {
+          "from": "token",
+          "to": "inversion",
+          "label": ""
+        },
+        {
+          "from": "dreambooth",
+          "to": "personalized",
+          "label": "model updates"
+        },
+        {
+          "from": "inversion",
+          "to": "personalized",
+          "label": "new embedding"
+        },
+        {
+          "from": "personalized",
+          "to": "output",
+          "label": "prompt token"
+        }
+      ],
+      "caption": "Both routes connect a few subject images to a rare token, but they personalize different parts of the generation system."
+    }
+  },
   "related": [
     "dreambooth",
     "embedding",

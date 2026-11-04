@@ -5,6 +5,97 @@
   "type": "concept",
   "definition": "In models such as BERT, the CLS token is added to the beginning of each input example and is used as the aggregate representation for classification tasks.",
   "details": "In models such as BERT, the CLS token is added to the beginning of each input example and is used as the aggregate representation for classification tasks.",
+  "explainer": {
+    "lead": "The CLS token is a special marker placed at the start of an input in models such as BERT. Its output representation gives a classifier one place to look for information about the whole input, rather than a single word.",
+    "tiers": {
+      "eli5": "Imagine putting a blank summary card at the front of a stack of notes before asking someone to read them. After reading, they fill in that card with the important overall message. BERT uses the CLS token in a similar way when it needs to classify a whole piece of text.",
+      "practitioner": "In a BERT-based classifier, prepend [CLS], run the sequence through the encoder, and pass the output at position 0 to the classification head. Train that head and, when fine-tuning, the encoder so this position learns an aggregate representation. Do not confuse it with the first ordinary token or assume it is the pooling method used by every model.",
+      "paperLevel": "For tokens x1,...,xn, construct the sequence ([CLS], x1,...,xn) and encode it to obtain hidden states h_CLS,h1,...,hn. A classification head uses h_CLS as the aggregate input representation, commonly written y_hat = f(h_CLS). This convention is used in BERT; it defines an aggregation point, not a guarantee that every relevant detail is preserved."
+    },
+    "example": "For the review “This film was moving,” the input begins “[CLS] This film was moving.” After BERT processes it, the vector at the [CLS] position is passed to a sentiment classifier, which could predict “positive.”",
+    "usedIn": [
+      {
+        "name": "BERT",
+        "detail": "Places CLS at the start of each input example.",
+        "url": ""
+      },
+      {
+        "name": "Text classification",
+        "detail": "Uses the CLS output as input to a label predictor.",
+        "url": ""
+      },
+      {
+        "name": "Document classification",
+        "detail": "Provides one representation for classifying an entire input passage.",
+        "url": ""
+      }
+    ],
+    "intuition": "A classifier needs a single representation for an entire example, even though the encoder processes many tokens. CLS reserves one position whose output can gather and carry that example-level information.",
+    "howItWorks": [
+      "Place the special CLS token before the input tokens.",
+      "Run the complete sequence through a model such as BERT.",
+      "Read the output representation at the CLS position.",
+      "Feed that representation to a classifier to predict a label."
+    ],
+    "whyItMatters": "It gives BERT-based classifiers a consistent interface between variable-length token sequences and a fixed label prediction. The same position can serve as the aggregate representation across training examples.",
+    "misconceptions": [
+      "CLS is not itself the predicted class label; it is an input marker with an output representation.",
+      "Its output is not the representation of the first ordinary word.",
+      "It should not be assumed that every model uses CLS for pooling or classification."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "tokens",
+          "label": "Input tokens",
+          "note": "The tokenized example."
+        },
+        {
+          "id": "sequence",
+          "label": "CLS-first sequence",
+          "note": "CLS is placed before all input tokens."
+        },
+        {
+          "id": "encoder",
+          "label": "BERT encoder",
+          "note": "Processes the full sequence together."
+        },
+        {
+          "id": "cls-vector",
+          "label": "CLS output vector",
+          "note": "The aggregate representation at position zero."
+        },
+        {
+          "id": "classifier",
+          "label": "Classification head",
+          "note": "Maps the aggregate representation to a label."
+        }
+      ],
+      "edges": [
+        {
+          "from": "tokens",
+          "to": "sequence",
+          "label": "prepend CLS"
+        },
+        {
+          "from": "sequence",
+          "to": "encoder",
+          "label": "encode"
+        },
+        {
+          "from": "encoder",
+          "to": "cls-vector",
+          "label": "position 0"
+        },
+        {
+          "from": "cls-vector",
+          "to": "classifier",
+          "label": "classify"
+        }
+      ],
+      "caption": "The CLS position supplies a single sequence-level representation to the classifier."
+    }
+  },
   "related": [
     "token"
   ],

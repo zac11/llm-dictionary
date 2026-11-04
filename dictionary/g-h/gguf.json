@@ -5,7 +5,118 @@
   "type": "concept",
   "definition": "The GGUF (GGML Universal File) file format is a binary file format that stores both tensors and metadata in a single file and is designed for fast saving and loading of model data.",
   "details": "It was introduced in August 2023 by the llama.cpp project to better maintain backward compatibility as support was added for other model architectures. It superseded previous formats used by the project such as GGML and is typically produced by converting models developed with a different machine-learning library such as PyTorch. GGUF has become the standard format for distributing quantized large language models for local inference and is natively supported by tools such as llama.cpp, Ollama, LM Studio, GPT4All, Jan, and koboldcpp. As of 2026, tens of thousands of GGUF checkpoints are hosted on Hugging Face, which provides first-class integration, including a metadata viewer, an inference endpoint service, and a JavaScript parser library.",
-  "story": "Think of a historian sorting through boxes of letters, building a picture of an era one sentence at a time. Every machine is shaped by what it was shown, so someone has to choose that material with care. The examples a machine reads become the world it believes in. The words a model reads become the world it believes in. That care with the raw material is GGUF.",
+  "explainer": {
+    "lead": "GGUF is a single-file format for packaging a model’s tensors and metadata so the model can be saved and loaded quickly. It matters because it gives local AI tools a common way to distribute and run large language models, especially quantized ones.",
+    "tiers": {
+      "eli5": "GGUF is like a lunchbox that keeps a model’s pieces and its label together in one container. Instead of assembling everything each time, a program can open the box and start using the model. It is especially useful for running large language models on your own computer.",
+      "practitioner": "Models developed in another machine-learning library, such as PyTorch, are typically converted into GGUF for local inference. You can load GGUF models with llama.cpp, Ollama, LM Studio, GPT4All, Jan, or koboldcpp, and find many checkpoints on Hugging Face. Do not treat GGUF itself as a quantization method or model architecture: it is the container, although quantized LLMs are commonly distributed in it.",
+      "paperLevel": "GGUF (GGML Universal File) is a binary container F = (T, M), where T denotes model tensors and M denotes metadata, designed for fast model-data saving and loading. The llama.cpp project introduced it in August 2023 to improve backward compatibility while adding support for other model architectures, superseding formats such as GGML. Its scope is model storage and distribution rather than training, quantization, or inference algorithms."
+    },
+    "example": "A language model developed with PyTorch is converted into one GGUF file containing its tensors and metadata. A user can then obtain that checkpoint and load it in Ollama or LM Studio for local inference.",
+    "usedIn": [
+      {
+        "name": "llama.cpp",
+        "detail": "Natively supports GGUF, the format the project introduced for model data.",
+        "url": ""
+      },
+      {
+        "name": "Ollama and LM Studio",
+        "detail": "Support GGUF models for local inference.",
+        "url": ""
+      },
+      {
+        "name": "Hugging Face",
+        "detail": "Hosts tens of thousands of GGUF checkpoints and provides a metadata viewer, inference endpoint service, and JavaScript parser library.",
+        "url": ""
+      },
+      {
+        "name": "GPT4All, Jan, and koboldcpp",
+        "detail": "Provide native support for the format.",
+        "url": ""
+      }
+    ],
+    "intuition": "A model needs both its numerical tensors and information describing them. GGUF keeps those together in one binary file, giving compatible tools a consistent package to load instead of requiring a separate arrangement for each distribution.",
+    "howItWorks": [
+      "Start with a model developed in a library such as PyTorch.",
+      "Convert the model into the GGUF format.",
+      "Store its tensors and metadata together in one binary file.",
+      "Distribute the file, often as a quantized LLM checkpoint.",
+      "Load it in a compatible tool for fast local inference."
+    ],
+    "whyItMatters": "GGUF became the standard format for distributing quantized large language models for local inference. Its single-file design, fast loading, backward-compatibility goals, and broad tool support make model distribution and use more consistent.",
+    "misconceptions": [
+      "GGUF is a file format, not a language model or neural-network architecture.",
+      "GGUF is not itself a quantization algorithm, although quantized models are commonly distributed in it.",
+      "GGML is an earlier project format; GGUF superseded it."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "source-model",
+          "label": "Source model",
+          "note": "Developed in a library such as PyTorch"
+        },
+        {
+          "id": "conversion",
+          "label": "Format conversion",
+          "note": "Produces a GGUF checkpoint"
+        },
+        {
+          "id": "gguf-file",
+          "label": "GGUF file",
+          "note": "One binary container"
+        },
+        {
+          "id": "tensors",
+          "label": "Model tensors",
+          "note": "Numerical model data"
+        },
+        {
+          "id": "metadata",
+          "label": "Model metadata",
+          "note": "Stored beside the tensors"
+        },
+        {
+          "id": "local-tools",
+          "label": "Local inference",
+          "note": "Loaded by compatible tools"
+        }
+      ],
+      "edges": [
+        {
+          "from": "source-model",
+          "to": "conversion",
+          "label": "convert"
+        },
+        {
+          "from": "conversion",
+          "to": "gguf-file",
+          "label": "writes"
+        },
+        {
+          "from": "gguf-file",
+          "to": "tensors",
+          "label": "contains"
+        },
+        {
+          "from": "gguf-file",
+          "to": "metadata",
+          "label": "contains"
+        },
+        {
+          "from": "tensors",
+          "to": "local-tools",
+          "label": "loads"
+        },
+        {
+          "from": "metadata",
+          "to": "local-tools",
+          "label": "loads"
+        }
+      ],
+      "caption": "Conversion packages a source model’s tensors and metadata in GGUF, which compatible tools load for local inference."
+    }
+  },
   "related": [
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",
     "accelerated-linear-algebra",

@@ -5,7 +5,91 @@
   "type": "concept",
   "definition": "The knowledge acquisition bottleneck is perhaps the major impediment to solving the word-sense disambiguation (WSD) problem.",
   "details": "Unsupervised learning methods rely on knowledge about word senses, which is barely formulated in dictionaries and lexical databases. Supervised learning methods depend heavily on the existence of manually annotated examples for every word sense, a requisite that can so far be met only for a handful of words for testing purposes, as it is done in the Senseval exercises.",
-  "story": "Imagine a chef tasting every ingredient before it goes into the pot, deciding what belongs and what would ruin the broth. Better ingredients make a better meal, and the same is true here. Every machine is shaped by what it was shown, so someone has to choose that material with care. It is the raw material; the model is only ever as good as what it was fed. And that is Automatic acquisition of sense-tagged corpora — the unglamorous work everything else stands on.",
+  "explainer": {
+    "lead": "Automatic acquisition of sense-tagged corpora means building collections of text in which ambiguous words are marked with their intended meanings, without annotating every example by hand. It addresses a major obstacle in word-sense disambiguation: supervised systems need many labeled examples, but manual annotation has been practical for only a small number of words.",
+    "tiers": {
+      "eli5": "Imagine teaching a computer that \"bat\" can mean an animal or something used to hit a ball. Instead of a person reading and labeling thousands of sentences, the computer tries to gather and label the sentences itself. Those examples can then help it learn which meaning fits a new sentence.",
+      "practitioner": "The goal is to generate training data for supervised word-sense disambiguation when manual sense annotation is scarce. Automatically assigned labels must still rest on knowledge about word senses, and errors or uneven coverage of senses can be passed directly into the learned disambiguator.",
+      "paperLevel": "For a word w with senses S(w), the task is to construct a corpus C = {(x_i, s_i)}, where x_i is a textual occurrence and s_i in S(w) is an automatically acquired sense label. This targets the knowledge-acquisition bottleneck: supervised WSD needs examples for every sense, while unsupervised WSD depends on sense knowledge that is only weakly formulated in dictionaries and lexical databases."
+    },
+    "example": "A system labels \"I sat on the bank of the river\" with the river-edge sense of \"bank\" and \"The bank approved my loan\" with the financial-institution sense. Both sentences can then serve as training examples without a person manually tagging each occurrence.",
+    "usedIn": [
+      {
+        "name": "Supervised word-sense disambiguation",
+        "detail": "Supplies sense-labeled occurrences for learning to choose among a word's possible meanings.",
+        "url": ""
+      },
+      {
+        "name": "Senseval-style evaluation",
+        "detail": "Highlights the need for annotated examples, since manual annotation has generally supported only limited testing sets.",
+        "url": ""
+      }
+    ],
+    "intuition": "A disambiguation system cannot reliably learn meanings it has never seen demonstrated. Automatically sense-tagging text turns unlabeled occurrences into training examples, reducing the amount of manual annotation required.",
+    "howItWorks": [
+      "Identify occurrences of words that have multiple possible senses.",
+      "Use available sense knowledge to determine an appropriate label for each occurrence.",
+      "Attach those labels to the text to form a sense-tagged corpus.",
+      "Use the resulting examples to train or test word-sense disambiguation methods."
+    ],
+    "whyItMatters": "Sense annotation is expensive to produce manually, while dictionaries and lexical databases do not fully supply the knowledge needed by unsupervised methods. Automatic corpus acquisition offers a way to expand the limited evidence available for word-sense disambiguation.",
+    "misconceptions": [
+      "It is not itself the final act of choosing a sense in every new text; it produces labeled material that supports disambiguation.",
+      "Automatic acquisition does not remove the need for knowledge about word senses or guarantee correct labels."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "text",
+          "label": "Ambiguous text",
+          "note": "Occurrences of words with multiple senses"
+        },
+        {
+          "id": "knowledge",
+          "label": "Sense knowledge",
+          "note": "Available information about possible meanings"
+        },
+        {
+          "id": "labeling",
+          "label": "Automatic labeling",
+          "note": "Assigns a sense to each occurrence"
+        },
+        {
+          "id": "corpus",
+          "label": "Sense-tagged corpus",
+          "note": "Text paired with acquired sense labels"
+        },
+        {
+          "id": "wsd",
+          "label": "WSD system",
+          "note": "Learns from or is tested on the examples"
+        }
+      ],
+      "edges": [
+        {
+          "from": "text",
+          "to": "labeling",
+          "label": ""
+        },
+        {
+          "from": "knowledge",
+          "to": "labeling",
+          "label": ""
+        },
+        {
+          "from": "labeling",
+          "to": "corpus",
+          "label": "tagged examples"
+        },
+        {
+          "from": "corpus",
+          "to": "wsd",
+          "label": "training data"
+        }
+      ],
+      "caption": "Automatic acquisition combines text with sense knowledge to create labeled examples for word-sense disambiguation."
+    }
+  },
   "related": [
     "automatic-acquisition-of-lexicon",
     "automatic-clustering-algorithms",

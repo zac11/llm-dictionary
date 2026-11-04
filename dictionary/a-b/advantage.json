@@ -8,6 +8,103 @@
   ],
   "definition": "How much better an action was than the policy's average at that state (Q minus V).",
   "details": "How much better an action was than the policy's average at that state (Q minus V). Generalized Advantage Estimation is the standard bias-variance-controlled estimator; GRPO replaces learned value baselines with group-relative advantages.",
+  "explainer": {
+    "lead": "Advantage tells an agent whether a particular choice beat what its policy would usually do in the same situation. Comparing an action with that baseline gives learning a clearer signal than looking at the action’s outcome alone.",
+    "tiers": {
+      "eli5": "Imagine you usually score 70 on a quiz, but a new way of studying helps you score 80. The advantage of that choice is 10 points: it worked better than your usual approach. A score of 60 would have an advantage of minus 10, meaning it worked worse.",
+      "practitioner": "Compute advantage as A(s, a) = Q(s, a) − V(s), keeping the action-specific value separate from the policy’s state baseline. GAE is the standard estimator when you want to control the bias–variance trade-off; GRPO instead uses group-relative advantages rather than learned value baselines. Do not treat GAE as a different advantage definition or a group-relative score as a learned V(s).",
+      "paperLevel": "For policy π, the advantage is A^π(s, a) = Q^π(s, a) − V^π(s), so positive values indicate actions above the policy’s average at that state and negative values indicate actions below it. Generalized Advantage Estimation estimates this quantity with a controlled bias–variance trade-off. GRPO replaces learned value baselines with group-relative advantages."
+    },
+    "example": "At a particular state, an action has Q = 8, while the policy’s average value there is V = 5. Its advantage is 8 − 5 = 3, so the action is 3 units better than the policy’s average; an action with Q = 4 would instead have advantage −1.",
+    "usedIn": [
+      {
+        "name": "Generalized Advantage Estimation",
+        "detail": "Estimates advantages while controlling the trade-off between bias and variance.",
+        "url": ""
+      },
+      {
+        "name": "GRPO",
+        "detail": "Uses group-relative advantages instead of learned value baselines.",
+        "url": ""
+      },
+      {
+        "name": "Reinforcement learning",
+        "detail": "Scores an action relative to the policy’s average value in the same state.",
+        "url": ""
+      }
+    ],
+    "intuition": "A good outcome is not necessarily a good choice if every choice would have done just as well. Advantage removes the policy’s usual performance at that state, leaving the action’s relative contribution.",
+    "howItWorks": [
+      "Start with a state and an action taken there.",
+      "Estimate Q(s, a), the value of that specific action.",
+      "Estimate V(s), the policy’s average value at that state.",
+      "Subtract V(s) from Q(s, a) to obtain the advantage.",
+      "Estimate the quantity with GAE, or use group-relative advantages in GRPO."
+    ],
+    "whyItMatters": "Advantage separates an action’s relative merit from how favourable the state already was. GAE provides a standard bias–variance-controlled way to estimate it, while GRPO offers a group-relative alternative without a learned value baseline.",
+    "misconceptions": [
+      "Advantage is not Q itself; it is Q minus V.",
+      "GAE is an estimator of advantage, not a different definition of it.",
+      "GRPO’s group-relative advantages do not use a learned value baseline."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "state",
+          "label": "State s",
+          "note": "The situation being evaluated"
+        },
+        {
+          "id": "action",
+          "label": "Action a",
+          "note": "The specific choice being scored"
+        },
+        {
+          "id": "q",
+          "label": "Q(s, a)",
+          "note": "Value of this action"
+        },
+        {
+          "id": "v",
+          "label": "V(s)",
+          "note": "Policy’s average at this state"
+        },
+        {
+          "id": "advantage",
+          "label": "Advantage A",
+          "note": "Q minus V"
+        }
+      ],
+      "edges": [
+        {
+          "from": "state",
+          "to": "q",
+          "label": "context"
+        },
+        {
+          "from": "action",
+          "to": "q",
+          "label": "choice"
+        },
+        {
+          "from": "state",
+          "to": "v",
+          "label": "average"
+        },
+        {
+          "from": "q",
+          "to": "advantage",
+          "label": "positive term"
+        },
+        {
+          "from": "v",
+          "to": "advantage",
+          "label": "subtract"
+        }
+      ],
+      "caption": "Advantage compares an action-specific value with the policy’s average value at the same state."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

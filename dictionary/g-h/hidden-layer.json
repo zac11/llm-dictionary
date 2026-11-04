@@ -5,7 +5,98 @@
   "type": "concept",
   "definition": "In artificial neural networks, a hidden layer is a layer of artificial neurons that is neither an input layer nor an output layer.",
   "details": "The simplest examples appear in multilayer perceptrons (MLP), as illustrated in the diagram. An MLP without any hidden layer is essentially just a linear model. With hidden layers and activation functions, however, nonlinearity is introduced into the model. In typical machine learning practice, the weights and biases are initialized, then iteratively updated during training via backpropagation.",
-  "story": "Picture an architect laying out a building where every room has to know which other rooms matter to it. The layout decides what the machine can even attempt, before it learns a single thing. It is the blueprint that makes everything else possible. It is the difference between a row of isolated cubicles and one big room where everyone can hear each other. And that shape of the machine — Hidden layer — is what makes everything else possible.",
+  "explainer": {
+    "lead": "A hidden layer is a group of artificial neurons between a neural network's inputs and its output. These intermediate layers, together with activation functions, let a network represent nonlinear relationships instead of only straight-line ones.",
+    "tiers": {
+      "eli5": "Imagine passing a message through a team of helpers before giving your final answer. The helpers are like a hidden layer: you cannot give them input directly or see their answer as the final result, but their work changes what the network can learn. Without them, a simple multilayer perceptron can act only like a straight-line rule; with them and special processing steps, it can handle more curved patterns.",
+      "practitioner": "In an MLP, add one or more hidden layers with activation functions when a linear model is insufficient. Initialize their weights and biases, then update them iteratively with backpropagation during training. Removing hidden layers leaves an MLP essentially linear, while adding them introduces the nonlinear transformations needed for more expressive models.",
+      "paperLevel": "For input x, a one-hidden-layer network can be written as h = f(Wx + b) and y = g(Vh + c), where W, V are weights, b, c are biases, and f, g are activation functions. The hidden representation h is neither the model's input nor its output. An MLP with no hidden layer is essentially linear; hidden layers with activation functions introduce nonlinearity."
+    },
+    "example": "Suppose an MLP receives two numbers and has one hidden layer containing three neurons. Each hidden neuron computes a weighted combination of the two numbers, adds its bias, and applies an activation function; the output layer then combines those three activated values. Training adjusts all these weights and biases through backpropagation.",
+    "usedIn": [
+      {
+        "name": "Multilayer perceptrons",
+        "detail": "The simplest setting in which hidden layers appear between input and output layers.",
+        "url": ""
+      },
+      {
+        "name": "Nonlinear machine-learning models",
+        "detail": "Hidden layers and activation functions allow models to go beyond linear relationships.",
+        "url": ""
+      },
+      {
+        "name": "Neural-network training",
+        "detail": "Hidden-layer weights and biases are initialized and iteratively updated through backpropagation.",
+        "url": ""
+      }
+    ],
+    "intuition": "A hidden layer is an intermediate computational stage that transforms input values before the network produces its output. Stacking these transformations with activation functions gives the model nonlinear behavior.",
+    "howItWorks": [
+      "The input layer supplies values to the network.",
+      "A hidden layer combines those values using initialized weights and biases.",
+      "Its activation functions transform the results, introducing nonlinearity.",
+      "Further hidden layers may transform the values again before the output layer produces a result.",
+      "During training, backpropagation iteratively updates the weights and biases."
+    ],
+    "whyItMatters": "Hidden layers mark the difference between an MLP that is essentially linear and one that can represent nonlinear relationships. They provide the intermediate computations on which multilayer neural networks depend.",
+    "misconceptions": [
+      "\"Hidden\" means between input and output, not secret or invisible.",
+      "Adding hidden layers alone is not the whole story: activation functions are what introduce nonlinearity.",
+      "An MLP without a hidden layer is essentially a linear model, not a multilayer nonlinear model."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input layer",
+          "note": "Receives the input values."
+        },
+        {
+          "id": "combine",
+          "label": "Weights and biases",
+          "note": "Combine inputs with learned parameters."
+        },
+        {
+          "id": "hidden",
+          "label": "Hidden layer",
+          "note": "Applies activation functions."
+        },
+        {
+          "id": "output",
+          "label": "Output layer",
+          "note": "Produces the network result."
+        },
+        {
+          "id": "training",
+          "label": "Backpropagation",
+          "note": "Iteratively updates weights and biases."
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "combine",
+          "label": "values"
+        },
+        {
+          "from": "combine",
+          "to": "hidden",
+          "label": "weighted sums"
+        },
+        {
+          "from": "hidden",
+          "to": "output",
+          "label": "activations"
+        },
+        {
+          "from": "training",
+          "to": "combine",
+          "label": "updates"
+        }
+      ],
+      "caption": "Values pass through hidden-layer transformations, while backpropagation updates the parameters during training."
+    }
+  },
   "related": [
     "convolutional-layer",
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",

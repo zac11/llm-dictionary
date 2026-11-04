@@ -5,6 +5,93 @@
   "type": "concept",
   "definition": "Small bottleneck modules inserted between transformer layers and trained while the base stays frozen.",
   "details": "Small bottleneck modules inserted between transformer layers and trained while the base stays frozen. The original PEFT approach; largely superseded by LoRA but conceptually foundational.",
+  "explainer": {
+    "lead": "Adapters let a large transformer learn a new task by training only small modules added between its layers, while the original model stays unchanged. This makes adaptation much lighter than retraining the whole model and established a foundational approach to parameter-efficient fine-tuning.",
+    "tiers": {
+      "eli5": "Imagine a big, complicated machine that you are not allowed to open or change. You can teach it a new job by plugging a few small attachments between its parts and teaching only those attachments. The main machine stays the same, and you can train different attachments for different jobs.",
+      "practitioner": "Insert bottleneck adapters between transformer layers, freeze every base-model parameter, and optimize only the adapter weights on the target task. Adapters are conceptually useful for parameter-efficient fine-tuning, although LoRA has largely superseded them in practice.",
+      "paperLevel": "Let theta denote the frozen base-transformer parameters and phi the parameters of bottleneck modules inserted between its layers. Training solves min_phi L(F_{theta,phi}(x), y), keeping theta fixed and updating only phi. The base model therefore cannot adapt its own weights, and this original PEFT approach has largely been superseded by LoRA."
+    },
+    "example": "To adapt a pretrained transformer for support-ticket classification, insert adapters between its layers and train on labeled tickets. The transformer's original weights never change; only the adapters learn to produce useful ticket-category predictions.",
+    "usedIn": [
+      {
+        "name": "Parameter-efficient fine-tuning",
+        "detail": "Adapters are the original approach of training small added modules instead of the full model.",
+        "url": ""
+      },
+      {
+        "name": "Transformer model adaptation",
+        "detail": "Bottleneck modules are placed between transformer layers to adapt a frozen base to a target task.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of rewriting all of a transformer's knowledge for each new task, leave it intact and learn a small amount of task-specific circuitry. The narrow bottleneck keeps the added module small.",
+    "howItWorks": [
+      "Start with a pretrained transformer.",
+      "Insert small bottleneck modules between its layers.",
+      "Freeze all base-model weights.",
+      "Run task data through the adapted model.",
+      "Update only the adapter weights."
+    ],
+    "whyItMatters": "Adapters showed that a transformer could be adapted without training all of its parameters. They laid the conceptual groundwork for parameter-efficient fine-tuning, even though LoRA has largely taken their place.",
+    "misconceptions": [
+      "Adapters do not fine-tune the base model; its weights remain frozen.",
+      "The bottleneck modules are trained, not the entire transformer.",
+      "Adapters and LoRA are related PEFT ideas, but they are not the same method."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Task input",
+          "note": "Examples enter the adapted transformer."
+        },
+        {
+          "id": "layer-a",
+          "label": "Frozen transformer layer",
+          "note": "Base weights remain unchanged."
+        },
+        {
+          "id": "adapter",
+          "label": "Bottleneck adapter",
+          "note": "Only these small modules are trained."
+        },
+        {
+          "id": "layer-b",
+          "label": "Frozen transformer layer",
+          "note": "Processing continues through the base."
+        },
+        {
+          "id": "output",
+          "label": "Task output",
+          "note": "Predictions drive adapter training."
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "layer-a",
+          "label": "tokens"
+        },
+        {
+          "from": "layer-a",
+          "to": "adapter",
+          "label": "activations"
+        },
+        {
+          "from": "adapter",
+          "to": "layer-b",
+          "label": "adapted"
+        },
+        {
+          "from": "layer-b",
+          "to": "output",
+          "label": "predictions"
+        }
+      ],
+      "caption": "Task data flows through frozen transformer layers and trainable bottleneck adapters; learning updates only the adapters."
+    }
+  },
   "related": [
     "transformer"
   ],

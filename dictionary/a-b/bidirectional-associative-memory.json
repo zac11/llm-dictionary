@@ -5,7 +5,70 @@
   "type": "concept",
   "definition": "Bidirectional associative memory (BAM) is a type of recurrent neural network.",
   "details": "BAM was introduced by Bart Kosko in 1988. There are two types of associative memory, auto-associative and hetero-associative. BAM is hetero-associative, meaning given a pattern it can return another pattern which is potentially of a different size. It is similar to the Hopfield network in that they are both forms of associative memory. However, Hopfield nets return patterns of the same size. It is said to be bi-directional as it can respond to inputs from either the input or the output layer.",
-  "story": "Picture an architect laying out a building where every room has to know which other rooms matter to it. The layout decides what the machine can even attempt, before it learns a single thing. It is the blueprint that makes everything else possible. It is the difference between a row of isolated cubicles and one big room where everyone can hear each other. That blueprint is Bidirectional associative memory.",
+  "explainer": {
+    "lead": "Bidirectional associative memory, or BAM, is a recurrent neural network that recalls one pattern when given another. It can connect patterns of different sizes and respond from either its input or output layer, making it a two-way form of associative memory.",
+    "tiers": {
+      "eli5": "Imagine two lists of matching cards, where a short card can be paired with a longer one. BAM learns these pairs so that seeing a card from either list can bring its match to mind. It works in both directions, a little like remembering a friend's face when you hear their name, or their name when you see their face.",
+      "practitioner": "Use BAM when the task is hetero-associative recall between paired patterns, including pairs whose representations have different sizes. Its recurrent, bidirectional behavior distinguishes it from a one-way mapping, while its different-size recall distinguishes it from the auto-associative Hopfield network. Check both directions of retrieval rather than treating input-to-output recall alone as the whole behavior.",
+      "paperLevel": "BAM, introduced by Bart Kosko in 1988, is a recurrent hetero-associative memory: an input pattern evokes an associated pattern that may have a different dimensionality. It is bidirectional because either the input layer or the output layer can drive the response; by contrast, a Hopfield network is auto-associative and returns patterns of the same size."
+    },
+    "example": "Suppose the pattern [1, 0] is associated with [0, 1, 1, 0]. Presenting [1, 0] can evoke the four-element pattern, while presenting the four-element pattern at the output layer can evoke [1, 0].",
+    "intuition": "BAM stores associations between two kinds of patterns rather than simply completing a pattern with itself. The association can be followed in either direction, even when the two patterns have different sizes.",
+    "howItWorks": [
+      "Start with a pattern presented to either the input layer or the output layer.",
+      "The recurrent network uses the association between the two layers.",
+      "Activity passes bidirectionally rather than only from input to output.",
+      "The network responds with the associated pattern, which may have a different size."
+    ],
+    "whyItMatters": "BAM extends associative memory beyond same-pattern completion: it links distinct patterns and allows recall from either side. This makes the difference between hetero-association and auto-association concrete.",
+    "misconceptions": [
+      "BAM is hetero-associative, not auto-associative.",
+      "Bidirectional does not mean the two patterns must be the same size.",
+      "It is similar to a Hopfield network as associative memory, but Hopfield networks return same-size patterns."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input layer",
+          "note": "Receives one side of a pattern pair"
+        },
+        {
+          "id": "memory",
+          "label": "Recurrent association",
+          "note": "Connects the two pattern representations"
+        },
+        {
+          "id": "output",
+          "label": "Output layer",
+          "note": "Can also initiate recall"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "memory",
+          "label": "pattern"
+        },
+        {
+          "from": "memory",
+          "to": "output",
+          "label": "association"
+        },
+        {
+          "from": "output",
+          "to": "memory",
+          "label": "reverse recall"
+        },
+        {
+          "from": "memory",
+          "to": "input",
+          "label": "response"
+        }
+      ],
+      "caption": "BAM links two layers through recurrent associations, so either layer can initiate recall and the associated patterns may differ in size."
+    }
+  },
   "related": [
     "autoassociative-memory",
     "bidirectional-recurrent-neural-networks",

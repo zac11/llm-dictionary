@@ -5,6 +5,102 @@
   "type": "concept",
   "definition": "Recognizing human activities in video clips — the broader umbrella covering action recognition and temporal localization.",
   "details": "Recognizing human activities in video clips — the broader umbrella covering action recognition and temporal localization.",
+  "explainer": {
+    "lead": "Activity recognition in videos teaches computers to describe what people are doing, either for a whole clip or during particular moments. It matters because the meaning of an action often comes from movement over time, not from any single image.",
+    "tiers": {
+      "eli5": "Imagine watching a few seconds of someone bending, picking up a ball, and throwing it. One picture might only show a person holding a ball, but the whole sequence tells you they threw it. Activity recognition helps a computer watch the sequence and name the activity or find when it happened.",
+      "practitioner": "Systems process sampled frames or video segments, learn spatial and temporal features, and produce either clip-level labels or time-stamped activity predictions. Applications range from short, trimmed clips to long videos containing several activities and irrelevant intervals. Common pitfalls include confusing similar motions, relying on background clues instead of the person’s behavior, and losing brief actions through coarse temporal sampling.",
+      "paperLevel": "Given a video V, activity recognition covers action recognition, f(V) -> y for an activity label y, and temporal localization, f(V) -> {(s_i, e_i, c_i)}, where s_i and e_i delimit an instance and c_i is its class. Performance depends on modeling appearance, motion, and temporal extent, with difficulties arising from class ambiguity, variable duration, occlusion, and activity boundaries that are not sharply defined."
+    },
+    "example": "In a 20-second clip, a person walks to a door at second 4, opens it, and leaves by second 8. A clip-level system might label the video “opening a door,” while a temporal-localization system could return “opening a door” from approximately second 4 to second 8 and ignore the rest.",
+    "usedIn": [
+      {
+        "name": "Sports analytics",
+        "detail": "Identifying plays or athletic actions and locating them within match footage.",
+        "url": ""
+      },
+      {
+        "name": "Video search",
+        "detail": "Helping people find clips by the human activities shown in them.",
+        "url": ""
+      },
+      {
+        "name": "Safety monitoring",
+        "detail": "Detecting relevant activities in video streams so they can be reviewed or flagged.",
+        "url": ""
+      },
+      {
+        "name": "Human-computer interaction",
+        "detail": "Allowing systems to respond to activities observed through a camera.",
+        "url": ""
+      }
+    ],
+    "intuition": "A single frame shows how a scene looks, while a sequence shows how it changes. Activity recognition combines those changes to decide what is happening and, when needed, when it starts and ends.",
+    "howItWorks": [
+      "Read frames from a video clip, preserving their order.",
+      "Extract visual information about people, objects, and the scene.",
+      "Model how that information changes across time.",
+      "Predict an activity label for the clip, or activity labels with start and end times."
+    ],
+    "whyItMatters": "It turns raw video into descriptions of human behavior that can support searching, summarizing, and responding to footage. Treating recognition and localization under one umbrella also distinguishes knowing what happened from knowing when it happened.",
+    "misconceptions": [
+      "It is not the same as recognizing objects or people in individual frames; the target is an activity unfolding over time.",
+      "Action recognition and temporal localization are related tasks, not interchangeable outputs: one labels a clip, while the other also finds activity intervals.",
+      "A correct-looking label can still come from misleading scene context rather than the person’s actual motion."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "video",
+          "label": "Ordered video frames",
+          "note": "A clip showing movement over time"
+        },
+        {
+          "id": "features",
+          "label": "Visual features",
+          "note": "People, objects, and scene appearance"
+        },
+        {
+          "id": "temporal",
+          "label": "Temporal modeling",
+          "note": "How visual information changes"
+        },
+        {
+          "id": "classification",
+          "label": "Activity label",
+          "note": "What the whole clip shows"
+        },
+        {
+          "id": "localization",
+          "label": "Timed activity spans",
+          "note": "Labels with start and end times"
+        }
+      ],
+      "edges": [
+        {
+          "from": "video",
+          "to": "features",
+          "label": "frames"
+        },
+        {
+          "from": "features",
+          "to": "temporal",
+          "label": "sequence"
+        },
+        {
+          "from": "temporal",
+          "to": "classification",
+          "label": "clip output"
+        },
+        {
+          "from": "temporal",
+          "to": "localization",
+          "label": "timed output"
+        }
+      ],
+      "caption": "Video features are modeled across time to produce either a clip-level activity label or localized activity intervals."
+    }
+  },
   "related": [
     "action-recognition"
   ],

@@ -2,10 +2,98 @@
   "term": "CIFAR-10",
   "letter": "C",
   "category": "Computer vision",
-  "type": "concept",
+  "type": "dataset",
   "definition": "The CIFAR-10 dataset (Canadian Institute For Advanced Research) is a collection of images that are commonly used to train machine learning and computer vision algorithms.",
   "details": "It is one of the most widely used datasets for machine learning research. The CIFAR-10 dataset contains 60,000 32x32 color images in 10 different classes. The 10 different classes represent airplanes, cars, birds, cats, deer, dogs, frogs, horses, ships, and trucks. There are 6,000 images of each class. Computer algorithms for recognizing objects in photos often learn by example. CIFAR-10 is a set of images that can be used to teach a computer how to recognize objects. Since the images in CIFAR-10 are low-resolution (32x32), this dataset can allow researchers to quickly try different algorithms to see what works. CIFAR-10 is a labeled subset of the 80 Million Tiny Images dataset from 2008, published in 2009. When the dataset was created, students were paid to label all of the images. Various kinds of convolutional neural networks tend to be the best at recognizing the images in CIFAR-10.",
-  "story": "Picture a child pointing at pictures in a book — cat, car, cloud — learning to see by seeing a thousand examples. It turns a picture into an understanding: this is a cat, that is a stop sign. What your eyes do without thinking, the machine does one careful layer at a time. It is eyes made of arithmetic — pixels become edges, edges become shapes, shapes become meaning. That pixel-to-meaning climb is CIFAR-10.",
+  "explainer": {
+    "lead": "CIFAR-10 is a labeled collection of 60,000 tiny color photographs used to teach computers to recognize ten kinds of objects and animals. Its small images make it especially useful for quickly testing whether a learning algorithm works before tackling larger problems.",
+    "tiers": {
+      "eli5": "CIFAR-10 is like a giant set of flashcards for a computer. Each card has a tiny picture and its correct name, such as frog, cat, or airplane. By studying enough cards, a computer can practice recognizing things in new pictures.",
+      "practitioner": "CIFAR-10 is used to train and compare image classifiers, with convolutional neural networks often performing best on its images. The 32x32 resolution makes algorithm experiments quick, but results on these ten low-resolution classes should not be assumed to carry over to higher-resolution or broader recognition tasks.",
+      "paperLevel": "Formally, CIFAR-10 is D = {(x_i, y_i)} with |D| = 60,000, where each x_i is a 32x32 color image and y_i is one of 10 class labels, with exactly 6,000 examples per class. It is a labeled subset of the 80 Million Tiny Images dataset from 2008 and was published in 2009; its principal limitations are its low resolution and restricted set of classes."
+    },
+    "example": "A classifier studies 6,000 labeled airplane images along with examples from the other nine classes. When given another picture, it might output “airplane,” and that prediction can be checked against the picture’s label.",
+    "usedIn": [
+      {
+        "name": "Machine learning research",
+        "detail": "A widely used image collection for developing and comparing learning algorithms.",
+        "url": ""
+      },
+      {
+        "name": "Object recognition",
+        "detail": "Labeled examples teach algorithms to distinguish categories such as birds, ships, and trucks.",
+        "url": ""
+      },
+      {
+        "name": "Convolutional neural networks",
+        "detail": "Various kinds of convolutional networks are used to recognize its images and tend to perform best.",
+        "url": ""
+      }
+    ],
+    "measures": "CIFAR-10 provides 60,000 labeled 32x32 color images spanning airplanes, cars, birds, cats, deer, dogs, frogs, horses, ships, and trucks. It supports supervised object-recognition experiments, with each class containing 6,000 images.",
+    "howScored": [
+      "An algorithm learns from each image and its supplied class label, then assigns one of the ten labels to an image. Its predictions can be compared with the provided labels."
+    ],
+    "formula": "10 classes × 6,000 images per class = 60,000 labeled images.",
+    "typicalResults": "Convolutional neural networks of various kinds tend to be the best-performing algorithms for recognizing CIFAR-10 images.",
+    "caveats": [
+      "Images are only 32x32 pixels.",
+      "Recognition covers just ten classes.",
+      "The low resolution is suited to quick experiments rather than detailed photographs."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "tiny-images",
+          "label": "80 Million Tiny Images",
+          "note": "The 2008 parent image dataset."
+        },
+        {
+          "id": "labeling",
+          "label": "Student labeling",
+          "note": "Paid students labeled the selected images."
+        },
+        {
+          "id": "cifar",
+          "label": "CIFAR-10",
+          "note": "60,000 labeled images in ten balanced classes."
+        },
+        {
+          "id": "training",
+          "label": "Classifier training",
+          "note": "Algorithms learn object categories by example."
+        },
+        {
+          "id": "recognition",
+          "label": "Object recognition",
+          "note": "The trained algorithm assigns one of ten labels."
+        }
+      ],
+      "edges": [
+        {
+          "from": "tiny-images",
+          "to": "labeling",
+          "label": "subset"
+        },
+        {
+          "from": "labeling",
+          "to": "cifar",
+          "label": "creates"
+        },
+        {
+          "from": "cifar",
+          "to": "training",
+          "label": "examples"
+        },
+        {
+          "from": "training",
+          "to": "recognition",
+          "label": "enables"
+        }
+      ],
+      "caption": "CIFAR-10 turns a labeled subset of Tiny Images into examples for training object recognizers."
+    }
+  },
   "related": [
     "accord-net",
     "active-appearance-model",

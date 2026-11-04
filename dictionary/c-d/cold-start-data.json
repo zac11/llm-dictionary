@@ -5,6 +5,97 @@
   "type": "concept",
   "definition": "The small, carefully curated set of long-form reasoning demonstrations used to SFT a base model before reasoning RL, stabilizing early training and shaping readable output style.",
   "details": "The small, carefully curated set of long-form reasoning demonstrations used to SFT a base model before reasoning RL, stabilizing early training and shaping readable output style. A small detail with outsized effect on whether large-scale reasoning RL converges.",
+  "explainer": {
+    "lead": "Cold-start data gives a base model a small set of carefully written, long-form reasoning examples before reinforcement learning begins. This short supervised phase can make later training more stable and teach the model to present its reasoning in a readable form.",
+    "tiers": {
+      "eli5": "Imagine learning difficult puzzles by first studying a few neat, fully worked solutions instead of immediately trying thousands on your own. Those examples show you how to take sensible steps and write them down clearly. Then you can practise, get feedback, and improve without starting in complete confusion.",
+      "practitioner": "Use a small, curated collection of long-form demonstrations to SFT the base model, then start reasoning RL from that checkpoint. Curation matters disproportionately: demonstrations shape both early optimization and output style, so inconsistent or unclear traces can carry into RL. Treat this as initialization rather than a substitute for the later RL stage.",
+      "paperLevel": "Let D_cold = {(x_i, y_i)} be a small curated dataset in which each y_i is a long-form reasoning demonstration; first minimize the SFT objective L_SFT(theta) = -sum_i log p_theta(y_i | x_i), then use the resulting parameters to initialize reasoning RL. Its roles are early training stabilization and readable output-style shaping, and its small size makes demonstration quality and consistency important."
+    },
+    "example": "For a problem such as “A train travels 120 km in 2 hours, then 60 km in 1 hour; what is its average speed?”, a demonstration calculates 120 + 60 = 180 km and 2 + 1 = 3 hours before giving 180 / 3 = 60 km/h. After SFT on examples with this kind of explicit, readable working, the model enters reasoning RL already inclined to lay out intermediate calculations.",
+    "usedIn": [
+      {
+        "name": "Reasoning model training",
+        "detail": "Initializes a base model with worked reasoning before large-scale reasoning RL.",
+        "url": ""
+      },
+      {
+        "name": "Supervised fine-tuning pipelines",
+        "detail": "Provides the initial SFT stage that establishes readable long-form outputs.",
+        "url": ""
+      },
+      {
+        "name": "Reinforcement-learning pipelines",
+        "detail": "Supplies a more stable starting checkpoint for subsequent reasoning RL.",
+        "url": ""
+      }
+    ],
+    "intuition": "A few good worked examples can give a model a useful starting pattern for both solving and explaining problems. Beginning RL from that pattern is easier than asking it to discover effective reasoning and readable presentation at the same time.",
+    "howItWorks": [
+      "Curate a small set of problems with detailed, coherent reasoning demonstrations.",
+      "Supervised-fine-tune the base model on these demonstrations.",
+      "Use the fine-tuned checkpoint to initialize reasoning RL.",
+      "Let RL improve performance from a more stable starting point and an established output style."
+    ],
+    "whyItMatters": "This small initialization set can have an outsized effect on whether large-scale reasoning RL converges. It also shapes how legible the model’s eventual reasoning outputs are.",
+    "misconceptions": [
+      "It is not a massive general-purpose pretraining corpus; it is small and deliberately curated.",
+      "It does not replace reasoning RL; it prepares the model for that later stage.",
+      "Its purpose is not merely to add correct answers, but also to establish coherent reasoning and readable presentation."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "demos",
+          "label": "Curated demonstrations",
+          "note": "Small set of long-form reasoning examples"
+        },
+        {
+          "id": "base",
+          "label": "Base model",
+          "note": "Initial model before cold-start SFT"
+        },
+        {
+          "id": "sft",
+          "label": "Cold-start SFT",
+          "note": "Learns reasoning patterns and readable style"
+        },
+        {
+          "id": "checkpoint",
+          "label": "SFT checkpoint",
+          "note": "Stable initialization for later training"
+        },
+        {
+          "id": "rl",
+          "label": "Reasoning RL",
+          "note": "Large-scale improvement from the initialized model"
+        }
+      ],
+      "edges": [
+        {
+          "from": "demos",
+          "to": "sft",
+          "label": "training data"
+        },
+        {
+          "from": "base",
+          "to": "sft",
+          "label": "parameters"
+        },
+        {
+          "from": "sft",
+          "to": "checkpoint",
+          "label": "produces"
+        },
+        {
+          "from": "checkpoint",
+          "to": "rl",
+          "label": "initializes"
+        }
+      ],
+      "caption": "Cold-start data is used in a short SFT stage whose checkpoint initializes reasoning RL."
+    }
+  },
   "related": [
     "foundation-model"
   ],

@@ -5,7 +5,112 @@
   "type": "concept",
   "definition": "A crowdsourced platform where users compare responses from different anonymized language models in blind pairwise comparisons, used to compute Elo-style leaderboard rankings.",
   "details": "Chatbot Arena provides a large-scale, real-world human preference signal for ranking language models, complementing static academic benchmarks with a dynamic, crowdsourced evaluation approach.",
-  "story": "Think of a referee whose job is to be completely honest about who touched the ball last. Before trusting a machine, someone has to measure how good it really is — fairly and honestly. It is the exam that separates “it sounds good” from “it actually is good”. What gets measured is what actually gets better. That shared ruler is Chatbot Arena.",
+  "explainer": {
+    "lead": "Chatbot Arena ranks language models by letting people judge their answers side by side without knowing which model wrote which. It matters because these everyday human preferences offer a different signal from fixed academic tests.",
+    "tiers": {
+      "eli5": "Imagine two friends answer the same question, but their names are covered up. You pick the answer you like better, and many people doing this helps rank the friends. Chatbot Arena does this with language models.",
+      "practitioner": "Engineers can use its crowdsourced rankings as a human-preference signal when comparing language models. The signal complements static benchmarks rather than replacing task-specific testing: a preferred answer is not necessarily more factual, and the rankings change as comparisons accumulate.",
+      "paperLevel": "Each blind comparison can be represented as (i, j, y), where i and j are anonymized models and y records the preferred response. Repeated pairwise observations update Elo-style ratings and produce a leaderboard. The result summarizes preferences over the collected comparisons, not factual correctness or performance on a fixed test set."
+    },
+    "example": "A user asks two hidden models to explain recycling. The user prefers Response B because it is clearer; that pairwise judgment is added to the comparisons used to update the models' ratings.",
+    "usedIn": [
+      {
+        "name": "Language model evaluation",
+        "detail": "Adds large-scale human preference comparisons to static academic benchmarks.",
+        "url": ""
+      },
+      {
+        "name": "Model leaderboards",
+        "detail": "Converts blind pairwise votes into Elo-style rankings.",
+        "url": ""
+      },
+      {
+        "name": "Human preference research",
+        "detail": "Provides real-world comparisons of how people judge model responses.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of grading models only with predetermined questions and answers, ask people which of two hidden-model responses they prefer. Enough of these head-to-head judgments can be combined into a ranking.",
+    "howItWorks": [
+      "A user gives a prompt to two anonymized language models.",
+      "The platform shows their responses side by side.",
+      "The user chooses the preferred response in a blind comparison.",
+      "Many pairwise results update Elo-style ratings and leaderboard rankings."
+    ],
+    "whyItMatters": "It supplies a dynamic, large-scale view of what people prefer in real interactions. This complements static benchmarks, which measure different aspects of model performance.",
+    "misconceptions": [
+      "A higher rank does not guarantee that every answer is correct.",
+      "The comparisons are blind, so voters do not choose using model names.",
+      "It complements rather than replaces fixed academic benchmarks."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "prompt",
+          "label": "User prompt",
+          "note": "One request enters the comparison."
+        },
+        {
+          "id": "models",
+          "label": "Anonymized models",
+          "note": "Two models answer without revealed names."
+        },
+        {
+          "id": "response-a",
+          "label": "Response A",
+          "note": "The first model's answer."
+        },
+        {
+          "id": "response-b",
+          "label": "Response B",
+          "note": "The second model's answer."
+        },
+        {
+          "id": "vote",
+          "label": "Human preference",
+          "note": "The user selects the preferred response."
+        },
+        {
+          "id": "leaderboard",
+          "label": "Elo leaderboard",
+          "note": "Pairwise results update model rankings."
+        }
+      ],
+      "edges": [
+        {
+          "from": "prompt",
+          "to": "models",
+          "label": "same request"
+        },
+        {
+          "from": "models",
+          "to": "response-a",
+          "label": ""
+        },
+        {
+          "from": "models",
+          "to": "response-b",
+          "label": ""
+        },
+        {
+          "from": "response-a",
+          "to": "vote",
+          "label": "blind comparison"
+        },
+        {
+          "from": "response-b",
+          "to": "vote",
+          "label": ""
+        },
+        {
+          "from": "vote",
+          "to": "leaderboard",
+          "label": "rating updates"
+        }
+      ],
+      "caption": "Blind responses become human pairwise judgments, which feed Elo-style rankings."
+    }
+  },
   "related": [
     "a-b-testing",
     "ablation-study",

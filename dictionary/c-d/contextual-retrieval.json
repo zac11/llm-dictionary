@@ -5,6 +5,102 @@
   "type": "concept",
   "definition": "Prepending a short LLM-generated description of each chunk's document context before embedding it, so chunks carry the situational information (\"this is from ACME's Q3 2025 contract, termination section\") that raw excerpts lose.",
   "details": "Prepending a short LLM-generated description of each chunk's document context before embedding it, so chunks carry the situational information (\"this is from ACME's Q3 2025 contract, termination section\") that raw excerpts lose. Substantially reduces retrieval failures on large corpora.",
+  "explainer": {
+    "lead": "Contextual Retrieval gives each excerpt a short introduction explaining where it belongs in its source document before the excerpt is embedded for search. This helps a retrieval system distinguish similar passages and reduces failures when searching large collections of documents.",
+    "tiers": {
+      "eli5": "Imagine cutting a book into small pieces and finding a piece that says, “This must end within 30 days.” It is hard to know what it means without knowing which book and chapter it came from. Contextual Retrieval adds a little note to each piece, such as which contract and section it belongs to, so the right piece is easier to find later.",
+      "practitioner": "For each chunk, use an LLM to generate a brief document-level context description, prepend it to the chunk, and embed the combined text into the retrieval index. Keep the description specific enough to disambiguate the excerpt, as in identifying the contract, period, and section. The method targets failures caused by missing context; it does not guarantee correct retrieval for every query.",
+      "paperLevel": "For chunk c from document d, generate a short context description k(c,d) with an LLM, then compute the embedding as e(k(c,d) || c) instead of e(c), where || denotes concatenation. The representation therefore incorporates document situation into each chunk before indexing. The stated benefit is a substantial reduction in retrieval failures on large corpora; the method specifically addresses context lost through chunking."
+    },
+    "example": "A raw excerpt says only, “Either party may terminate with 30 days' notice.” After contextualization, it becomes: “This is from ACME's Q3 2025 contract, termination section. Either party may terminate with 30 days' notice.” The combined text is then embedded, so its document and section are represented during retrieval.",
+    "usedIn": [
+      {
+        "name": "Large document corpora",
+        "detail": "Adds document context to embedded excerpts to reduce retrieval failures across large collections.",
+        "url": ""
+      },
+      {
+        "name": "Contract collections",
+        "detail": "Helps distinguish excerpts by identifying details such as the contract, reporting period, and section.",
+        "url": ""
+      }
+    ],
+    "intuition": "An excerpt can be ambiguous once separated from its document. A short contextual label restores the situational information that the chunk itself does not carry.",
+    "howItWorks": [
+      "Split each document into chunks for retrieval.",
+      "Ask an LLM to describe each chunk's relevant document context briefly.",
+      "Prepend that description to the original chunk.",
+      "Embed the combined text and store it in the retrieval index."
+    ],
+    "whyItMatters": "Chunks often lose the information needed to tell apart similar passages from different documents. Restoring that context before embedding substantially reduces retrieval failures on large corpora.",
+    "misconceptions": [
+      "It does not replace the original excerpt; it prepends context to it.",
+      "It adds document context, not an answer to the user's query.",
+      "It reduces context-related retrieval failures rather than eliminating all retrieval errors."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "document",
+          "label": "Source document",
+          "note": "Provides the surrounding document context."
+        },
+        {
+          "id": "chunks",
+          "label": "Raw chunks",
+          "note": "Excerpts that may be ambiguous alone."
+        },
+        {
+          "id": "context",
+          "label": "LLM context",
+          "note": "Writes a short description for each chunk."
+        },
+        {
+          "id": "combined",
+          "label": "Contextualized chunks",
+          "note": "Context is prepended to the original text."
+        },
+        {
+          "id": "index",
+          "label": "Embedding index",
+          "note": "Stores embeddings of the combined text."
+        }
+      ],
+      "edges": [
+        {
+          "from": "document",
+          "to": "chunks",
+          "label": "split"
+        },
+        {
+          "from": "document",
+          "to": "context",
+          "label": "context"
+        },
+        {
+          "from": "chunks",
+          "to": "context",
+          "label": "describe"
+        },
+        {
+          "from": "context",
+          "to": "combined",
+          "label": "prepend"
+        },
+        {
+          "from": "chunks",
+          "to": "combined",
+          "label": "original text"
+        },
+        {
+          "from": "combined",
+          "to": "index",
+          "label": "embed"
+        }
+      ],
+      "caption": "Each chunk is enriched with document context before its embedding is added to the retrieval index."
+    }
+  },
   "related": [
     "embedding"
   ],

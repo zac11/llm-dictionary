@@ -5,6 +5,87 @@
   "type": "concept",
   "definition": "The determinant is a scalar value that can be computed from the elements of a square matrix and encodes certain properties of the matrix.",
   "details": "The determinant is a scalar value that can be computed from the elements of a square matrix and encodes certain properties of the matrix.",
+  "explainer": {
+    "lead": "A determinant turns a square matrix into a single number that summarizes some of its behavior. In particular, it tells you whether the matrix is invertible: zero means it is not, while a nonzero determinant means it is.",
+    "tiers": {
+      "eli5": "Imagine a square grid of numbers as a machine that can sometimes be run backwards. The determinant is a special calculation that gives one number: if it is zero, the machine cannot be reversed, but if it is not zero, it can. For a tiny two-by-two grid, you multiply the numbers on one diagonal, multiply those on the other, and subtract.",
+      "practitioner": "Engineers typically compute determinants with numerical linear-algebra tools such as NumPy's numpy.linalg.det, often when checking whether a square matrix is singular. Exact zero is a clear singularity signal in exact arithmetic, but floating-point results need care: a small determinant alone does not reliably show that a matrix is nearly singular. Condition estimates and matrix factorizations are usually better for numerical decisions.",
+      "paperLevel": "For an n x n matrix A, det(A) = sum over permutations sigma of sgn(sigma) product from i=1 to n of a[i,sigma(i)]. The determinant is defined only for square matrices, and det(A) = 0 exactly when A is singular. Direct use of the permutation formula is impractical for large n because it involves n! terms."
+    },
+    "example": "For A = [[2,1],[3,4]], det(A) = 2 x 4 - 1 x 3 = 8 - 3 = 5. Because 5 is nonzero, A is invertible.",
+    "usedIn": [
+      {
+        "name": "Linear algebra",
+        "detail": "Used to determine whether a square matrix is invertible.",
+        "url": ""
+      },
+      {
+        "name": "Scientific computing",
+        "detail": "Appears in matrix analysis and numerical work involving square linear systems.",
+        "url": ""
+      },
+      {
+        "name": "Engineering",
+        "detail": "Used when matrix properties such as singularity affect models and calculations.",
+        "url": ""
+      }
+    ],
+    "intuition": "Think of the determinant as a compact summary of a square matrix rather than another matrix. Its most basic message is whether the matrix can be inverted: nonzero means yes, zero means no.",
+    "howItWorks": [
+      "Start with a square matrix, meaning it has equally many rows and columns.",
+      "Combine its entries according to the determinant rule.",
+      "For a 2 x 2 matrix [[a,b],[c,d]], calculate ad - bc.",
+      "Read the result: zero indicates a singular matrix, while nonzero indicates an invertible one."
+    ],
+    "whyItMatters": "It reduces a whole square matrix to one useful value and gives a direct test for invertibility. That makes it a basic tool wherever square matrices are analyzed.",
+    "misconceptions": [
+      "A determinant is not defined for a non-square matrix.",
+      "A zero determinant does not mean every matrix entry is zero.",
+      "In floating-point arithmetic, a small determinant alone is not a dependable measure of near-singularity."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "matrix",
+          "label": "Square matrix",
+          "note": "The input entries"
+        },
+        {
+          "id": "rule",
+          "label": "Determinant rule",
+          "note": "Combines the entries"
+        },
+        {
+          "id": "scalar",
+          "label": "Single number",
+          "note": "The determinant value"
+        },
+        {
+          "id": "test",
+          "label": "Invertibility test",
+          "note": "Zero or nonzero"
+        }
+      ],
+      "edges": [
+        {
+          "from": "matrix",
+          "to": "rule",
+          "label": ""
+        },
+        {
+          "from": "rule",
+          "to": "scalar",
+          "label": "computes"
+        },
+        {
+          "from": "scalar",
+          "to": "test",
+          "label": "indicates"
+        }
+      ],
+      "caption": "A square matrix is reduced to a scalar, whose zero or nonzero value reveals whether the matrix is invertible."
+    }
+  },
   "citation": {
     "title": "Math Glossary for AI (François Fleuret notes)",
     "authors": [],

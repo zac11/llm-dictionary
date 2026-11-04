@@ -5,6 +5,98 @@
   "type": "concept",
   "definition": "When top models cluster near a benchmark's ceiling and it stops discriminating.",
   "details": "When top models cluster near a benchmark's ceiling and it stops discriminating. The treadmill dynamic of LLM evaluation: MMLU gave way to MMLU-Pro and GPQA, GSM8K to AIME-level sets, HumanEval to SWE-bench.",
+  "explainer": {
+    "lead": "Benchmark saturation happens when the strongest AI models all score so close to a test’s maximum that the test can no longer tell them apart. It explains why model evaluation repeatedly moves to harder benchmarks.",
+    "tiers": {
+      "eli5": "Imagine a quiz where the best students all score 99 or 100 out of 100. The quiz can show that they did well, but it cannot easily show who understands the subject best, so a harder quiz is needed.",
+      "practitioner": "When comparing leading models, watch both their absolute scores and the gaps between them: a near-ceiling benchmark with tiny gaps offers little ranking signal. This dynamic drives moves such as MMLU to MMLU-Pro or GPQA, GSM8K to AIME-level sets, and HumanEval to SWE-bench. Do not treat small score differences on a saturated test as clear capability differences, or assume saturation means the underlying task is solved.",
+      "paperLevel": "For model scores s_i on a benchmark with maximum score C, saturation occurs when the leading scores approach C and their pairwise differences become too small to discriminate among the models. The benchmark may still measure performance, but it provides little useful separation at the top. Saturation therefore concerns a benchmark’s discriminative power, not proof that models have mastered the full underlying capability."
+    },
+    "example": "Suppose three leading models score 96, 97, and 98 on GSM8K. Their scores are all close to 100, so the benchmark offers little separation; moving to an AIME-level set gives stronger models harder problems on which differences can appear.",
+    "usedIn": [
+      {
+        "name": "General-knowledge evaluation",
+        "detail": "MMLU gave way to harder evaluations such as MMLU-Pro and GPQA.",
+        "url": ""
+      },
+      {
+        "name": "Mathematical reasoning evaluation",
+        "detail": "GSM8K gave way to AIME-level problem sets for stronger models.",
+        "url": ""
+      },
+      {
+        "name": "Code-generation evaluation",
+        "detail": "HumanEval gave way to SWE-bench as a harder coding evaluation.",
+        "url": ""
+      }
+    ],
+    "intuition": "A test is most useful for ranking strong models when their scores are meaningfully spread out. Once nearly all of them reach the ceiling, higher scores leave little room to distinguish further improvements.",
+    "howItWorks": [
+      "Models are evaluated on the same benchmark.",
+      "The strongest models approach its maximum score.",
+      "Their remaining score differences become very small.",
+      "The benchmark stops providing useful separation at the top.",
+      "Evaluators adopt a harder benchmark."
+    ],
+    "whyItMatters": "A saturated benchmark can make continued progress look invisible and can encourage misleading rankings based on tiny differences. Replacing or supplementing it with harder evaluations helps keep model comparisons informative.",
+    "misconceptions": [
+      "Saturation does not mean every model performs perfectly.",
+      "It does not prove the underlying capability is solved.",
+      "A saturated benchmark is not necessarily useless; it can still show high absolute performance."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "benchmark",
+          "label": "Shared benchmark",
+          "note": "Leading models take the same test."
+        },
+        {
+          "id": "scores",
+          "label": "Rising scores",
+          "note": "Results move toward the maximum."
+        },
+        {
+          "id": "cluster",
+          "label": "Top-score cluster",
+          "note": "Small gaps separate the leaders."
+        },
+        {
+          "id": "saturation",
+          "label": "Lost discrimination",
+          "note": "The test no longer ranks them usefully."
+        },
+        {
+          "id": "harder",
+          "label": "Harder benchmark",
+          "note": "Evaluation continues on harder tasks."
+        }
+      ],
+      "edges": [
+        {
+          "from": "benchmark",
+          "to": "scores",
+          "label": "repeated evaluation"
+        },
+        {
+          "from": "scores",
+          "to": "cluster",
+          "label": ""
+        },
+        {
+          "from": "cluster",
+          "to": "saturation",
+          "label": ""
+        },
+        {
+          "from": "saturation",
+          "to": "harder",
+          "label": "replacement"
+        }
+      ],
+      "caption": "Scores approaching the ceiling reduce discrimination and motivate harder evaluations."
+    }
+  },
   "related": [
     "humaneval",
     "mmlu-pro",

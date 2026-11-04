@@ -5,7 +5,92 @@
   "type": "concept",
   "definition": "Color normalization is a topic in computer vision concerned with artificial color vision and object recognition.",
   "details": "In general, the distribution of color values in an image depends on the illumination, which may vary depending on lighting conditions, cameras, and other factors. Color normalization allows for object recognition techniques based on color to compensate for these variations.",
-  "story": "Imagine an art restorer who can spot a single cracked tile in a vast mosaic. What your eyes do without thinking, the machine does one careful layer at a time. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. The model looks the way you look at a crowd and finds the one face you know. That pixel-to-meaning climb is Color normalization.",
+  "explainer": {
+    "lead": "Color normalization helps computer vision systems cope with changes in image colors caused by lighting, cameras, and other conditions. It matters because an object’s recorded colors can change even when the object itself has not, making color-based recognition less reliable.",
+    "tiers": {
+      "eli5": "A red toy can look different in a photo taken in sunshine and one taken in a dark room, even though it is the same toy. Color normalization is like adjusting the pictures so the computer is not fooled by those lighting changes. This helps it use color to recognize objects.",
+      "practitioner": "Apply color normalization when color-based recognition must handle images captured under varying lighting or with different cameras. Evaluate the full pipeline across those conditions, since compensation for color variation does not by itself guarantee reliable recognition. The aim is to make the image’s color distribution more useful for the downstream recognizer.",
+      "paperLevel": "Let C be the distribution of color values in an image, where C varies with illumination, camera, and other acquisition conditions. Color normalization seeks a transformed distribution C' that lets color-based object recognition compensate for these variations. It is a compensation problem rather than a guarantee that all appearance differences are removed."
+    },
+    "example": "A red ball photographed in bright light and dim light produces different color-value distributions. Color normalization adjusts for this variation so a color-based recognizer can compensate rather than treating the two appearances as unrelated.",
+    "usedIn": [
+      {
+        "name": "Color-based object recognition",
+        "detail": "Compensates for color changes caused by lighting, cameras, and other factors.",
+        "url": ""
+      },
+      {
+        "name": "Artificial color vision",
+        "detail": "Supports computer vision systems that interpret color under varying conditions.",
+        "url": ""
+      }
+    ],
+    "intuition": "The same object can produce different color values when the illumination or camera changes. Normalizing color reduces the impact of those changes so recognition can focus more on the object and less on capture conditions.",
+    "howItWorks": [
+      "Start with an image whose color values depend partly on its capture conditions.",
+      "Account for variation caused by illumination, cameras, and other factors.",
+      "Adjust the image’s color distribution through color normalization.",
+      "Pass the compensated color information to a color-based object recognizer."
+    ],
+    "whyItMatters": "Without compensation, changing capture conditions can undermine recognition methods that rely on color. Color normalization makes those methods better able to handle such variation.",
+    "misconceptions": [
+      "It is not itself an object-recognition method; it supports recognition based on color.",
+      "It does not mean the object’s physical color has changed.",
+      "It compensates for variation rather than guaranteeing identical images under every condition."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "image",
+          "label": "Input image",
+          "note": "Contains the observed color values."
+        },
+        {
+          "id": "conditions",
+          "label": "Capture conditions",
+          "note": "Lighting, camera, and other factors affect color."
+        },
+        {
+          "id": "normalize",
+          "label": "Color normalization",
+          "note": "Compensates for variation in the color distribution."
+        },
+        {
+          "id": "colors",
+          "label": "Adjusted colors",
+          "note": "Provides compensated color information."
+        },
+        {
+          "id": "recognition",
+          "label": "Object recognition",
+          "note": "Uses color to recognize objects."
+        }
+      ],
+      "edges": [
+        {
+          "from": "conditions",
+          "to": "image",
+          "label": "affects"
+        },
+        {
+          "from": "image",
+          "to": "normalize",
+          "label": ""
+        },
+        {
+          "from": "normalize",
+          "to": "colors",
+          "label": ""
+        },
+        {
+          "from": "colors",
+          "to": "recognition",
+          "label": ""
+        }
+      ],
+      "caption": "Color normalization sits between capture-dependent image colors and color-based object recognition."
+    }
+  },
   "related": [
     "accord-net",
     "active-appearance-model",

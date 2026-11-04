@@ -5,7 +5,133 @@
   "type": "concept",
   "definition": "Geographic information retrieval (GIR) or geographical information retrieval systems are search tools for searching the Web, enterprise documents, and mobile local search that combine traditional text-based queries with location querying, such as a map or placenames.",
   "details": "Like traditional information retrieval systems, GIR systems index text and information from structured and unstructured documents, and also augment those indices with geographic information. The development and engineering of GIR systems aims to build systems that can reliably answer queries that include a geographic dimension, such as \"What wars were fought in Greece?\" or \"restaurants in Beirut\". Semantic similarity and word-sense disambiguation are important components of GIR. To identify place names, GIR systems often rely on natural language processing or other metadata to associate text documents with locations. Such georeferencing, geotagging, and geoparsing tools often need databases of location names, known as gazetteers.",
-  "story": "Imagine a driving test that every new model has to pass before it is allowed on the road. It is the exam that separates “it sounds good” from “it actually is good”. A fair scoreboard keeps everyone honest. It is the exam that keeps everyone honest. That shared ruler is Geographic information retrieval.",
+  "explainer": {
+    "lead": "Geographic information retrieval helps people search for information using both words and places. It matters because questions such as “restaurants in Beirut” need more than keyword matching: a system must also understand which location the request refers to.",
+    "tiers": {
+      "eli5": "Imagine a library where every book has labels for its subjects and the places it talks about. You could then ask for stories about a particular city, and the librarian would check both kinds of labels. Geographic information retrieval gives search tools this ability, using maps or place names alongside ordinary words.",
+      "practitioner": "GIR is applied to web search, enterprise document search, and mobile local search by augmenting text indices with geographic information. Implementations often use natural language processing or metadata for geoparsing, geotagging, and georeferencing, supported by gazetteers of location names. Place-name ambiguity is a central pitfall, so semantic similarity and word-sense disambiguation may be needed.",
+      "paperLevel": "In plain-text terms, GIR extends an information retrieval index I(D) over structured or unstructured documents D with geographic associations G(D), enabling queries Q = (text, location), where location may be expressed through a map or place names. Georeferencing, geotagging, and geoparsing derive G(D), commonly using natural language processing, metadata, and gazetteers. Reliability is limited by challenges such as identifying place names and resolving their intended senses, making semantic similarity and word-sense disambiguation important."
+    },
+    "example": "For “restaurants in Beirut,” a GIR system interprets “restaurants” as the subject and “Beirut” as the geographic constraint. It searches an index that connects documents with locations, rather than merely looking for pages containing both words.",
+    "usedIn": [
+      {
+        "name": "Web search",
+        "detail": "Combines text queries with locations expressed through maps or place names.",
+        "url": ""
+      },
+      {
+        "name": "Enterprise document search",
+        "detail": "Adds geographic associations to indices built from structured and unstructured documents.",
+        "url": ""
+      },
+      {
+        "name": "Mobile local search",
+        "detail": "Supports location-specific requests such as finding restaurants in a named city.",
+        "url": ""
+      }
+    ],
+    "intuition": "Many searches are about both a subject and a place. GIR treats location as part of the query and the document index, rather than expecting a place name to behave like any other keyword.",
+    "howItWorks": [
+      "Index text and other information from structured and unstructured documents.",
+      "Identify locations using natural language processing or document metadata.",
+      "Use georeferencing, geotagging, or geoparsing, often supported by a gazetteer.",
+      "Augment the text index with the resulting geographic information.",
+      "Combine the text query with a map-based or place-name location query to retrieve results."
+    ],
+    "whyItMatters": "GIR makes geographically qualified questions answerable across web pages, enterprise documents, and local-search settings. It also supports queries whose location comes from a map, which ordinary text-only retrieval cannot directly handle.",
+    "misconceptions": [
+      "GIR is not simply keyword search with a city name added.",
+      "It is not limited to map interfaces; place names can supply the location too.",
+      "A place name does not always identify its intended meaning without disambiguation."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "documents",
+          "label": "Source documents",
+          "note": "Structured and unstructured material"
+        },
+        {
+          "id": "text-index",
+          "label": "Text indexing",
+          "note": "Indexes searchable document content"
+        },
+        {
+          "id": "geoparsing",
+          "label": "Location processing",
+          "note": "Finds and associates geographic information"
+        },
+        {
+          "id": "gazetteer",
+          "label": "Gazetteer",
+          "note": "Supplies a database of location names"
+        },
+        {
+          "id": "geo-index",
+          "label": "Geographic index",
+          "note": "Text index augmented with locations"
+        },
+        {
+          "id": "query",
+          "label": "User query",
+          "note": "Text plus a map or place name"
+        },
+        {
+          "id": "search",
+          "label": "Combined retrieval",
+          "note": "Matches subject and geographic constraints"
+        },
+        {
+          "id": "results",
+          "label": "Search results",
+          "note": "Documents relevant to text and place"
+        }
+      ],
+      "edges": [
+        {
+          "from": "documents",
+          "to": "text-index",
+          "label": "content"
+        },
+        {
+          "from": "documents",
+          "to": "geoparsing",
+          "label": "text metadata"
+        },
+        {
+          "from": "gazetteer",
+          "to": "geoparsing",
+          "label": "place names"
+        },
+        {
+          "from": "text-index",
+          "to": "geo-index",
+          "label": ""
+        },
+        {
+          "from": "geoparsing",
+          "to": "geo-index",
+          "label": "locations"
+        },
+        {
+          "from": "geo-index",
+          "to": "search",
+          "label": ""
+        },
+        {
+          "from": "query",
+          "to": "search",
+          "label": ""
+        },
+        {
+          "from": "search",
+          "to": "results",
+          "label": ""
+        }
+      ],
+      "caption": "GIR augments ordinary document indexing with location processing, then retrieves results using both textual and geographic query constraints."
+    }
+  },
   "related": [
     "information-retrieval",
     "adversarial-information-retrieval",

@@ -5,7 +5,108 @@
   "type": "algorithm",
   "definition": "Hierarchical navigable small world (HNSW) is an algorithm for approximate nearest neighbor search.",
   "details": "It is used to find items that are similar to a query item in a large collection, without comparing the query with every item one by one. The algorithm is commonly used for searching vector data. In these systems, an item such as a document, image, song, or user profile is represented by a list of numbers called a vector. Items with similar vectors are treated as similar according to the model that produced the vectors. HNSW provides a way to search these vectors quickly, especially in large datasets. HNSW stores vectors in a graph. Each vector is a node, and links connect it to some nearby vectors. The graph has several layers: upper layers contain fewer nodes and act like a rough map, while the bottom layer contains all nodes and gives a more detailed view. A search starts in an upper layer, follows links toward nodes that are closer to the query, and then repeats the process in lower layers until it finds a set of likely nearest neighbors.",
-  "story": "Think of a lightbulb moment: the idea was always there, but someone had to point a finger at it. Behind the jargon is an idea you could explain to a friend over coffee. At its heart it is a simple notion, once you strip away the fancy name. Once you see it, you cannot unsee it. That is Hierarchical navigable small world — a small key that opens a big door.",
+  "explainer": {
+    "lead": "Hierarchical navigable small world (HNSW) finds items whose vectors are likely closest to a query vector without checking the entire collection. It uses a layered graph as a rough-to-detailed map, making similarity search practical for large datasets, though the results are approximate.",
+    "tiers": {
+      "eli5": "Imagine finding people with interests like yours in a huge city. You start with a simple map showing only a few neighborhoods, then use more detailed maps as you get closer. HNSW searches items this way, quickly finding likely matches without visiting everyone.",
+      "practitioner": "Build a multilayer graph over the collection's vectors, then route each query from sparse upper layers toward the fully populated bottom layer. It suits large-scale vector search where an approximate neighbor set is acceptable and exhaustive comparison is too expensive. More thorough searching can improve results but takes more work, and the graph requires storage; result quality also depends on whether the vectors meaningfully represent similarity.",
+      "paperLevel": "For vectors X and query q, approximate nearest-neighbor search seeks a candidate set approximating the k members of X with the smallest distance to q. HNSW performs greedy graph traversal through progressively denser layers, ending in a bottom layer containing every vector. Because the answer is approximate, some true nearest neighbors may be missed."
+    },
+    "example": "To find songs similar to one song in a collection of a million tracks, HNSW starts among a small number of song vectors in an upper layer. It follows links toward closer vectors, refines the route in lower layers, and finishes in the complete bottom graph. It might then return ten likely closest songs without individually comparing the query with all million tracks.",
+    "usedIn": [
+      {
+        "name": "Document search",
+        "detail": "Finds documents with vectors similar to a query vector in large collections.",
+        "url": ""
+      },
+      {
+        "name": "Image search",
+        "detail": "Locates likely similar images without comparing the query against every image.",
+        "url": ""
+      },
+      {
+        "name": "Music and profile similarity",
+        "detail": "Searches vector representations of songs or user profiles for nearby items.",
+        "url": ""
+      }
+    ],
+    "goal": "Quickly return a set of likely nearest vectors to a query while avoiding a comparison with every vector in the collection.",
+    "inputs": [
+      "A collection of item vectors",
+      "A query vector",
+      "A layered graph linking nearby vectors"
+    ],
+    "outputs": [
+      "A set of likely nearest neighbors",
+      "The items associated with those vectors"
+    ],
+    "steps": [
+      "Represent each item as a node and link nodes to some nearby vectors.",
+      "Organize the graph into sparse upper layers and a bottom layer containing every node.",
+      "Start the query at a node in an upper layer.",
+      "Follow links toward nodes closer to the query vector.",
+      "Continue the search through lower, more detailed layers.",
+      "Return the likely nearest neighbors found at the bottom layer."
+    ],
+    "tradeoffs": [
+      "Avoids exhaustive comparison, enabling fast search in large datasets.",
+      "Results are approximate, so true nearest neighbors can be missed.",
+      "The multilayer graph must be stored alongside the vectors.",
+      "More thorough searching can improve results but requires more work."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "query",
+          "label": "Query vector",
+          "note": "The item to match"
+        },
+        {
+          "id": "upper",
+          "label": "Sparse upper layers",
+          "note": "A rough map with few nodes"
+        },
+        {
+          "id": "lower",
+          "label": "Lower layers",
+          "note": "Progressively refine the route"
+        },
+        {
+          "id": "bottom",
+          "label": "Full bottom graph",
+          "note": "Contains every vector"
+        },
+        {
+          "id": "neighbors",
+          "label": "Likely neighbors",
+          "note": "The approximate search result"
+        }
+      ],
+      "edges": [
+        {
+          "from": "query",
+          "to": "upper",
+          "label": "starts search"
+        },
+        {
+          "from": "upper",
+          "to": "lower",
+          "label": "closer nodes"
+        },
+        {
+          "from": "lower",
+          "to": "bottom",
+          "label": "refines"
+        },
+        {
+          "from": "bottom",
+          "to": "neighbors",
+          "label": "returns"
+        }
+      ],
+      "caption": "HNSW routes a query through increasingly detailed graph layers, ending with likely nearest neighbors in the complete bottom layer."
+    }
+  },
   "related": [
     "genie-world-model",
     "hierarchical-control-system",

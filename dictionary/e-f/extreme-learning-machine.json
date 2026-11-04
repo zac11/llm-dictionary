@@ -5,7 +5,103 @@
   "type": "concept",
   "definition": "Extreme learning machines are feedforward neural networks for classification, regression, clustering, sparse approximation, compression and feature learning with a single layer or multiple layers of hidden nodes, where the parameters of hidden nodes (not just the weights connecting inputs to hidden nodes) need to be tuned.",
   "details": "These hidden nodes can be randomly assigned and never updated (i.e. they are random projection but with nonlinear transforms), or can be inherited from their ancestors without being changed. In most cases, the output weights of hidden nodes are usually learned in a single step, which essentially amounts to learning a linear model. The name \"extreme learning machine\" (ELM) was given to such models by Guang-Bin Huang who originally proposed for the networks with any type of nonlinear piecewise continuous hidden nodes including biological neurons and different type of mathematical basis functions. The idea for artificial neural networks goes back to Frank Rosenblatt, who not only published a single layer perceptron in 1958, but also introduced a multilayer perceptron with 3 layers: an input layer, a hidden layer with randomized weights that did not learn, and a learning output layer. According to some researchers, these models are able to produce good generalization performance and learn thousands of times faster than networks trained using backpropagation. In literature, it also shows that these models can outperform support vector machines in both classification and regression appli",
-  "story": "Think of an orchestra warming up: no single instrument carries the piece, but together they make the sound. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. The layout decides what the machine can even attempt, before it learns a single thing. The shape of the machine is half the idea. That blueprint is Extreme learning machine.",
+  "explainer": {
+    "lead": "An extreme learning machine is a feedforward neural network that avoids slowly adjusting every connection. Its hidden transformations can be fixed, while the output weights are usually learned in a single step, making it an approach to classification, regression, clustering, compression and feature learning.",
+    "tiers": {
+      "eli5": "Imagine sorting photos with a box of quirky question-askers whose questions never change. You only have to learn how much to trust each answer, and you can do that in one calculation. This can make the whole system much quicker to train.",
+      "practitioner": "Use an ELM by feeding inputs through fixed nonlinear hidden nodes, then fitting the output weights as a linear model, usually in one step. Hidden nodes may be randomly assigned and never updated, or inherited unchanged, and the network can have one or several hidden layers. Do not treat reported speed or accuracy advantages over backpropagation or support vector machines as guarantees for every dataset.",
+      "paperLevel": "For input x, an ELM forms h(x; θ), where θ describes nonlinear piecewise-continuous hidden nodes and can be fixed randomly or inherited unchanged; output weights W are then learned, typically in one step, so fitting reduces to a linear model. Guang-Bin Huang gave this family the name ELM, while Frank Rosenblatt's 1958 multilayer perceptron already used a randomized, non-learning hidden layer and a learning output layer. Reports of strong generalization, much faster learning than backpropagation, and better results than support vector machines are researchers' findings rather than universal guarantees."
+    },
+    "example": "To estimate house prices from floor area and room count, pass each labelled home through randomly assigned nonlinear hidden nodes. Learn one set of output weights from the resulting features in a single step, then apply those weights to a new home's features to predict its price.",
+    "usedIn": [
+      {
+        "name": "Classification",
+        "detail": "Assigning inputs to categories with fixed hidden transformations and learned output weights.",
+        "url": ""
+      },
+      {
+        "name": "Regression",
+        "detail": "Predicting continuous values through a linear output learned in one step.",
+        "url": ""
+      },
+      {
+        "name": "Clustering and feature learning",
+        "detail": "Using hidden-node transformations to group data or construct useful representations.",
+        "url": ""
+      },
+      {
+        "name": "Compression and sparse approximation",
+        "detail": "Representing data compactly or approximating it with relatively few components.",
+        "url": ""
+      }
+    ],
+    "intuition": "Rather than painstakingly teaching every part of a network, give its hidden nodes fixed nonlinear ways of transforming the input. Learning then becomes the simpler problem of deciding how those transformations should contribute to the output.",
+    "howItWorks": [
+      "Choose feedforward hidden nodes with nonlinear transformations; the network may use one or multiple hidden layers.",
+      "Assign the hidden-node parameters randomly and leave them unchanged, or inherit them without modification.",
+      "Pass the training inputs through these hidden nodes to obtain transformed features.",
+      "Learn the output weights, usually in a single step, which amounts to fitting a linear model.",
+      "Use the resulting network for tasks such as classification or regression."
+    ],
+    "whyItMatters": "ELMs reduce much of neural-network training to a one-step linear learning problem. Some researchers report good generalization and learning thousands of times faster than backpropagation, with results that can outperform support vector machines in classification and regression.",
+    "misconceptions": [
+      "An ELM does not skip learning altogether: its output weights are still learned.",
+      "Its hidden nodes are not merely linear random projections; they also apply nonlinear transformations.",
+      "The reported speed and performance advantages are not universal guarantees for every task."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "inputs",
+          "label": "Input data",
+          "note": "Examples and their measured features."
+        },
+        {
+          "id": "hidden",
+          "label": "Fixed hidden nodes",
+          "note": "Random or inherited nonlinear transformations."
+        },
+        {
+          "id": "features",
+          "label": "Hidden features",
+          "note": "Transformed values passed to the output."
+        },
+        {
+          "id": "weights",
+          "label": "Output weights",
+          "note": "Usually learned in one linear step."
+        },
+        {
+          "id": "prediction",
+          "label": "Prediction",
+          "note": "A class, value or other task output."
+        }
+      ],
+      "edges": [
+        {
+          "from": "inputs",
+          "to": "hidden",
+          "label": "feeds"
+        },
+        {
+          "from": "hidden",
+          "to": "features",
+          "label": "transforms"
+        },
+        {
+          "from": "features",
+          "to": "weights",
+          "label": "fits"
+        },
+        {
+          "from": "weights",
+          "to": "prediction",
+          "label": "produces"
+        }
+      ],
+      "caption": "Fixed nonlinear hidden nodes transform the inputs, leaving output-weight learning as a usually one-step linear problem."
+    }
+  },
   "related": [
     "mathematics-of-neural-networks-in-machine-learning",
     "neural-network-machine-learning",

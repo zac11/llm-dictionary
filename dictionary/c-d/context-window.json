@@ -9,7 +9,102 @@
   ],
   "definition": "The maximum number of tokens a model can attend to at once when generating or processing text.",
   "details": "The context window bounds the prompt plus generated output a model can handle in a single pass. Performance is not uniform across the window: models often best use information at the very beginning or end of long contexts and can “lose” facts placed in the middle, a finding emphasized in the “lost in the middle” study.",
-  "story": "Picture an architect laying out a building where every room has to know which other rooms matter to it. The layout decides what the machine can even attempt, before it learns a single thing. It is the blueprint that makes everything else possible. It is the difference between a row of isolated cubicles and one big room where everyone can hear each other. And that shape of the machine — Context Window — is what makes everything else possible.",
+  "explainer": {
+    "lead": "A context window is an AI model's limited working space for text: everything it should consider, plus what it writes, has to fit. Its size affects how much a model can handle at once, but fitting information inside does not guarantee the model will use it equally well.",
+    "tiers": {
+      "eli5": "Imagine a desk that can hold only a certain number of small pieces of paper. The AI needs room for both the notes you give it and the answer it writes, so it cannot spread out an unlimited story. Even when everything fits, it may notice notes on the top or bottom more easily than notes buried in the middle.",
+      "practitioner": "Treat the context window as a shared token budget, reserving capacity for the generated answer as well as the prompt. Do not assume that a larger window guarantees reliable use of every included fact; test long inputs with essential information at the beginning, middle, and end. Position important material carefully when answers depend on details within a long context.",
+      "paperLevel": "For a maximum window W, a single pass is bounded by T_prompt + T_output <= W, with all quantities measured in tokens and attention limited to the tokens within the window. The \"lost in the middle\" study emphasizes non-uniform utilization: models often use information at the beginning or end of long contexts better than information in the middle. Nominal capacity is therefore distinct from effective use of the full context."
+    },
+    "example": "Suppose a model has a 1,000-token window and the prompt uses 750 tokens. That leaves at most 250 tokens for generated output in that pass; a longer prompt would leave correspondingly less room.",
+    "usedIn": [
+      {
+        "name": "Conversational assistants",
+        "detail": "The window bounds the instructions, conversation, and reply that can be handled in one pass.",
+        "url": ""
+      },
+      {
+        "name": "Document question answering",
+        "detail": "Source text, the question, and the answer share the available token budget.",
+        "url": ""
+      },
+      {
+        "name": "Code assistants",
+        "detail": "The window limits how much supplied code and instruction text can be considered while generating code.",
+        "url": ""
+      }
+    ],
+    "intuition": "Think of the window as a fixed-size desk: the prompt and the model's reply must share the space. A bigger desk holds more, but the model may still overlook something buried in the middle.",
+    "howItWorks": [
+      "Text is represented as tokens, the units counted against the window.",
+      "The prompt occupies part of the available token budget.",
+      "The model attends to tokens inside the window while processing or generating text.",
+      "Generated output also consumes the budget, so prompt plus output cannot exceed the limit.",
+      "Information near the beginning or end is often used better than information in the middle."
+    ],
+    "whyItMatters": "The window determines whether instructions, source material, and a useful answer can fit together. It also warns against treating every included fact as equally accessible, since position within a long context can affect performance.",
+    "misconceptions": [
+      "A larger window does not mean the model uses all included information equally well.",
+      "The limit is not just an output-length cap; the prompt and generated output share it."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input text",
+          "note": "Instructions and supplied material"
+        },
+        {
+          "id": "tokens",
+          "label": "Prompt tokens",
+          "note": "The units counted by the model"
+        },
+        {
+          "id": "window",
+          "label": "Context window",
+          "note": "Fixed shared token budget"
+        },
+        {
+          "id": "model",
+          "label": "Model attention",
+          "note": "Uses tokens inside the window"
+        },
+        {
+          "id": "output",
+          "label": "Generated tokens",
+          "note": "Consumes remaining capacity"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "tokens",
+          "label": "becomes"
+        },
+        {
+          "from": "tokens",
+          "to": "window",
+          "label": "fills"
+        },
+        {
+          "from": "window",
+          "to": "model",
+          "label": "visible tokens"
+        },
+        {
+          "from": "model",
+          "to": "output",
+          "label": "generates"
+        },
+        {
+          "from": "output",
+          "to": "window",
+          "label": "uses budget"
+        }
+      ],
+      "caption": "The prompt and generated output draw on the same bounded token window."
+    }
+  },
   "related": [
     "sliding-context-window",
     "emergent-abilities",

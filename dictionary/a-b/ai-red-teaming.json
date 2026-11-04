@@ -8,7 +8,118 @@
   ],
   "definition": "Deliberately attacking an AI system to find failures, vulnerabilities and harmful behaviors before real users do.",
   "details": "Red teams try jailbreaks, prompt injection, data leakage, tool abuse and harmful-generation attempts, then feed the findings back into safety training and guardrails. It adapts security's adversarial-testing practice to language models, and models are increasingly used to red-team other models.",
-  "story": "Picture a parachute packed by a second pair of hands: nobody plans to need it, but everyone is glad it was checked. The idea is simple: before something powerful is let loose, someone checks that it will not do real harm to real people. It is the habit of asking, before every launch, what could go wrong — and then doing something about it. Caution is not the enemy of progress — it is the reason progress gets to keep going. And that is AI Red Teaming — the reason we can move fast without breaking things, or people.",
+  "explainer": {
+    "lead": "AI red teaming means deliberately trying to make an AI system fail so its weaknesses can be fixed before real users encounter them. It looks beyond ordinary mistakes to problems such as leaked data, abused tools, and harmful outputs.",
+    "tiers": {
+      "eli5": "It is like asking a friend to try every tricky way they can think of to get past the rules of a game before you share it with everyone else. When the friend finds a loophole, you write it down and improve the rules so the game is harder to break.",
+      "practitioner": "Engineers run adversarial probes against the full system, including its prompts, connected tools, and guardrails, then route reproducible failures into safety training and mitigations. Typical probes cover jailbreaks, prompt injection, data leakage, tool abuse, and harmful generation. A clean test run is not proof of safety, and findings need retesting after fixes.",
+      "paperLevel": "AI red teaming can be expressed as an adversarial search for an input or interaction x such that system S produces a failure in set F, including vulnerabilities and harmful behavior. The observed failures are then used to improve safety training and guardrails. The method demonstrates weaknesses that it finds, but it cannot establish that untested weaknesses are absent."
+    },
+    "example": "A tester gives an AI assistant a crafted prompt injection that causes it to reveal private data available through a connected tool. The team records the attack and response, then uses the finding to strengthen the system's guardrails and checks whether the same attack still works.",
+    "usedIn": [
+      {
+        "name": "Language model safety",
+        "detail": "Testing jailbreaks and harmful-generation attempts before users encounter them.",
+        "url": ""
+      },
+      {
+        "name": "AI system security",
+        "detail": "Probing prompt injection, data leakage, and abuse of connected tools.",
+        "url": ""
+      },
+      {
+        "name": "Guardrail development",
+        "detail": "Turning discovered failures into improvements to system protections.",
+        "url": ""
+      },
+      {
+        "name": "Automated model evaluation",
+        "detail": "Using models to generate adversarial tests for other models.",
+        "url": ""
+      }
+    ],
+    "intuition": "The safest way to discover how an AI system can be misled or misused is often to try it yourself, under controlled conditions. Red teaming adopts security testing's adversarial mindset: behave like an attacker, record what breaks, and help the defenders improve.",
+    "howItWorks": [
+      "Define the failures and harms to look for.",
+      "Probe the system with jailbreaks, prompt injection, and other attacks.",
+      "Test for data leakage, tool abuse, and harmful outputs.",
+      "Document the successful attacks and resulting failures.",
+      "Feed findings into safety training and guardrails, then test again."
+    ],
+    "whyItMatters": "It can expose dangerous behaviors and security weaknesses before they affect real users. Just as importantly, it turns individual failures into concrete material for improving safety training and guardrails.",
+    "misconceptions": [
+      "It is not just testing rude or harmful text; it also covers leakage and tool abuse.",
+      "A system that passes a red-team exercise is not proven safe.",
+      "Finding failures is only the start; the findings must inform fixes and retesting."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "red-team",
+          "label": "Red team",
+          "note": "Designs adversarial tests."
+        },
+        {
+          "id": "probes",
+          "label": "Attack probes",
+          "note": "Jailbreaks, injection, and misuse attempts."
+        },
+        {
+          "id": "system",
+          "label": "AI system",
+          "note": "Model, tools, and guardrails under test."
+        },
+        {
+          "id": "failures",
+          "label": "Observed failures",
+          "note": "Leakage, abuse, or harmful outputs."
+        },
+        {
+          "id": "findings",
+          "label": "Documented findings",
+          "note": "Successful attacks and their results."
+        },
+        {
+          "id": "improvements",
+          "label": "Safety improvements",
+          "note": "Safety training and stronger guardrails."
+        }
+      ],
+      "edges": [
+        {
+          "from": "red-team",
+          "to": "probes",
+          "label": ""
+        },
+        {
+          "from": "probes",
+          "to": "system",
+          "label": "attacks"
+        },
+        {
+          "from": "system",
+          "to": "failures",
+          "label": "reveals"
+        },
+        {
+          "from": "failures",
+          "to": "findings",
+          "label": ""
+        },
+        {
+          "from": "findings",
+          "to": "improvements",
+          "label": ""
+        },
+        {
+          "from": "improvements",
+          "to": "system",
+          "label": "strengthens"
+        }
+      ],
+      "caption": "Adversarial testing turns observed failures into improvements, which are then tested again."
+    }
+  },
   "related": [
     "red-teaming",
     "ai-governance",

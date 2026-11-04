@@ -5,7 +5,118 @@
   "type": "algorithm",
   "definition": "The condensation algorithm (Conditional Density Propagation) is a computer vision algorithm.",
   "details": "The principal application is to detect and track the contour of objects moving in a cluttered environment. Object tracking is one of the more basic and difficult aspects of computer vision and is generally a prerequisite to object recognition. Being able to identify which pixels in an image make up the contour of an object is a non-trivial problem. Condensation is a probabilistic algorithm that attempts to solve this problem. The algorithm itself is described in detail by Isard and Blake in a publication in the International Journal of Computer Vision in 1998. One of the most interesting facets of the algorithm is that it does not compute on every pixel of the image. Rather, pixels to process are chosen at random, and only a subset of the pixels end up being processed. Multiple hypotheses about what is moving are supported naturally by the probabilistic nature of the approach. The evaluation functions come largely from previous work in the area and include many standard statistical approaches. The original part of this work is the application of particle filter estimation techniques. The algorithm's creation was inspired by the inability of Kalman filtering to perform object tracki",
-  "story": "Imagine an art restorer who can spot a single cracked tile in a vast mosaic. What your eyes do without thinking, the machine does one careful layer at a time. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. The model looks the way you look at a crowd and finds the one face you know. That pixel-to-meaning climb is Condensation algorithm.",
+  "explainer": {
+    "lead": "The condensation algorithm tracks the outline of a moving object when the background is cluttered and the correct outline is uncertain. It keeps several possibilities alive and checks only a randomly chosen subset of pixels, using particle-filter estimation to update its probabilistic track.",
+    "tiers": {
+      "eli5": "Imagine trying to follow a moving toy in a messy room by drawing its outline again and again. Instead of checking every dot in every picture, you check some dots at random and keep several guesses about the outline. As new pictures arrive, the guesses help you decide which outline makes the most sense.",
+      "practitioner": "Use condensation for probabilistic contour tracking in image sequences, especially when clutter makes a single contour hypothesis unreliable. Maintain multiple hypotheses and evaluate them with statistical observation functions on randomly selected pixels rather than processing the whole image. The main design burden is choosing useful contour hypotheses and evaluation functions; tracking is generally needed before object recognition.",
+      "paperLevel": "Condensation, or Conditional Density Propagation, propagates a conditional probability density over object-contour hypotheses using particle-filter estimation: p(x_t | z_1:t), where x_t represents the contour state and z_1:t the observations. Isard and Blake described the algorithm in the International Journal of Computer Vision in 1998. Its development was motivated by Kalman filtering's inability to perform the object-tracking task at hand."
+    },
+    "example": "Suppose a moving object passes in front of a cluttered background and part of its outline becomes ambiguous. Condensation keeps several plausible outlines, tests them using randomly selected pixels, and propagates the resulting probabilistic estimates into the next image rather than processing every pixel or relying on one guess.",
+    "usedIn": [
+      {
+        "name": "Computer vision",
+        "detail": "Detecting and tracking object contours as objects move through cluttered environments.",
+        "url": ""
+      },
+      {
+        "name": "Object recognition",
+        "detail": "Supplying the object tracking that is generally required before recognition.",
+        "url": ""
+      }
+    ],
+    "goal": "Estimate and follow the contour of a moving object despite clutter and uncertainty. The probabilistic approach can support several competing explanations of what is moving.",
+    "inputs": [
+      "Images containing the moving object",
+      "Hypotheses about the object contour",
+      "Statistical evaluation functions"
+    ],
+    "outputs": [
+      "A probabilistic contour estimate",
+      "Multiple possible contour hypotheses",
+      "An updated object track"
+    ],
+    "steps": [
+      "Represent several possible contours instead of committing to one.",
+      "Choose a random subset of image pixels to process.",
+      "Evaluate the contour hypotheses using statistical observation functions.",
+      "Propagate the conditional density with particle-filter estimation.",
+      "Repeat as new images arrive to update the contour track."
+    ],
+    "tradeoffs": [
+      "Processes only a subset of pixels rather than every image pixel.",
+      "Naturally maintains multiple hypotheses under uncertainty.",
+      "Identifying the object's contour pixels remains non-trivial.",
+      "Results depend on probabilistic contour hypotheses and evaluation functions."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "images",
+          "label": "Image sequence",
+          "note": "Observations of a moving object"
+        },
+        {
+          "id": "pixels",
+          "label": "Random pixel subset",
+          "note": "Only selected pixels are processed"
+        },
+        {
+          "id": "hypotheses",
+          "label": "Contour hypotheses",
+          "note": "Several possible outlines remain active"
+        },
+        {
+          "id": "evaluation",
+          "label": "Statistical evaluation",
+          "note": "Observations assess the hypotheses"
+        },
+        {
+          "id": "density",
+          "label": "Conditional density",
+          "note": "Particle-filter propagation updates uncertainty"
+        },
+        {
+          "id": "track",
+          "label": "Contour track",
+          "note": "The estimated outline follows the object"
+        }
+      ],
+      "edges": [
+        {
+          "from": "images",
+          "to": "pixels",
+          "label": "sample"
+        },
+        {
+          "from": "pixels",
+          "to": "evaluation",
+          "label": "observations"
+        },
+        {
+          "from": "hypotheses",
+          "to": "evaluation",
+          "label": "candidates"
+        },
+        {
+          "from": "evaluation",
+          "to": "density",
+          "label": "update"
+        },
+        {
+          "from": "density",
+          "to": "track",
+          "label": "estimate"
+        },
+        {
+          "from": "density",
+          "to": "hypotheses",
+          "label": "propagate"
+        }
+      ],
+      "caption": "Condensation combines sampled image observations with multiple contour hypotheses, then propagates their conditional density to maintain a track."
+    }
+  },
   "related": [
     "eight-point-algorithm",
     "marr-hildreth-algorithm",

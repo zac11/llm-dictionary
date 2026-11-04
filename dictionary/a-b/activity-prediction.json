@@ -5,6 +5,102 @@
   "type": "concept",
   "definition": "Predicting a person’s ongoing or upcoming activity from sensor or video data — anticipation rather than just recognition.",
   "details": "Predicting a person’s ongoing or upcoming activity from sensor or video data — anticipation rather than just recognition.",
+  "explainer": {
+    "lead": "Activity prediction uses video or sensor readings to work out what someone is doing now or is about to do next. It matters when a system needs to respond early, rather than waiting until an action is complete.",
+    "tiers": {
+      "eli5": "It is like seeing a friend pick up a ball and guessing that they are about to throw it. A computer looks for clues in camera images or wearable sensors, then makes its best guess before the whole activity happens.",
+      "practitioner": "An application processes a recent window of video or sensor data and outputs a current or future activity, often with a confidence score. Useful systems account for incomplete observations, sensor noise, and actions whose early stages look alike; confidence should not be treated as certainty.",
+      "paperLevel": "Given observations x_1:t from video or sensors, estimate the ongoing activity y_t or an upcoming activity y_t+k before it is fully observed. The task is anticipatory rather than purely retrospective, and predictions can be unreliable when early cues are weak or several activities share the same beginning."
+    },
+    "example": "A camera observes someone walking toward a door and reaching for its handle. The system predicts “opening the door” before the door has moved, allowing a response based on that anticipated activity.",
+    "usedIn": [
+      {
+        "name": "Human–robot interaction",
+        "detail": "Anticipating a person’s next action so a robot can respond earlier.",
+        "url": ""
+      },
+      {
+        "name": "Assistive technology",
+        "detail": "Inferring an ongoing or upcoming activity to provide timely assistance.",
+        "url": ""
+      },
+      {
+        "name": "Wearable monitoring",
+        "detail": "Using sensor readings to anticipate what the wearer is about to do.",
+        "url": ""
+      },
+      {
+        "name": "Video analytics",
+        "detail": "Forecasting activities from partially observed video sequences.",
+        "url": ""
+      }
+    ],
+    "intuition": "Many activities give clues before they are complete. Activity prediction uses those clues to look ahead, while activity recognition mainly labels what has already been observed.",
+    "howItWorks": [
+      "Collect recent video frames or sensor readings.",
+      "Extract cues about the person’s movement and situation.",
+      "Compare those cues with patterns associated with different activities.",
+      "Estimate the current or upcoming activity and, where available, its confidence."
+    ],
+    "whyItMatters": "Prediction gives systems time to respond before an activity finishes. This anticipatory ability is useful when waiting for a complete action would make the response too late.",
+    "misconceptions": [
+      "It is not simply activity recognition: recognition labels observed behavior, while prediction includes anticipating what comes next.",
+      "A prediction is not a certainty, especially when different activities begin with similar movements.",
+      "It does not reveal a person’s intentions beyond what can be inferred from the available observations."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "observations",
+          "label": "Video or sensors",
+          "note": "Recent observations of the person"
+        },
+        {
+          "id": "window",
+          "label": "Observation window",
+          "note": "A partial activity history"
+        },
+        {
+          "id": "cues",
+          "label": "Movement cues",
+          "note": "Patterns visible so far"
+        },
+        {
+          "id": "predictor",
+          "label": "Activity predictor",
+          "note": "Compares cues with activity patterns"
+        },
+        {
+          "id": "forecast",
+          "label": "Activity forecast",
+          "note": "Current or upcoming activity"
+        }
+      ],
+      "edges": [
+        {
+          "from": "observations",
+          "to": "window",
+          "label": "recent data"
+        },
+        {
+          "from": "window",
+          "to": "cues",
+          "label": "extract"
+        },
+        {
+          "from": "cues",
+          "to": "predictor",
+          "label": "observed cues"
+        },
+        {
+          "from": "predictor",
+          "to": "forecast",
+          "label": "estimate"
+        }
+      ],
+      "caption": "Partial video or sensor observations are turned into a prediction before the activity is complete."
+    }
+  },
   "citation": {
     "title": "Activity Prediction",
     "authors": [],

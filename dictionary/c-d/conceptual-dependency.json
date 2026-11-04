@@ -5,7 +5,113 @@
   "type": "concept",
   "definition": "In artificial intelligence, conceptual dependency (or CD) theory is a model of natural language understanding.",
   "details": "Roger Schank at Stanford University introduced the model in 1969, in the early days of artificial intelligence. This model was extensively used by Schank's students at Yale University such as Robert Wilensky, Wendy Lehnert, and Janet Kolodner. Schank developed the model to represent knowledge for natural language input into computers. Partly influenced by the work of Sydney Lamb, his goal was to make the meaning independent of the words used in the input, i.e. two sentences identical in meaning would have a single representation. The system was also intended to draw logical inferences. The model uses the following basic representational tokens: real world objects, each with some attributes. real world actions, each with attributes times locations A set of conceptual transitions then act on this representation, e.g. an ATRANS is used to represent a transfer such as \"give\" or \"take\" while a PTRANS is used to act on locations such as \"move\" or \"go\". An MTRANS represents mental acts such as \"tell\", etc.",
-  "story": "Think of a grammar teacher who never memorized a rule but can still tell you when a sentence sounds wrong. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It figures out meaning by noticing which words like to travel together. The machine learns to read between the lines by reading an impossible number of lines. And that is Conceptual dependency — teaching a machine to read between the lines.",
+  "explainer": {
+    "lead": "Conceptual dependency is a way to represent what a sentence means, rather than the particular words used to say it. Introduced by Roger Schank in 1969, it was designed to help computers store natural-language knowledge and draw logical inferences from it.",
+    "tiers": {
+      "eli5": "Imagine two friends describing the same gift in different words: one says, “Anna gave Ben a book,” and the other says, “Ben got a book from Anna.” Conceptual dependency gives both descriptions the same inner picture: a book changed hands. It uses special labels for happenings such as transferring something, moving somewhere, or telling someone something.",
+      "practitioner": "A system maps natural-language input into objects and actions with attributes, then applies conceptual transitions such as ATRANS, PTRANS, and MTRANS. The main design task is choosing a representation that captures meaning independently of wording while preserving information needed for inference; confusing physical transfer, movement, and mental communication would produce the wrong structure.",
+      "paperLevel": "A CD representation can be summarized as CD = structures over real-world objects with attributes and real-world actions with attributes, including times and locations, connected by conceptual transitions. Roger Schank introduced the model at Stanford University in 1969, partly influenced by Sydney Lamb; ATRANS denotes transfer, PTRANS denotes change of location, and MTRANS denotes mental acts. Its central constraint is that sentences with identical meaning receive a single representation, which can then support logical inference."
+    },
+    "example": "“John gave Mary a book” can be represented with John, Mary, and the book as objects, and ATRANS as the action transferring the book from John to Mary. “Mary received a book from John” has the same meaning and therefore receives the same representation.",
+    "usedIn": [
+      {
+        "name": "Natural-language understanding",
+        "detail": "Represents the meaning of language entered into a computer.",
+        "url": ""
+      },
+      {
+        "name": "Knowledge representation",
+        "detail": "Encodes objects, actions, attributes, times, and locations in a common structure.",
+        "url": ""
+      },
+      {
+        "name": "Logical inference",
+        "detail": "Provides a meaning representation from which a system can draw conclusions.",
+        "url": ""
+      }
+    ],
+    "intuition": "Different sentences can describe the same underlying event, so a computer should represent that event once instead of storing separate word patterns. CD does this with a small set of conceptual building blocks for things, actions, and changes.",
+    "howItWorks": [
+      "Identify the real-world objects mentioned in the input and record their attributes.",
+      "Identify the actions and their attributes, including times and locations.",
+      "Map the event to conceptual transitions: ATRANS for transfer, PTRANS for location changes, or MTRANS for mental acts.",
+      "Combine these tokens into a meaning representation independent of the original wording.",
+      "Use the resulting representation to support logical inferences."
+    ],
+    "whyItMatters": "CD separates meaning from surface wording, giving a computer a common structure for paraphrases. That structure was also intended to make knowledge available for logical inference rather than leaving it as unprocessed text.",
+    "misconceptions": [
+      "It is not a model of grammatical dependencies between individual words; it represents real-world objects, actions, and conceptual transitions.",
+      "ATRANS is not general movement: it represents transfers such as giving or taking, while PTRANS handles movement or going.",
+      "The transitions are not limited to physical events; MTRANS represents mental acts such as telling."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Language input",
+          "note": "A sentence enters the system."
+        },
+        {
+          "id": "objects",
+          "label": "Objects and attributes",
+          "note": "Real-world things are represented."
+        },
+        {
+          "id": "actions",
+          "label": "Actions and attributes",
+          "note": "Events can include times and locations."
+        },
+        {
+          "id": "transitions",
+          "label": "Conceptual transitions",
+          "note": "ATRANS, PTRANS, and MTRANS describe changes."
+        },
+        {
+          "id": "meaning",
+          "label": "Meaning representation",
+          "note": "Equivalent sentences share one structure."
+        },
+        {
+          "id": "inference",
+          "label": "Logical inference",
+          "note": "Conclusions can be drawn from the representation."
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "objects",
+          "label": "identifies"
+        },
+        {
+          "from": "input",
+          "to": "actions",
+          "label": "identifies"
+        },
+        {
+          "from": "objects",
+          "to": "transitions",
+          "label": "participate in"
+        },
+        {
+          "from": "actions",
+          "to": "transitions",
+          "label": "classified as"
+        },
+        {
+          "from": "transitions",
+          "to": "meaning",
+          "label": "builds"
+        },
+        {
+          "from": "meaning",
+          "to": "inference",
+          "label": "supports"
+        }
+      ],
+      "caption": "CD turns language into object, action, and transition structures, producing a wording-independent representation for inference."
+    }
+  },
   "related": [
     "generative-artificial-intelligence-dependency",
     "a-i-insight-forums",

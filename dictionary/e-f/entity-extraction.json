@@ -9,7 +9,81 @@
   ],
   "definition": "The task of identifying and classifying named entities (such as people, organizations, locations, or dates) within text.",
   "details": "Entity extraction (a form of Named Entity Recognition) is a foundational NLP task used in applications ranging from information retrieval to building knowledge graphs from unstructured text.",
-  "story": "Imagine learning a language by reading every book in the library and noticing, over time, which words travel together. It does not memorize a rulebook; it absorbs a library. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It is fluency built from pattern, not from memorized rules. That pattern-earned fluency is Entity Extraction.",
+  "explainer": {
+    "lead": "Entity extraction turns mentions of things like people, organizations, locations, and dates in ordinary text into labeled pieces of data. This makes unstructured writing easier to search, organize, and connect.",
+    "tiers": {
+      "eli5": "Imagine reading a story with different colored highlighters: pink for people, blue for companies, and green for places. Entity extraction teaches a computer to do that highlighting and write down what each highlighted phrase represents.",
+      "practitioner": "In practice, entity extraction converts text into entity spans with labels such as person, organization, location, or date. These outputs can feed information retrieval or knowledge graph construction; clear entity categories and consistent span boundaries are important when integrating the results.",
+      "paperLevel": "Given input text T, entity extraction produces a set E = {(s_i, l_i)}, where each s_i is a text span and l_i is its entity category, such as person, organization, location, or date. It is therefore a structured prediction task over both entity boundaries and labels."
+    },
+    "example": "For “Maria joined Acme in Paris on 3 May,” the output could label “Maria” as a person, “Acme” as an organization, “Paris” as a location, and “3 May” as a date.",
+    "usedIn": [
+      {
+        "name": "Information retrieval",
+        "detail": "Labeled people, organizations, locations, and dates provide structured information extracted from text.",
+        "url": ""
+      },
+      {
+        "name": "Knowledge graph construction",
+        "detail": "Extracted entities supply named things that can be represented from unstructured text.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of treating a sentence as only a sequence of words, entity extraction picks out the phrases that name specific kinds of things and records their categories.",
+    "howItWorks": [
+      "Read the unstructured input text.",
+      "Identify text spans that mention named entities.",
+      "Assign each span a category such as person, organization, location, or date.",
+      "Return the entity text, its category, and its position in the input."
+    ],
+    "whyItMatters": "It provides a bridge from unstructured text to structured entity records. That foundation supports information retrieval and the construction of knowledge graphs.",
+    "misconceptions": [
+      "It does more than find keywords: it identifies entity spans and assigns entity categories.",
+      "The task labels mentions in text; the definition does not itself require linking them to records in a knowledge graph."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "text",
+          "label": "Input text",
+          "note": "Unstructured sentences"
+        },
+        {
+          "id": "spans",
+          "label": "Find spans",
+          "note": "Locate entity mentions"
+        },
+        {
+          "id": "labels",
+          "label": "Classify entities",
+          "note": "Assign entity categories"
+        },
+        {
+          "id": "output",
+          "label": "Structured output",
+          "note": "Spans with labels"
+        }
+      ],
+      "edges": [
+        {
+          "from": "text",
+          "to": "spans",
+          "label": ""
+        },
+        {
+          "from": "spans",
+          "to": "labels",
+          "label": "mentions"
+        },
+        {
+          "from": "labels",
+          "to": "output",
+          "label": "labeled spans"
+        }
+      ],
+      "caption": "Entity extraction turns unstructured text into labeled entity spans."
+    }
+  },
   "related": [
     "named-entity-linking",
     "relation-extraction",

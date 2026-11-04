@@ -5,6 +5,97 @@
   "type": "concept",
   "definition": "Efficiently Learning an Encoder that Classifies Token Replacements Accurately",
   "details": "Efficiently Learning an Encoder that Classifies Token Replacements Accurately",
+  "explainer": {
+    "lead": "ELECTRA is an approach for training a text encoder to tell whether each token is original or has been replaced. This token-by-token classification task gives the encoder a direct learning signal about language.",
+    "tiers": {
+      "eli5": "Imagine reading a sentence where someone may have swapped a few words. Your job is to point to every word and say whether it is the original word or a replacement. Practising that game teaches ELECTRA's encoder useful things about how words fit together.",
+      "practitioner": "ELECTRA trains an encoder using per-token original-versus-replaced classification rather than text generation. Its output is contextual token representations that can support downstream natural-language processing. A key pitfall is treating replacement detection as the final application instead of the encoder's learning task.",
+      "paperLevel": "Given a token sequence x and a replacement-corrupted sequence x~, the encoder produces representations h_i used to predict y_i in {original, replaced} at each position i. Training can be written as minimizing the sum of binary cross-entropy losses over positions: L = -sum_i [y_i log p_i + (1-y_i) log(1-p_i)]. The name specifies the learning objective, not a particular encoder architecture or replacement procedure."
+    },
+    "example": "Suppose “The cat sat on the mat” becomes “The cat sat on the rug.” The encoder examines the changed sentence and should mark “rug” as replaced while marking the unchanged tokens as original.",
+    "usedIn": [
+      {
+        "name": "Encoder pretraining",
+        "detail": "Learning contextual token representations through replacement classification.",
+        "url": ""
+      },
+      {
+        "name": "Natural language processing",
+        "detail": "Providing an encoder-based approach to learning from text.",
+        "url": ""
+      }
+    ],
+    "intuition": "Deciding whether each token fits its context is a focused way to learn language structure. Because a decision can be made at every token position, the training example supplies many local classification signals.",
+    "howItWorks": [
+      "Start with a sequence of tokens.",
+      "Create a version containing token replacements.",
+      "Pass the changed sequence through an encoder.",
+      "Classify each position as original or replaced and train against the known answers."
+    ],
+    "whyItMatters": "It turns language understanding into a dense token-level classification exercise, providing feedback at every position. That is the efficiency idea captured by the name.",
+    "misconceptions": [
+      "It is an encoder-training approach, not a method for generating replacement text.",
+      "Replacement classification is the training task, not necessarily the final application.",
+      "The name promises an efficient learning idea, not a particular speed for every implementation."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "original",
+          "label": "Original tokens",
+          "note": "The unchanged text sequence."
+        },
+        {
+          "id": "replaced",
+          "label": "Replaced sequence",
+          "note": "Some token positions contain replacements."
+        },
+        {
+          "id": "encoder",
+          "label": "Text encoder",
+          "note": "Builds a contextual representation for each token."
+        },
+        {
+          "id": "decisions",
+          "label": "Token decisions",
+          "note": "Predicts original or replaced at each position."
+        },
+        {
+          "id": "labels",
+          "label": "Replacement labels",
+          "note": "Known answers used to compute training loss."
+        }
+      ],
+      "edges": [
+        {
+          "from": "original",
+          "to": "replaced",
+          "label": "replace tokens"
+        },
+        {
+          "from": "replaced",
+          "to": "encoder",
+          "label": ""
+        },
+        {
+          "from": "encoder",
+          "to": "decisions",
+          "label": ""
+        },
+        {
+          "from": "original",
+          "to": "labels",
+          "label": ""
+        },
+        {
+          "from": "labels",
+          "to": "decisions",
+          "label": "supervise"
+        }
+      ],
+      "caption": "ELECTRA learns by comparing per-token replacement predictions with the known original-versus-replaced labels."
+    }
+  },
   "related": [
     "token"
   ],

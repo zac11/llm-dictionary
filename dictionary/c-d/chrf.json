@@ -2,9 +2,98 @@
   "term": "chrF",
   "letter": "C",
   "category": "Evaluation and Benchmarks",
-  "type": "concept",
+  "type": "metric",
   "definition": "Character-n-gram F-score for translation, more robust than BLEU for morphologically rich languages (including Arabic) because it credits partial word matches.",
   "details": "Character-n-gram F-score for translation, more robust than BLEU for morphologically rich languages (including Arabic) because it credits partial word matches.",
+  "explainer": {
+    "lead": "chrF scores a machine translation by comparing character fragments with a reference translation, rather than relying only on whole-word matches. This lets it reward partly correct words, which is especially useful for morphologically rich languages such as Arabic.",
+    "tiers": {
+      "eli5": "Imagine checking a spelling answer by looking for small groups of letters instead of demanding the whole word be exactly right. If the expected word is \"played\" and the answer is \"playing\", some letter groups still match, so the answer gets partial credit. chrF uses this idea to judge translations.",
+      "practitioner": "Use chrF to compare a candidate translation with a reference at the character-n-gram level, particularly when word forms vary richly. It complements whole-word metrics such as BLEU by crediting partial word matches. A strong score still depends on the reference and should not be read as a complete assessment of meaning or fluency.",
+      "paperLevel": "chrF is a character-n-gram F-score combining character-n-gram precision and recall: chrF = (1 + beta^2) * chrP * chrR / (beta^2 * chrP + chrR), where chrP measures matched candidate character n-grams and chrR measures coverage of reference character n-grams. Its word-level BLEU alternative can miss partial matches between related word forms. Reference dependence remains a limitation."
+    },
+    "example": "If the reference contains \"played\" and the candidate contains \"playing\", the whole words do not match, but character fragments such as \"pla\" do. chrF can reward that shared fragment, whereas a whole-word comparison gives no credit for it.",
+    "usedIn": [
+      {
+        "name": "Machine translation evaluation",
+        "detail": "Scores candidate translations against reference translations using character n-grams.",
+        "url": ""
+      },
+      {
+        "name": "Morphologically rich language translation",
+        "detail": "Useful for languages such as Arabic because related word forms can receive partial credit.",
+        "url": ""
+      },
+      {
+        "name": "Translation model comparison",
+        "detail": "Provides a character-based score to compare outputs alongside word-based metrics such as BLEU.",
+        "url": ""
+      }
+    ],
+    "howScored": [
+      "Extract character n-grams from the candidate and reference",
+      "Compute character-n-gram precision and recall",
+      "Combine precision and recall into an F-score"
+    ],
+    "formula": "chrF = (1 + beta^2) * chrP * chrR / (beta^2 * chrP + chrR). chrP is character-n-gram precision and chrR is character-n-gram recall.",
+    "caveats": [
+      "A reference translation is required",
+      "Character overlap alone does not establish correct meaning",
+      "It is not a whole-word metric like standard BLEU"
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "candidate",
+          "label": "Candidate translation",
+          "note": "Machine-generated output"
+        },
+        {
+          "id": "reference",
+          "label": "Reference translation",
+          "note": "Human comparison text"
+        },
+        {
+          "id": "ngrams",
+          "label": "Character n-grams",
+          "note": "Fragments from both texts"
+        },
+        {
+          "id": "precision-recall",
+          "label": "Precision and recall",
+          "note": "Measure fragment overlap"
+        },
+        {
+          "id": "chrf",
+          "label": "chrF score",
+          "note": "F-score combining both"
+        }
+      ],
+      "edges": [
+        {
+          "from": "candidate",
+          "to": "ngrams",
+          "label": ""
+        },
+        {
+          "from": "reference",
+          "to": "ngrams",
+          "label": ""
+        },
+        {
+          "from": "ngrams",
+          "to": "precision-recall",
+          "label": "compare"
+        },
+        {
+          "from": "precision-recall",
+          "to": "chrf",
+          "label": "combine"
+        }
+      ],
+      "caption": "chrF compares character fragments from the candidate and reference, then combines their precision and recall."
+    }
+  },
   "related": [
     "f-score",
     "n-gram"

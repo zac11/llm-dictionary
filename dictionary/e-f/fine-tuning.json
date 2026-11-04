@@ -9,7 +9,103 @@
   ],
   "definition": "Continuing to train a pre-trained model on a smaller, task-specific dataset so it adapts to a target domain.",
   "details": "Fine-tuning exploits features learned during pre-training and adapts them to a new task with far less data than training from scratch. The ULMFiT recipe showed that a language-model “head” trained on a corpus could be fine-tuned layer by layer for text classification, and this pattern — pre-train broadly, fine-tune narrowly — underlies most applied NLP.",
-  "story": "Think of a hiker descending a foggy hill in the dark, taking small steps and feeling for the steepest way down. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. It is the same loop you use to learn anything: try, miss, correct, try again. Skill, for a model, is just error pushed down until it is small enough to ignore. And that is Fine-Tuning — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "Fine-tuning gives an already-trained model a focused education for a particular job. By building on what it learned during pre-training, it can adapt to a new task with much less data than training from the beginning.",
+    "tiers": {
+      "eli5": "Imagine someone who has read lots of books and then practises one specific kind of puzzle. They do not have to learn reading all over again; they use what they already know to get better at the puzzle. Fine-tuning does something similar by giving a broadly trained model extra practice on examples for one task.",
+      "practitioner": "Start with a pre-trained model and continue training it on a smaller dataset for the target task, rather than initialising a new model from scratch. For language-model classifiers, the ULMFiT recipe fine-tunes the pre-trained language-model head layer by layer. Task-specific training data is still required.",
+      "paperLevel": "Given pre-trained parameters θ0 and a task-specific dataset D_task, fine-tuning continues optimisation from θ0 on D_task to adapt the model to the target domain. ULMFiT instantiated this approach by fine-tuning a corpus-trained language-model head layer by layer for text classification. Its advantage over training from scratch is reuse of pre-trained features with substantially less task data."
+    },
+    "example": "A language-model head is first trained on a broad corpus. It is then fine-tuned layer by layer on a smaller set of reviews labelled as positive or negative, following the ULMFiT pattern, to produce a text classifier without training a language model from scratch.",
+    "usedIn": [
+      {
+        "name": "Text classification",
+        "detail": "ULMFiT fine-tunes a pre-trained language-model head layer by layer for a classification task.",
+        "url": ""
+      },
+      {
+        "name": "Applied natural language processing",
+        "detail": "The pattern of broad pre-training followed by narrow fine-tuning underlies most applied NLP.",
+        "url": ""
+      }
+    ],
+    "intuition": "Pre-training supplies broadly useful features, and fine-tuning adjusts them for a narrower purpose. This reuses earlier learning instead of making the target task teach the model everything from zero.",
+    "howItWorks": [
+      "Pre-train a model on a broad corpus or dataset.",
+      "Choose a smaller dataset for the target task or domain.",
+      "Initialise training with the pre-trained model rather than random parameters.",
+      "Continue training on the task data, adapting the learned features.",
+      "Use the resulting model for the target task."
+    ],
+    "whyItMatters": "Fine-tuning makes pre-trained features useful for new tasks while requiring far less task data than training from scratch. Pre-train broadly and fine-tune narrowly has become a foundational pattern in applied NLP.",
+    "misconceptions": [
+      "Fine-tuning is not training from scratch: it begins with a pre-trained model.",
+      "It is not the same as broad pre-training: its dataset is smaller and task-specific.",
+      "It does not eliminate the need for data: examples for the target task are still used."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "corpus",
+          "label": "Broad corpus",
+          "note": "General data used for pre-training."
+        },
+        {
+          "id": "pretrain",
+          "label": "Pre-train model",
+          "note": "Learn broadly useful features."
+        },
+        {
+          "id": "pretrained",
+          "label": "Pre-trained model",
+          "note": "Starting point for task adaptation."
+        },
+        {
+          "id": "task-data",
+          "label": "Task-specific data",
+          "note": "Smaller dataset for the target task."
+        },
+        {
+          "id": "finetune",
+          "label": "Continue training",
+          "note": "Adapt pre-trained features to the task."
+        },
+        {
+          "id": "adapted",
+          "label": "Adapted model",
+          "note": "Model ready for the target domain."
+        }
+      ],
+      "edges": [
+        {
+          "from": "corpus",
+          "to": "pretrain",
+          "label": "training data"
+        },
+        {
+          "from": "pretrain",
+          "to": "pretrained",
+          "label": "learned features"
+        },
+        {
+          "from": "pretrained",
+          "to": "finetune",
+          "label": "initialisation"
+        },
+        {
+          "from": "task-data",
+          "to": "finetune",
+          "label": "task examples"
+        },
+        {
+          "from": "finetune",
+          "to": "adapted",
+          "label": "adaptation"
+        }
+      ],
+      "caption": "Fine-tuning combines a pre-trained model with a smaller task-specific dataset, then continues training to adapt it."
+    }
+  },
   "related": [
     "fine-tuning-deep-learning",
     "parameter-efficient-fine-tuning",

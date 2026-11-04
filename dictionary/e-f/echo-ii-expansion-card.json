@@ -2,10 +2,121 @@
   "term": "Echo II (expansion card)",
   "letter": "E",
   "category": "Speech synthesis",
-  "type": "concept",
+  "type": "tool",
   "definition": "The Echo II is a plug-in expansion card, speech synthesizer card for the Apple II and Apple IIe personal computers that allow applications to use speech synthesis.",
   "details": "The Echo II provides a speaker/headphones jack on board, with a physical volume control adjustment. The Echo II software can synthesize either unlimited text-to-speech using stitched phonemes, or play back raw LPC data for specific words, with resulting higher speech quality. LPC (linear predictive coding) is the speech synthesis technology used, which allowed applications to encode speech data in a compact form. The Echo II uses the TMS 5220 LPC Speech Chip which was popular in other speech synthesizers.",
-  "story": "Picture a translator at the United Nations, listening to one language and whispering the meaning into another in real time. It figures out meaning by noticing which words like to travel together. It does not memorize a rulebook; it absorbs a library. Meaning lives in company — a word is known by the words it keeps. That pattern-earned fluency is Echo II (expansion card).",
+  "explainer": {
+    "lead": "The Echo II is a plug-in card that gives Apple II and Apple IIe applications a synthesized voice. It lets software choose between speaking arbitrary text or playing compactly encoded speech for particular words at higher quality.",
+    "tiers": {
+      "eli5": "The Echo II is like a small talking machine that plugs into an Apple II computer. A program can either build words from small speech sounds, so it can say almost anything, or use stored speech data for certain words to make them sound better. You can listen through its speaker or headphone socket and turn a control to change the volume.",
+      "practitioner": "An Apple II or Apple IIe application can use the Echo II for unrestricted text-to-speech by stitching phonemes together, or supply raw LPC data for selected words when speech quality matters more. The card uses the TMS 5220 LPC Speech Chip and provides an onboard speaker/headphone jack with a physical volume control. The main trade-off is coverage versus quality: phoneme synthesis handles arbitrary text, while the higher-quality LPC playback path is tied to specific encoded words.",
+      "paperLevel": "The Echo II is an Apple II-family speech-synthesis expansion card built around the TMS 5220 LPC Speech Chip. It supports two synthesis paths: T(text) → stitched phonemes → speech for unrestricted text, or raw LPC word data → speech for higher-quality playback of specific words. Linear predictive coding represents speech compactly, but the higher-quality path requires word-specific LPC data rather than accepting unlimited text."
+    },
+    "example": "An Apple IIe program could use stitched phonemes to speak a newly generated sentence, then switch to raw LPC data for a particular important word so that word is played with higher speech quality.",
+    "usedIn": [
+      {
+        "name": "Apple II applications",
+        "detail": "Software can add speech through the plug-in Echo II card.",
+        "url": ""
+      },
+      {
+        "name": "Apple IIe applications",
+        "detail": "Programs can synthesize text or play word-specific LPC speech data.",
+        "url": ""
+      }
+    ],
+    "intuition": "The card can speak in two ways: assemble a voice from small sound pieces when flexibility is needed, or use compact speech data for a chosen word when a better result is needed.",
+    "howItWorks": [
+      "An Apple II or Apple IIe application sends speech material to the card.",
+      "For arbitrary text, the Echo II software converts the text into stitched phonemes.",
+      "For selected words, the software instead plays back raw LPC data.",
+      "The TMS 5220 LPC Speech Chip produces the synthesized speech.",
+      "Sound reaches a speaker or headphones through the onboard jack, whose volume is adjusted physically."
+    ],
+    "whyItMatters": "It adds speech output to Apple II and Apple IIe applications while offering a practical choice between unlimited spoken text and higher-quality, word-specific playback. LPC also lets applications store speech data compactly.",
+    "misconceptions": [
+      "It is not just speech software: it is a physical expansion card containing a TMS 5220 speech chip.",
+      "The higher-quality LPC mode is for specific encoded words, not unlimited text-to-speech.",
+      "It does not require an external volume control; the card has its own jack and physical adjustment."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "app",
+          "label": "Apple II application",
+          "note": "Requests speech output"
+        },
+        {
+          "id": "text",
+          "label": "Arbitrary text",
+          "note": "Unlimited text-to-speech input"
+        },
+        {
+          "id": "phonemes",
+          "label": "Stitched phonemes",
+          "note": "Assembled by Echo II software"
+        },
+        {
+          "id": "lpc",
+          "label": "Raw LPC data",
+          "note": "Higher-quality data for specific words"
+        },
+        {
+          "id": "chip",
+          "label": "TMS 5220 chip",
+          "note": "Produces synthesized speech"
+        },
+        {
+          "id": "jack",
+          "label": "Audio jack",
+          "note": "Onboard output with volume control"
+        },
+        {
+          "id": "output",
+          "label": "Speaker or headphones",
+          "note": "Plays the resulting speech"
+        }
+      ],
+      "edges": [
+        {
+          "from": "app",
+          "to": "text",
+          "label": ""
+        },
+        {
+          "from": "app",
+          "to": "lpc",
+          "label": ""
+        },
+        {
+          "from": "text",
+          "to": "phonemes",
+          "label": "converted to"
+        },
+        {
+          "from": "phonemes",
+          "to": "chip",
+          "label": ""
+        },
+        {
+          "from": "lpc",
+          "to": "chip",
+          "label": ""
+        },
+        {
+          "from": "chip",
+          "to": "jack",
+          "label": "speech"
+        },
+        {
+          "from": "jack",
+          "to": "output",
+          "label": "audio"
+        }
+      ],
+      "caption": "The Echo II accepts either arbitrary text for phoneme-based speech or raw LPC data for specific words, then outputs audio through its onboard jack."
+    }
+  },
   "related": [
     "arabic-speech-corpus",
     "audio-deepfake",

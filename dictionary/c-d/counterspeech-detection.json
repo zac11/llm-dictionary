@@ -5,6 +5,92 @@
   "type": "concept",
   "definition": "Recognizing responses that push back against hateful or harmful content with constructive replies.",
   "details": "Recognizing responses that push back against hateful or harmful content with constructive replies. Identifying counterspeech helps platforms amplify it and informs automated response generation.",
+  "explainer": {
+    "lead": "Counterspeech detection is the task of spotting replies that answer hateful or harmful content constructively. It can help platforms amplify useful pushback and guide systems that generate responses.",
+    "tiers": {
+      "eli5": "Imagine someone posts a mean message, and another person replies by calmly standing up for the people being attacked. Counterspeech detection is like a helper noticing that this reply pushes back without adding more meanness. That makes it easier to show the helpful reply to more people.",
+      "practitioner": "Treat detection as a reply-level classification task, with the original harmful content available as context. A counterspeech/not-counterspeech output can support ranking for amplification or inform automated response generation. Key pitfalls include confusing hostile rebuttals with constructive pushback and judging a reply without the content it answers.",
+      "paperLevel": "Given a hateful or harmful post p and a candidate reply r, the task is f(p, r) -> {counterspeech, not counterspeech}. A positive label requires r both to push back against p and to do so constructively. Detection supports amplification and automated response generation; opposition alone does not satisfy the label."
+    },
+    "example": "A post says, “People from this group do not belong here.” The reply, “Everyone deserves to feel welcome; we can disagree without attacking people,” is detected as counterspeech because it rejects the exclusionary message constructively.",
+    "usedIn": [
+      {
+        "name": "Online content platforms",
+        "detail": "Identify constructive pushback against hateful or harmful posts so it can be amplified.",
+        "url": ""
+      },
+      {
+        "name": "Automated response generation",
+        "detail": "Use detected counterspeech to inform systems that produce constructive replies.",
+        "url": ""
+      }
+    ],
+    "intuition": "Not every disagreement is counterspeech: the reply must resist harmful content while remaining constructive. Detection looks for that combination rather than simply finding anger, conflict, or another hateful message.",
+    "howItWorks": [
+      "Start with a reply to hateful or harmful content.",
+      "Check whether the reply pushes back against that content.",
+      "Check whether its response is constructive rather than abusive.",
+      "Label qualifying replies for amplification or response-generation use."
+    ],
+    "whyItMatters": "Constructive replies can otherwise be lost among hostile exchanges. Detecting them gives platforms a way to amplify useful responses and provides a basis for better automated replies.",
+    "misconceptions": [
+      "Any reply to hate speech counts as counterspeech.",
+      "Counterspeech detection is the same as hate-speech detection.",
+      "Detecting counterspeech automatically generates a reply."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "harmful-post",
+          "label": "Harmful post",
+          "note": "Hateful or harmful content being answered."
+        },
+        {
+          "id": "candidate-reply",
+          "label": "Candidate reply",
+          "note": "A response to evaluate in context."
+        },
+        {
+          "id": "detector",
+          "label": "Counterspeech check",
+          "note": "Tests constructive pushback."
+        },
+        {
+          "id": "label",
+          "label": "Detection label",
+          "note": "Counterspeech or not counterspeech."
+        },
+        {
+          "id": "downstream",
+          "label": "Downstream use",
+          "note": "Amplification or response generation."
+        }
+      ],
+      "edges": [
+        {
+          "from": "harmful-post",
+          "to": "detector",
+          "label": "context"
+        },
+        {
+          "from": "candidate-reply",
+          "to": "detector",
+          "label": "response"
+        },
+        {
+          "from": "detector",
+          "to": "label",
+          "label": ""
+        },
+        {
+          "from": "label",
+          "to": "downstream",
+          "label": ""
+        }
+      ],
+      "caption": "A reply is evaluated with its original post, then a positive detection can support amplification or response generation."
+    }
+  },
   "citation": {
     "title": "Counterspeech Detection",
     "authors": [],

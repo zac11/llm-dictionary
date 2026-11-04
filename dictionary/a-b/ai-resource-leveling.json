@@ -5,6 +5,113 @@
   "type": "concept",
   "definition": "Using AI to balance resource allocation across projects — smoothing demand against capacity constraints.",
   "details": "Using AI to balance resource allocation across projects — smoothing demand against capacity constraints.",
+  "explainer": {
+    "lead": "AI resource leveling helps several projects share limited people, equipment, or other capacity without everything peaking at once. It suggests how to spread or reschedule work so plans fit capacity while respecting project needs.",
+    "tiers": {
+      "eli5": "Imagine two class projects both want the same helpers during the same week. Instead of giving everyone too much to do, a smart planner moves some flexible work to a quieter week. Both projects get a fair share, and the helpers have a workload they can actually manage.",
+      "practitioner": "Use project demand, skills, availability, deadlines, and capacity calendars as inputs to a scheduling or portfolio-planning workflow, then review the proposed allocation as a scenario rather than an automatic final plan. Re-run it when priorities or availability change; unreliable demand estimates, overlooked skill constraints, and excessive rescheduling can make recommendations impractical.",
+      "paperLevel": "A simple formulation is: choose 0 <= x(p,r,t) <= d(p,r,t) such that sum_p x(p,r,t) <= c(r,t), where d is requested demand, c is capacity, and x is the allocation to project p, resource r, and period t. The objective can penalize peaks, unmet demand, and disruptive plan changes. Results depend on demand estimates and the completeness of constraints such as skills, deadlines, and availability."
+    },
+    "example": "Projects A and B each request four data engineers for the same week, but only six are available. The leveler assigns four to A and two to B, then moves B’s remaining two-person workload to the following week when capacity is free and B’s deadline still allows it.",
+    "usedIn": [
+      {
+        "name": "Project portfolio management",
+        "detail": "Balancing shared staff and budgets across concurrent projects.",
+        "url": ""
+      },
+      {
+        "name": "Professional services",
+        "detail": "Matching consultants with the required skills to client work without overbooking them.",
+        "url": ""
+      },
+      {
+        "name": "Construction planning",
+        "detail": "Smoothing demand for shared crews and equipment across project schedules.",
+        "url": ""
+      }
+    ],
+    "intuition": "Resource leveling is like flattening hills in a workload chart: move flexible demand away from crowded periods and into periods with spare capacity. AI helps search the many possible allocations while accounting for competing project needs.",
+    "howItWorks": [
+      "Collect each project’s resource demand, timing, and priorities.",
+      "Add capacity limits, availability, skills, and other constraints.",
+      "Generate allocations or schedule changes that reduce overloads and smooth demand.",
+      "Check the resulting plan against deadlines and practical constraints.",
+      "Update the recommendations when demand or capacity changes."
+    ],
+    "whyItMatters": "It makes overbooking and capacity bottlenecks visible before they disrupt delivery. A leveled plan can use spare periods more effectively while reducing the need for last-minute staffing changes.",
+    "misconceptions": [
+      "It does not create extra capacity; it redistributes demand against the capacity available.",
+      "It is not simply giving every project an equal share, because deadlines, skills, and priorities may require different allocations.",
+      "A mathematically balanced plan is not automatically workable if its demand estimates or constraints are wrong."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "demand",
+          "label": "Project demand",
+          "note": "Required resources, timing, and priorities"
+        },
+        {
+          "id": "capacity",
+          "label": "Capacity limits",
+          "note": "Availability, skills, and constraints"
+        },
+        {
+          "id": "optimizer",
+          "label": "AI allocation",
+          "note": "Searches for smoother feasible plans"
+        },
+        {
+          "id": "plan",
+          "label": "Leveled plan",
+          "note": "Assignments and schedule changes"
+        },
+        {
+          "id": "review",
+          "label": "Human review",
+          "note": "Checks deadlines and practical impact"
+        },
+        {
+          "id": "updates",
+          "label": "Actual workloads",
+          "note": "Reveals changes in demand and capacity"
+        }
+      ],
+      "edges": [
+        {
+          "from": "demand",
+          "to": "optimizer",
+          "label": "requests"
+        },
+        {
+          "from": "capacity",
+          "to": "optimizer",
+          "label": "constraints"
+        },
+        {
+          "from": "optimizer",
+          "to": "plan",
+          "label": "proposal"
+        },
+        {
+          "from": "plan",
+          "to": "review",
+          "label": ""
+        },
+        {
+          "from": "review",
+          "to": "updates",
+          "label": "approved plan"
+        },
+        {
+          "from": "updates",
+          "to": "optimizer",
+          "label": "feedback"
+        }
+      ],
+      "caption": "Demand and capacity feed an AI allocation process, whose proposed plan is reviewed and updated using actual workloads."
+    }
+  },
   "citation": {
     "title": "AI Starter Guide",
     "authors": [],

@@ -5,6 +5,98 @@
   "type": "concept",
   "definition": "Estimating cause-and-effect relationships from data rather than mere correlation, using frameworks like Pearl’s do-calculus and potential outcomes — increasingly applied to debias and explain ML.",
   "details": "Estimating cause-and-effect relationships from data rather than mere correlation, using frameworks like Pearl’s do-calculus and potential outcomes — increasingly applied to debias and explain ML.",
+  "explainer": {
+    "lead": "Causal inference is the work of estimating what would happen if we actively changed something, rather than simply noticing that two things move together. It gives machine-learning teams a principled way to study interventions, reduce unwanted bias, and explain model behaviour.",
+    "tiers": {
+      "eli5": "People carrying umbrellas and wet pavements often appear together, but umbrellas do not make the pavement wet. Causal inference asks what would happen if we changed one thing while keeping the comparison fair. It helps us tell the difference between something that merely happens alongside a result and something that actually produces it.",
+      "practitioner": "Frame the question as an intervention, then use either Pearl’s do-calculus or the potential-outcomes framework to define and estimate its effect. In ML, this can support debiasing and explanation, but a strong predictive score does not establish a causal effect. A key pitfall is treating an observed group difference as the effect without checking whether the groups were otherwise comparable.",
+      "paperLevel": "In potential-outcomes notation, an individual effect is Y(1) - Y(0), comparing the outcomes under treatment and no treatment. Pearl’s intervention notation distinguishes P(Y | do(X = x)) from the observational conditional P(Y | X = x), and do-calculus supplies rules for identifying intervention effects. Causal estimates depend on causal assumptions; association alone is not sufficient."
+    },
+    "example": "Suppose historical data shows a 40% click rate for users shown a feature and 25% for other users. Causal inference asks whether showing the feature itself changes clicks, estimating P(click | do(show feature)) against P(click | do(hide feature)) instead of treating the raw 15-point gap as its effect.",
+    "usedIn": [
+      {
+        "name": "ML debiasing",
+        "detail": "Estimating how changing a variable or decision process affects outcomes, rather than copying observed associations.",
+        "url": ""
+      },
+      {
+        "name": "ML explainability",
+        "detail": "Distinguishing changes that would alter an outcome from features that merely predict it.",
+        "url": ""
+      },
+      {
+        "name": "Observational data analysis",
+        "detail": "Studying cause and effect when the available data records what happened rather than a deliberate intervention.",
+        "url": ""
+      }
+    ],
+    "intuition": "Prediction asks what usually happens together; causal inference asks what would change if we intervened. The central task is to move from observed associations to an estimate of an intervention’s effect.",
+    "howItWorks": [
+      "State the intervention and outcome.",
+      "Separate association from intervention.",
+      "Choose do-calculus or potential outcomes.",
+      "Estimate the effect under causal assumptions.",
+      "Use the estimate for decisions, debiasing, or explanation."
+    ],
+    "whyItMatters": "A model can predict well while learning relationships that would not survive an intervention. Causal inference makes its estimates more relevant to actions and provides a stronger basis for debiasing and explaining ML systems.",
+    "misconceptions": [
+      "A strong correlation proves causation.",
+      "High predictive accuracy identifies causes.",
+      "Causal notation removes the need for assumptions."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "question",
+          "label": "Intervention question",
+          "note": "Define what will be changed and which outcome matters."
+        },
+        {
+          "id": "data",
+          "label": "Observed data",
+          "note": "Provides associations and measured outcomes."
+        },
+        {
+          "id": "framework",
+          "label": "Causal framework",
+          "note": "Uses do-calculus or potential outcomes."
+        },
+        {
+          "id": "effect",
+          "label": "Effect estimate",
+          "note": "Estimates the result of the intervention."
+        },
+        {
+          "id": "ml",
+          "label": "ML application",
+          "note": "Supports debiasing, explanation, and decisions."
+        }
+      ],
+      "edges": [
+        {
+          "from": "question",
+          "to": "framework",
+          "label": "defines"
+        },
+        {
+          "from": "data",
+          "to": "framework",
+          "label": "informs"
+        },
+        {
+          "from": "framework",
+          "to": "effect",
+          "label": "estimates"
+        },
+        {
+          "from": "effect",
+          "to": "ml",
+          "label": "guides"
+        }
+      ],
+      "caption": "Causal inference combines an intervention question and observed data to estimate an effect for downstream use."
+    }
+  },
   "citation": {
     "title": "Causal Inference",
     "authors": [],

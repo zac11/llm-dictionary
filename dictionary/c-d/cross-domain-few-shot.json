@@ -5,6 +5,81 @@
   "type": "concept",
   "definition": "Adapting to new classes from few examples when test domains differ from training — the harder, realistic variant of few-shot learning.",
   "details": "Adapting to new classes from few examples when test domains differ from training — the harder, realistic variant of few-shot learning.",
+  "explainer": {
+    "lead": "Cross-domain few-shot learning asks a model to recognize new classes after seeing only a handful of examples, while also coping with a change in the kind of data it sees. It matters because real applications rarely provide both abundant labels and test data that look just like the training data.",
+    "tiers": {
+      "eli5": "Imagine learning animals from colorful drawings, then being shown photographs of three unfamiliar sea creatures, with only two labeled photos of each. You would have to use what you learned from the drawings without expecting the photos to look the same. Cross-domain few-shot learning is that double challenge: learn something new from very few examples, in a setting that looks different.",
+      "practitioner": "A typical setup trains or pretrains a feature extractor on labeled source-domain data, then adapts it using a small target-domain support set before classifying target-domain queries. Evaluation should use new classes and target data drawn from a different domain, with no target-query labels leaking into adaptation. The main pitfalls are assuming source and target features transfer cleanly and overfitting the tiny support set.",
+      "paperLevel": "Let source tasks come from domain D_s and test tasks from domain D_t, where D_t differs from D_s and their class sets are disjoint. Each target task supplies a support set S containing K labeled examples per class for each of N classes, with K small; the learner must predict labels for query examples Q from the same target domain. Performance depends on both transfer across the domain gap and reliable adaptation from limited supervision, so methods that work in same-domain few-shot learning may degrade substantially."
+    },
+    "example": "After training on labeled photographs of everyday objects, a system receives five labeled microscope images for each of three new cell types. It uses those 15 support images to adapt, then classifies previously unseen microscope images as one of the three cell types.",
+    "intuition": "The model must carry broadly useful knowledge from one domain into another, then use a few target examples to work out what distinguishes the new classes. The difficulty is that both the classes and the appearance of the data have changed.",
+    "howItWorks": [
+      "Learn general features or an adaptation procedure from labeled source-domain tasks.",
+      "Move to a target domain whose data distribution and class set differ.",
+      "Receive a support set with only a few labeled examples of each new target class.",
+      "Adapt the representation or classifier without retraining on a large target dataset.",
+      "Predict labels for unseen target-domain query examples."
+    ],
+    "whyItMatters": "It tests whether few-shot learning can work under realistic deployment conditions, where labeled target data are scarce and collecting them in the original training domain is not an option. Success requires handling limited supervision and domain shift together rather than solving either problem alone.",
+    "misconceptions": [
+      "It is not ordinary few-shot learning with training and test examples drawn from the same domain.",
+      "It is not zero-shot learning: a small labeled support set from the target domain is available.",
+      "Strong same-domain few-shot accuracy does not establish good cross-domain performance."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "source",
+          "label": "Source domain",
+          "note": "Labeled training tasks"
+        },
+        {
+          "id": "features",
+          "label": "Learned features",
+          "note": "Transferable knowledge"
+        },
+        {
+          "id": "support",
+          "label": "Target support",
+          "note": "Few labels, new classes"
+        },
+        {
+          "id": "adapt",
+          "label": "Small adaptation",
+          "note": "Fit target distinctions"
+        },
+        {
+          "id": "queries",
+          "label": "Target queries",
+          "note": "Classify unseen examples"
+        }
+      ],
+      "edges": [
+        {
+          "from": "source",
+          "to": "features",
+          "label": "pretrain"
+        },
+        {
+          "from": "features",
+          "to": "adapt",
+          "label": "transfer"
+        },
+        {
+          "from": "support",
+          "to": "adapt",
+          "label": "few labels"
+        },
+        {
+          "from": "adapt",
+          "to": "queries",
+          "label": "predict"
+        }
+      ],
+      "caption": "Knowledge learned in the source domain is transferred, adjusted with a few target-domain labels, and applied to new target queries."
+    }
+  },
   "related": [
     "few-shot-learning"
   ],

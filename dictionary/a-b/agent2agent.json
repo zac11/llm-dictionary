@@ -5,7 +5,129 @@
   "type": "concept",
   "definition": "Agent2Agent (A2A) is an open protocol that defines how artificial intelligence agents communicate with each other across different systems.",
   "details": "It is intended to allow agents built by different vendors or frameworks to discover one another, exchange messages, and coordinate tasks.",
-  "story": "Picture hiring a brilliant new assistant on their first morning — smart, motivated, but with no idea how anything in your office actually works. It plans a little, acts a little, looks at the result, and then decides what to do next. It is the difference between a search engine and a helper who actually finishes the task. It is a loop of look, act, and learn — the same way you cook from a recipe you have never tried: add, taste, correct. And that habit of checking, acting, then checking again is Agent2Agent.",
+  "explainer": {
+    "lead": "Agent2Agent is like a universal translator for AI agents, letting software built by different companies talk to each other without needing custom integrations for every pair. It matters because without such a standard, each vendor's agents become isolated islands, forcing businesses to choose a single ecosystem or build expensive bridges themselves.",
+    "tiers": {
+      "eli5": "Imagine you and your friends all speak different languages, but you want to work on a group project. Agent2Agent is like giving everyone the same phrasebook so you can split up tasks, ask each other questions, and combine your work—without all learning the same native language. Each person still thinks their own way, but now they can actually cooperate.",
+      "practitioner": "To use A2A, an agent publishes an Agent Card over HTTP—a JSON document describing its capabilities, endpoint, and authentication requirements. Other agents discover this card, then exchange structured messages to negotiate and execute multi-step workflows. You'll typically handle TLS for transport, JWT or OpenID Connect for auth, and JSON for message bodies. Pitfall: A2A covers agent-to-agent communication only; connecting agents to tools and databases still requires MCP or proprietary adapters.",
+      "paperLevel": "Agent2Agent defines an open protocol for inter-agent communication across heterogeneous platforms, using Agent Cards (metadata documents) for capability advertisement and HTTP/JSON-based messaging for runtime coordination. The protocol explicitly avoids requiring shared internal state or proprietary integrations. Originating work: announced by Google in April 2025, transferred to the Linux Foundation in June 2025. Known limits: adoption is nascent; security guarantees depend on correct implementation of TLS, JWT, and OpenID Connect by each participating agent."
+    },
+    "example": "A sales agent at Salesforce needs to check inventory and schedule delivery. It discovers a supplier's Agent Card, which shows the supplier agent can check stock and accept orders. The sales agent sends a message requesting availability; the supplier agent replies with stock levels and proposed delivery slots. The sales agent confirms, and both update their own systems independently—never sharing databases, yet completing the sale together.",
+    "usedIn": [
+      {
+        "name": "Google AI platforms",
+        "detail": "Originator of the protocol, announced support in April 2025",
+        "url": ""
+      },
+      {
+        "name": "Microsoft AI platforms",
+        "detail": "Announced planned support for A2A integration",
+        "url": ""
+      },
+      {
+        "name": "AWS, Cisco, Salesforce, SAP",
+        "detail": "Joined the Linux Foundation project in 2025",
+        "url": ""
+      }
+    ],
+    "intuition": "Two AI agents from different companies need to collaborate on a task—one handles travel booking, another handles expense reporting. Instead of the companies building a custom connection, A2A lets them discover and talk to each other using a shared, open format.",
+    "howItWorks": [
+      "An agent publishes an Agent Card—a JSON metadata document describing what it can do and how to reach it.",
+      "Other agents discover this card, typically via HTTP, and read its capabilities and endpoint.",
+      "Agents exchange structured messages in a standard format to negotiate tasks, share updates, and coordinate.",
+      "Authentication and authorization are enforced using TLS, JWTs, and OpenID Connect.",
+      "Agents complete their joint workflow without ever needing shared internal state or proprietary integrations."
+    ],
+    "whyItMatters": "Without A2A, every pair of agent platforms needs a custom integration, creating exponential complexity and vendor lock-in. A shared protocol lets businesses mix best-of-breed agents from different suppliers, reducing fragmentation and switching costs.",
+    "misconceptions": [
+      "A2A replaces MCP—they address different layers; MCP connects agents to tools and data, A2A connects agents to each other.",
+      "A2A requires agents to share internal databases or state—agents remain fully independent, exchanging only messages.",
+      "A2A is a Google proprietary standard—governance transferred to the Linux Foundation in June 2025."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "agent-a",
+          "label": "Sales Agent",
+          "note": "Initiates task, seeks partner"
+        },
+        {
+          "id": "agent-card",
+          "label": "Agent Card",
+          "note": "JSON metadata on capabilities"
+        },
+        {
+          "id": "agent-b",
+          "label": "Supplier Agent",
+          "note": "Publishes card, responds to requests"
+        },
+        {
+          "id": "auth",
+          "label": "Auth Layer",
+          "note": "TLS, JWT, OpenID Connect"
+        },
+        {
+          "id": "messages",
+          "label": "Message Exchange",
+          "note": "Structured JSON over HTTP"
+        },
+        {
+          "id": "completion",
+          "label": "Task Complete",
+          "note": "Each agent updates own systems"
+        }
+      ],
+      "edges": [
+        {
+          "from": "agent-b",
+          "to": "agent-card",
+          "label": "publishes"
+        },
+        {
+          "from": "agent-a",
+          "to": "agent-card",
+          "label": "discovers"
+        },
+        {
+          "from": "agent-a",
+          "to": "auth",
+          "label": "authenticates"
+        },
+        {
+          "from": "auth",
+          "to": "agent-b",
+          "label": "verifies"
+        },
+        {
+          "from": "agent-a",
+          "to": "messages",
+          "label": "sends request"
+        },
+        {
+          "from": "messages",
+          "to": "agent-b",
+          "label": "delivers"
+        },
+        {
+          "from": "agent-b",
+          "to": "messages",
+          "label": "sends reply"
+        },
+        {
+          "from": "messages",
+          "to": "completion",
+          "label": "enables"
+        }
+      ],
+      "caption": "An agent discovers another's capabilities via an Agent Card, authenticates, then exchanges structured messages to complete a joint task without shared state."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Agent2Agent",
+        "url": "https://en.wikipedia.org/wiki/Agent2Agent"
+      }
+    ]
+  },
   "related": [
     "a-i-insight-forums",
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",

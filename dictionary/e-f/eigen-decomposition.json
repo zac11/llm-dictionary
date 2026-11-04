@@ -5,6 +5,97 @@
   "type": "concept",
   "definition": "Eigen-decomposition is the method of decomposing a square matrix into its eigenvalues and eigenvectors, which is an important tool for simplifying matrix operations and analyzing systems.",
   "details": "Eigen-decomposition is the method of decomposing a square matrix into its eigenvalues and eigenvectors, which is an important tool for simplifying matrix operations and analyzing systems.",
+  "explainer": {
+    "lead": "Eigen-decomposition rewrites a square matrix using special directions, called eigenvectors, and the amounts by which it stretches them, called eigenvalues. When such a decomposition exists, it can make repeated matrix operations much easier to calculate and understand.",
+    "tiers": {
+      "eli5": "Imagine a machine that stretches arrows without turning some of them. Eigen-decomposition finds those special arrows and records how much each one is stretched. Once you know that, using the machine many times is easy: just stretch each special arrow again and again.",
+      "practitioner": "For a diagonalizable matrix, form A = V Λ V⁻¹, where V contains eigenvectors and Λ contains eigenvalues on its diagonal. This is useful for matrix powers because Aᵏ = V Λᵏ V⁻¹, but the inverse requires a full set of linearly independent eigenvectors. Do not assume every square matrix can be decomposed this way.",
+      "paperLevel": "For a square matrix A, eigen-decomposition expresses it as A = V Λ V⁻¹ when A has n linearly independent eigenvectors; V contains those eigenvectors, and Λ = diag(λ₁, …, λₙ) contains their eigenvalues. Each pair satisfies A vᵢ = λᵢ vᵢ. The method is limited by whether the matrix is diagonalizable."
+    },
+    "example": "For A = [[2, 0], [0, 3]], the eigenvalues are 2 and 3, with eigenvectors [1, 0] and [0, 1]. Since A is already diagonal, V is the identity matrix and Λ = A. Therefore A⁵ = [[2⁵, 0], [0, 3⁵]] = [[32, 0], [0, 243]].",
+    "usedIn": [
+      {
+        "name": "Matrix computation",
+        "detail": "Simplifies calculations such as taking repeated powers of a diagonalizable matrix.",
+        "url": ""
+      },
+      {
+        "name": "Systems analysis",
+        "detail": "Represents a square matrix in terms of its eigenvalues and eigenvectors to analyze its behavior.",
+        "url": ""
+      }
+    ],
+    "intuition": "An eigenvector keeps its direction when the matrix acts on it, while its eigenvalue tells how much it is scaled. Eigen-decomposition describes the matrix through these directions and scaling factors instead of its original entries.",
+    "howItWorks": [
+      "Start with a square matrix A.",
+      "Find its eigenvalues and corresponding eigenvectors.",
+      "Place the eigenvectors as columns of V and the eigenvalues on the diagonal of Λ.",
+      "If V is invertible, write A = V Λ V⁻¹.",
+      "Use this form to simplify operations such as computing matrix powers."
+    ],
+    "whyItMatters": "It turns a matrix into a form where its action along independent directions is explicit. This can simplify matrix operations and support analysis of systems represented by matrices.",
+    "misconceptions": [
+      "Not every square matrix has an eigen-decomposition of the form A = V Λ V⁻¹.",
+      "Eigenvalues and eigenvectors are not extra matrices added to A; together they provide a way to represent A."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "matrix",
+          "label": "Square matrix",
+          "note": "The matrix A to analyze."
+        },
+        {
+          "id": "pairs",
+          "label": "Eigenvalue pairs",
+          "note": "Eigenvalues with matching eigenvectors."
+        },
+        {
+          "id": "vectors",
+          "label": "Vector matrix",
+          "note": "Eigenvectors become columns of V."
+        },
+        {
+          "id": "values",
+          "label": "Diagonal matrix",
+          "note": "Eigenvalues form the diagonal of Λ."
+        },
+        {
+          "id": "decomposition",
+          "label": "Decomposed matrix",
+          "note": "A = V Λ V⁻¹ when V is invertible."
+        }
+      ],
+      "edges": [
+        {
+          "from": "matrix",
+          "to": "pairs",
+          "label": "find"
+        },
+        {
+          "from": "pairs",
+          "to": "vectors",
+          "label": "arrange"
+        },
+        {
+          "from": "pairs",
+          "to": "values",
+          "label": "arrange"
+        },
+        {
+          "from": "vectors",
+          "to": "decomposition",
+          "label": "combine"
+        },
+        {
+          "from": "values",
+          "to": "decomposition",
+          "label": "combine"
+        }
+      ],
+      "caption": "A square matrix is represented through its eigenvectors and eigenvalues when it is diagonalizable."
+    }
+  },
   "citation": {
     "title": "Math Glossary for AI (François Fleuret notes)",
     "authors": [],

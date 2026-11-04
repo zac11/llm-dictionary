@@ -5,6 +5,92 @@
   "type": "concept",
   "definition": "Finetuned Language Net — Google’s instruction-tuning recipe that fine-tunes LMs on hundreds of tasks phrased as instructions, sharply improving zero-shot generalization.",
   "details": "Finetuned Language Net — Google’s instruction-tuning recipe that fine-tunes LMs on hundreds of tasks phrased as instructions, sharply improving zero-shot generalization.",
+  "explainer": {
+    "lead": "FLAN is Google’s recipe for teaching language models to follow instructions by fine-tuning them on hundreds of differently phrased tasks. The goal is a model that can handle a new task from its instruction alone, without being shown task-specific examples first.",
+    "tiers": {
+      "eli5": "Imagine practising many kinds of schoolwork, with every exercise written as a clear instruction. After enough practice, you may understand a new kind of exercise just by reading what it asks you to do. FLAN gives language models similar practice across hundreds of tasks.",
+      "practitioner": "Apply FLAN by converting examples from many tasks into instruction-based inputs and fine-tuning a language model on the resulting mixture. Its purpose is zero-shot generalization, so evaluate it on tasks the model can attempt from instructions alone rather than only on the fine-tuning tasks. Keep in mind that FLAN describes a training recipe, not a particular model architecture.",
+      "paperLevel": "FLAN fine-tunes a language model on a mixture of hundreds of tasks, with each task expressed as instructions. Formally, training examples from many tasks are mapped to instruction-based text pairs, and the resulting mixture is used for supervised fine-tuning to improve zero-shot performance on new tasks."
+    },
+    "example": "During fine-tuning, the model might practise instructions such as “Translate this sentence into French” and “Summarize this paragraph.” It could then receive the unseen instruction “Classify this review as positive or negative: The battery lasts all day” and answer “Positive” without being shown labelled reviews first.",
+    "usedIn": [
+      {
+        "name": "Google language-model training",
+        "detail": "FLAN is Google’s instruction-tuning recipe for fine-tuning language models on hundreds of tasks.",
+        "url": ""
+      },
+      {
+        "name": "Zero-shot language tasks",
+        "detail": "The approach is used to improve a model’s ability to generalize to tasks presented only through instructions.",
+        "url": ""
+      }
+    ],
+    "intuition": "A model that practises many tasks in a common instruction format can learn to interpret the instruction itself, rather than memorizing one fixed task. That shared practice is what supports better performance on unseen tasks.",
+    "howItWorks": [
+      "Collect training examples spanning hundreds of language tasks.",
+      "Phrase the examples as instructions so different tasks share a consistent instruction-following setup.",
+      "Fine-tune a language model on this mixture of instruction-based tasks.",
+      "Give the tuned model an instruction for a new task and let it respond without task-specific examples."
+    ],
+    "whyItMatters": "FLAN makes language models more useful when a requested task was not individually prepared during training. Its instruction-based fine-tuning sharply improves zero-shot generalization.",
+    "misconceptions": [
+      "FLAN is a fine-tuning recipe, not a neural-network architecture.",
+      "Zero-shot does not mean the model received no training; it means no examples of the new task are supplied at request time.",
+      "Instruction tuning is more than writing a single clever prompt because it changes the model through fine-tuning."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "tasks",
+          "label": "Hundreds of tasks",
+          "note": "Training examples from many language tasks"
+        },
+        {
+          "id": "instructions",
+          "label": "Instruction phrasing",
+          "note": "Tasks expressed as instructions"
+        },
+        {
+          "id": "finetune",
+          "label": "Fine-tuning",
+          "note": "Training on the instruction-based mixture"
+        },
+        {
+          "id": "model",
+          "label": "Tuned language model",
+          "note": "A model trained for instruction following"
+        },
+        {
+          "id": "zeroshot",
+          "label": "Unseen task",
+          "note": "A new instruction answered without task examples"
+        }
+      ],
+      "edges": [
+        {
+          "from": "tasks",
+          "to": "instructions",
+          "label": "rephrase"
+        },
+        {
+          "from": "instructions",
+          "to": "finetune",
+          "label": "examples"
+        },
+        {
+          "from": "finetune",
+          "to": "model",
+          "label": "updates"
+        },
+        {
+          "from": "model",
+          "to": "zeroshot",
+          "label": "generalizes"
+        }
+      ],
+      "caption": "FLAN turns many tasks into instruction-based training examples, then fine-tunes a language model for zero-shot generalization."
+    }
+  },
   "related": [
     "instruction-tuning"
   ],

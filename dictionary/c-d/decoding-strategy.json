@@ -5,6 +5,103 @@
   "type": "concept",
   "definition": "The rule for turning the model's next-token probability distribution into an actual token choice, balancing quality, diversity, and determinism.",
   "details": "The rule for turning the model's next-token probability distribution into an actual token choice, balancing quality, diversity, and determinism.",
+  "explainer": {
+    "lead": "A language model assigns probabilities to possible next tokens, but something still has to make the choice. The decoding strategy is that choice rule, shaping whether output is repeatable, varied, or more narrowly focused.",
+    "tiers": {
+      "eli5": "Imagine a model suggesting words for a sentence, like a friend offering several endings with different chances of being picked. A decoding strategy decides whether to take the top suggestion every time or sometimes choose another one. That choice can make the finished text predictable or more varied.",
+      "practitioner": "Decoding is configured during generation, separately from model training or weights. Deterministic selection supports repeatable outputs, while probabilistic selection introduces run-to-run variation; evaluate the chosen setting for repetition, diversity, latency, and task quality. Do not treat variability or repeatability as evidence of factual accuracy.",
+      "paperLevel": "At step t, the model supplies p_t(v | x, y_<t), and a decoding strategy maps that distribution to a selected token y_t, either deterministically or through random sampling. Generation then conditions on the extended sequence and repeats until a stopping condition. The strategy changes output selection and diversity without changing the model's underlying probability distribution or guaranteeing correctness."
+    },
+    "example": "After “The pet is a”, suppose the model assigns cat 0.60, dog 0.25, and fox 0.15. A highest-probability rule selects “cat” every time, while probabilistic selection can choose any of the three, producing different continuations across runs.",
+    "usedIn": [
+      {
+        "name": "Chat assistants",
+        "detail": "Controls whether responses to the same prompt stay repeatable or vary between runs.",
+        "url": ""
+      },
+      {
+        "name": "Machine translation",
+        "detail": "Selects successive tokens in the translated text from the model's predictions.",
+        "url": ""
+      },
+      {
+        "name": "Code generation",
+        "detail": "Balances repeatable completions against variation in candidate implementations.",
+        "url": ""
+      }
+    ],
+    "intuition": "The model offers a ranked set of possibilities rather than one unavoidable answer. Decoding is the decision rule that turns those possibilities into text, one token at a time.",
+    "howItWorks": [
+      "Read the prompt and tokens generated so far.",
+      "Obtain the model's probability distribution over next tokens.",
+      "Apply the decoding rule to select one token.",
+      "Append it to the sequence and repeat.",
+      "Stop when the generation stopping condition is reached."
+    ],
+    "whyItMatters": "The same model can produce noticeably different behavior under different decoding rules. Choosing one deliberately helps match repeatability and diversity to the task instead of treating generation settings as an afterthought.",
+    "misconceptions": [
+      "Decoding does not retrain the model or change its learned probabilities.",
+      "More varied output is not automatically more creative or higher quality.",
+      "Deterministic output is not necessarily factual or correct."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "sequence",
+          "label": "Current sequence",
+          "note": "Prompt plus tokens generated so far"
+        },
+        {
+          "id": "model",
+          "label": "Language model",
+          "note": "Predicts the next-token distribution"
+        },
+        {
+          "id": "probabilities",
+          "label": "Token probabilities",
+          "note": "A probability for each candidate token"
+        },
+        {
+          "id": "strategy",
+          "label": "Decoding strategy",
+          "note": "Applies the selection rule"
+        },
+        {
+          "id": "token",
+          "label": "Chosen token",
+          "note": "Appended before the next step"
+        }
+      ],
+      "edges": [
+        {
+          "from": "sequence",
+          "to": "model",
+          "label": "conditions"
+        },
+        {
+          "from": "model",
+          "to": "probabilities",
+          "label": "outputs"
+        },
+        {
+          "from": "probabilities",
+          "to": "strategy",
+          "label": "candidates"
+        },
+        {
+          "from": "strategy",
+          "to": "token",
+          "label": "selects"
+        },
+        {
+          "from": "token",
+          "to": "sequence",
+          "label": "extends"
+        }
+      ],
+      "caption": "Decoding repeatedly selects a token from the model's distribution and feeds it back into the sequence."
+    }
+  },
   "related": [
     "token-probability",
     "token"

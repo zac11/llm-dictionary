@@ -5,7 +5,97 @@
   "type": "concept",
   "definition": "The closed-world assumption (CWA), in a formal system of logic used for knowledge representation, is the presumption that a statement that is true is also known to be true.",
   "details": "Therefore, by the contrapositive, what is not currently known to be true must be false. The same name also refers to a logical formalization of this assumption by Raymond Reiter. The opposite of the closed-world assumption is the open-world assumption (OWA), stating that lack of knowledge does not imply falsity. Decisions on CWA vs. OWA determine the understanding of the actual semantics of a conceptual expression with the same notations of concepts. A successful formalization of natural language semantics usually cannot avoid an explicit revelation of whether the implicit logical backgrounds are based on CWA or OWA. Negation as failure is related to the closed-world assumption, as it amounts to believing false every predicate that cannot be proved to be true.",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. And that idea, made concrete, is Closed-world assumption.",
+  "explainer": {
+    "lead": "The closed-world assumption treats anything not known to be true as false. It matters because the same knowledge-base notation can produce different answers depending on whether missing information means “no” or merely “unknown.”",
+    "tiers": {
+      "eli5": "Imagine a club list that is supposed to include every member. If your name is missing, the closed-world assumption says you are not a member, rather than “we do not know.” This is useful for complete lists, but risky when the list might be incomplete.",
+      "practitioner": "In a formal knowledge base, CWA lets a query conclude that a predicate is false when it cannot be proved true; negation as failure follows the same basic idea. It fits settings where the stored information is treated as complete, but can turn missing or not-yet-entered facts into incorrect negative answers. The alternative OWA leaves such cases unknown.",
+      "paperLevel": "For a knowledge base KB and a statement p, CWA licenses the inference KB does not prove p, therefore KB proves not-p; OWA does not. Raymond Reiter is credited with a logical formalization under the same name. Its main limitation is that absence of proof need not indicate falsity when knowledge is incomplete, and negation as failure embodies the related unprovable-means-false rule."
+    },
+    "example": "Suppose a course database records that Alice is enrolled and is treated as a complete enrollment list. Bob has no enrollment record, so under CWA the answer to “Is Bob enrolled?” is false; under OWA, his status remains unknown.",
+    "usedIn": [
+      {
+        "name": "Knowledge representation",
+        "detail": "Used in formal logical systems to answer queries when unrecorded positive facts are to be treated as false.",
+        "url": ""
+      },
+      {
+        "name": "Negation as failure",
+        "detail": "Uses the related rule that a predicate which cannot be proved true is believed false.",
+        "url": ""
+      },
+      {
+        "name": "Natural-language semantics",
+        "detail": "Formalizations may need to state whether their implicit logical background follows CWA or OWA.",
+        "url": ""
+      }
+    ],
+    "intuition": "A closed world is like a supposedly complete record: absence from the record counts as a negative fact. CWA therefore turns “not known to be true” into “false,” instead of leaving the question open.",
+    "howItWorks": [
+      "Start with the statements known or provable in the formal system.",
+      "Ask whether a particular statement is known to be true.",
+      "If it is known, accept it as true.",
+      "If it is not known, apply CWA and treat it as false."
+    ],
+    "whyItMatters": "Choosing CWA or OWA changes the meaning of conceptual expressions even when their notation is identical. Making the choice explicit prevents missing knowledge from being silently interpreted as falsity, or complete records from being treated as inconclusive.",
+    "misconceptions": [
+      "CWA is not a guarantee that the knowledge base really is complete.",
+      "Under CWA, “unknown” is treated as false; under OWA, it is not.",
+      "CWA does not say that every known statement is false, only that unproved statements are treated as false."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "query",
+          "label": "Statement queried",
+          "note": "Ask whether a statement is true."
+        },
+        {
+          "id": "known",
+          "label": "Known true?",
+          "note": "Check the formal system's knowledge."
+        },
+        {
+          "id": "true",
+          "label": "Accepted true",
+          "note": "The statement is known."
+        },
+        {
+          "id": "false",
+          "label": "Treated false",
+          "note": "CWA converts lack of knowledge into falsity."
+        },
+        {
+          "id": "owa",
+          "label": "OWA contrast",
+          "note": "Lack of knowledge instead leaves truth unknown."
+        }
+      ],
+      "edges": [
+        {
+          "from": "query",
+          "to": "known",
+          "label": ""
+        },
+        {
+          "from": "known",
+          "to": "true",
+          "label": "yes"
+        },
+        {
+          "from": "known",
+          "to": "false",
+          "label": "no"
+        },
+        {
+          "from": "known",
+          "to": "owa",
+          "label": "alternative"
+        }
+      ],
+      "caption": "CWA answers an unproved statement with false, while OWA leaves it unknown."
+    }
+  },
   "related": [
     "unique-name-assumption",
     "abductive-reasoning",

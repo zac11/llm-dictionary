@@ -5,6 +5,112 @@
   "type": "concept",
   "definition": "The parallel hardware AI runs on: NVIDIA GPUs (H100/B200 class) dominating training and serving, Google TPUs, and inference-focused challengers (Groq LPUs, Cerebras).",
   "details": "The parallel hardware AI runs on: NVIDIA GPUs (H100/B200 class) dominating training and serving, Google TPUs, and inference-focused challengers (Groq LPUs, Cerebras). Accelerator access and interconnect topology, more than any algorithm, set the ceiling of what an organization can train and serve.",
+  "explainer": {
+    "lead": "Accelerators are the parallel computer chips that do the heavy work of training AI models and running them for users. They matter because the hardware an organization can obtain, and the way that hardware is connected, can limit its ambitions more than the choice of algorithm.",
+    "tiers": {
+      "eli5": "AI accelerators are like giving a huge cooking job to a kitchen full of cooks instead of asking one person to do everything. The number of cooks you can get and how easily they can pass dishes to each other decide how big a meal you can make. That is why organizations care about chips and their connections, not just clever recipes.",
+      "practitioner": "For training or serving, plan around accelerator access and interconnect topology, not just model code. H100/B200-class NVIDIA GPUs dominate training and serving; Google TPUs are another accelerator family, while Groq LPUs and Cerebras are inference-focused challengers. A common pitfall is assuming that adding chips automatically raises achievable scale when access and topology still constrain the system.",
+      "paperLevel": "Let H denote accessible accelerator capacity and T the interconnect topology; attainable training and serving scale is bounded by a conceptual hardware ceiling C(H, T), rather than by algorithms alone. Accelerators are parallel AI-execution hardware: NVIDIA H100/B200-class GPUs dominate training and serving, Google TPUs provide another family, and Groq LPUs and Cerebras target inference. C(H, T) is not a benchmark score or a claim that one accelerator is fastest for every workload."
+    },
+    "example": "An organization planning a large training run and an inference service first determines how many H100/B200-class GPUs it can access and how they are interconnected. That hardware envelope limits what it can realistically train and serve before it chooses an algorithm; an inference-focused deployment could also consider Groq LPUs or Cerebras.",
+    "usedIn": [
+      {
+        "name": "NVIDIA H100/B200-class GPUs",
+        "detail": "The dominant accelerator class for AI training and serving.",
+        "url": ""
+      },
+      {
+        "name": "Google TPUs",
+        "detail": "Google's family of parallel AI accelerator hardware.",
+        "url": ""
+      },
+      {
+        "name": "Groq LPUs",
+        "detail": "An inference-focused challenger to dominant GPU-based systems.",
+        "url": ""
+      },
+      {
+        "name": "Cerebras",
+        "detail": "Another challenger focused on AI inference hardware.",
+        "url": ""
+      }
+    ],
+    "intuition": "Think of AI work as a very large job that can be divided among many workers at once. More parallel hardware helps, but usable scale also depends on whether accelerators can be accessed and connected effectively.",
+    "howItWorks": [
+      "A training or serving job is divided into computations that can run in parallel.",
+      "Accelerator hardware executes those computations for the AI workload.",
+      "Multiple accelerators are linked by an interconnect, whose topology shapes how work and data move between them.",
+      "Accelerator access and interconnect topology together set the ceiling for what can be trained and served."
+    ],
+    "whyItMatters": "Accelerator availability determines whether an organization can turn its training and serving plans into running systems. Interconnect topology matters too, so hardware access and connections can impose a tighter ceiling than algorithmic design.",
+    "misconceptions": [
+      "A better algorithm cannot simply remove the ceiling imposed by available hardware.",
+      "More accelerators alone do not guarantee greater scale; interconnect topology also matters.",
+      "These devices are not interchangeable in role: Groq LPUs and Cerebras are inference-focused challengers, while NVIDIA GPUs dominate both training and serving."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "workload",
+          "label": "AI workload",
+          "note": "A training or serving job"
+        },
+        {
+          "id": "accelerators",
+          "label": "Accelerator pool",
+          "note": "Parallel hardware executes the work"
+        },
+        {
+          "id": "interconnect",
+          "label": "Interconnect topology",
+          "note": "Connects accelerators and shapes data movement"
+        },
+        {
+          "id": "training",
+          "label": "Training ceiling",
+          "note": "Limits what the organization can train"
+        },
+        {
+          "id": "serving",
+          "label": "Serving ceiling",
+          "note": "Limits what the organization can serve"
+        }
+      ],
+      "edges": [
+        {
+          "from": "workload",
+          "to": "accelerators",
+          "label": "parallel work"
+        },
+        {
+          "from": "accelerators",
+          "to": "interconnect",
+          "label": "connected by"
+        },
+        {
+          "from": "accelerators",
+          "to": "training",
+          "label": "sets access"
+        },
+        {
+          "from": "interconnect",
+          "to": "training",
+          "label": "sets scale"
+        },
+        {
+          "from": "accelerators",
+          "to": "serving",
+          "label": "sets access"
+        },
+        {
+          "from": "interconnect",
+          "to": "serving",
+          "label": "sets scale"
+        }
+      ],
+      "caption": "Accelerator access and interconnect topology jointly bound training and serving scale."
+    }
+  },
   "related": [
     "inference",
     "interconnect"

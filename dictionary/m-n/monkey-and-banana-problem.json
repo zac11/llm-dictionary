@@ -5,7 +5,111 @@
   "type": "concept",
   "definition": "The monkey and banana problem is a famous toy problem in artificial intelligence, particularly in logic programming and planning.",
   "details": "It has been framed as: A monkey is in a room containing a box and a bunch of bananas. The bananas are hanging from the ceiling out of reach of the monkey. How can the monkey obtain the bananas? The situation is used as a toy problem for computer science and can be solved with an expert system such as CLIPS. The example set of rules that CLIPS provides is somewhat fragile, in that, naive changes to the rulebase that might seem to a human of average intelligence to make common sense can cause the engine to fail to get the monkey to reach the banana. Other examples exist using Rules Based System (RBS), including a project implemented in Python.",
-  "story": "Picture an engineer at a cluttered workbench, turning a clever idea over in their hands until it finally clicks. At its heart it is a simple notion, once you strip away the fancy name. A small key that opens a much bigger door. It is one of those ideas that feels obvious only after someone shows it to you. And that idea, made concrete, is Monkey and banana problem.",
+  "explainer": {
+    "lead": "The monkey and banana problem is a small reasoning puzzle used to test whether a computer can choose a sequence of actions to reach a goal. It matters because even this simple setup can expose how easily a rule-based system breaks when its rules are changed.",
+    "tiers": {
+      "eli5": "Imagine a toy monkey that wants bananas hanging too high to reach, with a box it can stand on. The monkey has to figure out the right order: move the box, climb up, and take the bananas. Computer scientists use this little puzzle to practice telling computers how to solve problems step by step.",
+      "practitioner": "The problem is used as a toy task in logic programming, planning, and rule-based systems, including CLIPS and a Python implementation. Rules encode the available actions and the goal of obtaining the bananas. A key pitfall is fragility: apparently sensible edits to the CLIPS rulebase can prevent the engine from reaching the goal.",
+      "paperLevel": "A state describes the monkey, box, and bananas; rules specify transitions between states, and the goal state is one in which the monkey has the bananas. Solving the task means finding a rule-enabled sequence of transitions from the initial state to that goal. The example CLIPS rules are fragile, so seemingly common-sense rulebase changes can make the engine fail."
+    },
+    "example": "The monkey moves to the box, pushes it beneath the bananas, climbs onto it, and grabs the bananas. The solution works because the actions occur in an order that makes the final action possible.",
+    "usedIn": [
+      {
+        "name": "CLIPS",
+        "detail": "An expert system supplied with example rules for solving the problem.",
+        "url": ""
+      },
+      {
+        "name": "Rules Based System projects",
+        "detail": "Other implementations exist, including a project written in Python.",
+        "url": ""
+      },
+      {
+        "name": "Logic programming and planning",
+        "detail": "The puzzle serves as a compact toy problem for reasoning about actions and goals.",
+        "url": ""
+      }
+    ],
+    "intuition": "The bananas are out of reach, but the box provides a way to change the situation. The reasoning task is to connect the starting arrangement to the goal through a useful sequence of actions.",
+    "howItWorks": [
+      "Describe the room, including the monkey, box, and hanging bananas.",
+      "Give the system rules for the monkey's possible actions.",
+      "Apply rules to move the monkey and box into a useful arrangement.",
+      "Continue until the monkey can reach and take the bananas."
+    ],
+    "whyItMatters": "It offers a small, understandable setting for demonstrating rule-based reasoning and planning. It also shows that a working demonstration can be brittle when apparently reasonable changes are made to its rules.",
+    "misconceptions": [
+      "It is not one particular algorithm or software product; it is a toy problem with multiple implementations.",
+      "Solving it does not show general common sense, because small rulebase changes can cause failure."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "state",
+          "label": "Room state",
+          "note": "Monkey, box, and unreachable bananas"
+        },
+        {
+          "id": "rules",
+          "label": "Action rules",
+          "note": "Available rule-based actions"
+        },
+        {
+          "id": "actions",
+          "label": "Chosen actions",
+          "note": "Move the monkey and box"
+        },
+        {
+          "id": "updated",
+          "label": "Updated state",
+          "note": "Box positioned beneath bananas"
+        },
+        {
+          "id": "goal",
+          "label": "Goal test",
+          "note": "Can the monkey take the bananas?"
+        },
+        {
+          "id": "bananas",
+          "label": "Monkey has bananas",
+          "note": "The desired final state"
+        }
+      ],
+      "edges": [
+        {
+          "from": "state",
+          "to": "rules",
+          "label": "initial state"
+        },
+        {
+          "from": "rules",
+          "to": "actions",
+          "label": "selects"
+        },
+        {
+          "from": "actions",
+          "to": "updated",
+          "label": "changes"
+        },
+        {
+          "from": "updated",
+          "to": "goal",
+          "label": "checks"
+        },
+        {
+          "from": "goal",
+          "to": "rules",
+          "label": "not yet"
+        },
+        {
+          "from": "goal",
+          "to": "bananas",
+          "label": "yes"
+        }
+      ],
+      "caption": "The system applies action rules and updates the room until the monkey obtains the bananas."
+    }
+  },
   "related": [
     "bin-covering-problem",
     "bin-packing-problem",

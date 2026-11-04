@@ -5,7 +5,103 @@
   "type": "concept",
   "definition": "A text generation strategy that selects the single most probable next token at each step, without considering alternative sequences.",
   "details": "Greedy decoding is fast and deterministic but can lead to suboptimal overall sequences and repetitive text, since it never reconsiders earlier choices.",
-  "story": "Imagine a sketch artist who starts with static and, stroke by stroke, sharpens it into a face. The result feels creative because it is memory, reshuffled at speed. Given a starting line, the machine imagines what comes next — a word, a note, a patch of a picture. The model dreams a little, then cleans up the dream. And that is Greedy Decoding — making something new out of everything it has ever seen.",
+  "explainer": {
+    "lead": "Greedy decoding generates text by always taking the most likely next token. It is quick and predictable, but a choice that looks best right now can lead to a weaker or repetitive result later.",
+    "tiers": {
+      "eli5": "Imagine telling a story by always picking the word that seems most obvious next, without thinking about the rest of the sentence. This makes storytelling fast, and the same setup gives the same story. But you can get stuck repeating yourself or miss a better story that needed a less obvious word earlier.",
+      "practitioner": "At each generation step, select the highest-probability token, append it to the context, and continue until generation ends. It is useful when speed and deterministic output matter, but it offers no way to reconsider earlier choices. Watch for repetitive text and locally sensible choices that produce a poor overall sequence.",
+      "paperLevel": "Given context x_<t and token probabilities p(x_t | x_<t), greedy decoding chooses x_t = argmax_v p(v | x_<t) and repeats. The procedure is deterministic for fixed probabilities and requires only one token choice per step. Its central limitation is that maximizing each local probability does not guarantee the best overall sequence, and earlier decisions are never revised."
+    },
+    "example": "After “The cat sat on the”, suppose the model assigns “mat” a probability of 0.70, “floor” 0.20, and “sofa” 0.10. Greedy decoding chooses “mat”, adds it to the text, and calculates the next token using “The cat sat on the mat” as the new context.",
+    "usedIn": [
+      {
+        "name": "Text completion",
+        "detail": "Produces a deterministic continuation by repeatedly choosing the most likely token.",
+        "url": ""
+      },
+      {
+        "name": "Code generation",
+        "detail": "Can generate code quickly, although locally likely tokens may not give the best full output.",
+        "url": ""
+      },
+      {
+        "name": "Machine translation",
+        "detail": "Can build a translation one token at a time without exploring alternative sequences.",
+        "url": ""
+      }
+    ],
+    "intuition": "Greedy decoding is like walking by always taking the step that looks best immediately, without checking where the whole path leads. Its simplicity makes it fast, but it can settle on a poor route.",
+    "howItWorks": [
+      "Start with the prompt or text generated so far.",
+      "Estimate a probability for every possible next token.",
+      "Choose the single token with the highest probability.",
+      "Append that token to the text and update the context.",
+      "Repeat until generation ends."
+    ],
+    "whyItMatters": "Greedy decoding provides a simple, fast baseline for text generation with repeatable choices. Its drawbacks show why the most probable next token is not necessarily the best foundation for the complete output.",
+    "misconceptions": [
+      "The most likely next token does not guarantee the best overall sequence.",
+      "Deterministic generation does not mean the output cannot be repetitive or poor.",
+      "Greedy decoding does not compare and revise complete candidate sequences."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "context",
+          "label": "Current text",
+          "note": "The prompt plus tokens generated so far."
+        },
+        {
+          "id": "probabilities",
+          "label": "Token probabilities",
+          "note": "Scores every possible next token."
+        },
+        {
+          "id": "choice",
+          "label": "Highest probability",
+          "note": "Selects one token without exploring alternatives."
+        },
+        {
+          "id": "append",
+          "label": "Append token",
+          "note": "Adds the chosen token to the text."
+        },
+        {
+          "id": "output",
+          "label": "Generated text",
+          "note": "Produced by repeating the same local choice."
+        }
+      ],
+      "edges": [
+        {
+          "from": "context",
+          "to": "probabilities",
+          "label": "predict next"
+        },
+        {
+          "from": "probabilities",
+          "to": "choice",
+          "label": "compare"
+        },
+        {
+          "from": "choice",
+          "to": "append",
+          "label": "selected token"
+        },
+        {
+          "from": "append",
+          "to": "context",
+          "label": "repeat"
+        },
+        {
+          "from": "append",
+          "to": "output",
+          "label": "finish"
+        }
+      ],
+      "caption": "Greedy decoding repeatedly selects the highest-probability next token and feeds it back into the context."
+    }
+  },
   "related": [
     "grammar-constrained-decoding",
     "beam-search",

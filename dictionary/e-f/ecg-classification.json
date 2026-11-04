@@ -5,6 +5,98 @@
   "type": "concept",
   "definition": "Classifying heart rhythms from electrocardiogram signals — arrhythmia detection where deep models now match cardiologist-level performance on benchmarks.",
   "details": "Classifying heart rhythms from electrocardiogram signals — arrhythmia detection where deep models now match cardiologist-level performance on benchmarks.",
+  "explainer": {
+    "lead": "ECG classification turns the heart’s electrical tracing into rhythm labels, such as normal rhythm or a particular arrhythmia. It can help computers flag abnormal recordings for review, and deep models have reached cardiologist-level performance on some benchmarks.",
+    "tiers": {
+      "eli5": "An ECG draws the heart’s activity as a wiggly line, a bit like the beat of a song drawn on paper. A computer learns which wiggles belong to normal rhythms and which suggest unusual ones, then labels new recordings. Its label can be a useful warning, but it is not automatically a final diagnosis.",
+      "practitioner": "A typical pipeline cleans and segments ECG signals, trains a deep model on recordings with rhythm labels, and outputs class probabilities for new segments or recordings. Evaluate with patient-level data splits to avoid leakage, and inspect per-class performance because rare rhythms and overall accuracy can hide important failures. Noise, changing recording conditions, and benchmark-specific performance are practical concerns.",
+      "paperLevel": "Given an ECG segment x, represented as a voltage time series, learn a function f that maps x to a rhythm label y or a probability distribution p(y | x). Deep models have matched cardiologist-level performance on some arrhythmia benchmarks, but that result does not by itself establish robustness to noise, different recording settings, or clinical deployment."
+    },
+    "example": "A 10-second ECG segment is cleaned and passed to a trained classifier. The model assigns its highest probability to atrial fibrillation rather than normal sinus rhythm, so the segment is flagged with that predicted label for review.",
+    "usedIn": [
+      {
+        "name": "Arrhythmia detection",
+        "detail": "Assigning ECG recordings to normal or abnormal rhythm categories.",
+        "url": ""
+      },
+      {
+        "name": "Cardiac monitoring",
+        "detail": "Flagging rhythm patterns in ECG signals for further review.",
+        "url": ""
+      },
+      {
+        "name": "Model evaluation",
+        "detail": "Comparing deep-learning systems on labelled arrhythmia benchmarks.",
+        "url": ""
+      }
+    ],
+    "intuition": "Different heart rhythms leave different patterns in the timing and shape of an ECG. A classifier learns those patterns from labelled recordings and uses them to predict the rhythm in a new one.",
+    "howItWorks": [
+      "Record an ECG as one or more voltage signals changing over time.",
+      "Clean the signal and divide it into beats, windows, or complete recordings.",
+      "Train a model on examples whose rhythm labels are already known.",
+      "For a new ECG, predict probabilities for the possible rhythm classes.",
+      "Select or report a label, then test performance on separate patient data."
+    ],
+    "whyItMatters": "Automatic rhythm labels can make large numbers of ECG recordings easier to screen and compare. Strong benchmark results also show that deep models can learn clinically meaningful patterns directly from these signals.",
+    "misconceptions": [
+      "A predicted arrhythmia label is not by itself a complete clinical diagnosis.",
+      "Cardiologist-level performance on one benchmark does not guarantee the same performance in every setting.",
+      "Classifying a short beat or segment is not necessarily the same task as classifying an entire recording."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "ecg",
+          "label": "ECG recording",
+          "note": "Voltage signals over time"
+        },
+        {
+          "id": "prepare",
+          "label": "Clean and segment",
+          "note": "Prepare beats or windows"
+        },
+        {
+          "id": "model",
+          "label": "Rhythm classifier",
+          "note": "Learned signal patterns"
+        },
+        {
+          "id": "probabilities",
+          "label": "Class probabilities",
+          "note": "Scores for rhythm labels"
+        },
+        {
+          "id": "label",
+          "label": "Predicted rhythm",
+          "note": "Normal or arrhythmia class"
+        }
+      ],
+      "edges": [
+        {
+          "from": "ecg",
+          "to": "prepare",
+          "label": "raw signals"
+        },
+        {
+          "from": "prepare",
+          "to": "model",
+          "label": "ECG segments"
+        },
+        {
+          "from": "model",
+          "to": "probabilities",
+          "label": "predictions"
+        },
+        {
+          "from": "probabilities",
+          "to": "label",
+          "label": "selection"
+        }
+      ],
+      "caption": "An ECG flows from signal preparation through a trained classifier to a predicted rhythm label."
+    }
+  },
   "citation": {
     "title": "ECG Classification",
     "authors": [],

@@ -5,6 +5,128 @@
   "type": "concept",
   "definition": "A mechanism that lets each position in a sequence gather information from other positions, weighted by learned relevance.",
   "details": "A mechanism that lets each position in a sequence gather information from other positions, weighted by learned relevance. Instead of compressing history into a fixed state (like RNNs), attention gives direct access to the entire context.",
+  "explainer": {
+    "lead": "Attention lets a model decide which pieces of a sequence are useful for the piece it is working on. This gives each position direct access to relevant context, rather than requiring the whole history to fit into one fixed memory state.",
+    "tiers": {
+      "eli5": "Imagine answering a question about a story by highlighting the sentences that help, instead of treating every sentence as equally important. Attention does something similar: each word can look at the other words and focus more on the useful ones. It then mixes their information, giving a bigger share to the words with stronger highlights.",
+      "practitioner": "Implementations commonly turn positions into query, key, and value vectors, compare queries with keys, normalize the scores, and take a weighted sum of values. Masks prevent disallowed positions from contributing, while long contexts can be expensive because many position pairs are compared. Check mask direction and tensor shapes when a model ignores context or leaks future positions.",
+      "paperLevel": "For a query q_i, keys k_j, and values v_j, a common form is a_ij = softmax_j(s(q_i, k_j)) and o_i = sum_j a_ij v_j, where s is a learned compatibility score. This content-dependent weighted sum provides direct access to the allowed context instead of routing all history through a fixed recurrent state. The number of query-key comparisons can become costly for long sequences, and attention weights alone do not establish why a model made a decision."
+    },
+    "example": "While processing “it” in “The cat sat on the mat because it was tired,” attention can give “cat” a larger weight than “mat” if that information is more relevant. The representation of “it” then draws more heavily from “cat,” without relying on a single fixed summary of all the preceding words.",
+    "usedIn": [
+      {
+        "name": "Language modeling",
+        "detail": "Uses information from context positions to build representations and make predictions for the current position.",
+        "url": ""
+      },
+      {
+        "name": "Machine translation",
+        "detail": "Lets positions gather relevant information from the available source and target context.",
+        "url": ""
+      },
+      {
+        "name": "Text summarization",
+        "detail": "Allows representations or generated positions to draw directly from relevant parts of the input text.",
+        "url": ""
+      }
+    ],
+    "intuition": "Different parts of the context matter to different positions. Attention learns a fresh set of relevance weights for each position, then uses those weights to collect the most useful information.",
+    "howItWorks": [
+      "Represent the current position and each accessible context position.",
+      "Compare the current position with the context to produce relevance scores.",
+      "Normalize the scores into weights over the accessible positions.",
+      "Blend the context information using those weights.",
+      "Learn the representations and scoring through training."
+    ],
+    "whyItMatters": "Attention makes relevant context directly available where it is needed, avoiding the bottleneck of compressing all history into a fixed state. Its weights also adapt to the input and to the position being processed.",
+    "misconceptions": [
+      "Attention usually blends information with continuous weights rather than selecting one position outright.",
+      "A high attention weight does not by itself prove why a model made a prediction.",
+      "Attention is a mathematical operation, not human attention or awareness."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "positions",
+          "label": "Sequence positions",
+          "note": "Each position supplies representations."
+        },
+        {
+          "id": "query",
+          "label": "Current query",
+          "note": "Describes what the current position matches."
+        },
+        {
+          "id": "keys",
+          "label": "Context keys",
+          "note": "Provide features for relevance comparisons."
+        },
+        {
+          "id": "values",
+          "label": "Context values",
+          "note": "Carry the information to be gathered."
+        },
+        {
+          "id": "scores",
+          "label": "Relevance scores",
+          "note": "Measure each query-key match."
+        },
+        {
+          "id": "weights",
+          "label": "Normalized weights",
+          "note": "Scores become context mixing weights."
+        },
+        {
+          "id": "output",
+          "label": "Contextual output",
+          "note": "Values are combined by weight."
+        }
+      ],
+      "edges": [
+        {
+          "from": "positions",
+          "to": "query",
+          "label": "current"
+        },
+        {
+          "from": "positions",
+          "to": "keys",
+          "label": "context"
+        },
+        {
+          "from": "positions",
+          "to": "values",
+          "label": "content"
+        },
+        {
+          "from": "query",
+          "to": "scores",
+          "label": "compare"
+        },
+        {
+          "from": "keys",
+          "to": "scores",
+          "label": "compare"
+        },
+        {
+          "from": "scores",
+          "to": "weights",
+          "label": "normalize"
+        },
+        {
+          "from": "weights",
+          "to": "output",
+          "label": "weight"
+        },
+        {
+          "from": "values",
+          "to": "output",
+          "label": "blend"
+        }
+      ],
+      "caption": "A position matches its query against context keys, normalizes the scores into weights, and uses them to blend context values."
+    }
+  },
   "related": [
     "attention"
   ],

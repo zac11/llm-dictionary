@@ -10,7 +10,98 @@
   ],
   "definition": "An alignment paradigm that trains models to critique and refine responses using a specified set of behavioral principles rather than direct human annotation.",
   "details": "Constitutional AI operationalizes harmlessness and helpfulness training by employing automated model supervision, removing human annotators from exposure to toxic red-teaming vectors while producing scalable supervision signals.",
-  "story": "Picture guardrails on a mountain road — not there to slow you down on the straightaways, but to keep you from flying off the cliff. It is the habit of asking, before every launch, what could go wrong — and then doing something about it. Think of it as the quiet rule that a tool should be useful without being dangerous. It is the difference between “it works” and “it is safe to put in front of people.” That deliberate caution is Constitutional AI.",
+  "explainer": {
+    "lead": "Constitutional AI is a way to train language models using an explicit list of behavioral principles, often called a constitution. Instead of relying entirely on people to judge every response, the model helps critique and improve its own answers, making alignment supervision easier to scale.",
+    "tiers": {
+      "eli5": "Imagine teaching a student to check their work against a class rulebook. The student writes an answer, reads the rules, explains what went wrong, and tries again. Those improved answers can then help teach the student to be more helpful and avoid harmful behavior.",
+      "practitioner": "Use a written constitution to guide model-generated critiques and revisions, then turn the resulting preference or revision data into training signals. The main engineering concerns are unclear or conflicting principles and flawed model self-critiques; automated supervision still needs evaluation rather than blind trust.",
+      "paperLevel": "Given a constitution C and an initial response y to a prompt x, the model generates a critique conditioned on C and produces a revised response y'. These model-generated revisions and judgments provide supervision for optimizing helpfulness and harmlessness without direct human annotation of every example. The approach can inherit errors in the supervising model and weaknesses or omissions in C."
+    },
+    "example": "For the prompt “How do I break into someone’s email account?”, a model initially gives intrusion instructions. A principle prohibiting help with unauthorized access leads it to critique that answer and revise it into a refusal with safe guidance on securing an account or recovering access to one’s own.",
+    "usedIn": [
+      {
+        "name": "Language model alignment",
+        "detail": "Training responses to follow specified principles for helpfulness and harmlessness.",
+        "url": ""
+      },
+      {
+        "name": "Red-teaming workflows",
+        "detail": "Producing supervision without repeatedly exposing human annotators to toxic prompts and outputs.",
+        "url": ""
+      },
+      {
+        "name": "Scalable model supervision",
+        "detail": "Using model-generated critiques and revisions instead of direct human annotation for every response.",
+        "url": ""
+      }
+    ],
+    "intuition": "Give the model a clear rulebook, then let it use that rulebook to inspect and repair its own work. The improved responses become examples it can learn from.",
+    "howItWorks": [
+      "Specify behavioral principles covering the desired helpful and harmless conduct.",
+      "Generate an initial response to a prompt.",
+      "Ask the model to critique that response against the principles.",
+      "Revise the response to address the critique.",
+      "Use the resulting model-generated judgments or improved responses as training signals."
+    ],
+    "whyItMatters": "It turns alignment goals into an explicit, repeatable supervision process and reduces the need for people to label large volumes of harmful material. This can make helpfulness and harmlessness training more scalable, while keeping the chosen principles and the model’s judgment important sources of error.",
+    "misconceptions": [
+      "It does not mean the AI has a legal constitution; the term refers to a specified set of training principles.",
+      "It does not eliminate human involvement altogether, because people still choose the principles and design the training process.",
+      "A model-generated critique is not automatically correct and can reproduce the model’s own mistakes."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "constitution",
+          "label": "Behavioral principles",
+          "note": "The specified rulebook for helpful and harmless responses."
+        },
+        {
+          "id": "response",
+          "label": "Initial response",
+          "note": "The model’s first answer to a prompt."
+        },
+        {
+          "id": "critique",
+          "label": "Model critique",
+          "note": "The response is checked against the principles."
+        },
+        {
+          "id": "revision",
+          "label": "Revised response",
+          "note": "The model repairs problems identified in its answer."
+        },
+        {
+          "id": "training",
+          "label": "Training signal",
+          "note": "Revisions and judgments guide further optimization."
+        }
+      ],
+      "edges": [
+        {
+          "from": "response",
+          "to": "critique",
+          "label": "answer"
+        },
+        {
+          "from": "constitution",
+          "to": "critique",
+          "label": "principles"
+        },
+        {
+          "from": "critique",
+          "to": "revision",
+          "label": "feedback"
+        },
+        {
+          "from": "revision",
+          "to": "training",
+          "label": "supervision"
+        }
+      ],
+      "caption": "A model uses explicit principles to critique and revise its responses, producing supervision for alignment training."
+    }
+  },
   "related": [
     "rlhf",
     "deep-reinforcement-learning",

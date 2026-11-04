@@ -5,6 +5,90 @@
   "type": "architecture",
   "definition": "An attention layer is a component in neural network architectures that weighs the input features of the data based on their importance to the task at hand.",
   "details": "An attention layer is a component in neural network architectures that weighs the input features of the data based on their importance to the task at hand. It is a key component of models that require focus on specific aspects of the input data, such as models that involve natural language processing.",
+  "explainer": {
+    "lead": "An attention layer helps a neural network concentrate on the parts of its input that matter most for the current task. Instead of treating every feature equally, it assigns different levels of importance and produces a representation shaped by those priorities.",
+    "tiers": {
+      "eli5": "Imagine reading a long sentence while looking for who performed an action. Some words deserve more of your focus than others, and an attention layer gives a computer a similar way to emphasize useful clues. It then passes along a version of the information where those clues count more strongly.",
+      "practitioner": "Use an attention layer when a model needs to emphasize different input features according to the task, as in natural language processing. Its output is a weighted representation rather than a final decision; evaluate whether that selective weighting improves the task instead of treating the weights alone as proof of useful behavior.",
+      "paperLevel": "Given input features x_1, ..., x_n, an attention layer assigns task-dependent importance weights a_1, ..., a_n and produces a weighted representation, commonly written as z = sum_i a_i x_i. This general definition does not specify how the weights are scored or normalized, so different attention mechanisms can implement those steps differently."
+    },
+    "example": "While processing “The cat slept because it was tired,” a language model interpreting “it” can give greater weight to features associated with “cat” than to unrelated words. The resulting representation emphasizes the input features most useful for that task.",
+    "usedIn": [
+      {
+        "name": "Natural language processing",
+        "detail": "Helps models focus on particular aspects of text or other input data when performing a task.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Input features",
+        "detail": "The numerical representations of the data that the layer can emphasize or de-emphasize."
+      },
+      {
+        "name": "Importance weighting",
+        "detail": "The operation that assigns weights according to each feature's relevance to the task."
+      },
+      {
+        "name": "Weighted representation",
+        "detail": "The resulting combination of features, with more important inputs contributing more strongly."
+      }
+    ],
+    "flow": [
+      "The layer receives input features from the data or an earlier network component.",
+      "It determines how important those features are for the task at hand.",
+      "It applies the corresponding importance weights to the features.",
+      "It passes the weighted representation to later parts of the neural network."
+    ],
+    "whyItMatters": "Attention layers let neural networks allocate their processing unevenly rather than giving every input feature the same influence. This is especially useful when only certain aspects of the input are relevant to a particular task.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "features",
+          "label": "Input features",
+          "note": "Representations entering the layer"
+        },
+        {
+          "id": "weights",
+          "label": "Importance weights",
+          "note": "Task-dependent emphasis for features"
+        },
+        {
+          "id": "combine",
+          "label": "Weighted combination",
+          "note": "Applies weights to the inputs"
+        },
+        {
+          "id": "output",
+          "label": "Focused representation",
+          "note": "Output passed to later network parts"
+        }
+      ],
+      "edges": [
+        {
+          "from": "features",
+          "to": "weights",
+          "label": "scored"
+        },
+        {
+          "from": "features",
+          "to": "combine",
+          "label": "features"
+        },
+        {
+          "from": "weights",
+          "to": "combine",
+          "label": "weights"
+        },
+        {
+          "from": "combine",
+          "to": "output",
+          "label": "produces"
+        }
+      ],
+      "caption": "An attention layer scores input features by task relevance, weights them, and emits a focused representation."
+    }
+  },
   "related": [
     "attention",
     "natural-language-processing",

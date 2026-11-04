@@ -5,7 +5,98 @@
   "type": "concept",
   "definition": "In machine learning, the delta rule is a gradient descent learning rule for updating the weights of the inputs to artificial neurons in a single-layer neural network.",
   "details": "It can be derived as the backpropagation algorithm for a single-layer neural network with mean-square error loss function. For a neuron j {\\displaystyle j} with activation function g ( x ) {\\displaystyle g(x)} , the delta rule for neuron j {\\displaystyle j} 's i {\\displaystyle i} -th weight w j i {\\displaystyle w_{ji}} is given by Δ w j i = α ( t j − y j ) g ′ ( h j ) x i , {\\displaystyle \\Delta w_{ji}=\\alpha (t_{j}-y_{j})g'(h_{j})x_{i},} where α {\\displaystyle \\alpha } is a small constant called learning rate g ( x ) {\\displaystyle g(x)} is the neuron's activation function g ′ {\\displaystyle g'} is the derivative of g {\\displaystyle g} t j {\\displaystyle t_{j}} is the target output h j {\\displaystyle h_{j}} is the weighted sum of the neuron's inputs y j {\\displaystyle y_{j}} is the actual output x i {\\displaystyle x_{i}} is the i {\\displaystyle i} -th input. It holds that h j = ∑ i x i w j i {\\textstyle h_{j}=\\sum _{i}x_{i}w_{ji}} and y j = g ( h j ) {\\displaystyle y_{j}=g(h_{j})} . The delta rule is commonly stated in simplified form for a neuron with a linear activation function as Δ w j i = α ( t j − y j ) x i {\\displaystyle \\Delta w_{ji}=\\alpha \\left(t_{j}-y_{j}\\right)x_{i}} W",
-  "story": "Imagine a factory floor where each workstation can glance at every other workstation before doing its part. It is the blueprint that makes everything else possible. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. Structure decides what the model can even express — the blueprint before the bricks. That blueprint is Delta rule.",
+  "explainer": {
+    "lead": "The delta rule is a way for a single-layer neural network to learn from its mistakes. It changes each input weight in proportion to the output error, helping later predictions move closer to their targets.",
+    "tiers": {
+      "eli5": "Imagine guessing a number, then being told the answer you should have given. You adjust your next guess based on how far off you were, and inputs that played a bigger part get a bigger adjustment. Repeating this process helps the neuron make better guesses.",
+      "practitioner": "Use the rule to update input weights in a single-layer network, scaling the target-minus-output error by the learning rate and input value. With a nonlinear activation, also multiply by g′(h_j); omitting that derivative or applying the rule as though it were general multilayer backpropagation are common mistakes.",
+      "paperLevel": "For neuron j, Δw_ji = α(t_j − y_j)g′(h_j)x_i, where h_j = Σ_i x_i w_ji and y_j = g(h_j). Here α is the learning rate, t_j the target output, and g′ the activation derivative. For a linear activation this simplifies to Δw_ji = α(t_j − y_j)x_i. It is the single-layer, mean-square-error case of backpropagation."
+    },
+    "example": "Suppose a linear neuron has one weight w = 0, receives x = 2, produces y = 0, and has target t = 1. With learning rate α = 0.1, the update is Δw = 0.1 × (1 − 0) × 2 = 0.2, so the new weight is 0.2 and the same input would now produce 0.4, closer to the target.",
+    "usedIn": [
+      {
+        "name": "Single-layer neural networks",
+        "detail": "Updates input weights using the difference between target and actual outputs.",
+        "url": ""
+      },
+      {
+        "name": "Gradient-descent learning",
+        "detail": "Provides a weight-update rule derived for a single-layer network with mean-square-error loss.",
+        "url": ""
+      }
+    ],
+    "intuition": "If a neuron's output is too low or too high, adjust its weights to reduce that error. The learning rate controls the size of each adjustment, while the input value determines how strongly each weight is changed.",
+    "howItWorks": [
+      "Multiply each input by its current weight and sum the results to get h_j.",
+      "Apply the activation function g to h_j to produce the output y_j.",
+      "Subtract the output from the target t_j to measure the error.",
+      "Multiply the error by the learning rate, input x_i, and—unless activation is linear—the derivative g′(h_j).",
+      "Add the resulting change to weight w_ji and repeat with further training examples."
+    ],
+    "whyItMatters": "It gives a direct connection between output error and a concrete weight update. It also shows the basic gradient-descent idea that backpropagation extends beyond a single layer.",
+    "misconceptions": [
+      "It is not the general backpropagation procedure for multilayer networks; it is the single-layer case.",
+      "The activation derivative is only absent in the simplified linear-activation form.",
+      "A larger error does not automatically require a larger learning rate; the learning rate separately controls update size."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "inputs",
+          "label": "Inputs",
+          "note": "Values x_i enter the neuron."
+        },
+        {
+          "id": "sum",
+          "label": "Weighted sum",
+          "note": "Weights combine inputs into h_j."
+        },
+        {
+          "id": "activation",
+          "label": "Activation",
+          "note": "Function g produces output y_j."
+        },
+        {
+          "id": "error",
+          "label": "Output error",
+          "note": "Target t_j minus output y_j."
+        },
+        {
+          "id": "update",
+          "label": "Weight update",
+          "note": "Error, input, and learning rate set Δw_ji."
+        }
+      ],
+      "edges": [
+        {
+          "from": "inputs",
+          "to": "sum",
+          "label": "x_i"
+        },
+        {
+          "from": "sum",
+          "to": "activation",
+          "label": "h_j"
+        },
+        {
+          "from": "activation",
+          "to": "error",
+          "label": "y_j"
+        },
+        {
+          "from": "error",
+          "to": "update",
+          "label": "t_j − y_j"
+        },
+        {
+          "from": "update",
+          "to": "sum",
+          "label": "new weights"
+        }
+      ],
+      "caption": "The neuron's output is compared with its target, and the resulting error drives the next weight update."
+    }
+  },
   "related": [
     "learning-rule",
     "oja-s-rule",

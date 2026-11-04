@@ -5,6 +5,82 @@
   "type": "concept",
   "definition": "Deciding that a speaker has finished their turn, closing the microphone and triggering the response.",
   "details": "Deciding that a speaker has finished their turn, closing the microphone and triggering the response. The perceived intelligence of voice assistants lives here: endpoint too early and you interrupt users mid-sentence, too late and the assistant feels sluggish.",
+  "explainer": {
+    "lead": "Endpointing is the moment a speech system decides you have finished speaking and it is its turn to respond. Getting that moment right helps a voice assistant feel attentive rather than interruptive or slow.",
+    "tiers": {
+      "eli5": "Imagine talking with a friend who has to guess when you are done so they can answer. If they jump in during a pause, they cut you off; if they wait too long, the conversation feels awkward. Endpointing is how a voice assistant makes that same decision before closing the microphone and responding.",
+      "practitioner": "Endpointing sits between listening and response generation: its end-of-turn decision closes the microphone and triggers the assistant's response. The central tuning trade-off is responsiveness versus interruption, since an aggressive endpoint can cut off a user mid-sentence while a conservative one adds noticeable delay. Evaluate both failure modes rather than optimizing only for a faster response.",
+      "paperLevel": "Endpointing can be expressed as a decision over the speech observed so far: continue listening, or declare the speaker's turn complete. On completion, the system closes the microphone and initiates the response. Its known limit is the asymmetry of timing errors: premature endpoints interrupt speech, while delayed endpoints make the interaction feel sluggish."
+    },
+    "example": "A user says, “Set a timer for five minutes.” Once endpointing determines that the request is complete, the assistant closes the microphone and triggers its response instead of continuing to wait or interrupting earlier.",
+    "usedIn": [
+      {
+        "name": "Voice assistants",
+        "detail": "Used to decide when the user has finished a request so the assistant can stop listening and respond.",
+        "url": ""
+      },
+      {
+        "name": "Microphone-based speech interfaces",
+        "detail": "Used to manage the handoff from a user's spoken turn to the system's response.",
+        "url": ""
+      }
+    ],
+    "intuition": "A conversation depends on knowing when one speaker has yielded the floor. Endpointing gives a speech system that judgment: wait for more speech, or treat the turn as finished and answer.",
+    "howItWorks": [
+      "The system listens while the user speaks.",
+      "It decides whether the user's turn is complete or should continue.",
+      "If the turn is complete, it closes the microphone.",
+      "That decision triggers the assistant's response."
+    ],
+    "whyItMatters": "Endpointing strongly shapes how intelligent and responsive a voice assistant feels. Ending too early interrupts the user, while ending too late makes the assistant seem sluggish.",
+    "misconceptions": [
+      "Endpointing is not the response itself; it decides when listening ends and triggers that response.",
+      "The fastest possible endpoint is not always best, because it can interrupt users mid-sentence.",
+      "A pause does not automatically mean the user's whole thought is finished."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "speech",
+          "label": "User speech",
+          "note": "The user's current spoken turn."
+        },
+        {
+          "id": "decision",
+          "label": "Endpoint decision",
+          "note": "Keep listening or declare the turn complete."
+        },
+        {
+          "id": "microphone",
+          "label": "Close microphone",
+          "note": "Stop capturing the completed turn."
+        },
+        {
+          "id": "response",
+          "label": "Trigger response",
+          "note": "Hand control to the assistant's response stage."
+        }
+      ],
+      "edges": [
+        {
+          "from": "speech",
+          "to": "decision",
+          "label": "observed audio"
+        },
+        {
+          "from": "decision",
+          "to": "microphone",
+          "label": "turn complete"
+        },
+        {
+          "from": "microphone",
+          "to": "response",
+          "label": ""
+        }
+      ],
+      "caption": "Endpointing turns an end-of-turn decision into microphone closure and the start of the assistant's response."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

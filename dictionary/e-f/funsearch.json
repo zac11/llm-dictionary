@@ -5,7 +5,98 @@
   "type": "concept",
   "definition": "FunSearch (short for searching in the function space) is an artificial intelligence method developed by Google DeepMind for discovering computer programs that solve mathematical and algorithmic problems.",
   "details": "It combines a large language model with an automated evaluator and an evolutionary search procedure, generating candidate programs, scoring them, and using high-performing programs to produce new candidates. Google DeepMind announced FunSearch in 2023, and the associated paper was published in Nature. The system was applied to the cap set problem in extremal combinatorics and to the online bin packing problem, where it found new mathematical constructions and new packing heuristics.",
-  "story": "Picture a translator at the United Nations, listening to one language and whispering the meaning into another in real time. It figures out meaning by noticing which words like to travel together. It does not memorize a rulebook; it absorbs a library. Meaning lives in company — a word is known by the words it keeps. That pattern-earned fluency is FunSearch.",
+  "explainer": {
+    "lead": "FunSearch is a Google DeepMind method that uses a large language model to write candidate computer programs, then tests and improves them through repeated search. It matters because this process has produced new constructions for a mathematical problem and new heuristics for packing items into bins.",
+    "tiers": {
+      "eli5": "Imagine trying different recipes, tasting each one, and using the best recipes as inspiration for the next batch. FunSearch does something similar with computer programs: an AI writes them, an automatic judge scores them, and the best ones help guide new attempts. This helped it find fresh answers to a maths puzzle and better ways to pack bins.",
+      "practitioner": "FunSearch is applied by connecting a large language model to an automated program evaluator and an evolutionary search loop. It suits mathematical or algorithmic tasks where candidate programs can be generated and scored automatically; the cap set problem and online bin packing are its demonstrated applications. A key practical constraint is the need for a reliable evaluator, since its scores determine which programs guide later candidates.",
+      "paperLevel": "FunSearch performs evolutionary search over programs p: an LLM generates candidate programs, an automated evaluator assigns scores E(p), and high-performing programs condition the generation of further candidates. Announced by Google DeepMind in 2023 and described in an associated Nature paper, it produced new constructions for the cap set problem and new heuristics for online bin packing. Its demonstrated setting therefore requires problems whose solutions can be expressed as programs and assessed automatically."
+    },
+    "example": "For online bin packing, FunSearch generated candidate packing programs and automatically scored how well they performed. Strong programs were then used to produce further candidates, and repeating this cycle led to new packing heuristics.",
+    "usedIn": [
+      {
+        "name": "Cap set research",
+        "detail": "Applied to the cap set problem in extremal combinatorics, where it found new mathematical constructions.",
+        "url": ""
+      },
+      {
+        "name": "Online bin packing",
+        "detail": "Searched for packing programs and discovered new heuristics for placing items as they arrive.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of asking a language model for one final answer, FunSearch treats its outputs as programs to be tested and improved. Automated scoring supplies the feedback, while evolutionary search turns strong candidates into starting points for further exploration.",
+    "howItWorks": [
+      "Use a large language model to generate candidate programs for the target problem.",
+      "Run each candidate through an automated evaluator and assign it a score.",
+      "Identify programs that perform well according to that evaluation.",
+      "Use those high-performing programs to guide the language model toward new candidates.",
+      "Repeat the generation, evaluation, and selection cycle to search the function space."
+    ],
+    "whyItMatters": "FunSearch shows how language-model generation can be combined with automatic evaluation and search to discover programs rather than merely describe solutions. Its results include new mathematical constructions for the cap set problem and new heuristics for online bin packing.",
+    "misconceptions": [
+      "It is not a single large language model answering a question once; the evaluator and evolutionary search are essential parts of the method.",
+      "It does not search only for text answers: its candidates are computer programs representing possible solutions.",
+      "Its reported discoveries do not make it a universal mathematics solver; the demonstrated applications are specific mathematical and algorithmic problems."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "llm",
+          "label": "Language model",
+          "note": "Generates candidate programs."
+        },
+        {
+          "id": "programs",
+          "label": "Candidate programs",
+          "note": "Possible solutions expressed as code."
+        },
+        {
+          "id": "evaluator",
+          "label": "Automated evaluator",
+          "note": "Tests programs and scores performance."
+        },
+        {
+          "id": "selection",
+          "label": "Evolutionary selection",
+          "note": "Retains high-performing programs for further search."
+        },
+        {
+          "id": "discoveries",
+          "label": "Discovered programs",
+          "note": "New constructions or packing heuristics."
+        }
+      ],
+      "edges": [
+        {
+          "from": "llm",
+          "to": "programs",
+          "label": "generates"
+        },
+        {
+          "from": "programs",
+          "to": "evaluator",
+          "label": "tested by"
+        },
+        {
+          "from": "evaluator",
+          "to": "selection",
+          "label": "scores"
+        },
+        {
+          "from": "selection",
+          "to": "llm",
+          "label": "guides"
+        },
+        {
+          "from": "selection",
+          "to": "discoveries",
+          "label": "yields"
+        }
+      ],
+      "caption": "FunSearch repeatedly generates programs, evaluates them, and feeds strong performers back into the search."
+    }
+  },
   "related": [
     "ai-tiger",
     "alice-ai-ai-model-family",

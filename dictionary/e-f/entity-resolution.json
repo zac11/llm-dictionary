@@ -5,6 +5,108 @@
   "type": "concept",
   "definition": "Identifying and merging records that refer to the same entity across datasets — deduplication for people, products, and organizations.",
   "details": "Identifying and merging records that refer to the same entity across datasets — deduplication for people, products, and organizations. Methods span blocking, similarity scoring, and learned matchers.",
+  "explainer": {
+    "lead": "Entity resolution finds records that describe the same person, product, or organization and combines them into one reliable record. It matters because names, addresses, and other details often vary across datasets, leaving duplicates that are difficult to spot.",
+    "tiers": {
+      "eli5": "Imagine two address books: one lists \"Sam Lee at 10 Oak Street,\" and the other lists \"Samuel L. at 10 Oak St.\" They look different, but they may be the same person. Entity resolution compares clues like these, decides which records belong together, and tidies away the duplicates.",
+      "practitioner": "A typical pipeline normalizes identifying fields, uses blocking to limit the pairs that need comparison, and then applies similarity scores or a learned matcher. Match thresholds determine whether candidate pairs are merged, so overly loose matching can combine different entities while overly strict matching leaves duplicates behind. Blocking choices also matter because a true match excluded from the candidate set cannot be recovered by the matcher.",
+      "paperLevel": "Given record collections R and S, entity resolution estimates whether a pair (r, s) refers to the same real-world entity, then groups or merges the predicted matches. Blocking constructs a candidate set C, after which similarity-based or learned matchers score the pairs in C. The main error modes are false matches between distinct entities and missed matches, including true pairs removed during blocking."
+    },
+    "example": "One customer record says \"Sam Lee, 10 Oak Street,\" while another says \"Samuel L., 10 Oak St.\" Blocking places them in the same candidate group, their similar name and address produce a strong match, and the system merges them into a single customer record.",
+    "usedIn": [
+      {
+        "name": "Customer databases",
+        "detail": "Combining duplicate records for the same person when names or contact details differ.",
+        "url": ""
+      },
+      {
+        "name": "Product catalogs",
+        "detail": "Recognizing that differently worded listings describe the same product.",
+        "url": ""
+      },
+      {
+        "name": "Organization directories",
+        "detail": "Merging records for organizations whose names or addresses vary between datasets.",
+        "url": ""
+      }
+    ],
+    "intuition": "The same real-world thing can leave several slightly different records behind. Entity resolution uses shared and similar details as evidence that those records belong together.",
+    "howItWorks": [
+      "Collect records from one or more datasets.",
+      "Use blocking to generate likely candidate pairs instead of comparing every pair.",
+      "Compare identifying details with similarity scores or a learned matcher.",
+      "Decide which candidate pairs refer to the same entity.",
+      "Group the matching records and merge their information."
+    ],
+    "whyItMatters": "Resolving duplicates gives each person, product, or organization a more consistent representation across datasets. It also prevents scattered records from being treated as separate entities.",
+    "misconceptions": [
+      "It is not just exact-match deduplication: records can refer to the same entity even when their text differs.",
+      "Similar records are not always duplicates: two different people or products may share many details.",
+      "Blocking does not decide matches; it only narrows down which pairs the matcher will examine."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "records-a",
+          "label": "Dataset A",
+          "note": "Records with varying details"
+        },
+        {
+          "id": "records-b",
+          "label": "Dataset B",
+          "note": "More possibly overlapping records"
+        },
+        {
+          "id": "blocking",
+          "label": "Blocking",
+          "note": "Limits which pairs are compared"
+        },
+        {
+          "id": "candidates",
+          "label": "Candidate pairs",
+          "note": "Pairs that could be duplicates"
+        },
+        {
+          "id": "matcher",
+          "label": "Match decision",
+          "note": "Similarity scoring or a learned matcher"
+        },
+        {
+          "id": "merged",
+          "label": "Merged records",
+          "note": "One record group per resolved entity"
+        }
+      ],
+      "edges": [
+        {
+          "from": "records-a",
+          "to": "blocking",
+          "label": ""
+        },
+        {
+          "from": "records-b",
+          "to": "blocking",
+          "label": ""
+        },
+        {
+          "from": "blocking",
+          "to": "candidates",
+          "label": "likely pairs"
+        },
+        {
+          "from": "candidates",
+          "to": "matcher",
+          "label": "compare"
+        },
+        {
+          "from": "matcher",
+          "to": "merged",
+          "label": "matches"
+        }
+      ],
+      "caption": "Records pass through blocking and matching before pairs judged to represent the same entity are merged."
+    }
+  },
   "related": [
     "deduplication"
   ],

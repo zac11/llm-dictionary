@@ -5,6 +5,102 @@
   "type": "concept",
   "definition": "Classifying events — structured records or streams — into categories, as in event cameras or log analytics.",
   "details": "Classifying events — structured records or streams — into categories, as in event cameras or log analytics.",
+  "explainer": {
+    "lead": "Event data classification assigns categories to individual records or groups of records arriving as events, such as camera events or system logs. It turns raw streams into labels that people and software can count, filter, and act on.",
+    "tiers": {
+      "eli5": "Imagine sorting a steady stream of notes into boxes labeled “urgent,” “routine,” and “unclear.” Event data classification does something similar with computer records: it looks at each event and chooses the category that fits best. This helps people understand a busy stream without reading every record by hand.",
+      "practitioner": "A pipeline typically encodes each event, or a short window of events, into features and applies a classifier to produce a category. In log analytics, useful inputs can include timestamps, categorical fields, and message text; similar care is needed when representing event-camera data. Common pitfalls include ambiguous category definitions, leakage of future information into features, and evaluating on events that do not reflect the stream seen in deployment.",
+      "paperLevel": "For an event representation x and category set Y, classification learns or applies a mapping f: x -> Y; sequential models may instead classify x using surrounding events as context. The central limits are the quality of the event representation and labels, plus whether evaluation matches the target stream. Performance can degrade when event patterns or category frequencies change."
+    },
+    "example": "A log event contains a timestamp, host, username, and the message “Failed password for user sam.” The pipeline encodes those fields and assigns the event to the category “failed login,” allowing similar records to be counted together.",
+    "usedIn": [
+      {
+        "name": "Event-camera vision",
+        "detail": "Assigns categories to event-camera outputs or groups of those events.",
+        "url": ""
+      },
+      {
+        "name": "Log analytics",
+        "detail": "Labels structured log records so streams can be searched, summarized, and monitored by category.",
+        "url": ""
+      }
+    ],
+    "intuition": "An event is a record that something happened; classification asks what kind of thing it was. The classifier uses the event’s fields, content, and sometimes neighboring events to choose a label.",
+    "howItWorks": [
+      "Collect an event record or a short window from a stream.",
+      "Represent its fields and content as features the classifier can use.",
+      "Apply the classifier to select one of the defined categories.",
+      "Use the resulting labels for filtering, counting, or further analysis."
+    ],
+    "whyItMatters": "Streams can contain far more events than people can inspect directly. Reliable categories make them easier to summarize and provide structured inputs for subsequent analysis.",
+    "misconceptions": [
+      "It labels events; it does not necessarily predict which event will happen next.",
+      "An event is not always one isolated record: useful context can come from a window of events.",
+      "Producing a category does not guarantee that the category is correct or meaningful."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "stream",
+          "label": "Event stream",
+          "note": "Structured records arrive over time."
+        },
+        {
+          "id": "window",
+          "label": "Event selection",
+          "note": "Choose one record or surrounding events."
+        },
+        {
+          "id": "features",
+          "label": "Feature encoding",
+          "note": "Represent fields, content, and context."
+        },
+        {
+          "id": "classifier",
+          "label": "Classifier",
+          "note": "Compare the representation with known categories."
+        },
+        {
+          "id": "label",
+          "label": "Category label",
+          "note": "Output the selected event category."
+        },
+        {
+          "id": "analytics",
+          "label": "Downstream analytics",
+          "note": "Filter, count, or further analyze labels."
+        }
+      ],
+      "edges": [
+        {
+          "from": "stream",
+          "to": "window",
+          "label": "events"
+        },
+        {
+          "from": "window",
+          "to": "features",
+          "label": "records"
+        },
+        {
+          "from": "features",
+          "to": "classifier",
+          "label": "features"
+        },
+        {
+          "from": "classifier",
+          "to": "label",
+          "label": "prediction"
+        },
+        {
+          "from": "label",
+          "to": "analytics",
+          "label": "labeled events"
+        }
+      ],
+      "caption": "Events are selected and encoded before a classifier assigns labels for downstream use."
+    }
+  },
   "citation": {
     "title": "Event Data Classification",
     "authors": [],

@@ -2,10 +2,104 @@
   "term": "Encoder-Only Model",
   "letter": "E",
   "category": "Architecture",
-  "type": "concept",
+  "type": "architecture",
   "definition": "A transformer variant that uses only the encoder stack, producing contextual representations of input text rather than generating new text.",
   "details": "Encoder-only models like BERT are typically used for understanding tasks such as classification, named entity recognition, and embedding generation rather than free-form text generation.",
-  "story": "Picture an architect laying out a building where every room has to know which other rooms matter to it. The layout decides what the machine can even attempt, before it learns a single thing. It is the blueprint that makes everything else possible. It is the difference between a row of isolated cubicles and one big room where everyone can hear each other. That blueprint is Encoder-Only Model.",
+  "explainer": {
+    "lead": "An encoder-only model reads text and builds representations that capture each word in its surrounding context. This makes the architecture useful for understanding language—classifying text, identifying entities, or creating embeddings—rather than writing new passages.",
+    "tiers": {
+      "eli5": "Think of it as a careful reader who goes through a sentence and makes detailed notes about what each word means alongside its neighbours. Those notes can help answer questions or sort the sentence into categories, but the reader is not designed to continue the story.",
+      "practitioner": "Use an encoder-only model such as BERT when the output is a label, an entity annotation, or an embedding rather than generated prose. The encoder stack supplies contextual representations for classification, named entity recognition, and embedding generation. Do not treat it as a free-form text generator: producing representations is its core purpose.",
+      "paperLevel": "For an input sequence x, an encoder-only transformer computes H = Encoder(x), where each h_i in H represents an input element in context. Task-specific processing can use H for classification, named entity recognition, or embedding generation. BERT exemplifies this architecture; its encoder-only design produces representations rather than free-form generated text."
+    },
+    "example": "Given the review “The battery lasts all day,” an encoder-only model produces contextual representations of the sentence. A classification component can then label the review as positive; the model does not need to generate a continuation.",
+    "usedIn": [
+      {
+        "name": "BERT",
+        "detail": "An encoder-only model used for language-understanding tasks.",
+        "url": ""
+      },
+      {
+        "name": "Text classification",
+        "detail": "Contextual representations support assigning categories to input text.",
+        "url": ""
+      },
+      {
+        "name": "Named entity recognition",
+        "detail": "Representations of words in context support identifying named entities.",
+        "url": ""
+      },
+      {
+        "name": "Embedding generation",
+        "detail": "The encoder produces representations that can be used as text embeddings.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Input text: the sequence to be understood.",
+        "detail": ""
+      },
+      {
+        "name": "Encoder stack: the transformer encoder layers that process the sequence.",
+        "detail": ""
+      },
+      {
+        "name": "Contextual representations: outputs that represent input elements in context.",
+        "detail": ""
+      }
+    ],
+    "flow": [
+      "Text enters the encoder stack.",
+      "The encoder processes elements in context.",
+      "The stack outputs contextual representations.",
+      "A task uses those representations for classification, entity recognition, or embeddings."
+    ],
+    "origin": "This transformer variant retains only the encoder stack, with BERT serving as the named example of the approach.",
+    "whyItMatters": "It separates language understanding from text generation, providing a focused architecture for tasks that need contextual representations of an input. The same representations can support several kinds of understanding tasks.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input text",
+          "note": "The sequence to understand"
+        },
+        {
+          "id": "encoder",
+          "label": "Encoder stack",
+          "note": "Processes text in context"
+        },
+        {
+          "id": "representations",
+          "label": "Contextual representations",
+          "note": "Representations of the input"
+        },
+        {
+          "id": "tasks",
+          "label": "Understanding tasks",
+          "note": "Classification, entities, or embeddings"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "encoder",
+          "label": "text"
+        },
+        {
+          "from": "encoder",
+          "to": "representations",
+          "label": "encodes"
+        },
+        {
+          "from": "representations",
+          "to": "tasks",
+          "label": "supports"
+        }
+      ],
+      "caption": "The encoder turns input text into contextual representations for understanding tasks, rather than generating new text."
+    }
+  },
   "related": [
     "decoder-only-model",
     "bert",

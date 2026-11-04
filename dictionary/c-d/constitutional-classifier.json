@@ -5,7 +5,112 @@
   "type": "concept",
   "definition": "A classifier trained using a defined set of principles to detect and filter harmful inputs or outputs in an AI system, in a manner analogous to Constitutional AI training.",
   "details": "Constitutional classifiers extend the idea of principle-guided AI training into standalone filtering systems, used to guard against jailbreak attempts and harmful content at the input/output boundary of a deployed model.",
-  "story": "Picture guardrails on a mountain road — not there to slow you down on the straightaways, but to keep you from flying off the cliff. It is the habit of asking, before every launch, what could go wrong — and then doing something about it. Think of it as the quiet rule that a tool should be useful without being dangerous. It is the difference between “it works” and “it is safe to put in front of people.” And that is Constitutional Classifier — the reason we can move fast without breaking things, or people.",
+  "explainer": {
+    "lead": "A constitutional classifier is a separate safety checker that follows a written set of principles to decide whether an AI request or response should be allowed. It places principle-guided filtering at the boundary of a deployed model, where it can catch jailbreak attempts and harmful content.",
+    "tiers": {
+      "eli5": "Imagine a club with a rulebook and a doorkeeper who checks every note going in or out. A constitutional classifier is that doorkeeper for an AI: it checks messages against its rules and stops ones that try to trick the AI or contain harmful content.",
+      "practitioner": "Deploy the classifier as a separate filter on user inputs, model outputs, or both, with its decisions guided by a defined constitution. Input filtering can stop detected jailbreak attempts before generation, while output filtering can prevent flagged responses from reaching the user.",
+      "paperLevel": "Given a set of principles P, a constitutional classifier implements C(x; P) -> {allow, block}, where x is a model input or output. It can be applied as C_in(prompt; P) before generation and C_out(response; P) before the response is released."
+    },
+    "example": "A user submits a prompt designed to jailbreak a deployed model. The input classifier evaluates it against the system's principles, flags the jailbreak attempt, and filters it out before the model generates a response.",
+    "usedIn": [
+      {
+        "name": "AI input filtering",
+        "detail": "Checks user prompts for jailbreak attempts or harmful content before they reach the model.",
+        "url": ""
+      },
+      {
+        "name": "AI output filtering",
+        "detail": "Checks generated responses against the defined principles before they are shown to users.",
+        "url": ""
+      },
+      {
+        "name": "Deployed AI safety",
+        "detail": "Adds standalone, principle-guided protection at a model's input/output boundary.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of relying only on the AI model to behave safely, give a separate checker an explicit rulebook. The checker uses those principles to judge each request or response crossing the model's boundary.",
+    "howItWorks": [
+      "Define a set of principles, called a constitution, for identifying prohibited content or behavior.",
+      "Train a classifier to assess inputs or outputs according to those principles.",
+      "Place the classifier before the model, after it, or at both boundaries.",
+      "Allow safe traffic to proceed and filter content flagged as harmful or as a jailbreak attempt."
+    ],
+    "whyItMatters": "It turns principle-guided safety into a standalone control at the point where people and models exchange content. This provides a dedicated way to guard deployed systems against jailbreak attempts and harmful inputs or outputs.",
+    "misconceptions": [
+      "It is not the main AI model; it is a separate classifier guarding that model.",
+      "Its constitution is a defined set of AI principles, not a national legal constitution.",
+      "It is analogous to Constitutional AI training, but serves specifically as a filtering system."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "prompt",
+          "label": "User prompt",
+          "note": "Incoming request"
+        },
+        {
+          "id": "input-filter",
+          "label": "Input classifier",
+          "note": "Checks prompt against principles"
+        },
+        {
+          "id": "model",
+          "label": "AI model",
+          "note": "Generates a response"
+        },
+        {
+          "id": "output-filter",
+          "label": "Output classifier",
+          "note": "Checks response against principles"
+        },
+        {
+          "id": "response",
+          "label": "Allowed response",
+          "note": "Released to the user"
+        },
+        {
+          "id": "blocked",
+          "label": "Filtered content",
+          "note": "Stopped at the boundary"
+        }
+      ],
+      "edges": [
+        {
+          "from": "prompt",
+          "to": "input-filter",
+          "label": "input"
+        },
+        {
+          "from": "input-filter",
+          "to": "model",
+          "label": "allowed"
+        },
+        {
+          "from": "input-filter",
+          "to": "blocked",
+          "label": "flagged"
+        },
+        {
+          "from": "model",
+          "to": "output-filter",
+          "label": "output"
+        },
+        {
+          "from": "output-filter",
+          "to": "response",
+          "label": "allowed"
+        },
+        {
+          "from": "output-filter",
+          "to": "blocked",
+          "label": "flagged"
+        }
+      ],
+      "caption": "Standalone classifiers apply the same defined principles to content entering and leaving the AI model."
+    }
+  },
   "related": [
     "constitutional-prompt",
     "constitutional-reward-model",

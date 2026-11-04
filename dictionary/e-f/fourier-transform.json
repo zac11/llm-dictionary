@@ -5,6 +5,88 @@
   "type": "concept",
   "definition": "The Fourier Transform is a mathematical transform that decomposes functions depending on space or time into functions depending on spatial or temporal frequency.",
   "details": "The Fourier Transform is a mathematical transform that decomposes functions depending on space or time into functions depending on spatial or temporal frequency.",
+  "explainer": {
+    "lead": "The Fourier Transform rewrites a signal in terms of the frequencies that make it up. Instead of describing how something changes over time or across space, it shows which oscillations are present and how strongly each contributes, making patterns and filtering problems easier to analyze.",
+    "tiers": {
+      "eli5": "Imagine hearing several musical notes played together. The Fourier Transform is like listening carefully and figuring out which notes are present and how loud each one is. It changes a description of sound over time into a description of its pitches.",
+      "practitioner": "Engineers use Fourier analysis to inspect frequency content, design filters, and study signals or images. Sampled data is usually processed with the discrete Fourier transform, most often computed using an FFT implementation such as NumPy's numpy.fft. Finite observation windows can cause spectral leakage, and frequency resolution, sampling rate, scaling, and units must be interpreted carefully.",
+      "paperLevel": "One common continuous-time convention is X(f) = integral from -infinity to infinity of x(t) e^(-i 2 pi f t) dt, where X(f) describes the signal at temporal frequency f. An inverse transform reconstructs x(t) when the relevant conditions hold. Existence and inversion depend on the function class and convention, while finite sampled observations introduce discretization and windowing limits."
+    },
+    "example": "For x(t) = cos(2 pi 5t) + 0.5 cos(2 pi 20t), the frequency description has cosine components at 5 Hz with relative amplitude 1 and at 20 Hz with relative amplitude 0.5. A spectrum therefore reveals the two tones directly, even when their sum looks complicated as a waveform.",
+    "usedIn": [
+      {
+        "name": "Audio signal processing",
+        "detail": "Inspecting pitch and frequency content, and separating or attenuating frequency bands.",
+        "url": ""
+      },
+      {
+        "name": "Communications",
+        "detail": "Analyzing how signals occupy frequency bands and how filters affect them.",
+        "url": ""
+      },
+      {
+        "name": "Image processing",
+        "detail": "Representing spatial patterns by spatial frequency for analysis and filtering.",
+        "url": ""
+      }
+    ],
+    "intuition": "A complicated variation can often be understood as a combination of simpler oscillations at different frequencies. The Fourier Transform measures each frequency's contribution, shifting the description from time or space to temporal or spatial frequency.",
+    "howItWorks": [
+      "Start with a function whose input is time or position.",
+      "Compare it with complex oscillations e^(-i 2 pi f t) across frequencies.",
+      "Integrate each comparison over the function's domain to obtain X(f).",
+      "Read the resulting frequency function to see which oscillations contribute.",
+      "Use the inverse transform to return to the time or spatial representation when applicable."
+    ],
+    "whyItMatters": "Frequency representations can expose periodic structure that is difficult to see in the original function. They also provide a natural way to describe filtering and other operations that affect different frequencies differently.",
+    "misconceptions": [
+      "It does not destroy the time-domain or spatial information; the inverse transform recovers it under the applicable conditions.",
+      "The Fourier Transform and the FFT are not identical: an FFT is an efficient algorithm for computing a discrete Fourier transform.",
+      "A spectrum estimated from a finite sample is not an exact description of every possible continuation of the signal."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "signal",
+          "label": "Time signal",
+          "note": "A function x(t) varying over time."
+        },
+        {
+          "id": "oscillations",
+          "label": "Complex oscillations",
+          "note": "Comparison functions indexed by frequency f."
+        },
+        {
+          "id": "transform",
+          "label": "Fourier Transform",
+          "note": "Integrates the signal against each oscillation."
+        },
+        {
+          "id": "spectrum",
+          "label": "Frequency spectrum",
+          "note": "The resulting frequency-dependent function X(f)."
+        }
+      ],
+      "edges": [
+        {
+          "from": "signal",
+          "to": "transform",
+          "label": "input"
+        },
+        {
+          "from": "oscillations",
+          "to": "transform",
+          "label": "compare at f"
+        },
+        {
+          "from": "transform",
+          "to": "spectrum",
+          "label": "output"
+        }
+      ],
+      "caption": "The transform compares a time-varying function with oscillations at different frequencies to produce its frequency representation."
+    }
+  },
   "citation": {
     "title": "Math Glossary for AI (François Fleuret notes)",
     "authors": [],

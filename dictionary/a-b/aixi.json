@@ -5,7 +5,114 @@
   "type": "concept",
   "definition": "AIXI is a theoretical mathematical formalism for artificial general intelligence.",
   "details": "It combines Solomonoff induction with sequential decision theory. AIXI was first proposed by Marcus Hutter in 2000 and several results regarding AIXI are proved in Hutter's 2005 book Universal Artificial Intelligence. AIXI is a reinforcement learning (RL) agent. It maximizes the expected total rewards received from the environment. Intuitively, it simultaneously considers every computable hypothesis (or environment). In each time step, it looks at every possible program and evaluates how many rewards that program generates depending on the next action taken. The promised rewards are then weighted by the subjective belief that this program constitutes the true environment. This belief is computed from the length of the program: longer programs are considered less likely, in line with Occam's razor. AIXI then selects the action that has the highest expected total reward in the weighted sum of all these programs.",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. And that idea, made concrete, is AIXI.",
+  "explainer": {
+    "lead": "AIXI is a mathematical blueprint for an agent that learns an unknown environment and chooses actions to collect the most reward over its lifetime. It matters because it joins general-purpose prediction with decision-making, offering a theoretical ideal for artificial general intelligence rather than a ready-to-run system.",
+    "tiers": {
+      "eli5": "Imagine playing a game without being told its rules. AIXI imagines every possible rulebook, gives shorter rulebooks more credence, and picks the move that should earn the most points across all of them. After each move, it uses what it sees and the points it receives to continue choosing.",
+      "practitioner": "Treat AIXI as a theoretical reference for reinforcement learning, not a conventional trainable agent: its action rule involves evaluating every possible program. Its setting is an unknown, stochastic, computable environment with history-dependent responses, no Markov assumption, and a finite lifespan. A central pitfall is confusing this exhaustive mathematical construction with a practical implementation or a single learned environment model.",
+      "paperLevel": "For history h_<t and finite lifespan m, the action rule can be summarized as a_t = arg max_a sum_mu w(mu) E_mu[sum_{s=t}^m r_s | h_<t, a_t = a], where mu ranges over computable environments and w(mu) favors shorter programs. Marcus Hutter proposed AIXI in 2000, with further results proved in his 2005 book Universal Artificial Intelligence. Its defining demands include considering every computable hypothesis and assuming that the true environment is computable."
+    },
+    "example": "In a one-step toy case with only two candidate programs, suppose the shorter program has belief 3/4 and predicts rewards of 2 for “left” and 0 for “right.” The longer program has belief 1/4 and predicts 0 for left and 4 for right. The weighted expected rewards are 1.5 for left and 1 for right, so AIXI chooses left; the full formalism performs this kind of calculation over every computable program and the remaining lifespan.",
+    "usedIn": [
+      {
+        "name": "Artificial general intelligence theory",
+        "detail": "A mathematical formalism combining Solomonoff induction with sequential decision theory.",
+        "url": ""
+      },
+      {
+        "name": "Reinforcement learning theory",
+        "detail": "An idealized agent for maximizing total reward in an unknown, computable, history-dependent environment.",
+        "url": ""
+      }
+    ],
+    "intuition": "AIXI handles uncertainty by keeping every computable explanation of the environment in play, while treating shorter explanations as more plausible under Occam's razor. It then lets those explanations vote according to their beliefs and the future rewards they predict for each action.",
+    "howItWorks": [
+      "Begin with the full history of actions, observations, and rewards, plus a finite remaining lifespan.",
+      "Consider every computable program as a candidate description of the unknown environment.",
+      "Weight each candidate by program length, giving longer programs lower belief.",
+      "For each possible action, combine the candidates' predicted rewards through the end of the lifespan using those weights.",
+      "Take the action with the highest weighted expected total reward, then add the resulting observation and reward to the history."
+    ],
+    "whyItMatters": "AIXI provides a single formal account of learning and acting without requiring a known environment or a Markov assumption. It makes precise how Occam-weighted prediction can guide reward-maximizing sequential decisions.",
+    "misconceptions": [
+      "AIXI is a theoretical mathematical agent, not an implemented general intelligence or an off-the-shelf model.",
+      "It does not know the environment's probability distribution; it only assumes that the environment is computable.",
+      "It does not follow just the most likely program; it weights expected rewards across every computable candidate."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "history",
+          "label": "Interaction history",
+          "note": "Past actions, observations, and rewards"
+        },
+        {
+          "id": "programs",
+          "label": "Candidate programs",
+          "note": "Every computable environment hypothesis"
+        },
+        {
+          "id": "beliefs",
+          "label": "Length-based beliefs",
+          "note": "Longer programs receive lower weight"
+        },
+        {
+          "id": "rewards",
+          "label": "Expected rewards",
+          "note": "Future totals evaluated for each action"
+        },
+        {
+          "id": "action",
+          "label": "Best action",
+          "note": "Maximum weighted expected total reward"
+        },
+        {
+          "id": "environment",
+          "label": "Environment response",
+          "note": "Returns an observation and reward"
+        }
+      ],
+      "edges": [
+        {
+          "from": "history",
+          "to": "programs",
+          "label": "conditions"
+        },
+        {
+          "from": "programs",
+          "to": "beliefs",
+          "label": "weighted by"
+        },
+        {
+          "from": "beliefs",
+          "to": "rewards",
+          "label": "combines"
+        },
+        {
+          "from": "rewards",
+          "to": "action",
+          "label": "maximizes"
+        },
+        {
+          "from": "action",
+          "to": "environment",
+          "label": "executed in"
+        },
+        {
+          "from": "environment",
+          "to": "history",
+          "label": "extends"
+        }
+      ],
+      "caption": "At each step, AIXI weights computable environment hypotheses, chooses the reward-maximizing action, and incorporates the new percept into its history."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: AIXI",
+        "url": "https://en.wikipedia.org/wiki/AIXI"
+      }
+    ]
+  },
   "related": [
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",
     "accelerated-linear-algebra",

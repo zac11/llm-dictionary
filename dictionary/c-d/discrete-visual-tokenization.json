@@ -8,6 +8,113 @@
   ],
   "definition": "Compressing images into sequences of discrete codes from a learned codebook, so autoregressive transformers can generate images token by token like text.",
   "details": "Compressing images into sequences of discrete codes from a learned codebook, so autoregressive transformers can generate images token by token like text. The alternative pathway to diffusion for unified any-to-any models.",
+  "explainer": {
+    "lead": "Discrete visual tokenization turns an image into a short sequence of symbols chosen from a learned visual vocabulary. This gives image generation a text-like interface: a transformer can predict visual tokens one after another, then turn them back into an image.",
+    "tiers": {
+      "eli5": "Imagine building pictures from a box of useful puzzle pieces instead of coloring every tiny dot yourself. A computer learns which pieces represent parts of pictures and gives each piece a number. To make a new picture, it predicts those numbers in order and then assembles the pieces.",
+      "practitioner": "A typical pipeline encodes an image into features, replaces local features with their nearest codebook entries, and serializes the resulting indices as visual tokens. An autoregressive transformer models that token sequence, and a decoder converts generated codes back into pixels. The main design considerations are the spatial token count, codebook size, reconstruction quality, and the cost of generating long sequences.",
+      "paperLevel": "Given an image x, an encoder produces features z_e = E(x); each feature is quantized as q(z) = e_k, where k = argmin_j ||z - e_j|| and e_j is a learned codebook vector. The indices form a sequence z_1,...,z_N modeled autoregressively as p(z_1,...,z_N) = product_i p(z_i | z_1,...,z_(i-1)), while a decoder maps quantized features back to image space. This discrete bottleneck enables text-like generation but makes token length, codebook capacity, and reconstruction fidelity important constraints."
+    },
+    "example": "Suppose a small image is encoded into a 4 × 4 grid and matched against a codebook of 1,024 entries. The result might be 16 tokens such as [517, 42, 908, ...]; a transformer predicts these tokens in order, and the decoder uses their codebook vectors to reconstruct the image.",
+    "usedIn": [
+      {
+        "name": "Autoregressive image generation",
+        "detail": "Images are represented as discrete token sequences so transformers can generate them token by token.",
+        "url": ""
+      },
+      {
+        "name": "Unified any-to-any models",
+        "detail": "Visual tokens provide an alternative to diffusion for handling images within a shared token-based generation framework.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of asking a model to produce millions of raw pixel values, give it a learned alphabet of visual building blocks. Image generation then becomes sequence prediction, much like writing with tokens.",
+    "howItWorks": [
+      "Encode an image into a grid of visual features.",
+      "Match each feature to the closest entry in a learned codebook.",
+      "Record the selected codebook indices as a sequence of discrete tokens.",
+      "Train an autoregressive transformer to predict each token from earlier tokens.",
+      "Decode a generated token sequence back into an image."
+    ],
+    "whyItMatters": "It connects images to the autoregressive machinery already used for text and offers a route to unified multimodal generation. It also provides an alternative to diffusion-based image generation.",
+    "misconceptions": [
+      "Visual tokens are learned codes, not words with fixed human-readable meanings.",
+      "This approach is not diffusion: it generates discrete codes autoregressively.",
+      "A shorter token sequence is not automatically better; compression can affect how faithfully details are reconstructed."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "image",
+          "label": "Input image",
+          "note": "Pixels to be compressed"
+        },
+        {
+          "id": "encoder",
+          "label": "Visual encoder",
+          "note": "Produces spatial features"
+        },
+        {
+          "id": "codebook",
+          "label": "Learned codebook",
+          "note": "Matches features to entries"
+        },
+        {
+          "id": "tokens",
+          "label": "Visual tokens",
+          "note": "Sequence of discrete indices"
+        },
+        {
+          "id": "transformer",
+          "label": "Autoregressive transformer",
+          "note": "Predicts tokens in order"
+        },
+        {
+          "id": "decoder",
+          "label": "Image decoder",
+          "note": "Maps codes back to pixels"
+        },
+        {
+          "id": "output",
+          "label": "Generated image",
+          "note": "Reconstructed visual output"
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "encoder",
+          "label": "pixels"
+        },
+        {
+          "from": "encoder",
+          "to": "codebook",
+          "label": "features"
+        },
+        {
+          "from": "codebook",
+          "to": "tokens",
+          "label": "indices"
+        },
+        {
+          "from": "tokens",
+          "to": "transformer",
+          "label": "sequence"
+        },
+        {
+          "from": "transformer",
+          "to": "decoder",
+          "label": "new tokens"
+        },
+        {
+          "from": "decoder",
+          "to": "output",
+          "label": "pixels"
+        }
+      ],
+      "caption": "Images are quantized into codebook indices; an autoregressive transformer generates those indices, and a decoder turns them back into pixels."
+    }
+  },
   "related": [
     "token",
     "any-to-any-models"

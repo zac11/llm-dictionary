@@ -5,7 +5,98 @@
   "type": "concept",
   "definition": "The learnable evolution model (LEM) is a non-Darwinian methodology for evolutionary computation that employs machine learning to guide the generation of new individuals (candidate problem solutions).",
   "details": "Unlike standard, Darwinian-type evolutionary computation methods that use random or semi-random operators for generating new individuals (such as mutations and/or recombinations), LEM employs hypothesis generation and instantiation operators. The hypothesis generation operator applies a machine learning program to induce descriptions that distinguish between high-fitness and low-fitness individuals in each consecutive population. Such descriptions delineate areas in the search space that most likely contain the desirable solutions. Subsequently the instantiation operator samples these areas to create new individuals. LEM has been modified from optimization domain to classification domain by augmented LEM with ID3 (February 2013 by M. Elemam Shehab, K. Badran, M. Zaki and Gouda I. Salama).",
-  "story": "Think of a jazz musician who has heard so many solos that a new one simply falls out of their fingers. Given a starting line, the machine imagines what comes next — a word, a note, a patch of a picture. It makes new things by recombining everything it has ever seen. Creation, here, is memory recombined at speed. And that is Learnable evolution model — making something new out of everything it has ever seen.",
+  "explainer": {
+    "lead": "The learnable evolution model, or LEM, improves candidate solutions by learning from the best and worst ones rather than relying only on random changes. It uses what it learns to focus the search on promising parts of the solution space.",
+    "tiers": {
+      "eli5": "Imagine trying to build a paper airplane that flies far. Instead of changing folds at random, you compare your good and bad airplanes, learn what seems to make them fly well, and use those lessons to design the next ones. LEM applies that idea to computer searches for good solutions.",
+      "practitioner": "In an optimization run, apply a machine-learning program to each population to induce rules separating high-fitness from low-fitness individuals, then instantiate new candidates in the regions those rules identify. LEM replaces random or semi-random mutation and recombination with hypothesis generation and instantiation, so the learned descriptions strongly shape the search. A February 2013 modification by M. Elemam Shehab, K. Badran, M. Zaki and Gouda I. Salama augmented LEM with ID3 for classification.",
+      "paperLevel": "Given consecutive populations, induce a hypothesis H that distinguishes high-fitness individuals from low-fitness individuals; H delineates regions of the search space likely to contain desirable solutions. Generate the next individuals by instantiating candidates sampled from those regions, rather than by Darwinian mutation or recombination. The method is non-Darwinian evolutionary computation, and its search depends on the descriptions induced from the observed populations."
+    },
+    "example": "Suppose candidates are different settings for a simulated machine, and high-fitness candidates share one pattern of settings while low-fitness candidates do not. LEM learns a description of that pattern and generates new candidates in the matching region of settings, instead of changing every setting randomly.",
+    "usedIn": [
+      {
+        "name": "Optimization",
+        "detail": "Learns descriptions of promising search-space regions and samples them to generate new candidate solutions.",
+        "url": ""
+      },
+      {
+        "name": "Classification",
+        "detail": "An augmented version combined LEM with the ID3 decision-tree method to adapt it from optimization to classification.",
+        "url": ""
+      }
+    ],
+    "intuition": "Good and bad candidates contain clues about where better solutions may lie. LEM turns those clues into learned descriptions, then uses the descriptions to aim the next round of candidate generation.",
+    "howItWorks": [
+      "Evaluate the current population and compare high-fitness with low-fitness individuals.",
+      "Apply machine learning to induce descriptions that distinguish the two groups.",
+      "Treat those descriptions as hypotheses marking regions likely to contain desirable solutions.",
+      "Sample or instantiate new individuals within the identified regions.",
+      "Repeat the process with each consecutive population."
+    ],
+    "whyItMatters": "LEM gives evolutionary computation a way to direct candidate generation using patterns learned from the population. This can concentrate the search on regions judged promising rather than depending solely on random or semi-random variation.",
+    "misconceptions": [
+      "LEM is not simply Darwinian evolution with a different mutation rate; its central variation operators are hypothesis generation and instantiation.",
+      "The learned descriptions are hypotheses about promising regions, not guarantees that every sampled candidate will have high fitness.",
+      "LEM is not limited to optimization; it has also been adapted to classification with ID3."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "population",
+          "label": "Current population",
+          "note": "Candidates with high and low fitness"
+        },
+        {
+          "id": "learning",
+          "label": "Hypothesis generation",
+          "note": "Machine learning compares the fitness groups"
+        },
+        {
+          "id": "descriptions",
+          "label": "Learned descriptions",
+          "note": "Delineate promising search-space regions"
+        },
+        {
+          "id": "instantiation",
+          "label": "Instantiation",
+          "note": "Samples the identified regions"
+        },
+        {
+          "id": "new-population",
+          "label": "New individuals",
+          "note": "Candidates for the next population"
+        }
+      ],
+      "edges": [
+        {
+          "from": "population",
+          "to": "learning",
+          "label": "fitness groups"
+        },
+        {
+          "from": "learning",
+          "to": "descriptions",
+          "label": "induces"
+        },
+        {
+          "from": "descriptions",
+          "to": "instantiation",
+          "label": "guides"
+        },
+        {
+          "from": "instantiation",
+          "to": "new-population",
+          "label": "creates"
+        },
+        {
+          "from": "new-population",
+          "to": "population",
+          "label": "next round"
+        }
+      ],
+      "caption": "LEM alternates learning descriptions of promising regions with generating new candidates inside them."
+    }
+  },
   "related": [
     "acoustic-model",
     "action-model-learning",

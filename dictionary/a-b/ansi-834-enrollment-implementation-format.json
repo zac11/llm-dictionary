@@ -5,7 +5,94 @@
   "type": "concept",
   "definition": "The X12 834 EDI Enrollment Implementation Format is a standard file format in the United States for electronically exchanging health plan enrollment data between employers and health insurance carriers.",
   "details": "The Health Insurance Portability and Accountability Act (HIPAA) requires that all health plans or health insurance carriers accept a standard enrollment format: ANSI 834A Version 5010. An 834 file contains a string of data elements, with each representing a fact, such as a subscriber’s name, hire date, etc. The entire string is called a transaction set. The 834 is used to transfer enrollment information from the sponsor of the insurance coverage, benefits, or policy to a payer. The format attempts to meet the health care industry's specific need for the initial enrollment and subsequent maintenance of individuals who are enrolled in insurance products.",
-  "story": "Think of a referee whose job is to be completely honest about who touched the ball last. Before trusting a machine, someone has to measure how good it really is — fairly and honestly. It is the exam that separates “it sounds good” from “it actually is good”. What gets measured is what actually gets better. That shared ruler is ANSI 834 Enrollment Implementation Format.",
+  "explainer": {
+    "lead": "ANSI 834 is a standard way to put health plan enrollment information into an electronic file in the United States. It gives employers, other coverage sponsors, and insurance payers a shared layout for signing people up and keeping their enrollment records current.",
+    "tiers": {
+      "eli5": "Imagine every school used a different kind of form to register students, and families had to learn each one. ANSI 834 is like one agreed-upon form for health insurance enrollment, with each small piece holding a fact such as a person's name or hire date. It helps the group providing coverage send those facts to the company paying for the insurance.",
+      "practitioner": "An implementation reads or writes X12 834 Version 005010 transaction sets when moving enrollment data from a coverage sponsor to a payer. Preserve the segment-identifying codes, asterisk-separated data elements, and tilde-terminated sections, and handle both initial enrollment and subsequent maintenance. HIPAA requires health plans and health insurance carriers to accept ANSI 834A Version 5010.",
+      "paperLevel": "Formally, an 834 file is a transaction set: an ordered string of data elements, where each element represents a fact such as a subscriber's name or hire date. X12 834 defines a United States EDI format for transferring health plan enrollment and maintenance information from the sponsor of coverage, benefits, or a policy to a payer. HIPAA designates ANSI 834A Version 5010 as the standard enrollment format that health plans and health insurance carriers must accept."
+    },
+    "example": "In the supplied Version 005010 example, an INS section is followed by reference and date entries, then NM1*IL*1*BLUTH*LUCILLE****34*881019999~ identifies Lucille Bluth. The next N3 and N4 sections give her address as 224 N Des Plaines, 6th Floor, Chicago, IL 60661, USA, while DMG includes the birth date 19720121. A later INS section begins the enrollment information for Buster Bluth.",
+    "usedIn": [
+      {
+        "name": "Employer health benefits",
+        "detail": "Employers electronically exchange health plan enrollment data with insurance carriers.",
+        "url": ""
+      },
+      {
+        "name": "Health insurance carriers",
+        "detail": "Carriers receive standardized enrollment information and must accept ANSI 834A Version 5010 under HIPAA.",
+        "url": ""
+      },
+      {
+        "name": "Coverage sponsors and payers",
+        "detail": "Sponsors transfer initial enrollment and later maintenance information for people enrolled in insurance products.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of every employer and insurer inventing a different enrollment spreadsheet, ANSI 834 supplies a common, machine-readable sequence of facts. A complete sequence forms one transaction set that a coverage sponsor can send to a payer.",
+    "howItWorks": [
+      "The coverage sponsor collects enrollment facts, such as names and hire dates.",
+      "Each fact is placed in a data element within an 834 transaction set.",
+      "Codes identify each section, asterisks separate elements, and tildes end sections.",
+      "The sponsor transfers the transaction set to the payer.",
+      "The format supports initial enrollment and subsequent enrollment maintenance."
+    ],
+    "whyItMatters": "A shared format lets different organizations exchange enrollment data without designing a new file layout for every relationship. It addresses both enrolling individuals initially and maintaining their records afterward, and HIPAA makes acceptance of ANSI 834A Version 5010 mandatory for health plans and health insurance carriers.",
+    "misconceptions": [
+      "It is not a general-purpose AI or information-retrieval algorithm; it is an EDI enrollment file format.",
+      "The whole file string is the transaction set, while an individual data element represents one fact.",
+      "It covers enrollment maintenance as well as initial enrollment."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "sponsor",
+          "label": "Coverage sponsor",
+          "note": "Employer or other source of enrollment information"
+        },
+        {
+          "id": "transaction",
+          "label": "834 transaction set",
+          "note": "Coded sections containing individual enrollment facts"
+        },
+        {
+          "id": "payer",
+          "label": "Insurance payer",
+          "note": "Health plan or carrier receiving the standard file"
+        },
+        {
+          "id": "records",
+          "label": "Enrollment records",
+          "note": "Initial enrollment and subsequent individual maintenance"
+        }
+      ],
+      "edges": [
+        {
+          "from": "sponsor",
+          "to": "transaction",
+          "label": "encodes facts"
+        },
+        {
+          "from": "transaction",
+          "to": "payer",
+          "label": "transfers"
+        },
+        {
+          "from": "payer",
+          "to": "records",
+          "label": "enrolls maintains"
+        }
+      ],
+      "caption": "ANSI 834 carries standardized enrollment facts from a coverage sponsor to a payer for initial enrollment and ongoing maintenance."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: ANSI 834 Enrollment Implementation Format",
+        "url": "https://en.wikipedia.org/wiki/ANSI_834_Enrollment_Implementation_Format"
+      }
+    ]
+  },
   "related": [
     "adversarial-information-retrieval",
     "astroinformatics",

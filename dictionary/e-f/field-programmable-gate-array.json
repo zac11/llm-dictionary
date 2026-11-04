@@ -8,6 +8,93 @@
   ],
   "definition": "A reconfigurable hardware chip whose logic can be programmed after manufacturing — used for custom low-latency AI inference and prototyping accelerators.",
   "details": "A reconfigurable hardware chip whose logic can be programmed after manufacturing — used for custom low-latency AI inference and prototyping accelerators.",
+  "explainer": {
+    "lead": "An FPGA is a chip whose internal logic can be set up after it has been manufactured, so its hardware can be shaped for a particular task. This makes it useful for building low-latency AI inference hardware and testing accelerator designs without first committing to a fixed-purpose chip.",
+    "tiers": {
+      "eli5": "Imagine a box of building blocks that is already inside a finished chip: you can arrange the blocks to make one kind of machine, then rearrange them to make another. An FPGA works like that for electronic circuits. It can be set up to process an AI task in a custom way instead of using the same general circuit for every job.",
+      "practitioner": "Engineers configure an FPGA's logic to implement a hardware data path for a target workload, such as custom AI inference, and can revise that configuration as the design changes. It is also useful for prototyping an accelerator before settling on fixed hardware. The main pitfall is treating reconfigurability as automatic speed: the circuit still has to be designed for the workload, and results depend on that design.",
+      "paperLevel": "An FPGA is a manufactured integrated circuit whose logic function can be specified by post-manufacturing configuration, allowing a custom hardware data path rather than a permanently fixed circuit. For AI inference, the objective is to implement workload-specific computation with low latency and to iterate on accelerator designs through reconfiguration. Reconfigurability does not itself guarantee lower latency; performance depends on the implemented design and workload."
+    },
+    "example": "For a low-latency AI inference task, an engineer configures an FPGA with a data path tailored to that workload. Input data then flows through this dedicated circuit, and the configuration can later be revised to prototype a different accelerator design.",
+    "usedIn": [
+      {
+        "name": "Custom AI inference",
+        "detail": "Configured as workload-specific hardware for low-latency processing.",
+        "url": ""
+      },
+      {
+        "name": "Accelerator prototyping",
+        "detail": "Used to implement and revise accelerator designs without manufacturing a new fixed-purpose chip for each iteration.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of building a new chip for every circuit design, an FPGA provides logic that can be arranged after manufacturing. The resulting configuration acts as custom hardware for the chosen task.",
+    "howItWorks": [
+      "Choose the circuit behavior needed for the task.",
+      "Load a configuration into the manufactured FPGA to define its logic.",
+      "The configured logic forms a custom hardware data path.",
+      "Input data passes through that data path to produce results.",
+      "Change the configuration when the circuit design needs to change."
+    ],
+    "whyItMatters": "FPGAs combine custom hardware behavior with the ability to revise the design after manufacturing. That combination supports low-latency AI inference and makes accelerator prototyping more flexible than committing immediately to a fixed circuit.",
+    "misconceptions": [
+      "An FPGA is not simply a general-purpose processor running ordinary software; its logic is configured to implement a circuit.",
+      "Reconfigurable does not mean automatically faster; low latency depends on the circuit design and workload.",
+      "Changing an FPGA configuration changes its hardware behavior, not merely a setting in an unchanged circuit."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "design",
+          "label": "Circuit design",
+          "note": "The hardware behavior wanted for the task."
+        },
+        {
+          "id": "configuration",
+          "label": "Configuration",
+          "note": "Defines the chip's logic after manufacturing."
+        },
+        {
+          "id": "logic",
+          "label": "Programmable logic",
+          "note": "Forms a custom hardware data path."
+        },
+        {
+          "id": "input",
+          "label": "Input data",
+          "note": "Data from the AI inference workload."
+        },
+        {
+          "id": "output",
+          "label": "Results",
+          "note": "Output produced by the configured circuit."
+        }
+      ],
+      "edges": [
+        {
+          "from": "design",
+          "to": "configuration",
+          "label": "defines"
+        },
+        {
+          "from": "configuration",
+          "to": "logic",
+          "label": "programs"
+        },
+        {
+          "from": "input",
+          "to": "logic",
+          "label": "data"
+        },
+        {
+          "from": "logic",
+          "to": "output",
+          "label": "processes"
+        }
+      ],
+      "caption": "A configuration shapes the FPGA's logic, which then processes workload data as a custom hardware circuit."
+    }
+  },
   "related": [
     "inference",
     "latency",

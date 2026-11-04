@@ -5,6 +5,106 @@
   "type": "concept",
   "definition": "Assessing whether a textual claim is supported by evidence retrieved from a reference corpus, as in the FEVER benchmark.",
   "details": "Assessing whether a textual claim is supported by evidence retrieved from a reference corpus, as in the FEVER benchmark. Pipelines combine retrieval, evidence selection, and entailment classification.",
+  "explainer": {
+    "lead": "Fact verification checks a written claim against evidence found in a reference collection. It helps distinguish a statement that merely sounds plausible from one that the available evidence actually supports.",
+    "tiers": {
+      "eli5": "Imagine someone says, “Our class won the school race,” and you check the school newsletter before believing them. A fact-verification system does something similar: it looks through a collection of documents, picks out useful passages, and checks whether they support the claim. The answer is about the evidence it finds, not just whether the sentence sounds believable.",
+      "practitioner": "A typical pipeline retrieves candidate passages from a reference corpus, selects the most relevant evidence, and applies an entailment classifier to the claim and evidence. Errors can enter at every stage: retrieval may miss the key passage, selection may keep irrelevant text, or classification may misread the relationship between evidence and claim. Evaluation should therefore consider the evidence produced as well as the final verdict.",
+      "paperLevel": "Given a textual claim c and reference corpus D, retrieve and select evidence E ⊆ D, then predict whether E supports c. The standard decomposition is retrieval → evidence selection → entailment classification, as exemplified by the FEVER benchmark. A verdict of support is conditional on the retrieved corpus evidence; missing or incorrectly selected evidence can cause an otherwise sound claim to be rejected."
+    },
+    "example": "For the claim “The Moon orbits Earth,” the system retrieves a reference passage stating that the Moon is Earth’s natural satellite and orbits it. It selects that passage as evidence and classifies the claim as supported.",
+    "usedIn": [
+      {
+        "name": "FEVER benchmark",
+        "detail": "Provides a setting for assessing claims with evidence retrieved from a reference corpus.",
+        "url": ""
+      },
+      {
+        "name": "Automated claim checking",
+        "detail": "Uses retrieval, evidence selection, and entailment classification to produce evidence-based verdicts.",
+        "url": ""
+      }
+    ],
+    "intuition": "Do not judge a claim in isolation: first find the relevant passages, then ask whether those passages actually establish what the claim says.",
+    "howItWorks": [
+      "Take a textual claim and a reference corpus as input.",
+      "Retrieve documents or passages that may contain relevant evidence.",
+      "Select the passages most useful for checking the claim.",
+      "Classify whether the selected evidence entails and therefore supports the claim."
+    ],
+    "whyItMatters": "It makes automated claim checking inspectable by pairing a verdict with retrieved evidence. It also exposes failures in retrieval and evidence selection rather than treating every mistake as a classification error.",
+    "misconceptions": [
+      "Corpus support is not the same as universal truth: the verdict depends on the available reference evidence.",
+      "Finding a topically related passage is not enough; the passage must establish the claim’s specific content."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "claim",
+          "label": "Textual claim",
+          "note": "The statement to check"
+        },
+        {
+          "id": "corpus",
+          "label": "Reference corpus",
+          "note": "Documents used as evidence"
+        },
+        {
+          "id": "retrieval",
+          "label": "Evidence retrieval",
+          "note": "Finds candidate passages"
+        },
+        {
+          "id": "selection",
+          "label": "Evidence selection",
+          "note": "Keeps relevant passages"
+        },
+        {
+          "id": "entailment",
+          "label": "Entailment classification",
+          "note": "Compares claim and evidence"
+        },
+        {
+          "id": "verdict",
+          "label": "Support verdict",
+          "note": "Whether evidence supports the claim"
+        }
+      ],
+      "edges": [
+        {
+          "from": "claim",
+          "to": "retrieval",
+          "label": "query"
+        },
+        {
+          "from": "corpus",
+          "to": "retrieval",
+          "label": "documents"
+        },
+        {
+          "from": "retrieval",
+          "to": "selection",
+          "label": "candidates"
+        },
+        {
+          "from": "selection",
+          "to": "entailment",
+          "label": "evidence"
+        },
+        {
+          "from": "claim",
+          "to": "entailment",
+          "label": "claim"
+        },
+        {
+          "from": "entailment",
+          "to": "verdict",
+          "label": "decision"
+        }
+      ],
+      "caption": "A fact-verification pipeline turns a claim and corpus into selected evidence and a support verdict."
+    }
+  },
   "related": [
     "benchmark"
   ],

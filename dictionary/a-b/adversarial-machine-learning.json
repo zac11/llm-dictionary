@@ -5,7 +5,123 @@
   "type": "concept",
   "definition": "Adversarial machine learning is the study of the attacks on machine learning algorithms, and of the defenses against such attacks.",
   "details": "Machine learning techniques are mostly designed to work on specific problem sets, under the assumption that the training and test data are generated from the same statistical distribution (IID). However, this assumption is often violated in practical high-stake applications, where users may intentionally supply fabricated data that violates the statistical assumption. Most common attacks in adversarial machine learning include evasion attacks, data poisoning attacks, Byzantine attacks and model extraction.",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. And that idea, made concrete, is Adversarial machine learning.",
+  "explainer": {
+    "lead": "Adversarial machine learning is the study of how to attack and defend machine learning systems. It matters because AI is increasingly used in high-stakes settings—spam filters, malware detection, self-driving cars, biometric security—where an attacker can profit by fooling the system.",
+    "tiers": {
+      "eli5": "Imagine a school where the teacher uses a checklist to spot cheaters. Some clever students figure out exactly what the teacher looks for, then carefully break just enough rules to avoid detection without getting caught. Adversarial machine learning is like that arms race: researchers study how tricksters fool AI systems, and how to make those systems harder to fool.",
+      "practitioner": "In practice, adversarial ML surfaces when you deploy models where users have incentive to evade them. Common settings include spam filtering, intrusion detection, malware classification, and content moderation. Pitfalls include assuming non-linear models are inherently robust, failing to validate against adaptive attackers who change tactics after deployment, and overestimating transferability of lab-crafted attacks to real-world conditions. Environmental factors—lighting, rotation, compression—often destroy adversarial perturbations, but physical-world attacks like tape on road signs remain practical.",
+      "paperLevel": "Formally, adversarial machine learning studies attacks that violate the IID assumption between training and test distributions by introducing strategically crafted perturbations δ to inputs x such that f(x) ≠ f(x+δ) for classifier f, with δ constrained by some norm bound. Gradient-based attacks on non-linear classifiers were first demonstrated by Battista Biggio et al. (2012–2013) for SVMs and neural networks; Christian Szegedy et al. (2014) extended this to deep neural networks in computer vision. Key limitations include brittleness in uncontrolled environments and the difficulty of defining meaningful threat models for security domains with concept drift."
+    },
+    "example": "In 2019, researchers 3D-printed a toy turtle with a carefully engineered texture that caused Google's object detection AI to classify it as a rifle from any viewing angle. The attack required only low-cost commercial 3D printing, demonstrating that adversarial perturbations can survive in the physical world.",
+    "usedIn": [
+      {
+        "name": "Spam filtering",
+        "detail": "Spammers insert 'good words' or misspell 'bad words' to evade Bayesian and linear classifiers",
+        "url": ""
+      },
+      {
+        "name": "Malware detection",
+        "detail": "Attackers inject benign content into Windows executables to evade learning-based detectors",
+        "url": ""
+      },
+      {
+        "name": "Autonomous vehicles",
+        "detail": "Physical modifications to signs can mislead vision systems, as demonstrated on Tesla's Mobileye",
+        "url": ""
+      },
+      {
+        "name": "Biometric security",
+        "detail": "Fake traits or adversarial glasses can fool facial-recognition systems",
+        "url": ""
+      }
+    ],
+    "intuition": "Machine learning assumes the world at test time looks like the world at training time. Adversarial machine learning asks: what happens when someone deliberately breaks that assumption?",
+    "howItWorks": [
+      "An attacker identifies a machine learning system they want to fool, such as a spam filter or image classifier.",
+      "They craft an input perturbation—subtle noise, added words, physical modifications—that exploits the model's specific learned patterns.",
+      "The perturbed input causes the model to make a wrong prediction, like classifying spam as legitimate mail or a stop sign as a speed limit.",
+      "Defenders study these attacks to build more robust models, though perfect robustness remains elusive."
+    ],
+    "whyItMatters": "As machine learning moves into security-critical domains, the cost of successful attacks rises. Understanding adversarial vulnerabilities helps practitioners build systems that fail more gracefully under attack and allocate defensive resources effectively.",
+    "misconceptions": [
+      "Non-linear models like neural networks are naturally robust to adversaries—they are not, as shown by gradient-based attacks since 2012–2013.",
+      "Adversarial examples are a major threat to self-driving cars in practice—physical attacks like removing signs are often easier than crafting adversarial perturbations that survive real-world conditions.",
+      "Adversarial defenses that work in the lab will work in deployment—environmental constraints and adaptive attackers often invalidate lab results."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "clean-input",
+          "label": "Clean input",
+          "note": "Normal email, image, or network packet"
+        },
+        {
+          "id": "attacker",
+          "label": "Attacker",
+          "note": "Crafts perturbation to fool model"
+        },
+        {
+          "id": "perturbed-input",
+          "label": "Perturbed input",
+          "note": "Input with adversarial modification"
+        },
+        {
+          "id": "model",
+          "label": "ML model",
+          "note": "Trained classifier making predictions"
+        },
+        {
+          "id": "wrong-output",
+          "label": "Wrong prediction",
+          "note": "Model misclassifies adversarial input"
+        },
+        {
+          "id": "defender",
+          "label": "Defender",
+          "note": "Studies attack, builds more robust model"
+        }
+      ],
+      "edges": [
+        {
+          "from": "clean-input",
+          "to": "attacker",
+          "label": "analyzed"
+        },
+        {
+          "from": "attacker",
+          "to": "perturbed-input",
+          "label": "creates"
+        },
+        {
+          "from": "perturbed-input",
+          "to": "model",
+          "label": "fed to"
+        },
+        {
+          "from": "model",
+          "to": "wrong-output",
+          "label": "produces"
+        },
+        {
+          "from": "wrong-output",
+          "to": "defender",
+          "label": "studied by"
+        },
+        {
+          "from": "defender",
+          "to": "model",
+          "label": "improves"
+        }
+      ],
+      "caption": "The adversarial machine learning cycle: attackers probe models to cause errors, defenders study failures to improve robustness."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Adversarial machine learning",
+        "url": "https://en.wikipedia.org/wiki/Adversarial_machine_learning"
+      }
+    ]
+  },
   "related": [
     "machine-learning",
     "active-learning-machine-learning",

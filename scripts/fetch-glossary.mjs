@@ -10,7 +10,7 @@
 //
 //  After this writes the file, run:
 //    npm run import    # merge data/ai_terms_extra.json into dictionary/
-//    npm run stories   # add story + related to the new terms
+//    node scripts/generate-explainers.mjs --only <slugs>   # layered explainers for the new terms
 //    npm run graph     # rebuild the knowledge graph
 // -----------------------------------------------------------------------------
 
@@ -236,7 +236,7 @@ async function main() {
   }
   writeFileSync(output, JSON.stringify(entries, null, 2) + '\n');
   console.log(`wrote ${entries.length} entries → data/ai_terms_extra.json`);
-  console.log('next: npm run import && npm run stories && npm run graph');
+  console.log('next: npm run import && node scripts/generate-explainers.mjs --only <slugs> && npm run graph');
 }
 
 main().catch((error) => {

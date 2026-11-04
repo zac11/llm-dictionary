@@ -5,7 +5,92 @@
   "type": "concept",
   "definition": "A learning rate schedule that decreases the learning rate following a cosine curve, often used in combination with periodic restarts.",
   "details": "Cosine annealing schedules are popular for training deep networks including LLMs, providing a smooth decay pattern that has empirically been shown to help models converge to better final solutions.",
-  "story": "Think of a hiker descending a foggy hill in the dark, taking small steps and feeling for the steepest way down. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. It is the same loop you use to learn anything: try, miss, correct, try again. Skill, for a model, is just error pushed down until it is small enough to ignore. That steady, miss-by-miss improvement is Cosine Annealing.",
+  "explainer": {
+    "lead": "Cosine annealing gradually turns down a model’s learning rate along a smooth cosine curve. It gives training room for early exploration and smaller, more careful updates later, and can be combined with periodic restarts.",
+    "tiers": {
+      "eli5": "Imagine riding a bicycle downhill: you start with bigger movements, then slow down gently as you approach your destination. Cosine annealing does something similar while a computer learns, making its changes smaller and smaller along a smooth curve. Sometimes it starts the slowing-down process again to explore another path.",
+      "practitioner": "Set the initial learning rate, the cycle length, and optionally a minimum rate, then update the rate from the cosine schedule as training progresses. A single cycle provides smooth decay; a restart variant raises the rate again at cycle boundaries, so check that this behavior fits the training run. The schedule changes the learning rate, not the optimizer, and better final convergence is empirical rather than guaranteed.",
+      "paperLevel": "For one cycle, a common form is eta_t = eta_min + 0.5(eta_max - eta_min)(1 + cos(pi t / T)), where t runs from 0 to T. The rate moves smoothly from eta_max to eta_min; periodic restarts repeat the cycle instead of continuing the decay. Its reported benefit is empirical convergence to better final solutions, not a universal guarantee."
+    },
+    "example": "With eta_max = 0.001, eta_min = 0, and T = 100 steps, the rate starts at 0.001, reaches 0.0005 at step 50, and reaches 0 at step 100. With restarts, step 101 begins another cycle near 0.001 instead of remaining at zero.",
+    "usedIn": [
+      {
+        "name": "Deep network training",
+        "detail": "Provides smooth learning-rate decay during optimization.",
+        "url": ""
+      },
+      {
+        "name": "LLM training",
+        "detail": "Uses the same gradual reduction of update sizes while training large language models.",
+        "url": ""
+      }
+    ],
+    "intuition": "Training can take relatively large steps early and increasingly gentle steps later. A cosine curve makes that transition smooth, while an optional restart temporarily restores a larger learning rate for another cycle.",
+    "howItWorks": [
+      "Choose an initial learning rate and a cycle length.",
+      "Compute the rate at each point using the falling half of a cosine curve.",
+      "Pass that changing rate to the optimizer during training.",
+      "Reach the minimum rate, or restart the curve for another cycle."
+    ],
+    "whyItMatters": "The schedule offers a simple, smooth way to reduce update sizes over training. It is popular for deep networks, including LLMs, because it has empirically helped models converge to better final solutions.",
+    "misconceptions": [
+      "It is a learning-rate schedule, not an optimizer by itself.",
+      "With periodic restarts, the learning rate does not decrease throughout the entire run.",
+      "Smooth decay does not guarantee a better result for every model or training setup."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "settings",
+          "label": "Schedule settings",
+          "note": "Initial rate, minimum rate, and cycle length"
+        },
+        {
+          "id": "cosine",
+          "label": "Cosine curve",
+          "note": "Computes the rate for the current step"
+        },
+        {
+          "id": "optimizer",
+          "label": "Optimizer",
+          "note": "Uses the scheduled learning rate"
+        },
+        {
+          "id": "model",
+          "label": "Model update",
+          "note": "Parameters change by progressively smaller steps"
+        },
+        {
+          "id": "restart",
+          "label": "Optional restart",
+          "note": "Begins another decay cycle"
+        }
+      ],
+      "edges": [
+        {
+          "from": "settings",
+          "to": "cosine",
+          "label": ""
+        },
+        {
+          "from": "cosine",
+          "to": "optimizer",
+          "label": "learning rate"
+        },
+        {
+          "from": "optimizer",
+          "to": "model",
+          "label": "updates"
+        },
+        {
+          "from": "restart",
+          "to": "cosine",
+          "label": "new cycle"
+        }
+      ],
+      "caption": "A cosine schedule supplies a changing learning rate to the optimizer, with an optional path back for periodic restarts."
+    }
+  },
   "related": [
     "active-learning",
     "backpropagation",

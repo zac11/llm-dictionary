@@ -5,7 +5,115 @@
   "type": "algorithm",
   "definition": "Destination dispatch is an optimization technique used for multi-elevator installations, in which groups of passengers heading to the same destinations use the same elevators, thereby reducing waiting and travel times.",
   "details": "This contrasts with the traditional approach, in which each passenger calls for and enters the first available lift and then, once inside, requests their destination. Using destination dispatch, passengers request travel to a particular floor using a keypad, touch screen, or proximity card (such as a hotel room keycard) and are then directed to an appropriate elevator car selected by an algorithm. The elevator then takes each passenger to their destination, with no further input after entering the car.",
-  "story": "Imagine teaching a friend to shoot a basketball. They miss, and you walk them backwards through the shot — elbow, wrist, release — to find what needs fixing. It is the same loop you use to learn anything: try, miss, correct, try again. Underneath all the magic is a patient process of small improvements. It is learning from every miss instead of repeating the same mistake. That steady, miss-by-miss improvement is Destination dispatch.",
+  "explainer": {
+    "lead": "Destination dispatch assigns people to elevators before they board, grouping passengers who want the same floor. This can reduce both waiting and travel time in buildings with several elevators.",
+    "tiers": {
+      "eli5": "It is like a teacher putting children going to the same classroom on the same bus. You say which floor you want before getting into the elevator, and a screen tells you which one to take. Once inside, you do not need to press any more buttons.",
+      "practitioner": "Passengers enter their destination through a keypad or touch screen, or identify it with a proximity card such as a hotel keycard. The dispatch algorithm selects a car for each request, aiming to group common destinations and reduce waiting and travel times. The interface must make the assigned car clear because passengers do not select a floor after boarding.",
+      "paperLevel": "Given destination requests and a set of elevator cars, destination dispatch computes an assignment of requests to cars that groups passengers with common destinations to reduce waiting and travel time. Unlike conventional dispatch, the destination is known before car assignment and boarding. Its grouping approach is intended for multi-elevator installations rather than a single-car setting."
+    },
+    "example": "Four passengers request floors 10, 10, 12, and 12. The system directs the first two to car A and the other two to car B, and none of them needs to press a floor button after boarding.",
+    "usedIn": [
+      {
+        "name": "Multi-elevator installations",
+        "detail": "Coordinates several cars by assigning passengers according to their requested floors.",
+        "url": ""
+      },
+      {
+        "name": "Hotels",
+        "detail": "A room keycard can be used as a proximity card when requesting elevator travel.",
+        "url": ""
+      }
+    ],
+    "goal": "Reduce passenger waiting and travel times by grouping people with the same destination into the same elevator.",
+    "inputs": [
+      "Each passenger's destination floor",
+      "The available elevator cars"
+    ],
+    "outputs": [
+      "An assigned elevator car for each passenger",
+      "A trip to the requested destination without further input"
+    ],
+    "steps": [
+      "A passenger requests a destination floor.",
+      "The dispatch algorithm selects an appropriate car.",
+      "The system directs the passenger to that car.",
+      "Passengers with common destinations are grouped together.",
+      "The elevator takes each passenger to their destination."
+    ],
+    "tradeoffs": [
+      "Grouping destinations can reduce waiting and travel time.",
+      "Passengers must provide their destination before boarding.",
+      "The result depends on the algorithm selecting an appropriate car."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "request",
+          "label": "Destination request",
+          "note": "Passenger specifies a floor"
+        },
+        {
+          "id": "dispatch",
+          "label": "Dispatch algorithm",
+          "note": "Selects an appropriate car"
+        },
+        {
+          "id": "direction",
+          "label": "Passenger direction",
+          "note": "Tells passenger which car to enter"
+        },
+        {
+          "id": "car-a",
+          "label": "Elevator car A",
+          "note": "Carries one destination group"
+        },
+        {
+          "id": "car-b",
+          "label": "Elevator car B",
+          "note": "Carries another destination group"
+        },
+        {
+          "id": "arrival",
+          "label": "Destination arrival",
+          "note": "No further passenger input needed"
+        }
+      ],
+      "edges": [
+        {
+          "from": "request",
+          "to": "dispatch",
+          "label": "floor"
+        },
+        {
+          "from": "dispatch",
+          "to": "direction",
+          "label": "assignment"
+        },
+        {
+          "from": "direction",
+          "to": "car-a",
+          "label": ""
+        },
+        {
+          "from": "direction",
+          "to": "car-b",
+          "label": ""
+        },
+        {
+          "from": "car-a",
+          "to": "arrival",
+          "label": ""
+        },
+        {
+          "from": "car-b",
+          "to": "arrival",
+          "label": ""
+        }
+      ],
+      "caption": "Passengers provide destinations first; the algorithm assigns cars, which then complete the trips."
+    }
+  },
   "related": [
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",
     "accelerated-linear-algebra",

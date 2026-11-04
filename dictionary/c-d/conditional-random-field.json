@@ -5,7 +5,107 @@
   "type": "concept",
   "definition": "In pattern recognition and machine learning, conditional random field (CRF) is a class of statistical modeling methods often used for structured prediction.",
   "details": "Unlike a classifier which predicts a label for a single sample without considering neighboring samples, a CRF can take context into account. To do so, the predictions are modeled as a graphical model, which represents the presence of dependencies between the predictions. The kind of graph used depends on the application. For example, in natural language processing, linear chain CRFs are popular, for which each prediction is dependent only on its immediate neighbors. In image processing, the graph typically connects locations to nearby and/or similar locations to enforce that they receive similar predictions. Other examples where CRFs are used are: labeling or parsing of sequential data for natural language processing or biological sequences, part-of-speech tagging, shallow parsing, named entity recognition, gene finding, peptide critical functional region finding, and object recognition and image segmentation in computer vision.",
-  "story": "Picture an engineer at a cluttered workbench, turning a clever idea over in their hands until it finally clicks. At its heart it is a simple notion, once you strip away the fancy name. A small key that opens a much bigger door. It is one of those ideas that feels obvious only after someone shows it to you. And that idea, made concrete, is Conditional random field.",
+  "explainer": {
+    "lead": "A conditional random field is a way to make a whole set of related predictions together, rather than labeling each item in isolation. That makes it useful for sentences, biological sequences, and images, where context can change the best label.",
+    "tiers": {
+      "eli5": "It is like completing a row of puzzle pieces, where each piece has to fit its neighbors. Instead of choosing every label separately, the method looks at how nearby labels depend on one another. This helps it make a sensible prediction for the whole sentence or picture.",
+      "practitioner": "Use a CRF when predictions have sequence or image structure and neighboring outputs provide useful context. Linear-chain CRFs fit tasks such as part-of-speech tagging, shallow parsing, and named entity recognition, while image CRFs connect nearby or similar locations. A key pitfall is choosing a graph that cannot represent the needed context: a linear chain limits each prediction’s dependencies to its immediate neighbors.",
+      "paperLevel": "A CRF models p(y | x), where x is the observed input and y is a structured collection of predictions whose dependencies are represented by a graph. In a linear-chain CRF, each prediction depends only on its immediate neighbors; other applications require different graph structures. The approach therefore depends on choosing a dependency structure appropriate to the task."
+    },
+    "example": "For the words “Paris / is / lovely,” a linear-chain CRF can produce the label sequence “named entity / other / other.” It makes the three predictions as a connected sequence, using immediate-neighbor dependencies instead of treating each word as an unrelated sample.",
+    "usedIn": [
+      {
+        "name": "Natural language processing",
+        "detail": "Used for part-of-speech tagging, shallow parsing, named entity recognition, and labeling or parsing sequential data.",
+        "url": ""
+      },
+      {
+        "name": "Biological sequence analysis",
+        "detail": "Applied to gene finding and finding critical functional regions in peptides.",
+        "url": ""
+      },
+      {
+        "name": "Computer vision",
+        "detail": "Used for object recognition and image segmentation, with graphs connecting nearby or similar image locations.",
+        "url": ""
+      }
+    ],
+    "intuition": "A single prediction is often easier to get right when neighboring predictions are considered too. A CRF represents those relationships as a graph and uses them to produce context-aware structured predictions.",
+    "howItWorks": [
+      "Start with items whose labels form a structure, such as words in a sequence or locations in an image.",
+      "Choose a graph that represents dependencies between the predictions.",
+      "Use immediate-neighbor links for a linear chain, or connect nearby and similar image locations when that fits the application.",
+      "Predict the labels with those dependencies taken into account, rather than classifying every sample independently."
+    ],
+    "whyItMatters": "CRFs provide a systematic way to use context in structured prediction. The same idea supports sequence labeling in language and biology and spatially related predictions in images.",
+    "misconceptions": [
+      "A CRF is not simply a classifier for isolated samples; it models dependencies between predictions.",
+      "CRFs are not always linear chains: the graph depends on the application.",
+      "In a linear-chain CRF, each prediction depends only on its immediate neighbors, not directly on every other prediction."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Observed sequence",
+          "note": "Words or other sequential observations"
+        },
+        {
+          "id": "p1",
+          "label": "First prediction",
+          "note": "Label for the first position"
+        },
+        {
+          "id": "p2",
+          "label": "Middle prediction",
+          "note": "Depends on immediate neighbors"
+        },
+        {
+          "id": "p3",
+          "label": "Last prediction",
+          "note": "Label for the final position"
+        },
+        {
+          "id": "output",
+          "label": "Structured labels",
+          "note": "A context-aware label sequence"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "p1",
+          "label": "observations"
+        },
+        {
+          "from": "input",
+          "to": "p2",
+          "label": "observations"
+        },
+        {
+          "from": "input",
+          "to": "p3",
+          "label": "observations"
+        },
+        {
+          "from": "p1",
+          "to": "p2",
+          "label": "dependency"
+        },
+        {
+          "from": "p2",
+          "to": "p3",
+          "label": "dependency"
+        },
+        {
+          "from": "p3",
+          "to": "output",
+          "label": ""
+        }
+      ],
+      "caption": "In a linear-chain CRF, observed inputs inform predictions, and neighboring predictions are linked by dependencies."
+    }
+  },
   "related": [
     "iterated-conditional-modes",
     "neural-field",

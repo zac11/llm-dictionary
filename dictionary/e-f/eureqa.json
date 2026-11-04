@@ -2,10 +2,106 @@
   "term": "Eureqa",
   "letter": "E",
   "category": "Knowledge representation",
-  "type": "concept",
+  "type": "tool",
   "definition": "Eureqa was a proprietary modeling engine created in Cornell's Artificial Intelligence Lab and later commercialized by Nutonian, Inc.",
   "details": "The software used genetic algorithms to determine mathematical equations that describe sets of data in their simplest form, a technique referred to as symbolic regression.",
-  "story": "Picture an engineer at a cluttered workbench, turning a clever idea over in their hands until it finally clicks. At its heart it is a simple notion, once you strip away the fancy name. A small key that opens a much bigger door. It is one of those ideas that feels obvious only after someone shows it to you. And that idea, made concrete, is Eureqa.",
+  "explainer": {
+    "lead": "Eureqa was software for turning a set of data into candidate mathematical equations, rather than requiring someone to choose the equation in advance. Its search for simple descriptions made it a tool for exploring patterns and possible relationships in data.",
+    "tiers": {
+      "eli5": "Imagine trying different rules for a number puzzle until you find a short rule that matches the answers. Eureqa did something similar with data: it tried many possible equations and looked for simple ones that described the numbers well.",
+      "practitioner": "Use it as an equation-discovery tool: supply a dataset, let its genetic algorithms search for mathematical expressions, and inspect the simplest equations that describe the data. A discovered expression should still be treated as a candidate model, not as proof of causation or a guarantee that it will hold outside the observed data.",
+      "paperLevel": "Given data D = {(x_i, y_i)}, symbolic regression seeks a mathematical expression f such that y_i ≈ f(x_i), searching over the form of f rather than only fitting parameters in a fixed form. Eureqa used genetic algorithms for this search and emphasized simple equations; the supplied description gives no further detail about its objective function, search operators, or performance limits."
+    },
+    "example": "For the pairs (x, y) = (1, 3), (2, 5), (3, 7), and (4, 9), the search could consider rules such as y = x + 2, y = 3x, and y = 2x + 1. The last equation matches every listed pair and is a simple description of this dataset.",
+    "usedIn": [
+      {
+        "name": "Cornell Artificial Intelligence Lab",
+        "detail": "The proprietary modeling engine was created there.",
+        "url": ""
+      },
+      {
+        "name": "Nutonian, Inc.",
+        "detail": "The company later commercialized Eureqa.",
+        "url": ""
+      },
+      {
+        "name": "Data modeling",
+        "detail": "It searched for simple mathematical equations describing datasets.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of asking only, “What numbers should go in this equation?”, Eureqa also asked, “What equation should I use?” It used genetic algorithms to explore possible formulas and favored simple ones that described the data.",
+    "howItWorks": [
+      "Start with a dataset whose numerical relationships you want to describe.",
+      "Generate and vary candidate mathematical equations using genetic algorithms.",
+      "Compare the candidates by how well they describe the data.",
+      "Continue the search while favoring equations in their simplest form.",
+      "Return candidate formulas for inspection rather than only a list of fitted coefficients."
+    ],
+    "whyItMatters": "Eureqa made symbolic regression practical as an automated search for readable mathematical models, helping users move from raw observations to explicit equations they could examine.",
+    "misconceptions": [
+      "It was not just fitting parameters in an equation chosen beforehand; it searched for the equation itself.",
+      "A simple equation that matches a dataset is not automatically a causal explanation.",
+      "A good match to the supplied data does not by itself guarantee correct predictions elsewhere."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data",
+          "label": "Input dataset",
+          "note": "Observed values to describe"
+        },
+        {
+          "id": "candidates",
+          "label": "Candidate equations",
+          "note": "Possible mathematical expressions"
+        },
+        {
+          "id": "genetic",
+          "label": "Genetic search",
+          "note": "Varies and selects candidates"
+        },
+        {
+          "id": "compare",
+          "label": "Compare descriptions",
+          "note": "Checks fit and favors simplicity"
+        },
+        {
+          "id": "output",
+          "label": "Simple equations",
+          "note": "Readable candidate models"
+        }
+      ],
+      "edges": [
+        {
+          "from": "data",
+          "to": "compare",
+          "label": "observations"
+        },
+        {
+          "from": "candidates",
+          "to": "genetic",
+          "label": "variation"
+        },
+        {
+          "from": "genetic",
+          "to": "compare",
+          "label": "candidates"
+        },
+        {
+          "from": "compare",
+          "to": "genetic",
+          "label": "selection"
+        },
+        {
+          "from": "compare",
+          "to": "output",
+          "label": "results"
+        }
+      ],
+      "caption": "Eureqa used genetic algorithms to search candidate equations and return simple descriptions of a dataset."
+    }
+  },
   "related": [
     "abductive-reasoning",
     "abox",

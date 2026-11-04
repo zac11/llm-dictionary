@@ -5,7 +5,93 @@
   "type": "concept",
   "definition": "An AI system's ability to comprehend the structure, logic, and intent of a software codebase, often across multiple files and dependencies.",
   "details": "Codebase understanding is a key capability for advanced coding assistants and agents, requiring not just generating isolated code snippets but reasoning about how a change interacts with the broader existing system.",
-  "story": "Picture an engineer at a cluttered workbench, turning a clever idea over in their hands until it finally clicks. At its heart it is a simple notion, once you strip away the fancy name. A small key that opens a much bigger door. It is one of those ideas that feels obvious only after someone shows it to you. And that idea, made concrete, is Codebase Understanding.",
+  "explainer": {
+    "lead": "Codebase understanding lets an AI treat a software project as a connected system rather than a pile of separate files. It matters because even a small change can affect logic and dependencies far from the file being edited.",
+    "tiers": {
+      "eli5": "Imagine changing one rule in a big board game: you need to check the other rules so the game still makes sense. Codebase understanding is like that for software. The AI looks at how the pieces fit together before changing one piece.",
+      "practitioner": "Coding assistants and agents apply it when navigating repositories, tracing dependencies, and planning edits across files. Providing only an isolated snippet can hide important interactions, so the relevant surrounding code and dependencies need to be considered before judging a proposed change.",
+      "paperLevel": "Let C = (F, D), where F is the set of files and D their dependencies; codebase understanding is the ability to infer structure, logic, and intent from C and reason about the broader effects of a change. Its central challenge is multi-file reasoning, and incomplete context can leave important interactions unexamined."
+    },
+    "example": "Asked to change a discount calculation, an AI locates the calculation, follows its use into checkout and invoice code, and accounts for both callers. Editing only the original function without that tracing could leave the wider system inconsistent.",
+    "usedIn": [
+      {
+        "name": "Coding assistants",
+        "detail": "Helps suggestions account for existing project structure and logic instead of producing isolated snippets.",
+        "url": ""
+      },
+      {
+        "name": "Coding agents",
+        "detail": "Supports reasoning about how an intended change interacts with the wider software system.",
+        "url": ""
+      }
+    ],
+    "intuition": "Useful code changes depend on context: the AI must understand what each part does and how the parts connect, not merely recognize code in one file.",
+    "howItWorks": [
+      "Examine the codebase's files and overall structure.",
+      "Trace dependencies and relationships between relevant components.",
+      "Infer the existing logic and the intent behind it.",
+      "Reason about which other parts a proposed change could affect.",
+      "Plan or generate changes that remain coherent with the broader system."
+    ],
+    "whyItMatters": "It moves coding AI beyond snippet generation toward changes that fit an existing system. That cross-file reasoning is essential for more advanced assistants and agents.",
+    "misconceptions": [
+      "Generating a plausible code snippet is not the same as understanding the codebase.",
+      "Reading the file being edited does not reveal every relevant dependency or interaction.",
+      "Understanding a codebase does not by itself guarantee that a proposed change is correct."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "files",
+          "label": "Codebase files",
+          "note": "Existing code across the project"
+        },
+        {
+          "id": "structure",
+          "label": "Structure and logic",
+          "note": "How components are organized and behave"
+        },
+        {
+          "id": "dependencies",
+          "label": "Dependency tracing",
+          "note": "Connections between relevant components"
+        },
+        {
+          "id": "reasoning",
+          "label": "Change reasoning",
+          "note": "Likely interactions with the wider system"
+        },
+        {
+          "id": "edits",
+          "label": "Coordinated changes",
+          "note": "Edits informed by cross-file context"
+        }
+      ],
+      "edges": [
+        {
+          "from": "files",
+          "to": "structure",
+          "label": "reveals"
+        },
+        {
+          "from": "structure",
+          "to": "dependencies",
+          "label": "guides"
+        },
+        {
+          "from": "dependencies",
+          "to": "reasoning",
+          "label": "informs"
+        },
+        {
+          "from": "reasoning",
+          "to": "edits",
+          "label": "produces"
+        }
+      ],
+      "caption": "Codebase understanding connects project structure and dependencies to reasoning about a change."
+    }
+  },
   "related": [
     "agentic-loop",
     "ai-pair-programming",

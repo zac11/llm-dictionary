@@ -5,7 +5,82 @@
   "type": "concept",
   "definition": "EuroWordNet (EWN) was a European research project to build a multilingual database of wordnets for several European languages.",
   "details": "Each language has its own wordnet structured along the same lines as the Princeton WordNet, with synsets linked by semantic relations. The wordnets are interconnected through an Interlingual Index (ILI) that maps language-specific synsets to a shared set of concepts, enabling cross-lingual queries and applications. The project was managed by Piek Vossen at the University of Amsterdam and ran in two phases funded by the European Commission: LE-2 (1996–1999) and LE-4 (1997–1999).",
-  "story": "Think of a grammar teacher who never memorized a rule but can still tell you when a sentence sounds wrong. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It figures out meaning by noticing which words like to travel together. The machine learns to read between the lines by reading an impossible number of lines. And that is EuroWordNet — teaching a machine to read between the lines.",
+  "explainer": {
+    "lead": "EuroWordNet was a European research project that connected wordnets for several European languages through a shared index of concepts. This let applications follow meanings across languages while preserving each language's own network of word senses and semantic relations.",
+    "tiers": {
+      "eli5": "Imagine several teams making maps of words, with each team working in a different language and grouping words with similar meanings. EuroWordNet gave matching places on these maps shared labels, so you could start with a meaning in one language and find the corresponding meaning in another. It helped computers work with meanings across languages instead of only matching individual words.",
+      "practitioner": "A typical integration keeps each language's wordnet separate and resolves cross-lingual matches through Interlingual Index identifiers rather than translating surface word forms. Keep semantic relations within a wordnet distinct from ILI mappings, and do not treat an ILI match as a context-free dictionary translation. Since the project's two phases ended in 1999, check the provenance and format of any resource before integrating it.",
+      "paperLevel": "Formally, let W_l = (S_l, R_l) be the wordnet for language l, where S_l contains synsets and R_l contains their semantic relations. An interlingual mapping f_l : S_l -> C connects language-specific synsets to shared ILI concepts, so synsets s_a and s_b are aligned when f_a(s_a) = f_b(s_b). Managed by Piek Vossen at the University of Amsterdam, the project ran as LE-2 (1996–1999) and LE-4 (1997–1999); its mappings align senses rather than guaranteeing unrestricted word-for-word translations."
+    },
+    "example": "A query can start with the English synset for “dog,” follow its mapping to an ILI concept, and then find the synset mapped to that same concept in another participating wordnet. The connection is made between word senses, without requiring a direct word-to-word translation table.",
+    "usedIn": [
+      {
+        "name": "Cross-lingual querying",
+        "detail": "An application can follow ILI links from a synset in one language's wordnet to corresponding concepts in another.",
+        "url": ""
+      },
+      {
+        "name": "Multilingual lexical semantics",
+        "detail": "Separate wordnets retain language-specific synsets and semantic relations while sharing a conceptual connection through the ILI.",
+        "url": ""
+      }
+    ],
+    "intuition": "Different languages can organize their words independently while still referring to common meanings. EuroWordNet used a shared concept index as a bridge between those language-specific networks.",
+    "howItWorks": [
+      "Build a separate wordnet for each participating language, following the Princeton WordNet structure.",
+      "Group word senses into synsets and connect them with semantic relations.",
+      "Map each language-specific synset to a concept in the shared Interlingual Index.",
+      "Use those shared ILI concepts to move between wordnets for cross-lingual queries and applications."
+    ],
+    "whyItMatters": "EuroWordNet provided a common structure for connecting lexical resources across European languages. Its interlingual design supported cross-lingual queries without collapsing all languages into one wordnet.",
+    "misconceptions": [
+      "It was not one flat multilingual dictionary: each language retained its own wordnet.",
+      "An ILI connection links synsets through shared concepts; it does not guarantee a suitable word-for-word translation in every context.",
+      "The semantic relations inside a wordnet and the interlingual mappings between wordnets serve different roles."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "wordnet-a",
+          "label": "Language A wordnet",
+          "note": "Language-specific synsets and semantic relations"
+        },
+        {
+          "id": "wordnet-b",
+          "label": "Language B wordnet",
+          "note": "A separate network with the same general structure"
+        },
+        {
+          "id": "ili",
+          "label": "Interlingual Index",
+          "note": "Shared concepts connecting language-specific synsets"
+        },
+        {
+          "id": "query",
+          "label": "Cross-lingual query",
+          "note": "Moves between wordnets through common concepts"
+        }
+      ],
+      "edges": [
+        {
+          "from": "wordnet-a",
+          "to": "ili",
+          "label": "maps synsets"
+        },
+        {
+          "from": "wordnet-b",
+          "to": "ili",
+          "label": "maps synsets"
+        },
+        {
+          "from": "ili",
+          "to": "query",
+          "label": "aligns concepts"
+        }
+      ],
+      "caption": "Language-specific wordnets remain separate, while shared ILI concepts provide the bridge for cross-lingual queries."
+    }
+  },
   "related": [
     "wordnet",
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",

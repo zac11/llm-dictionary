@@ -5,7 +5,106 @@
   "type": "concept",
   "definition": "Chessboards arise frequently in computer vision theory and practice because their highly structured geometry is well-suited for algorithmic detection and processing.",
   "details": "The appearance of chessboards in computer vision can be divided into three main areas: camera calibration, feature extraction, and real-world board state recognition (handling occlusions). This article provides a unified discussion of the role that chessboards play in the canonical methods from these areas, including references to the seminal literature, examples, and pointers to software implementations.",
-  "story": "Picture a child pointing at pictures in a book — cat, car, cloud — learning to see by seeing a thousand examples. It turns a picture into an understanding: this is a cat, that is a stop sign. What your eyes do without thinking, the machine does one careful layer at a time. It is eyes made of arithmetic — pixels become edges, edges become shapes, shapes become meaning. And that is Chessboard detection — giving a machine the gift of sight.",
+  "explainer": {
+    "lead": "Chessboard detection finds a chessboard’s regular grid in an image, giving computer vision systems precise, predictable visual landmarks. It is useful both for technical tasks such as camera calibration and for recognizing the state of a real chess game.",
+    "tiers": {
+      "eli5": "A chessboard is like a sheet of graph paper with bold squares: its pattern makes the crossing points easy for a computer to find. A camera can photograph the board, and software can locate those crossings to learn about the camera or understand the board. If hands or chess pieces cover parts of it, the job becomes harder.",
+      "practitioner": "Chessboard detection supplies ordered grid features for camera calibration, feature-extraction work, and real-world board-state recognition. Its regular geometry simplifies detection, but practical board recognition must also handle occlusions from pieces or hands. Calibration, general feature extraction, and game-state recognition are related applications, not the same pipeline.",
+      "paperLevel": "Given an image I, chessboard detection estimates grid-corner locations p_ij whose ordering is consistent with the board’s structured geometry, producing image-to-board correspondences for downstream processing. The same geometric regularity supports calibration and feature extraction, while real-world board-state recognition additionally requires reasoning about occlusions."
+    },
+    "example": "A printed chessboard is placed in front of a camera. The detector finds and orders the grid intersections, and their known arrangement on the board provides correspondences that can be used to calibrate the camera.",
+    "usedIn": [
+      {
+        "name": "Camera calibration",
+        "detail": "Uses detected board features and their regular geometry as calibration references.",
+        "url": ""
+      },
+      {
+        "name": "Feature extraction",
+        "detail": "Provides highly structured visual features for developing and processing detection methods.",
+        "url": ""
+      },
+      {
+        "name": "Real-world chess recognition",
+        "detail": "Helps locate the board before recognizing its state, including when pieces or hands cause occlusions.",
+        "url": ""
+      }
+    ],
+    "intuition": "A chessboard offers a known repeating pattern rather than an unpredictable scene. Once its grid is located, individual intersections become reliable reference points that connect image positions with the board’s geometry.",
+    "howItWorks": [
+      "Capture an image containing the chessboard.",
+      "Locate the board’s distinctive square-grid pattern.",
+      "Identify and order its geometric features, such as grid intersections.",
+      "Use the resulting correspondences for calibration, feature extraction, or board-state processing."
+    ],
+    "whyItMatters": "Chessboards turn difficult visual measurements into a structured detection problem with repeatable reference points. This makes them a shared tool across calibration, feature extraction, and physical board recognition.",
+    "misconceptions": [
+      "Detecting the chessboard does not by itself recognize every piece or determine the complete game state.",
+      "A regular grid does not eliminate real-world difficulties such as occlusions."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "image",
+          "label": "Board image",
+          "note": "Camera view of the chessboard"
+        },
+        {
+          "id": "detect",
+          "label": "Grid detection",
+          "note": "Locate the structured pattern"
+        },
+        {
+          "id": "features",
+          "label": "Ordered features",
+          "note": "Grid positions tied to board geometry"
+        },
+        {
+          "id": "calibration",
+          "label": "Camera calibration",
+          "note": "Use geometric correspondences"
+        },
+        {
+          "id": "extraction",
+          "label": "Feature extraction",
+          "note": "Process repeatable visual landmarks"
+        },
+        {
+          "id": "state",
+          "label": "Board state",
+          "note": "Recognize the board despite occlusions"
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "detect",
+          "label": "image data"
+        },
+        {
+          "from": "detect",
+          "to": "features",
+          "label": "grid locations"
+        },
+        {
+          "from": "features",
+          "to": "calibration",
+          "label": ""
+        },
+        {
+          "from": "features",
+          "to": "extraction",
+          "label": ""
+        },
+        {
+          "from": "features",
+          "to": "state",
+          "label": ""
+        }
+      ],
+      "caption": "Detected chessboard geometry provides ordered features for three main computer vision uses."
+    }
+  },
   "related": [
     "blob-detection",
     "corner-detection",

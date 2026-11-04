@@ -5,7 +5,103 @@
   "type": "concept",
   "definition": "Google Neural Machine Translation (GNMT) is a discontinued neural machine translation (NMT) system developed by Google and introduced in November 2016 that used an artificial neural network to increase fluency and accuracy in Google Translate.",
   "details": "The neural network consisted of two main blocks, an encoder and a decoder, both of LSTM architecture with 8 1024-wide layers each and a simple 1-layer 1024-wide feedforward attention mechanism connecting them. The total number of parameters has been variously described as over 160 million, approximately 210 million, 278 million or 380 million. It used WordPiece tokenizer, and beam search decoding strategy. It ran on Tensor Processing Units. By 2020, the system had been replaced by another deep learning system based on a Transformer encoder and an RNN decoder. GNMT improved on the quality of translation by applying an example-based (EBMT) machine translation method in which the system learns from millions of examples of language translation. GNMT's proposed architecture of system learning was first tested on over a hundred languages supported by Google Translate. With the large end-to-end framework, the system learns over time to create better, more natural translations. GNMT attempts to translate whole sentences at a time, rather than just piece by piece. The GNMT network can undertake interlingual machine translation by encoding the semantics of the sentence, rather than by memorizing phrase-to-phrase translations.",
-  "story": "Imagine learning a language by reading every book in the library and noticing, over time, which words travel together. It does not memorize a rulebook; it absorbs a library. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It is fluency built from pattern, not from memorized rules. That pattern-earned fluency is Google Neural Machine Translation.",
+  "explainer": {
+    "lead": "Google Neural Machine Translation, or GNMT, was the neural translation system Google introduced for Google Translate in November 2016. It translated whole sentences by learning from millions of examples, aiming for more fluent and accurate results. It was discontinued and, by 2020, had been replaced by a different deep-learning system.",
+    "tiers": {
+      "eli5": "GNMT was like a student who learned languages by reading millions of translated sentences. Instead of swapping one phrase at a time, it tried to understand the whole sentence and then say the same thing naturally in another language. Google used it in Translate starting in 2016, but later replaced it with a newer system.",
+      "practitioner": "GNMT is mainly relevant as a historical production sequence-to-sequence system, not as the architecture behind Google Translate today. Its pipeline used WordPiece tokenization, eight-layer 1024-wide LSTMs for encoding and decoding, single-layer feedforward attention, and beam-search decoding, with inference on Tensor Processing Units. Reproductions should treat published parameter counts cautiously because they range from over 160 million to 380 million; by 2020, Google had replaced it with a Transformer-encoder and RNN-decoder system.",
+      "paperLevel": "GNMT is a neural machine translation system that models sentence translation with an LSTM encoder, an LSTM decoder, and an attention connection, rather than with phrase-to-phrase lookup. Both recurrent blocks had eight 1024-wide layers, attention used one 1024-wide feedforward layer, and output was selected through beam search after WordPiece tokenization. Reported parameter totals vary widely, and the architecture was superseded by a Transformer-encoder/RNN-decoder system by 2020."
+    },
+    "example": "For the English sentence \"The cat sits on the mat,\" GNMT would tokenize the full sentence, encode its meaning, and use attention while decoding a German translation such as \"Die Katze sitzt auf der Matte.\" Beam search would compare possible output sequences rather than simply translating each phrase independently.",
+    "usedIn": [
+      {
+        "name": "Google Translate",
+        "detail": "Introduced in November 2016 to improve translation fluency and accuracy, and tested across more than a hundred supported languages.",
+        "url": ""
+      },
+      {
+        "name": "Multilingual machine translation",
+        "detail": "Its end-to-end approach learned from millions of translation examples and could encode sentence meaning for interlingual translation.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of translating a sentence as a chain of memorized phrases, GNMT first built a numerical representation of the whole sentence and then generated its translation. Learning from millions of examples helped it produce text that read more naturally.",
+    "howItWorks": [
+      "Split the input sentence into pieces with the WordPiece tokenizer.",
+      "Pass the pieces through an eight-layer, 1024-wide LSTM encoder to represent the sentence.",
+      "Use a one-layer feedforward attention mechanism to connect relevant encoder information to the decoder.",
+      "Generate the translation with an eight-layer, 1024-wide LSTM decoder.",
+      "Use beam search to choose among candidate translations, running the system on Tensor Processing Units."
+    ],
+    "whyItMatters": "GNMT brought whole-sentence neural translation into Google Translate, improving fluency and accuracy through learning from large numbers of examples. Its later replacement also illustrates how quickly production translation architectures moved beyond large LSTM encoder-decoder systems.",
+    "misconceptions": [
+      "GNMT was not just a large phrase dictionary: it encoded sentence semantics instead of relying only on phrase-to-phrase matches.",
+      "It is not the system Google Translate used by 2020; that replacement combined a Transformer encoder with an RNN decoder.",
+      "There is no single supported parameter count to quote confidently, because reported totals range from over 160 million to 380 million."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "sentence",
+          "label": "Input sentence",
+          "note": "Text in the source language"
+        },
+        {
+          "id": "tokens",
+          "label": "WordPiece tokens",
+          "note": "Sentence split into token pieces"
+        },
+        {
+          "id": "encoder",
+          "label": "LSTM encoder",
+          "note": "Eight 1024-wide layers encode meaning"
+        },
+        {
+          "id": "attention",
+          "label": "Feedforward attention",
+          "note": "One 1024-wide layer links encoder and decoder"
+        },
+        {
+          "id": "decoder",
+          "label": "LSTM decoder",
+          "note": "Eight 1024-wide layers generate tokens"
+        },
+        {
+          "id": "translation",
+          "label": "Beam-search translation",
+          "note": "Candidate sequences yield the final sentence"
+        }
+      ],
+      "edges": [
+        {
+          "from": "sentence",
+          "to": "tokens",
+          "label": "tokenize"
+        },
+        {
+          "from": "tokens",
+          "to": "encoder",
+          "label": "encode"
+        },
+        {
+          "from": "encoder",
+          "to": "attention",
+          "label": "representations"
+        },
+        {
+          "from": "attention",
+          "to": "decoder",
+          "label": "context"
+        },
+        {
+          "from": "decoder",
+          "to": "translation",
+          "label": "candidates"
+        }
+      ],
+      "caption": "GNMT's translation flow, from WordPiece tokenization through recurrent encoding, attention, recurrent decoding, and beam search."
+    }
+  },
   "related": [
     "neural-machine-translation",
     "machine-translation",

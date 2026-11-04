@@ -5,6 +5,96 @@
   "type": "concept",
   "definition": "Compressing a many-step teacher into a few-step student, via latent consistency training or adversarial objectives (the turbo-style models).",
   "details": "Compressing a many-step teacher into a few-step student, via latent consistency training or adversarial objectives (the turbo-style models). The reason interactive, type-and-see image generation became feasible in products.",
+  "explainer": {
+    "lead": "Diffusion distillation trains a fast image generator to imitate a slower one that needs many denoising steps. The resulting student can produce an image in only a few steps, making responsive, type-and-see generation practical.",
+    "tiers": {
+      "eli5": "Imagine an artist who makes a picture through many careful rounds of cleaning and redrawing. A student artist practices until they can make nearly the same picture in just a few rounds. That is diffusion distillation: a quick model learns from a slower, thorough teacher.",
+      "practitioner": "Start with a many-step diffusion teacher, then train a few-step student using latent consistency targets or an adversarial objective. The student is deployed with far fewer sampler evaluations, so latency falls; compare its output quality and prompt faithfulness against the teacher when reducing steps. This changes the sampling cost, not necessarily the number of model parameters.",
+      "paperLevel": "Let T_N(x_T, c) denote a teacher that transforms noise x_T into an image using N denoising steps under condition c, and let S_k be a student with k << N steps. Distillation trains S_k to reproduce teacher-derived behavior through a latent consistency objective or to match generated outputs through an adversarial objective. The central trade-off is fewer generation steps versus possible degradation relative to the many-step teacher."
+    },
+    "example": "For the prompt \"a red bicycle beside a lake,\" a teacher might use 50 denoising steps, while its distilled student uses 4. The student is trained to approximate the teacher's result, so it can return the bicycle image with substantially less sampling work.",
+    "usedIn": [
+      {
+        "name": "Turbo-style image models",
+        "detail": "Few-step students are trained to approximate much slower diffusion teachers.",
+        "url": ""
+      },
+      {
+        "name": "Interactive image generation",
+        "detail": "Short sampling runs support products where people type a prompt and quickly see an image.",
+        "url": ""
+      }
+    ],
+    "intuition": "A diffusion teacher reaches an image through a long sequence of small improvements; distillation teaches a student to make a similar journey with much larger jumps. The speed comes from learning the shortcut rather than simply skipping work in the original teacher.",
+    "howItWorks": [
+      "Choose a trained diffusion teacher that generates through many denoising steps.",
+      "Run the same kinds of noise and prompt inputs through a student designed to use only a few steps.",
+      "Train the student with latent consistency targets derived from the teacher, or with an adversarial objective on its generations.",
+      "Deploy the learned student with its short sampling schedule instead of running the teacher's full schedule."
+    ],
+    "whyItMatters": "It removes much of the waiting caused by long diffusion sampling schedules. That makes interactive image-generation products feasible without requiring users to run the full many-step teacher.",
+    "misconceptions": [
+      "It is not merely running the teacher with fewer steps; the student needs distillation training.",
+      "It primarily compresses the sampling process, not necessarily the model's weight count."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "noise",
+          "label": "Noise and prompt",
+          "note": "Inputs shared during training"
+        },
+        {
+          "id": "teacher",
+          "label": "Many-step teacher",
+          "note": "Generates the slow reference behavior"
+        },
+        {
+          "id": "objective",
+          "label": "Distillation objective",
+          "note": "Consistency or adversarial training signal"
+        },
+        {
+          "id": "student",
+          "label": "Few-step student",
+          "note": "Learns a much shorter sampling path"
+        },
+        {
+          "id": "image",
+          "label": "Generated image",
+          "note": "Produced with less sampling work"
+        }
+      ],
+      "edges": [
+        {
+          "from": "noise",
+          "to": "teacher",
+          "label": "reference run"
+        },
+        {
+          "from": "noise",
+          "to": "student",
+          "label": "fast run"
+        },
+        {
+          "from": "teacher",
+          "to": "objective",
+          "label": "teaches"
+        },
+        {
+          "from": "objective",
+          "to": "student",
+          "label": "updates"
+        },
+        {
+          "from": "student",
+          "to": "image",
+          "label": "few steps"
+        }
+      ],
+      "caption": "A many-step teacher supplies the training signal for a student that generates through only a few steps."
+    }
+  },
   "related": [
     "student"
   ],

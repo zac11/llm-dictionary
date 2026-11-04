@@ -5,6 +5,108 @@
   "type": "concept",
   "definition": "Systematic performance or treatment disparities across groups, inherited from data and design choices: dialect speakers getting worse ASR, names from some regions triggering worse outcomes.",
   "details": "Systematic performance or treatment disparities across groups, inherited from data and design choices: dialect speakers getting worse ASR, names from some regions triggering worse outcomes. Measured with disaggregated evaluation; mitigated with data balancing, targeted fine-tuning, and continuous monitoring rather than one-time fixes.",
+  "explainer": {
+    "lead": "Bias and fairness concern whether an AI system performs worse for, or treats differently, particular groups of people. These disparities can come from training data or design choices, so teams need to measure them by group and keep addressing them after deployment.",
+    "tiers": {
+      "eli5": "Imagine a voice helper that understands most children but often gets confused when one child speaks with a different accent. That is unfair if the helper was mostly taught using other accents. Grown-ups can listen for mistakes with each accent, add more examples, and keep checking after making changes.",
+      "practitioner": "Evaluate error rates and outcomes separately for relevant groups rather than relying on an aggregate score. Depending on the observed disparity, rebalance training data, apply targeted fine-tuning, and continue disaggregated monitoring after deployment. A one-time mitigation can miss disparities that remain or appear later.",
+      "paperLevel": "Let M_g be a performance or treatment measure for group g; disparities appear as systematic differences in M_g across groups, such as a higher ASR error rate for speakers of one dialect. Diagnosis uses disaggregated evaluation, while mitigation can include data balancing and targeted fine-tuning. Improving an aggregate metric does not establish group-level fairness, and continuous monitoring is needed rather than assuming a one-time fix is sufficient."
+    },
+    "example": "An ASR system has acceptable overall accuracy, but a dialect-by-dialect evaluation shows much worse transcription for one dialect. The team adds more representative training data, applies targeted fine-tuning, and continues checking that dialect’s error rate after deployment.",
+    "usedIn": [
+      {
+        "name": "Automatic speech recognition",
+        "detail": "Error rates can be evaluated separately for speakers of different dialects.",
+        "url": ""
+      },
+      {
+        "name": "Name-based automated decisions",
+        "detail": "Outcomes can be checked for disparities associated with names from particular regions.",
+        "url": ""
+      },
+      {
+        "name": "AI governance and monitoring",
+        "detail": "Deployed systems can be reviewed repeatedly for group-level performance or treatment disparities.",
+        "url": ""
+      }
+    ],
+    "intuition": "A good overall score can hide a system that works well for most people but badly for a smaller group. Fairness work looks inside the average to find who experiences those errors or worse outcomes.",
+    "howItWorks": [
+      "Identify relevant groups and the performance or treatment measure to compare.",
+      "Evaluate results separately for each group instead of reporting only an aggregate.",
+      "Trace observed disparities to data and design choices.",
+      "Apply mitigations such as data balancing or targeted fine-tuning.",
+      "Keep monitoring group-level results after deployment and after system changes."
+    ],
+    "whyItMatters": "Group disparities can make a system less useful or produce worse treatment for the people already poorly served by it. Disaggregated evaluation makes those problems visible, while ongoing mitigation and monitoring reduce the chance that they persist unnoticed.",
+    "misconceptions": [
+      "A strong overall score does not show that every group receives comparable performance or treatment.",
+      "Balancing data once does not guarantee fairness; targeted changes and continuous monitoring may still be needed.",
+      "Bias is not only a data problem because design choices can also produce disparities."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data-design",
+          "label": "Data and design",
+          "note": "Choices that can introduce group disparities"
+        },
+        {
+          "id": "system",
+          "label": "AI system",
+          "note": "Produces predictions, transcripts, or decisions"
+        },
+        {
+          "id": "disaggregated",
+          "label": "Group evaluation",
+          "note": "Compares results separately across groups"
+        },
+        {
+          "id": "mitigation",
+          "label": "Targeted mitigation",
+          "note": "Balances data or fine-tunes for observed gaps"
+        },
+        {
+          "id": "monitoring",
+          "label": "Continuous monitoring",
+          "note": "Rechecks group results after changes and deployment"
+        }
+      ],
+      "edges": [
+        {
+          "from": "data-design",
+          "to": "system",
+          "label": "shapes"
+        },
+        {
+          "from": "system",
+          "to": "disaggregated",
+          "label": "results"
+        },
+        {
+          "from": "disaggregated",
+          "to": "mitigation",
+          "label": "disparities"
+        },
+        {
+          "from": "mitigation",
+          "to": "system",
+          "label": "updates"
+        },
+        {
+          "from": "system",
+          "to": "monitoring",
+          "label": "deployed results"
+        },
+        {
+          "from": "monitoring",
+          "to": "mitigation",
+          "label": "new gaps"
+        }
+      ],
+      "caption": "Group-level evaluation reveals disparities, informs mitigation, and continues as a monitoring loop."
+    }
+  },
   "related": [
     "fine-tuning"
   ],

@@ -5,6 +5,93 @@
   "type": "concept",
   "definition": "Choosing the best response to a conversation turn from a set of candidates rather than generating one.",
   "details": "Choosing the best response to a conversation turn from a set of candidates rather than generating one. Models score each candidate against the dialogue context, a common setup for retrieval-based chatbots and dialogue benchmarks.",
+  "explainer": {
+    "lead": "Conversational response selection turns replying into a ranking task: compare several possible answers with the conversation so far and pick the highest-scoring one. It lets dialogue systems reuse prepared responses instead of writing every reply from scratch.",
+    "tiers": {
+      "eli5": "Imagine a friend says, “Want to play outside?” and you have three answer cards: “Yes, let’s go,” “The sky is blue,” and “I like soup.” You choose the card that fits best. A computer can do something similar by giving each possible answer a score and picking the winner.",
+      "practitioner": "In a retrieval-based chatbot, encode the dialogue context and each candidate response, score their compatibility, and return the top-ranked candidate. The same setup supports dialogue benchmarks that test whether a model can identify the appropriate response. Results depend heavily on the candidate pool: a good ranker cannot recover a suitable reply that was never included, and a high score does not guarantee a useful response.",
+      "paperLevel": "Given dialogue context c and candidate set R = {r1, ..., rn}, learn a compatibility score s(c, ri) and select r* = argmax over ri in R of s(c, ri). This distinguishes selection from response generation, but performance is bounded by the available candidates and by how well the scoring function captures contextual appropriateness."
+    },
+    "example": "For the context “Alex: Could you send me the report?”, the candidates “Sure, I’ll send it now,” “I like rainy weather,” and “What is a report?” receive scores of 0.93, 0.08, and 0.41. The system selects “Sure, I’ll send it now” because it has the highest score.",
+    "usedIn": [
+      {
+        "name": "Retrieval-based chatbots",
+        "detail": "Choose a stored response by scoring candidates against the current dialogue context.",
+        "url": ""
+      },
+      {
+        "name": "Dialogue benchmarks",
+        "detail": "Evaluate models by asking them to rank or identify the best response among candidates.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of composing a new sentence, the model acts like a judge comparing possible replies. The best reply is the one whose content fits the conversation so far, according to the model’s scores.",
+    "howItWorks": [
+      "Take the current conversation turn and its dialogue context.",
+      "Collect a set of candidate responses.",
+      "Score each candidate for compatibility with that context.",
+      "Rank the candidates by their scores.",
+      "Return the highest-scoring response."
+    ],
+    "whyItMatters": "Response selection provides a clear way to build retrieval-based dialogue systems and to compare models on the same candidates. It also makes the task’s main limitation visible: the chosen answer can only be as good as the candidate set.",
+    "misconceptions": [
+      "It does not generate a new response; it chooses from existing candidates.",
+      "The highest-scoring candidate is not necessarily a good reply if every candidate is unsuitable.",
+      "Candidate retrieval and response selection are distinct stages: retrieval supplies options, while selection ranks or chooses among them."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "context",
+          "label": "Dialogue context",
+          "note": "The conversation so far and current turn."
+        },
+        {
+          "id": "candidates",
+          "label": "Candidate responses",
+          "note": "The possible replies to compare."
+        },
+        {
+          "id": "scorer",
+          "label": "Compatibility scorer",
+          "note": "Scores each response against the context."
+        },
+        {
+          "id": "ranking",
+          "label": "Ranked candidates",
+          "note": "Candidates ordered by their scores."
+        },
+        {
+          "id": "response",
+          "label": "Selected response",
+          "note": "The highest-scoring candidate is returned."
+        }
+      ],
+      "edges": [
+        {
+          "from": "context",
+          "to": "scorer",
+          "label": ""
+        },
+        {
+          "from": "candidates",
+          "to": "scorer",
+          "label": ""
+        },
+        {
+          "from": "scorer",
+          "to": "ranking",
+          "label": "scores"
+        },
+        {
+          "from": "ranking",
+          "to": "response",
+          "label": "top candidate"
+        }
+      ],
+      "caption": "The model scores every candidate against the dialogue context, then returns the top-ranked response."
+    }
+  },
   "citation": {
     "title": "Conversational Response Selection",
     "authors": [],

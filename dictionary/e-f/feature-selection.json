@@ -5,7 +5,88 @@
   "type": "concept",
   "definition": "In machine learning, feature selection is the process of selecting a subset of relevant features (variables, predictors) for use in model construction.",
   "details": "Feature selection techniques are used for several reasons: simplification of models to make them easier to interpret, shorter training times, to avoid the curse of dimensionality, improve the compatibility of the data with a certain learning model class, to encode inherent symmetries present in the input space. The central premise when using feature selection is that data sometimes contains features that are redundant or irrelevant, and can thus be removed without incurring much loss of information. Redundancy and irrelevance are two distinct notions, since one relevant feature may be redundant in the presence of another relevant feature with which it is strongly correlated. Feature extraction creates new features from functions of the original features, whereas feature selection finds a subset of the features. Feature selection techniques are often used in domains where there are many features and comparatively few samples (data points).",
-  "story": "Think of a lightbulb moment: the idea was always there, but someone had to point a finger at it. Behind the jargon is an idea you could explain to a friend over coffee. At its heart it is a simple notion, once you strip away the fancy name. Once you see it, you cannot unsee it. And that idea, made concrete, is Feature selection.",
+  "explainer": {
+    "lead": "Feature selection means keeping a useful subset of a dataset’s input variables and leaving the rest out when building a model. It can make models easier to interpret and faster to train, especially when there are many features but relatively few data points.",
+    "tiers": {
+      "eli5": "Imagine guessing tomorrow’s weather using a notebook filled with useful clues, repeated clues, and unrelated facts. Feature selection is like keeping the helpful clues and crossing out the repeats and distractions. You then make your prediction from the smaller notebook without creating any new clues.",
+      "practitioner": "Apply feature selection before model construction to remove irrelevant or redundant inputs, particularly in high-dimensional datasets with comparatively few samples. The goals can include shorter training times, simpler models, reduced dimensionality, better compatibility with a model class, or encoding input-space symmetries. Check redundancy as well as relevance: a relevant feature can still be unnecessary when it is strongly correlated with another retained feature.",
+      "paperLevel": "Given an original feature set F, feature selection constructs a model using a subset S of F rather than deriving new features from functions of F. Its premise is that irrelevant or redundant features can sometimes be removed with little information loss. Relevance and redundancy are distinct, and selection is especially relevant when the number of features is large relative to the number of samples."
+    },
+    "example": "Suppose a dataset has 1,000 input measurements but only 50 samples. After removing measurements that are irrelevant and keeping one feature from a strongly correlated redundant pair, the model is trained on the remaining subset rather than all 1,000 inputs.",
+    "usedIn": [
+      {
+        "name": "High-dimensional machine learning",
+        "detail": "Used when datasets contain many features but comparatively few samples.",
+        "url": ""
+      },
+      {
+        "name": "Interpretable modeling",
+        "detail": "Reduces the number of inputs so the resulting model can be simpler to understand.",
+        "url": ""
+      },
+      {
+        "name": "Model-specific data preparation",
+        "detail": "Can improve compatibility between the data and a chosen class of learning models.",
+        "url": ""
+      }
+    ],
+    "intuition": "Not every input variable adds useful information: some may be irrelevant, while others repeat information already carried by a correlated feature. Keeping only a relevant subset can preserve most of the information while reducing complexity.",
+    "howItWorks": [
+      "Start with the original set of features available for model construction.",
+      "Identify features that are irrelevant to the learning task.",
+      "Check for redundancy, including relevant features strongly correlated with one another.",
+      "Select a subset of features to retain.",
+      "Construct the model using only that subset."
+    ],
+    "whyItMatters": "Feature selection can shorten training, simplify interpretation, and help avoid the curse of dimensionality. It can also adapt data to a model class or encode symmetries already present in the input space.",
+    "misconceptions": [
+      "Feature selection is not feature extraction: selection keeps a subset of existing features, while extraction creates new ones.",
+      "A relevant feature is not necessarily non-redundant; another strongly correlated relevant feature may carry much of the same information.",
+      "Removing features is not assumed to be cost-free; the premise is that irrelevant or redundant ones can sometimes be removed with little information loss."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "features",
+          "label": "Original features",
+          "note": "All available input variables"
+        },
+        {
+          "id": "assess",
+          "label": "Assess features",
+          "note": "Check relevance and redundancy"
+        },
+        {
+          "id": "subset",
+          "label": "Selected subset",
+          "note": "Retained original features"
+        },
+        {
+          "id": "model",
+          "label": "Model construction",
+          "note": "Training uses only the subset"
+        }
+      ],
+      "edges": [
+        {
+          "from": "features",
+          "to": "assess",
+          "label": ""
+        },
+        {
+          "from": "assess",
+          "to": "subset",
+          "label": "select"
+        },
+        {
+          "from": "subset",
+          "to": "model",
+          "label": ""
+        }
+      ],
+      "caption": "Feature selection filters the original inputs before the model is constructed."
+    }
+  },
   "related": [
     "feature-selection-toolbox",
     "minimum-redundancy-feature-selection",

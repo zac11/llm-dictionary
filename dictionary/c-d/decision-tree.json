@@ -5,7 +5,102 @@
   "type": "concept",
   "definition": "A model that makes predictions by learning a hierarchy of if-then splitting rules based on input features, forming a tree structure.",
   "details": "Decision trees are interpretable and easy to visualize, but individual trees can overfit; they're often combined into ensembles (like random forests or gradient boosting) for better performance.",
-  "story": "Think of a lightbulb moment: the idea was always there, but someone had to point a finger at it. Behind the jargon is an idea you could explain to a friend over coffee. At its heart it is a simple notion, once you strip away the fancy name. Once you see it, you cannot unsee it. And that idea, made concrete, is Decision Tree.",
+  "explainer": {
+    "lead": "A decision tree makes a prediction by asking a sequence of questions about the input, with each answer determining the next question. Its visible if-then rules make it easy to inspect, although a single tree can overfit and is often strengthened by combining many trees.",
+    "tiers": {
+      "eli5": "A decision tree is like playing a guessing game with yes-or-no questions. You might ask, \"Is rain forecast?\" and then, \"Is it cloudy?\" before deciding whether to take an umbrella. The computer learns which questions to ask from examples instead of someone writing every rule by hand.",
+      "practitioner": "Use a decision tree when you want a prediction model whose splitting rules can be inspected and visualized. Watch for overfitting in individual trees, and compare against random forests or gradient boosting when predictive performance is the priority. The learned hierarchy of feature-based rules is the model's central output.",
+      "paperLevel": "A decision tree represents a function f(x) by recursively partitioning the input-feature space: each internal node applies a splitting rule, and each leaf returns the prediction associated with its region. Learning constructs a hierarchy of such rules from training examples. Individual trees can overfit; ensembles including random forests and gradient boosting are commonly used to improve performance."
+    },
+    "example": "To decide whether to carry an umbrella, the tree first asks, \"Is rain forecast?\" If yes, it predicts \"Take an umbrella.\" If no, it asks, \"Is it cloudy?\" and predicts \"Take an umbrella\" for cloudy weather but \"Leave it behind\" otherwise; a cloudy day with no rain forecast therefore ends at \"Take an umbrella.\"",
+    "usedIn": [
+      {
+        "name": "Credit scoring",
+        "detail": "Applicant features can feed a sequence of splitting rules that produces a prediction.",
+        "url": ""
+      },
+      {
+        "name": "Medical decision support",
+        "detail": "A tree's visible questions and outcomes can make a prediction easier to inspect.",
+        "url": ""
+      },
+      {
+        "name": "Customer analytics",
+        "detail": "Customer attributes can be split into branches to support prediction tasks.",
+        "url": ""
+      },
+      {
+        "name": "Ensemble learning",
+        "detail": "Many trees are combined in methods such as random forests and gradient boosting.",
+        "url": ""
+      }
+    ],
+    "intuition": "Think of narrowing down an answer through a series of questions: each question separates the cases into groups, and the final group supplies the prediction. Because the questions form branches and endpoints, the whole process can be drawn as a tree.",
+    "howItWorks": [
+      "Start at the root with an input's feature values.",
+      "Apply the current node's if-then splitting rule.",
+      "Follow the matching branch to another rule or a leaf.",
+      "Return the prediction stored at the reached leaf."
+    ],
+    "whyItMatters": "Decision trees combine prediction with a structure people can readily visualize and follow. They also provide the building blocks for widely used ensembles that can perform better than an individual tree.",
+    "misconceptions": [
+      "Easy to interpret does not guarantee accurate predictions.",
+      "The splitting rules are learned, not necessarily written manually.",
+      "A random forest is an ensemble, not one large decision tree."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "rain",
+          "label": "Rain forecast?",
+          "note": "Root splitting rule"
+        },
+        {
+          "id": "take-direct",
+          "label": "Take umbrella",
+          "note": "Prediction leaf"
+        },
+        {
+          "id": "cloudy",
+          "label": "Is it cloudy?",
+          "note": "Next splitting rule"
+        },
+        {
+          "id": "take-cloudy",
+          "label": "Take umbrella",
+          "note": "Prediction leaf"
+        },
+        {
+          "id": "leave",
+          "label": "Leave umbrella",
+          "note": "Prediction leaf"
+        }
+      ],
+      "edges": [
+        {
+          "from": "rain",
+          "to": "take-direct",
+          "label": "Yes"
+        },
+        {
+          "from": "rain",
+          "to": "cloudy",
+          "label": "No"
+        },
+        {
+          "from": "cloudy",
+          "to": "take-cloudy",
+          "label": "Yes"
+        },
+        {
+          "from": "cloudy",
+          "to": "leave",
+          "label": "No"
+        }
+      ],
+      "caption": "Each answer selects a branch until a leaf supplies the umbrella prediction."
+    }
+  },
   "related": [
     "decision-tree-pruning",
     "ensemble-learning",

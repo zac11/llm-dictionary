@@ -5,6 +5,93 @@
   "type": "concept",
   "definition": "Partitioning the nodes of a graph into clusters based on connectivity — overlapping with community detection, often via spectral methods or GNN embeddings.",
   "details": "Partitioning the nodes of a graph into clusters based on connectivity — overlapping with community detection, often via spectral methods or GNN embeddings.",
+  "explainer": {
+    "lead": "Graph clustering groups a graph’s nodes so that nodes with stronger connectivity are more likely to end up together. It helps turn a web of relationships into a smaller set of meaningful groups, and is closely related to community detection.",
+    "tiers": {
+      "eli5": "Imagine children holding hands to show who plays together often. Graph clustering looks at those connections and sorts the children into groups whose members are strongly linked, like finding friendship circles without being told who belongs to each one.",
+      "practitioner": "Represent the data as nodes and edges, then cluster directly with a spectral method or cluster embeddings produced by a GNN. Results depend heavily on how connectivity is represented, and a weak link between groups can make the boundary unstable; overlapping communities also do not fit a strict partition cleanly.",
+      "paperLevel": "Given G=(V,E), graph clustering seeks a partition of V into subsets whose assignments reflect connectivity, typically placing strongly connected nodes together. Spectral approaches use graph-derived spectral representations, while GNN-based approaches cluster learned node embeddings. Community detection overlaps with this task, but connectivity alone may not determine a unique or non-overlapping partition."
+    },
+    "example": "Suppose eight nodes form two groups of four, with many edges inside each group and only one edge joining the groups. Graph clustering would typically place nodes 1–4 in one cluster and nodes 5–8 in another, using the single connecting edge as the boundary.",
+    "usedIn": [
+      {
+        "name": "Computer vision",
+        "detail": "Groups visual elements represented as graph nodes according to their connections.",
+        "url": ""
+      },
+      {
+        "name": "Community detection",
+        "detail": "Finds groups of nodes whose connectivity suggests shared community structure.",
+        "url": ""
+      }
+    ],
+    "intuition": "A graph can look tangled as a whole while containing tightly connected pockets. Clustering reveals those pockets by using edges as evidence for which nodes belong together.",
+    "howItWorks": [
+      "Start with a graph whose nodes are the items to group and whose edges encode connectivity.",
+      "Examine the connection pattern directly or derive node representations from it.",
+      "For spectral clustering, use a spectral representation; alternatively, learn node embeddings with a GNN.",
+      "Assign nodes to clusters so that the resulting groups reflect the connectivity structure.",
+      "Inspect the clusters, especially where sparse connections make group boundaries unclear."
+    ],
+    "whyItMatters": "It reduces complex relational structure to interpretable groups without requiring predefined node labels. In computer vision and other graph-based settings, those groups can expose structure that is difficult to see from individual nodes or edges.",
+    "misconceptions": [
+      "It is not identical to community detection; the two tasks overlap.",
+      "A GNN is not required; spectral methods are another common approach.",
+      "Connectivity-based clusters need not be unique, and real groups may overlap rather than form a strict partition."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "graph",
+          "label": "Input graph",
+          "note": "Nodes joined by connectivity edges"
+        },
+        {
+          "id": "structure",
+          "label": "Connection structure",
+          "note": "Patterns of edges among nodes"
+        },
+        {
+          "id": "representation",
+          "label": "Node representations",
+          "note": "Spectral features or GNN embeddings"
+        },
+        {
+          "id": "clustering",
+          "label": "Cluster assignment",
+          "note": "Nodes partitioned using connectivity"
+        },
+        {
+          "id": "clusters",
+          "label": "Node clusters",
+          "note": "Groups reflecting connected structure"
+        }
+      ],
+      "edges": [
+        {
+          "from": "graph",
+          "to": "structure",
+          "label": "encodes"
+        },
+        {
+          "from": "structure",
+          "to": "representation",
+          "label": "transformed into"
+        },
+        {
+          "from": "representation",
+          "to": "clustering",
+          "label": "guides"
+        },
+        {
+          "from": "clustering",
+          "to": "clusters",
+          "label": "produces"
+        }
+      ],
+      "caption": "Graph connectivity is represented and then used to partition nodes into clusters."
+    }
+  },
   "related": [
     "community-detection"
   ],

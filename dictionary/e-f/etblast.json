@@ -2,10 +2,111 @@
   "term": "ETBLAST",
   "letter": "E",
   "category": "Artificial Intelligence",
-  "type": "concept",
+  "type": "tool",
   "definition": "eTBLAST was a free text-similarity service now defunct.",
   "details": "It was initially developed by Alexander Pertsemlidis and Harold “Skip” Garner in 2005 at The University of Texas Southwestern Medical Center. It offered access to the following databases: MEDLINE National Institutes of Health (NIH) CRISP Institute of Physics (IOP) Wikipedia arXiv NASA technical reports Virginia Tech class descriptions others of clinical interest eTBLAST searched citation databases and databases containing full-text such as PUBMED. It compared a user’s natural-text query with target databases utilizing a hybrid-search algorithm. The algorithm consisted of a low-sensitivity, weighted, keyword-based first pass followed by a novel second pass based on sentence alignment. eTBLAST later became a web-based service of The Innovation Laboratory at the Virginia Bioinformatics Institute. The text-similarity engine studied duplicate publications and potential plagiarism in biomedical literature. eTBLAST received thousands of random samples of Medline abstracts for a large-scale study. Those with the highest similarity were assessed then entered into an on-line database. The work revealed several trends including an increasing rate of duplication in the biomedical literature, according to prominent scientific journals Bioinformatics,Anaesthesia and Intensive Care, Clinical Chemistry, Urologic oncology, Nature, and Science.",
-  "story": "Picture an engineer at a cluttered workbench, turning a clever idea over in their hands until it finally clicks. At its heart it is a simple notion, once you strip away the fancy name. A small key that opens a much bigger door. It is one of those ideas that feels obvious only after someone shows it to you. And that idea, made concrete, is ETBLAST.",
+  "explainer": {
+    "lead": "eTBLAST was a free, now-defunct service for finding text similar to a natural-language query. It helped researchers investigate duplicate publications and possible plagiarism in biomedical literature by comparing wording across citation and full-text databases.",
+    "tiers": {
+      "eli5": "Imagine giving a teacher one paragraph and asking whether another student had written something almost the same. eTBLAST did a similar job with scientific writing: it first looked for shared important words, then checked how closely the sentences lined up. Very close matches could be examined for duplication or copying.",
+      "practitioner": "When available, eTBLAST accepted a natural-text query and searched targets such as MEDLINE, PubMed, arXiv, Wikipedia, and NASA technical reports. Its two-stage retrieval combined weighted-keyword screening with sentence alignment, making it useful for candidate duplicate detection rather than one-shot plagiarism decisions. Highly similar results still required assessment, and the service is no longer available.",
+      "paperLevel": "For a query q and target document collection D, eTBLAST applied a low-sensitivity, weighted keyword-based first pass, followed by sentence-alignment comparison on the retrieved candidates. In its large-scale duplication study, thousands of randomly sampled Medline abstracts were compared, and the highest-similarity pairs were assessed and entered into an online database. Similarity identified candidates for investigation, not proof of plagiarism."
+    },
+    "example": "A researcher submits a biomedical abstract. eTBLAST first finds documents sharing important weighted keywords, then compares sentence alignments; an earlier abstract with very close wording is flagged as a high-similarity candidate for assessment as a possible duplicate.",
+    "usedIn": [
+      {
+        "name": "Biomedical publication integrity",
+        "detail": "Studied duplicate publications and potential plagiarism in biomedical literature.",
+        "url": ""
+      },
+      {
+        "name": "Scientific literature search",
+        "detail": "Compared natural-text queries with citation databases and full-text collections such as PubMed.",
+        "url": ""
+      },
+      {
+        "name": "Large-scale duplication analysis",
+        "detail": "Processed thousands of random Medline abstracts and sent the highest-similarity cases for assessment.",
+        "url": ""
+      }
+    ],
+    "intuition": "Matching a few distinctive words can narrow a huge collection, but close sentence-level comparison gives a better indication that two passages may be duplicates. eTBLAST combined those two ideas in one search pipeline.",
+    "howItWorks": [
+      "A user supplied a natural-text query, such as a biomedical abstract.",
+      "A low-sensitivity first pass used weighted keywords to retrieve candidate documents.",
+      "A second pass compared candidates using sentence alignment.",
+      "The service searched selected citation and full-text databases for similar text.",
+      "In duplication studies, the highest-similarity results were assessed and added to an online database."
+    ],
+    "whyItMatters": "It made large collections searchable by textual similarity and supported investigation of publication duplication. Its Medline study reported several trends, including an increasing rate of duplication in biomedical literature.",
+    "misconceptions": [
+      "A high similarity score was not by itself proof of plagiarism.",
+      "It was not limited to exact-word matching; its second pass used sentence alignment.",
+      "Although its name resembles BLAST, the described service compared natural text rather than biological sequences."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "query",
+          "label": "Natural-text query",
+          "note": "A passage supplied by the user"
+        },
+        {
+          "id": "databases",
+          "label": "Target databases",
+          "note": "Citation and full-text collections"
+        },
+        {
+          "id": "keywords",
+          "label": "Weighted keyword pass",
+          "note": "Low-sensitivity candidate retrieval"
+        },
+        {
+          "id": "alignment",
+          "label": "Sentence alignment",
+          "note": "Second-pass similarity comparison"
+        },
+        {
+          "id": "candidates",
+          "label": "Similar candidates",
+          "note": "Highest-similarity text matches"
+        },
+        {
+          "id": "assessment",
+          "label": "Assessment",
+          "note": "Review of possible duplication"
+        }
+      ],
+      "edges": [
+        {
+          "from": "query",
+          "to": "keywords",
+          "label": "query"
+        },
+        {
+          "from": "databases",
+          "to": "keywords",
+          "label": "documents"
+        },
+        {
+          "from": "keywords",
+          "to": "alignment",
+          "label": "candidates"
+        },
+        {
+          "from": "alignment",
+          "to": "candidates",
+          "label": "scores"
+        },
+        {
+          "from": "candidates",
+          "to": "assessment",
+          "label": "top matches"
+        }
+      ],
+      "caption": "eTBLAST narrowed database searches with weighted keywords, refined candidates through sentence alignment, and supported assessment of the closest matches."
+    }
+  },
   "related": [
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",
     "accelerated-linear-algebra",

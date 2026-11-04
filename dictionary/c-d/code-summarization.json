@@ -5,6 +5,102 @@
   "type": "concept",
   "definition": "Generating a natural-language description of what a code snippet or function does, typically for documentation.",
   "details": "Generating a natural-language description of what a code snippet or function does, typically for documentation. Models treat source code like text while also exploiting AST structure.",
+  "explainer": {
+    "lead": "Code summarization turns a piece of source code into a short explanation of what it does. It helps developers write documentation and understand unfamiliar functions without first reading every line.",
+    "tiers": {
+      "eli5": "It is like asking a friend to read a recipe and tell you, in one sentence, what dish it makes and how. A code summarizer reads instructions written for a computer and explains their purpose in ordinary language. For example, it might describe a function as calculating a price after tax.",
+      "practitioner": "It is applied at snippet or function level in documentation generators and coding assistants. Models can combine source-code text with abstract syntax tree structure, then produce a candidate description for review. Summaries may sound convincing while omitting edge cases, side effects, or assumptions, so they should be checked against the code.",
+      "paperLevel": "The task can be written as s = f(c, AST(c)), where c is source code, AST(c) is its abstract syntax tree, and s is a natural-language summary. The model uses both token-level code information and syntactic structure to describe behavior. A central limit is semantic fidelity: fluent text can still misstate behavior or omit important conditions."
+    },
+    "example": "Given `def total(price): return price * 1.2`, a summarizer could output: \"Calculates a total by multiplying the input price by 1.2, equivalent to adding 20%.\"",
+    "usedIn": [
+      {
+        "name": "Software documentation",
+        "detail": "Drafting short descriptions of functions and code snippets.",
+        "url": ""
+      },
+      {
+        "name": "Coding assistants",
+        "detail": "Explaining unfamiliar code directly within developer workflows.",
+        "url": ""
+      },
+      {
+        "name": "Software maintenance",
+        "detail": "Helping developers quickly establish a function's intended purpose.",
+        "url": ""
+      }
+    ],
+    "intuition": "Reading code line by line is slow when you only want its purpose. Code summarization compresses that purpose into natural language, using syntax-tree structure as well as the code's words and symbols.",
+    "howItWorks": [
+      "Take a code snippet or function as input.",
+      "Represent its source text as a sequence of code tokens.",
+      "Parse or use its abstract syntax tree to capture code structure.",
+      "Generate a natural-language description of the code's behavior."
+    ],
+    "whyItMatters": "Useful summaries reduce the effort needed to document code and orient yourself in an unfamiliar codebase. They provide a quick starting point, while the source remains the authority on exact behavior.",
+    "misconceptions": [
+      "A generated summary is not proof that the code is correct.",
+      "Code summarization explains existing code; it does not generate code from a request.",
+      "Using an AST does not guarantee that every runtime behavior or edge case is captured."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "code",
+          "label": "Source code",
+          "note": "A snippet or function"
+        },
+        {
+          "id": "tokens",
+          "label": "Code tokens",
+          "note": "Text-like representation"
+        },
+        {
+          "id": "ast",
+          "label": "Syntax tree",
+          "note": "Structural representation"
+        },
+        {
+          "id": "model",
+          "label": "Summarization model",
+          "note": "Combines text and structure"
+        },
+        {
+          "id": "summary",
+          "label": "Natural-language summary",
+          "note": "Description of behavior"
+        }
+      ],
+      "edges": [
+        {
+          "from": "code",
+          "to": "tokens",
+          "label": ""
+        },
+        {
+          "from": "code",
+          "to": "ast",
+          "label": "parsed into"
+        },
+        {
+          "from": "tokens",
+          "to": "model",
+          "label": ""
+        },
+        {
+          "from": "ast",
+          "to": "model",
+          "label": ""
+        },
+        {
+          "from": "model",
+          "to": "summary",
+          "label": "generates"
+        }
+      ],
+      "caption": "A summarization model combines source-code text with abstract syntax tree structure to produce a natural-language description."
+    }
+  },
   "related": [
     "natural-language"
   ],

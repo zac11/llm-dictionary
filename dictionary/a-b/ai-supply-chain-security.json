@@ -5,7 +5,107 @@
   "type": "concept",
   "definition": "Managing the risk that a model, dataset, plugin or dependency an AI system relies on has been tampered with or compromised.",
   "details": "Modern AI applications assemble third-party models, weights, datasets, prompts and MCP tools; any of those links can carry backdoors, poisoned data or malicious code. Supply-chain controls track provenance, pin versions, scan artifacts and verify integrity before anything reaches production.",
-  "story": "Picture a parachute packed by a second pair of hands: nobody plans to need it, but everyone is glad it was checked. The idea is simple: before something powerful is let loose, someone checks that it will not do real harm to real people. It is the habit of asking, before every launch, what could go wrong — and then doing something about it. Caution is not the enemy of progress — it is the reason progress gets to keep going. That deliberate caution is AI Supply Chain Security.",
+  "explainer": {
+    "lead": "AI supply chain security is about checking the outside ingredients an AI system is built from before trusting them. A tampered model, dataset or tool can introduce malicious behavior, so those dependencies need the same careful handling as the system itself.",
+    "tiers": {
+      "eli5": "Building an AI system can be like making lunch with food supplied by lots of different people. If someone slips something harmful into one ingredient, the finished lunch can be unsafe even if you cooked it correctly. AI supply chain security means checking where each ingredient came from and making sure it has not been changed before using it.",
+      "practitioner": "Before deployment, teams track provenance for third-party models, weights, datasets, prompts and MCP tools, pin their versions, scan the artifacts and verify their integrity. These checks belong in the path to production so a compromised dependency can be blocked. Pinning or integrity verification alone does not show that an artifact is harmless, and every dependency needs coverage rather than just the model.",
+      "paperLevel": "Let A = {models, weights, datasets, prompts, MCP tools, dependencies} be the external artifacts used by an AI system. The objective is to prevent any compromised a in A from reaching production by establishing provenance, pinning versions, scanning artifacts and verifying integrity. These controls address tampering and compromise; they do not by themselves establish an artifact's accuracy, fairness or broader behavioral safety."
+    },
+    "example": "A team adding third-party model weights and an MCP tool records both artifacts' origins, pins their versions, scans them and verifies their integrity before release. If the tool has been altered and fails verification, it is blocked instead of being deployed with the application.",
+    "usedIn": [
+      {
+        "name": "AI application deployment",
+        "detail": "Third-party models, weights and dependencies are checked before they reach production.",
+        "url": ""
+      },
+      {
+        "name": "Model and data pipelines",
+        "detail": "Dataset and model provenance, pinned versions and artifact integrity are tracked to reduce poisoning and tampering risks.",
+        "url": ""
+      },
+      {
+        "name": "AI agents using MCP tools",
+        "detail": "External tools and prompts are treated as supply-chain dependencies that may carry malicious code or instructions.",
+        "url": ""
+      }
+    ],
+    "intuition": "An AI system is only as trustworthy as the outside pieces it assembles. Compromise can enter through any link in that chain, even when the system's own code is sound.",
+    "howItWorks": [
+      "Identify the third-party models, weights, datasets, prompts, MCP tools and other dependencies in use.",
+      "Track where each artifact came from and pin the version intended for use.",
+      "Scan artifacts for poisoned data, backdoors or malicious code.",
+      "Verify integrity before release and block anything that fails the checks from reaching production."
+    ],
+    "whyItMatters": "A single compromised dependency can carry a backdoor, poisoned data or malicious code into an otherwise carefully built system. Checking every link reduces the chance that tampering reaches users through production.",
+    "misconceptions": [
+      "It is not only about model files: datasets, prompts, plugins, MCP tools and other dependencies can also be compromised.",
+      "A pinned version or successful integrity check confirms which artifact is present, not that the artifact is harmless.",
+      "Supply-chain controls do not replace testing for accuracy, fairness or other behavioral risks."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "artifacts",
+          "label": "External artifacts",
+          "note": "Models, weights, datasets, prompts and MCP tools"
+        },
+        {
+          "id": "provenance",
+          "label": "Track provenance",
+          "note": "Record where each dependency came from"
+        },
+        {
+          "id": "versions",
+          "label": "Pin versions",
+          "note": "Fix the intended artifact versions"
+        },
+        {
+          "id": "scan",
+          "label": "Scan artifacts",
+          "note": "Look for backdoors, poisoning and malicious code"
+        },
+        {
+          "id": "verify",
+          "label": "Verify integrity",
+          "note": "Block artifacts that fail the checks"
+        },
+        {
+          "id": "production",
+          "label": "Production system",
+          "note": "Only approved dependencies are deployed"
+        }
+      ],
+      "edges": [
+        {
+          "from": "artifacts",
+          "to": "provenance",
+          "label": "dependencies"
+        },
+        {
+          "from": "provenance",
+          "to": "versions",
+          "label": "origins"
+        },
+        {
+          "from": "versions",
+          "to": "scan",
+          "label": "pinned artifacts"
+        },
+        {
+          "from": "scan",
+          "to": "verify",
+          "label": "scan results"
+        },
+        {
+          "from": "verify",
+          "to": "production",
+          "label": "approved artifacts"
+        }
+      ],
+      "caption": "Supply-chain controls check external AI dependencies before approved artifacts reach production."
+    }
+  },
   "related": [
     "ai-security",
     "ai-governance",

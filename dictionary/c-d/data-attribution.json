@@ -8,6 +8,102 @@
   ],
   "definition": "Tracing a model's specific behavior back to the training examples most responsible for it, via influence functions or scalable approximations like TracIn and TRAK.",
   "details": "Tracing a model's specific behavior back to the training examples most responsible for it, via influence functions or scalable approximations like TracIn and TRAK. The tool for debugging bad behaviors, valuing data contributions, and informing copyright and licensing disputes.",
+  "explainer": {
+    "lead": "Data attribution asks which training examples most influenced a particular model behavior. It turns a mysterious answer into a ranked set of examples to inspect, helping with debugging, data valuation, and copyright or licensing questions.",
+    "tiers": {
+      "eli5": "Imagine a student gives a strange answer, and you look through their notes to find which pages most likely caused it. Data attribution does something similar for an AI model, pointing to training examples connected to a specific behavior. Those examples can then be checked for mistakes or other problems.",
+      "practitioner": "Start with a precisely defined behavior, then use influence functions or scalable approximations such as TracIn or TRAK to rank training examples by their estimated contribution. Inspecting highly ranked examples can guide debugging and data review. Treat the scores as estimates, and do not equate a high score by itself with proof of legal responsibility.",
+      "paperLevel": "For a target behavior b and training examples z_1, ..., z_n, data attribution estimates scores a_i measuring each example's responsibility for b. Influence functions approximate how model behavior changes when a training point's weight changes; TracIn and TRAK are scalable approximation approaches. The resulting rankings are estimates rather than direct proof that an example uniquely caused the behavior."
+    },
+    "example": "Suppose a support chatbot repeatedly gives customers an obsolete email address. Data attribution might rank several outdated support documents in its training data highest, giving engineers a focused set of examples to examine while debugging the behavior.",
+    "usedIn": [
+      {
+        "name": "Model debugging",
+        "detail": "Finding training examples associated with unwanted model behaviors.",
+        "url": ""
+      },
+      {
+        "name": "Data valuation",
+        "detail": "Estimating how individual data contributions affect a selected behavior.",
+        "url": ""
+      },
+      {
+        "name": "Copyright and licensing review",
+        "detail": "Identifying relevant training examples to inform disputes, without deciding the legal question alone.",
+        "url": ""
+      }
+    ],
+    "intuition": "A model learns from many examples, but some may matter much more than others for one particular behavior. Attribution works backward from that behavior to estimate which examples deserve inspection first.",
+    "howItWorks": [
+      "Choose a specific model behavior or output to investigate.",
+      "Compare that behavior with the model's training examples.",
+      "Estimate each example's influence using influence functions, TracIn, TRAK, or another approximation.",
+      "Rank the examples and inspect those with the highest estimated responsibility."
+    ],
+    "whyItMatters": "It makes model behavior easier to investigate by connecting outputs to training data. The same connection can support data-contribution estimates and provide evidence for copyright and licensing discussions.",
+    "misconceptions": [
+      "A high attribution score does not prove that one example uniquely caused a behavior.",
+      "Attribution informs copyright or licensing disputes; it does not settle them by itself.",
+      "Influence functions and their scalable approximations are related methods, not guarantees of exact rankings."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "training-data",
+          "label": "Training examples",
+          "note": "The data whose contributions are being estimated."
+        },
+        {
+          "id": "model",
+          "label": "Trained model",
+          "note": "The model shaped by those examples."
+        },
+        {
+          "id": "behavior",
+          "label": "Target behavior",
+          "note": "The specific output or behavior under investigation."
+        },
+        {
+          "id": "attribution",
+          "label": "Attribution method",
+          "note": "Influence functions, TracIn, TRAK, or another approximation."
+        },
+        {
+          "id": "ranking",
+          "label": "Ranked examples",
+          "note": "Training examples ordered by estimated responsibility."
+        }
+      ],
+      "edges": [
+        {
+          "from": "training-data",
+          "to": "model",
+          "label": "training"
+        },
+        {
+          "from": "model",
+          "to": "behavior",
+          "label": "produces"
+        },
+        {
+          "from": "behavior",
+          "to": "attribution",
+          "label": "defines target"
+        },
+        {
+          "from": "training-data",
+          "to": "attribution",
+          "label": "candidate data"
+        },
+        {
+          "from": "attribution",
+          "to": "ranking",
+          "label": "scores"
+        }
+      ],
+      "caption": "Attribution connects a selected model behavior back to a ranked set of training examples."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

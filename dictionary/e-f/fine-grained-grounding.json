@@ -5,7 +5,107 @@
   "type": "concept",
   "definition": "The practice of tying specific claims in a model's output back to specific supporting evidence, such as source documents or citations.",
   "details": "Grounding techniques (including citation generation) help users verify AI-generated claims and are an important tool for reducing the practical harm of hallucination.",
-  "story": "Imagine a factory floor where each workstation can glance at every other workstation before doing its part. It is the blueprint that makes everything else possible. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. Structure decides what the model can even express — the blueprint before the bricks. That blueprint is Fine-Grained Grounding.",
+  "explainer": {
+    "lead": "Fine-grained grounding connects individual claims in an AI answer to the particular evidence behind them. Instead of offering a general list of sources, it helps a reader check exactly which document or citation supports each statement.",
+    "tiers": {
+      "eli5": "Imagine writing a school report and putting a little note beside each fact to show where you found it. Fine-grained grounding does the same for an AI answer, so you can check each claim instead of trusting the whole answer blindly.",
+      "practitioner": "In document-based answer systems, split generated output into claims and associate each one with its supporting passage or citation. Check that the evidence supports the specific claim, not merely the general topic; an attached citation alone does not establish correctness.",
+      "paperLevel": "Given output O decomposed into claims c1, ..., cn and evidence E, fine-grained grounding produces a mapping g: ci -> subset of E for each supported claim. The mapping is claim-specific rather than response-level, and grounding does not by itself guarantee that every claim is correct or supported."
+    },
+    "example": "An answer says, “The library opens at 9 a.m. [1] and is closed on Mondays [2].” Citation [1] points to the opening-hours table, while [2] points to the weekly closure rule, allowing each claim to be checked separately.",
+    "usedIn": [
+      {
+        "name": "Document-based question answering",
+        "detail": "Links statements in an answer to supporting passages in source documents.",
+        "url": ""
+      },
+      {
+        "name": "AI answers with citations",
+        "detail": "Attaches citations to particular claims so readers can verify them.",
+        "url": ""
+      },
+      {
+        "name": "Hallucination risk reduction",
+        "detail": "Makes unsupported statements easier to identify and check.",
+        "url": ""
+      }
+    ],
+    "intuition": "A trustworthy answer should let you ask, “Where did this particular statement come from?” Fine-grained grounding answers that question at the level of individual claims rather than only for the response as a whole.",
+    "howItWorks": [
+      "Generate or receive an answer.",
+      "Identify its individual claims.",
+      "Find supporting evidence for each claim.",
+      "Attach the relevant citation or passage.",
+      "Let the reader verify claim by claim."
+    ],
+    "whyItMatters": "It gives users a practical way to inspect AI-generated claims and spot unsupported ones. This can reduce the harm caused by hallucinations, even though it does not eliminate them.",
+    "misconceptions": [
+      "Adding any citation is not enough; it must support the specific claim.",
+      "Grounded output is not guaranteed to be correct and still needs verification."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "answer",
+          "label": "Generated answer",
+          "note": "Contains one or more claims."
+        },
+        {
+          "id": "claims",
+          "label": "Individual claims",
+          "note": "The answer is split into checkable statements."
+        },
+        {
+          "id": "documents",
+          "label": "Source documents",
+          "note": "Provide the available evidence."
+        },
+        {
+          "id": "matching",
+          "label": "Evidence matching",
+          "note": "Connects each claim to supporting material."
+        },
+        {
+          "id": "citations",
+          "label": "Claim-level citations",
+          "note": "Show which evidence supports each statement."
+        },
+        {
+          "id": "verification",
+          "label": "User verification",
+          "note": "Readers inspect claims against their evidence."
+        }
+      ],
+      "edges": [
+        {
+          "from": "answer",
+          "to": "claims",
+          "label": "split"
+        },
+        {
+          "from": "claims",
+          "to": "matching",
+          "label": "claims"
+        },
+        {
+          "from": "documents",
+          "to": "matching",
+          "label": "evidence"
+        },
+        {
+          "from": "matching",
+          "to": "citations",
+          "label": "links"
+        },
+        {
+          "from": "citations",
+          "to": "verification",
+          "label": ""
+        }
+      ],
+      "caption": "Individual claims are matched to source evidence, producing citations that readers can verify."
+    }
+  },
   "related": [
     "grounding",
     "retrieval-augmented-fine-tuning",

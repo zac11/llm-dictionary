@@ -5,7 +5,103 @@
   "type": "concept",
   "definition": "Description logics (DL) are a family of formal knowledge representation languages.",
   "details": "Many DLs are more expressive than propositional logic but less expressive than first-order logic. In contrast to the latter, the core reasoning problems for DLs are (usually) decidable, and efficient decision procedures have been designed and implemented for these problems. There are general, spatial, temporal, spatiotemporal, and fuzzy description logics, and each description logic features a different balance between expressive power and reasoning complexity by supporting different sets of mathematical constructors. DLs are used in artificial intelligence to describe and reason about the relevant concepts of an application domain (known as terminological knowledge). It is of particular importance in providing a logical formalism for ontologies and the Semantic Web: the Web Ontology Language (OWL) and its profiles are based on DLs. A major area of application of DLs and OWL is in biomedical informatics, where they assist in the codification of biomedical knowledge. DLs and OWL are also applied in other domains, including defense, climate modeling, and large-scale industrial knowledge graphs.",
-  "story": "Think of a grammar teacher who never memorized a rule but can still tell you when a sentence sounds wrong. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It figures out meaning by noticing which words like to travel together. The machine learns to read between the lines by reading an impossible number of lines. That pattern-earned fluency is Description logic.",
+  "explainer": {
+    "lead": "Description logic gives computers a precise way to describe the concepts in a subject and reason about them. It underpins OWL ontologies, making it useful where knowledge must be consistent, machine-readable, and open to automated inference.",
+    "tiers": {
+      "eli5": "Imagine making a carefully labelled guide to everything in a hospital, with rules such as “every cardiologist is a doctor” and “every doctor is a person.” If the guide says Ada is a cardiologist, a computer can work out that she is also a person. Different versions of description logic allow different kinds of rules, with harder rules potentially taking more work to check.",
+      "practitioner": "Use DL-based OWL and its profiles to encode an application domain's terminological knowledge and apply automated reasoning to it. Choose the logic or profile by balancing the constructors you need against reasoning complexity; decidable core problems do not make every choice equally cheap. Typical settings include biomedical ontologies, Semantic Web systems, climate modeling, defense, and industrial knowledge graphs.",
+      "paperLevel": "Description logics are formal knowledge representation languages; many satisfy propositional logic < DL < first-order logic in expressive power. Each DL admits a different set of mathematical constructors, trading expressive power against reasoning complexity. Unlike first-order logic, the core reasoning problems for DLs are usually decidable, and efficient decision procedures have been designed and implemented for them."
+    },
+    "example": "Suppose an ontology states Cardiologist ⊆ Physician, Physician ⊆ Person, and Cardiologist(ada). A description-logic reasoner can infer Physician(ada) and Person(ada) without those conclusions being stated separately.",
+    "usedIn": [
+      {
+        "name": "Web Ontology Language (OWL)",
+        "detail": "OWL and its profiles are based on description logics.",
+        "url": ""
+      },
+      {
+        "name": "Biomedical informatics",
+        "detail": "DLs and OWL help codify biomedical knowledge.",
+        "url": ""
+      },
+      {
+        "name": "Climate modeling",
+        "detail": "DLs and OWL are applied to knowledge in this domain.",
+        "url": ""
+      },
+      {
+        "name": "Industrial knowledge graphs",
+        "detail": "They support reasoning in large-scale knowledge graphs.",
+        "url": ""
+      }
+    ],
+    "intuition": "Write down what kinds of things exist in a domain and how those kinds relate, then let a reasoner draw conclusions from those statements. The key design choice is how much you can say before reasoning becomes too complex.",
+    "howItWorks": [
+      "Choose a description logic whose mathematical constructors fit the domain.",
+      "Use it to describe the domain's relevant concepts as terminological knowledge.",
+      "Select general, spatial, temporal, spatiotemporal, or fuzzy features when that variant requires them.",
+      "Apply decision procedures to the logic's core reasoning problems, which are usually decidable.",
+      "Balance added expressive power against the resulting reasoning complexity."
+    ],
+    "whyItMatters": "DLs combine useful expressiveness with reasoning procedures that are usually decidable. That makes them a logical foundation for OWL, ontologies, and the Semantic Web.",
+    "misconceptions": [
+      "Description logic is not one fixed language; it is a family with different variants and constructors.",
+      "It is not as expressive as first-order logic, although many DLs go beyond propositional logic.",
+      "Decidability does not mean every logic has the same reasoning cost."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "domain",
+          "label": "Domain concepts",
+          "note": "The relevant knowledge of an application area"
+        },
+        {
+          "id": "constructors",
+          "label": "DL constructors",
+          "note": "Set expressive power and reasoning complexity"
+        },
+        {
+          "id": "ontology",
+          "label": "Ontology or OWL",
+          "note": "Represents terminological knowledge"
+        },
+        {
+          "id": "reasoner",
+          "label": "Decision procedures",
+          "note": "Solve usually decidable core reasoning problems"
+        },
+        {
+          "id": "conclusions",
+          "label": "Reasoned knowledge",
+          "note": "Conclusions derived from the represented concepts"
+        }
+      ],
+      "edges": [
+        {
+          "from": "domain",
+          "to": "ontology",
+          "label": "described by"
+        },
+        {
+          "from": "constructors",
+          "to": "ontology",
+          "label": "shape"
+        },
+        {
+          "from": "ontology",
+          "to": "reasoner",
+          "label": "input to"
+        },
+        {
+          "from": "reasoner",
+          "to": "conclusions",
+          "label": "derives"
+        }
+      ],
+      "caption": "Description logic represents domain concepts and applies decision procedures, with its constructors determining the expressiveness–complexity balance."
+    }
+  },
   "related": [
     "agentive-logic",
     "dynamic-epistemic-logic",

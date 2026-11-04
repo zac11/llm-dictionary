@@ -5,7 +5,113 @@
   "type": "concept",
   "definition": "ELMo (embeddings from language model) is a word embedding method for representing a sequence of words as a corresponding sequence of vectors.",
   "details": "It was created by researchers at the Allen Institute for Artificial Intelligence, and University of Washington and first released in February 2018. It is a bidirectional LSTM which takes character-level as inputs and produces word-level embeddings, trained on a corpus of about 30 million sentences and 1 billion words. The architecture of ELMo accomplishes a contextual understanding of tokens. Deep contextualized word representation is useful for many natural language processing tasks, such as coreference resolution and polysemy resolution. ELMo was historically important as a pioneer of self-supervised generative pretraining followed by fine-tuning, where a large model is trained to reproduce a large corpus, then the large model is augmented with additional task-specific weights and fine-tuned on supervised task data. It was an instrumental step in the evolution towards transformer-based language modelling.",
-  "story": "Picture a translator at the United Nations, listening to one language and whispering the meaning into another in real time. It figures out meaning by noticing which words like to travel together. It does not memorize a rulebook; it absorbs a library. Meaning lives in company — a word is known by the words it keeps. That pattern-earned fluency is ELMo.",
+  "explainer": {
+    "lead": "ELMo turns words into numerical vectors while taking their surrounding sentence into account, so the same word can receive different representations in different contexts. Released in February 2018, it helped establish pretraining on a large text corpus followed by task-specific fine-tuning as a path toward modern language modelling.",
+    "tiers": {
+      "eli5": "Words are a bit like LEGO bricks whose meaning can change depending on what you build with them. ELMo reads the words around a word and makes a number-based description that fits that particular sentence. This helps a computer tell apart different uses of the same word.",
+      "practitioner": "A practitioner feeds character-level text into ELMo's pretrained bidirectional LSTM and uses the resulting contextual word vectors in a downstream NLP model. The pretrained model can be augmented with task-specific weights and fine-tuned on supervised data, which is useful when a fixed vector per word would lose contextual meaning.",
+      "paperLevel": "For a token sequence (x1, ..., xn), ELMo produces a corresponding contextual vector sequence (h1, ..., hn) using a character-input bidirectional LSTM. It was trained on about 30 million sentences and 1 billion words, with deep contextualized representations supporting tasks such as coreference and polysemy resolution. Its representations depend on linguistic context rather than assigning every occurrence of a word type one identical vector."
+    },
+    "example": "In one sentence about a river bank and another about a bank offering a loan, ELMo can give the two occurrences of \"bank\" different vectors because their surrounding words differ.",
+    "usedIn": [
+      {
+        "name": "Coreference resolution",
+        "detail": "Contextual word representations help determine which expressions in a text refer to the same thing.",
+        "url": ""
+      },
+      {
+        "name": "Polysemy resolution",
+        "detail": "Different occurrences of a word with multiple meanings can receive different vectors.",
+        "url": ""
+      },
+      {
+        "name": "Natural language processing",
+        "detail": "Pretrained ELMo representations can be combined with task-specific weights and supervised fine-tuning.",
+        "url": ""
+      }
+    ],
+    "intuition": "A word's meaning depends on its surroundings, so its numerical representation should too. ELMo reads text in both directions and produces a vector for each word in its particular context.",
+    "howItWorks": [
+      "Take a sequence of words as character-level input.",
+      "Process the sequence with a bidirectional LSTM.",
+      "Produce one contextual word-level vector for each position.",
+      "Use these deep representations in a downstream NLP task.",
+      "Add task-specific weights and fine-tune on supervised task data."
+    ],
+    "whyItMatters": "ELMo made contextual word representations broadly useful for NLP and pioneered self-supervised generative pretraining followed by supervised fine-tuning. It was an instrumental step in the evolution toward transformer-based language modelling.",
+    "misconceptions": [
+      "ELMo does not assign every occurrence of a word the same fixed vector.",
+      "ELMo is based on a bidirectional LSTM, not a transformer.",
+      "Pretraining is not the whole task-specific system; supervised fine-tuning can follow."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "chars",
+          "label": "Character input",
+          "note": "A word sequence enters at character level."
+        },
+        {
+          "id": "forward",
+          "label": "Forward LSTM",
+          "note": "Processes context in one direction."
+        },
+        {
+          "id": "backward",
+          "label": "Backward LSTM",
+          "note": "Processes context in the other direction."
+        },
+        {
+          "id": "vectors",
+          "label": "Contextual vectors",
+          "note": "One word-level embedding per sequence position."
+        },
+        {
+          "id": "task",
+          "label": "Task-specific weights",
+          "note": "Additional weights adapt the model to an NLP task."
+        },
+        {
+          "id": "finetune",
+          "label": "Supervised fine-tuning",
+          "note": "Task data trains the augmented model."
+        }
+      ],
+      "edges": [
+        {
+          "from": "chars",
+          "to": "forward",
+          "label": "sequence"
+        },
+        {
+          "from": "chars",
+          "to": "backward",
+          "label": "sequence"
+        },
+        {
+          "from": "forward",
+          "to": "vectors",
+          "label": ""
+        },
+        {
+          "from": "backward",
+          "to": "vectors",
+          "label": ""
+        },
+        {
+          "from": "vectors",
+          "to": "task",
+          "label": "representations"
+        },
+        {
+          "from": "task",
+          "to": "finetune",
+          "label": "task data"
+        }
+      ],
+      "caption": "ELMo combines bidirectional LSTM processing to create contextual word vectors, which can then support a fine-tuned task model."
+    }
+  },
   "related": [
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",
     "accelerated-linear-algebra",

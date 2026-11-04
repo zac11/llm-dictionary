@@ -5,7 +5,98 @@
   "type": "concept",
   "definition": "In information retrieval, dwell time denotes the time which a user spends viewing a document or other piece of content after clicking a link on a search engine results page (SERP) or receiving it as part of a \"feed\" in environments like Instagram or TikTok.",
   "details": "Formal descriptions of modern dwell time systems first appear in the literature in early 2010 patent filings. The term \"dwell time,\" however, was not in common use until a year later, having been popularized by Duane Forrester (a Senior Project Manager at Bing) in 2011. The term gained popularity in the multimedia library management context in 2012 when it was adopted as a primary ranking coefficient in the then-new 2012 YouTube algorithm. The purpose of dwell time algorithms is both to more precisely measure the distribution of user interest across content in a library and to combat \"clickbait,\" \"thumbnail trolling,\" or other deceptive tactics that may induce a user to click a link; in general, dwell time algorithms outperform simple click counting as a way of appraising content's quality. Most dwell time algorithms, including the framework first proposed in the early (circa 2010) patent filings, attempt to associate time spent experiencing content to a \"full consumption\" denominator of some type. Importantly, notation norms in expressing dwell time concepts mathematically vary, particularly when comparing private sector \"white paper\" output from sources like Microsoft Research or",
-  "story": "Think of a referee whose job is to be completely honest about who touched the ball last. Before trusting a machine, someone has to measure how good it really is — fairly and honestly. It is the exam that separates “it sounds good” from “it actually is good”. What gets measured is what actually gets better. And that, done honestly, is Dwell time (information retrieval).",
+  "explainer": {
+    "lead": "Dwell time measures how long someone actually spends with content after opening it from search results or receiving it in a feed. It helps ranking systems look beyond clicks, which can be won by misleading titles or thumbnails, and better estimate where users’ interest lies.",
+    "tiers": {
+      "eli5": "Imagine two videos: one has an exciting picture, but you leave after five seconds, while another keeps you watching for five minutes. Dwell time is the amount of time you spend watching or reading after opening something. It helps a system tell the difference between something that merely got a click and something that held your attention.",
+      "practitioner": "Measure the viewing interval after a result click or feed delivery, then optionally relate it to a content-specific “full consumption” denominator before using it as a ranking signal. Define notation and normalization consistently, since mathematical conventions vary across descriptions. Dwell time generally appraises content better than click counts alone, but it should be treated as an interest signal rather than a guarantee of quality.",
+      "paperLevel": "Dwell time is the duration a user spends viewing content after clicking a search result or receiving it in a feed. A common formulation relates observed consumption time t to a full-consumption denominator T, such as t/T, although notation and normalization vary. Formal descriptions of modern systems appeared in early 2010 patent filings; Duane Forrester popularized the term in 2011, and YouTube adopted it as a primary ranking coefficient in its 2012 algorithm."
+    },
+    "example": "A user opens a 10-minute video from a feed and watches for 2 minutes. The dwell time is 2 minutes; if the full video duration is used as the denominator, the normalized consumption is 2/10 = 0.2.",
+    "usedIn": [
+      {
+        "name": "YouTube",
+        "detail": "Adopted dwell time as a primary ranking coefficient in its then-new 2012 algorithm.",
+        "url": ""
+      },
+      {
+        "name": "Search engine results pages",
+        "detail": "Viewing time after a result click can help estimate interest beyond the click itself.",
+        "url": ""
+      },
+      {
+        "name": "Instagram and TikTok feeds",
+        "detail": "Dwell time can describe how long a user spends with content delivered in a feed.",
+        "url": ""
+      }
+    ],
+    "intuition": "A click shows that something attracted attention; dwell time shows whether that attention lasted. Comparing consumption with what full consumption would require can make the signal more meaningful across different content.",
+    "howItWorks": [
+      "A user clicks a search result or receives content in a feed.",
+      "The system measures how long the user spends viewing that content.",
+      "The duration may be compared with a “full consumption” denominator, such as the amount needed to experience the whole item.",
+      "The resulting signal helps estimate user interest and rank content.",
+      "Using attention as well as clicks reduces the reward for clickbait and other deceptive click-inducing tactics."
+    ],
+    "whyItMatters": "Dwell time gives content libraries a more precise picture of how user interest is distributed and generally outperforms simple click counting as an appraisal of content quality. It also makes deceptive titles and thumbnails less useful when they attract clicks but fail to hold attention.",
+    "misconceptions": [
+      "A click and a long dwell time measure the same thing.",
+      "Every dwell-time system uses one standard formula or notation.",
+      "Dwell time guarantees a perfect judgment of content quality."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "discovery",
+          "label": "Search or feed",
+          "note": "Content is clicked or delivered."
+        },
+        {
+          "id": "viewing",
+          "label": "Content viewing",
+          "note": "The user spends time with the item."
+        },
+        {
+          "id": "duration",
+          "label": "Dwell time",
+          "note": "The viewing duration is measured."
+        },
+        {
+          "id": "normalization",
+          "label": "Consumption ratio",
+          "note": "Duration may be compared with full consumption."
+        },
+        {
+          "id": "ranking",
+          "label": "Interest and ranking",
+          "note": "The signal informs content appraisal."
+        }
+      ],
+      "edges": [
+        {
+          "from": "discovery",
+          "to": "viewing",
+          "label": "open content"
+        },
+        {
+          "from": "viewing",
+          "to": "duration",
+          "label": "measure time"
+        },
+        {
+          "from": "duration",
+          "to": "normalization",
+          "label": "optional"
+        },
+        {
+          "from": "normalization",
+          "to": "ranking",
+          "label": "ranking signal"
+        }
+      ],
+      "caption": "Dwell time turns post-click or in-feed viewing into a signal for estimating interest and ranking content."
+    }
+  },
   "related": [
     "information-retrieval",
     "adversarial-information-retrieval",

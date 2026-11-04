@@ -5,6 +5,96 @@
   "type": "concept",
   "definition": "Removing background noise from an audio signal while preserving the target speech or sound.",
   "details": "Removing background noise from an audio signal while preserving the target speech or sound. Neural models estimate a clean spectrogram or waveform and are standard front ends for calls, hearing aids, and ASR.",
+  "explainer": {
+    "lead": "Audio denoising cleans up a recording by reducing unwanted background noise while keeping the speech or sound you want to hear. It helps make phone calls easier to understand and gives speech recognition systems a clearer signal to work with.",
+    "tiers": {
+      "eli5": "Imagine trying to hear a friend tell a story while a vacuum cleaner is running. Audio denoising is like turning down the vacuum without turning down your friend's voice, so the story comes through more clearly.",
+      "practitioner": "Neural denoising models are used as front ends for calls, hearing aids, and ASR, producing either a clean spectrogram or a clean waveform. The key design choice is the output representation needed by the downstream system. The main pitfall is removing noise at the expense of the target speech or sound.",
+      "paperLevel": "A noisy signal can be written as x = s + n, where s is the target speech or sound, n is background noise, and the goal is to estimate s from x. Neural models perform this estimation in either the spectrogram or waveform domain. The central limit is the need to suppress n without damaging s."
+    },
+    "example": "During a call made beside a busy road, the model receives speech mixed with traffic noise and outputs a cleaner speech signal. The caller's words remain in the output while the background noise is reduced.",
+    "usedIn": [
+      {
+        "name": "Phone and video calls",
+        "detail": "Reduces background noise before the speech is heard by the other person.",
+        "url": ""
+      },
+      {
+        "name": "Hearing aids",
+        "detail": "Cleans the incoming audio while aiming to preserve the sounds the wearer wants to hear.",
+        "url": ""
+      },
+      {
+        "name": "Automatic speech recognition",
+        "detail": "Acts as a front end that supplies a cleaner signal to an ASR system.",
+        "url": ""
+      }
+    ],
+    "intuition": "The wanted sound and the background noise arrive mixed together. Denoising learns to separate their contributions well enough to rebuild the wanted sound without simply making everything quieter.",
+    "howItWorks": [
+      "Take an audio signal containing the target sound and background noise.",
+      "Represent the signal as a spectrogram or waveform.",
+      "Use a neural model to estimate the clean version of that representation.",
+      "Pass the cleaned audio to a listener or a downstream system such as ASR."
+    ],
+    "whyItMatters": "Cleaner audio makes speech easier to hear and provides a better input for automatic speech recognition. Its role as a standard front end makes it useful across calls, hearing aids, and ASR.",
+    "misconceptions": [
+      "Denoising is not just lowering the volume of the whole recording; the target sound should remain intact.",
+      "Removing more noise is not automatically better if the process also damages the target speech or sound."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "noisy-audio",
+          "label": "Noisy audio",
+          "note": "Target sound mixed with background noise."
+        },
+        {
+          "id": "representation",
+          "label": "Audio representation",
+          "note": "The signal is handled as a spectrogram or waveform."
+        },
+        {
+          "id": "neural-model",
+          "label": "Neural model",
+          "note": "Estimates the clean signal."
+        },
+        {
+          "id": "clean-audio",
+          "label": "Clean audio",
+          "note": "Noise is reduced while the target is preserved."
+        },
+        {
+          "id": "downstream",
+          "label": "Listening or ASR",
+          "note": "The cleaned signal is heard or processed further."
+        }
+      ],
+      "edges": [
+        {
+          "from": "noisy-audio",
+          "to": "representation",
+          "label": "encoded as"
+        },
+        {
+          "from": "representation",
+          "to": "neural-model",
+          "label": "processed by"
+        },
+        {
+          "from": "neural-model",
+          "to": "clean-audio",
+          "label": "estimates"
+        },
+        {
+          "from": "clean-audio",
+          "to": "downstream",
+          "label": "sent to"
+        }
+      ],
+      "caption": "A neural denoising front end turns noisy speech or sound into a cleaner spectrogram or waveform for listening or ASR."
+    }
+  },
   "citation": {
     "title": "Audio Denoising",
     "authors": [],

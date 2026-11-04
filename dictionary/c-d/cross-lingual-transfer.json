@@ -5,6 +5,97 @@
   "type": "concept",
   "definition": "Capabilities learned in high-resource languages transferring to low-resource ones through shared multilingual representations: fine-tune in English, gain in Arabic.",
   "details": "Capabilities learned in high-resource languages transferring to low-resource ones through shared multilingual representations: fine-tune in English, gain in Arabic. The main lever behind usable NLP in underserved languages, and strongest between related varieties (MSA to dialects).",
+  "explainer": {
+    "lead": "Cross-lingual transfer lets a multilingual language model reuse what it learns in a language with plentiful training data when working in one with much less. It is a key route to useful Arabic NLP, including transferring capabilities from Modern Standard Arabic to related dialects.",
+    "tiers": {
+      "eli5": "Imagine learning to sort pictures using instructions in a language you know well, then discovering you can do the same task when the instructions are in another language. A multilingual model can similarly learn a task from lots of English examples and use some of that skill in Arabic. This is especially helpful when Arabic examples are scarce, and transfer often works better between closely related language varieties.",
+      "practitioner": "Start with shared multilingual representations, fine-tune on task data in a high-resource language such as English, and evaluate directly in Arabic or another low-resource target language. For Arabic dialect work, Modern Standard Arabic can serve as the higher-resource source, with transfer generally strongest between related varieties. Treat target-language evaluation as essential: transfer is not automatic, and gains can vary with language relatedness.",
+      "paperLevel": "Given source-language supervision D_s and a target language t with limited supervision, learn parameters theta on D_s within a shared multilingual representation space, then measure task performance in t. Cross-lingual transfer is the target-language capability obtained through those shared representations rather than equivalent target-language training. Its strength is not uniform; the entry highlights stronger transfer between related varieties, such as Modern Standard Arabic and Arabic dialects."
+    },
+    "example": "Fine-tune a multilingual model on English examples for a task, then give it Arabic inputs for that same task without an equally large Arabic training set. Any resulting Arabic capability is cross-lingual transfer through the shared multilingual representations.",
+    "usedIn": [
+      {
+        "name": "Arabic NLP",
+        "detail": "Reusing capabilities learned in English or other high-resource languages for Arabic tasks with less labelled data.",
+        "url": ""
+      },
+      {
+        "name": "Dialectal Arabic NLP",
+        "detail": "Transferring from Modern Standard Arabic to related dialects, where language relatedness can make transfer stronger.",
+        "url": ""
+      },
+      {
+        "name": "Low-resource language technology",
+        "detail": "Building usable language-processing capabilities where task-specific training data is limited.",
+        "url": ""
+      }
+    ],
+    "intuition": "A multilingual model can place languages in a shared representation space, so learning a task in one language may change representations that are also useful in another. This allows supervision in a data-rich language to partially substitute for missing supervision in a data-poor one.",
+    "howItWorks": [
+      "Use representations learned across multiple languages.",
+      "Fine-tune the model on a task using plentiful source-language examples, such as English data.",
+      "Reuse the resulting shared representations when processing the low-resource target language.",
+      "Evaluate the target-language gain, expecting stronger transfer between closely related varieties."
+    ],
+    "whyItMatters": "It reduces dependence on large labelled datasets in every language, making NLP more practical for underserved languages. It also provides a route from Modern Standard Arabic resources to dialectal Arabic applications.",
+    "misconceptions": [
+      "It does not mean translating every target-language example into English; the learned capability transfers through shared representations.",
+      "Fine-tuning in English does not guarantee an equal improvement in Arabic.",
+      "Transfer is not equally strong across all language pairs; related varieties often benefit more."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "shared",
+          "label": "Shared multilingual representations",
+          "note": "Represent text across languages."
+        },
+        {
+          "id": "english",
+          "label": "English task data",
+          "note": "High-resource supervision."
+        },
+        {
+          "id": "finetune",
+          "label": "Task fine-tuning",
+          "note": "Learn the task in the source language."
+        },
+        {
+          "id": "arabic",
+          "label": "Arabic task inputs",
+          "note": "Low-resource target language."
+        },
+        {
+          "id": "gain",
+          "label": "Target-language gain",
+          "note": "Capability reused without equivalent target supervision."
+        }
+      ],
+      "edges": [
+        {
+          "from": "shared",
+          "to": "finetune",
+          "label": "supports"
+        },
+        {
+          "from": "english",
+          "to": "finetune",
+          "label": "trains"
+        },
+        {
+          "from": "finetune",
+          "to": "arabic",
+          "label": "transfers"
+        },
+        {
+          "from": "arabic",
+          "to": "gain",
+          "label": "produces"
+        }
+      ],
+      "caption": "Task learning in a high-resource language is reused for a low-resource language through shared multilingual representations."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

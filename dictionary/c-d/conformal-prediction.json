@@ -5,6 +5,114 @@
   "type": "concept",
   "definition": "A distribution-free wrapper that turns any model's scores into prediction sets with guaranteed coverage (for example, sets that contain the true label 90 percent of the time), assuming exchangeable data.",
   "details": "A distribution-free wrapper that turns any model's scores into prediction sets with guaranteed coverage (for example, sets that contain the true label 90 percent of the time), assuming exchangeable data. Increasingly applied to LLMs for selective answering and calibrated abstention.",
+  "explainer": {
+    "lead": "Conformal prediction turns an ordinary model's output into a set of plausible answers, or an interval for a number, with a chosen error rate. It is useful when an honest “these are the possibilities” is safer than a single confident guess.",
+    "tiers": {
+      "eli5": "Imagine a guessing game where you may name several animals instead of just one. By checking how often your guesses were wrong before, you can choose a rule that includes the right animal about 90 times out of 100. A clearer question lets you name fewer animals, while a harder one may require a longer list.",
+      "practitioner": "Train the underlying predictor, then calculate nonconformity scores on labeled calibration data and use the chosen significance level to construct prediction sets or intervals. Inductive conformal prediction avoids retraining for every test example, making it practical for neural networks and other expensive models. The main pitfalls are violating exchangeability and treating coverage as a measure of set size: a valid predictor can still produce outputs too broad to be useful.",
+      "paperLevel": "For exchangeable data and user-specified miscoverage level alpha, conformal prediction constructs C(X) with marginal validity P(Y in C(X)) >= 1 - alpha; in classification, candidate labels are retained according to p-values derived from ranked nonconformity scores. The transductive version was proposed by Gammerman, Vovk, and Vapnik in 1998, followed by inductive conformal prediction in 2002. Validity depends on exchangeability, while efficiency—set size for classification or interval width for regression—depends on the underlying model and significance level."
+    },
+    "example": "An animal classifier is calibrated at significance level 0.1, targeting at most 10% errors. For one image, cat has p-value 0.4, dog 0.2, and horse 0.03, so the output is {'cat', 'dog'} rather than a single class; a better underlying model may produce a smaller set at the same coverage level.",
+    "usedIn": [
+      {
+        "name": "Medical and biotechnology research",
+        "detail": "Applied to uncertainty estimates for breast cancer and stroke-risk prediction.",
+        "url": ""
+      },
+      {
+        "name": "Hardware security",
+        "detail": "Used to detect evolving hardware trojans.",
+        "url": ""
+      },
+      {
+        "name": "Language technology",
+        "detail": "Applied to language models for selective answering and calibrated abstention.",
+        "url": ""
+      },
+      {
+        "name": "Storage reliability",
+        "detail": "Used in data storage and disk-drive scrubbing applications.",
+        "url": ""
+      }
+    ],
+    "intuition": "Past labeled examples provide a yardstick for how unusual a candidate answer would look according to the model. Keeping every candidate that is not too unusual produces a prediction region whose long-run error frequency is controlled by the chosen significance level.",
+    "howItWorks": [
+      "Train any point predictor, such as a classifier or regression model.",
+      "Run labeled calibration examples through it and compute a nonconformity score for each true outcome.",
+      "Choose a significance level and derive the corresponding score threshold or class p-values.",
+      "For a new input, include labels with sufficiently large p-values, or construct an interval from the selected score.",
+      "Assess validity by error frequency and efficiency by set size or interval width."
+    ],
+    "whyItMatters": "It adds a statistical coverage guarantee to almost any point predictor without requiring a particular model family or data distribution beyond exchangeability. This makes uncertainty explicit in classifications and numerical forecasts, while the output size still reveals when the model is uncertain.",
+    "misconceptions": [
+      "A prediction set is not a list of equally likely labels; it contains labels that pass the conformal threshold.",
+      "Coverage does not guarantee small sets or narrow intervals, which depend on model quality and the significance level.",
+      "The guarantee is not assumption-free: it relies on exchangeable data."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "model",
+          "label": "Trained predictor",
+          "note": "Any classification or regression model"
+        },
+        {
+          "id": "calibration",
+          "label": "Calibration examples",
+          "note": "Previously labeled exchangeable data"
+        },
+        {
+          "id": "scores",
+          "label": "Nonconformity scores",
+          "note": "Measure disagreement with true labels"
+        },
+        {
+          "id": "threshold",
+          "label": "Significance threshold",
+          "note": "Sets the allowed error frequency"
+        },
+        {
+          "id": "region",
+          "label": "Prediction region",
+          "note": "Label set or regression interval"
+        }
+      ],
+      "edges": [
+        {
+          "from": "model",
+          "to": "scores",
+          "label": "predictions"
+        },
+        {
+          "from": "calibration",
+          "to": "scores",
+          "label": "true labels"
+        },
+        {
+          "from": "scores",
+          "to": "threshold",
+          "label": "ranking"
+        },
+        {
+          "from": "threshold",
+          "to": "region",
+          "label": "calibration"
+        },
+        {
+          "from": "model",
+          "to": "region",
+          "label": "test input"
+        }
+      ],
+      "caption": "Labeled calibration data converts a point predictor's outputs into a prediction region at a user-chosen error level."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Conformal prediction",
+        "url": "https://en.wikipedia.org/wiki/Conformal_prediction"
+      }
+    ]
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

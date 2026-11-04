@@ -5,7 +5,104 @@
   "type": "algorithm",
   "definition": "In statistics, an expectation–maximization (EM) algorithm is an iterative method to find (local) maximum likelihood or maximum a posteriori (MAP) estimates of parameters in statistical models, where the model depends on unobserved latent variables.",
   "details": "The EM iteration alternates between performing an expectation (E) step, which creates a function for the expectation of the log-likelihood evaluated using the current estimate for the parameters, and a maximization (M) step, which computes parameters maximizing the expected log-likelihood found on the E step. These parameter-estimates are then used to determine the distribution of the latent variables in the next E step. It can be used, for example, to estimate a mixture of gaussians, or to solve the multiple linear regression problem.",
-  "story": "Imagine a factory floor where each workstation can glance at every other workstation before doing its part. It is the blueprint that makes everything else possible. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. Structure decides what the model can even express — the blueprint before the bricks. That blueprint is Expectation–maximization algorithm.",
+  "explainer": {
+    "lead": "Expectation–maximization is a way to fit a statistical model when some important information is hidden. It improves the parameters in alternating rounds, making it useful for problems such as estimating a mixture of Gaussian distributions.",
+    "tiers": {
+      "eli5": "Imagine sorting a pile of mixed puzzle pieces when some labels are missing. Make your best guess about the hidden labels, use those guesses to improve your sorting rules, and then guess the labels again. Repeating these two actions can gradually produce a better fit, though it may not find the very best one.",
+      "practitioner": "EM alternates an E step, which evaluates the expected log-likelihood using the current parameters, with an M step, which updates the parameters by maximizing that expectation. It can be applied to Gaussian mixture estimation and multiple linear regression. Because the result can be a local rather than global optimum, the starting parameter estimates matter.",
+      "paperLevel": "EM seeks local maximum-likelihood or MAP parameter estimates for models with unobserved latent variables. In plain-text notation, the E step forms Q(theta | theta_t) as the expectation of the log-likelihood under the current parameter estimate, and the M step sets theta_(t+1) = argmax_theta Q(theta | theta_t). The new parameters then determine the latent-variable distribution used in the next E step; the procedure is not guaranteed to reach a global optimum."
+    },
+    "example": "To estimate a mixture of Gaussians, begin with current parameter estimates. The E step uses them to evaluate the expected log-likelihood while accounting for the unobserved mixture memberships; the M step then chooses new Gaussian-mixture parameters that maximize that expectation, and the cycle repeats.",
+    "usedIn": [
+      {
+        "name": "Gaussian mixture estimation",
+        "detail": "Estimates the parameters of a model made up of multiple Gaussian distributions.",
+        "url": ""
+      },
+      {
+        "name": "Multiple linear regression",
+        "detail": "Can be used to solve the multiple linear regression problem.",
+        "url": ""
+      }
+    ],
+    "goal": "Find local maximum-likelihood or maximum a posteriori parameter estimates when a statistical model depends on unobserved latent variables.",
+    "inputs": [
+      "A statistical model with unobserved latent variables",
+      "Current estimates of the model parameters"
+    ],
+    "outputs": [
+      "Updated parameter estimates",
+      "A local maximum-likelihood or MAP estimate"
+    ],
+    "steps": [
+      "Start with current parameter estimates.",
+      "E step: create a function for the expectation of the log-likelihood using those estimates.",
+      "M step: compute parameters that maximize the expected log-likelihood.",
+      "Use the new parameters to determine the latent-variable distribution for the next E step, then repeat."
+    ],
+    "tradeoffs": [
+      "It handles models with hidden variables through a simple alternating procedure.",
+      "It can converge to a local rather than global optimum.",
+      "Each iteration depends on the parameters produced by the previous iteration."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "params",
+          "label": "Current parameters",
+          "note": "The estimates used by this iteration."
+        },
+        {
+          "id": "e-step",
+          "label": "E step",
+          "note": "Build the expected log-likelihood function."
+        },
+        {
+          "id": "m-step",
+          "label": "M step",
+          "note": "Maximize that function to update parameters."
+        },
+        {
+          "id": "latent",
+          "label": "Latent distribution",
+          "note": "Determined using the updated parameters."
+        },
+        {
+          "id": "estimate",
+          "label": "Final estimate",
+          "note": "A local likelihood or MAP solution."
+        }
+      ],
+      "edges": [
+        {
+          "from": "params",
+          "to": "e-step",
+          "label": ""
+        },
+        {
+          "from": "e-step",
+          "to": "m-step",
+          "label": "expectation"
+        },
+        {
+          "from": "m-step",
+          "to": "latent",
+          "label": "new parameters"
+        },
+        {
+          "from": "latent",
+          "to": "e-step",
+          "label": "next iteration"
+        },
+        {
+          "from": "m-step",
+          "to": "estimate",
+          "label": ""
+        }
+      ],
+      "caption": "EM alternates expectation and maximization, feeding each new parameter estimate into the next iteration."
+    }
+  },
   "related": [
     "ordered-subset-expectation-maximization",
     "actor-critic-algorithm",

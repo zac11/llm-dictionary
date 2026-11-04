@@ -5,7 +5,82 @@
   "type": "concept",
   "definition": "In artificial intelligence, especially computer vision and artificial neural networks, a hard sigmoid is non-smooth function used in place of a sigmoid function.",
   "details": "These retain the basic shape of a sigmoid, rising from 0 to 1, but using simpler functions, especially piecewise linear functions or piecewise constant functions. These are preferred where speed of computation is more important than precision.",
-  "story": "Picture walking through a crowd and instantly picking out a familiar face without reading a single name tag. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. It turns a picture into an understanding: this is a cat, that is a stop sign. Sight, for a machine, is a long climb from raw light to a name. And that is Hard sigmoid — giving a machine the gift of sight.",
+  "explainer": {
+    "lead": "A hard sigmoid is a simplified stand-in for the sigmoid function in artificial neural networks, including computer-vision networks. It keeps the broad rise from 0 to 1 but uses simpler pieces, trading mathematical precision for faster computation.",
+    "tiers": {
+      "eli5": "Imagine a smooth hill that climbs from a low road to a high road. A hard sigmoid replaces that hill with a few straight ramps or flat steps, which are easier to calculate while still getting you from bottom to top.",
+      "practitioner": "Use it as a replacement activation when computational speed matters more than precisely matching a sigmoid. Implement the chosen piecewise-linear or piecewise-constant form and check that its reduced precision is acceptable for the network. Remember that the function is non-smooth, so it is not mathematically identical to the activation it replaces.",
+      "paperLevel": "A hard sigmoid is a non-smooth surrogate for a sigmoid, typically piecewise linear or piecewise constant, preserving the overall transition from 0 to 1. One illustrative form is h(x) = 0 for x < -2, h(x) = (x + 2) / 4 for -2 <= x <= 2, and h(x) = 1 for x > 2. The simplified computation sacrifices precision and smoothness; different hard-sigmoid functions need not share this exact formula."
+    },
+    "example": "Define h(x) as 0 below -2, (x + 2) / 4 from -2 through 2, and 1 above 2. Then h(-3) = 0, h(0) = 0.5, and h(3) = 1: the output follows the sigmoid’s broad progression using only comparisons, simple arithmetic, and flat end regions.",
+    "usedIn": [
+      {
+        "name": "Computer vision",
+        "detail": "Used in neural networks when a fast sigmoid-like activation is preferred over a more precise one.",
+        "url": ""
+      },
+      {
+        "name": "Artificial neural networks",
+        "detail": "Serves as a simpler substitute for the sigmoid function while retaining its output range and general shape.",
+        "url": ""
+      }
+    ],
+    "intuition": "Keep the useful part of a sigmoid—a transition from low to high output—but replace its smooth curve with simpler straight-line or flat pieces. This makes each evaluation cheaper when exact sigmoid values are unnecessary.",
+    "howItWorks": [
+      "Start with an input that would ordinarily be passed to a sigmoid.",
+      "Apply a piecewise-linear or piecewise-constant rule instead.",
+      "Produce an output that broadly rises from 0 toward 1.",
+      "Use that output as the activation, accepting lower precision in exchange for faster computation."
+    ],
+    "whyItMatters": "It offers a practical speed-versus-precision choice for neural-network computation. The approximation is useful when preserving the sigmoid’s general behavior is enough and evaluating the original function would be unnecessarily costly.",
+    "misconceptions": [
+      "It is the ordinary sigmoid evaluated exactly, just with faster code.",
+      "Every hard sigmoid uses the same fixed formula.",
+      "Its non-smooth, simplified shape comes without any loss of precision."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Network input",
+          "note": "A value that would ordinarily enter a sigmoid."
+        },
+        {
+          "id": "pieces",
+          "label": "Simple pieces",
+          "note": "A piecewise-linear or piecewise-constant rule."
+        },
+        {
+          "id": "output",
+          "label": "Approximate activation",
+          "note": "An output broadly rising from 0 to 1."
+        },
+        {
+          "id": "network",
+          "label": "Neural network",
+          "note": "Uses the activation in subsequent computation."
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "pieces",
+          "label": "evaluate"
+        },
+        {
+          "from": "pieces",
+          "to": "output",
+          "label": "produce"
+        },
+        {
+          "from": "output",
+          "to": "network",
+          "label": "pass on"
+        }
+      ],
+      "caption": "A hard sigmoid replaces the smooth sigmoid calculation with simpler pieces before passing the activation onward."
+    }
+  },
   "related": [
     "accord-net",
     "active-appearance-model",

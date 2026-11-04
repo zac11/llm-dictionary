@@ -5,6 +5,102 @@
   "type": "concept",
   "definition": "A fixed-size vector capturing voice identity, trained on speaker-discrimination tasks.",
   "details": "A fixed-size vector capturing voice identity, trained on speaker-discrimination tasks. Used for speaker verification, diarization, and as the conditioning signal in multi-speaker and cloned TTS.",
+  "explainer": {
+    "lead": "A d-vector turns speech into a fixed-size numerical description of who is speaking. That shared voice-identity representation lets systems check whether two voices match, separate speakers in a conversation, or give a text-to-speech system a particular voice.",
+    "tiers": {
+      "eli5": "A d-vector is like a short numerical description of a voice. A computer learns to make these descriptions by practising telling different speakers apart. It can then compare voices or use one description to make synthetic speech sound like a chosen speaker.",
+      "practitioner": "Use d-vectors as speaker representations for verification, diarization, or conditioning multi-speaker and cloned TTS. Their fixed size makes them convenient to pass between these stages. A match is evidence about speaker identity, not proof, and a vector intended for verification should not automatically be assumed suitable for high-quality voice cloning.",
+      "paperLevel": "For speech input x, a model f_theta trained with a speaker-discrimination objective produces d = f_theta(x), where d is in R^D and D is fixed. The vector represents speaker identity and can be compared with other speaker vectors or supplied as conditioning to multi-speaker or cloned TTS. Speaker discrimination during training does not by itself guarantee reliable identification in every downstream setting."
+    },
+    "example": "For speaker verification, create d-vectors from a person's enrollment speech and from a new recording. The system compares the vectors to decide whether the new voice matches the enrolled speaker; the same kind of vector could instead condition a TTS system on that speaker's voice.",
+    "usedIn": [
+      {
+        "name": "Speaker verification",
+        "detail": "Represent speech so a system can assess whether voices belong to the same speaker.",
+        "url": ""
+      },
+      {
+        "name": "Speaker diarization",
+        "detail": "Provide voice-identity features that help distinguish speakers in a recording.",
+        "url": ""
+      },
+      {
+        "name": "Multi-speaker text-to-speech",
+        "detail": "Condition speech generation on a vector representing the desired speaker.",
+        "url": ""
+      },
+      {
+        "name": "Voice-cloning text-to-speech",
+        "detail": "Supply the speaker-identity signal used to synthesize speech in a target voice.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of storing a whole recording to describe a voice, compress the speaker-related information into one list of numbers. Training the model to discriminate between speakers encourages that list to capture voice identity.",
+    "howItWorks": [
+      "Provide speech as input to the d-vector model.",
+      "Train the model on tasks that require distinguishing speakers.",
+      "Produce a vector with the same fixed size for each input.",
+      "Use the vector to compare speakers or to condition speech synthesis."
+    ],
+    "whyItMatters": "One fixed-size representation connects several speaker-aware tasks, avoiding a different voice description for each application. It is especially useful when speech synthesis must be controlled by speaker identity.",
+    "misconceptions": [
+      "A d-vector is not a recording or a reconstruction of the spoken words.",
+      "A fixed-size vector does not mean every speaker can be identified perfectly.",
+      "A d-vector is not automatically suitable for every verification, diarization, and cloning system."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "speech",
+          "label": "Speech input",
+          "note": "Audio containing a speaker's voice"
+        },
+        {
+          "id": "model",
+          "label": "Speaker model",
+          "note": "Trained to discriminate between speakers"
+        },
+        {
+          "id": "vector",
+          "label": "Fixed d-vector",
+          "note": "Numerical representation of voice identity"
+        },
+        {
+          "id": "compare",
+          "label": "Speaker comparison",
+          "note": "Used for verification and diarization"
+        },
+        {
+          "id": "tts",
+          "label": "Speech synthesis",
+          "note": "Conditioning for multi-speaker or cloned TTS"
+        }
+      ],
+      "edges": [
+        {
+          "from": "speech",
+          "to": "model",
+          "label": "audio"
+        },
+        {
+          "from": "model",
+          "to": "vector",
+          "label": "embedding"
+        },
+        {
+          "from": "vector",
+          "to": "compare",
+          "label": "identity"
+        },
+        {
+          "from": "vector",
+          "to": "tts",
+          "label": "conditioning"
+        }
+      ],
+      "caption": "A d-vector carries speaker identity from speech into comparison and synthesis tasks."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

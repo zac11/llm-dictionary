@@ -5,7 +5,98 @@
   "type": "tool",
   "definition": "Foma is a free and open source finite-state toolkit created and maintained by Mans Hulden.",
   "details": "It includes a compiler, programming language, and C library for constructing finite-state automata and transducers (FST's) for various uses, most typically Natural Language Processing uses such as morphological analysis. Foma can replace the proprietary Xerox Finite State Toolkit for compiling and running FST's written in the lexc and xfst formalisms. The speed is comparable with the Xerox tools for most lexicons, although Foma can be 3 or 4 times slower for very large lexicons (e.g. >100,000 words). Foma is also one of the possible backends of the free and open source Helsinki Finite State Toolkit (where other backends provide support for further formalisms). There are several FOSS morphologies written in lexc/xfst compatible with foma, e.g. for the Sámi, Cornish, Faroese, Finnish, Komi, Mari, Udmurt, Buriat, Greenlandic language and Iñupiaq languages.",
-  "story": "Picture a translator at the United Nations, listening to one language and whispering the meaning into another in real time. It figures out meaning by noticing which words like to travel together. It does not memorize a rulebook; it absorbs a library. Meaning lives in company — a word is known by the words it keeps. That pattern-earned fluency is Foma (software).",
+  "explainer": {
+    "lead": "Foma is a free, open-source toolkit for turning descriptions of words and their forms into finite-state machines. Created and maintained by Mans Hulden, it is especially useful for building morphological analysers without the proprietary Xerox Finite State Toolkit.",
+    "tiers": {
+      "eli5": "Foma is like a machine that learns the rules for building words from a rulebook you give it. It can then take a word apart to find its pieces, or put pieces together to make a word form. People use it to help computers understand languages such as Finnish, Sámi, and Greenlandic.",
+      "practitioner": "Use Foma to compile and run lexc and xfst descriptions as finite-state automata or transducers, either directly or as a backend of the Helsinki Finite State Toolkit. It is a practical replacement for the proprietary Xerox tools, with comparable speed for most lexicons. Expect it to be three or four times slower on very large lexicons, such as those with more than 100,000 words.",
+      "paperLevel": "Foma constructs finite-state automata and transducers: an automaton accepts strings from a regular language, while a transducer maps input strings to output strings. Its compiler, programming language, and C library support lexc and xfst formalisms for applications such as morphological analysis and generation. Its main stated limitation is slower compilation or processing for very large lexicons, typically three to four times slower than the Xerox tools above roughly 100,000 words."
+    },
+    "example": "A Finnish morphology written in lexc can list stems and rules for adding grammatical endings. Foma compiles it into a transducer, which can then analyse an inflected Finnish word as a base form plus grammatical information, or generate an inflected form from that information.",
+    "usedIn": [
+      {
+        "name": "Morphological analysis",
+        "detail": "Compiles language descriptions into machines that analyse or generate word forms.",
+        "url": ""
+      },
+      {
+        "name": "Helsinki Finite State Toolkit",
+        "detail": "Serves as one possible backend; other backends support additional formalisms.",
+        "url": ""
+      },
+      {
+        "name": "Open-source language morphologies",
+        "detail": "Compatible lexc/xfst morphologies exist for Sámi, Cornish, Faroese, Finnish, Komi, Mari, Udmurt, Buriat, Greenlandic, and Iñupiaq.",
+        "url": ""
+      }
+    ],
+    "intuition": "A language description can be treated as a network of allowed word-building steps. Foma compiles that network into a machine that efficiently follows the steps to recognise, analyse, or produce word forms.",
+    "howItWorks": [
+      "Write the lexicon and word-formation rules in lexc or xfst.",
+      "Compile the description with Foma's compiler and programming language.",
+      "Foma constructs a finite-state automaton or transducer.",
+      "Run word forms through it for morphological analysis or generation.",
+      "Applications can also use its C library or access it through HFST."
+    ],
+    "whyItMatters": "Foma makes established finite-state methods available without proprietary software, supporting both language research and practical tools for many languages. Its Xerox compatibility also lets existing lexc and xfst morphologies be reused.",
+    "misconceptions": [
+      "Foma is not a ready-made analyser for one language; it compiles language descriptions supplied separately.",
+      "It is compatible with the Xerox lexc and xfst formalisms, but it is not the proprietary Xerox toolkit.",
+      "HFST is not simply another name for Foma: Foma is one of several possible HFST backends."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "rules",
+          "label": "Lexicon and rules",
+          "note": "A language description in lexc or xfst."
+        },
+        {
+          "id": "compiler",
+          "label": "Foma compiler",
+          "note": "Compiles the description into a finite-state machine."
+        },
+        {
+          "id": "fst",
+          "label": "Automaton or transducer",
+          "note": "Represents accepted words or mappings between word forms."
+        },
+        {
+          "id": "input",
+          "label": "Word form",
+          "note": "An inflected word supplied for analysis."
+        },
+        {
+          "id": "output",
+          "label": "Morphological analysis",
+          "note": "Base-form and grammatical information produced by the transducer."
+        }
+      ],
+      "edges": [
+        {
+          "from": "rules",
+          "to": "compiler",
+          "label": "lexc/xfst"
+        },
+        {
+          "from": "compiler",
+          "to": "fst",
+          "label": "compiles"
+        },
+        {
+          "from": "input",
+          "to": "fst",
+          "label": "processed by"
+        },
+        {
+          "from": "fst",
+          "to": "output",
+          "label": "produces"
+        }
+      ],
+      "caption": "Foma compiles a lexicon and its rules into a finite-state machine that analyses or generates word forms."
+    }
+  },
   "related": [
     "lexical-variant-generation-software",
     "amazon-lex",

@@ -5,7 +5,118 @@
   "type": "concept",
   "definition": "CoDi is a cellular automaton (CA) model for spiking neural networks (SNNs).",
   "details": "CoDi is an acronym for Collect and Distribute, referring to the signals and spikes in a neural network. CoDi uses a von Neumann neighborhood modified for a three-dimensional space; each cell looks at the states of its six orthogonal neighbors and its own state. In a growth phase a neural network is grown in the CA-space based on an underlying chromosome. There are four types of cells: neuron body, axon, dendrite and blank. The growth phase is followed by a signaling- or processing-phase. Signals are distributed from the neuron bodies via their axon tree and collected from connection dendrites. These two basic interactions cover every case, and they can be expressed simply, using a small number of rules.",
-  "story": "Think of an orchestra warming up: no single instrument carries the piece, but together they make the sound. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. The layout decides what the machine can even attempt, before it learns a single thing. The shape of the machine is half the idea. That blueprint is CoDi.",
+  "explainer": {
+    "lead": "CoDi, short for Collect and Distribute, grows and runs a spiking neural network inside a three-dimensional cellular automaton. Its interest lies in building complex network behavior from local interactions and a small set of rules.",
+    "tiers": {
+      "eli5": "Imagine a 3D grid of tiny boxes that can be empty or hold part of a brain-like cell, such as its body or branches. First, the grid grows a network by following instructions, then signals travel out along some branches and arrive through others. Each box only needs to check itself and the six boxes touching its faces.",
+      "practitioner": "Use CoDi as two distinct stages: chromosome-driven growth of the network in CA space, followed by spike signaling and processing. The four cell states are neuron body, axon, dendrite, and blank, with updates based on the cell and its six orthogonal neighbors. A key pitfall is assuming diagonal neighbors participate or mixing growth rules with signaling rules.",
+      "paperLevel": "CoDi is a cellular-automaton model for spiking neural networks in a 3D space. For cell c, its neighborhood is N(c) = {c} union the six cells at unit orthogonal offsets, excluding diagonal neighbors; cell states are {neuron body, axon, dendrite, blank}. A chromosome underlies a growth phase, after which processing distributes signals from neuron bodies through axon trees and collects them from connection dendrites using a small rule set."
+    },
+    "example": "Suppose growth has produced a neuron body connected to an axon tree, with another neuron's dendrite at a connection point. During processing, the body sends a signal through its axon tree, and the connected dendrite collects it; nearby blank cells and unrelated branches do not create additional connection types.",
+    "usedIn": [
+      {
+        "name": "Spiking neural networks",
+        "detail": "Provides a cellular-automaton model for growing networks and processing their signals and spikes.",
+        "url": ""
+      },
+      {
+        "name": "Cellular automata",
+        "detail": "Applies local, neighbor-based rules in a three-dimensional space to represent neural structures and signaling.",
+        "url": ""
+      }
+    ],
+    "intuition": "A neural network can be represented as locally interacting parts of a 3D grid rather than as one globally described structure. CoDi first grows those parts, then uses axons to distribute signals and dendrites to collect them.",
+    "howItWorks": [
+      "Start with an underlying chromosome that guides growth in the cellular-automaton space.",
+      "Grow a network using four cell types: neuron body, axon, dendrite, and blank.",
+      "Update each cell from its own state and the states of its six orthogonal neighbors.",
+      "After growth, enter the signaling or processing phase.",
+      "Distribute signals from neuron bodies through axon trees, and collect signals from connection dendrites."
+    ],
+    "whyItMatters": "CoDi shows how neural growth and spike processing can be expressed through local cellular-automaton interactions. Its collect-and-distribute interactions cover the signaling cases with a small number of rules.",
+    "misconceptions": [
+      "CoDi is not a 26-neighbor 3D rule: it uses the cell itself and six orthogonal neighbors.",
+      "Growth and signaling are separate phases, not one simultaneous process.",
+      "Blank is a cell type in the model, alongside neuron bodies, axons, and dendrites."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "chromosome",
+          "label": "Underlying chromosome",
+          "note": "Guides network growth."
+        },
+        {
+          "id": "growth",
+          "label": "Growth phase",
+          "note": "Builds neural structure in CA space."
+        },
+        {
+          "id": "cells",
+          "label": "Four cell types",
+          "note": "Neuron body, axon, dendrite, or blank."
+        },
+        {
+          "id": "body",
+          "label": "Neuron body",
+          "note": "Originates outgoing signals."
+        },
+        {
+          "id": "axon",
+          "label": "Axon tree",
+          "note": "Distributes signals."
+        },
+        {
+          "id": "dendrite",
+          "label": "Connection dendrites",
+          "note": "Collect incoming signals."
+        },
+        {
+          "id": "processing",
+          "label": "Processing phase",
+          "note": "Runs signaling after growth."
+        }
+      ],
+      "edges": [
+        {
+          "from": "chromosome",
+          "to": "growth",
+          "label": "guides"
+        },
+        {
+          "from": "growth",
+          "to": "cells",
+          "label": "grows"
+        },
+        {
+          "from": "cells",
+          "to": "body",
+          "label": "includes"
+        },
+        {
+          "from": "body",
+          "to": "axon",
+          "label": "signals"
+        },
+        {
+          "from": "axon",
+          "to": "dendrite",
+          "label": "distributes"
+        },
+        {
+          "from": "growth",
+          "to": "processing",
+          "label": "precedes"
+        },
+        {
+          "from": "dendrite",
+          "to": "processing",
+          "label": "collects"
+        }
+      ],
+      "caption": "CoDi grows a four-cell-type network from a chromosome, then distributes signals through axons and collects them through dendrites."
+    }
+  },
   "related": [
     "byte-pair-encoding",
     "character-encoding",

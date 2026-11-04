@@ -8,7 +8,118 @@
   ],
   "definition": "Maliciously tampering with training data so a model learns a hidden backdoor or degrades on certain inputs.",
   "details": "An attacker inserts mislabeled or crafted examples before training; the model then behaves normally on most inputs but fails or triggers on attacker-chosen ones. Poisoning matters for both centralized training and systems that fine-tune on user-supplied or web-scraped data.",
-  "story": "Imagine a new medicine that works brilliantly in the lab but still has to be tested on real people before anyone takes it. Think of it as the quiet rule that a tool should be useful without being dangerous. The idea is simple: before something powerful is let loose, someone checks that it will not do real harm to real people. Rules and red-teaming are the brakes that make the speed trustworthy. That deliberate caution is Data Poisoning.",
+  "explainer": {
+    "lead": "Data poisoning is an attack on the examples a model learns from, rather than on the finished model itself. A small set of crafted or mislabeled examples can leave everyday behavior looking normal while causing targeted failures or a hidden backdoor.",
+    "tiers": {
+      "eli5": "Imagine learning from flashcards, but someone secretly slips in a few wrong ones. You might still answer most questions correctly, yet give a wrong answer whenever a special word appears. Data poisoning does something similar by sneaking bad examples into a model's lessons.",
+      "practitioner": "Poisoning is a concern in centralized training and when fine-tuning on user-supplied or web-scraped data. Review added examples and their labels, especially unusual input patterns tied to particular outcomes, and test suspected trigger cases as well as ordinary behavior. Standard accuracy checks can miss a backdoor because the model may perform normally on most inputs.",
+      "paperLevel": "Given training data D, an attacker produces D' by inserting crafted or mislabeled examples. A model trained on D' retains normal behavior on most inputs x but fails or exhibits attacker-chosen behavior on selected inputs. The attack can target either a hidden backdoor or degraded performance on particular cases."
+    },
+    "example": "An attacker adds mislabeled spam emails to a training set so that messages containing the unusual phrase \"golden banana\" are marked as legitimate. The finished spam filter may handle ordinary email correctly but allow later spam containing that phrase to pass through.",
+    "usedIn": [
+      {
+        "name": "Centralized model training",
+        "detail": "Attackers may tamper with examples before the training process begins.",
+        "url": ""
+      },
+      {
+        "name": "User-data fine-tuning",
+        "detail": "Fine-tuning on user-supplied examples creates an opening for crafted inputs or labels.",
+        "url": ""
+      },
+      {
+        "name": "Web-scraped training data",
+        "detail": "Poisoned material included in scraped data can influence the resulting model.",
+        "url": ""
+      }
+    ],
+    "intuition": "A model inherits patterns from its training examples, so corrupting those examples can corrupt what it learns. The attack is especially hard to notice when the corruption affects only attacker-chosen cases and leaves typical behavior intact.",
+    "howItWorks": [
+      "The attacker prepares crafted examples or assigns misleading labels to real ones.",
+      "Those examples are inserted into the data before training or fine-tuning.",
+      "The model trains on the tampered dataset and learns the planted pattern.",
+      "It continues to behave normally on most ordinary inputs.",
+      "On attacker-chosen inputs, it fails or activates the hidden backdoor behavior."
+    ],
+    "whyItMatters": "Poisoning can create targeted failures that ordinary testing may not reveal. Systems trained centrally or fine-tuned on user-supplied and web-scraped data need to consider who can influence their training examples.",
+    "misconceptions": [
+      "Poisoning does not necessarily make a model perform badly everywhere; it can affect only selected inputs.",
+      "It happens before or during learning through tampered training examples, not simply by giving a trained model an unusual prompt.",
+      "A hidden backdoor and degradation on particular inputs are different possible goals of poisoning."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "clean-data",
+          "label": "Clean training data",
+          "note": "Ordinary examples and labels"
+        },
+        {
+          "id": "crafted-data",
+          "label": "Crafted examples",
+          "note": "Mislabeled or attacker-designed inputs"
+        },
+        {
+          "id": "poisoned-set",
+          "label": "Poisoned dataset",
+          "note": "Combined data used for learning"
+        },
+        {
+          "id": "training",
+          "label": "Model training",
+          "note": "Learns normal and planted patterns"
+        },
+        {
+          "id": "model",
+          "label": "Trained model",
+          "note": "Carries the poisoning effect"
+        },
+        {
+          "id": "ordinary",
+          "label": "Ordinary inputs",
+          "note": "Usually produce normal behavior"
+        },
+        {
+          "id": "chosen",
+          "label": "Attacker-chosen inputs",
+          "note": "Trigger failure or backdoor behavior"
+        }
+      ],
+      "edges": [
+        {
+          "from": "clean-data",
+          "to": "poisoned-set",
+          "label": ""
+        },
+        {
+          "from": "crafted-data",
+          "to": "poisoned-set",
+          "label": "inserted into"
+        },
+        {
+          "from": "poisoned-set",
+          "to": "training",
+          "label": ""
+        },
+        {
+          "from": "training",
+          "to": "model",
+          "label": ""
+        },
+        {
+          "from": "ordinary",
+          "to": "model",
+          "label": ""
+        },
+        {
+          "from": "chosen",
+          "to": "model",
+          "label": ""
+        }
+      ],
+      "caption": "Crafted examples enter the training set, leaving most model behavior normal while changing responses to selected inputs."
+    }
+  },
   "related": [
     "ai-governance",
     "ai-red-teaming",

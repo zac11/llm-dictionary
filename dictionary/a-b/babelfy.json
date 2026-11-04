@@ -5,7 +5,99 @@
   "type": "algorithm",
   "definition": "Babelfy is a software algorithm for the disambiguation of text written in any language.",
   "details": "It performs the tasks of multilingual Word Sense Disambiguation (i.e., the disambiguation of common nouns, verbs, adjectives and adverbs) and Entity Linking (i.e. the disambiguation of mentions to encyclopedic entities like people, companies, places, etc.).",
-  "story": "Think of a grammar teacher who never memorized a rule but can still tell you when a sentence sounds wrong. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It figures out meaning by noticing which words like to travel together. The machine learns to read between the lines by reading an impossible number of lines. That pattern-earned fluency is Babelfy.",
+  "explainer": {
+    "lead": "Babelfy is an algorithm that works out what ambiguous words and names mean in text, across languages. This matters because an ordinary word can have several senses, while a mention of a person, company, or place must be connected to the right entity.",
+    "tiers": {
+      "eli5": "Words can be like people wearing identical name tags: you need the rest of the sentence to tell who is who. Babelfy reads text and helps work out which meaning each word has. It can also tell whether a name refers to a particular person, company, place, or another kind of entity.",
+      "practitioner": "Use Babelfy when a text-processing pipeline must resolve both ordinary word senses and entity mentions, including across languages. Treat these as two output types: senses for common nouns, verbs, adjectives, and adverbs, and links for mentions of encyclopedic entities. Do not evaluate or handle both outputs identically, because selecting a word sense and linking an entity are distinct tasks.",
+      "paperLevel": "Given text x, Babelfy's two tasks are WSD: w -> s for common nouns, verbs, adjectives, and adverbs, and EL: m -> e for mentions of encyclopedic entities. WSD is multilingual, while EL covers entities such as people, companies, and places. The stated word-sense scope is limited to those four parts of speech."
+    },
+    "example": "In “Apple released the phone while I ate an apple,” Babelfy links the first mention to the company and disambiguates the second as the fruit.",
+    "usedIn": [
+      {
+        "name": "Multilingual text processing",
+        "detail": "Resolving the senses of common nouns, verbs, adjectives, and adverbs across languages.",
+        "url": ""
+      },
+      {
+        "name": "Entity-aware text analysis",
+        "detail": "Linking mentions of people, companies, places, and other encyclopedic subjects to the intended entities.",
+        "url": ""
+      }
+    ],
+    "goal": "Disambiguate text in any language by resolving ordinary word senses and linking entity mentions to their intended encyclopedic entities.",
+    "inputs": [
+      "Text written in any language",
+      "Ambiguous word occurrences and entity mentions within that text"
+    ],
+    "outputs": [
+      "Disambiguated senses for common nouns, verbs, adjectives, and adverbs",
+      "Links from mentions to encyclopedic entities"
+    ],
+    "steps": [
+      "Read the input text.",
+      "Identify words requiring sense disambiguation and mentions requiring entity linking.",
+      "Apply multilingual word sense disambiguation to common nouns, verbs, adjectives, and adverbs.",
+      "Apply entity linking to mentions of people, companies, places, and other encyclopedic entities.",
+      "Produce the resolved word senses and entity links."
+    ],
+    "tradeoffs": [
+      "It combines two disambiguation tasks, but word senses and entity links remain different kinds of output.",
+      "It accepts text in any language, while its word-sense task covers common nouns, verbs, adjectives, and adverbs."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "text",
+          "label": "Input text",
+          "note": "Text written in any language."
+        },
+        {
+          "id": "wsd",
+          "label": "Word sense disambiguation",
+          "note": "Resolves covered ordinary words."
+        },
+        {
+          "id": "el",
+          "label": "Entity linking",
+          "note": "Resolves encyclopedic entity mentions."
+        },
+        {
+          "id": "senses",
+          "label": "Word senses",
+          "note": "Meanings for nouns, verbs, adjectives, and adverbs."
+        },
+        {
+          "id": "entities",
+          "label": "Entity links",
+          "note": "Links for people, companies, places, and other entities."
+        }
+      ],
+      "edges": [
+        {
+          "from": "text",
+          "to": "wsd",
+          "label": "word occurrences"
+        },
+        {
+          "from": "text",
+          "to": "el",
+          "label": "entity mentions"
+        },
+        {
+          "from": "wsd",
+          "to": "senses",
+          "label": ""
+        },
+        {
+          "from": "el",
+          "to": "entities",
+          "label": ""
+        }
+      ],
+      "caption": "Babelfy routes text through two related disambiguation tasks, producing word senses and entity links."
+    }
+  },
   "related": [
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",
     "accelerated-linear-algebra",

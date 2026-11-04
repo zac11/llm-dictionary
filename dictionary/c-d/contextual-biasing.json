@@ -8,6 +8,97 @@
   ],
   "definition": "Boosting the decode-time probability of user- or session-specific terms (contact names, product SKUs, medical drugs) via boosted phrase lists or trie-based mechanisms.",
   "details": "Boosting the decode-time probability of user- or session-specific terms (contact names, product SKUs, medical drugs) via boosted phrase lists or trie-based mechanisms. The standard fix for the rare-entity failures that dominate real-world ASR complaints.",
+  "explainer": {
+    "lead": "Contextual biasing helps a speech recognizer favor words that matter in the current conversation, such as a contact’s name or a product code. It tackles a common frustration: ordinary words are recognized well, while the rare names users care about most come out wrong.",
+    "tiers": {
+      "eli5": "Imagine a friend taking notes while you talk and checking a small list of names you might mention. Contextual biasing gives a computer that same hint, so it is more likely to hear your contact’s unusual name correctly. It does not teach the computer what the name means; it just makes that name a stronger guess.",
+      "practitioner": "Supply user- or session-specific phrases to the ASR decoder through a boosted phrase list or a trie-based mechanism, and update them when the context changes. Tune boosting carefully so rare entities become more likely without overwhelming the audio evidence. It is especially useful for contact names, product SKUs, and medical drugs.",
+      "paperLevel": "At decode time, contextual biasing increases the effective probability of terms in a context set B: score'(w) = score(w) + boost(w), where boost(w) is positive for targeted terms and is applied through phrase lists or a trie. It modifies decoding rather than retraining the recognizer. Its main target is recognition errors on rare, user- or session-specific entities."
+    },
+    "example": "A user dictates a message to a contact named Saoirse. Because Saoirse is in that user’s boosted contact list, the decoder gives it a higher probability and is more likely to transcribe the spoken name correctly instead of substituting a more familiar phrase.",
+    "usedIn": [
+      {
+        "name": "Contact-name dictation",
+        "detail": "Names from the current user’s contacts receive extra probability during recognition.",
+        "url": ""
+      },
+      {
+        "name": "Product-code transcription",
+        "detail": "Relevant product SKUs are boosted so uncommon codes are easier to recognize.",
+        "url": ""
+      },
+      {
+        "name": "Medical dictation",
+        "detail": "Drug names relevant to the session can be favored over more common wording.",
+        "url": ""
+      }
+    ],
+    "intuition": "Speech recognition often has to choose between similar-sounding possibilities, and rare names start at a disadvantage. A small, context-specific nudge tells the decoder which unusual terms are worth considering more strongly right now.",
+    "howItWorks": [
+      "Collect terms specific to the user or session.",
+      "Put those terms into a boosted phrase list or trie.",
+      "During decoding, raise the probability of matching terms.",
+      "Produce the transcript using both the audio and those boosts."
+    ],
+    "whyItMatters": "Rare-entity mistakes can make an otherwise accurate recognizer feel unreliable, because they affect the exact names and codes the user intended. Biasing addresses those failures without retraining the whole speech model.",
+    "misconceptions": [
+      "It changes decoding probabilities, not the model’s underlying training.",
+      "It favors selected phrases; it does not explain their meaning.",
+      "A larger boost is not automatically better if it overrides the audio evidence."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "audio",
+          "label": "Spoken audio",
+          "note": "The user’s speech"
+        },
+        {
+          "id": "terms",
+          "label": "Context terms",
+          "note": "User- or session-specific phrases"
+        },
+        {
+          "id": "boost",
+          "label": "Boost mechanism",
+          "note": "Phrase list or trie"
+        },
+        {
+          "id": "decoder",
+          "label": "ASR decoder",
+          "note": "Combines acoustic evidence and boosts"
+        },
+        {
+          "id": "text",
+          "label": "Transcript",
+          "note": "Output favoring relevant rare terms"
+        }
+      ],
+      "edges": [
+        {
+          "from": "audio",
+          "to": "decoder",
+          "label": "speech"
+        },
+        {
+          "from": "terms",
+          "to": "boost",
+          "label": "phrases"
+        },
+        {
+          "from": "boost",
+          "to": "decoder",
+          "label": "probability boost"
+        },
+        {
+          "from": "decoder",
+          "to": "text",
+          "label": "recognized words"
+        }
+      ],
+      "caption": "Context-specific phrases nudge the decoder toward relevant names and codes while it transcribes the audio."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

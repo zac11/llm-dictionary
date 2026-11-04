@@ -5,6 +5,97 @@
   "type": "concept",
   "definition": "Also known as OS or GUI agent paradigm, where multimodal LLMs are given the ability to directly interact with computer environments such as controlling mouse and keyboard.",
   "details": "Also known as OS or GUI agent paradigm, where multimodal LLMs are given the ability to directly interact with computer environments such as controlling mouse and keyboard.",
+  "explainer": {
+    "lead": "Computer use lets a multimodal language model operate a graphical computer interface, not just talk about it. By connecting what the model sees on screen to mouse and keyboard actions, it can work through tasks in ordinary computer environments.",
+    "tiers": {
+      "eli5": "Imagine showing a helper your computer screen and letting them use the mouse and keyboard for you. Computer use gives an AI a similar job: look at the screen, choose an action, and then look again to see what changed. It repeats this until the task is done or it gets stuck.",
+      "practitioner": "An implementation typically runs an observe–act loop: supply the goal and a screenshot, emit a mouse or keyboard action, execute it, and return the updated screen. Check the environment state after actions rather than assuming a click or keystroke succeeded. Common pitfalls include clicking the wrong control, losing track after the interface changes, and stopping before the task is actually complete.",
+      "paperLevel": "At step t, a multimodal policy π receives goal g and observation o_t, such as a GUI screenshot, and selects action a_t ~ π(g, o_≤t, a_<t), where a_t is a mouse or keyboard operation. The computer environment executes a_t and returns o_{t+1}, producing a closed-loop sequential decision process. Key difficulties include grounding visual elements in precise actions, recovering from errors, and judging whether the goal has been achieved."
+    },
+    "example": "To save an open document as a PDF, the agent inspects the screen, opens the File menu, chooses the export option, enters a filename, and confirms the dialog. It then checks the resulting screen before deciding whether another action is needed.",
+    "usedIn": [
+      {
+        "name": "Desktop task assistance",
+        "detail": "An agent works toward a user's goal by operating visible controls with mouse and keyboard actions.",
+        "url": ""
+      },
+      {
+        "name": "Graphical operating systems",
+        "detail": "Multimodal models interact with the GUI as an environment, using screen observations to guide subsequent actions.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of requiring every application to offer a special text command or API, give the model the same broad interface a person uses: the screen, mouse, and keyboard. Its visual understanding guides action, and each new screen provides feedback for the next decision.",
+    "howItWorks": [
+      "Receive a task goal and observe the current screen.",
+      "Interpret visible interface elements and decide the next action.",
+      "Execute a mouse or keyboard operation in the computer environment.",
+      "Observe the resulting screen and update the task state.",
+      "Repeat until the goal is complete or the agent cannot proceed."
+    ],
+    "whyItMatters": "It turns a multimodal LLM from a system that only responds with text into one that can carry out sequences of actions in a GUI. The repeated screen feedback also lets later decisions depend on what earlier actions actually changed.",
+    "misconceptions": [
+      "It is more than suggesting which button to click: the agent directly performs actions in the computer environment.",
+      "GUI control is not the same as calling an application's underlying API; this paradigm centers on screen interaction through mouse and keyboard."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "goal",
+          "label": "Task goal",
+          "note": "The outcome requested by the user."
+        },
+        {
+          "id": "model",
+          "label": "Multimodal LLM",
+          "note": "Combines the goal with visual observations to choose actions."
+        },
+        {
+          "id": "controls",
+          "label": "Mouse and keyboard",
+          "note": "Carry out the selected GUI operation."
+        },
+        {
+          "id": "computer",
+          "label": "Computer environment",
+          "note": "Executes actions and changes the interface state."
+        },
+        {
+          "id": "screen",
+          "label": "Screen observation",
+          "note": "Shows the model the updated GUI."
+        }
+      ],
+      "edges": [
+        {
+          "from": "goal",
+          "to": "model",
+          "label": "instructs"
+        },
+        {
+          "from": "model",
+          "to": "controls",
+          "label": "selects action"
+        },
+        {
+          "from": "controls",
+          "to": "computer",
+          "label": "operates"
+        },
+        {
+          "from": "computer",
+          "to": "screen",
+          "label": "updates"
+        },
+        {
+          "from": "screen",
+          "to": "model",
+          "label": "feedback"
+        }
+      ],
+      "caption": "Computer use is a feedback loop: the model observes the GUI, acts through mouse and keyboard controls, and observes the result."
+    }
+  },
   "citation": {
     "title": "Computer Use",
     "authors": [],

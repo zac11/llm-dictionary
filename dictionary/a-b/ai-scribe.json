@@ -5,7 +5,124 @@
   "type": "concept",
   "definition": "AI scribes (artificial intelligence scribes) in medicine (also called automated medical scribes, digital scribes, virtual scribes, ambient AI scribes, ambient voice technologies, AI documentation assistants, and digital/virtual/smart clinical assistants) are tools for transcribing and summarising patient consultations and other forms of medical notes.",
   "details": "AI scribes based on large language models (LLMs) increased drastically in popularity in 2024. They can lead to faster documentation, reduced administrative burden, and an improved interaction between the patient and the clinician. However, there are concerns about accuracy, equity concerns, privacy and antitrust concerns. Accuracy concerns intensify in situations in which tools try to go beyond transcribing and summarizing, and are asked to format information by its meaning, since LLMs do not deal well with meaning (see weak artificial intelligence). Medics using these scribes are generally expected to understand the ethical and legal considerations, and supervise the outputs. Most providers have not published any safety or utility data in academic journals, and are not responsive to requests from medical researchers studying their products. The privacy protections of automated medical scribes vary widely. While it is possible to do all the transcription and summarizing locally, with no connection to the internet, most closed-source providers require that data be sent to their own servers over the internet, processed there, and the results sent back (as with digital voice assistants). Some retailers say their tools use zero-knowledge encryption (meaning that the service provider can't access the data). Others explicitly say that they use patient data to train their AIs, or rent or resell it to third parties; the nature of privacy protections used in such situations is unclear, and they are likely not to be fully effective.",
-  "story": "Think of a lightbulb moment: the idea was always there, but someone had to point a finger at it. Behind the jargon is an idea you could explain to a friend over coffee. At its heart it is a simple notion, once you strip away the fancy name. Once you see it, you cannot unsee it. And that idea, made concrete, is AI scribe.",
+  "explainer": {
+    "lead": "An AI scribe turns a clinician–patient conversation into a draft medical note, saving the clinician from typing everything themselves. It can make documentation faster and consultations less distracted, but its mistakes and handling of sensitive patient data still require careful oversight.",
+    "tiers": {
+      "eli5": "An AI scribe is like a helper who listens to a doctor’s appointment and writes down what happened. It can give the doctor more time to look at and talk with the patient instead of a computer screen. The helper can sometimes mishear, leave something out, or invent details, so the doctor must check its notes.",
+      "practitioner": "AI scribes are deployed on desktop or mobile systems, often as cloud services that transcribe consultations, generate structured notes, and integrate with electronic health records. Local, open-source deployments can keep processing on the clinician’s computer, while cloud deployments require scrutiny of data retention, secondary use, encryption, and operating-system security. Do not treat generated text as a verified record: hallucinations, omissions, misclassification, and failures to recognise indirectly described symptoms are known failure modes.",
+      "paperLevel": "An AI medical scribe is a documentation system that maps audio from a clinical encounter to a transcription and a summarised or structured clinical note, commonly using a large language model. LLM-based systems can reduce documentation time, but draft quality varies by setting and software, and clinically relevant information may be omitted, invented, or assigned the wrong meaning. Reported limits also include variable privacy protections, possible re-identification of anonymised records, unequal performance, and limited published safety and utility evidence from providers."
+    },
+    "example": "A patient says they could sleep for only four hours but never uses the word “insomnia.” A scribe might transcribe that sentence, draft a consultation summary, and place details into a note template; it might also fail to recognise the statement as a description of insomnia, so the clinician must verify both the wording and the structured fields.",
+    "usedIn": [
+      {
+        "name": "General practice",
+        "detail": "Most products target general practitioners and draft notes from routine consultations.",
+        "url": ""
+      },
+      {
+        "name": "Medical specialties",
+        "detail": "Some vendors offer scribes tailored to particular branches of medicine.",
+        "url": ""
+      },
+      {
+        "name": "Clinical documentation systems",
+        "detail": "Cloud-based platforms may provide real-time transcription, document generation, and electronic health record integration.",
+        "url": ""
+      }
+    ],
+    "intuition": "The aim is to separate listening to the patient from writing the paperwork. The software produces a first draft so the clinician can review and correct it rather than compose the note from scratch.",
+    "howItWorks": [
+      "Capture the clinician–patient conversation on a desktop, laptop, or mobile device.",
+      "Transcribe the speech into text, locally or on a provider’s servers.",
+      "Summarise the conversation and, in some systems, organise details into a clinical template.",
+      "Generate a draft note or populate parts of an electronic health record.",
+      "Have the clinician check and supervise the output before relying on it."
+    ],
+    "whyItMatters": "Less documentation can reduce administrative workload and help clinicians stay present with patients. At the same time, an unchecked error can enter a medical record and harm a patient, while consultation audio and notes contain highly sensitive information whose privacy protections vary widely.",
+    "misconceptions": [
+      "An AI scribe is not just a transcriber: many systems also summarise conversations or extract details into forms, which introduces additional ways to make mistakes.",
+      "A fluent note is not necessarily an accurate one; convincing invented content and omissions are intrinsic risks of LLM-based systems.",
+      "Removing names does not guarantee anonymity, because linked medical histories and outside information can make a patient identifiable."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "consultation",
+          "label": "Clinical consultation",
+          "note": "Clinician and patient conversation"
+        },
+        {
+          "id": "audio",
+          "label": "Audio capture",
+          "note": "Desktop, laptop, or mobile device"
+        },
+        {
+          "id": "transcription",
+          "label": "Speech transcription",
+          "note": "Processed locally or in the cloud"
+        },
+        {
+          "id": "generation",
+          "label": "Note generation",
+          "note": "Summarising and optional structuring"
+        },
+        {
+          "id": "draft",
+          "label": "Draft clinical note",
+          "note": "May contain errors or omissions"
+        },
+        {
+          "id": "review",
+          "label": "Clinician review",
+          "note": "Checks and corrects the output"
+        },
+        {
+          "id": "ehr",
+          "label": "Health record",
+          "note": "Destination in integrated systems"
+        }
+      ],
+      "edges": [
+        {
+          "from": "consultation",
+          "to": "audio",
+          "label": "speech"
+        },
+        {
+          "from": "audio",
+          "to": "transcription",
+          "label": "audio"
+        },
+        {
+          "from": "transcription",
+          "to": "generation",
+          "label": "text"
+        },
+        {
+          "from": "generation",
+          "to": "draft",
+          "label": ""
+        },
+        {
+          "from": "draft",
+          "to": "review",
+          "label": ""
+        },
+        {
+          "from": "review",
+          "to": "ehr",
+          "label": "approved note"
+        }
+      ],
+      "caption": "A typical AI-scribe workflow; where transcription and generation run affects the system’s privacy and security risks."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: AI scribe",
+        "url": "https://en.wikipedia.org/wiki/AI_scribe"
+      }
+    ]
+  },
   "related": [
     "ai-alignment",
     "ai-anthropomorphism",

@@ -5,7 +5,113 @@
   "type": "concept",
   "definition": "Dataset shift is a phenomenon in machine learning and statistics in which the joint distribution of input variables and target labels is different in the training phase and the deployment or test phase (i.e., P t r a i n ( X , Y ) ≠ P t e s t ( X , Y ) {\\displaystyle P_{train}(X,Y)\\neq P_{test}(X,Y)} ).",
   "details": "This happens when the statistical properties of data used to train a model are no longer representative of the data encountered in real-world use, often resulting in degraded predictive performance and diminished generalization ability. Dataset shift is a generic term for a number of particular types of distributional change. Covariate shift is when the distribution of the input features changes, but the conditional relationship between inputs and outputs remains constant. Prior probability shift (or label shift) happens when the distribution of target labels changes, but the conditional distribution of inputs given labels stays the same. Concept shift (also known as concept drift) is the change of the conditional relationship between inputs and outputs that renders previously learned patterns invalid over time. A key challenge for deploying machine learning systems is dataset shift, in particular in dynamic environments where the data distributions change over time. Detecting and mitigating such shifts is an active area of research, e.g., drift detection, domain adaptation, continual learning.",
-  "story": "Imagine a chef tasting every ingredient before it goes into the pot, deciding what belongs and what would ruin the broth. Better ingredients make a better meal, and the same is true here. Every machine is shaped by what it was shown, so someone has to choose that material with care. It is the raw material; the model is only ever as good as what it was fed. That care with the raw material is Dataset shift.",
+  "explainer": {
+    "lead": "A model can look accurate during training and still struggle after launch because the world starts feeding it different data. Dataset shift is the umbrella term for that training-to-deployment mismatch, and identifying what changed is the first step toward addressing it.",
+    "tiers": {
+      "eli5": "Imagine practising for a test using only addition questions, then finding multiplication questions on the real test. Dataset shift is like that: the examples a computer learned from no longer match what it sees later. Because its old practice does not fit the new situation, its answers can get worse.",
+      "practitioner": "In deployed systems, practitioners use drift detection to flag changes and approaches such as domain adaptation or continual learning to mitigate them. Diagnosis matters because covariate, prior probability and concept shift change different parts of the data distribution. Validation data drawn only from the original training conditions can miss the problem.",
+      "paperLevel": "Dataset shift means P_train(X,Y) != P_test(X,Y). Covariate shift changes P(X) while P(Y|X) remains fixed; prior probability or label shift changes P(Y) while P(X|Y) remains fixed; concept shift changes P(Y|X), potentially invalidating learned patterns. Detection and mitigation remain active research areas, particularly when distributions evolve over time."
+    },
+    "example": "A cat-versus-dog image classifier is trained mostly on bright daytime photographs and then deployed on dim nighttime photographs. If the meaning of the visual features for distinguishing cats from dogs remains unchanged but the input-image distribution has changed, this is covariate shift, and predictive performance may degrade.",
+    "usedIn": [
+      {
+        "name": "Deployed machine learning systems",
+        "detail": "Relevant when real-world inputs or labels stop resembling the data used for training.",
+        "url": ""
+      },
+      {
+        "name": "Drift detection",
+        "detail": "Focuses on identifying changes in data distributions after deployment.",
+        "url": ""
+      },
+      {
+        "name": "Domain adaptation and continual learning",
+        "detail": "Research approaches used to mitigate shifts and help models handle changing distributions.",
+        "url": ""
+      }
+    ],
+    "intuition": "Learning from data assumes that future examples resemble past ones closely enough for learned patterns to remain useful. Dataset shift occurs when that assumption breaks because the joint distribution of inputs and labels differs between training and testing or deployment.",
+    "howItWorks": [
+      "Train a model using inputs X and target labels Y drawn from P_train(X,Y).",
+      "Deploy or evaluate it on data drawn from P_test(X,Y).",
+      "Compare the distributions: differing input distributions indicate covariate shift, while differing label distributions indicate prior probability shift.",
+      "If the input-output relationship P(Y|X) changes, concept shift makes previously learned patterns unreliable.",
+      "Detect the change and mitigate it through approaches such as domain adaptation or continual learning."
+    ],
+    "whyItMatters": "Dataset shift can reduce predictive performance and generalization after deployment, even when a model performed well during training. It is especially challenging in dynamic environments where distributions continue changing over time.",
+    "misconceptions": [
+      "Dataset shift is not limited to changing input features; label distributions and input-output relationships can change too.",
+      "Covariate shift and concept shift are different: the former changes P(X), while the latter changes P(Y|X).",
+      "Dataset shift does not guarantee failure, but it often degrades predictive performance."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "train-data",
+          "label": "Training data",
+          "note": "Inputs and labels follow P_train(X,Y)."
+        },
+        {
+          "id": "training",
+          "label": "Model training",
+          "note": "Learns patterns from the training distribution."
+        },
+        {
+          "id": "model",
+          "label": "Trained model",
+          "note": "Applies learned patterns to new data."
+        },
+        {
+          "id": "test-data",
+          "label": "Deployment data",
+          "note": "Inputs and labels follow P_test(X,Y)."
+        },
+        {
+          "id": "shift",
+          "label": "Distribution comparison",
+          "note": "Checks whether training and deployment distributions differ."
+        },
+        {
+          "id": "response",
+          "label": "Detection and mitigation",
+          "note": "Addresses shift through research and adaptation methods."
+        }
+      ],
+      "edges": [
+        {
+          "from": "train-data",
+          "to": "training",
+          "label": "X and Y"
+        },
+        {
+          "from": "training",
+          "to": "model",
+          "label": "learns"
+        },
+        {
+          "from": "test-data",
+          "to": "model",
+          "label": "new data"
+        },
+        {
+          "from": "train-data",
+          "to": "shift",
+          "label": "compare"
+        },
+        {
+          "from": "test-data",
+          "to": "shift",
+          "label": "compare"
+        },
+        {
+          "from": "shift",
+          "to": "response",
+          "label": "shift found"
+        }
+      ],
+      "caption": "Dataset shift arises when the distribution supplying deployment data differs from the distribution used to train the model."
+    }
+  },
   "related": [
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",
     "accelerated-linear-algebra",

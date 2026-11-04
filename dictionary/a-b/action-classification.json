@@ -5,6 +5,82 @@
   "type": "concept",
   "definition": "Assigning an action label to a video segment — closely related to action recognition with an emphasis on clip-level classification benchmarks such as Kinetics.",
   "details": "Assigning an action label to a video segment — closely related to action recognition with an emphasis on clip-level classification benchmarks such as Kinetics.",
+  "explainer": {
+    "lead": "Action classification turns a short video segment into a single action label, such as “running” or “playing guitar.” It gives researchers and engineers a clear clip-level task for comparing video models, including on benchmarks such as Kinetics.",
+    "tiers": {
+      "eli5": "Imagine watching a very short video and choosing one phrase that describes what is happening. Action classification teaches a computer to make that choice. Instead of describing every person or object, it gives the whole clip one action label.",
+      "practitioner": "A model receives a video segment and predicts one action category for the entire clip. Performance can be compared on clip-level benchmarks such as Kinetics. Predictions depend on the chosen segment boundaries, and a single label may be a poor fit when several actions occur in one clip.",
+      "paperLevel": "Given a video segment v and a set of action categories Y, action classification learns a mapping f(v) -> y, where y is the clip-level label in Y. It is closely related to action recognition, with an emphasis on clip-level classification benchmarks such as Kinetics. The formulation does not itself specify when or where within the segment the action occurs."
+    },
+    "example": "Given a short clip of a person running, an action classifier considers categories such as “running,” “walking,” and “jumping,” then assigns the single label “running” to the entire segment.",
+    "usedIn": [
+      {
+        "name": "Kinetics",
+        "detail": "A clip-level classification benchmark used to evaluate predictions of action labels for video segments.",
+        "url": ""
+      },
+      {
+        "name": "Action recognition research",
+        "detail": "Action classification provides a focused setting for comparing models that assign labels to whole video clips.",
+        "url": ""
+      }
+    ],
+    "intuition": "The task treats a video segment as one example and asks, “Which action best describes this clip?” The answer is a category for the segment as a whole rather than a description of each frame.",
+    "howItWorks": [
+      "Select a video segment to classify.",
+      "Use the visual and temporal information in that segment as model input.",
+      "Score the possible action categories for the clip.",
+      "Return the selected action label for the whole segment."
+    ],
+    "whyItMatters": "A single clip-level target creates a well-defined way to train and compare video models. Benchmarks such as Kinetics make those comparisons possible across different approaches.",
+    "misconceptions": [
+      "It does not necessarily identify the exact start and end of an action; the input segment is already being classified.",
+      "It is not a separate label for every frame: the standard output is one action label for the whole clip.",
+      "It is closely related to action recognition, but emphasizes the clip-level classification setting rather than every possible recognition task."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "video",
+          "label": "Video segment",
+          "note": "A short clip containing an action"
+        },
+        {
+          "id": "model",
+          "label": "Classification model",
+          "note": "Uses the clip's visual and temporal information"
+        },
+        {
+          "id": "scores",
+          "label": "Category scores",
+          "note": "Scores for the possible action labels"
+        },
+        {
+          "id": "label",
+          "label": "Action label",
+          "note": "One predicted category for the segment"
+        }
+      ],
+      "edges": [
+        {
+          "from": "video",
+          "to": "model",
+          "label": "clip input"
+        },
+        {
+          "from": "model",
+          "to": "scores",
+          "label": "predicts"
+        },
+        {
+          "from": "scores",
+          "to": "label",
+          "label": "selects"
+        }
+      ],
+      "caption": "Action classification maps one video segment to one clip-level action label."
+    }
+  },
   "related": [
     "action-recognition"
   ],

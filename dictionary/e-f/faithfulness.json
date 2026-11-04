@@ -5,7 +5,93 @@
   "type": "concept",
   "definition": "In summarization and generation tasks, the property of an output accurately representing the content of its source material without introducing unsupported claims.",
   "details": "Faithfulness is closely related to groundedness and is a key concern for tasks like summarization, where a model might otherwise produce fluent but inaccurate restatements of the source content.",
-  "story": "Think of a referee whose job is to be completely honest about who touched the ball last. Before trusting a machine, someone has to measure how good it really is — fairly and honestly. It is the exam that separates “it sounds good” from “it actually is good”. What gets measured is what actually gets better. And that, done honestly, is Faithfulness.",
+  "explainer": {
+    "lead": "Faithfulness asks whether a generated summary or answer stays true to its source material. It matters because fluent writing can still add claims the source never supported.",
+    "tiers": {
+      "eli5": "Imagine retelling a story you just read. You are being faithful if everything you say matches the story, rather than adding a dragon or changing who won. A smooth retelling can still be unfaithful if it invents details.",
+      "practitioner": "Do not use fluency as evidence of faithfulness: an output can read naturally while misstating the source. Groundedness is a closely related concern.",
+      "paperLevel": "Given source S and generated output O, faithfulness is the property that O accurately represents S without introducing claims unsupported by S. An unsupported addition or inaccurate restatement violates this property, independently of how fluent O is. The formulation does not by itself specify a scoring procedure or establish complete agreement with related notions such as groundedness."
+    },
+    "example": "If an article says, \"The team won 2–1 after extra time,\" the summary \"The team won 2–1\" is faithful. \"The team won 2–1 thanks to a penalty\" is unfaithful when the article never mentions a penalty.",
+    "usedIn": [
+      {
+        "name": "Summarization",
+        "detail": "Checks whether a summary accurately restates the source without adding unsupported details.",
+        "url": ""
+      },
+      {
+        "name": "Text generation",
+        "detail": "Evaluates whether generated content remains supported by its source material.",
+        "url": ""
+      }
+    ],
+    "intuition": "A faithful output is like a careful retelling: it preserves what the source says and does not smuggle in new claims. Good wording and accurate content are separate qualities.",
+    "howItWorks": [
+      "Start with the source material and generated output.",
+      "Identify what the output claims.",
+      "Compare those claims with the source.",
+      "Flag inaccurate restatements or unsupported additions.",
+      "Treat an output without such problems as faithful."
+    ],
+    "whyItMatters": "Faithfulness helps expose plausible-sounding summaries and generated text that misrepresent their sources. Without it, evaluation can reward fluent outputs even when they introduce unsupported information.",
+    "misconceptions": [
+      "Fluency does not guarantee faithfulness.",
+      "",
+      "Faithfulness concerns support from the source, not just whether a claim sounds reasonable."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "source",
+          "label": "Source material",
+          "note": "The content that provides support."
+        },
+        {
+          "id": "output",
+          "label": "Generated output",
+          "note": "A summary or other generated text."
+        },
+        {
+          "id": "claims",
+          "label": "Output claims",
+          "note": "Statements made by the output."
+        },
+        {
+          "id": "check",
+          "label": "Support check",
+          "note": "Claims compared with the source."
+        },
+        {
+          "id": "result",
+          "label": "Faithfulness result",
+          "note": "Supported content versus unsupported additions or errors."
+        }
+      ],
+      "edges": [
+        {
+          "from": "output",
+          "to": "claims",
+          "label": "contains"
+        },
+        {
+          "from": "claims",
+          "to": "check",
+          "label": "checked"
+        },
+        {
+          "from": "source",
+          "to": "check",
+          "label": "supports"
+        },
+        {
+          "from": "check",
+          "to": "result",
+          "label": "determines"
+        }
+      ],
+      "caption": "Faithfulness evaluation compares the output's claims with the source material."
+    }
+  },
   "related": [
     "a-b-testing",
     "ablation-study",

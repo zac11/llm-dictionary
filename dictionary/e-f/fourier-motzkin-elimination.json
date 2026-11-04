@@ -5,7 +5,86 @@
   "type": "algorithm",
   "definition": "Fourier–Motzkin elimination, also known as the FME method, is a mathematical algorithm for eliminating variables from a system of linear inequalities.",
   "details": "It can output real solutions. The algorithm is named after Joseph Fourier who proposed the method in 1826 and Theodore Motzkin who re-discovered it in 1936.",
-  "story": "Picture an engineer at a cluttered workbench, turning a clever idea over in their hands until it finally clicks. At its heart it is a simple notion, once you strip away the fancy name. A small key that opens a much bigger door. It is one of those ideas that feels obvious only after someone shows it to you. And that idea, made concrete, is Fourier–Motzkin elimination.",
+  "explainer": {
+    "lead": "Fourier–Motzkin elimination removes unwanted variables from a system of linear inequalities, leaving constraints on the variables that remain. This can reduce a problem to a simpler form while preserving information about its real solutions.",
+    "tiers": {
+      "eli5": "Imagine a box must be shorter than a shelf, and the shelf must be shorter than a doorway. You can remove the shelf from the rules and conclude that the box must be shorter than the doorway. Fourier–Motzkin elimination does this kind of simplification for mathematical rules, one variable at a time.",
+      "practitioner": "Apply the method to linear inequalities over real variables when a chosen variable should be projected out. Rearrange its constraints into lower and upper bounds, pair every lower bound with every upper bound, and retain constraints that do not involve it; take care with inequality direction and strictness.",
+      "paperLevel": "Given a system of linear inequalities over real variables, FME eliminates a selected variable by combining its lower and upper bounds and keeping the inequalities independent of that variable. Repeating the procedure produces constraints on the remaining variables from which real solutions can be obtained. Joseph Fourier proposed the method in 1826, and Theodore Motzkin re-discovered it in 1936."
+    },
+    "example": "Start with x ≤ y and y ≤ 2. Eliminating y combines the lower bound x on y with the upper bound 2 on y, giving x ≤ 2. The new inequality constrains real values of x without mentioning y.",
+    "goal": "Eliminate selected variables from a system of linear inequalities while preserving the constraints that govern real solutions in the remaining variables.",
+    "inputs": [
+      "A system of linear inequalities",
+      "Real variables and a variable chosen for elimination"
+    ],
+    "outputs": [
+      "A system with the selected variable removed",
+      "Inequalities describing real solutions in the remaining variables"
+    ],
+    "steps": [
+      "Choose a variable to eliminate.",
+      "Rewrite its inequalities as lower bounds, upper bounds, or constraints not involving that variable.",
+      "Combine each lower bound with each upper bound to form inequalities without the variable.",
+      "Keep the unaffected inequalities and repeat for any further variables."
+    ],
+    "tradeoffs": [
+      "Removing a variable simplifies the system but can create many new inequalities.",
+      "Repeated elimination can leave a large collection of constraints to simplify and manage."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "system",
+          "label": "Linear inequality system",
+          "note": "Real variables and constraints"
+        },
+        {
+          "id": "choose",
+          "label": "Choose variable",
+          "note": "Select the next variable to remove"
+        },
+        {
+          "id": "bounds",
+          "label": "Form bounds",
+          "note": "Separate lower and upper bounds"
+        },
+        {
+          "id": "combine",
+          "label": "Combine bounds",
+          "note": "Create inequalities without the variable"
+        },
+        {
+          "id": "result",
+          "label": "Reduced system",
+          "note": "Repeat or return remaining constraints"
+        }
+      ],
+      "edges": [
+        {
+          "from": "system",
+          "to": "choose",
+          "label": ""
+        },
+        {
+          "from": "choose",
+          "to": "bounds",
+          "label": ""
+        },
+        {
+          "from": "bounds",
+          "to": "combine",
+          "label": "paired bounds"
+        },
+        {
+          "from": "combine",
+          "to": "result",
+          "label": "new constraints"
+        }
+      ],
+      "caption": "Each elimination replaces constraints involving one variable with constraints on the remaining variables."
+    }
+  },
   "related": [
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",
     "accelerated-linear-algebra",

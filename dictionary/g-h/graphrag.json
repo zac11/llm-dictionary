@@ -8,7 +8,102 @@
   ],
   "definition": "A retrieval-augmented generation variant that builds and queries a knowledge graph extracted from source documents, rather than retrieving flat text chunks.",
   "details": "GraphRAG aims to improve on standard RAG for tasks requiring understanding of relationships and structure across a corpus (such as summarizing themes across many documents), by first organizing extracted entities and relations into a graph.",
-  "story": "Imagine a factory floor where each workstation can glance at every other workstation before doing its part. It is the blueprint that makes everything else possible. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. Structure decides what the model can even express — the blueprint before the bricks. And that shape of the machine — GraphRAG — is what makes everything else possible.",
+  "explainer": {
+    "lead": "GraphRAG helps an AI system answer questions by mapping how people, organizations, events, and ideas connect across a collection of documents. That makes it especially useful when the answer depends on relationships or corpus-wide themes, rather than on finding one relevant passage.",
+    "tiers": {
+      "eli5": "Imagine reading a huge pile of stories and making a pinboard: each character gets a card, and strings connect characters who know each other. GraphRAG makes a similar map for documents, so an AI can follow the connections instead of only grabbing a few matching pages.",
+      "practitioner": "An implementation extracts entities and relations from source documents, organizes them into a knowledge graph, and uses that graph to supply context for generation. It is suited to relationship-heavy questions and cross-document theme summarization, while standard chunk retrieval may remain sufficient for localized questions. The main pitfalls are errors or omissions in extraction and graph construction, which can distort the relationships available at query time.",
+      "paperLevel": "Given documents D, construct a knowledge graph G = (V, E), where V represents extracted entities and E represents extracted relations; retrieval then uses G rather than only flat text chunks to provide context for generation. The approach targets queries whose answers depend on relational structure or information distributed across a corpus. Its effectiveness is constrained by the coverage and accuracy of the extracted graph."
+    },
+    "example": "Suppose a collection of reports mentions several projects, their teams, and shared suppliers. For a question about which projects are linked through the same suppliers, GraphRAG can use project–supplier connections in the graph instead of hoping that a few retrieved text chunks contain the whole answer.",
+    "usedIn": [
+      {
+        "name": "Cross-document theme summarization",
+        "detail": "Summarizing themes that span many documents by using their extracted entities and relations.",
+        "url": ""
+      },
+      {
+        "name": "Relationship-focused document analysis",
+        "detail": "Answering questions whose answers depend on understanding connections across a corpus.",
+        "url": ""
+      }
+    ],
+    "intuition": "Flat retrieval is good at finding passages, but some answers emerge only when separate facts are connected. A knowledge graph makes those connections explicit so retrieval can use the structure of the whole corpus.",
+    "howItWorks": [
+      "Extract entities and relations from the source documents.",
+      "Organize those entities and relations into a knowledge graph.",
+      "Use the question to query the graph for relevant connected information.",
+      "Provide the retrieved graph-based information as context for answer generation."
+    ],
+    "whyItMatters": "It extends retrieval-augmented generation toward questions about relationships and global structure, including themes spread across many documents. These are cases where isolated text chunks may not provide enough connected context.",
+    "misconceptions": [
+      "GraphRAG is not simply standard RAG with larger text chunks; it adds an extracted knowledge graph.",
+      "The graph does not replace generation: it supplies structured, connected context for producing an answer.",
+      "It is not limited to finding one entity; it can also support summarization of themes across a corpus."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "documents",
+          "label": "Source documents",
+          "note": "The corpus containing facts and relationships."
+        },
+        {
+          "id": "extraction",
+          "label": "Entity extraction",
+          "note": "Finds entities and relations in the text."
+        },
+        {
+          "id": "graph",
+          "label": "Knowledge graph",
+          "note": "Stores extracted entities and their connections."
+        },
+        {
+          "id": "query",
+          "label": "Graph query",
+          "note": "Finds information connected to the question."
+        },
+        {
+          "id": "context",
+          "label": "Retrieved context",
+          "note": "Connected information selected for the answer."
+        },
+        {
+          "id": "generation",
+          "label": "Answer generation",
+          "note": "Produces a response using the retrieved context."
+        }
+      ],
+      "edges": [
+        {
+          "from": "documents",
+          "to": "extraction",
+          "label": "text"
+        },
+        {
+          "from": "extraction",
+          "to": "graph",
+          "label": "entities, relations"
+        },
+        {
+          "from": "graph",
+          "to": "query",
+          "label": "connections"
+        },
+        {
+          "from": "query",
+          "to": "context",
+          "label": "retrieves"
+        },
+        {
+          "from": "context",
+          "to": "generation",
+          "label": "grounds"
+        }
+      ],
+      "caption": "GraphRAG turns documents into a queryable graph, then uses retrieved connected information to support generation."
+    }
+  },
   "related": [
     "agentic-rag",
     "fine-grained-grounding",

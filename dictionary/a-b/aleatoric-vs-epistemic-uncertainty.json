@@ -5,6 +5,103 @@
   "type": "concept",
   "definition": "The split between irreducible data noise (aleatoric) and model ignorance that more data can fix (epistemic).",
   "details": "The split between irreducible data noise (aleatoric) and model ignorance that more data can fix (epistemic). Only epistemic uncertainty shrinks with data, which is why it drives active learning and out-of-distribution detection, and why conflating the two produces misleading confidence.",
+  "explainer": {
+    "lead": "Uncertainty can come from unpredictable data or from gaps in what a model has learned. Separating the two tells you whether collecting more data could help, and prevents a model’s confidence from being misread.",
+    "tiers": {
+      "eli5": "Imagine guessing whether a tossed coin will land heads or tails: even a perfect guesser cannot remove that randomness. Now imagine guessing the rules of a game you have never seen played; watching more games could teach you. The first kind of uncertainty is aleatoric, and the second is epistemic.",
+      "practitioner": "In active learning, prioritize examples with high epistemic uncertainty because additional data can reduce it. In out-of-distribution detection, epistemic uncertainty can help flag inputs unlike those the model has learned from. Treating irreducible noise as model ignorance can waste labeling effort and produce misleading confidence.",
+      "paperLevel": "Predictive uncertainty can be decomposed as total uncertainty = aleatoric uncertainty + epistemic uncertainty. Aleatoric uncertainty represents irreducible data noise, while epistemic uncertainty represents model ignorance that additional data can reduce. Only the epistemic component is expected to shrink with data; conflating the components can misguide active learning and out-of-distribution detection."
+    },
+    "example": "An image classifier is unsure about a hopelessly blurred animal photo because the visual information itself is insufficient: this is aleatoric uncertainty, and more similar blurred photos need not resolve it. It is also unsure about a clear photo of an animal type absent from its training data: this is epistemic uncertainty, and relevant new examples can reduce it.",
+    "usedIn": [
+      {
+        "name": "Active learning",
+        "detail": "Epistemic uncertainty helps identify examples where acquiring more data could improve the model.",
+        "url": ""
+      },
+      {
+        "name": "Out-of-distribution detection",
+        "detail": "Model ignorance can help distinguish unfamiliar inputs from cases that are merely noisy.",
+        "url": ""
+      }
+    ],
+    "intuition": "Some outcomes remain unpredictable even with complete knowledge, while others are uncertain only because the model has not learned enough. The first is noise in the data; the second is a gap that more data can address.",
+    "howItWorks": [
+      "Start with the model’s overall uncertainty about a prediction.",
+      "Attribute irreducible randomness or noise in the data to aleatoric uncertainty.",
+      "Attribute uncertainty caused by limited knowledge or data to epistemic uncertainty.",
+      "Use the epistemic part to guide data collection and detect unfamiliar inputs.",
+      "Avoid interpreting high total uncertainty alone as evidence that more data will help."
+    ],
+    "whyItMatters": "The distinction shows when additional data is worth collecting and when uncertainty reflects unavoidable noise. It supports active learning and out-of-distribution detection while reducing misleading interpretations of model confidence.",
+    "misconceptions": [
+      "More data reduces every kind of uncertainty; aleatoric uncertainty is irreducible data noise.",
+      "High total uncertainty always identifies a useful example to label; the useful signal for active learning is epistemic uncertainty.",
+      "Aleatoric and epistemic uncertainty can be treated as interchangeable without affecting confidence estimates."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "prediction",
+          "label": "Model prediction",
+          "note": "Produces overall uncertainty"
+        },
+        {
+          "id": "total",
+          "label": "Total uncertainty",
+          "note": "Combined predictive uncertainty"
+        },
+        {
+          "id": "aleatoric",
+          "label": "Aleatoric uncertainty",
+          "note": "Irreducible data noise"
+        },
+        {
+          "id": "epistemic",
+          "label": "Epistemic uncertainty",
+          "note": "Reducible model ignorance"
+        },
+        {
+          "id": "data",
+          "label": "More relevant data",
+          "note": "Reduces knowledge gaps"
+        },
+        {
+          "id": "uses",
+          "label": "Selection and detection",
+          "note": "Active learning and OOD detection"
+        }
+      ],
+      "edges": [
+        {
+          "from": "prediction",
+          "to": "total",
+          "label": ""
+        },
+        {
+          "from": "total",
+          "to": "aleatoric",
+          "label": "data noise"
+        },
+        {
+          "from": "total",
+          "to": "epistemic",
+          "label": "model ignorance"
+        },
+        {
+          "from": "data",
+          "to": "epistemic",
+          "label": "reduces"
+        },
+        {
+          "from": "epistemic",
+          "to": "uses",
+          "label": "guides"
+        }
+      ],
+      "caption": "Total predictive uncertainty splits into irreducible data noise and model ignorance; only the latter shrinks with more data."
+    }
+  },
   "related": [
     "active-learning",
     "out-of-distribution-detection"

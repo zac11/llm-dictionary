@@ -5,6 +5,108 @@
   "type": "concept",
   "definition": "The failure modes where gradients shrink toward zero or blow up as they propagate through many layers, stalling or destabilizing training.",
   "details": "The failure modes where gradients shrink toward zero or blow up as they propagate through many layers, stalling or destabilizing training. Residuals, normalization, careful initialization, and gradient clipping are the standard defenses.",
+  "explainer": {
+    "lead": "Exploding gradients happen when the signals used to update a neural network grow rapidly as they move backward through its layers. The resulting updates can become so large that training becomes unstable instead of steadily improving.",
+    "tiers": {
+      "eli5": "Imagine passing a whisper down a long line, but each person repeats it louder. By the end, the whisper has become a shout. In a neural network, an overly loud learning signal can push its settings around too violently, so people use techniques that keep the signal under control.",
+      "practitioner": "Watch for rapidly growing gradient magnitudes and unstable training in deep networks. Gradient clipping limits overly large gradients, while residual connections, normalization, and careful initialization help prevent the problem earlier. Clipping alone does not remove underlying causes such as an unsuitable initialization.",
+      "paperLevel": "In a depth-L network, backpropagation produces products of layerwise derivative factors. If typical amplification factors exceed 1, repeated multiplication can make gradient magnitude grow exponentially with depth, destabilizing parameter updates. Gradient clipping bounds magnitude after gradients are computed; residuals, normalization, and initialization instead improve the propagation conditions."
+    },
+    "example": "Suppose backward propagation multiplies a gradient by 1.5 at each of 20 layers. Its overall amplification is 1.5^20, or about 3,325, so an initial gradient of 0.001 grows to roughly 3.3. Gradient clipping could cap that value before it drives an excessively large update.",
+    "usedIn": [
+      {
+        "name": "Deep neural network training",
+        "detail": "Gradient behavior is monitored because excessive amplification can destabilize optimization.",
+        "url": ""
+      },
+      {
+        "name": "Residual architectures",
+        "detail": "Residual connections are a standard defense against harmful gradient behavior across many layers.",
+        "url": ""
+      },
+      {
+        "name": "Normalized deep networks",
+        "detail": "Normalization is used alongside careful initialization and clipping to keep training stable.",
+        "url": ""
+      }
+    ],
+    "intuition": "Learning signals are reused and multiplied as they travel backward through a network. If each passage tends to enlarge them, many layers can turn a modest signal into an enormous one, causing excessively large parameter changes.",
+    "howItWorks": [
+      "The training loss produces gradients for the network.",
+      "Gradients propagate backward through successive layers.",
+      "Repeated amplification makes their magnitudes grow rapidly.",
+      "Oversized gradients produce destabilizing parameter updates.",
+      "Clipping limits gradients, while architectural and initialization choices improve propagation."
+    ],
+    "whyItMatters": "Without control, exploding gradients can prevent a deep network from training reliably. Managing them allows optimization to proceed with more stable updates, especially as networks become deeper.",
+    "misconceptions": [
+      "Exploding gradients mean uncontrolled growth, while vanishing gradients shrink toward zero.",
+      "A large loss alone does not prove that gradients are exploding.",
+      "Clipping limits gradient size but does not replace good initialization or architecture."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "loss",
+          "label": "Training loss",
+          "note": "Starts the learning signal"
+        },
+        {
+          "id": "late",
+          "label": "Later layers",
+          "note": "Gradients begin moving backward"
+        },
+        {
+          "id": "early",
+          "label": "Earlier layers",
+          "note": "Repeated amplification accumulates"
+        },
+        {
+          "id": "large",
+          "label": "Huge gradients",
+          "note": "Update signals grow excessively"
+        },
+        {
+          "id": "unstable",
+          "label": "Unstable updates",
+          "note": "Training can be destabilized"
+        },
+        {
+          "id": "controls",
+          "label": "Gradient controls",
+          "note": "Clipping and preventive defenses"
+        }
+      ],
+      "edges": [
+        {
+          "from": "loss",
+          "to": "late",
+          "label": "backward pass"
+        },
+        {
+          "from": "late",
+          "to": "early",
+          "label": "amplification"
+        },
+        {
+          "from": "early",
+          "to": "large",
+          "label": ""
+        },
+        {
+          "from": "large",
+          "to": "unstable",
+          "label": ""
+        },
+        {
+          "from": "controls",
+          "to": "large",
+          "label": "limits growth"
+        }
+      ],
+      "caption": "Repeated amplification during backward propagation can turn gradients into destabilizing updates; clipping and preventive design choices help control them."
+    }
+  },
   "related": [
     "gradient-clipping"
   ],

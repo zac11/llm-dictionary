@@ -5,7 +5,108 @@
   "type": "concept",
   "definition": "Data exploration is an approach similar to initial data analysis, whereby a data analyst uses visual exploration to understand what is in a dataset and the characteristics of the data, rather than through traditional data management systems.",
   "details": "These characteristics can include size or amount of data, completeness of the data, correctness of the data, possible relationships amongst data elements or files/tables in the data. Data exploration is typically conducted using a combination of automated and manual activities. Automated activities can include data profiling or data visualization or tabular reports to give the analyst an initial view into the data and an understanding of key characteristics. This is often followed by manual drill-down or filtering of the data to identify anomalies or patterns identified through the automated actions. Data exploration can also require manual scripting and queries into the data (e.g. using languages such as SQL or R) or using spreadsheets or similar tools to view the raw data. All of these activities are aimed at creating a mental model and understanding of the data in the mind of the analyst, and defining basic metadata (statistics, structure, relationships) for the data set that can be used in further analysis. Once this initial understanding of the data is had, the data can be pruned or refined by removing unusable parts of the data (data cleansing), correcting poorly formatted elements and defining relevant relationships across datasets. This process is also known as determining data quality. Data exploration can also refer to the ad hoc querying or visualization of data to identify potential relationships or insights that may be hidden in the data and does not require to formulate assumptions beforehand. Traditionally, this had been a key area of focus for statisticians, with John Tukey being a key evangelist in the field. Today, data exploration is more widespread and is the focus of data analysts and data scientists; the latter being a relatively new role within enterprises and larger organizations.",
-  "story": "Think of a historian sorting through boxes of letters, building a picture of an era one sentence at a time. Every machine is shaped by what it was shown, so someone has to choose that material with care. The examples a machine reads become the world it believes in. The words a model reads become the world it believes in. And that is Data exploration — the unglamorous work everything else stands on.",
+  "explainer": {
+    "lead": "Data exploration is the process of looking through a dataset with charts, reports, queries, and direct inspection to understand what it contains. It helps an analyst spot gaps, errors, patterns, and relationships before relying on the data for further analysis.",
+    "tiers": {
+      "eli5": "Data exploration is like opening a big box of mixed puzzle pieces and looking them over before building the puzzle. You might count the pieces, check whether any are missing or damaged, and group ones that seem to belong together. This gives you a better idea of what you have and what needs fixing.",
+      "practitioner": "Analysts typically start with automated profiling, visualizations, or tabular reports, then drill down, filter, or inspect raw records to investigate anomalies and patterns. SQL, R, and spreadsheets can support this work, which may produce basic metadata about statistics, structure, and relationships. Automated summaries provide only an initial view, so unusual results still need manual investigation before cleansing or refinement.",
+      "paperLevel": "Data exploration combines automated and manual inspection to characterize a dataset's size, completeness, correctness, and possible relationships among its elements, files, or tables. Its outputs include the analyst's mental model and basic metadata—statistics, structure, and relationships—for later analysis. It can also mean ad hoc querying or visualization without prior assumptions; John Tukey was a key evangelist of this traditionally statistical practice."
+    },
+    "example": "An analyst profiles a sales table and sees that some records have missing values and that a date column is poorly formatted. They filter the affected records, inspect the raw rows in a spreadsheet, and use SQL to examine how the table relates to another table. They then document the dataset's basic statistics and structure, remove unusable records, and correct the formatting before further analysis.",
+    "usedIn": [
+      {
+        "name": "Data analysis",
+        "detail": "Analysts use exploration to understand a dataset and identify anomalies, patterns, and possible relationships.",
+        "url": ""
+      },
+      {
+        "name": "Data science",
+        "detail": "Data scientists explore data before pruning, cleansing, correcting, or relating it for further analysis.",
+        "url": ""
+      },
+      {
+        "name": "Statistics",
+        "detail": "Statisticians have traditionally used exploration to seek relationships or insights without formulating assumptions beforehand.",
+        "url": ""
+      }
+    ],
+    "intuition": "Before analyzing data, get acquainted with it much as you would inspect an unfamiliar collection before using it. The aim is not just to produce summaries, but to build a useful mental model of what is present, what is questionable, and how the pieces connect.",
+    "howItWorks": [
+      "Generate an initial view with automated profiling, visualizations, or tabular reports.",
+      "Examine size, completeness, correctness, and possible relationships among elements or tables.",
+      "Drill down, filter, or query the data to investigate anomalies and patterns revealed by the automated view.",
+      "Inspect raw data with spreadsheets or manual scripts and queries when needed, using languages such as SQL or R.",
+      "Record basic metadata, then cleanse unusable parts, correct poor formatting, and define relevant relationships."
+    ],
+    "whyItMatters": "Exploration reveals whether data is incomplete, incorrect, or unexpectedly structured before later work depends on it. It also supplies basic metadata and can uncover hidden patterns or relationships that guide subsequent analysis.",
+    "misconceptions": [
+      "It is not only automated profiling: manual drill-down, filtering, queries, and raw-data inspection are often essential.",
+      "It does not always begin with assumptions: ad hoc exploration can look for potential relationships or insights without them.",
+      "It is not the same as data cleansing, although what it reveals can guide cleansing and refinement."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "dataset",
+          "label": "Raw dataset",
+          "note": "Unfamiliar data awaiting inspection"
+        },
+        {
+          "id": "automated",
+          "label": "Automated overview",
+          "note": "Profiles, charts, and tabular reports"
+        },
+        {
+          "id": "manual",
+          "label": "Manual investigation",
+          "note": "Filtering, drill-down, scripts, and queries"
+        },
+        {
+          "id": "model",
+          "label": "Analyst understanding",
+          "note": "A mental model of contents and quality"
+        },
+        {
+          "id": "metadata",
+          "label": "Basic metadata",
+          "note": "Statistics, structure, and relationships"
+        },
+        {
+          "id": "refined",
+          "label": "Refined data",
+          "note": "Cleansed and corrected for further analysis"
+        }
+      ],
+      "edges": [
+        {
+          "from": "dataset",
+          "to": "automated",
+          "label": "profile"
+        },
+        {
+          "from": "automated",
+          "to": "manual",
+          "label": "investigate"
+        },
+        {
+          "from": "manual",
+          "to": "model",
+          "label": "understand"
+        },
+        {
+          "from": "model",
+          "to": "metadata",
+          "label": "define"
+        },
+        {
+          "from": "model",
+          "to": "refined",
+          "label": "cleanse"
+        }
+      ],
+      "caption": "Automated views guide manual investigation, which builds understanding for metadata creation and data refinement."
+    }
+  },
   "related": [
     "acl-data-collection-initiative",
     "ai-data-center",

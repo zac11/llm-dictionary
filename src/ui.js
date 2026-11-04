@@ -80,7 +80,7 @@ export class UI {
     this._activeTerm = null;
     this._termList = [];
     this._termIndex = -1;
-    this._entryPage = 0; // 0 = entry spread, 1 = story spread
+    this._entryPage = 0; // 0 = entry spread, 1 = second spread
     this._indexPage = 0; // current contents page within the open volume
     this._indexPages = 1;
     this._flipping = false;
@@ -516,7 +516,7 @@ export class UI {
     next.disabled = Boolean(atLast);
 
     // In contents mode these buttons page through the sheets; in entry mode
-    // they always walk between terms — flipping to the story is done by the
+    // they always walk between terms — flipping to the second spread is done by the
     // in-page flip buttons so the footer stays unambiguous.
     const prevLabel = this._mode === 'index' ? 'Previous contents page' : step ? 'Previous step in path' : 'Previous entry';
     const nextLabel = this._mode === 'index' ? 'Next contents page' : step ? 'Next step in path' : 'Next entry';
@@ -575,7 +575,7 @@ export class UI {
     }
   }
 
-  /** Entry spread: definition on the left, details + citation (+ story cue) on the right. */
+  /** Entry spread: definition on the left, details + citation (+ second-spread cue) on the right. */
   // ---------- contribution flywheel ----------
 
   _renderContributors(term) {
@@ -1020,7 +1020,7 @@ export class UI {
 
   /**
    * The entry's second spread. What sits there follows the entry's type: a
-   * story for a concept, a profile for a person or organization, coverage for
+   * layered explainer for a concept, a profile for a person or organization, coverage for
    * an event, paper, venue, policy or award.
    */
   _renderSecondSpread(term) {
@@ -1028,7 +1028,6 @@ export class UI {
     if (presentation === 'explainer') return this._renderExplainerSpread(term);
     if (presentation === 'profile') return this._renderProfileSpread(term);
     if (presentation === 'coverage') return this._renderCoverageSpread(term);
-    return this._renderStorySpread(term);
   }
 
   /**
@@ -1425,45 +1424,6 @@ export class UI {
     );
   }
 
-  /**
-   * Story spread: the opening sentence on the left ("Imagine…" no longer sits
-   * alone), the rest of the vignette plus suggested related terms on the right.
-   */
-  _renderStorySpread(term) {
-    const sentences = splitSentences(term.story);
-    const opening = sentences[0] || '';
-    const rest = sentences.slice(1);
-    const moral = rest.length ? rest.pop() : '';
-    const body = rest;
-
-    this._renderSecondPageFoot();
-
-    this._pageLeft.innerHTML = `
-      <div class="story-left">
-        <p class="idx-kicker">TheAIDictionary · The Story</p>
-        <p class="idx-ornament">✦&nbsp;&nbsp;❦&nbsp;&nbsp;✦</p>
-        <h2 class="story-title">In a story</h2>
-        <p class="story-subject">${escapeHtml(term.term)}</p>
-        ${term.aka.length ? `<p class="pg-aka">also known as: ${escapeHtml(term.aka.join(', '))}</p>` : ''}
-        <p class="story-open">${highlightTerm(opening, term)}</p>
-      </div>`;
-
-    const bodyHtml = body.map((s) => `<p class="story-line">${highlightTerm(s, term)}</p>`).join('');
-    const moralHtml = moral ? `<p class="story-moral">${highlightTerm(moral, term)}</p>` : '';
-
-    this._pageRight.innerHTML = `
-      <div class="pg-entry">
-        <p class="pg-story-term">${escapeHtml(term.term)}</p>
-        ${bodyHtml}
-        ${moralHtml}
-        <p class="pg-story-end" aria-hidden="true">❦</p>
-        ${this._renderSuggested(term)}
-      </div>`;
-
-    this._bindSuggestedRows();
-    this._resetScroll();
-  }
-
   /** "Suggested terms" — related entries computed from shared category/words. */
   _renderSuggested(term) {
     const related = (term.related || [])
@@ -1514,7 +1474,7 @@ export class UI {
     this.openEntry(this._termList[next].slug, { from: 'volume', dir: dir > 0 ? 'next' : 'prev' });
   }
 
-  /** Flip between a term's entry spread and its story spread (in-page turn). */
+  /** Flip between a term's entry spread and its second spread (in-page turn). */
   _flipToPage(page) {
     if (this._mode !== 'entry' || !this._activeTerm || page === this._entryPage) return;
     const term = this._activeTerm;
@@ -1912,14 +1872,6 @@ function escapeHtml(str = '') {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
-}
-
-/** Split prose into sentences on ". ! ?" followed by a capital/quote or end. */
-function splitSentences(text) {
-  return String(text || '')
-    .split(/(?<=[.!?])\s+(?=[A-Z"'“(])/)
-    .map((s) => s.trim())
-    .filter(Boolean);
 }
 
 const REGEX_ESCAPE = /[.*+?^${}()|[\]\\]/g;

@@ -5,7 +5,92 @@
   "type": "concept",
   "definition": "A qualitative or quantitative measure of how much independent decision-making and action an AI system is permitted to take without human approval.",
   "details": "Autonomy level is an important design and governance consideration for agentic AI systems, often tuned based on the stakes, reversibility, and risk profile of the tasks the system is permitted to perform.",
-  "story": "Think of a chess player who never commits to a move blindly — they consider the board, try an action, watch what changes, and only then decide what is next. The machine stops just answering one question and starts getting a job done, step by step, checking its work along the way. It plans a little, acts a little, looks at the result, and then decides what to do next. The model stops being a one-shot answer machine and becomes a coworker that checks its own work. That loop of reason, act, and observe is Autonomy Level.",
+  "explainer": {
+    "lead": "Autonomy level describes how much an AI system can decide and do on its own before it must ask a person for approval. Setting it appropriately helps balance useful independence against the risks of letting a system act.",
+    "tiers": {
+      "eli5": "Imagine a helper who can tidy your desk but must ask before throwing anything away. An AI system's autonomy level is like that rule: it says what the system may do alone and what needs your permission. More important or harder-to-undo jobs usually call for more asking.",
+      "practitioner": "Autonomy level is applied as a design and governance setting: define which decisions and actions an agent may take independently and which require human approval. Tune it using task stakes, reversibility, and risk, rather than applying one setting indiscriminately. A key pitfall is granting independence beyond what the task's risk profile justifies.",
+      "paperLevel": "Autonomy level L is a qualitative or quantitative measure of permitted independent decision-making and action without human approval. Its appropriate setting depends on task stakes, reversibility, and risk profile. The concept does not, by itself, specify a common numerical scale."
+    },
+    "example": "A customer-support agent at a low autonomy level drafts a reply but cannot send it until a person approves. At a higher autonomy level, it may send a routine, reversible reply independently while still seeking approval for a high-stakes action.",
+    "usedIn": [
+      {
+        "name": "Agentic system design",
+        "detail": "Sets the boundary between independent action and required human approval.",
+        "url": ""
+      },
+      {
+        "name": "AI governance",
+        "detail": "Matches permitted autonomy to task stakes, reversibility, and risk.",
+        "url": ""
+      }
+    ],
+    "intuition": "Think of autonomy level as a permission boundary around an AI agent. A low level keeps a person involved in decisions and actions, while a higher level lets the agent proceed independently.",
+    "howItWorks": [
+      "Identify the tasks the AI system is permitted to perform.",
+      "Assess each task's stakes, reversibility, and risk profile.",
+      "Set how much independent decision-making and action is allowed.",
+      "Require human approval for decisions or actions outside that allowance."
+    ],
+    "whyItMatters": "The setting determines how much independence an agent receives relative to the consequences of its actions. Considering stakes and reversibility helps make autonomy a deliberate governance choice rather than an accidental one.",
+    "misconceptions": [
+      "Higher autonomy is not automatically better; it must fit the task's risk.",
+      "Autonomy level concerns permission to act independently, not how capable the system is.",
+      "Human approval can still be required at higher autonomy levels for particular actions."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "tasks",
+          "label": "Permitted tasks",
+          "note": "The work the agent may perform"
+        },
+        {
+          "id": "risk",
+          "label": "Risk assessment",
+          "note": "Stakes, reversibility, and risk profile"
+        },
+        {
+          "id": "level",
+          "label": "Autonomy level",
+          "note": "The permitted independence boundary"
+        },
+        {
+          "id": "action",
+          "label": "Independent action",
+          "note": "Action within the allowance"
+        },
+        {
+          "id": "approval",
+          "label": "Human approval",
+          "note": "Review required outside the allowance"
+        }
+      ],
+      "edges": [
+        {
+          "from": "tasks",
+          "to": "risk",
+          "label": ""
+        },
+        {
+          "from": "risk",
+          "to": "level",
+          "label": ""
+        },
+        {
+          "from": "level",
+          "to": "action",
+          "label": "within boundary"
+        },
+        {
+          "from": "level",
+          "to": "approval",
+          "label": "outside boundary"
+        }
+      ],
+      "caption": "Task risk informs an autonomy setting, which separates independent action from actions requiring approval."
+    }
+  },
   "related": [
     "agent-registry",
     "agentic-workflow",

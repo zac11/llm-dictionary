@@ -5,6 +5,102 @@
   "type": "concept",
   "definition": "Conjunctions, prepositions, articles, and pronouns attached directly to words (و+ب+ال+كتاب = \"and with the book\").",
   "details": "Conjunctions, prepositions, articles, and pronouns attached directly to words (و+ب+ال+كتاب = \"and with the book\"). Segmentation (splitting clitics from stems) is a standard Arabic preprocessing step that materially improves translation, retrieval, and tagging.",
+  "explainer": {
+    "lead": "Arabic often packs several small grammatical words into one written word, such as conjunctions, prepositions, articles, and pronouns. Finding those pieces helps language systems understand the word’s structure and meaning.",
+    "tiers": {
+      "eli5": "Some Arabic words are like several toy blocks snapped together: one block might mean “and,” another “with,” and another “the.” Clitic segmentation carefully separates the blocks so a computer can see each meaning instead of treating the whole stack as one mysterious piece.",
+      "practitioner": "Clitic segmentation is a standard preprocessing step in Arabic machine translation, information retrieval, and tagging pipelines. It splits attached conjunctions, prepositions, articles, and pronouns from stems while retaining their identities; simply deleting them would discard useful grammatical information.",
+      "paperLevel": "A word form can be represented as w = p1 + ... + pm + s + q1 + ... + qn, where p are prefix clitics, q are suffix clitics, and s is the stem. Segmentation predicts these boundaries and component units, as in و + ب + ال + كتاب = “and with the book,” rather than discarding the attached material."
+    },
+    "example": "Segmenting و+ب+ال+كتاب produces و (“and”), ب (“with”), ال (“the”), and الكتاب (“book”), yielding “and with the book.”",
+    "usedIn": [
+      {
+        "name": "Arabic machine translation",
+        "detail": "Separating attached grammatical units helps translation systems process word structure.",
+        "url": ""
+      },
+      {
+        "name": "Arabic information retrieval",
+        "detail": "Segmentation provides cleaner stems and clitic units for search and matching.",
+        "url": ""
+      },
+      {
+        "name": "Arabic tagging",
+        "detail": "Exposed stems and clitics give taggers more useful linguistic units.",
+        "url": ""
+      }
+    ],
+    "intuition": "A single Arabic written word can contain both a stem and several small attached units. Clitic segmentation makes those hidden boundaries explicit without throwing the attached meanings away.",
+    "howItWorks": [
+      "Take an Arabic word containing attached material.",
+      "Identify boundaries between clitics and the stem.",
+      "Split the word while preserving every component.",
+      "Pass the segmented units to translation, retrieval, or tagging."
+    ],
+    "whyItMatters": "Segmentation turns densely packed word forms into units that downstream systems can handle more effectively. It is a standard Arabic preprocessing step that materially improves translation, retrieval, and tagging.",
+    "misconceptions": [
+      "Segmentation is not the same as deleting clitics; their meanings must be preserved.",
+      "A segmented Arabic word is not necessarily a sequence of independent dictionary words.",
+      "Clitics are not limited to conjunctions: prepositions, articles, and pronouns can also attach directly."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "word",
+          "label": "Arabic word",
+          "note": "A stem with attached clitics."
+        },
+        {
+          "id": "segment",
+          "label": "Clitic segmentation",
+          "note": "Find and preserve component boundaries."
+        },
+        {
+          "id": "clitics",
+          "label": "Separated clitics",
+          "note": "Conjunctions, prepositions, articles, or pronouns."
+        },
+        {
+          "id": "stem",
+          "label": "Recovered stem",
+          "note": "The central word remains available."
+        },
+        {
+          "id": "tasks",
+          "label": "Downstream language tasks",
+          "note": "Translation, retrieval, and tagging."
+        }
+      ],
+      "edges": [
+        {
+          "from": "word",
+          "to": "segment",
+          "label": "input"
+        },
+        {
+          "from": "segment",
+          "to": "clitics",
+          "label": "splits"
+        },
+        {
+          "from": "segment",
+          "to": "stem",
+          "label": "retains"
+        },
+        {
+          "from": "clitics",
+          "to": "tasks",
+          "label": "features"
+        },
+        {
+          "from": "stem",
+          "to": "tasks",
+          "label": "features"
+        }
+      ],
+      "caption": "Clitic segmentation exposes attached units and the stem for downstream Arabic NLP."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

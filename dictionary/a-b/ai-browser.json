@@ -5,7 +5,144 @@
   "type": "concept",
   "definition": "An AI browser is a web browser with integrated artificial intelligence capabilities, such as automatically summarizing web page content or answering questions about it.",
   "details": "A more specialized type is an agentic browser, based on the concept of agentic AI, which can take actions – such as navigating webpages or filling out forms – on behalf of the user. Several agentic browsers emerged in 2025, including ChatGPT Atlas (macOS only), Comet, and Dia. As of 2025, this is a recent development in the browser market, including new entrants from OpenAI, Opera and Perplexity. The designation of 'AI browser' also includes established browsers that later added non-agentic AI features, such as Microsoft Edge with the Copilot chatbot, Google Chrome with the Gemini chatbot (for Windows desktop users in the US with their language set to English), and Firefox with multiple chatbot providers (such as ChatGPT, Claude, Copilot, Gemini, and Le Chat). AI browsers have been noted to be susceptible to prompt injection attacks.",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. And that idea, made concrete, is AI browser.",
+  "explainer": {
+    "lead": "An AI browser puts an AI assistant inside the tool you use to explore the web, so it can explain pages and, in some cases, operate the browser for you. That can reduce reading and repetitive clicking, but it also gives website content a new way to interfere with the assistant through prompt injection.",
+    "tiers": {
+      "eli5": "Imagine a web browser with a helper sitting beside you. The helper can read a long page and explain it, and some helpers can also click links or fill in forms when you ask. The catch is that a webpage might contain instructions that trick the helper into doing something you did not want.",
+      "practitioner": "Implementations range from built-in assistants and browser extensions to cloud-based agents using Puppeteer or Playwright. Agents commonly parse the DOM to locate page elements and may also inspect screenshots for layout; evaluate prompt-injection paths before adoption because webpage content can hijack browser control. The UK National Cyber Security Centre and Gartner consider AI browsers too risky for adoption by most organisations.",
+      "paperLevel": "In plain-text notation, an AI browser can be represented as B_AI = (B_web, F_AI), where F_AI includes functions such as summarize(page) and answer(question, page); an agentic browser additionally supports act(goal, page), including navigation and form completion. A known limit is prompt injection through webpage content, which can hijack browser control and expose deployments to malware, fraud, automated defamation, disinformation and biased outputs."
+    },
+    "example": "You open a long return policy and ask, “Can I return this after 30 days?” The browser reads the page and answers your question; with an agentic browser, you could then ask it to navigate the retailer’s return site and fill out the return form on your behalf.",
+    "usedIn": [
+      {
+        "name": "ChatGPT Atlas",
+        "detail": "An agentic browser released for macOS only.",
+        "url": ""
+      },
+      {
+        "name": "Comet and Dia",
+        "detail": "Agentic browsers that emerged in 2025.",
+        "url": ""
+      },
+      {
+        "name": "Microsoft Edge and Google Chrome",
+        "detail": "Established browsers that added non-agentic assistants: Copilot in Edge and Gemini in Chrome.",
+        "url": ""
+      },
+      {
+        "name": "Firefox",
+        "detail": "Offers multiple chatbot providers, including ChatGPT, Claude, Copilot, Gemini and Le Chat.",
+        "url": ""
+      }
+    ],
+    "intuition": "A ordinary browser displays webpages; an AI browser also interprets them for you. Agentic versions go further by turning a request into browser actions, while non-agentic versions stick to assistance such as summaries and answers.",
+    "howItWorks": [
+      "The browser loads a webpage as usual.",
+      "The AI receives page content or structure to summarize it or answer a question.",
+      "An agentic browser can also locate page elements using the DOM, sometimes aided by screenshots.",
+      "It then carries out requested actions such as navigating pages or completing forms.",
+      "Extensions and cloud-based agents can provide these capabilities without replacing the user’s existing browser."
+    ],
+    "whyItMatters": "AI browsers combine reading assistance with a way to automate routine web tasks, and 2025 brought new entrants from OpenAI, Opera and Perplexity alongside AI features in established browsers. Their direct exposure to webpage content also makes security a central adoption concern.",
+    "misconceptions": [
+      "Not every AI browser is agentic; some only summarize pages or answer questions.",
+      "An AI browser does not have to be a wholly new browser, because extensions and companion applications can add the capabilities.",
+      "Cloud-based agents can run automated browsing remotely without local installation."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "user",
+          "label": "User request",
+          "note": "A question, summary request or goal."
+        },
+        {
+          "id": "assistant",
+          "label": "AI assistant",
+          "note": "Interprets the request and page."
+        },
+        {
+          "id": "reader",
+          "label": "Page understanding",
+          "note": "Reads content, DOM and sometimes screenshots."
+        },
+        {
+          "id": "webpage",
+          "label": "Webpage",
+          "note": "Supplies content and interactive elements."
+        },
+        {
+          "id": "actions",
+          "label": "Browser actions",
+          "note": "Agentic navigation and form filling."
+        },
+        {
+          "id": "injection",
+          "label": "Injected instructions",
+          "note": "Hostile page content attempting control."
+        }
+      ],
+      "edges": [
+        {
+          "from": "user",
+          "to": "assistant",
+          "label": "asks"
+        },
+        {
+          "from": "webpage",
+          "to": "reader",
+          "label": "content"
+        },
+        {
+          "from": "reader",
+          "to": "assistant",
+          "label": "page context"
+        },
+        {
+          "from": "assistant",
+          "to": "user",
+          "label": "answers"
+        },
+        {
+          "from": "assistant",
+          "to": "actions",
+          "label": "agentic only"
+        },
+        {
+          "from": "actions",
+          "to": "webpage",
+          "label": "operates"
+        },
+        {
+          "from": "webpage",
+          "to": "injection",
+          "label": "may contain"
+        },
+        {
+          "from": "injection",
+          "to": "assistant",
+          "label": "can hijack"
+        }
+      ],
+      "caption": "The assistant uses webpage context to help the user; agentic systems also act on the page, creating a prompt-injection path from page content to browser control."
+    },
+    "image": {
+      "src": "https://upload.wikimedia.org/wikipedia/commons/e/e2/Firefox_145.0_AI_Chatbot_on_Linux_screenshot.webp",
+      "alt": "AI browser — Web browser with integrated AI capabilities",
+      "width": 640,
+      "height": 768,
+      "credit": "Software: Mozilla Foundation and contributors Website and content: Mistral AI Screenshot: VulcanSphere",
+      "license": "Public domain",
+      "licenseUrl": "",
+      "page": "https://commons.wikimedia.org/wiki/File:Firefox_145.0_AI_Chatbot_on_Linux_screenshot.webp"
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: AI browser",
+        "url": "https://en.wikipedia.org/wiki/AI_browser"
+      }
+    ]
+  },
   "related": [
     "ai-alignment",
     "ai-anthropomorphism",

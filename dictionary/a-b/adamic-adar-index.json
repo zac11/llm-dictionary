@@ -2,10 +2,103 @@
   "term": "Adamic–Adar index",
   "letter": "A",
   "category": "Artificial Intelligence",
-  "type": "concept",
+  "type": "metric",
   "definition": "The Adamic–Adar index is a measure introduced in 2003 by Lada Adamic and Eytan Adar to predict links in a social network, according to the amount of shared links between two nodes.",
   "details": "It is defined as the sum of the inverse logarithmic degree centrality of the neighbours shared by the two nodes A ( x , y ) = ∑ u ∈ N ( x ) ∩ N ( y ) 1 log ⁡ | N ( u ) | {\\displaystyle A(x,y)=\\sum _{u\\in N(x)\\cap N(y)}{\\frac {1}{\\log {|N(u)|}}}} where N ( u ) {\\displaystyle N(u)} is the set of nodes adjacent to u {\\displaystyle u} . The definition is based on the concept that common elements with very large neighbourhoods are less significant when predicting a connection between two nodes compared with elements shared between a small number of nodes.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. That steady, miss-by-miss improvement is Adamic–Adar index.",
+  "explainer": {
+    "lead": "The Adamic–Adar index is a way to guess whether two people in a network should be connected, based on who they already know in common. It gives more weight to shared friends who themselves know fewer people, on the theory that rare mutual connections are stronger signals of a likely bond.",
+    "tiers": {
+      "eli5": "Imagine you and a stranger both know the school librarian, who only knows a few students, and also both know the principal, who knows everyone. The librarian is a bigger clue that you two should meet, because their knowing both of you is special. The principal knowing both of you is less meaningful, since the principal knows almost everyone anyway.",
+      "practitioner": "Used in link prediction pipelines for social networks and knowledge graphs. Typically computed as a feature for classifiers or ranking models in libraries like NetworkX or igraph. Pitfall: it breaks down when shared neighbors have degree 1, since log(1) = 0 causes division by zero; smoothing or filtering is needed.",
+      "paperLevel": "A(x,y) = Σ_{u ∈ N(x) ∩ N(y)} 1 / log|N(u)|, introduced by Lada Adamic and Eytan Adar in 2003. The logarithmic penalty on high-degree common neighbors derives from the information-theoretic intuition that rare co-occurrences carry more information. Known limits: undefined for degree-1 nodes, and it ignores the global structure beyond immediate common neighbors."
+    },
+    "example": "Suppose Alice and Bob share two common friends: Carol, who has 10 friends, and Dave, who has 100 friends. The index is 1/log(10) + 1/log(100) = 1/1 + 1/2 = 1.5. If they instead shared only Eve, who has 3 friends, the score would be 1/log(3) ≈ 2.1, higher despite fewer common connections.",
+    "usedIn": [
+      {
+        "name": "Social network friend recommendation",
+        "detail": "Predicting which users should be suggested as connections based on overlap in their contact lists",
+        "url": ""
+      },
+      {
+        "name": "Knowledge graph completion",
+        "detail": "Scoring candidate relations between entities by their shared neighboring nodes",
+        "url": ""
+      },
+      {
+        "name": "Biological network analysis",
+        "detail": "Predicting protein-protein interactions from shared interaction partners",
+        "url": ""
+      }
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "alice",
+          "label": "Alice",
+          "note": "Node x: wants link prediction"
+        },
+        {
+          "id": "bob",
+          "label": "Bob",
+          "note": "Node y: target for prediction"
+        },
+        {
+          "id": "carol",
+          "label": "Carol",
+          "note": "Common neighbor, degree 10"
+        },
+        {
+          "id": "dave",
+          "label": "Dave",
+          "note": "Common neighbor, degree 100"
+        },
+        {
+          "id": "score",
+          "label": "AA score",
+          "note": "Sum of 1/log(degree) weights"
+        }
+      ],
+      "edges": [
+        {
+          "from": "alice",
+          "to": "carol",
+          "label": "friend"
+        },
+        {
+          "from": "bob",
+          "to": "carol",
+          "label": "friend"
+        },
+        {
+          "from": "alice",
+          "to": "dave",
+          "label": "friend"
+        },
+        {
+          "from": "bob",
+          "to": "dave",
+          "label": "friend"
+        },
+        {
+          "from": "carol",
+          "to": "score",
+          "label": "weight 1.0"
+        },
+        {
+          "from": "dave",
+          "to": "score",
+          "label": "weight 0.5"
+        }
+      ],
+      "caption": "Alice and Bob's Adamic–Adar score comes from their common neighbors Carol and Dave, weighted inversely by the log of each neighbor's degree."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Adamic–Adar index",
+        "url": "https://en.wikipedia.org/wiki/Adamic%E2%80%93Adar_index"
+      }
+    ]
+  },
   "related": [
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",
     "accelerated-linear-algebra",

@@ -5,7 +5,103 @@
   "type": "concept",
   "definition": "Machine translation can use a method based on dictionary entries, which means that the words will be translated as a dictionary does – word by word, usually without much correlation of meaning between them.",
   "details": "Dictionary lookups may be done with or without morphological analysis or lemmatisation. While this approach to machine translation is probably the least sophisticated, dictionary-based machine translation is ideally suitable for the translation of long lists of phrases on the subsentential (i.e., not a full sentence) level, e.g. inventories or simple catalogs of products and services. It can also be used to speed up manual translation, if the person carrying it out is fluent in both languages and therefore capable of correcting syntax and grammar.",
-  "story": "Picture a translator at the United Nations, listening to one language and whispering the meaning into another in real time. It figures out meaning by noticing which words like to travel together. It does not memorize a rulebook; it absorbs a library. Meaning lives in company — a word is known by the words it keeps. And that is Dictionary-based machine translation — teaching a machine to read between the lines.",
+  "explainer": {
+    "lead": "Dictionary-based machine translation converts text by looking up words in a dictionary and translating them one by one. It is a simple fit for inventories and product or service catalogs, and can also give a bilingual human translator a draft to correct.",
+    "tiers": {
+      "eli5": "Imagine translating a shopping list by finding each word in a bilingual dictionary and writing down its match. That works well for short labels, but the resulting sentence may sound odd because words can affect each other's meaning and may need a different order.",
+      "practitioner": "Apply it to inventories, simple catalogs, or other text below the sentence level, with optional morphological analysis or lemmatisation before lookup. For manual translation support, have someone fluent in both languages correct the output's syntax and grammar; isolated word translations can miss meaning relationships between words.",
+      "paperLevel": "For source words w1, ..., wn, a basic system produces D(w1), ..., D(wn), where D is a bilingual dictionary lookup; preprocessing may include morphological analysis or lemmatisation. The approach usually does little to relate word meanings or reconstruct sentence syntax and grammar, so it is best suited to subsentential phrase lists or drafts corrected by a bilingual person."
+    },
+    "example": "For a simple catalog entry such as \"red cotton shirt\", the system looks up \"red\", \"cotton\", and \"shirt\" separately and emits their dictionary equivalents. If the result is used in a manual workflow, a person fluent in both languages adjusts the wording and grammar.",
+    "usedIn": [
+      {
+        "name": "Inventories",
+        "detail": "Translating long lists of short entries rather than full sentences.",
+        "url": ""
+      },
+      {
+        "name": "Product and service catalogs",
+        "detail": "Handling simple subsentential descriptions where word-by-word translation is often sufficient.",
+        "url": ""
+      },
+      {
+        "name": "Manual translation workflows",
+        "detail": "Producing lookups that a person fluent in both languages can turn into correct text.",
+        "url": ""
+      }
+    ],
+    "intuition": "Treat translation as repeated dictionary consultation: replace each source word with its dictionary equivalent. This avoids elaborate language processing, but usually provides little coordination of meaning between words.",
+    "howItWorks": [
+      "Take a word or phrase from the source text.",
+      "Optionally apply morphological analysis or lemmatisation.",
+      "Look up the resulting entry in a bilingual dictionary.",
+      "Combine the word-by-word translations into output.",
+      "For assisted translation, let a bilingual person correct syntax and grammar."
+    ],
+    "whyItMatters": "Although probably the least sophisticated machine-translation approach, it is well suited to long lists below the sentence level. It can also speed up manual translation when a bilingual person is available to repair the output.",
+    "misconceptions": [
+      "It is not necessarily a raw-form-only lookup: morphological analysis or lemmatisation may be used.",
+      "Word-by-word output is not guaranteed to be a grammatical or meaning-aware sentence translation.",
+      "Its simplicity does not make it useless; short phrase lists and translation assistance are suitable uses."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "source",
+          "label": "Source words",
+          "note": "Often subsentential list entries"
+        },
+        {
+          "id": "morphology",
+          "label": "Optional analysis",
+          "note": "Morphological analysis or lemmatisation"
+        },
+        {
+          "id": "dictionary",
+          "label": "Dictionary lookup",
+          "note": "Translate entries word by word"
+        },
+        {
+          "id": "output",
+          "label": "Translated words",
+          "note": "Usually little meaning correlation"
+        },
+        {
+          "id": "editor",
+          "label": "Bilingual editor",
+          "note": "Corrects syntax and grammar when used manually"
+        }
+      ],
+      "edges": [
+        {
+          "from": "source",
+          "to": "morphology",
+          "label": "optional"
+        },
+        {
+          "from": "source",
+          "to": "dictionary",
+          "label": "direct lookup"
+        },
+        {
+          "from": "morphology",
+          "to": "dictionary",
+          "label": ""
+        },
+        {
+          "from": "dictionary",
+          "to": "output",
+          "label": ""
+        },
+        {
+          "from": "output",
+          "to": "editor",
+          "label": "manual use"
+        }
+      ],
+      "caption": "Words go directly or through optional morphological processing to dictionary lookup; a bilingual editor may then correct the result."
+    }
+  },
   "related": [
     "machine-translation",
     "transfer-based-machine-translation",

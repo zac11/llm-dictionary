@@ -5,6 +5,46 @@
   "type": "concept",
   "definition": "The position that learning is compression: the best model is the shortest description of the data (minimum description length), with Kolmogorov complexity as the theoretical limit.",
   "details": "The position that learning is compression: the best model is the shortest description of the data (minimum description length), with Kolmogorov complexity as the theoretical limit. The frame behind \"LLMs are compressors\" arguments and language-modeling-as-compression results.",
+  "explainer": {
+    "lead": "The compression view treats learning as finding a compact way to describe data: a good model captures regular patterns instead of memorizing every detail. It connects model quality to description length, and helps explain why language modeling is sometimes discussed as compression.",
+    "tiers": {
+      "eli5": "Imagine describing a huge checkerboard by saying, “repeat black, white across every row,” instead of naming every square. The short description works because you found the pattern. This idea says learning is similar: find a short description that still explains what you saw.",
+      "practitioner": "This view is used to interpret model selection through minimum description length and to frame language modeling as compression. The relevant cost is the total description of both the model and the data left unexplained by it, not simply parameter count or file size. A shorter description is not automatically more useful if it fails to describe the data well.",
+      "paperLevel": "In minimum-description-length form, choose M* = argmin_M [L(M) + L(D | M)], balancing the cost of describing the model against the cost of describing the data given that model. Kolmogorov complexity K(D), the length of the shortest description that generates D, supplies the theoretical limit. It is an idealized benchmark rather than a general practical scoring procedure."
+    },
+    "example": "For the string “ababababab”, storing every character takes ten characters, while the rule “repeat ‘ab’ five times” captures it more compactly. A rule that merely said “some letters” would be shorter still, but would no longer describe the data accurately.",
+    "usedIn": [
+      {
+        "name": "Minimum description length",
+        "detail": "Model selection balances model complexity against how well the model accounts for the data.",
+        "url": ""
+      },
+      {
+        "name": "Language modeling",
+        "detail": "Language-modeling-as-compression results connect predicting text with representing it compactly.",
+        "url": ""
+      },
+      {
+        "name": "Large language model research",
+        "detail": "The view underlies arguments that describe LLMs as compressors.",
+        "url": ""
+      }
+    ],
+    "intuition": "Patterns let us replace long lists of observations with short rules. On this view, learning means finding rules that describe the data compactly without losing what matters.",
+    "howItWorks": [
+      "Start with data that may contain repeated structure or regularities.",
+      "Describe a candidate model and the parts of the data it does not explain.",
+      "Measure the combined description length of the model and those leftovers.",
+      "Prefer the model with the shortest total description.",
+      "Treat Kolmogorov complexity as the ideal shortest-description limit."
+    ],
+    "whyItMatters": "It gives a shared lens for thinking about pattern discovery, model selection, and generalization: useful structure reduces description length. It also supplies the framing behind claims that language models learn by becoming better compressors.",
+    "misconceptions": [
+      "Shortest does not mean shortest model alone; the description of unexplained data also counts.",
+      "Kolmogorov complexity is a theoretical limit, not a ready-made score to compute for every dataset.",
+      "Calling an LLM a compressor is a framing of its learning and prediction behavior, not a claim that it is simply a file-compression utility."
+    ]
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

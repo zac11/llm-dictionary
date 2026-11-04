@@ -5,6 +5,76 @@
   "type": "concept",
   "definition": "The broad problem of learning policies that maximize reward through interaction — unifying bandits, MDPs, and deep RL.",
   "details": "The broad problem of learning policies that maximize reward through interaction — unifying bandits, MDPs, and deep RL.",
+  "explainer": {
+    "lead": "General reinforcement learning is the umbrella problem of learning what to do by trying actions and using the resulting rewards to improve. It connects bandits, Markov decision processes, and deep reinforcement learning under one goal: find behavior that earns more reward over time.",
+    "tiers": {
+      "eli5": "Imagine learning a new game without anyone explaining the best moves. You try something, see whether you gain points, and gradually favor moves that lead to better results. General reinforcement learning is this trial-and-feedback idea, including both single choices and long sequences of choices.",
+      "practitioner": "Use this as an umbrella framing rather than a specific algorithm: bandits fit reward feedback without lasting state, MDPs model actions that affect future states, and deep RL adds neural-network representations. A practical setup needs an interaction loop, a reward signal, and a way to update and evaluate the policy. Poorly designed rewards can encourage behavior that scores well without achieving the intended goal.",
+      "paperLevel": "In MDP form, the objective is to learn a policy pi that maximizes expected discounted return J(pi) = E_pi[sum_{t=0}^infinity gamma^t r_t], where r_t is reward and gamma controls discounting. Bandits and deep RL fall within the broader learning-from-interaction problem. General reinforcement learning specifies the objective and setting, not one particular learning algorithm."
+    },
+    "example": "An agent learning a maze receives 10 points for reaching the exit and loses 1 point per step. After trying different routes, it updates its policy to favor actions that lead toward the exit, eventually preferring shorter paths because they yield more total reward.",
+    "intuition": "An agent improves by acting, observing what happens, and adjusting its behavior toward choices that produce greater cumulative reward.",
+    "howItWorks": [
+      "Observe the current situation or state.",
+      "Choose an action using the current policy.",
+      "Receive a reward and observe the next state.",
+      "Use that experience to improve the policy.",
+      "Repeat while balancing exploration with exploitation."
+    ],
+    "whyItMatters": "It provides a common way to frame learning problems ranging from one-off reward decisions to long sequential tasks with complex representations.",
+    "misconceptions": [
+      "It is not one specific algorithm.",
+      "Rewards are feedback, not correct-action labels.",
+      "The goal is cumulative reward, not just the next reward."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "policy",
+          "label": "Policy",
+          "note": "Maps observations to actions"
+        },
+        {
+          "id": "agent",
+          "label": "Agent",
+          "note": "Selects and performs actions"
+        },
+        {
+          "id": "environment",
+          "label": "Environment",
+          "note": "Responds to each action"
+        },
+        {
+          "id": "experience",
+          "label": "Experience",
+          "note": "Contains state and reward feedback"
+        }
+      ],
+      "edges": [
+        {
+          "from": "policy",
+          "to": "agent",
+          "label": "action choice"
+        },
+        {
+          "from": "agent",
+          "to": "environment",
+          "label": "action"
+        },
+        {
+          "from": "environment",
+          "to": "experience",
+          "label": "state, reward"
+        },
+        {
+          "from": "experience",
+          "to": "policy",
+          "label": "update"
+        }
+      ],
+      "caption": "Repeated interaction produces experience that improves the policy."
+    }
+  },
   "citation": {
     "title": "General Reinforcement Learning",
     "authors": [],

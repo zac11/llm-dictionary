@@ -5,6 +5,107 @@
   "type": "concept",
   "definition": "Locating faces in an image with bounding boxes or landmarks — the front end for recognition, alignment, and tracking.",
   "details": "Locating faces in an image with bounding boxes or landmarks — the front end for recognition, alignment, and tracking. Cascades and anchor-based detectors made it a solved, real-time task.",
+  "explainer": {
+    "lead": "Face detection finds where faces appear in an image and marks them with boxes or key points called landmarks. It gives later systems a face to work with, making tasks such as recognition, alignment, and tracking possible.",
+    "tiers": {
+      "eli5": "Face detection is like drawing a rectangle around every face in a class photo. It does not need to know who anyone is; it just notices, “There is a face here.” Those rectangles can then help a computer line up faces or follow them through a video.",
+      "practitioner": "Use face detection as the first stage of a vision pipeline, then pass its bounding boxes or landmarks to recognition, alignment, or tracking components. Cascades and anchor-based detectors support real-time use, but inaccurate boxes or landmarks can degrade every downstream stage.",
+      "paperLevel": "Given an image I, face detection predicts a set of face locations, typically bounding boxes b_i and optionally landmark coordinates l_i. It solves localization rather than identification: the output indicates where faces are, not who they belong to."
+    },
+    "example": "For a group photo containing three faces, a detector returns three bounding boxes, one around each face. An alignment stage can then crop and position those regions before recognition runs.",
+    "usedIn": [
+      {
+        "name": "Face recognition pipelines",
+        "detail": "Supplies the image regions that a later recognition stage processes.",
+        "url": ""
+      },
+      {
+        "name": "Face alignment",
+        "detail": "Uses detected boxes or landmarks to position faces consistently for subsequent processing.",
+        "url": ""
+      },
+      {
+        "name": "Video face tracking",
+        "detail": "Provides face locations that can be followed from frame to frame.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of asking who a person is, face detection asks a simpler question: where are the faces? Its output turns a whole image into one or more localized face regions.",
+    "howItWorks": [
+      "Take an image as input.",
+      "Search for patterns that indicate the presence of a face.",
+      "Estimate a bounding box around each detected face.",
+      "Optionally predict landmarks that mark key face locations.",
+      "Pass these locations to recognition, alignment, or tracking."
+    ],
+    "whyItMatters": "Detection is the front end for many face-processing systems: downstream components need a face location before they can recognize, align, or track it. Cascades and anchor-based detectors made this task practical in real time.",
+    "misconceptions": [
+      "Face detection locates faces; face recognition determines or compares identities.",
+      "A bounding box marks a face region, while landmarks mark specific points on the face."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "image",
+          "label": "Input image",
+          "note": "May contain one or more faces."
+        },
+        {
+          "id": "detector",
+          "label": "Face detector",
+          "note": "Finds face locations using a cascade or anchor-based approach."
+        },
+        {
+          "id": "locations",
+          "label": "Boxes and landmarks",
+          "note": "Marks face regions and optional key points."
+        },
+        {
+          "id": "recognition",
+          "label": "Recognition",
+          "note": "Processes the localized face regions."
+        },
+        {
+          "id": "alignment",
+          "label": "Alignment",
+          "note": "Positions faces consistently using detections."
+        },
+        {
+          "id": "tracking",
+          "label": "Tracking",
+          "note": "Follows detected faces across video frames."
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "detector",
+          "label": "pixels"
+        },
+        {
+          "from": "detector",
+          "to": "locations",
+          "label": "face locations"
+        },
+        {
+          "from": "locations",
+          "to": "recognition",
+          "label": ""
+        },
+        {
+          "from": "locations",
+          "to": "alignment",
+          "label": ""
+        },
+        {
+          "from": "locations",
+          "to": "tracking",
+          "label": ""
+        }
+      ],
+      "caption": "Face detection localizes faces so downstream systems can recognize, align, or track them."
+    }
+  },
   "related": [
     "alignment"
   ],

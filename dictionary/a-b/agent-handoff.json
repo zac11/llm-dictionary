@@ -5,6 +5,97 @@
   "type": "concept",
   "definition": "Transferring control of a conversation or task from one agent to another with the necessary state (summary, artifacts, constraints).",
   "details": "Transferring control of a conversation or task from one agent to another with the necessary state (summary, artifacts, constraints). Poor handoffs (dropped context, ambiguous ownership) are a primary multi-agent failure mode.",
+  "explainer": {
+    "lead": "Agent handoff is the moment one AI agent passes a conversation or task to another, along with the information needed to continue. A good handoff keeps work moving without forcing the next agent—or the user—to reconstruct what has already happened.",
+    "tiers": {
+      "eli5": "Imagine asking one friend to help plan a party, then having another friend take over. The first friend should pass along the guest list, decorations, and rules like “no peanuts,” not just say, “You handle it now.” Agent handoff works the same way: the next helper gets both the job and the notes needed to do it.",
+      "practitioner": "Use handoffs when responsibility moves between specialized agents in a conversation or multi-step task. Package a concise state payload containing the summary, relevant artifacts, and constraints, and make the receiving agent’s ownership explicit. Common pitfalls are omitting context, passing stale or incomplete artifacts, and leaving both agents—or neither agent—acting as the owner.",
+      "paperLevel": "A handoff can be written as (A_i, S_i) -> (A_j, S_j), where control passes from agent A_i to A_j and S_j preserves the required summary, artifacts, and constraints. Its main failure modes are lossy state transfer, especially dropped context, and ambiguous ownership after control changes."
+    },
+    "example": "A trip-planning agent hands a booking task to a booking agent with a summary saying the traveler chose a weekend train trip, an artifact containing the selected itinerary, and constraints fixing the dates and budget. The booking agent can proceed without asking for the dates again or accidentally choosing a different itinerary.",
+    "usedIn": [
+      {
+        "name": "Multi-agent workflows",
+        "detail": "Passes a task between agents with different responsibilities while preserving working state.",
+        "url": ""
+      },
+      {
+        "name": "Conversational assistants",
+        "detail": "Transfers an ongoing conversation without losing its summary or user constraints.",
+        "url": ""
+      },
+      {
+        "name": "Task automation",
+        "detail": "Moves partially completed work and its artifacts to the agent responsible for the next stage.",
+        "url": ""
+      }
+    ],
+    "intuition": "A handoff is more than naming the next agent: it transfers both control and enough state for that agent to act. The summary explains progress, artifacts carry the work produced so far, and constraints preserve the rules that still apply.",
+    "howItWorks": [
+      "The current agent determines that another agent should take control.",
+      "It assembles the necessary state: a summary, relevant artifacts, and active constraints.",
+      "It transfers that state and assigns clear ownership to the receiving agent.",
+      "The receiving agent resumes the conversation or task from the transferred state."
+    ],
+    "whyItMatters": "Clean handoffs let specialized agents divide work while maintaining continuity. Dropped context can change or duplicate the work, while ambiguous ownership can stall the task or cause conflicting actions.",
+    "misconceptions": [
+      "A handoff is not just a message telling another agent to take over; the necessary state must move too.",
+      "Passing more text does not guarantee a good handoff if ownership is unclear or key constraints are missing.",
+      "The receiving agent should not have to restart the task or recover context from the user."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "task",
+          "label": "Active task",
+          "note": "Conversation or work in progress"
+        },
+        {
+          "id": "agent-a",
+          "label": "Current agent",
+          "note": "Prepares the transfer"
+        },
+        {
+          "id": "state",
+          "label": "Handoff state",
+          "note": "Summary, artifacts, constraints"
+        },
+        {
+          "id": "agent-b",
+          "label": "Receiving agent",
+          "note": "Takes clear ownership"
+        },
+        {
+          "id": "continued",
+          "label": "Continued work",
+          "note": "Resumes with context intact"
+        }
+      ],
+      "edges": [
+        {
+          "from": "task",
+          "to": "agent-a",
+          "label": "control"
+        },
+        {
+          "from": "agent-a",
+          "to": "state",
+          "label": "packages"
+        },
+        {
+          "from": "state",
+          "to": "agent-b",
+          "label": "transfers"
+        },
+        {
+          "from": "agent-b",
+          "to": "continued",
+          "label": "resumes"
+        }
+      ],
+      "caption": "Control and the state needed to continue move together from one agent to the next."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

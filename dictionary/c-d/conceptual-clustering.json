@@ -5,7 +5,91 @@
   "type": "concept",
   "definition": "Conceptual clustering is a machine learning paradigm for unsupervised classification that has been defined by Ryszard S.",
   "details": "Michalski in 1980 (Fisher 1987, Michalski 1980) and developed mainly during the 1980s. It is distinguished from ordinary data clustering by generating a concept description for each generated class. Most conceptual clustering methods are capable of generating hierarchical category structures; see Categorization for more information on hierarchy. Conceptual clustering is closely related to formal concept analysis, decision tree learning, and mixture model learning.",
-  "story": "Think of a lightbulb moment: the idea was always there, but someone had to point a finger at it. Behind the jargon is an idea you could explain to a friend over coffee. At its heart it is a simple notion, once you strip away the fancy name. Once you see it, you cannot unsee it. And that idea, made concrete, is Conceptual clustering.",
+  "explainer": {
+    "lead": "Conceptual clustering sorts unlabeled data while also explaining what each group means. Its concept descriptions make the resulting classes easier to interpret than clusters identified only by their members.",
+    "tiers": {
+      "eli5": "Imagine sorting a mixed box of toys without being told the categories. You might put toy cars together and describe them as “toys with wheels,” then group those with other vehicle toys. Conceptual clustering does something similar: it makes groups and gives each group a description.",
+      "practitioner": "Use conceptual clustering when an unsupervised classification must include an interpretable description of every class, not just assignments to clusters. Inspect both the groupings and their descriptions, and check the category hierarchy produced by methods that support one; ordinary clustering alone does not provide the same output.",
+      "paperLevel": "Given unlabeled data X, learn classes C_1, ..., C_k together with a concept description D_i for each class C_i; most methods can also generate hierarchical category structures. Ryszard S. Michalski defined the paradigm in 1980, and it was developed mainly during the 1980s. It is closely related to formal concept analysis, decision tree learning, and mixture model learning."
+    },
+    "example": "Given unlabeled customer-support tickets, a method could place password-reset and login-failure tickets in a class described as “account-access problems,” and late or missing deliveries in a class described as “delivery problems.” It could then place both classes beneath a broader “customer-support issues” category.",
+    "usedIn": [
+      {
+        "name": "Unsupervised classification",
+        "detail": "Creates classes from unlabeled data and supplies a concept description for each class.",
+        "url": ""
+      },
+      {
+        "name": "Hierarchical categorization",
+        "detail": "Most conceptual clustering methods can organize generated categories into hierarchies.",
+        "url": ""
+      }
+    ],
+    "intuition": "A useful category is more than a collection of similar items: it also has an explanation of what its members share. Conceptual clustering learns both the collection and that explanation.",
+    "howItWorks": [
+      "Start with unlabeled examples.",
+      "Generate classes from the examples.",
+      "Produce a concept description for each class.",
+      "Where supported, arrange categories into a hierarchy."
+    ],
+    "whyItMatters": "The added descriptions connect unsupervised grouping with explicit concepts, making each generated class interpretable. Hierarchical category structures can also show how narrower and broader classes relate.",
+    "misconceptions": [
+      "It is not simply ordinary clustering: every generated class also receives a concept description.",
+      "Its output need not be flat; most methods can generate hierarchical category structures."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data",
+          "label": "Unlabeled examples",
+          "note": "Input data without assigned classes."
+        },
+        {
+          "id": "cluster",
+          "label": "Conceptual clustering",
+          "note": "Generates classes and their concepts."
+        },
+        {
+          "id": "classes",
+          "label": "Generated classes",
+          "note": "Groups of classified examples."
+        },
+        {
+          "id": "concepts",
+          "label": "Concept descriptions",
+          "note": "One description for each class."
+        },
+        {
+          "id": "hierarchy",
+          "label": "Category hierarchy",
+          "note": "A structure produced by most methods."
+        }
+      ],
+      "edges": [
+        {
+          "from": "data",
+          "to": "cluster",
+          "label": "input"
+        },
+        {
+          "from": "cluster",
+          "to": "classes",
+          "label": "groups"
+        },
+        {
+          "from": "cluster",
+          "to": "concepts",
+          "label": "describes"
+        },
+        {
+          "from": "classes",
+          "to": "hierarchy",
+          "label": "organizes"
+        }
+      ],
+      "caption": "Conceptual clustering turns unlabeled examples into described classes, often arranged hierarchically."
+    }
+  },
   "related": [
     "clustering",
     "consensus-clustering",

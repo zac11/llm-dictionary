@@ -5,7 +5,108 @@
   "type": "concept",
   "definition": "Data preprocessing can refer to manipulation, filtration or augmentation of data before it is analyzed, and is often an important step in the data mining process.",
   "details": "Data collection methods are often loosely controlled, resulting in out-of-range values, impossible data combinations, and missing values, amongst other issues. Preprocessing is the process by which unstructured data is transformed into intelligible representations suitable for machine-learning models. This phase of model deals with noise in order to arrive at better and improved results from the original data set which was noisy. This dataset also has some level of missing value present in it. The preprocessing pipeline used can often have large effects on the conclusions drawn from the downstream analysis. Thus, representation and quality of data is necessary before running any analysis. If there is a high proportion of irrelevant and redundant information present or noisy and unreliable data, then knowledge discovery during the training phase may be more difficult. Data preparation and filtering steps can take a considerable amount of processing time. Examples of methods used in data preprocessing include cleaning, instance selection, normalization, one-hot encoding, data transformation, feature extraction and feature selection.",
-  "story": "Think of a historian sorting through boxes of letters, building a picture of an era one sentence at a time. Every machine is shaped by what it was shown, so someone has to choose that material with care. The examples a machine reads become the world it believes in. The words a model reads become the world it believes in. That care with the raw material is Data preprocessing.",
+  "explainer": {
+    "lead": "Data preprocessing turns raw, messy data into a representation that can be analyzed or fed to a machine-learning model. It matters because errors, missing values, and unsuitable formats can make the results harder to trust.",
+    "tiers": {
+      "eli5": "It is like sorting and washing ingredients before cooking: you remove spoiled pieces, deal with anything missing, and cut everything into usable pieces. Data preprocessing does the same kind of preparation for information, so a computer can work with it more easily.",
+      "practitioner": "In practice, inspect out-of-range values, impossible combinations, missing entries, noise, and redundant information before choosing cleaning, instance selection, normalization, one-hot encoding, transformation, feature extraction, or feature selection. These steps can consume considerable processing time, and the resulting pipeline can materially change downstream conclusions.",
+      "paperLevel": "Let D be raw data and let f be a composition of cleaning, filtering, transformation, encoding, and feature-processing operations; preprocessing produces D' = f(D), a representation suitable for analysis or machine learning. Its limits include the processing cost and the dependence of downstream conclusions on the chosen pipeline, particularly when D contains noise, missing values, or irrelevant and redundant information."
+    },
+    "example": "Suppose a table for a machine-learning model contains an impossible age of -5, several missing heights, and a color column containing \"red\" and \"green\". Preprocessing addresses the invalid and missing entries, normalizes the numerical values, and one-hot encodes color into separate red and green indicators before training.",
+    "usedIn": [
+      {
+        "name": "Machine learning",
+        "detail": "Transforms unstructured or noisy data into representations suitable for model training.",
+        "url": ""
+      },
+      {
+        "name": "Data mining",
+        "detail": "Prepares data so that knowledge discovery is not hindered by unreliable, irrelevant, or redundant information.",
+        "url": ""
+      },
+      {
+        "name": "Data analysis",
+        "detail": "Improves data representation and quality before conclusions are drawn.",
+        "url": ""
+      }
+    ],
+    "intuition": "Raw data often arrives with gaps, errors, noise, and formats that an analysis cannot use directly. Preprocessing is the preparation stage that makes the data cleaner, more consistent, and more informative.",
+    "howItWorks": [
+      "Inspect the data for out-of-range values, impossible combinations, and missing entries.",
+      "Clean noisy or unreliable values and filter irrelevant information.",
+      "Select useful instances and reduce redundancy where needed.",
+      "Normalize, encode, or transform values into suitable representations.",
+      "Extract or select features, then pass the prepared data to analysis or training."
+    ],
+    "whyItMatters": "Poor representation and quality can make knowledge discovery during training more difficult, while a well-chosen pipeline can improve results from a noisy dataset. Because preprocessing choices can strongly affect downstream conclusions, they are part of the analysis rather than a cosmetic preliminary step.",
+    "misconceptions": [
+      "Preprocessing is not only deleting bad rows; it can also involve augmentation, normalization, encoding, transformation, and feature work.",
+      "It is not necessarily quick: preparation and filtering can take considerable processing time.",
+      "A preprocessed dataset is not automatically reliable, because the chosen pipeline can still shape the conclusions."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "raw",
+          "label": "Raw data",
+          "note": "Noisy, incomplete, or unstructured input"
+        },
+        {
+          "id": "inspect",
+          "label": "Inspect values",
+          "note": "Find invalid, impossible, and missing entries"
+        },
+        {
+          "id": "clean",
+          "label": "Clean and filter",
+          "note": "Address noise and irrelevant information"
+        },
+        {
+          "id": "transform",
+          "label": "Transform and encode",
+          "note": "Normalize values and create usable representations"
+        },
+        {
+          "id": "features",
+          "label": "Process features",
+          "note": "Select instances and extract or select features"
+        },
+        {
+          "id": "analysis",
+          "label": "Analysis or training",
+          "note": "Use the prepared dataset downstream"
+        }
+      ],
+      "edges": [
+        {
+          "from": "raw",
+          "to": "inspect",
+          "label": "data"
+        },
+        {
+          "from": "inspect",
+          "to": "clean",
+          "label": "issues found"
+        },
+        {
+          "from": "clean",
+          "to": "transform",
+          "label": "cleaned data"
+        },
+        {
+          "from": "transform",
+          "to": "features",
+          "label": "encoded data"
+        },
+        {
+          "from": "features",
+          "to": "analysis",
+          "label": "prepared data"
+        }
+      ],
+      "caption": "A preprocessing pipeline converts problematic raw data into a representation suitable for analysis or model training."
+    }
+  },
   "related": [
     "acl-data-collection-initiative",
     "ai-data-center",

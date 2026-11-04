@@ -5,7 +5,112 @@
   "type": "concept",
   "definition": "In computer vision or natural language processing, document layout analysis is the process of identifying and categorizing the regions of interest in the scanned image of a text document.",
   "details": "A reading system requires the segmentation of text zones from non-textual ones and the arrangement in their correct reading order. Detection and labeling of the different zones (or blocks) as text body, illustrations, math symbols, and tables embedded in a document is called geometric layout analysis. But text zones play different logical roles inside the document (titles, captions, footnotes, etc.) and this kind of semantic labeling is the scope of the logical layout analysis. Document layout analysis is the union of geometric and logical labeling. It is typically performed before a document image is sent to an OCR engine, but it can be used also to detect duplicate copies of the same document in large archives, or to index documents by their structure or pictorial content. Document layout is formally defined in the international standard ISO 8613-1:1989.",
-  "story": "Imagine learning a language by reading every book in the library and noticing, over time, which words travel together. It does not memorize a rulebook; it absorbs a library. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It is fluency built from pattern, not from memorized rules. That pattern-earned fluency is Document layout analysis.",
+  "explainer": {
+    "lead": "Document layout analysis turns a scanned page from a flat picture into a map of its contents. It finds text, images, tables and mathematical symbols, puts them in reading order, and labels roles such as titles, captions and footnotes so software can interpret the page sensibly.",
+    "tiers": {
+      "eli5": "Imagine cutting up a photo of a newspaper page into pieces: a headline, a story, a picture, its caption and a table. Then you put the pieces in the order someone should read them and give each one a useful label. Document layout analysis teaches a computer to do that before it tries to read the words.",
+      "practitioner": "It is commonly run before OCR so the engine receives correctly segmented regions in reading order rather than an undifferentiated page image. A pipeline needs both geometric labels, such as body text, illustrations, tables and math symbols, and logical labels, such as titles, captions and footnotes. Confusing these two labeling tasks or sending poorly ordered regions to OCR can produce a misleading representation of the document.",
+      "paperLevel": "Document layout is formally defined in ISO 8613-1:1989. Document layout analysis combines geometric layout analysis, which detects and labels zones such as text body, illustrations, math symbols and tables, with logical layout analysis, which assigns roles such as title, caption and footnote. A reading system must also separate text from non-text and arrange the zones in their correct reading order."
+    },
+    "example": "For a scanned article page, the process separates a title, body text, a table and an illustration with its caption; it then labels their roles and places them in reading order before the text regions go to OCR.",
+    "usedIn": [
+      {
+        "name": "OCR pipelines",
+        "detail": "Identifies and orders page regions before the document image is sent to an OCR engine.",
+        "url": ""
+      },
+      {
+        "name": "Document reading systems",
+        "detail": "Separates text from non-text and organizes zones into a usable reading order.",
+        "url": ""
+      },
+      {
+        "name": "Large document archives",
+        "detail": "Uses layout to help detect duplicate copies of the same document.",
+        "url": ""
+      },
+      {
+        "name": "Document indexing",
+        "detail": "Indexes documents by their structure or pictorial content.",
+        "url": ""
+      }
+    ],
+    "intuition": "A scanned page is easier to understand when treated as an organized collection of regions rather than one undifferentiated image. Layout analysis supplies both the regions' locations and their roles in the document.",
+    "howItWorks": [
+      "Start with the scanned image of a text document.",
+      "Segment text zones from non-textual regions.",
+      "Label regions geometrically as body text, illustrations, math symbols or tables.",
+      "Assign logical roles such as title, caption or footnote, and arrange the zones in reading order."
+    ],
+    "whyItMatters": "It gives downstream software the structure needed to read and organize a document instead of merely processing its pixels. The same structural information also supports duplicate detection and indexing by structure or pictures.",
+    "misconceptions": [
+      "It is not OCR: it maps and labels page regions, while OCR handles the text sent to it afterward.",
+      "Geometric and logical analysis are not interchangeable: one identifies kinds of zones, while the other identifies their roles.",
+      "Finding regions is not enough for a reading system; their correct reading order is also required."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "scan",
+          "label": "Scanned page",
+          "note": "Image of a text document"
+        },
+        {
+          "id": "geometric",
+          "label": "Geometric analysis",
+          "note": "Detects and labels page zones"
+        },
+        {
+          "id": "logical",
+          "label": "Logical analysis",
+          "note": "Labels roles such as title or caption"
+        },
+        {
+          "id": "order",
+          "label": "Reading order",
+          "note": "Arranges zones for reading"
+        },
+        {
+          "id": "layout",
+          "label": "Structured layout",
+          "note": "Labeled and ordered document regions"
+        },
+        {
+          "id": "ocr",
+          "label": "OCR engine",
+          "note": "Receives the document image after analysis"
+        }
+      ],
+      "edges": [
+        {
+          "from": "scan",
+          "to": "geometric",
+          "label": ""
+        },
+        {
+          "from": "geometric",
+          "to": "logical",
+          "label": "labeled zones"
+        },
+        {
+          "from": "logical",
+          "to": "order",
+          "label": ""
+        },
+        {
+          "from": "order",
+          "to": "layout",
+          "label": ""
+        },
+        {
+          "from": "layout",
+          "to": "ocr",
+          "label": ""
+        }
+      ],
+      "caption": "Geometric and logical labeling, together with reading order, turn a scanned page into structured regions for downstream processing."
+    }
+  },
   "related": [
     "page-analysis-and-ground-truth-elements",
     "amazon-lex",

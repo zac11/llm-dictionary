@@ -5,7 +5,107 @@
   "type": "concept",
   "definition": "Facial age estimation is the use of artificial intelligence to estimate the age of a person based on their facial features.",
   "details": "Computer vision techniques are used to analyse the facial features in the images of millions of people whose age is known and then deep learning is used to create an algorithm that tries to predict the age of an unknown person. The key use of the technology is to prevent access to age-restricted goods and services. Examples include restricting children from accessing internet pornography, checking that they meet a mandatory minimum age when registering for an account on social media, or preventing adults from accessing websites, online chat or games designed only for use by children. The technology is distinct from facial recognition systems as the software does not attempt to uniquely identify the individual. Researchers have applied neural networks for age estimation since at least 2010.",
-  "story": "Picture a child pointing at pictures in a book — cat, car, cloud — learning to see by seeing a thousand examples. It turns a picture into an understanding: this is a cat, that is a stop sign. What your eyes do without thinking, the machine does one careful layer at a time. It is eyes made of arithmetic — pixels become edges, edges become shapes, shapes become meaning. And that is Facial age estimation — giving a machine the gift of sight.",
+  "explainer": {
+    "lead": "Facial age estimation looks at a person’s face and predicts how old they are, without trying to work out who they are. It is mainly used as an age check for online services, such as keeping children away from adult content or adults out of child-only spaces.",
+    "tiers": {
+      "eli5": "It is like guessing someone’s age from a photograph, but a computer makes the guess. The computer learns by looking at many faces whose ages are already known, then uses what it learned on a new face. The answer is an estimate, not a confirmed birthday.",
+      "practitioner": "A typical system trains a deep-learning model on facial images labelled with known ages, then applies computer-vision analysis to a new image to produce an age estimate. It can sit behind an age gate for adult content, social-media registration, or child-only chat and games. Because the output is an estimate, it should not be treated as verified age or as identification of the individual.",
+      "paperLevel": "Given a facial image x, learn a function f from labelled image–age pairs so that the predicted age is y_hat = f(x). Neural networks have been applied to this task since at least 2010. The output is a prediction from facial features, not a unique identity or proof of chronological age."
+    },
+    "example": "A child tries to register for a social-media account that has a mandatory minimum age. The service analyses the child’s facial image, receives an estimated age, and uses that estimate as part of deciding whether registration can proceed.",
+    "usedIn": [
+      {
+        "name": "Adult-content access controls",
+        "detail": "Estimating whether a user is old enough to access internet pornography.",
+        "url": ""
+      },
+      {
+        "name": "Social-media registration",
+        "detail": "Checking whether a new user appears to meet a mandatory minimum age.",
+        "url": ""
+      },
+      {
+        "name": "Child-only online services",
+        "detail": "Helping prevent adults from entering websites, chat services, or games intended only for children.",
+        "url": ""
+      }
+    ],
+    "intuition": "Faces change with age, so a model can learn patterns associated with different ages by studying many labelled examples. It then uses those patterns to make a best guess about a new face.",
+    "howItWorks": [
+      "Collect facial images of people whose ages are known.",
+      "Use computer-vision techniques to analyse facial features in those images.",
+      "Train a deep-learning algorithm to connect those features with age.",
+      "Give the trained algorithm an image of a person whose age is unknown.",
+      "Use the predicted age in an access decision, such as an online age restriction."
+    ],
+    "whyItMatters": "It offers a way to enforce age restrictions without requiring the software to identify the person. Its main uses concern children’s access to adult material and adults’ access to spaces designed for children.",
+    "misconceptions": [
+      "It is not facial recognition: it estimates age rather than uniquely identifying someone.",
+      "An estimated age is not the same as a verified date of birth."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "labelled",
+          "label": "Known-age faces",
+          "note": "Training images with age labels"
+        },
+        {
+          "id": "features",
+          "label": "Feature analysis",
+          "note": "Computer vision examines facial features"
+        },
+        {
+          "id": "model",
+          "label": "Deep-learning model",
+          "note": "Learns links between faces and ages"
+        },
+        {
+          "id": "new-face",
+          "label": "New facial image",
+          "note": "The person’s age is unknown"
+        },
+        {
+          "id": "estimate",
+          "label": "Age estimate",
+          "note": "The model predicts an age"
+        },
+        {
+          "id": "access",
+          "label": "Access decision",
+          "note": "An age-restricted service applies its rule"
+        }
+      ],
+      "edges": [
+        {
+          "from": "labelled",
+          "to": "features",
+          "label": "training images"
+        },
+        {
+          "from": "features",
+          "to": "model",
+          "label": "training"
+        },
+        {
+          "from": "new-face",
+          "to": "model",
+          "label": "prediction"
+        },
+        {
+          "from": "model",
+          "to": "estimate",
+          "label": ""
+        },
+        {
+          "from": "estimate",
+          "to": "access",
+          "label": ""
+        }
+      ],
+      "caption": "Training uses faces with known ages; prediction uses a new face to produce an age estimate for an access check."
+    }
+  },
   "related": [
     "articulated-body-pose-estimation",
     "motion-estimation",

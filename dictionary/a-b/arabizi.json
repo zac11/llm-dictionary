@@ -8,6 +8,102 @@
   ],
   "definition": "Arabic written in Latin letters with digits standing in for Arabic-specific sounds (3 = ع, 7 = ح, 2 = ء): \"3amel eh\".",
   "details": "Arabic written in Latin letters with digits standing in for Arabic-specific sounds (3 = ع, 7 = ح, 2 = ء): \"3amel eh\". Common in chat and social data; systems either normalize it via transliteration or must be trained to understand it natively.",
+  "explainer": {
+    "lead": "Arabizi is a way to write Arabic with Latin letters, using digits for sounds that Latin spelling does not easily cover. It matters for language technology because chat and social-media text may not look like standard Arabic script, so systems must either convert it or learn to handle it directly.",
+    "tiers": {
+      "eli5": "Imagine writing a language with a keyboard that does not have all its letters. You could use numbers as stand-ins, a bit like using 3 for one special sound and 7 for another. Arabizi is that kind of workaround for Arabic, and computers need special handling to read it.",
+      "practitioner": "Arabizi appears in chat and social data, so an Arabic NLP pipeline should not assume that all input is in Arabic script. One option is to normalize it through transliteration; another is to train the system to understand Arabizi natively. A pitfall is treating its digits as ordinary numbers rather than possible markers for Arabic-specific sounds.",
+      "paperLevel": "Arabizi is a Latin-script representation of Arabic augmented by digit-to-sound mappings, including 3 = ع, 7 = ح, and 2 = ء. For NLP, the input can be mapped through transliteration into normalized text or retained as Arabizi for native modeling. These alternatives differ in whether conversion is performed before downstream processing."
+    },
+    "example": "In “3amel eh”, the digit 3 stands for the Arabic letter ع; the rest is written with Latin letters. The digit is therefore part of the word’s spelling, not a quantity to be read as “three”.",
+    "usedIn": [
+      {
+        "name": "Chat data",
+        "detail": "Arabizi is common in informal messages written with Latin letters and digits.",
+        "url": ""
+      },
+      {
+        "name": "Social-media analysis",
+        "detail": "Systems processing social data may encounter Arabizi alongside other text.",
+        "url": ""
+      },
+      {
+        "name": "Arabic NLP pipelines",
+        "detail": "Inputs can be normalized by transliteration or handled directly by models trained on Arabizi.",
+        "url": ""
+      }
+    ],
+    "intuition": "Arabizi improvises an Arabic spelling system on a Latin keyboard: familiar letters carry much of the writing, while selected digits represent Arabic sounds that need extra symbols.",
+    "howItWorks": [
+      "Write Arabic words using Latin letters.",
+      "Use digits for certain Arabic-specific sounds.",
+      "Read mappings such as 3 = ع, 7 = ح, and 2 = ء according to context.",
+      "For NLP, either transliterate the text to normalize it or process it directly with a system trained on Arabizi."
+    ],
+    "whyItMatters": "Arabizi is common in chat and social data, which makes it a practical input format for Arabic language systems. Choosing between transliteration-based normalization and native handling determines whether this text can be processed effectively.",
+    "misconceptions": [
+      "The digits are not necessarily numbers; in Arabizi they can stand for Arabic sounds.",
+      "Arabizi is not Arabic written in the standard Arabic alphabet.",
+      "Converting Arabizi is not the only option: a system can instead be trained to understand it natively."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Arabizi input",
+          "note": "Latin letters plus sound-marking digits"
+        },
+        {
+          "id": "mapping",
+          "label": "Digit mappings",
+          "note": "For example, 3 represents ع"
+        },
+        {
+          "id": "normalize",
+          "label": "Transliteration",
+          "note": "Normalize the written input"
+        },
+        {
+          "id": "native",
+          "label": "Native training",
+          "note": "Learn directly from Arabizi text"
+        },
+        {
+          "id": "nlp",
+          "label": "Arabic NLP",
+          "note": "Process chat or social data"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "mapping",
+          "label": "contains"
+        },
+        {
+          "from": "mapping",
+          "to": "normalize",
+          "label": "guides"
+        },
+        {
+          "from": "normalize",
+          "to": "nlp",
+          "label": "normalized text"
+        },
+        {
+          "from": "input",
+          "to": "native",
+          "label": "direct input"
+        },
+        {
+          "from": "native",
+          "to": "nlp",
+          "label": "native handling"
+        }
+      ],
+      "caption": "An NLP system can normalize Arabizi through transliteration or learn to handle the original text directly."
+    }
+  },
   "related": [
     "transliteration"
   ],

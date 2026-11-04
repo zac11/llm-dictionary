@@ -5,7 +5,82 @@
   "type": "concept",
   "definition": "Cover's theorem is a statement in computational learning theory and is one of the primary theoretical motivations for the use of non-linear kernel methods in machine learning applications.",
   "details": "It is so termed after the information theorist Thomas M. Cover who stated it in 1965, referring to it as counting function theorem.",
-  "story": "Picture an architect laying out a building where every room has to know which other rooms matter to it. The layout decides what the machine can even attempt, before it learns a single thing. It is the blueprint that makes everything else possible. It is the difference between a row of isolated cubicles and one big room where everyone can hear each other. And that shape of the machine — Cover's theorem — is what makes everything else possible.",
+  "explainer": {
+    "lead": "Cover's theorem explains why a difficult classification problem can become easier after a nonlinear change of representation. It is a major theoretical motivation for nonlinear kernel methods in machine learning.",
+    "tiers": {
+      "eli5": "Imagine red beads inside a circle and blue beads arranged in a ring around them: no straight line on the table can divide them. If you measure each bead's distance from the centre instead, one distance threshold can separate the two colours. Cover's theorem gives the same basic intuition: a nonlinear change of viewpoint can make two groups easier to separate with a simple boundary.",
+      "practitioner": "Use the theorem as motivation to try nonlinear kernel methods when a linear boundary is inadequate in the original representation. It does not choose a kernel, tune its parameters, or provide a training procedure, and its intuition should not be treated as a guarantee of good performance on a particular dataset.",
+      "paperLevel": "Cover's theorem states that a complex pattern-classification problem, cast nonlinearly in a high-dimensional space, is more likely to be linearly separable than in a low-dimensional space. Thomas M. Cover stated it in 1965 and referred to it as the counting function theorem. Its role here is theoretical motivation for nonlinear kernel methods, not a specification of a particular algorithm."
+    },
+    "example": "Let class A contain points with x² + y² < 1 and class B contain points with 4 < x² + y² < 9. No straight line in the (x, y) plane separates the inner disk from the surrounding ring, but after mapping each point to r = sqrt(x² + y²), the classes can be separated by a threshold such as r = 1.5.",
+    "usedIn": [
+      {
+        "name": "Nonlinear kernel methods",
+        "detail": "Cover's theorem is one of their primary theoretical motivations in machine-learning applications.",
+        "url": ""
+      },
+      {
+        "name": "Computational learning theory",
+        "detail": "It is a theoretical statement about pattern classification and linear separability.",
+        "url": ""
+      }
+    ],
+    "intuition": "Classes that cannot be divided by a straight boundary in their original coordinates may become linearly separable after a nonlinear mapping into a richer, higher-dimensional representation.",
+    "howItWorks": [
+      "Begin with a complex pattern-classification problem in its original representation.",
+      "Apply a nonlinear transformation that casts the problem into a higher-dimensional space.",
+      "In that space, a linear separator can become more likely to distinguish the classes.",
+      "This insight helps motivate the use of nonlinear kernel methods."
+    ],
+    "whyItMatters": "It supplies a theoretical reason to seek nonlinear representations in which a comparatively simple linear classifier may work. This makes it an important idea behind nonlinear kernel methods.",
+    "misconceptions": [
+      "It is a theorem, not a kernel or a training algorithm.",
+      "It does not specify which nonlinear transformation or kernel to use.",
+      "Its motivation should not be read as a guarantee for every dataset."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "original",
+          "label": "Original classification problem",
+          "note": "Classes may lack a linear boundary."
+        },
+        {
+          "id": "mapping",
+          "label": "Nonlinear transformation",
+          "note": "Changes the data representation."
+        },
+        {
+          "id": "space",
+          "label": "Higher-dimensional space",
+          "note": "Linear separation becomes more likely."
+        },
+        {
+          "id": "separator",
+          "label": "Linear separator",
+          "note": "Divides classes in the new representation."
+        }
+      ],
+      "edges": [
+        {
+          "from": "original",
+          "to": "mapping",
+          "label": "input"
+        },
+        {
+          "from": "mapping",
+          "to": "space",
+          "label": "transformed data"
+        },
+        {
+          "from": "space",
+          "to": "separator",
+          "label": "classification"
+        }
+      ],
+      "caption": "The intuition behind Cover's theorem: a nonlinear representation can make a complex classification problem easier to separate linearly."
+    }
+  },
   "related": [
     "ablation-artificial-intelligence",
     "adaline",

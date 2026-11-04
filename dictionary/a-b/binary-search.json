@@ -5,6 +5,168 @@
   "type": "algorithm",
   "definition": "Binary search is an efficient algorithm for finding an item from a sorted list of items.",
   "details": "Binary search is an efficient algorithm for finding an item from a sorted list of items. It works by repeatedly dividing in half the portion of the list that could contain the item, until you've narrowed the possible locations to just one.",
+  "explainer": {
+    "lead": "Binary search finds a target in a sorted array by checking the middle and discarding the half that cannot contain it. Each check cuts the remaining search space in half, so even large arrays require relatively few comparisons.",
+    "tiers": {
+      "eli5": "Imagine looking for a word in a dictionary. Open it near the middle: if your word comes later, ignore the first half; if it comes earlier, ignore the second half. Keep doing this until you find the word or run out of pages to check.",
+      "practitioner": "Use binary search when the input is sorted and you need a target's index or can use comparisons to narrow a range. The iterative version tracks left and right boundaries and computes the midpoint as L + floor((R - L) / 2). Linear search can be faster for small arrays, and choosing floor versus ceiling for the midpoint can change which matching index is returned when duplicates exist.",
+      "paperLevel": "For a sorted array A of n elements and target T, binary search repeatedly compares T with a middle element and eliminates half of the remaining interval. It makes O(log n) comparisons in the worst case, but requires sorted input; specialized structures such as hash tables can support faster searching. Hermann Bottenbruch published the first implementation that postpones the equality check until one element remains in 1962."
+    },
+    "example": "Search for 16 in [2, 5, 8, 12, 16, 23, 38]. The first middle element is 12 at index 3, so the search moves to indices 4 through 6. The next middle element is 23 at index 5, leaving only index 4; A[4] is 16, so the algorithm returns 4.",
+    "usedIn": [
+      {
+        "name": "Computational geometry",
+        "detail": "Fractional cascading speeds up repeated searches for the same value across multiple arrays and helps solve search problems in this field.",
+        "url": ""
+      },
+      {
+        "name": "Unbounded-list searching",
+        "detail": "Exponential search extends binary search to lists without a known upper bound.",
+        "url": ""
+      },
+      {
+        "name": "Binary search trees",
+        "detail": "This data structure is based on the same principle of narrowing a search by comparison.",
+        "url": ""
+      },
+      {
+        "name": "B-trees",
+        "detail": "This search-oriented data structure is also based on binary search.",
+        "url": ""
+      }
+    ],
+    "goal": "Find the position of a target value in a sorted array, or determine that the target is absent, while examining only a logarithmic number of elements in the worst case.",
+    "inputs": [
+      "An array A of n elements sorted in nondecreasing order",
+      "A target value T to locate"
+    ],
+    "outputs": [
+      "An index m where A[m] equals T",
+      "An unsuccessful result if the search interval becomes empty"
+    ],
+    "steps": [
+      "Set the left boundary L to 0 and the right boundary R to n - 1.",
+      "If L is greater than R, stop and report that the search was unsuccessful.",
+      "Set the middle position m to L + floor((R - L) / 2).",
+      "If A[m] is less than T, discard the lower half by setting L to m + 1 and repeat.",
+      "If A[m] is greater than T, discard the upper half by setting R to m - 1 and repeat.",
+      "If A[m] equals T, return m."
+    ],
+    "tradeoffs": [
+      "Worst-case search takes O(log n) comparisons.",
+      "The array must be sorted before binary search can be applied.",
+      "Linear search can be faster for small arrays.",
+      "Hash tables can search more efficiently, but binary search also handles tasks such as finding the next-smallest or next-largest element when the target is absent."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "bounds",
+          "label": "Set search bounds",
+          "note": "Start with L = 0 and R = n - 1."
+        },
+        {
+          "id": "empty",
+          "label": "Check empty interval",
+          "note": "If L > R, the target is absent."
+        },
+        {
+          "id": "middle",
+          "label": "Choose middle element",
+          "note": "Compute m from the current boundaries."
+        },
+        {
+          "id": "compare",
+          "label": "Compare with target",
+          "note": "Compare A[m] with T."
+        },
+        {
+          "id": "lower",
+          "label": "Discard lower half",
+          "note": "When A[m] < T, set L = m + 1."
+        },
+        {
+          "id": "upper",
+          "label": "Discard upper half",
+          "note": "When A[m] > T, set R = m - 1."
+        },
+        {
+          "id": "found",
+          "label": "Return position",
+          "note": "When A[m] = T, return m."
+        },
+        {
+          "id": "absent",
+          "label": "Report unsuccessful",
+          "note": "No searchable elements remain."
+        }
+      ],
+      "edges": [
+        {
+          "from": "bounds",
+          "to": "empty",
+          "label": ""
+        },
+        {
+          "from": "empty",
+          "to": "middle",
+          "label": "L ≤ R"
+        },
+        {
+          "from": "empty",
+          "to": "absent",
+          "label": "L > R"
+        },
+        {
+          "from": "middle",
+          "to": "compare",
+          "label": ""
+        },
+        {
+          "from": "compare",
+          "to": "lower",
+          "label": "A[m] < T"
+        },
+        {
+          "from": "compare",
+          "to": "upper",
+          "label": "A[m] > T"
+        },
+        {
+          "from": "compare",
+          "to": "found",
+          "label": "A[m] = T"
+        },
+        {
+          "from": "lower",
+          "to": "empty",
+          "label": ""
+        },
+        {
+          "from": "upper",
+          "to": "empty",
+          "label": ""
+        }
+      ],
+      "caption": "Each comparison either returns the target's position or halves the remaining search interval before the boundaries are checked again."
+    },
+    "image": {
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/83/Binary_Search_Depiction.svg/960px-Binary_Search_Depiction.svg.png",
+      "alt": "Binary search — Search algorithm used in sorted arrays",
+      "width": 640,
+      "height": 272,
+      "credit": "AlwaysAngry",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Binary_Search_Depiction.svg"
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Binary search",
+        "url": "https://en.wikipedia.org/wiki/Binary_search"
+      }
+    ]
+  },
   "citation": {
     "title": "Math Glossary for AI (François Fleuret notes)",
     "authors": [],

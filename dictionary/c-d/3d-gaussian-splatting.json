@@ -5,6 +5,96 @@
   "type": "concept",
   "definition": "Representing scenes as millions of explicit 3D Gaussians rendered by fast rasterization, achieving real-time novel-view synthesis with quality rivaling NeRF.",
   "details": "Representing scenes as millions of explicit 3D Gaussians rendered by fast rasterization, achieving real-time novel-view synthesis with quality rivaling NeRF. Its speed made it the default for scene capture, robotics simulation, and immersive media.",
+  "explainer": {
+    "lead": "3D Gaussian Splatting represents a scene as millions of explicit 3D Gaussians and turns them into images through fast rasterization. It matters because it can synthesize new viewpoints in real time while producing quality that rivals NeRF.",
+    "tiers": {
+      "eli5": "Imagine rebuilding a place with millions of tiny, soft 3D blobs instead of one solid model. A fast drawing process combines the blobs to show what the place would look like from a new angle, quickly enough for smooth, real-time viewing.",
+      "practitioner": "Use it when an application needs an explicit scene representation and fast novel-view rendering, such as scene capture, robotics simulation, or immersive media. The core setup is millions of 3D Gaussians feeding a fast rasterizer; evaluate real-time performance and visual quality for the target scene rather than treating them as automatic.",
+      "paperLevel": "Represent a scene as G = {g_i}, i = 1…N, where N can be in the millions and each g_i is an explicit 3D Gaussian. A novel view is produced by fast rasterization of G, targeting real-time synthesis with quality rivaling NeRF; this is a comparison of rendering quality, not a claim of uniform superiority."
+    },
+    "example": "After capturing a room, represent it with millions of 3D Gaussians. As a viewer moves a virtual camera around the room, fast rasterization generates each new view in real time, with visual quality comparable to NeRF.",
+    "usedIn": [
+      {
+        "name": "Scene capture",
+        "detail": "Represents captured scenes for fast rendering from new viewpoints.",
+        "url": ""
+      },
+      {
+        "name": "Robotics simulation",
+        "detail": "Provides explicit scene representations that can be rendered quickly.",
+        "url": ""
+      },
+      {
+        "name": "Immersive media",
+        "detail": "Supports real-time novel-view synthesis for immersive viewing.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of representing a scene implicitly as NeRF does, keep millions of explicit 3D Gaussian elements and rasterize them directly. The explicit representation and fast rendering path make real-time new-view synthesis possible without giving up NeRF-rivaling quality.",
+    "howItWorks": [
+      "Represent the scene with millions of explicit 3D Gaussians.",
+      "Choose a new camera viewpoint.",
+      "Pass the Gaussian scene representation through fast rasterization.",
+      "Produce the image for that viewpoint in real time."
+    ],
+    "whyItMatters": "It combines real-time novel-view synthesis with quality rivaling NeRF. That speed explains its adoption as a default approach for scene capture, robotics simulation, and immersive media.",
+    "misconceptions": [
+      "It is not simply another name for NeRF: it uses explicit 3D Gaussians and fast rasterization.",
+      "Real-time novel-view rendering does not by itself mean every other stage of scene capture is real-time."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "scene",
+          "label": "Captured scene",
+          "note": "The scene to be represented."
+        },
+        {
+          "id": "gaussians",
+          "label": "3D Gaussian set",
+          "note": "Millions of explicit scene elements."
+        },
+        {
+          "id": "viewpoint",
+          "label": "New viewpoint",
+          "note": "The requested camera view."
+        },
+        {
+          "id": "rasterizer",
+          "label": "Fast rasterizer",
+          "note": "Renders the Gaussian representation."
+        },
+        {
+          "id": "image",
+          "label": "Novel-view image",
+          "note": "A real-time synthesized view."
+        }
+      ],
+      "edges": [
+        {
+          "from": "scene",
+          "to": "gaussians",
+          "label": "represented as"
+        },
+        {
+          "from": "gaussians",
+          "to": "rasterizer",
+          "label": ""
+        },
+        {
+          "from": "viewpoint",
+          "to": "rasterizer",
+          "label": ""
+        },
+        {
+          "from": "rasterizer",
+          "to": "image",
+          "label": "renders"
+        }
+      ],
+      "caption": "An explicit Gaussian scene representation and a requested viewpoint feed fast rasterization to produce a new image."
+    }
+  },
   "related": [
     "robotics",
     "view-synthesis",

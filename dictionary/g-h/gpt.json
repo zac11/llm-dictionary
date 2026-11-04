@@ -2,13 +2,116 @@
   "term": "GPT",
   "letter": "G",
   "category": "Architecture",
-  "type": "concept",
+  "type": "architecture",
   "aka": [
     "Generative Pre-trained Transformer"
   ],
   "definition": "The family of decoder-only Transformer language models introduced by OpenAI that generate text left to right.",
   "details": "GPT established the recipe that dominates modern LLMs: pre-train an autoregressive Transformer on a large corpus to predict the next token, then adapt it. The original paper showed that generative pre-training plus discriminative fine-tuning beat prior task-specific models; later generations (GPT-2, GPT-3, GPT-4) scaled the same idea into chat assistants and tool-using agents.",
-  "story": "Think of a jazz musician who has heard so many solos that a new one simply falls out of their fingers. Given a starting line, the machine imagines what comes next — a word, a note, a patch of a picture. It makes new things by recombining everything it has ever seen. Creation, here, is memory recombined at speed. That next-word, next-stroke magic is GPT.",
+  "explainer": {
+    "lead": "GPT is a family of language models that learn by predicting the next piece of text, then continue that process to write one token at a time. Its combination of large-scale pre-training and later adaptation became a foundation for modern chat assistants and tool-using agents.",
+    "tiers": {
+      "eli5": "GPT is like someone playing a giant game of guessing the next word. After practising on a huge collection of writing, it can keep adding one likely piece after another to answer questions or write text.",
+      "practitioner": "GPT-style systems use a decoder-only Transformer trained autoregressively on a large corpus, then adapt the pre-trained model for the intended use. Generation proceeds left to right, with each new token conditioned on the existing sequence. GPT-2, GPT-3, and GPT-4 show how this approach was scaled into chat assistants and tool-using agents.",
+      "paperLevel": "For tokens x_1 ... x_T, the autoregressive objective factorizes the sequence probability as p(x) = product over t of p(x_t | x_<t), using a decoder-only Transformer. The original GPT work paired generative pre-training on a large corpus with discriminative fine-tuning and outperformed earlier task-specific models. Each prediction is conditioned on preceding tokens rather than future tokens."
+    },
+    "example": "Given the prefix “The cat sat on the”, the model predicts a next token such as “mat”. It then adds that token to the sequence and uses the longer prefix to predict what comes next.",
+    "usedIn": [
+      {
+        "name": "Chat assistants",
+        "detail": "Later GPT generations scaled next-token pre-training into conversational systems.",
+        "url": ""
+      },
+      {
+        "name": "Tool-using agents",
+        "detail": "Later GPT generations extended the same approach to agents that use tools.",
+        "url": ""
+      },
+      {
+        "name": "Discriminative language tasks",
+        "detail": "The original work fine-tuned the generatively pre-trained model for specific tasks.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Large corpus: supplies text for generative pre-training.",
+        "detail": ""
+      },
+      {
+        "name": "Decoder-only Transformer: models each token from the tokens before it.",
+        "detail": ""
+      },
+      {
+        "name": "Next-token objective: provides the autoregressive training signal.",
+        "detail": ""
+      },
+      {
+        "name": "Adaptation stage: adjusts the pre-trained model for later tasks or uses.",
+        "detail": ""
+      }
+    ],
+    "flow": [
+      "Pre-train the Transformer on a large text corpus.",
+      "At each position, predict the next token from the preceding tokens.",
+      "Adapt the pre-trained model; the original work used discriminative fine-tuning.",
+      "Generate text by repeatedly appending a predicted token and predicting again."
+    ],
+    "origin": "OpenAI introduced GPT as a decoder-only Transformer language model. The original paper showed that generative pre-training followed by discriminative fine-tuning could beat earlier task-specific models.",
+    "whyItMatters": "GPT established a reusable recipe: learn broadly through next-token prediction, then adapt the resulting model. Scaling that recipe across later generations helped shape modern large language models and their uses.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "corpus",
+          "label": "Large text corpus",
+          "note": "Text used for generative pre-training."
+        },
+        {
+          "id": "objective",
+          "label": "Next-token prediction",
+          "note": "Learn each token from preceding tokens."
+        },
+        {
+          "id": "transformer",
+          "label": "Decoder-only Transformer",
+          "note": "The pre-trained autoregressive model."
+        },
+        {
+          "id": "adaptation",
+          "label": "Model adaptation",
+          "note": "Fine-tuning in the original work."
+        },
+        {
+          "id": "generation",
+          "label": "Left-to-right text",
+          "note": "Repeatedly append predicted tokens."
+        }
+      ],
+      "edges": [
+        {
+          "from": "corpus",
+          "to": "objective",
+          "label": "training text"
+        },
+        {
+          "from": "objective",
+          "to": "transformer",
+          "label": "pre-trains"
+        },
+        {
+          "from": "transformer",
+          "to": "adaptation",
+          "label": "then"
+        },
+        {
+          "from": "adaptation",
+          "to": "generation",
+          "label": "produces"
+        }
+      ],
+      "caption": "GPT pre-trains on next-token prediction, adapts the resulting Transformer, and generates text one token at a time."
+    }
+  },
   "related": [
     "transformer",
     "activation-function",

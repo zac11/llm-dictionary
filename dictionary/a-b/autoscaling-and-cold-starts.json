@@ -5,6 +5,112 @@
   "type": "concept",
   "definition": "Matching GPU capacity to traffic.",
   "details": "Matching GPU capacity to traffic. LLM autoscaling is hard: model loading takes minutes (cold start), GPUs are scarce and expensive, and load is spiky, hence over-provisioning, model warm pools, serverless GPU platforms, and scale-to-zero tradeoffs.",
+  "explainer": {
+    "lead": "Autoscaling changes the amount of GPU capacity serving an LLM as demand rises and falls. It matters because responding too slowly leaves users waiting, while keeping enough hardware ready for every burst can leave costly GPUs idle.",
+    "tiers": {
+      "eli5": "Imagine a food stand that can open more counters when its queue grows. Opening a counter takes a while, so the first people in a sudden rush still have to wait. Keeping counters open all day avoids that wait but wastes money when nobody is hungry.",
+      "practitioner": "Engineers match GPU serving capacity to traffic, using over-provisioning or warm pools when bursts justify idle capacity, and scale-to-zero when cost savings matter more than startup latency. Serverless GPU platforms can automate provisioning, but minutes-long model loads, GPU scarcity, and spiky demand still create queues or excess cost.",
+      "paperLevel": "Let D(t) be offered inference load and C(t) serving capacity at time t; autoscaling adjusts C(t) toward D(t), subject to costly, scarce GPUs and a model-loading delay L that can last minutes. Warm pools and over-provisioning trade idle-capacity cost for lower cold-start exposure, while scale-to-zero removes idle replicas but reintroduces that delay when demand returns."
+    },
+    "example": "An LLM API scales to zero during a quiet night. When a morning burst arrives, new capacity needs minutes to load the model, so early requests queue. A warm pool could have answered sooner, but it would have consumed resources while traffic was low.",
+    "usedIn": [
+      {
+        "name": "LLM inference services",
+        "detail": "Adjust GPU capacity as request traffic rises and falls.",
+        "url": ""
+      },
+      {
+        "name": "Serverless GPU platforms",
+        "detail": "Provide on-demand capacity with scale-to-zero and cold-start tradeoffs.",
+        "url": ""
+      },
+      {
+        "name": "Bursty model-serving workloads",
+        "detail": "Use warm pools or over-provisioning to prepare for sudden load.",
+        "url": ""
+      }
+    ],
+    "intuition": "The goal is to have enough serving capacity when requests arrive without paying for idle GPUs when they do not. The difficulty is that capacity cannot always appear immediately: loading a model can take minutes.",
+    "howItWorks": [
+      "Observe incoming LLM traffic and current serving capacity.",
+      "Add GPU capacity when demand rises and remove it when demand falls.",
+      "Load the model onto new capacity before it can serve requests.",
+      "Choose among idle over-provisioning, warm pools, or scale-to-zero to balance latency and cost."
+    ],
+    "whyItMatters": "Autoscaling directly affects both user-visible delays and GPU spending. Cold starts and scarce GPUs mean that simply requesting more capacity cannot guarantee instant service during a traffic spike.",
+    "misconceptions": [
+      "Autoscaling is not instant: a scaling decision does not eliminate minutes of model-loading time.",
+      "Scale-to-zero is not free of latency costs: returning demand can trigger a cold start.",
+      "A warm pool avoids some startup delays but does not remove the cost of keeping capacity ready."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "traffic",
+          "label": "Incoming traffic",
+          "note": "Spiky LLM request load"
+        },
+        {
+          "id": "autoscaler",
+          "label": "Autoscaler",
+          "note": "Matches capacity to demand"
+        },
+        {
+          "id": "gpus",
+          "label": "GPU capacity",
+          "note": "Scarce and expensive"
+        },
+        {
+          "id": "loading",
+          "label": "Model loading",
+          "note": "Minutes-long cold start"
+        },
+        {
+          "id": "warm-pool",
+          "label": "Warm pool",
+          "note": "Capacity kept ready"
+        },
+        {
+          "id": "service",
+          "label": "LLM service",
+          "note": "Serves incoming requests"
+        }
+      ],
+      "edges": [
+        {
+          "from": "traffic",
+          "to": "autoscaler",
+          "label": "demand"
+        },
+        {
+          "from": "autoscaler",
+          "to": "gpus",
+          "label": "scales"
+        },
+        {
+          "from": "gpus",
+          "to": "loading",
+          "label": "provisions"
+        },
+        {
+          "from": "loading",
+          "to": "service",
+          "label": "becomes ready"
+        },
+        {
+          "from": "warm-pool",
+          "to": "service",
+          "label": "ready capacity"
+        },
+        {
+          "from": "traffic",
+          "to": "service",
+          "label": "requests"
+        }
+      ],
+      "caption": "Autoscaling provisions GPU capacity for changing traffic, with cold starts on the loading path and warm pools offering a readier but costlier alternative."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

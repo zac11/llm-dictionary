@@ -8,6 +8,138 @@
   ],
   "definition": "AI applied to advertising technology — targeting, bidding, creative optimization, and attribution.",
   "details": "AI applied to advertising technology — targeting, bidding, creative optimization, and attribution.",
+  "explainer": {
+    "lead": "AI + adtech means using machine learning to make advertising decisions, such as who should see an ad, how much to bid, which creative to show, and which outcomes to credit to a campaign. It matters because these choices happen repeatedly and at large scale, where small prediction errors can affect both spending and results.",
+    "tiers": {
+      "eli5": "Imagine a shop helper choosing which poster to show each passerby and how much the shop should pay to display it. AI + adtech is a computer version of that helper: it learns from past responses, picks an ad, and checks what happened afterward. The aim is to spend the advertising budget more usefully, not simply to show more ads.",
+      "practitioner": "In practice, models use audience, context, creative, and outcome data to support targeting, auction bidding, creative selection, and attribution. Teams typically connect predictions to campaign constraints and evaluate changes against business outcomes rather than clicks alone. Common pitfalls include feedback loops, shifting user behavior, and treating attributed conversions as proof that an ad caused them.",
+      "paperLevel": "A common formulation estimates p(response | user, context, creative), then uses that estimate to select an audience, creative, or bid; bidding can be framed as optimizing expected campaign value subject to budget constraints. Attribution assigns outcome credit across ad exposures, but observational exposure and response data do not by themselves establish causality."
+    },
+    "example": "An online shop tests two headlines for the same product. The system predicts which placements are likely to produce valuable responses, bids in those placements, and chooses between the headlines; subsequent clicks and purchases then inform later decisions and outcome attribution.",
+    "usedIn": [
+      {
+        "name": "Online ad auctions",
+        "detail": "Predicted response and campaign value can inform automated bids.",
+        "url": ""
+      },
+      {
+        "name": "Digital campaign targeting",
+        "detail": "Models help decide which audiences and contexts should receive an ad.",
+        "url": ""
+      },
+      {
+        "name": "Creative optimization",
+        "detail": "Response data can guide which advertising variant is shown.",
+        "url": ""
+      },
+      {
+        "name": "Marketing attribution",
+        "detail": "Models assign outcome credit across advertising touchpoints.",
+        "url": ""
+      }
+    ],
+    "intuition": "Advertising involves many repeated choices under uncertainty. AI turns past signals and outcomes into predictions that guide those choices, then uses new outcomes to update the process.",
+    "howItWorks": [
+      "Collect available audience, context, creative, bid, and outcome signals.",
+      "Estimate the likelihood or value of a response for a possible ad placement.",
+      "Use the estimates to select targeting, bidding, and creative decisions.",
+      "Deliver the ad and record responses such as clicks or purchases.",
+      "Feed outcomes back into optimization and attribution, while checking for changing conditions and misleading feedback."
+    ],
+    "whyItMatters": "These systems can automate high-volume decisions and connect advertising spend to measured outcomes. Their value depends on prediction quality, campaign constraints, and whether the measured outcomes reflect the advertiser's real goals.",
+    "misconceptions": [
+      "It is not only generative AI writing ad copy; prediction and decision-making are central parts.",
+      "A higher attributed conversion count does not necessarily mean the ads caused all those conversions.",
+      "Optimizing clicks does not automatically optimize purchases or overall campaign value."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "signals",
+          "label": "Campaign signals",
+          "note": "Audience, context, and creative data"
+        },
+        {
+          "id": "models",
+          "label": "Response models",
+          "note": "Estimate response likelihood or value"
+        },
+        {
+          "id": "targeting",
+          "label": "Targeting",
+          "note": "Select placements and audiences"
+        },
+        {
+          "id": "bidding",
+          "label": "Bidding",
+          "note": "Choose auction bids"
+        },
+        {
+          "id": "creative",
+          "label": "Creative selection",
+          "note": "Choose an advertising variant"
+        },
+        {
+          "id": "delivery",
+          "label": "Ad delivery",
+          "note": "Serve the selected advertisement"
+        },
+        {
+          "id": "outcomes",
+          "label": "Outcomes and attribution",
+          "note": "Measure responses and assign credit"
+        }
+      ],
+      "edges": [
+        {
+          "from": "signals",
+          "to": "models",
+          "label": "features"
+        },
+        {
+          "from": "models",
+          "to": "targeting",
+          "label": "predictions"
+        },
+        {
+          "from": "models",
+          "to": "bidding",
+          "label": "value estimates"
+        },
+        {
+          "from": "models",
+          "to": "creative",
+          "label": "predictions"
+        },
+        {
+          "from": "targeting",
+          "to": "delivery",
+          "label": ""
+        },
+        {
+          "from": "bidding",
+          "to": "delivery",
+          "label": ""
+        },
+        {
+          "from": "creative",
+          "to": "delivery",
+          "label": ""
+        },
+        {
+          "from": "delivery",
+          "to": "outcomes",
+          "label": "responses"
+        },
+        {
+          "from": "outcomes",
+          "to": "models",
+          "label": "feedback"
+        }
+      ],
+      "caption": "Predictions guide targeting, bidding, and creative selection; measured outcomes provide feedback for later decisions."
+    }
+  },
   "related": [
     "attribution"
   ],
