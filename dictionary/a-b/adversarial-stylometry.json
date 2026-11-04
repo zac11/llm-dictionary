@@ -5,7 +5,124 @@
   "type": "concept",
   "definition": "Adversarial stylometry is the practice of altering writing style to reduce the potential for stylometry to discover the author's identity or their characteristics.",
   "details": "This task is also known as authorship obfuscation or authorship anonymisation. Stylometry poses a significant privacy challenge in its ability to unmask anonymous authors or to link pseudonyms to an author's other identities, which, for example, creates difficulties for whistleblowers, activists, and hoaxers and fraudsters. The privacy risk is expected to grow as machine learning techniques and text corpora develop. All adversarial stylometry shares the core idea of faithfully paraphrasing the source text so that the meaning is unchanged but the stylistic signals are obscured. Such a faithful paraphrase is an adversarial example for a stylometric classifier. Several broad approaches to this exist, with some overlap: imitation, substituting the author's own style for another's; translation, applying machine translation with the hope that this eliminates characteristic style in the source text; and obfuscation, deliberately modifying a text's style to make it not resemble the author's own. Manually obscuring style is possible, but laborious; in some circumstances, it is preferable or necessary. Automated tooling, either semi- or fully-automatic, could assist an author. How best to perform the task and the design of such tools is an open research question. While some approaches have been shown to be able to defeat particular stylometric analyses, particularly those that do not account for the potential of adversariality, establishing safety in the face of unknown analyses is an issue. Ensuring the faithfulness of the paraphrase is a critical challenge for automated tools. It is uncertain if the practice of adversarial stylometry is detectable in itself. Some studies have found that particular methods produced signals in the output text, but a stylometrist who is uncertain of what methods may have been used may not be able to reliably detect them.",
-  "story": "Think of a lightbulb moment: the idea was always there, but someone had to point a finger at it. Behind the jargon is an idea you could explain to a friend over coffee. At its heart it is a simple notion, once you strip away the fancy name. Once you see it, you cannot unsee it. And that idea, made concrete, is Adversarial stylometry.",
+  "explainer": {
+    "lead": "Adversarial stylometry is the craft of rewriting text to hide who wrote it. As machines get better at fingerprinting prose—linking pseudonymous posts to real identities, or guessing a writer's gender, age, or race—this practice offers a defense for anyone who needs anonymity.",
+    "tiers": {
+      "eli5": "Imagine you have a secret diary, but your handwriting is so unique that anyone who finds it knows it's yours. Adversarial stylometry is like asking a friend to copy your diary in their own handwriting, or running it through a translator and back so the words stay the same but the style changes. The goal is simple: keep your secrets secret by hiding your writing 'fingerprint.'",
+      "practitioner": "Engineers implement adversarial stylometry through three main strategies: imitation (style transfer to match another author), translation (round-trip machine translation to scrub style), or obfuscation (metric-guided rewriting to reduce similarity to the author's corpus). Automated tools use encoder–decoder architectures or rule-based paraphrasing, sometimes with feedback from a stylometric classifier to generate adversarial examples. Pitfalls include reintroducing idiosyncrasies during manual correction, leaving translation artifacts that signal tampering, and ensuring semantic faithfulness—especially with chained translation or complex texts.",
+      "paperLevel": "Adversarial stylometry seeks a faithful paraphrase x' of source text x such that a stylometric classifier f(x) → (identity, characteristics) yields f(x') ≠ f(x), while preserving meaning: semantics(x) ≈ semantics(x'). Rao & Rohatgi (2000) identified machine translation as an early approach; Brennan, Afroz & Greenstadt (2012) provided the first evaluation on actual texts. Key limits include: safety against unknown analyses is unproven; automated faithfulness remains unsolved; and detectability of the practice itself is uncertain, with some methods leaving recoverable traces (e.g., chain-translation artifacts per Wang, Juola & Riddell 2022)."
+    },
+    "example": "A whistleblower writes a memo exposing corporate fraud. Their natural prose uses short sentences, frequent em-dashes, and the phrase 'in point of fact'—all flagged by a stylometric system. They run the memo through round-trip translation: English → German → French → English. The output keeps the allegations intact but replaces 'in point of fact' with 'actually,' normalizes sentence length, and removes the dashes. A later audit shows occasional short sentences and misspellings survived verbatim, so the whistleblower manually edits those remaining traces before submission.",
+    "usedIn": [
+      {
+        "name": "Whistleblower communications",
+        "detail": "Journalists and sources use style modification to prevent attribution of leaked documents.",
+        "url": ""
+      },
+      {
+        "name": "Pseudonymous activism",
+        "detail": "Activists maintain multiple identities without stylometric linkage across personas.",
+        "url": ""
+      },
+      {
+        "name": "Blind audition systems",
+        "detail": "Authors or agents mask characteristics like gender or race to prevent algorithmic bias in evaluation.",
+        "url": ""
+      },
+      {
+        "name": "Literary forgery detection research",
+        "detail": "Corpora like the International Imitation Hemingway Competition test stylometric robustness.",
+        "url": ""
+      }
+    ],
+    "intuition": "Every writer has habits—favorite words, sentence rhythms, punctuation tics—that act like a fingerprint. Adversarial stylometry deliberately breaks those habits while keeping the message intact, like a spy changing their walk to avoid recognition.",
+    "howItWorks": [
+      "The author selects a strategy: imitate another writer's style, translate the text through other languages to scrub patterns, or obfuscate by deliberately altering stylistic features.",
+      "The text is rewritten or transformed, with automated or manual effort, targeting preservation of meaning while modifying stylometric signals such as vocabulary choice, syntax, or formatting.",
+      "If using automated tools with feedback, the system iteratively searches for paraphrases that evade a stylometric classifier—treating the successful output as an adversarial example.",
+      "The author verifies faithfulness, checking that core meaning remains and that no new identifying artifacts (translation errors, incomplete imitation traces) were introduced.",
+      "The resulting text is published or transmitted, with reduced risk of stylometric deanonymization or characteristic inference."
+    ],
+    "whyItMatters": "As machine learning and text corpora expand, stylometric identification threatens pseudonymity for whistleblowers, activists, and ordinary users alike. Adversarial stylometry provides a technical countermeasure, but its effectiveness against unknown future analyses and its own detectability remain open questions—making it both urgently needed and fundamentally uncertain.",
+    "misconceptions": [
+      "That machine translation alone reliably anonymizes: chained translation can leave identifying artifacts and alter meaning significantly.",
+      "That any style change suffices: incomplete imitation or inconsistent obfuscation can create detectable signals of tampering.",
+      "That automated tools are ready for use: ensuring faithfulness and safety against unknown classifiers remains unsolved."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "source",
+          "label": "Original text",
+          "note": "Contains author's stylistic fingerprint"
+        },
+        {
+          "id": "strategy",
+          "label": "Choose strategy",
+          "note": "Imitation, translation, or obfuscation"
+        },
+        {
+          "id": "transform",
+          "label": "Transform text",
+          "note": "Manual rewrite, MT pipeline, or style transfer model"
+        },
+        {
+          "id": "feedback",
+          "label": "Classifier check",
+          "note": "Optional: test against stylometric system"
+        },
+        {
+          "id": "verify",
+          "label": "Verify faithfulness",
+          "note": "Ensure meaning preserved, no new artifacts"
+        },
+        {
+          "id": "output",
+          "label": "Anonymized text",
+          "note": "Same content, obscured style"
+        }
+      ],
+      "edges": [
+        {
+          "from": "source",
+          "to": "strategy",
+          "label": "analyze risk"
+        },
+        {
+          "from": "strategy",
+          "to": "transform",
+          "label": "apply method"
+        },
+        {
+          "from": "transform",
+          "to": "feedback",
+          "label": "optional loop"
+        },
+        {
+          "from": "feedback",
+          "to": "transform",
+          "label": "revise if flagged"
+        },
+        {
+          "from": "transform",
+          "to": "verify",
+          "label": "check output"
+        },
+        {
+          "from": "verify",
+          "to": "output",
+          "label": "release if clean"
+        }
+      ],
+      "caption": "The adversarial stylometry pipeline: from original text to anonymized output through strategy selection, transformation, optional adversarial testing, and faithfulness verification."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Adversarial stylometry",
+        "url": "https://en.wikipedia.org/wiki/Adversarial_stylometry"
+      }
+    ]
+  },
   "related": [
     "stylometry",
     "adversarial-machine-learning",

@@ -5,7 +5,98 @@
   "type": "concept",
   "definition": "Backpropagation through time (BPTT) is a gradient-based technique for training certain types of recurrent neural networks, such as Elman networks.",
   "details": "The algorithm was independently derived by numerous researchers.",
-  "story": "Imagine teaching a friend to shoot a basketball. They miss, and you walk them backwards through the shot — elbow, wrist, release — to find what needs fixing. It is the same loop you use to learn anything: try, miss, correct, try again. Underneath all the magic is a patient process of small improvements. It is learning from every miss instead of repeating the same mistake. That steady, miss-by-miss improvement is Backpropagation through time.",
+  "explainer": {
+    "lead": "Backpropagation through time, or BPTT, lets a recurrent neural network learn from mistakes made across a sequence. It matters because a network that reuses the same parameters at every step needs credit and blame assigned not just to the latest output, but to earlier steps too.",
+    "tiers": {
+      "eli5": "Imagine practicing a short dance while watching a recording of the whole routine. You can notice that an early wrong step caused trouble later, then adjust your practice so the whole sequence improves. BPTT gives a recurrent network a similar way to learn from errors spread across earlier and later steps.",
+      "practitioner": "Apply BPTT by unrolling the recurrent computation for a sequence and using gradient-based optimization on the parameters shared across its steps. For long sequences, truncated BPTT limits how far back gradients are propagated, reducing computation and memory but also limiting the temporal dependencies directly captured by an update.",
+      "paperLevel": "For an unrolled recurrent computation with shared parameters θ and total loss L, BPTT computes dL/dθ by applying the chain rule through the time-indexed states and summing parameter-gradient contributions across steps. Exact BPTT requires retaining the unrolled computation, while truncation reduces that cost at the expense of gradient information from earlier steps. The technique was independently derived by numerous researchers."
+    },
+    "example": "Suppose a recurrent network reads the letters c, a, and t in order and makes a prediction after each letter. If its predictions are poor, BPTT calculates gradients through all three steps and combines their contributions before updating the parameters reused at every step.",
+    "usedIn": [
+      {
+        "name": "Elman networks",
+        "detail": "BPTT provides gradient-based training for this type of recurrent network.",
+        "url": ""
+      },
+      {
+        "name": "Recurrent sequence prediction",
+        "detail": "Errors from outputs at different sequence positions can guide updates to the same recurrent parameters.",
+        "url": ""
+      }
+    ],
+    "intuition": "A recurrent network is like the same small decision-maker being used again and again as a sequence unfolds. BPTT looks at the resulting chain of decisions so each update can reflect how earlier activity contributed to later errors.",
+    "howItWorks": [
+      "Run the recurrent network through the sequence, keeping its step-by-step computations.",
+      "Treat the steps as an unrolled computation whose parameters are shared across time.",
+      "Measure the loss from the outputs produced during the sequence.",
+      "Use the chain rule to send gradient information backward through the steps.",
+      "Combine the gradient contributions and update the shared parameters."
+    ],
+    "whyItMatters": "It makes gradient-based training possible for recurrent networks such as Elman networks by connecting sequence-level errors to the parameters that produced them. Without that connection, the network could not systematically adjust its behavior across time.",
+    "misconceptions": [
+      "It is not a different kind of recurrent network; it is a way to train one.",
+      "The network is not given separate parameters for every time step: the recurrent parameters are shared.",
+      "Truncated BPTT does not propagate exact gradients through the entire sequence."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "sequence",
+          "label": "Input sequence",
+          "note": "Inputs arrive step by step."
+        },
+        {
+          "id": "steps",
+          "label": "Unrolled recurrent steps",
+          "note": "The same parameters are reused across time."
+        },
+        {
+          "id": "outputs",
+          "label": "Step outputs",
+          "note": "The network produces sequence predictions."
+        },
+        {
+          "id": "loss",
+          "label": "Sequence loss",
+          "note": "Output errors are measured."
+        },
+        {
+          "id": "update",
+          "label": "Parameter update",
+          "note": "Combined gradients adjust the shared parameters."
+        }
+      ],
+      "edges": [
+        {
+          "from": "sequence",
+          "to": "steps",
+          "label": "forward pass"
+        },
+        {
+          "from": "steps",
+          "to": "outputs",
+          "label": "predictions"
+        },
+        {
+          "from": "outputs",
+          "to": "loss",
+          "label": "errors"
+        },
+        {
+          "from": "loss",
+          "to": "steps",
+          "label": "gradients"
+        },
+        {
+          "from": "steps",
+          "to": "update",
+          "label": "combined gradients"
+        }
+      ],
+      "caption": "BPTT unrolls recurrent computation, then propagates loss gradients back through its time steps to update shared parameters."
+    }
+  },
   "related": [
     "backpropagation",
     "backpropagation-through-structure",

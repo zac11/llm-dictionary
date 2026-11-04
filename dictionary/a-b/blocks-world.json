@@ -5,7 +5,96 @@
   "type": "concept",
   "definition": "The blocks world is a planning domain in artificial intelligence.",
   "details": "It consists of a set of wooden blocks of various shapes and colors sitting on a table. The goal is to build one or more vertical stacks of blocks. Only one block may be moved at a time: it may either be placed on the table or placed atop another block. Because of this, any blocks that are, at a given time, under another block cannot be moved. Moreover, some kinds of blocks cannot have other blocks stacked on top of them. The simplicity of this toy world lends itself readily to classical symbolic artificial intelligence approaches, in which the world is modeled as a set of abstract symbols which may be reasoned about.",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. And that idea, made concrete, is Blocks world.",
+  "explainer": {
+    "lead": "Blocks world is a toy planning problem about moving wooden blocks on a table to build stacks. Its simple, strict rules make it a useful setting for testing how symbolic AI systems reason about actions and goals.",
+    "tiers": {
+      "eli5": "Imagine wooden blocks on a table, and you want to stack them in a particular way. You can move only one block at a time, and you cannot grab a block with another block sitting on it. The challenge is to figure out the right order of moves.",
+      "practitioner": "Represent each arrangement symbolically, generate actions that move one uncovered block to the table or onto a permitted block, and search for a sequence that reaches the target stacks. Encode the movement and stacking restrictions explicitly; allowing a buried block to move produces invalid plans.",
+      "paperLevel": "A state is an arrangement of blocks on a table, and an action moves exactly one currently uncovered block either to the table or onto another block, subject to stacking restrictions. The goal predicate requires one or specified vertical stacks. The domain is deliberately simple and represents the world through abstract symbols rather than physical detail."
+    },
+    "example": "Start with block C on block A and block B on the table. To put B on C, first move C onto the table, then place B on C; A also becomes movable as soon as C is lifted.",
+    "usedIn": [
+      {
+        "name": "AI planning",
+        "detail": "A compact domain for finding sequences of block-moving actions that achieve a stacking goal.",
+        "url": ""
+      },
+      {
+        "name": "Classical symbolic AI",
+        "detail": "A setting where abstract symbols describe the world and support reasoning about legal actions.",
+        "url": ""
+      }
+    ],
+    "intuition": "The puzzle is less about stacking blocks than about choosing moves in the right order. A block may need to be cleared before it can move, so every action changes which later actions are possible.",
+    "howItWorks": [
+      "Describe the blocks and their current arrangement with symbols.",
+      "Identify blocks with nothing on top of them.",
+      "Move one such block to the table or onto another permitted block.",
+      "Update the arrangement and repeat until the required stacks exist."
+    ],
+    "whyItMatters": "It turns the essentials of planning—states, legal actions, and goals—into a small, easy-to-describe problem. That simplicity makes it well suited to classical symbolic reasoning.",
+    "misconceptions": [
+      "It is not a detailed simulation of physical block handling; the world is modeled abstractly.",
+      "A plan cannot move several blocks at once or directly move a block trapped beneath another."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "state",
+          "label": "Block arrangement",
+          "note": "Symbolic description of the current state"
+        },
+        {
+          "id": "moves",
+          "label": "Legal moves",
+          "note": "Actions for uncovered blocks"
+        },
+        {
+          "id": "action",
+          "label": "Move one block",
+          "note": "Place it on the table or another block"
+        },
+        {
+          "id": "next",
+          "label": "Updated state",
+          "note": "A new arrangement results"
+        },
+        {
+          "id": "goal",
+          "label": "Target stacks",
+          "note": "Planning stops when the goal holds"
+        }
+      ],
+      "edges": [
+        {
+          "from": "state",
+          "to": "moves",
+          "label": ""
+        },
+        {
+          "from": "moves",
+          "to": "action",
+          "label": "choose"
+        },
+        {
+          "from": "action",
+          "to": "next",
+          "label": ""
+        },
+        {
+          "from": "next",
+          "to": "state",
+          "label": "repeat"
+        },
+        {
+          "from": "next",
+          "to": "goal",
+          "label": "check"
+        }
+      ],
+      "caption": "Planning repeatedly selects a legal block move, updates the symbolic state, and checks the stacking goal."
+    }
+  },
   "related": [
     "cruel-world-of-dreams-and-fears",
     "genie-world-model",

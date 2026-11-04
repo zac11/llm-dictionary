@@ -5,7 +5,118 @@
   "type": "concept",
   "definition": "Protecting AI systems and their inputs, models, tools and data from attacks and misuse.",
   "details": "AI security spans prompt injection, model theft, data poisoning, supply-chain risk and abuse of agents with access to real systems. Frameworks such as the OWASP Top 10 for LLM Applications catalog the most common failure modes and defenses.",
-  "story": "Picture guardrails on a mountain road — not there to slow you down on the straightaways, but to keep you from flying off the cliff. It is the habit of asking, before every launch, what could go wrong — and then doing something about it. Think of it as the quiet rule that a tool should be useful without being dangerous. It is the difference between “it works” and “it is safe to put in front of people.” That deliberate caution is AI Security.",
+  "explainer": {
+    "lead": "AI security is the work of keeping AI systems, the information they handle, and the tools they control safe from attacks and misuse. It matters because a weakness can affect not only a model’s answers but also real systems an AI agent is allowed to use.",
+    "tiers": {
+      "eli5": "An AI system is a bit like a helpful assistant with keys to several rooms. AI security means stopping people from tricking the assistant, stealing its secrets, messing with what it learned, or making it open doors it should not open. The assistant needs protection, and so do its instructions, information, and tools.",
+      "practitioner": "Teams apply AI security across inputs, models, training data, dependencies, and connected tools rather than treating the model as an isolated component. Common work includes testing for prompt injection and data poisoning, protecting against model theft, reviewing supply-chain risk, and restricting what agents can do in real systems. The OWASP Top 10 for LLM Applications can help structure reviews, but a checklist alone does not remove the risk from powerful tool access.",
+      "paperLevel": "For an AI system S = {inputs, models, tools, data}, AI security concerns mechanisms that protect S from attacks and misuse. Its scope includes prompt injection, model theft, data poisoning, supply-chain compromise, and abuse of agent capabilities. The security boundary therefore extends beyond the model to its data flows, dependencies, and effects on external systems."
+    },
+    "example": "A support assistant can read customer messages and update accounts through an internal tool; a malicious message tries prompt injection to make it misuse that access. AI security addresses both the hostile input and the assistant’s tool permissions, rather than relying only on telling the model to ignore attacks.",
+    "usedIn": [
+      {
+        "name": "LLM applications",
+        "detail": "Protecting prompts, model behavior, and application data from attacks such as prompt injection.",
+        "url": ""
+      },
+      {
+        "name": "AI agents",
+        "detail": "Reducing the chance that agents with access to real systems are manipulated into harmful actions.",
+        "url": ""
+      },
+      {
+        "name": "Model training pipelines",
+        "detail": "Guarding training data against poisoning and models against theft.",
+        "url": ""
+      },
+      {
+        "name": "AI software supply chains",
+        "detail": "Reviewing risks introduced through the components used to build and operate AI systems.",
+        "url": ""
+      }
+    ],
+    "intuition": "Securing an AI system means protecting the whole path from input to action, not just the model in the middle. Inputs, learned behavior, data, software components, and tool permissions can all become routes for attack or misuse.",
+    "howItWorks": [
+      "Map the system’s inputs, models, tools, and data.",
+      "Identify threats such as prompt injection, theft, poisoning, and supply-chain compromise.",
+      "Add defenses around the model and its connected components.",
+      "Limit the actions available to agents that access real systems.",
+      "Use frameworks such as the OWASP Top 10 for LLM Applications to review failure modes and defenses."
+    ],
+    "whyItMatters": "AI systems can handle valuable models and data, while agents can turn manipulated instructions into actions on real systems. Security work reduces the opportunities for these attacks and limits what an attacker can reach through the AI system.",
+    "misconceptions": [
+      "AI security is not only about protecting the model itself.",
+      "Prompt injection is one concern, not the whole field.",
+      "A safe-looking model response does not by itself secure connected tools and data."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "inputs",
+          "label": "User inputs",
+          "note": "May carry prompt injection."
+        },
+        {
+          "id": "app",
+          "label": "AI application",
+          "note": "Connects components and permissions."
+        },
+        {
+          "id": "model",
+          "label": "Model",
+          "note": "Can be attacked or stolen."
+        },
+        {
+          "id": "data",
+          "label": "Training data",
+          "note": "Can be poisoned."
+        },
+        {
+          "id": "tools",
+          "label": "Connected tools",
+          "note": "Give agents access to real systems."
+        },
+        {
+          "id": "defenses",
+          "label": "Security defenses",
+          "note": "Protect components and constrain misuse."
+        }
+      ],
+      "edges": [
+        {
+          "from": "inputs",
+          "to": "app",
+          "label": "requests"
+        },
+        {
+          "from": "app",
+          "to": "model",
+          "label": "prompts"
+        },
+        {
+          "from": "data",
+          "to": "model",
+          "label": "training"
+        },
+        {
+          "from": "app",
+          "to": "tools",
+          "label": "actions"
+        },
+        {
+          "from": "defenses",
+          "to": "app",
+          "label": "protects"
+        },
+        {
+          "from": "defenses",
+          "to": "tools",
+          "label": "constrains"
+        }
+      ],
+      "caption": "AI security protects the model together with the inputs, data, application, and tools around it."
+    }
+  },
   "related": [
     "ai-supply-chain-security",
     "ai-governance",

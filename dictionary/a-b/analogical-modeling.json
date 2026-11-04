@@ -5,7 +5,124 @@
   "type": "concept",
   "definition": "Analogical modeling (AM) is a formal theory of exemplar based analogical reasoning, proposed by Royal Skousen, professor of Linguistics and English language at Brigham Young University in Provo, Utah.",
   "details": "It is applicable to language modeling and other categorization tasks. Analogical modeling is related to connectionism and nearest neighbor approaches, in that it is data-based rather than abstraction-based; but it is distinguished by its ability to cope with imperfect datasets (such as caused by simulated short term memory limits) and to base predictions on all relevant segments of the dataset, whether near or far. In language modeling, AM has successfully predicted empirically valid forms for which no theoretical explanation was known (see the discussion of Finnish morphology in Skousen et al. 2002).",
-  "story": "Imagine a mathematician who writes every step on paper, reads it back, crosses out a bad line, and starts that line over. Slowing down to think often beats answering fast. Instead of blurting out an answer, the machine talks its way through the problem one step at a time. More time spent reconsidering can be worth more than a bigger model. That loop of draft, check, and revise is Analogical modeling.",
+  "explainer": {
+    "lead": "Analogical modeling is a way to predict a new case by reasoning from stored examples rather than first learning an abstract rule. It matters for language modeling and other categorization tasks because it can use both close and distant evidence and still work with imperfect datasets.",
+    "tiers": {
+      "eli5": "Imagine deciding whether you might like a new snack by remembering snacks you tried before. You consider many ways the new snack resembles those experiences, trust the comparisons that show a consistent pattern, and let one of those past experiences guide your guess. Analogical modeling does something similar with stored cases, giving more weight to larger, reliable patterns.",
+      "practitioner": "Prepare an exemplar table in which each row contains a feature vector and its outcome, then represent each query as an outcome-less vector in the same format. For every query, enumerate supracontexts, filter them by consistency, and sample an outcome through the pointer-based weighting scheme. The main scaling pitfall is generating 2^n supracontexts for n variables, and prediction is probabilistic rather than a single deterministic nearest-neighbor lookup.",
+      "paperLevel": "Proposed by Royal Skousen and detailed in Skousen (2002) and Skousen (2003), AM enumerates 2^n supracontexts for a given context with n variables, excludes heterogeneous supracontexts, and retains an analogical set of consistent views. For n exemplars with n_i supporting outcome i, agreements for that outcome are n_i^2 and disagreements are n_i(n - n_i), while total disagreements are n^2 - sum(n_i^2). Pointer-based selection weights each supracontext in proportion to the square of its size; exhaustive supracontext generation is exponential in the number of variables, although the approach is designed to cope with imperfect datasets."
+    },
+    "example": "In the small example from Skousen (1989), five exemplars have three variables and outcomes e or r: 3 1 0 → e, 0 3 2 → r, 2 1 0 → r, 2 1 2 → r, and 3 1 1 → r. There are n^2 = 25 total pairings; outcome r has 4^2 = 16 agreements and 4(5 - 4) = 4 disagreements, while e has 1 agreement and 4 disagreements.",
+    "usedIn": [
+      {
+        "name": "Language modeling",
+        "detail": "Predicts linguistic forms from exemplars, including empirically valid Finnish morphological forms for which no theoretical explanation was known.",
+        "url": ""
+      },
+      {
+        "name": "Spelling-to-sound tasks",
+        "detail": "A word's letters can form the feature vector, with a phoneme or phone stored as the outcome.",
+        "url": ""
+      },
+      {
+        "name": "Categorization tasks",
+        "detail": "Past categorized cases supply outcomes for new contexts through exemplar-based analogical reasoning.",
+        "url": ""
+      }
+    ],
+    "intuition": "Treat each stored case as evidence about what tends to happen in contexts like the new one. Instead of trusting only the closest match or extracting one general rule, examine every relevant view of the data and favor behavior that remains consistent as the views become more specific.",
+    "howItWorks": [
+      "Store each exemplar as a feature vector together with its outcome.",
+      "For a new given context with n variables, generate 2^n supracontexts by matching different subsets of variables and ignoring the rest.",
+      "Arrange supracontexts by specificity, retain deterministically and non-deterministically homogeneous ones, and exclude heterogeneous ones.",
+      "Link exemplar appearances within the analogical set and randomly follow a pointer, favoring larger supracontexts.",
+      "Use the selected exemplar's outcome as the prediction; each outcome's probability combines the support of its exemplars."
+    ],
+    "whyItMatters": "AM can cope with imperfect datasets, including imperfections caused by simulated short-term memory limits, and can base predictions on all relevant dataset segments whether near or far. In Finnish morphology, it successfully predicted empirically valid forms for which no theoretical explanation was known.",
+    "misconceptions": [
+      "AM is not abstraction-based rule learning: its predictions remain grounded in stored exemplars and consistent supracontexts.",
+      "AM is not ordinary nearest-neighbor lookup: it uses relevant evidence both near and far from the given context.",
+      "A supracontext with several outcomes is not always rejected; it can remain when no more specific subcontext supplies a counterargument."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "dataset",
+          "label": "Exemplar dataset",
+          "note": "Feature vectors paired with known outcomes."
+        },
+        {
+          "id": "query",
+          "label": "Given context",
+          "note": "A new feature vector without an outcome."
+        },
+        {
+          "id": "supracontexts",
+          "label": "Supracontext views",
+          "note": "All 2^n ways to match subsets of variables."
+        },
+        {
+          "id": "filter",
+          "label": "Consistency filter",
+          "note": "Excludes heterogeneous supracontexts."
+        },
+        {
+          "id": "analogical-set",
+          "label": "Analogical set",
+          "note": "Consistent exemplar groups arranged by specificity."
+        },
+        {
+          "id": "selection",
+          "label": "Weighted selection",
+          "note": "Random pointers favor larger supracontexts."
+        },
+        {
+          "id": "outcome",
+          "label": "Predicted outcome",
+          "note": "The outcome of the selected exemplar."
+        }
+      ],
+      "edges": [
+        {
+          "from": "dataset",
+          "to": "supracontexts",
+          "label": "exemplars"
+        },
+        {
+          "from": "query",
+          "to": "supracontexts",
+          "label": "template"
+        },
+        {
+          "from": "supracontexts",
+          "to": "filter",
+          "label": ""
+        },
+        {
+          "from": "filter",
+          "to": "analogical-set",
+          "label": "consistent views"
+        },
+        {
+          "from": "analogical-set",
+          "to": "selection",
+          "label": "pointers"
+        },
+        {
+          "from": "selection",
+          "to": "outcome",
+          "label": ""
+        }
+      ],
+      "caption": "AM compares a new context with stored exemplars through all supracontext views, keeps consistent ones, and probabilistically selects a supporting outcome."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Analogical modeling",
+        "url": "https://en.wikipedia.org/wiki/Analogical_modeling"
+      }
+    ]
+  },
   "related": [
     "empirical-dynamic-modeling",
     "neural-modeling-fields",

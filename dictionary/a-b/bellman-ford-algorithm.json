@@ -5,7 +5,114 @@
   "type": "algorithm",
   "definition": "The Bellman–Ford algorithm is an algorithm that computes shortest paths from a single source vertex to all of the other vertices in a weighted digraph.",
   "details": "It is slower than Dijkstra's algorithm for the same problem, but more versatile, as it is capable of handling graphs in which some of the edge weights are negative numbers. The algorithm was first proposed by Alfonso Shimbel (1955), but is instead named after Richard Bellman and Lester Ford Jr., who published it in 1958 and 1956, respectively. Edward F. Moore also published a variation of the algorithm in 1959, and for this reason it is also sometimes called the Bellman–Ford–Moore algorithm. Negative edge weights are found in various applications of graphs. This is why this algorithm is useful. If a graph contains a \"negative cycle\" (i.e. a cycle whose edges sum to a negative value) that is reachable from the source, then there is no cheapest path: any path that has a point on the negative cycle can be made cheaper by one more walk around the negative cycle. In such a case, the Bellman–Ford algorithm can detect and report the negative cycle.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. That steady, miss-by-miss improvement is Bellman–Ford algorithm.",
+  "explainer": {
+    "lead": "Bellman–Ford finds the cheapest routes from one starting point to every other point in a weighted directed graph. It is slower than Dijkstra’s algorithm, but it can handle negative edge weights and warn when a reachable negative cycle means there is no cheapest route at all.",
+    "tiers": {
+      "eli5": "Imagine finding the cheapest way to travel from your home to every other place on a map. Most trips cost money, but a few might give money back, and Bellman–Ford can still work out the cheapest journeys. If you could keep going around a loop that pays you each time, there would be no final cheapest journey, and the algorithm can spot that problem.",
+      "practitioner": "Use Bellman–Ford for single-source shortest paths in weighted directed graphs when edges may be negative. Initialize the source distance to zero and all others to infinity, relax every edge for |V|−1 passes, then make one more pass to detect an improvable distance. That final improvement indicates a reachable negative cycle; otherwise, the computed distances and predecessor links give the shortest paths. Its main practical drawback is that it is slower than Dijkstra’s algorithm.",
+      "paperLevel": "For a weighted digraph G = (V, E) and source s, Bellman–Ford computes delta(s, v), the minimum path weight from s to each vertex v. It relaxes edges for |V|−1 passes and uses a further relaxation check to detect a negative cycle reachable from s; such a cycle means no minimum-weight path exists for affected vertices. Alfonso Shimbel first proposed the algorithm in 1955. It is named for Richard Bellman and Lester Ford Jr., who published it in 1958 and 1956 respectively, and Edward F. Moore’s 1959 variation leads to the name Bellman–Ford–Moore algorithm."
+    },
+    "example": "Start at A in a graph with edges A→B = 4, A→C = 5, and B→C = −2. The algorithm finds distance 4 to B. It then improves C’s distance from 5 to 2 by taking A→B→C, so the cheapest distances are A = 0, B = 4, and C = 2.",
+    "usedIn": [
+      {
+        "name": "Negative-weight graph problems",
+        "detail": "Finds cheapest single-source routes when some edges reduce the total path cost.",
+        "url": ""
+      },
+      {
+        "name": "Negative-cycle detection",
+        "detail": "Flags reachable cycles that can be traversed repeatedly to make a path cheaper without limit.",
+        "url": ""
+      }
+    ],
+    "goal": "Compute the shortest paths from one source vertex to every other vertex in a weighted directed graph, including graphs with negative edge weights, and report any reachable negative cycle.",
+    "inputs": [
+      "A weighted directed graph",
+      "A single source vertex",
+      "Edge weights that may be negative"
+    ],
+    "outputs": [
+      "The shortest distance from the source to each vertex",
+      "The shortest paths to the other vertices",
+      "A warning if a reachable negative cycle prevents cheapest paths from existing"
+    ],
+    "steps": [
+      "Set the source distance to zero and every other distance to infinity.",
+      "Relax every edge, updating a vertex whenever a cheaper route to it is found.",
+      "Repeat the full relaxation pass |V|−1 times.",
+      "Check all edges once more for a possible distance improvement.",
+      "If an improvement is possible, report a reachable negative cycle.",
+      "Otherwise, return the shortest distances and paths."
+    ],
+    "tradeoffs": [
+      "Handles negative edge weights.",
+      "Slower than Dijkstra’s algorithm for the same problem.",
+      "Detects negative cycles reachable from the source.",
+      "A reachable negative cycle means affected paths have no cheapest solution."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Graph and source",
+          "note": "Weighted digraph with one starting vertex"
+        },
+        {
+          "id": "initialize",
+          "label": "Initialize distances",
+          "note": "Source is zero; all others are infinite"
+        },
+        {
+          "id": "relax",
+          "label": "Relax all edges",
+          "note": "Repeat for |V|−1 passes"
+        },
+        {
+          "id": "check",
+          "label": "Check once more",
+          "note": "Look for any remaining improvement"
+        },
+        {
+          "id": "paths",
+          "label": "Return shortest paths",
+          "note": "No further improvement was found"
+        },
+        {
+          "id": "cycle",
+          "label": "Report negative cycle",
+          "note": "An improvement reveals a reachable negative cycle"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "initialize",
+          "label": ""
+        },
+        {
+          "from": "initialize",
+          "to": "relax",
+          "label": ""
+        },
+        {
+          "from": "relax",
+          "to": "check",
+          "label": ""
+        },
+        {
+          "from": "check",
+          "to": "paths",
+          "label": "no improvement"
+        },
+        {
+          "from": "check",
+          "to": "cycle",
+          "label": "improvement found"
+        }
+      ],
+      "caption": "Bellman–Ford repeatedly relaxes edges, then uses one final check to distinguish shortest paths from a reachable negative cycle."
+    }
+  },
   "related": [
     "bellman-equation",
     "hamilton-jacobi-bellman-equation",

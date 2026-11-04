@@ -5,7 +5,93 @@
   "type": "concept",
   "definition": "In computer science, a chart parser is a type of parser suitable for ambiguous grammars (including grammars of natural languages).",
   "details": "It uses the dynamic programming approach—partial hypothesized results are stored in a structure called a chart and can be re-used. This eliminates backtracking and prevents a combinatorial explosion. Chart parsing is generally credited to Martin Kay.",
-  "story": "Imagine learning a language by reading every book in the library and noticing, over time, which words travel together. It does not memorize a rulebook; it absorbs a library. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It is fluency built from pattern, not from memorized rules. And that is Chart parser — teaching a machine to read between the lines.",
+  "explainer": {
+    "lead": "A chart parser finds the structure of a sentence or other expression when its grammar allows more than one interpretation. It saves partial parsing results so they can be reused, avoiding repeated work and backtracking.",
+    "tiers": {
+      "eli5": "Parsing an ambiguous sentence is like trying several ways to fit puzzle pieces together. A chart parser keeps every useful partial fit in a notebook, so it can reuse that work instead of starting over. This makes exploring many possible fits much more manageable.",
+      "practitioner": "Use chart parsing when an ambiguous grammar can produce many partial analyses, as in natural-language parsing. Store hypothesized partial results in a chart and reuse them through dynamic programming rather than reparsing the same material. The main implementation concern is representing those partial results so later parsing steps can retrieve and combine them.",
+      "paperLevel": "A chart parser applies dynamic programming to parsing with ambiguous grammars: partial hypothesized results are memoized in a chart and reused in subsequent analyses. This eliminates backtracking and prevents the combinatorial explosion caused by repeatedly recomputing shared partial results. Chart parsing is generally credited to Martin Kay."
+    },
+    "example": "For “I saw the man with the telescope,” an ambiguous grammar may allow “with the telescope” to attach to either “saw” or “the man.” The parser can keep the shared partial analysis of “the man” in its chart and reuse it while pursuing both attachments, instead of parsing that phrase again.",
+    "usedIn": [
+      {
+        "name": "Natural-language parsing",
+        "detail": "Analyzing sentences whose grammars permit multiple interpretations.",
+        "url": ""
+      },
+      {
+        "name": "Computer-science parsing",
+        "detail": "Parsing expressions described by ambiguous formal grammars.",
+        "url": ""
+      }
+    ],
+    "intuition": "Many possible parses share the same smaller pieces. A chart parser records each partial hypothesis once and reuses it, rather than rediscovering it while exploring different interpretations.",
+    "howItWorks": [
+      "Begin parsing according to the given grammar.",
+      "Form hypotheses about partial parses.",
+      "Store those partial results in a chart.",
+      "Retrieve and reuse saved results while building further hypotheses.",
+      "Continue without backtracking or recomputing shared partial parses."
+    ],
+    "whyItMatters": "Ambiguity can make naive parsing repeat enormous amounts of work. Reusing partial results removes backtracking and prevents that combinatorial explosion, making chart parsing suitable for natural-language grammars.",
+    "misconceptions": [
+      "The chart is a data structure for partial results, not necessarily a visual diagram.",
+      "Chart parsing is not limited to natural languages; it applies to ambiguous grammars generally.",
+      "It does not remove grammatical ambiguity; it manages the work of exploring alternative parses."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "grammar",
+          "label": "Ambiguous grammar",
+          "note": "Permits alternative analyses"
+        },
+        {
+          "id": "input",
+          "label": "Input expression",
+          "note": "Sentence or other input"
+        },
+        {
+          "id": "hypotheses",
+          "label": "Partial hypotheses",
+          "note": "Candidate partial parses"
+        },
+        {
+          "id": "chart",
+          "label": "Chart",
+          "note": "Stores reusable results"
+        },
+        {
+          "id": "parses",
+          "label": "Further parses",
+          "note": "Built by reusing chart entries"
+        }
+      ],
+      "edges": [
+        {
+          "from": "grammar",
+          "to": "hypotheses",
+          "label": "guides"
+        },
+        {
+          "from": "input",
+          "to": "hypotheses",
+          "label": "parsed into"
+        },
+        {
+          "from": "hypotheses",
+          "to": "chart",
+          "label": "stored in"
+        },
+        {
+          "from": "chart",
+          "to": "parses",
+          "label": "reused by"
+        }
+      ],
+      "caption": "Partial parsing hypotheses are saved in a chart and reused to build further parses."
+    }
+  },
   "related": [
     "albert-one",
     "alexander-gelbukh",

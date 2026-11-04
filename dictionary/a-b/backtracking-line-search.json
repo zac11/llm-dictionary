@@ -5,7 +5,112 @@
   "type": "algorithm",
   "definition": "In (unconstrained) mathematical optimization, a backtracking line search is a line search method to determine the amount to move along a given search direction.",
   "details": "Its use requires that the objective function is differentiable and that its gradient is known. The method involves starting with a relatively large estimate of the step size for movement along the line search direction, and iteratively shrinking the step size (i.e., \"backtracking\") until a decrease of the objective function is observed that adequately corresponds to the amount of decrease that is expected, based on the step size and the local gradient of the objective function. A common stopping criterion is the Armijo–Goldstein condition. Backtracking line search is typically used for gradient descent (GD), but it can also be used in other contexts. For example, it can be used with Newton's method if the Hessian matrix is positive definite.",
-  "story": "Imagine teaching a friend to shoot a basketball. They miss, and you walk them backwards through the shot — elbow, wrist, release — to find what needs fixing. It is the same loop you use to learn anything: try, miss, correct, try again. Underneath all the magic is a patient process of small improvements. It is learning from every miss instead of repeating the same mistake. And that is Backtracking line search — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "Backtracking line search chooses how far an optimization algorithm should move along a chosen direction. It tries a fairly large step first, then keeps shortening it until the objective function improves enough, helping avoid steps that are too aggressive.",
+    "tiers": {
+      "eli5": "Imagine walking downhill and trying a big stride. If it does not take you downward enough, you try a shorter stride, and keep shortening it until the step is good enough. This method does the same thing when a computer is trying to make a number as small as possible.",
+      "practitioner": "Use it when the objective is differentiable, its gradient is available, and an optimizer has already supplied a search direction. Evaluate the objective at trial points, shrinking an initially large step until the observed decrease adequately matches the decrease expected from the step size and local gradient; the Armijo–Goldstein condition is a common test. It is typical with gradient descent and can also safeguard Newton's method when the Hessian is positive definite, but rejected trials can require many objective evaluations.",
+      "paperLevel": "Given a differentiable objective f, its gradient, a current point, and a search direction, backtracking line search selects a step size by starting with a relatively large trial value and iteratively reducing it. It stops when the decrease in f adequately corresponds to the decrease predicted from the step size and local gradient, commonly using the Armijo–Goldstein condition. Its applicability requires a known gradient, and for use with Newton's method the Hessian must be positive definite."
+    },
+    "example": "Minimize f(x) = x² from x = 2, using search direction -4 and initial step size 1. A full step reaches x = -2, where f(-2) = 4, so there is no decrease from f(2) = 4; shrinking the step to 0.5 reaches x = 0, where f(0) = 0, giving a clear decrease.",
+    "usedIn": [
+      {
+        "name": "Gradient descent",
+        "detail": "Chooses a suitable step length along the gradient-based search direction.",
+        "url": ""
+      },
+      {
+        "name": "Newton's method",
+        "detail": "Can choose the step length when the Hessian matrix is positive definite.",
+        "url": ""
+      },
+      {
+        "name": "Unconstrained optimization",
+        "detail": "Controls movement along a search direction to obtain an adequate decrease in the objective.",
+        "url": ""
+      }
+    ],
+    "goal": "Find a step size that moves along a given search direction while producing an adequate decrease in the objective function.",
+    "inputs": [
+      "A differentiable objective function",
+      "The objective function's known gradient",
+      "A current point and search direction",
+      "A relatively large initial step size"
+    ],
+    "outputs": [
+      "A reduced, acceptable step size",
+      "A trial point with adequate objective decrease"
+    ],
+    "steps": [
+      "Start with a relatively large estimate of the step size.",
+      "Move that distance along the search direction and evaluate the objective.",
+      "Compare the observed decrease with the decrease expected from the step size and local gradient.",
+      "If the decrease is inadequate, shrink the step size and try again.",
+      "Stop when a stopping test such as the Armijo–Goldstein condition is satisfied."
+    ],
+    "tradeoffs": [
+      "Shortening rejected steps helps prevent overly aggressive movement.",
+      "Repeated trials can require many objective-function evaluations.",
+      "The method needs a differentiable objective and a known gradient."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "start",
+          "label": "Large step",
+          "note": "Begin with a relatively large step size."
+        },
+        {
+          "id": "trial",
+          "label": "Trial point",
+          "note": "Move along the given search direction."
+        },
+        {
+          "id": "evaluate",
+          "label": "Evaluate decrease",
+          "note": "Compare actual and expected objective decrease."
+        },
+        {
+          "id": "shrink",
+          "label": "Shrink step",
+          "note": "Backtrack when the decrease is inadequate."
+        },
+        {
+          "id": "accept",
+          "label": "Accept step",
+          "note": "Stop when the stopping condition is met."
+        }
+      ],
+      "edges": [
+        {
+          "from": "start",
+          "to": "trial",
+          "label": ""
+        },
+        {
+          "from": "trial",
+          "to": "evaluate",
+          "label": ""
+        },
+        {
+          "from": "evaluate",
+          "to": "shrink",
+          "label": "inadequate"
+        },
+        {
+          "from": "shrink",
+          "to": "trial",
+          "label": "retry"
+        },
+        {
+          "from": "evaluate",
+          "to": "accept",
+          "label": "adequate"
+        }
+      ],
+      "caption": "Backtracking repeatedly shrinks the trial step until the objective decreases adequately."
+    }
+  },
   "related": [
     "line-search",
     "golden-section-search",

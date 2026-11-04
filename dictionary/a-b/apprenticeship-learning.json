@@ -5,7 +5,109 @@
   "type": "concept",
   "definition": "In artificial intelligence, apprenticeship learning (or learning from demonstration or imitation learning) is the process of learning by observing an expert.",
   "details": "It can be viewed as a form of supervised learning, where the training dataset consists of task executions by a demonstration teacher.",
-  "story": "Picture an engineer at a cluttered workbench, turning a clever idea over in their hands until it finally clicks. At its heart it is a simple notion, once you strip away the fancy name. A small key that opens a much bigger door. It is one of those ideas that feels obvious only after someone shows it to you. That is Apprenticeship learning — a small key that opens a big door.",
+  "explainer": {
+    "lead": "Apprenticeship learning lets a machine acquire a task from examples of an expert performing it, rather than requiring every desired behavior to be programmed. It is useful when demonstrations are easier to supply than a precise reward function, as in driving or helicopter aerobatics.",
+    "tiers": {
+      "eli5": "Imagine showing someone how to make a paper plane instead of writing down every tiny hand movement. A robot can similarly watch or record an expert, then copy the actions or try to work out the goal behind them. Later, it uses what it learned to perform the task itself.",
+      "practitioner": "Demonstrations become training data: a system may learn a direct state-to-action or state-to-reward mapping, infer a reward function with inverse reinforcement learning, model world dynamics, or learn action plans. In driving, several objectives operate simultaneously, so a trivial reward function may fail to produce the wanted policy. A demonstration that looks like simple recording and replay can therefore conceal a much more complex learning problem.",
+      "paperLevel": "In inverse reinforcement learning, the inputs are measurements of an agent's behavior over time and circumstances, its sensory inputs, and a model of the environment; the output is the reward function the agent appears to be optimizing. Pieter Abbeel and Andrew Ng developed apprenticeship via inverse reinforcement learning (AIRP) in 2004 for a Markov decision process with no explicit reward function but with expert demonstrations. Tasks such as driving can combine many simultaneous objectives, and a trivial reward function may not converge to the desired policy."
+    },
+    "example": "A human guides a robot arm to place a cup under a coffeemaker and press its start button, and the robot later reproduces the behavior. Although the replay may look like an exact one-to-one copy, the learning system is doing more internally than simply playing back a recording.",
+    "usedIn": [
+      {
+        "name": "AIBO robot soccer",
+        "detail": "In 2002, a mapping approach taught an AIBO robot basic soccer skills.",
+        "url": ""
+      },
+      {
+        "name": "Autonomous helicopter aerobatics",
+        "detail": "AIRP supported maneuvers including flips, rolls, loops, hurricanes, and auto-rotation landings.",
+        "url": ""
+      },
+      {
+        "name": "Sarcos robot arm",
+        "detail": "Stefan Schaal's 1997 work recorded a human pendulum demonstration and reproduced its motion with tracking control.",
+        "url": ""
+      },
+      {
+        "name": "Atari games and robot tasks",
+        "detail": "In 2017, OpenAI and DeepMind used human preferences between actions in simple domains, including robot backflips.",
+        "url": ""
+      }
+    ],
+    "intuition": "An expert shows what competent behavior looks like, and the learner extracts either the actions to imitate or the underlying goal that makes those actions worthwhile. This reverses the usual reinforcement-learning setup: instead of receiving a reward function, the learner may try to infer one from behavior.",
+    "howItWorks": [
+      "Observe an expert executing the task.",
+      "Record behavior and, where available, sensory inputs and environment information.",
+      "Learn a mapping, reward function, dynamics model, or action plan.",
+      "Use the learned model to select or reproduce actions.",
+      "Apply the result to the demonstrated task or related situations."
+    ],
+    "whyItMatters": "It offers a way to teach tasks whose goals are difficult to write down explicitly, including driving and advanced helicopter maneuvers. Inverse reinforcement learning also opens the possibility of studying the goals implicit in human behavior.",
+    "misconceptions": [
+      "It is not necessarily just recording and replaying movements.",
+      "It need not infer a reward; some methods directly map states to actions.",
+      "Inverse reinforcement learning reverses ordinary reinforcement learning by deriving rewards from observed behavior."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "expert",
+          "label": "Expert teacher",
+          "note": "Performs the task to be learned."
+        },
+        {
+          "id": "demos",
+          "label": "Task demonstrations",
+          "note": "Observed behavior across circumstances."
+        },
+        {
+          "id": "learner",
+          "label": "Learning method",
+          "note": "Uses mapping, IRL, dynamics, or plans."
+        },
+        {
+          "id": "model",
+          "label": "Learned task model",
+          "note": "Represents actions, rewards, dynamics, or rules."
+        },
+        {
+          "id": "robot",
+          "label": "Robot actions",
+          "note": "Executes behavior based on what was learned."
+        }
+      ],
+      "edges": [
+        {
+          "from": "expert",
+          "to": "demos",
+          "label": "demonstrates"
+        },
+        {
+          "from": "demos",
+          "to": "learner",
+          "label": "training data"
+        },
+        {
+          "from": "learner",
+          "to": "model",
+          "label": "infers"
+        },
+        {
+          "from": "model",
+          "to": "robot",
+          "label": "guides"
+        }
+      ],
+      "caption": "Expert demonstrations are transformed into a task model that guides later machine behavior."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Apprenticeship learning",
+        "url": "https://en.wikipedia.org/wiki/Apprenticeship_learning"
+      }
+    ]
+  },
   "related": [
     "action-model-learning",
     "active-learning-machine-learning",

@@ -5,7 +5,113 @@
   "type": "concept",
   "definition": "In algorithmic information theory, algorithmic probability, also known as Solomonoff probability, is a mathematical method of assigning a prior probability to a given observation.",
   "details": "It was invented by Ray Solomonoff in the 1960s. It is used in inductive inference theory and analyses of algorithms. In his general theory of inductive inference, Solomonoff uses the method together with Bayes' rule to obtain probabilities of prediction for an algorithm's future outputs. In the mathematical formalism used, the observations have the form of finite binary strings viewed as outputs of Turing machines, and the universal prior is a probability distribution over the set of finite binary strings calculated from a probability distribution over programs (that is, inputs to a universal Turing machine). The prior is universal in the Turing-computability sense, i.e. no string has zero probability. It is not computable, but it can be approximated. Formally, the probability P {\\displaystyle P} is not a probability and it is not computable. It is only \"lower semi-computable\" and a \"semi-measure\". By \"semi-measure\", it means that 0 ≤ ∑ x P ( x ) &lt; 1 {\\displaystyle 0\\leq \\sum _{x}P(x)&lt;1} . That is, the \"probability\" does not actually sum up to one, unlike actual probabilities. This is because some inputs to the Turing machine causes it to never halt, which means the probability mass allocated to those inputs is lost. By \"lower semi-computable\", it means there is a Turing machine that, given an input string x {\\displaystyle x} , can print out a sequence y 1 &lt; y 2 &lt; ⋯ {\\displaystyle y_{1}&lt;y_{2}&lt;\\cdots } that converges to P ( x ) {\\displaystyle P(x)} from below, but there is no such Turing machine that does the same from above.",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. And that idea, made concrete, is Algorithmic probability.",
+  "explainer": {
+    "lead": "Algorithmic probability is a way to judge how likely an observation is by considering the computer programs that could have produced it. Short programs count for more, but every compatible explanation contributes, giving a principled—though uncomputable—starting point for prediction.",
+    "tiers": {
+      "eli5": "Imagine seeing a pattern and thinking of different recipes that could make it. A short, simple recipe gets more weight, but you do not throw away the longer recipes that also work. Algorithmic probability combines all those recipes to help guess what might come next, although no computer can finish the whole calculation.",
+      "practitioner": "It serves mainly as a theoretical ideal for inductive inference and prediction rather than a drop-in estimator. Approximations can use a variant of Levin's search algorithm, limiting program runtimes while favoring shorter programs, or restrict the search space with training sequences. Exact computation is impossible, approximation may require unlimited time, and changing the abstract computer changes the distribution only within a constant factor.",
+      "paperLevel": "For a universal Turing machine U, the prior P(x) sums the length-based weights of programs whose outputs begin with the finite binary string x; shorter programs receive greater weight. P assigns no string zero probability, but it is a lower-semicomputable semi-measure rather than a computable probability distribution: 0 ≤ sum_x P(x) < 1, with mass lost to non-halting programs. A machine can generate an increasing sequence converging to P(x) from below but not, in general, from above; Solomonoff also proved machine invariance within a constant factor."
+    },
+    "example": "Suppose the observed prefix is 01010101. A short program that repeatedly prints 01 supports that observation, while longer programs producing the same beginning also contribute smaller weights; their combined weights determine its prior and, through Bayes' rule, the probabilities of possible next symbols.",
+    "usedIn": [
+      {
+        "name": "Inductive inference",
+        "detail": "Combined with Bayes' rule in Solomonoff's theory to assign probabilities to an algorithm's future outputs.",
+        "url": ""
+      },
+      {
+        "name": "Machine learning theory",
+        "detail": "Provides an optimal-in-a-certain-sense but incomputable answer to which symbol should follow an observed sequence.",
+        "url": ""
+      },
+      {
+        "name": "Analysis of algorithms",
+        "detail": "Used as a mathematical method for reasoning about observations, programs, and their outputs.",
+        "url": ""
+      }
+    ],
+    "intuition": "Treat every program that could explain an observation as a possible explanation, with simpler programs preferred. Instead of choosing only the simplest one, combine them all into a universal prior.",
+    "howItWorks": [
+      "Represent observations as finite binary strings and explanations as programs for a universal Turing machine.",
+      "Weight each program according to its length, giving shorter programs greater weight.",
+      "For an observed prefix, add the weights of all programs whose output begins with that prefix.",
+      "Use the resulting prior with Bayes' rule to assess possible continuations and predict future outputs."
+    ],
+    "whyItMatters": "It turns Occam's razor and the principle of keeping multiple explanations into one formal framework for prediction. It also connects inductive reasoning with Turing machines and Kolmogorov complexity, while marking a precise limit: the ideal predictor cannot be computed exactly.",
+    "misconceptions": [
+      "It is not an ordinary normalized probability distribution; its total mass is less than one because non-halting programs lose probability mass.",
+      "It does not select only the shortest explanation; all programs compatible with the observation contribute.",
+      "It cannot be computed exactly, although approximations can converge toward it."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "programs",
+          "label": "Candidate programs",
+          "note": "Explanations weighted by program length"
+        },
+        {
+          "id": "machine",
+          "label": "Universal machine",
+          "note": "Runs programs to generate binary outputs"
+        },
+        {
+          "id": "prefixes",
+          "label": "Output prefixes",
+          "note": "Programs matching an observation are retained"
+        },
+        {
+          "id": "prior",
+          "label": "Universal prior",
+          "note": "Matching program weights are summed"
+        },
+        {
+          "id": "prediction",
+          "label": "Bayes prediction",
+          "note": "The prior assigns probabilities to continuations"
+        }
+      ],
+      "edges": [
+        {
+          "from": "programs",
+          "to": "machine",
+          "label": "inputs"
+        },
+        {
+          "from": "machine",
+          "to": "prefixes",
+          "label": "outputs"
+        },
+        {
+          "from": "prefixes",
+          "to": "prior",
+          "label": "sum weights"
+        },
+        {
+          "from": "prior",
+          "to": "prediction",
+          "label": "Bayes' rule"
+        }
+      ],
+      "caption": "Algorithmic probability builds a prior from programs that reproduce an observation, then uses it for prediction."
+    },
+    "image": {
+      "src": "https://upload.wikimedia.org/wikipedia/commons/b/bc/From_observer_states_to_physics_via_algorithmic_probability.png",
+      "alt": "Algorithmic probability — Mathematical method of assigning a prior probability to a given observation",
+      "width": 640,
+      "height": 381,
+      "credit": "Markus Müller",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:From_observer_states_to_physics_via_algorithmic_probability.png"
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Algorithmic probability",
+        "url": "https://en.wikipedia.org/wiki/Algorithmic_probability"
+      }
+    ]
+  },
   "related": [
     "algorithmic-bias",
     "algorithmic-inference",

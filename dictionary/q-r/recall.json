@@ -2,13 +2,90 @@
   "term": "Recall",
   "letter": "R",
   "category": "Evaluation",
-  "type": "concept",
+  "type": "metric",
   "aka": [
     "Sensitivity"
   ],
   "definition": "The proportion of actual positive cases that a model correctly identifies.",
   "details": "Recall (also called sensitivity) is critical in settings where missing a positive case is costly, such as disease detection or fraud detection.",
-  "story": "Think of a referee whose job is to be completely honest about who touched the ball last. Before trusting a machine, someone has to measure how good it really is — fairly and honestly. It is the exam that separates “it sounds good” from “it actually is good”. What gets measured is what actually gets better. That shared ruler is Recall.",
+  "explainer": {
+    "lead": "Recall measures how many of the real positive cases a model manages to find. It matters when overlooking a positive case is more costly than raising a false alarm, as in disease or fraud detection.",
+    "tiers": {
+      "eli5": "Imagine looking for red apples in a basket that also contains green ones. Recall asks how many of the red apples you actually found, not whether you accidentally picked some green ones. Finding every red apple means perfect recall, even if your pile contains some green apples too.",
+      "practitioner": "Use recall alongside other evaluation measures when false negatives are especially costly, such as screening for disease or suspicious transactions. It can be increased by catching more positives, but that may also produce more false positives. A model with high recall alone is not necessarily a good classifier.",
+      "paperLevel": "For binary classification, recall is TP / (TP + FN), where TP is the number of true positives and FN is the number of false negatives. Its maximum value is 1, reached when no actual positive is missed. Recall does not account for false positives, and the ratio is undefined when there are no actual positive cases."
+    },
+    "example": "Suppose 100 patients have a disease and a model correctly flags 80 of them while missing 20. Recall is 80 / (80 + 20) = 0.80, or 80%.",
+    "usedIn": [
+      {
+        "name": "Disease detection",
+        "detail": "Measures how many people with a disease are correctly flagged, highlighting missed cases.",
+        "url": ""
+      },
+      {
+        "name": "Fraud detection",
+        "detail": "Measures how many actual fraud cases the system successfully identifies.",
+        "url": ""
+      }
+    ],
+    "measures": "Recall measures coverage of the actual positive class: the fraction of real positives that receive a positive prediction. It is also called sensitivity.",
+    "howScored": [
+      "Count the actual positives the model identifies correctly and divide by all actual positives. Scores range from 0 to 1 when actual positives exist, with higher values indicating fewer missed positives."
+    ],
+    "formula": "Recall = TP / (TP + FN), where TP means true positives and FN means false negatives.",
+    "caveats": [
+      "Recall ignores false positives, so flagging everything as positive gives recall of 1.",
+      "A high recall score does not show whether positive predictions are reliable.",
+      "The score is undefined when the evaluation data contains no actual positives."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "actual",
+          "label": "Actual positives",
+          "note": "All cases that truly belong to the positive class."
+        },
+        {
+          "id": "found",
+          "label": "Correctly flagged",
+          "note": "True positives found by the model."
+        },
+        {
+          "id": "missed",
+          "label": "Missed cases",
+          "note": "False negatives predicted as negative."
+        },
+        {
+          "id": "recall",
+          "label": "Recall score",
+          "note": "Correctly flagged cases divided by all actual positives."
+        }
+      ],
+      "edges": [
+        {
+          "from": "actual",
+          "to": "found",
+          "label": "detected"
+        },
+        {
+          "from": "actual",
+          "to": "missed",
+          "label": "overlooked"
+        },
+        {
+          "from": "found",
+          "to": "recall",
+          "label": "numerator"
+        },
+        {
+          "from": "missed",
+          "to": "recall",
+          "label": "denominator part"
+        }
+      ],
+      "caption": "Recall compares the positives a model finds with all actual positives, including those it misses."
+    }
+  },
   "related": [
     "a-b-testing",
     "ablation-study",

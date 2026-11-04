@@ -5,7 +5,130 @@
   "type": "algorithm",
   "definition": "Adaptive coordinate descent is an improvement of the coordinate descent algorithm to non-separable optimization by the use of adaptive encoding.",
   "details": "The adaptive coordinate descent approach gradually builds a transformation of the coordinate system such that the new coordinates are as decorrelated as possible with respect to the objective function. The adaptive coordinate descent was shown to be competitive to the state-of-the-art evolutionary algorithms and has the following invariance properties: Invariance with respect to monotonous transformations of the function (scaling) Invariance with respect to orthogonal transformations of the search space (rotation). CMA-like Adaptive Encoding Update (b) mostly based on principal component analysis (a) is used to extend the coordinate descent method (c) to the optimization of non-separable problems (d). The adaptation of an appropriate coordinate system allows adaptive coordinate descent to outperform coordinate descent on non-separable functions. The following figure illustrates the convergence of both algorithms on 2-dimensional Rosenbrock function up to a target function value 10 − 10 {\\displaystyle 10^{-10}} , starting from the initial point x 0 = ( − 3 , − 4 ) {\\displaystyle x_{0}=(-3,-4)} . The adaptive coordinate descent method reaches the target value after only 325 function evaluations (about 70 times faster than coordinate descent), that is comparable to gradient-based methods. The algorithm has linear time complexity if update coordinate system every D iterations, it is also suitable for large-scale (D>>100) non-linear optimization.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. And that is Adaptive coordinate descent — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "Adaptive coordinate descent is a twist on a classic optimization technique that learns the right 'language' to describe your problem as it goes. Instead of searching north-south-east-west in a fixed grid, it gradually discovers a better set of directions—ones where the problem actually separates into simpler pieces.",
+    "tiers": {
+      "eli5": "Imagine you're trying to find the lowest point in a hilly landscape, but your compass only points in four fixed directions. If the valleys run diagonally, you're stuck zigzagging. Adaptive coordinate descent is like realizing the valleys run northwest-southeast and making a new compass that points that way—then updating it again as you learn more about the terrain.",
+      "practitioner": "Use this when you face large-scale (D >> 100) non-linear, non-separable optimization problems where gradients are expensive or unavailable. Update the coordinate system every D iterations to maintain linear time complexity. Watch out: the PCA-based encoding update adds overhead, and the method assumes you can afford periodic full-rank updates. Comparable performance to CMA-ES on some problems but with different memory scaling.",
+      "paperLevel": "Given objective f: R^D → R, the algorithm maintains an adaptive encoding matrix B such that search proceeds in coordinates y where x = By. The encoding is updated via CMA-like Adaptive Encoding Update, mostly based on principal component analysis, to progressively decorrelate coordinates with respect to f. The method exhibits invariance to monotonous transformations of f (scaling) and orthogonal transformations of the search space (rotation). Originating work not explicitly named in sources; early related approaches include Rosenbrock's method (1960s) and Brent's PRAXIS algorithm."
+    },
+    "example": "On the 2D Rosenbrock function starting from x₀ = (−3, −4), standard coordinate descent struggles because the curved valley is not aligned with the axes. Adaptive coordinate descent learns to rotate and scale its coordinates, reaching the target value 10⁻¹⁰ in only 325 function evaluations—about 70 times faster than plain coordinate descent, comparable to gradient-based methods.",
+    "usedIn": [
+      {
+        "name": "Robot-manipulator path planning",
+        "detail": "Adaptive coordinate descent with step-size adaptation and local coordinate system rotation used for planning in 3D space with static polygonal obstacles",
+        "url": ""
+      }
+    ],
+    "goal": "Minimize a non-separable objective function by adaptively learning a coordinate system where the problem becomes easier to solve, without requiring gradient information.",
+    "inputs": [
+      "An objective function f(x) to minimize",
+      "An initial point x₀ in D-dimensional space",
+      "A target precision (e.g., f(x) ≤ 10⁻¹⁰)"
+    ],
+    "outputs": [
+      "A point x* approximating the minimum",
+      "The number of function evaluations consumed",
+      "The learned adaptive coordinate transformation"
+    ],
+    "steps": [
+      "Initialize search point and coordinate system (typically identity)",
+      "Perform coordinate descent steps in the current transformed coordinates",
+      "Accumulate information about function landscape from recent steps",
+      "Update the coordinate encoding via PCA-based transformation to reduce correlation between coordinates",
+      "Repeat until target precision reached or budget exhausted"
+    ],
+    "tradeoffs": [
+      "Linear time complexity only if coordinate system updated every D iterations; more frequent updates cost more",
+      "PCA-based encoding update adds computational overhead versus plain coordinate descent",
+      "Invariance to scaling and rotation makes it robust, but not invariant to arbitrary rank-preserving transformations",
+      "Well-suited for large-scale problems (D >> 100) but encoding storage scales with dimensionality",
+      "Competitive with evolutionary algorithms but may still lag on highly multimodal landscapes"
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "objective",
+          "label": "Objective function",
+          "note": "The non-separable function to minimize"
+        },
+        {
+          "id": "coords",
+          "label": "Current coordinates",
+          "note": "Search point in original or transformed space"
+        },
+        {
+          "id": "descent",
+          "label": "Coordinate descent",
+          "note": "Optimize along one transformed axis at a time"
+        },
+        {
+          "id": "history",
+          "label": "Step history",
+          "note": "Collected search trajectory information"
+        },
+        {
+          "id": "pca",
+          "label": "PCA update",
+          "note": "Compute principal components of successful directions"
+        },
+        {
+          "id": "encoding",
+          "label": "Adaptive encoding",
+          "note": "Transformation matrix B for new coordinates"
+        }
+      ],
+      "edges": [
+        {
+          "from": "objective",
+          "to": "coords",
+          "label": "evaluates"
+        },
+        {
+          "from": "coords",
+          "to": "descent",
+          "label": "feeds into"
+        },
+        {
+          "from": "descent",
+          "to": "history",
+          "label": "generates"
+        },
+        {
+          "from": "history",
+          "to": "pca",
+          "label": "analyzed by"
+        },
+        {
+          "from": "pca",
+          "to": "encoding",
+          "label": "updates"
+        },
+        {
+          "from": "encoding",
+          "to": "coords",
+          "label": "transforms"
+        }
+      ],
+      "caption": "The adaptive loop: coordinate descent generates data, PCA extracts structure, and the encoding matrix rotates coordinates for faster progress on non-separable problems."
+    },
+    "image": {
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/58/Rosenbrock2D.png/960px-Rosenbrock2D.png",
+      "alt": "Adaptive coordinate descent — Improvement of the coordinate descent algorithm",
+      "width": 640,
+      "height": 310,
+      "credit": "Ilya Loshchilov",
+      "license": "Public domain",
+      "licenseUrl": "",
+      "page": "https://commons.wikimedia.org/wiki/File:Rosenbrock2D.png"
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Adaptive coordinate descent",
+        "url": "https://en.wikipedia.org/wiki/Adaptive_coordinate_descent"
+      }
+    ]
+  },
   "related": [
     "adaptive-simulated-annealing",
     "differentially-private-stochastic-gradient-descent",

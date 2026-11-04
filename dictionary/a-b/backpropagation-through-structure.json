@@ -5,7 +5,96 @@
   "type": "concept",
   "definition": "Backpropagation through structure (BPTS) is a gradient-based technique for training recursive neural networks, proposed in a 1996 paper written by Christoph Goller and Andreas Küchler.",
   "details": "Backpropagation through structure (BPTS) is a gradient-based technique for training recursive neural networks, proposed in a 1996 paper written by Christoph Goller and Andreas Küchler.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. That steady, miss-by-miss improvement is Backpropagation through structure.",
+  "explainer": {
+    "lead": "Backpropagation through structure trains a recursive neural network by sending error information backward through the network’s recursive layout. It matters because the same learning rules can then be adjusted using examples whose computations branch and combine rather than forming one simple chain.",
+    "tiers": {
+      "eli5": "Imagine building a model from small pieces, then following shared instructions to combine those pieces into bigger ones. If the finished model gets an answer wrong, backpropagation through structure works backward to see how each step contributed. It then suggests changes to the shared instructions so the next answer can be better.",
+      "practitioner": "Run the recursive computation forward while caching each node’s value, then traverse the structure in reverse to propagate gradients from the loss toward the leaves. Accumulate gradients wherever parameters are shared across recursive applications. Careful bookkeeping is important because examples can have different structures and one parameter update receives contributions from many nodes.",
+      "paperLevel": "For a node v, let h_v = f_theta(g({h_u : u in ch(v)})), where ch(v) contains its children and f_theta is differentiable. Gradients follow dL/dtheta = sum_v (dL/dh_v)(dh_v/dtheta), with error signals propagated from the loss back through the recursive structure and contributions summed for shared parameters. The technique was proposed in a 1996 paper by Christoph Goller and Andreas Küchler; it requires a differentiable recursive computation and structure-dependent gradient traversal."
+    },
+    "example": "Suppose a tree combines leaf representations a and b into p = f_theta(a, b), then combines p with leaf c into r = f_theta(p, c). After a loss L is computed from r, BPTS differentiates through the second application of f_theta and then the first. The gradients from both applications are added to obtain the update for the shared parameters theta.",
+    "usedIn": [
+      {
+        "name": "Recursive neural networks",
+        "detail": "Provides gradient-based training when a network is applied repeatedly over a recursive structure.",
+        "url": ""
+      },
+      {
+        "name": "Structured-data learning",
+        "detail": "Supports learning from inputs represented by linked recursive structures rather than only flat sequences.",
+        "url": ""
+      }
+    ],
+    "intuition": "A recursive network reuses a learnable computation while combining smaller representations into larger ones. BPTS extends ordinary backpropagation by following that particular structure backward, collecting every use of the shared parameters into the update.",
+    "howItWorks": [
+      "Apply the recursive network forward, computing values from the leaves toward the root or final output.",
+      "Evaluate the loss and store the intermediate values needed for differentiation.",
+      "Propagate gradients backward through each recursive connection, reversing the forward computation.",
+      "Add together contributions to shared parameters and use the resulting gradients to update them."
+    ],
+    "whyItMatters": "It makes gradient-based training possible for recursive networks whose computation follows an input’s structure. It also ensures that repeated uses of the same parameters all contribute to learning.",
+    "misconceptions": [
+      "It is not backpropagation through time: the recursive layout need not represent a temporal sequence.",
+      "It is a training technique, not a separate recursive neural network architecture."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "leaves",
+          "label": "Leaf representations",
+          "note": "Values at the structure’s starting nodes"
+        },
+        {
+          "id": "combine",
+          "label": "Recursive combination",
+          "note": "Shared network computes parent values"
+        },
+        {
+          "id": "root",
+          "label": "Root representation",
+          "note": "Final value produced by the recursion"
+        },
+        {
+          "id": "loss",
+          "label": "Training loss",
+          "note": "Measures the output error"
+        },
+        {
+          "id": "gradients",
+          "label": "Shared gradients",
+          "note": "Contributions from every recursive application are summed"
+        }
+      ],
+      "edges": [
+        {
+          "from": "leaves",
+          "to": "combine",
+          "label": "forward values"
+        },
+        {
+          "from": "combine",
+          "to": "root",
+          "label": "recursive output"
+        },
+        {
+          "from": "root",
+          "to": "loss",
+          "label": "prediction"
+        },
+        {
+          "from": "loss",
+          "to": "gradients",
+          "label": "backward errors"
+        },
+        {
+          "from": "gradients",
+          "to": "combine",
+          "label": "parameter update"
+        }
+      ],
+      "caption": "Values move forward through the recursive structure; gradients move backward and are accumulated across shared computations."
+    }
+  },
   "related": [
     "backpropagation",
     "backpropagation-through-time",

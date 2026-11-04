@@ -5,7 +5,138 @@
   "type": "algorithm",
   "definition": "In mathematics, the Chambolle–Pock algorithm is an algorithm used to solve convex optimization problems.",
   "details": "It was introduced by Antonin Chambolle and Thomas Pock in 2011 and has since become a widely used method in various fields, including image processing, computer vision, and signal processing. The Chambolle–Pock algorithm is specifically designed to efficiently solve convex optimization problems that involve the minimization of a non-smooth cost function composed of a data fidelity term and a regularization term. This is a typical configuration that commonly arises in ill-posed imaging inverse problems such as image reconstruction, denoising and inpainting. The algorithm is based on a primal-dual formulation, which allows for simultaneous updates of primal and dual variables. By employing the proximal operator, the Chambolle–Pock algorithm efficiently handles non-smooth and non-convex regularization terms, such as the total variation, specific in imaging framework.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. That steady, miss-by-miss improvement is Chambolle–Pock algorithm.",
+  "explainer": {
+    "lead": "The Chambolle–Pock algorithm is a way to reconstruct a useful answer when measurements are noisy, incomplete, or otherwise difficult to work with. It is widely used in imaging because it can balance fidelity to the measured data against regularization, even when the regularizer is not smooth.",
+    "tiers": {
+      "eli5": "Imagine cleaning up a noisy photograph. One rule says the cleaned picture should stay close to the photo you started with, while another says it should not contain lots of random speckles. The method repeatedly works toward a compromise between those rules. The same idea can help rebuild images or fill in missing patches.",
+      "practitioner": "Express the objective as a data-fidelity term plus a regularizer, then use proximal operators within the primal-dual iterations. Total variation is a typical regularizer for image reconstruction, denoising, and inpainting. Keep the formulation convex, and tune the fidelity–regularization balance carefully: excessive smoothing can remove detail, while insufficient regularization can leave noise or artifacts.",
+      "paperLevel": "The algorithm addresses problems of the form min_x D(x) + R(x), where D is a data-fidelity term, R is a potentially non-smooth regularizer, and the overall problem is convex. Introduced by Antonin Chambolle and Thomas Pock in 2011, it uses a primal-dual formulation and proximal operators to update primal and dual variables. Its intended scope is convex optimization rather than general non-convex optimization."
+    },
+    "example": "For a noisy grayscale photograph, let the data-fidelity term penalize disagreement with the recorded pixels and use total variation as the regularizer. The primal-dual iterations seek an image that remains consistent with the photograph while reducing noisy variation, producing a denoised image as the output.",
+    "usedIn": [
+      {
+        "name": "Image reconstruction",
+        "detail": "Recovers images in ill-posed inverse problems by combining measured-data fidelity with regularization.",
+        "url": ""
+      },
+      {
+        "name": "Image denoising",
+        "detail": "Reduces noise while using terms such as total variation to regularize the result.",
+        "url": ""
+      },
+      {
+        "name": "Image inpainting",
+        "detail": "Fills missing image content within a fidelity-plus-regularization formulation.",
+        "url": ""
+      },
+      {
+        "name": "Computer vision and signal processing",
+        "detail": "Applies the same convex primal-dual optimization approach to suitable problems in these fields.",
+        "url": ""
+      }
+    ],
+    "goal": "Minimize a convex cost made up of a data-fidelity term and a regularization term. In imaging, this means finding an image that both fits the available observations and satisfies the chosen structural prior.",
+    "inputs": [
+      "A convex objective containing data fidelity and regularization",
+      "The observed data or measurements",
+      "A regularizer, potentially non-smooth, such as total variation",
+      "The proximal operations needed for the primal-dual updates"
+    ],
+    "outputs": [
+      "An estimated solution to the minimization problem",
+      "For imaging tasks, a reconstructed, denoised, or inpainted image"
+    ],
+    "steps": [
+      "Write the problem as the minimization of data fidelity plus regularization.",
+      "Formulate the problem using both primal and dual variables.",
+      "Update the primal and dual variables using proximal operators.",
+      "Repeat the updates to improve the candidate solution.",
+      "Return the resulting minimizer or restored image."
+    ],
+    "tradeoffs": [
+      "Handles non-smooth regularizers through proximal operators.",
+      "Well suited to ill-posed imaging inverse problems.",
+      "Requires a convex formulation with a suitable primal-dual representation.",
+      "The fidelity–regularization balance controls whether noise or image detail is preserved."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "objective",
+          "label": "Convex objective",
+          "note": "Data fidelity plus regularization"
+        },
+        {
+          "id": "formulation",
+          "label": "Primal-dual form",
+          "note": "Represents the problem with two variable sets"
+        },
+        {
+          "id": "primal",
+          "label": "Primal update",
+          "note": "Improves the candidate solution"
+        },
+        {
+          "id": "dual",
+          "label": "Dual update",
+          "note": "Updates the companion dual variables"
+        },
+        {
+          "id": "iterate",
+          "label": "Repeat updates",
+          "note": "Continues the proximal iterations"
+        },
+        {
+          "id": "solution",
+          "label": "Estimated solution",
+          "note": "A minimizer or restored image"
+        }
+      ],
+      "edges": [
+        {
+          "from": "objective",
+          "to": "formulation",
+          "label": ""
+        },
+        {
+          "from": "formulation",
+          "to": "primal",
+          "label": ""
+        },
+        {
+          "from": "formulation",
+          "to": "dual",
+          "label": ""
+        },
+        {
+          "from": "primal",
+          "to": "iterate",
+          "label": ""
+        },
+        {
+          "from": "dual",
+          "to": "iterate",
+          "label": ""
+        },
+        {
+          "from": "iterate",
+          "to": "primal",
+          "label": "next iteration"
+        },
+        {
+          "from": "iterate",
+          "to": "dual",
+          "label": "next iteration"
+        },
+        {
+          "from": "iterate",
+          "to": "solution",
+          "label": "result"
+        }
+      ],
+      "caption": "The objective is recast in primal-dual form, proximal updates are repeated, and the resulting estimate is returned."
+    }
+  },
   "related": [
     "actor-critic-algorithm",
     "algorithm-imed",

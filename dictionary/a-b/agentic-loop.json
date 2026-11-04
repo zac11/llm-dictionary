@@ -10,7 +10,123 @@
   ],
   "definition": "An iterative execution cycle where a language model observes environment state, reasons over trajectories, issues tool calls, and adjusts actions dynamically.",
   "details": "Unlike single-turn generation, agentic loops maintain internal scratchpads to recursively query retrieval engines, code interpreters, or external APIs until a terminal condition or target goal is satisfied.",
-  "story": "Think of a chess player who never commits to a move blindly — they consider the board, try an action, watch what changes, and only then decide what is next. The machine stops just answering one question and starts getting a job done, step by step, checking its work along the way. It plans a little, acts a little, looks at the result, and then decides what to do next. It is a loop of look, act, and learn — the same way you cook from a recipe you have never tried: add, taste, correct. And that habit of checking, acting, then checking again is Agentic Loop.",
+  "explainer": {
+    "lead": "An agentic loop is what turns a chatbot into a persistent problem-solver: instead of answering once and stopping, the model keeps thinking, acting, and checking results until the job is actually done. It is the engine behind AI systems that can research, code, or plan over minutes rather than milliseconds.",
+    "tiers": {
+      "eli5": "Imagine you're solving a maze with a pen and paper. You don't just guess the whole path at once—you take one step, look around, write down what you see, decide the next step, and repeat. An agentic loop works the same way: the AI thinks, does something, sees what happened, and thinks again until it finds the exit.",
+      "practitioner": "Implement an agentic loop by giving an LLM access to a scratchpad (for reasoning traces) and tool endpoints (search, code execution, API calls). Typical stacks include LangChain, AutoGPT, or custom ReAct implementations. Pitfalls: unbounded recursion, tool failures that loop silently, and context-window overflow from long scratchpad histories. Always set max iterations, validate tool outputs, and trim or summarize the scratchpad.",
+      "paperLevel": "The agentic loop instantiates a partially observable Markov decision process where the LLM serves as policy π, the scratchpad constitutes memory M, and tool outputs provide observations O. At each timestep t: the model generates a reasoning trace r_t ~ π(· | prompt, M_{<t}, O_{<t}), selects an action a_t (tool call or termination), receives observation o_t, and updates M_t = M_{<t} ⊕ (r_t, a_t, o_t). The loop terminates on a stop condition or when a_t ∈ {Answer, GiveUp}."
+    },
+    "example": "A user asks: 'What was the total revenue of Tesla's energy division in Q2 2023, and how did it change year-over-year?' The agentic loop proceeds: (1) reason—need Tesla's Q2 2023 earnings report; (2) action—search web for 'Tesla Q2 2023 earnings energy revenue'; (3) observation—snippet shows $1.51B energy revenue; (4) reason—need Q2 2022 comparison; (5) action—search 'Tesla Q2 2022 energy revenue'; (6) observation—$866M; (7) reason—calculate growth: (1.51 - 0.866) / 0.866 ≈ 74.4%; (8) action—terminate with answer. The scratchpad holds all intermediate reasoning and raw results.",
+    "usedIn": [
+      {
+        "name": "ReAct agents",
+        "detail": "Reasoning and acting in language models, interleaving thought and tool use",
+        "url": ""
+      },
+      {
+        "name": "AutoGPT",
+        "detail": "Autonomous task execution with recursive goal decomposition",
+        "url": ""
+      },
+      {
+        "name": "Code interpreters (ChatGPT, Claude)",
+        "detail": "Multi-turn code generation, execution, and error correction",
+        "url": ""
+      },
+      {
+        "name": "Retrieval-augmented generation systems",
+        "detail": "Iterative query reformulation and document retrieval",
+        "url": ""
+      }
+    ],
+    "intuition": "A person planning a trip doesn't book everything in one breath. They check flights, find they're too expensive, reconsider dates, check hotels, discover a festival, adjust again. Each round of thinking and doing informs the next. An agentic loop gives an AI this same iterative, adaptive capability.",
+    "howItWorks": [
+      "The model receives a goal and any prior context, then writes out its reasoning in a scratchpad.",
+      "Based on that reasoning, it chooses an action: call a tool, query a database, run code, or formulate an answer.",
+      "The environment executes the action and returns an observation (result, error, or new state).",
+      "The model reads the observation, appends it to the scratchpad, and the cycle repeats.",
+      "The loop halts when the model emits a terminal action or a hard limit on iterations is reached."
+    ],
+    "whyItMatters": "Single-turn LLMs are confined to their training data and cannot verify facts or recover from errors. Agentic loops extend capability through interaction: they enable up-to-date information retrieval, multi-step computation, error correction, and adaptation to unforeseen obstacles. This closes the gap between static knowledge and dynamic problem-solving.",
+    "misconceptions": [
+      "Agentic loops are not conscious or self-aware; they are deterministic programs with a loop construct.",
+      "More iterations do not guarantee better results—loops can spiral on wrong assumptions or noisy observations.",
+      "They are not the same as simple multi-turn chat; the scratchpad reasoning and explicit tool-use structure are essential."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "scratchpad",
+          "label": "Scratchpad",
+          "note": "Accumulated reasoning traces and observations"
+        },
+        {
+          "id": "llm",
+          "label": "LLM policy",
+          "note": "Generates next reasoning step and action"
+        },
+        {
+          "id": "action",
+          "label": "Action selector",
+          "note": "Chooses tool call or terminal output"
+        },
+        {
+          "id": "tool",
+          "label": "Tool / API",
+          "note": "External executor: search, code, database"
+        },
+        {
+          "id": "env",
+          "label": "Environment",
+          "note": "Returns observation from action"
+        },
+        {
+          "id": "check",
+          "label": "Halt check",
+          "note": "Tests terminal condition or iteration limit"
+        }
+      ],
+      "edges": [
+        {
+          "from": "scratchpad",
+          "to": "llm",
+          "label": "context"
+        },
+        {
+          "from": "llm",
+          "to": "action",
+          "label": "proposes"
+        },
+        {
+          "from": "action",
+          "to": "tool",
+          "label": "invokes"
+        },
+        {
+          "from": "tool",
+          "to": "env",
+          "label": "executes on"
+        },
+        {
+          "from": "env",
+          "to": "scratchpad",
+          "label": "observation"
+        },
+        {
+          "from": "action",
+          "to": "check",
+          "label": "if terminal"
+        },
+        {
+          "from": "check",
+          "to": "scratchpad",
+          "label": "continue loop"
+        }
+      ],
+      "caption": "Information flow in an agentic loop: the scratchpad grows with each cycle, feeding context back to the LLM until the halt check triggers termination."
+    }
+  },
   "related": [
     "loop-engineering",
     "prompt-routing",

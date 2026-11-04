@@ -5,7 +5,86 @@
   "type": "concept",
   "definition": "The census transform (CT) is an image operator that associates to each pixel of a grayscale image a binary string, encoding whether the pixel has smaller intensity than each of its neighbours, one for each bit.",
   "details": "It is a non-parametric transform that depends only on relative ordering of intensities, and not on the actual values of intensity, making it invariant with respect to monotonic variations of illumination, and it behaves well in presence of multimodal distributions of intensity, e.g. along object boundaries. It has applications in computer vision, and it is commonly used in visual correspondence problems such as optical flow calculation and disparity estimation. The census transform is related to the rank transform, that associates to each pixel the number of neighbouring pixels with higher intensity than the pixel itself, and was introduced in the same paper.",
-  "story": "Picture walking through a crowd and instantly picking out a familiar face without reading a single name tag. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. It turns a picture into an understanding: this is a cat, that is a stop sign. Sight, for a machine, is a long climb from raw light to a name. And that is Census transform — giving a machine the gift of sight.",
+  "explainer": {
+    "lead": "The census turn compares each pixel with its neighbours and records the result as a string of bits. It is useful for matching images because it cares about local intensity order rather than exact brightness values.",
+    "tiers": {
+      "eli5": "Imagine looking at one square in a grey picture and asking, for each nearby square, “Am I darker than you?” Writing each yes or no as a 1 or 0 gives that square its own code. These codes can still match when the whole picture becomes brighter or darker in a smooth way.",
+      "practitioner": "Compute a bit string per pixel by comparing its intensity with each pixel in a chosen neighbourhood, then use those strings as local descriptors for correspondence. It is commonly applied in optical-flow calculation and disparity estimation, where monotonic illumination changes should not alter the descriptor. The comparison captures ordering only, so it discards the actual intensity differences.",
+      "paperLevel": "For pixel p with neighbourhood N(p), CT(p) = concat_{q in N(p)} xi(I(p), I(q)), where xi = 1 if I(p) < I(q) and 0 otherwise. CT is non-parametric and invariant to monotonic intensity variations, and it can behave well around multimodal intensity distributions such as object boundaries. The related rank transform instead counts neighbours whose intensity is higher than that of p and was introduced in the same paper."
+    },
+    "example": "Suppose the centre pixel has intensity 50 and three neighbours, read in order, have intensities 40, 60 and 45. The centre is not smaller than 40, is smaller than 60 and is not smaller than 45, so its census string is 010.",
+    "usedIn": [
+      {
+        "name": "Optical flow calculation",
+        "detail": "Provides local pixel descriptors for visual correspondence between images.",
+        "url": ""
+      },
+      {
+        "name": "Disparity estimation",
+        "detail": "Supports matching when estimating disparity from image intensities.",
+        "url": ""
+      },
+      {
+        "name": "Computer vision",
+        "detail": "Used as a non-parametric image transform based on relative local ordering.",
+        "url": ""
+      }
+    ],
+    "intuition": "A pixel’s local pattern can be described by whether it is darker than each neighbour, without storing any neighbour’s exact intensity. This preserves relative ordering while making the description insensitive to monotonic illumination changes.",
+    "howItWorks": [
+      "Select a pixel in a grayscale image.",
+      "Compare its intensity with each neighbouring pixel.",
+      "Write one bit per neighbour: 1 when the centre pixel has smaller intensity, otherwise 0.",
+      "Concatenate the bits to form the pixel’s census signature."
+    ],
+    "whyItMatters": "Because the transform depends only on relative intensity order, it remains unchanged under monotonic illumination variations. That makes it useful for visual correspondence, and it can also behave well where intensity distributions are multimodal, such as along object boundaries.",
+    "misconceptions": [
+      "It does not encode the actual intensity values or the sizes of intensity differences.",
+      "It is not the rank transform: census stores individual comparisons, while rank stores a count of brighter neighbours."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "image",
+          "label": "Grayscale image",
+          "note": "Supplies pixel intensities."
+        },
+        {
+          "id": "neighbourhood",
+          "label": "Local neighbourhood",
+          "note": "Selects the centre and its neighbours."
+        },
+        {
+          "id": "comparisons",
+          "label": "Intensity comparisons",
+          "note": "Tests whether the centre is darker."
+        },
+        {
+          "id": "signature",
+          "label": "Binary signature",
+          "note": "Concatenates one bit per neighbour."
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "neighbourhood",
+          "label": "pixels"
+        },
+        {
+          "from": "neighbourhood",
+          "to": "comparisons",
+          "label": "intensities"
+        },
+        {
+          "from": "comparisons",
+          "to": "signature",
+          "label": "bits"
+        }
+      ],
+      "caption": "The census transform converts local intensity ordering into a binary string for each pixel."
+    }
+  },
   "related": [
     "distance-transform",
     "hough-transform",

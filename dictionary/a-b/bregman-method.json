@@ -5,7 +5,106 @@
   "type": "algorithm",
   "definition": "The Bregman method is an iterative algorithm to solve certain convex optimization problems involving regularization.",
   "details": "The original version is due to Lev M. Bregman, who published it in 1967. The algorithm is a row-action method accessing constraint functions one by one and the method is particularly suited for large optimization problems where constraints can be efficiently enumerated. The algorithm works particularly well for regularizers such as the ℓ 1 {\\displaystyle \\ell _{1}} norm, where it converges very quickly because of an error-cancellation effect.",
-  "story": "Think of a hiker descending a foggy hill in the dark, taking small steps and feeling for the steepest way down. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. It is the same loop you use to learn anything: try, miss, correct, try again. Skill, for a model, is just error pushed down until it is small enough to ignore. And that is Bregman method — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "The Bregman method solves certain regularized convex optimization problems by working through their constraints one at a time. This makes it useful for large problems whose constraints can be enumerated efficiently, and it can converge especially quickly with an ℓ1 regularizer.",
+    "tiers": {
+      "eli5": "Imagine improving a guess by checking a long list of rules, one rule at a time, and then going through the list again until the guess settles down. This approach is handy when the list is very long. With one particular kind of penalty, mistakes can cancel out and help the answer arrive quickly.",
+      "practitioner": "Use it for suitable regularized convex problems when processing individual constraints is efficient. Iterate row-action updates over the constraints and return the resulting estimate; ℓ1 regularization is a notable setting because error cancellation can produce very fast convergence. Its suitability depends on the problem structure and efficient constraint enumeration, so the ℓ1 behavior should not be assumed for every regularizer.",
+      "paperLevel": "The Bregman method is an iterative row-action algorithm for certain regularized convex optimization problems, accessing the constraint functions individually rather than requiring all constraints at once. Lev M. Bregman published the original method in 1967. For regularizers such as the ℓ1 norm, an error-cancellation effect can yield very fast convergence."
+    },
+    "example": "Consider nonnegative values x1 and x2 required to satisfy x1 + x2 = 2, with the regularizer |x1| + |x2|. The method starts with an estimate and applies the constraint through its row-action updates rather than tackling a large constraint set all at once; x1 = 1 and x2 = 1 is one solution, with a regularizer value of 2.",
+    "usedIn": [
+      {
+        "name": "Large constrained optimization",
+        "detail": "Applied when the problem is large but its constraints can be enumerated and accessed efficiently one by one.",
+        "url": ""
+      },
+      {
+        "name": "ℓ1-regularized convex problems",
+        "detail": "A particularly favorable setting because an error-cancellation effect can make convergence very fast.",
+        "url": ""
+      }
+    ],
+    "goal": "Find a solution to a suitable convex optimization problem that includes a regularizer, while handling its constraints individually.",
+    "inputs": [
+      "A regularized convex optimization problem",
+      "Constraint functions that can be accessed one by one",
+      "An initial estimate to update iteratively"
+    ],
+    "outputs": [
+      "An estimate of the problem's solution",
+      "A result refined through repeated passes over the constraints"
+    ],
+    "steps": [
+      "Start with an initial estimate.",
+      "Select one constraint function rather than processing every constraint together.",
+      "Update the estimate using that constraint while accounting for the regularized objective.",
+      "Continue through the other constraints, repeating passes until the estimate is sufficiently settled.",
+      "Return the final estimate."
+    ],
+    "tradeoffs": [
+      "The row-action structure is well suited to large problems with efficiently enumerable constraints.",
+      "It applies to certain regularized convex problems, not optimization problems in general.",
+      "Convergence can be very fast with ℓ1 regularization because of error cancellation."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "problem",
+          "label": "Regularized problem",
+          "note": "Convex objective, regularizer, and constraints"
+        },
+        {
+          "id": "estimate",
+          "label": "Current estimate",
+          "note": "The candidate solution being refined"
+        },
+        {
+          "id": "constraint",
+          "label": "One constraint",
+          "note": "A single row-action constraint function"
+        },
+        {
+          "id": "update",
+          "label": "Iterative update",
+          "note": "Revise the estimate using that constraint"
+        },
+        {
+          "id": "solution",
+          "label": "Final estimate",
+          "note": "Returned after repeated constraint passes"
+        }
+      ],
+      "edges": [
+        {
+          "from": "problem",
+          "to": "constraint",
+          "label": "enumerates"
+        },
+        {
+          "from": "estimate",
+          "to": "update",
+          "label": "candidate"
+        },
+        {
+          "from": "constraint",
+          "to": "update",
+          "label": "one row"
+        },
+        {
+          "from": "update",
+          "to": "estimate",
+          "label": "repeats"
+        },
+        {
+          "from": "estimate",
+          "to": "solution",
+          "label": "settles"
+        }
+      ],
+      "caption": "The method repeatedly refines an estimate by accessing constraints individually."
+    }
+  },
   "related": [
     "active-set-method",
     "augmented-lagrangian-method",

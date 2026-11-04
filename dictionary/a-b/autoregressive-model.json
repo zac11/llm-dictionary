@@ -5,7 +5,88 @@
   "type": "concept",
   "definition": "A model that generates sequences one element at a time, with each new element conditioned on all previously generated elements.",
   "details": "Most modern LLMs are autoregressive: they generate text token-by-token, feeding each generated token back in as part of the context for predicting the next one.",
-  "story": "Imagine a sketch artist who starts with static and, stroke by stroke, sharpens it into a face. The result feels creative because it is memory, reshuffled at speed. Given a starting line, the machine imagines what comes next — a word, a note, a patch of a picture. The model dreams a little, then cleans up the dream. And that is Autoregressive Model — making something new out of everything it has ever seen.",
+  "explainer": {
+    "lead": "An autoregressive model builds a sequence one piece at a time, using what it has already produced to decide what comes next. This is how most modern large language models generate text, so it explains both their step-by-step output and why earlier words shape later ones.",
+    "tiers": {
+      "eli5": "It is like writing a story while covering up everything except what you have written so far. You add one word, look at the growing story, and then choose another word. A language model does the same thing with small pieces of text called tokens.",
+      "practitioner": "In an LLM, generation repeatedly appends a selected token to the context and runs the model again for the next token. The available context therefore grows during decoding, and generation proceeds one token at a time rather than producing the whole response in parallel.",
+      "paperLevel": "For a sequence x = (x_1, ..., x_T), an autoregressive model factorizes its probability as p(x) = product over t of p(x_t | x_<t). Each token is conditioned on all preceding tokens, including tokens generated earlier in the same output. Sequential generation means later positions cannot be produced before their predecessors."
+    },
+    "example": "Given the prompt \"The cat\", the model might generate \"sat\" and extend the sequence to \"The cat sat\". It then uses that whole sequence to predict \"on\", producing \"The cat sat on\".",
+    "usedIn": [
+      {
+        "name": "Large language models",
+        "detail": "Most modern LLMs generate responses token by token.",
+        "url": ""
+      },
+      {
+        "name": "Text generation",
+        "detail": "Each new piece of text is conditioned on the text generated so far.",
+        "url": ""
+      }
+    ],
+    "intuition": "Think of extending a sentence: every new choice depends on the sentence fragment already written. The model repeatedly turns its current partial sequence into a prediction for the next element.",
+    "howItWorks": [
+      "Start with the initial context, such as a prompt.",
+      "Predict the next token from that context.",
+      "Append the generated token to the sequence.",
+      "Use the extended sequence as the new context.",
+      "Repeat to generate the remaining tokens."
+    ],
+    "whyItMatters": "Autoregressive generation connects each output token to the full preceding context, making it a direct way to produce coherent sequences of varying length. It also explains why text generation is inherently sequential.",
+    "misconceptions": [
+      "It does not generate an entire response all at once; it adds one token at a time.",
+      "It does not condition on future tokens when predicting the next one.",
+      "Autoregressive describes how a sequence is generated, not a particular model size or product."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "context",
+          "label": "Current context",
+          "note": "Prompt plus tokens generated so far"
+        },
+        {
+          "id": "model",
+          "label": "Autoregressive model",
+          "note": "Conditions on the current context"
+        },
+        {
+          "id": "token",
+          "label": "Next token",
+          "note": "One newly generated element"
+        },
+        {
+          "id": "append",
+          "label": "Extend sequence",
+          "note": "Adds the token to the context"
+        }
+      ],
+      "edges": [
+        {
+          "from": "context",
+          "to": "model",
+          "label": "conditions on"
+        },
+        {
+          "from": "model",
+          "to": "token",
+          "label": "predicts"
+        },
+        {
+          "from": "token",
+          "to": "append",
+          "label": "feeds into"
+        },
+        {
+          "from": "append",
+          "to": "context",
+          "label": "updates"
+        }
+      ],
+      "caption": "Each generated token is appended to the context before the model predicts another token."
+    }
+  },
   "related": [
     "frontier-model",
     "long-context-model",

@@ -5,7 +5,128 @@
   "type": "concept",
   "definition": "A vector representation summarizing the semantic content of an entire document or document chunk, used for similarity-based retrieval.",
   "details": "Document embeddings allow systems to compare and search across large collections of text efficiently by reducing each document to a fixed-size vector that captures its meaning.",
-  "story": "Imagine a chef tasting every ingredient before it goes into the pot, deciding what belongs and what would ruin the broth. Better ingredients make a better meal, and the same is true here. Every machine is shaped by what it was shown, so someone has to choose that material with care. It is the raw material; the model is only ever as good as what it was fed. That care with the raw material is Document Embedding.",
+  "explainer": {
+    "lead": "A document embedding turns a document or passage into a fixed-length list of numbers that represents its meaning. This lets a search system compare text by semantic similarity, making large collections much easier to search.",
+    "tiers": {
+      "eli5": "Imagine giving every document a numerical “meaning tag,” so documents about similar things get similar tags. To find something, the computer compares tags instead of reading every document from beginning to end.",
+      "practitioner": "Embed documents or chunks once, store their fixed-size vectors, then embed a query and rank candidates by vector similarity. Retrieval quality depends on whether the chosen document or chunk representation preserves the distinctions users need. A fixed-size summary can lose details, so a close semantic match is not necessarily a document that contains the exact requested fact.",
+      "paperLevel": "For a document or chunk D, an embedding function produces f(D) = v in R^d, where d is fixed across the collection. Retrieval compares v with a query vector q using a similarity score sim(v, q), enabling efficient similarity-based search. The representation is lossy, and the choice between embedding whole documents and chunks affects what semantic content is retained."
+    },
+    "example": "A user searches for “how to reduce home heating costs.” A chunk about adding loft insulation and sealing draughts can be retrieved because its embedding is semantically similar to the query, even if it does not repeat the query’s exact wording.",
+    "usedIn": [
+      {
+        "name": "Semantic document search",
+        "detail": "Ranks documents whose vector representations are similar to a query’s meaning.",
+        "url": ""
+      },
+      {
+        "name": "Large text collections",
+        "detail": "Supports efficient comparison and retrieval without directly comparing every pair of full texts.",
+        "url": ""
+      },
+      {
+        "name": "Passage retrieval",
+        "detail": "Represents document chunks individually so smaller, semantically relevant sections can be found.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of treating a document as a long sequence of words, represent its overall meaning as a point in a vector space. Similarity between vectors then provides a practical way to find semantically related text.",
+    "howItWorks": [
+      "Choose a whole document or a document chunk to represent.",
+      "Convert its semantic content into a fixed-size vector.",
+      "Repeat this process across the text collection.",
+      "Compare a query representation with the stored vectors.",
+      "Retrieve documents or chunks with the most similar representations."
+    ],
+    "whyItMatters": "Document embeddings make meaning-based retrieval practical across large collections. They reduce every document or chunk to a consistent vector form that search systems can compare efficiently.",
+    "misconceptions": [
+      "An embedding is not a compressed copy from which the full document can necessarily be reconstructed.",
+      "A fixed-size vector summarizes meaning; it does not guarantee that every detail is preserved.",
+      "Document embeddings and document chunks are different: chunks are pieces of text, while embeddings are their vector representations."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "documents",
+          "label": "Source documents",
+          "note": "Text in a collection"
+        },
+        {
+          "id": "chunks",
+          "label": "Documents or chunks",
+          "note": "Units chosen for representation"
+        },
+        {
+          "id": "embed",
+          "label": "Embedding step",
+          "note": "Summarizes semantic content"
+        },
+        {
+          "id": "vectors",
+          "label": "Document vectors",
+          "note": "Fixed-size representations"
+        },
+        {
+          "id": "query",
+          "label": "Search query",
+          "note": "The information need"
+        },
+        {
+          "id": "query-vector",
+          "label": "Query vector",
+          "note": "Comparable query representation"
+        },
+        {
+          "id": "compare",
+          "label": "Similarity comparison",
+          "note": "Compares query and document vectors"
+        },
+        {
+          "id": "matches",
+          "label": "Retrieved matches",
+          "note": "Semantically similar text"
+        }
+      ],
+      "edges": [
+        {
+          "from": "documents",
+          "to": "chunks",
+          "label": "select units"
+        },
+        {
+          "from": "chunks",
+          "to": "embed",
+          "label": "text"
+        },
+        {
+          "from": "embed",
+          "to": "vectors",
+          "label": "vectors"
+        },
+        {
+          "from": "query",
+          "to": "query-vector",
+          "label": "embed"
+        },
+        {
+          "from": "vectors",
+          "to": "compare",
+          "label": "candidates"
+        },
+        {
+          "from": "query-vector",
+          "to": "compare",
+          "label": "query"
+        },
+        {
+          "from": "compare",
+          "to": "matches",
+          "label": "rank"
+        }
+      ],
+      "caption": "Documents or chunks become fixed-size vectors, which are compared with a query vector to retrieve semantically similar text."
+    }
+  },
   "related": [
     "embedding",
     "api-key",

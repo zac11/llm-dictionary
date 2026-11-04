@@ -5,7 +5,113 @@
   "type": "concept",
   "definition": "In computer science and operations research, the ant colony optimization algorithm (ACO) is a probabilistic technique for solving computational problems that can be reduced to finding good paths through graphs.",
   "details": "Artificial ants represent multi-agent methods inspired by the behavior of real ants. The pheromone-based communication of biological ants is often the predominant paradigm used. Combinations of artificial ants and local search algorithms have become a preferred method for numerous optimization tasks involving some sort of graph, e.g., vehicle routing and internet routing. As an example, ant colony optimization is a class of optimization algorithms modeled on the actions of an ant colony. Artificial 'ants' (e.g. simulation agents) locate optimal solutions by moving through a parameter space representing all possible solutions. Real ants lay down pheromones to direct each other to resources while exploring their environment. The simulated 'ants' similarly, record their positions and the quality of their solutions so that in later simulation iterations more ants locate better solutions. One variation on this approach is the bees algorithm, which is more analogous to the foraging patterns of the honey bee, another social insect. This algorithm is a member of the ant colony algorithms family, in swarm intelligence methods, and it constitutes some metaheuristic optimizations. Initially proposed by Marco Dorigo in 1992 in his PhD thesis, the first algorithm was aiming to search for an optimal path in a graph, based on the behavior of ants seeking a path between their colony and a source of food. The original idea has since diversified to solve a wider class of numerical problems, and as a result, several problems have emerged, drawing on various aspects of the behavior of ants. From a broader perspective, ACO performs a model-based search and shares some similarities with estimation of distribution algorithms.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. That steady, miss-by-miss improvement is Ant colony optimization algorithms.",
+  "explainer": {
+    "lead": "Ant colony optimization (ACO) solves routing and other graph-based problems by letting many simple simulated agents try different paths. Useful paths leave stronger artificial pheromone trails, guiding later agents while fading trails preserve room for exploration.",
+    "tiers": {
+      "eli5": "Imagine ants looking for food: when one finds a short route, other ants follow its smelly trail and make it stronger. Trails slowly fade, so an early route does not remain popular just because it was found first. ACO copies this idea inside a computer to search for good routes through a graph.",
+      "practitioner": "To apply ACO, express the optimization problem as finding a short path on a weighted graph. Each iteration generates stochastic solutions using edge lengths and pheromone levels, compares the resulting paths, and updates the pheromones; artificial ants are also commonly combined with local search for tasks such as vehicle and internet routing. Without evaporation, the first paths found can become excessively attractive, restricting exploration and encouraging convergence to a locally optimal solution.",
+      "paperLevel": "ACO is a probabilistic metaheuristic for optimization problems reducible to shortest-path search on a weighted graph. At state x, ant k constructs the feasible expansion set A_k(x) and moves to state y with probability p_xy^k, informed by edge length and pheromone; the main loop is generateSolutions(), daemonActions(), and pheromoneUpdate(). Marco Dorigo initially proposed the approach in his 1992 PhD thesis; evaporation is important in artificial systems for avoiding convergence to local optima, and ACO can be viewed as model-based search with similarities to estimation of distribution algorithms."
+    },
+    "example": "Suppose ants seek a path from S to G and try S-A-G, with total length 4, and S-B-G, with total length 9. After the paths are compared, the shorter route becomes more attractive through the pheromone update, while evaporation weakens trails; later ants are therefore more likely to follow S-A-G without being forced to abandon every alternative.",
+    "usedIn": [
+      {
+        "name": "Vehicle routing",
+        "detail": "Artificial ants, often combined with local search, search graphs for good vehicle routes.",
+        "url": ""
+      },
+      {
+        "name": "Internet routing",
+        "detail": "The same graph-based path-search approach is applied to routing through networks.",
+        "url": ""
+      }
+    ],
+    "intuition": "A colony can find a good route without any single ant understanding the whole problem: individuals explore, and shared pheromone trails accumulate evidence about which routes work well. ACO reproduces this feedback on a graph, balancing reinforcement of promising paths with evaporation that keeps alternatives open.",
+    "howItWorks": [
+      "Convert the optimization problem into finding a short path on a weighted graph.",
+      "Let each artificial ant stochastically build a path using edge lengths and pheromone levels.",
+      "Compare the paths produced by the different ants.",
+      "Update edge pheromones, including evaporation, then repeat until termination."
+    ],
+    "whyItMatters": "ACO turns the collective behavior of simple agents into a practical way to search large graphs for good solutions. Its combination of distributed exploration, reinforcement, and evaporation has made it useful for optimization tasks including vehicle routing and internet routing.",
+    "misconceptions": [
+      "ACO is a class of algorithms, not one single fixed procedure.",
+      "The artificial ants are computational agents, not simulations requiring detailed biological behavior.",
+      "Evaporation is not merely decorative: it helps prevent early paths from dominating the search."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "graph",
+          "label": "Weighted problem graph",
+          "note": "Edges carry lengths and pheromone levels."
+        },
+        {
+          "id": "generate",
+          "label": "Construct ant paths",
+          "note": "Each ant stochastically builds a solution."
+        },
+        {
+          "id": "compare",
+          "label": "Compare solutions",
+          "note": "Paths from different ants are evaluated."
+        },
+        {
+          "id": "update",
+          "label": "Update pheromones",
+          "note": "Trails are reinforced and evaporate."
+        },
+        {
+          "id": "result",
+          "label": "Good graph path",
+          "note": "The search returns a solution when terminated."
+        }
+      ],
+      "edges": [
+        {
+          "from": "graph",
+          "to": "generate",
+          "label": "lengths, pheromones"
+        },
+        {
+          "from": "generate",
+          "to": "compare",
+          "label": "candidate paths"
+        },
+        {
+          "from": "compare",
+          "to": "update",
+          "label": "path quality"
+        },
+        {
+          "from": "update",
+          "to": "generate",
+          "label": "next iteration"
+        },
+        {
+          "from": "compare",
+          "to": "result",
+          "label": "on termination"
+        }
+      ],
+      "caption": "Artificial ants repeatedly construct and compare graph paths, with pheromone updates guiding the next iteration."
+    },
+    "image": {
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/34/Safari_ants.jpg/960px-Safari_ants.jpg",
+      "alt": "Ant colony optimization algorithms — Optimization algorithm",
+      "width": 640,
+      "height": 424,
+      "credit": "Mehmet Karatay",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "page": "https://commons.wikimedia.org/wiki/File:Safari_ants.jpg"
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Ant colony optimization algorithms",
+        "url": "https://en.wikipedia.org/wiki/Ant_colony_optimization_algorithms"
+      }
+    ]
+  },
   "related": [
     "bacterial-colony-optimization",
     "automatic-clustering-algorithms",

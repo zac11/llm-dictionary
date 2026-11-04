@@ -5,7 +5,102 @@
   "type": "architecture",
   "definition": "Bidirectional recurrent neural networks (BRNN) connect two hidden layers of opposite directions to the same output.",
   "details": "With this form of generative deep learning, the output layer can get information from past (backwards) and future (forward) states simultaneously. Invented in 1997 by Schuster and Paliwal, BRNNs were introduced to increase the amount of input information available to the network. For example, multilayer perceptron (MLPs) and time delay neural network (TDNNs) have limitations on the input data flexibility, as they require their input data to be fixed. Standard recurrent neural network (RNNs) also have restrictions as the future input information cannot be reached from the current state. On the contrary, BRNNs do not require their input data to be fixed. Moreover, their future input information is reachable from the current state. BRNN are especially useful when the context of the input is needed. For example, in handwriting recognition, the performance can be enhanced by knowledge of the letters located before and after the current letter.",
-  "story": "Picture an architect laying out a building where every room has to know which other rooms matter to it. The layout decides what the machine can even attempt, before it learns a single thing. It is the blueprint that makes everything else possible. It is the difference between a row of isolated cubicles and one big room where everyone can hear each other. And that shape of the machine — Bidirectional recurrent neural networks — is what makes everything else possible.",
+  "explainer": {
+    "lead": "A bidirectional recurrent neural network reads a sequence in both directions, so each output can use context from before and after the current position. This is useful when surrounding information changes the interpretation, such as recognizing a handwritten letter from its neighboring letters.",
+    "tiers": {
+      "eli5": "Imagine trying to read a smudged letter in a handwritten word. Looking at the letters on both sides can help you work it out. This network does something similar: one part looks backward through the sequence, another looks forward, and both help make the decision.",
+      "practitioner": "Apply a BRNN when each prediction benefits from both preceding and following sequence context. Feed the input through two opposite-direction recurrent hidden layers and combine their information at the output layer. It avoids the fixed-input constraint of MLPs and TDNNs and the current-state limitation of standard RNNs, which cannot access future input information.",
+      "paperLevel": "At position t, the output y_t receives information from two hidden states with opposite directions: one carrying past information and the other carrying future information, written as y_t = output(h_backward_t, h_forward_t). Schuster and Paliwal introduced BRNNs in 1997 to increase the input information available to the network. Unlike standard RNNs, future input information is reachable from the current state."
+    },
+    "example": "In handwriting recognition, the network can identify the current letter using both the letters located before it and those located after it, improving performance when that surrounding context helps.",
+    "usedIn": [
+      {
+        "name": "Handwriting recognition",
+        "detail": "Knowledge of letters before and after the current letter can improve recognition performance.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Backward hidden layer",
+        "detail": "Processes information in one direction so the output can use past states."
+      },
+      {
+        "name": "Forward hidden layer",
+        "detail": "Processes information in the opposite direction so the output can use future states."
+      },
+      {
+        "name": "Shared output layer",
+        "detail": "Receives information from both hidden layers and produces the output using past and future context."
+      }
+    ],
+    "flow": [
+      "The input sequence is processed by hidden layers running in opposite directions.",
+      "The backward hidden layer supplies information from past states.",
+      "The forward hidden layer supplies information from future states.",
+      "Both hidden layers connect to the same output layer, which uses both kinds of context."
+    ],
+    "origin": "Schuster and Paliwal invented BRNNs in 1997 to increase the amount of input information available to the network.",
+    "lineage": "BRNNs address restrictions in earlier architectures: MLPs and TDNNs require fixed input data, while standard RNNs cannot reach future input information from the current state. BRNNs do not require fixed input data and make future information available alongside past information.",
+    "whyItMatters": "Many sequence elements are easier to interpret with context on both sides rather than history alone. Combining opposite-direction information gives the output a fuller view of the input.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input sequence",
+          "note": "Sequence requiring surrounding context"
+        },
+        {
+          "id": "backward",
+          "label": "Backward hidden layer",
+          "note": "Carries information from past states"
+        },
+        {
+          "id": "forward",
+          "label": "Forward hidden layer",
+          "note": "Carries information from future states"
+        },
+        {
+          "id": "output",
+          "label": "Shared output layer",
+          "note": "Combines both directions of information"
+        },
+        {
+          "id": "prediction",
+          "label": "Context-aware output",
+          "note": "Output informed by past and future"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "backward",
+          "label": "past context"
+        },
+        {
+          "from": "input",
+          "to": "forward",
+          "label": "future context"
+        },
+        {
+          "from": "backward",
+          "to": "output",
+          "label": ""
+        },
+        {
+          "from": "forward",
+          "to": "output",
+          "label": ""
+        },
+        {
+          "from": "output",
+          "to": "prediction",
+          "label": ""
+        }
+      ],
+      "caption": "Two opposite-direction hidden layers feed the same output, allowing past and future information to inform each result."
+    }
+  },
   "related": [
     "recurrent-neural-network",
     "confabulation-neural-networks",

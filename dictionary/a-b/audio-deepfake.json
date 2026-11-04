@@ -5,7 +5,119 @@
   "type": "concept",
   "definition": "Audio deepfake technology, also referred to as voice cloning or deepfake audio, is an application of artificial intelligence designed to generate speech that convincingly mimics specific individuals, often synthesizing phrases or sentences they have never spoken.",
   "details": "Initially developed with the intent to enhance various aspects of human life, it has practical applications such as generating audiobooks and assisting individuals who have lost their voices due to medical conditions. Additionally, it has commercial uses, including the creation of personalized digital assistants, natural-sounding text-to-speech systems, and advanced speech translation services. As with other forms of deepfakes, audio deepfakes have faced criticism for their use in scams, phishing, and misinformation campaigns.",
-  "story": "Think of a grammar teacher who never memorized a rule but can still tell you when a sentence sounds wrong. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It figures out meaning by noticing which words like to travel together. The machine learns to read between the lines by reading an impossible number of lines. And that is Audio deepfake — teaching a machine to read between the lines.",
+  "explainer": {
+    "lead": "An audio deepfake is computer-generated or altered speech that sounds like a particular person, including words they never actually said. The same technology can create audiobooks or restore a voice, but it can also make scams and misinformation more convincing.",
+    "tiers": {
+      "eli5": "Imagine a computer learning to imitate someone’s voice the way a skilled impressionist does. After studying recordings, it can read a new sentence aloud in that voice, even though the person never recorded it. That can help someone who has lost their voice, but it can also trick a listener into thinking a real person asked for money.",
+      "practitioner": "A typical synthetic system is trained on clean, transcribed speech and combines text analysis, an acoustic model, and a vocoder to generate a waveform in the target voice. Voice-conversion systems instead take speech as input and change its style, intonation, or prosody while preserving the words. Voice-corpus quality, textual ambiguity, and weak detection performance on non-English audio and varied accents are important pitfalls.",
+      "paperLevel": "Synthetic voice cloning can be expressed as learning a conditional mapping from input text x and target-speaker characteristics s to an audio waveform y, commonly through text analysis, acoustic modeling, and vocoding. WaveNet is named as the first breakthrough neural network for generating raw audio waveforms that emulate many speakers. Detection remains limited by scarce research beyond English, sensitivity to accent variation, and the cost of manual feature extraction and training at scale."
+    },
+    "example": "To clone a narrator’s voice, a system is trained on clean recordings of the narrator and their transcripts. Given the new sentence “The train leaves at noon,” it analyzes the text, applies the narrator’s learned vocal characteristics, and produces a waveform even though the narrator never spoke that sentence.",
+    "usedIn": [
+      {
+        "name": "Audiobook production",
+        "detail": "Synthetic voices can narrate text without a speaker recording every sentence.",
+        "url": ""
+      },
+      {
+        "name": "Assistive speech",
+        "detail": "Voice generation can help people who have lost their voices because of medical conditions.",
+        "url": ""
+      },
+      {
+        "name": "Digital assistants",
+        "detail": "Personalized assistants and text-to-speech systems can use natural-sounding synthetic voices.",
+        "url": ""
+      },
+      {
+        "name": "Speech translation",
+        "detail": "Voice synthesis is used in advanced speech-translation services.",
+        "url": ""
+      }
+    ],
+    "intuition": "A model learns the acoustic patterns that make a voice recognizable, then uses those patterns to produce new speech. Depending on the method, it starts with written text, an existing recording, or a replayed voice sample.",
+    "howItWorks": [
+      "Collect clean speech recordings and matching transcripts.",
+      "Train a speech model on this voice corpus.",
+      "Convert input text into linguistic features.",
+      "Combine those features with the target speaker’s acoustic characteristics.",
+      "Use a vocoder to generate the final speech waveform."
+    ],
+    "whyItMatters": "Audio deepfakes make synthetic speech more useful and accessible, but they also threaten trust in spoken communication. They have enabled large financial scams and can endanger voice-based identity checks, while reliable detection remains difficult.",
+    "misconceptions": [
+      "Not every audio deepfake is generated from text: some replay recordings, while others convert one person’s speech into another voice.",
+      "Voice conversion usually preserves the spoken words and changes how they sound; text-to-speech generates speech from written input.",
+      "A detector that works well on English is not necessarily reliable for other languages or accents."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "corpus",
+          "label": "Voice corpus",
+          "note": "Clean recordings with matching transcripts"
+        },
+        {
+          "id": "text",
+          "label": "Input text",
+          "note": "The new sentence to be spoken"
+        },
+        {
+          "id": "analysis",
+          "label": "Text analysis",
+          "note": "Converts text into linguistic features"
+        },
+        {
+          "id": "acoustic",
+          "label": "Acoustic model",
+          "note": "Combines language and speaker characteristics"
+        },
+        {
+          "id": "vocoder",
+          "label": "Vocoder",
+          "note": "Turns acoustic features into audio"
+        },
+        {
+          "id": "waveform",
+          "label": "Synthetic speech",
+          "note": "Waveform in the target voice"
+        }
+      ],
+      "edges": [
+        {
+          "from": "corpus",
+          "to": "acoustic",
+          "label": "training data"
+        },
+        {
+          "from": "text",
+          "to": "analysis",
+          "label": ""
+        },
+        {
+          "from": "analysis",
+          "to": "acoustic",
+          "label": "linguistic features"
+        },
+        {
+          "from": "acoustic",
+          "to": "vocoder",
+          "label": "acoustic features"
+        },
+        {
+          "from": "vocoder",
+          "to": "waveform",
+          "label": ""
+        }
+      ],
+      "caption": "A classical text-to-speech voice-cloning pipeline, from recordings and text to synthetic speech."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Audio deepfake",
+        "url": "https://en.wikipedia.org/wiki/Audio_deepfake"
+      }
+    ]
+  },
   "related": [
     "deepfake",
     "udio",

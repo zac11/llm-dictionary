@@ -5,7 +5,82 @@
   "type": "concept",
   "definition": "In computer vision a camera matrix or (camera) projection matrix is a 3 × 4 {\\displaystyle 3\\times 4} matrix which describes the mapping of a pinhole camera from 3D points in the world to 2D points in an image.",
   "details": "Let x {\\displaystyle \\mathbf {x} } be a representation of a 3D point in homogeneous coordinates (a 4-dimensional vector), and let y {\\displaystyle \\mathbf {y} } be a representation of the image of this point in the pinhole camera (a 3-dimensional vector). Then the following relation holds y ∼ C x {\\displaystyle \\mathbf {y} \\sim \\mathbf {C} \\,\\mathbf {x} } where C {\\displaystyle \\mathbf {C} } is the camera matrix and the ∼ {\\displaystyle \\,\\sim } sign implies that the left and right hand sides are equal except for a multiplication by a non-zero scalar k ≠ 0 {\\displaystyle k\\neq 0} : y = k C x . {\\displaystyle \\mathbf {y} =k\\,\\mathbf {C} \\,\\mathbf {x} .} Since the camera matrix C {\\displaystyle \\mathbf {C} } is involved in the mapping between elements of two projective spaces, it too can be regarded as a projective element. This means that it has only 11 degrees of freedom since any multiplication by a non-zero scalar results in an equivalent camera matrix.",
-  "story": "Picture walking through a crowd and instantly picking out a familiar face without reading a single name tag. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. It turns a picture into an understanding: this is a cat, that is a stop sign. Sight, for a machine, is a long climb from raw light to a name. That pixel-to-meaning climb is Camera matrix.",
+  "explainer": {
+    "lead": "A camera matrix is a compact mathematical link between a 3D scene and a 2D image. For a pinhole camera, it lets computer-vision systems calculate where a world point appears in the image.",
+    "tiers": {
+      "eli5": "Imagine a simple camera turning the position of a toy into a dot on a photo. A camera matrix is like the instruction sheet for that conversion: you give it the toy's location, and it helps work out where the dot belongs.",
+      "practitioner": "Represent the world point as a homogeneous 4-vector, multiply it by the 3 × 4 matrix, and interpret the resulting homogeneous 3-vector up to a non-zero scale before obtaining its 2D image position. Do not treat all 12 matrix entries as independent: multiplying the entire matrix by a non-zero scalar gives an equivalent projection, leaving 11 degrees of freedom.",
+      "paperLevel": "For a pinhole camera, C is a 3 × 4 projection matrix such that y = k C x, where x is a homogeneous 4-vector, y is a homogeneous image 3-vector, and k is non-zero. C is itself projective: C and aC are equivalent for any non-zero scalar a, so C has 11 degrees of freedom."
+    },
+    "example": "Take C with rows [1,0,0,0], [0,1,0,0], and [0,0,1,0], and let x = (2,3,4,1). Then Cx = (2,3,4); after homogeneous normalization this is (1/2,3/4,1), so the corresponding 2D image point is (0.5,0.75).",
+    "usedIn": [
+      {
+        "name": "Computer vision",
+        "detail": "Represents the projection of 3D world points into 2D image points.",
+        "url": ""
+      },
+      {
+        "name": "Pinhole camera models",
+        "detail": "Provides the 3 × 4 matrix describing the camera's projective mapping.",
+        "url": ""
+      }
+    ],
+    "intuition": "Think of the matrix as packaging the pinhole camera's projection rule into one multiplication. It maps a point's homogeneous world coordinates to homogeneous image coordinates, with overall scale carrying no additional meaning.",
+    "howItWorks": [
+      "Write the 3D world point as a homogeneous 4-vector x.",
+      "Multiply x by the 3 × 4 camera matrix C.",
+      "Read Cx as a homogeneous image vector, defined up to a non-zero scalar.",
+      "Normalize that image vector to obtain its 2D image position."
+    ],
+    "whyItMatters": "It expresses the central 3D-to-2D mapping of a pinhole camera in a single compact object. Its projective interpretation also explains why scale is ambiguous and why the matrix has 11 rather than 12 degrees of freedom.",
+    "misconceptions": [
+      "A 3 × 4 camera matrix has 12 independent degrees of freedom; it has 11 because overall scale is irrelevant.",
+      "Cx is already an ordinary 2D pixel coordinate; it is a homogeneous 3-vector defined up to scale.",
+      "Changing every entry of C by the same non-zero factor changes the projection; it produces an equivalent matrix."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "world-point",
+          "label": "3D world point",
+          "note": "Homogeneous 4-vector x"
+        },
+        {
+          "id": "camera-matrix",
+          "label": "Camera matrix",
+          "note": "3 × 4 projective matrix C"
+        },
+        {
+          "id": "image-vector",
+          "label": "Homogeneous image vector",
+          "note": "Three-vector defined up to scale"
+        },
+        {
+          "id": "image-point",
+          "label": "2D image point",
+          "note": "Result after homogeneous normalization"
+        }
+      ],
+      "edges": [
+        {
+          "from": "world-point",
+          "to": "camera-matrix",
+          "label": "multiply"
+        },
+        {
+          "from": "camera-matrix",
+          "to": "image-vector",
+          "label": "Cx"
+        },
+        {
+          "from": "image-vector",
+          "to": "image-point",
+          "label": "normalize"
+        }
+      ],
+      "caption": "The camera matrix maps homogeneous world coordinates to homogeneous image coordinates, which are then normalized to a 2D point."
+    }
+  },
   "related": [
     "essential-matrix",
     "fundamental-matrix-computer-vision",

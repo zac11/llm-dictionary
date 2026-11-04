@@ -5,7 +5,45 @@
   "type": "concept",
   "definition": "A fundamental tension in model design between bias (error from overly simplistic assumptions) and variance (error from excessive sensitivity to training data fluctuations).",
   "details": "Understanding the bias-variance tradeoff helps explain both underfitting (high bias) and overfitting (high variance), guiding decisions about model complexity, regularization, and the amount of training data needed.",
-  "story": "Imagine a new medicine that works brilliantly in the lab but still has to be tested on real people before anyone takes it. Think of it as the quiet rule that a tool should be useful without being dangerous. The idea is simple: before something powerful is let loose, someone checks that it will not do real harm to real people. Rules and red-teaming are the brakes that make the speed trustworthy. That deliberate caution is Bias-Variance Tradeoff.",
+  "explainer": {
+    "lead": "The bias-variance tradeoff describes why a model can fail by being either too simple or too reactive to its training data. It gives a practical way to think about model complexity, regularization, and training data when trying to make reliable predictions on new examples.",
+    "tiers": {
+      "eli5": "Imagine guessing the path of a ball. If you always draw a straight line, your simple rule may miss curved paths; if you bend the line through every tiny wobble you saw once, it may fail on the next throw. Good prediction means finding a balance between a rule that is too rigid and one that copies every accident in the examples.",
+      "practitioner": "Use the tradeoff when diagnosing underfitting and overfitting: high bias points toward overly restrictive assumptions, while high variance points toward excessive sensitivity to the training sample. Model complexity, regularization strength, and training-set size are the main levers highlighted by the idea. The pitfall is treating complexity alone as a diagnosis rather than checking whether the model generalizes beyond its training data.",
+      "paperLevel": "Bias is error caused by overly simplistic assumptions, and variance is error caused by sensitivity to fluctuations in the training data. For squared-error prediction, the standard decomposition is expected error = Bias^2 + Variance + irreducible error. The tradeoff frames underfitting as high bias and overfitting as high variance, rather than as a requirement to minimize either term alone."
+    },
+    "example": "Suppose house prices mostly rise with floor area but curve slightly at larger sizes. A straight-line model may underfit by forcing every relationship into that line, while an extremely flexible curve may overfit by bending around a few unusually cheap or expensive training houses; a moderately flexible model can capture the broad curve without chasing those exceptions.",
+    "usedIn": [
+      {
+        "name": "Predictive modeling",
+        "detail": "Used to diagnose whether poor predictions come from underfitting or overfitting.",
+        "url": ""
+      },
+      {
+        "name": "Model selection",
+        "detail": "Guides choices about how complex a model should be.",
+        "url": ""
+      },
+      {
+        "name": "Regularization",
+        "detail": "Helps motivate constraints that reduce excessive sensitivity to training data.",
+        "url": ""
+      }
+    ],
+    "intuition": "A very simple model can miss important patterns, while a very flexible one can treat accidental details of the training set as real patterns. Useful generalization sits between those failure modes.",
+    "howItWorks": [
+      "Train a model and examine whether it captures the underlying pattern.",
+      "If overly simple assumptions cause systematic errors, the model has high bias and may underfit.",
+      "If small training-data fluctuations cause large changes in predictions, the model has high variance and may overfit.",
+      "Adjust model complexity, regularization, or the amount of training data to improve performance on new examples."
+    ],
+    "whyItMatters": "It connects two common causes of poor generalization and turns them into practical modeling decisions. Instead of assuming that a more complex model is always better, it encourages balancing simplicity against sensitivity to the available data.",
+    "misconceptions": [
+      "Low bias alone does not guarantee good predictions; a low-bias model can still have high variance.",
+      "Overfitting is not simply using a complex model—it is excessive sensitivity to training-data fluctuations that harms generalization.",
+      "The goal is not zero bias or zero variance in isolation, but a useful balance for new data."
+    ]
+  },
   "related": [
     "inductive-bias",
     "convex-optimization",

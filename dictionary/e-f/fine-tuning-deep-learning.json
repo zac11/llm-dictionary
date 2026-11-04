@@ -5,7 +5,108 @@
   "type": "concept",
   "definition": "In deep learning, fine-tuning is the process of adapting a computational model trained for one task (the upstream task) to perform a different, usually more specific, task (the downstream task).",
   "details": "It is considered a form of transfer learning, as it reuses knowledge learned from the original training objective. Fine-tuning involves applying additional training (e.g., on new data) to the parameters of a neural network that have been pre-trained. Many variants exist. The additional training can be applied to the entire neural network, or to only a subset of its layers, in which case the layers that are not being fine-tuned are \"frozen\" (i.e., not changed during backpropagation). A model may also be augmented with \"adapters\"—lightweight modules inserted into the model's architecture that nudge the embedding space for domain adaptation. These contain far fewer parameters than the original model and can be fine-tuned in a parameter-efficient way by tuning only their weights and leaving the rest of the model's weights frozen. For some architectures, such as convolutional neural networks, it is common to keep the earlier layers (those closest to the input layer) frozen, as they capture lower-level features, while later layers often discern high-level features that can be more related to the task that the model is trained on. Models that are pre-trained on large, general corpora are usually fine-tuned by reusing their parameters as a starting point and adding a task-specific layer trained from scratch. Fine-tuning the full model is also common and often yields better results, but is more computationally expensive. Fine-tuning is typically accomplished via supervised learning, but there are also techniques to fine-tune a model using weak supervision. Fine-tuning can be combined with a reinforcement learning from human feedback-based objective to produce language models such as ChatGPT (a fine-tuned version of GPT models) and Sparrow.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. And that is Fine-tuning (deep learning) — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "Fine-tuning gives an already trained neural network extra practice for a new, usually more specific job. It reuses what the model has learned, saving the effort of starting from nothing, though updating the whole model can still be computationally expensive.",
+    "tiers": {
+      "eli5": "Imagine a musician who already knows how to play many songs learning one particular piece. They keep their general skills and practise the details that matter for the new performance. Fine-tuning does something similar with a neural network: it starts with learned settings and adjusts them using examples for the new task.",
+      "practitioner": "Start from pretrained parameters and continue training on downstream data, either with a new task-specific layer or across the existing network. Freezing early layers is common in convolutional networks because they capture lower-level features; full fine-tuning often performs better but costs more computation. Adapters offer a parameter-efficient alternative, and training is usually supervised but can use weak supervision or an RLHF-based objective.",
+      "paperLevel": "Given parameters theta_0 pretrained on an upstream objective, fine-tuning continues optimization from theta_0 for a downstream objective L_down(theta), commonly using new task data. Freezing fixes a subset of parameters, while adapter tuning inserts lightweight modules with parameters phi and optimizes phi while holding the original weights fixed. Updating every parameter often yields better results but is more computationally expensive."
+    },
+    "example": "To turn a pretrained language model into a support-request classifier, reuse its parameters and add a task-specific classification layer trained from scratch. Continue supervised training on labelled support requests, either updating the full network or freezing some layers to reduce the number of weights being changed.",
+    "usedIn": [
+      {
+        "name": "ChatGPT",
+        "detail": "A fine-tuned version of GPT models, produced with fine-tuning combined with a reinforcement learning from human feedback-based objective.",
+        "url": ""
+      },
+      {
+        "name": "Sparrow",
+        "detail": "A language model cited as another example of fine-tuning combined with an RLHF-based objective.",
+        "url": ""
+      },
+      {
+        "name": "Convolutional neural networks",
+        "detail": "Often adapted by freezing early layers that capture lower-level features and fine-tuning later layers for task-related, high-level features.",
+        "url": ""
+      }
+    ],
+    "intuition": "Pretraining supplies broadly useful knowledge, and fine-tuning reshapes that knowledge for a narrower purpose. The original parameters serve as a starting point rather than being discarded.",
+    "howItWorks": [
+      "Train a neural network on an upstream task and retain its learned parameters.",
+      "Choose the downstream task and prepare its additional training data.",
+      "Reuse the pretrained parameters, adding a task-specific layer trained from scratch when appropriate.",
+      "Continue training all weights, only selected layers, or lightweight adapters while other weights remain frozen.",
+      "Use the adapted parameters for the downstream task."
+    ],
+    "whyItMatters": "It lets one pretrained model support more specific tasks without repeating the original training process. Layer freezing and adapters also provide ways to reduce the computational cost, although full fine-tuning can give better results.",
+    "misconceptions": [
+      "Fine-tuning does not always update the entire network; layers can be frozen or adapters tuned alone.",
+      "It is not training from scratch, because it begins with parameters learned on an upstream task.",
+      "It is not limited to standard supervised learning; weak supervision and RLHF-based objectives can also be used."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "upstream",
+          "label": "Upstream training",
+          "note": "Learns parameters on the original task."
+        },
+        {
+          "id": "pretrained",
+          "label": "Pretrained model",
+          "note": "Supplies the starting parameters."
+        },
+        {
+          "id": "data",
+          "label": "Downstream data",
+          "note": "Provides examples for the new task."
+        },
+        {
+          "id": "tuning",
+          "label": "Additional training",
+          "note": "Updates all, selected, or adapter weights."
+        },
+        {
+          "id": "head",
+          "label": "Task-specific layer",
+          "note": "Can be added and trained from scratch."
+        },
+        {
+          "id": "downstream",
+          "label": "Adapted model",
+          "note": "Performs the more specific task."
+        }
+      ],
+      "edges": [
+        {
+          "from": "upstream",
+          "to": "pretrained",
+          "label": "learned weights"
+        },
+        {
+          "from": "pretrained",
+          "to": "tuning",
+          "label": "starting point"
+        },
+        {
+          "from": "data",
+          "to": "tuning",
+          "label": "new examples"
+        },
+        {
+          "from": "tuning",
+          "to": "downstream",
+          "label": "adapted weights"
+        },
+        {
+          "from": "head",
+          "to": "downstream",
+          "label": "task output"
+        }
+      ],
+      "caption": "Fine-tuning continues from pretrained parameters, using downstream data and optionally a new task-specific layer."
+    }
+  },
   "related": [
     "fine-tuning",
     "deep-learning",

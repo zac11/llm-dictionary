@@ -2,13 +2,38 @@
   "term": "Adam Optimizer",
   "letter": "A",
   "category": "Optimization",
-  "type": "concept",
+  "type": "algorithm",
   "aka": [
     "Adam"
   ],
   "definition": "An adaptive learning-rate optimization algorithm that combines momentum with per-parameter learning-rate scaling.",
   "details": "Adam (Adaptive Moment Estimation) is one of the most widely used optimizers for training deep neural networks, including large language models, due to its fast convergence and relatively low tuning burden.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. That steady, miss-by-miss improvement is Adam Optimizer.",
+  "explainer": {
+    "lead": "Adam is the workhorse optimizer behind most modern AI training. It automatically adjusts how much each parameter in a neural network should change, saving engineers from painstaking manual tuning while typically converging faster than simpler methods.",
+    "tiers": {
+      "eli5": "Imagine you're walking down a bumpy hill in fog, trying to find the lowest point. Adam is like a smart hiking guide who remembers which directions you've been going (momentum) and also notices which paths are consistently steep or flat (per-parameter scaling), so it suggests step sizes that fit each part of the terrain.",
+      "practitioner": "Adam is the default optimizer in PyTorch (`torch.optim.Adam`) and TensorFlow (`tf.keras.optimizers.Adam`), typically with default hyperparameters β₁=0.9, β₂=0.999, ε=1e-8, and learning rate 0.001. It works well across most architectures without per-parameter tuning, though it can generalize slightly worse than properly tuned SGD with momentum; practitioners sometimes switch to SGD after Adam's fast early convergence. Watch for instability with very large batch sizes or sparse gradients, where variants like AdamW (with proper weight decay) are often preferred.",
+      "paperLevel": "Adam maintains exponential moving averages of the gradient (first moment, m_t) and the squared gradient (second moment, v_t), with bias correction for initialization: m̂_t = m_t / (1 − β₁^t), v̂_t = v_t / (1 − β₂^t), then updates parameters as θ_t = θ_{t−1} − α · m̂_t / (√v̂_t + ε). The algorithm was introduced by Kingma and Ba in 2014. Known limitations include: convergence is not guaranteed in all non-convex settings, the second moment can accumulate spurious small gradients causing dead units, and the original formulation conflates weight decay with L2 regularization (addressed by Loshchilov and Hutter's AdamW decoupling)."
+    },
+    "example": "Training a small neural network: at step t=100, parameter w has gradient g=−0.5, with previous averages β₁=0.9, β₂=0.999. Its momentum m_100 = 0.9·m_99 + 0.1·(−0.5) = −0.08, and second moment v_100 = 0.999·v_99 + 0.001·0.25 ≈ 0.0015. After bias correction (dividing by 1−0.9^100 ≈ 0.999 and 1−0.999^100 ≈ 0.095), the update is −0.08/0.999 divided by √(0.0015/0.095) + 1e-8 ≈ −0.08 / 0.125 ≈ −0.64, multiplied by learning rate 0.001: w changes by +0.00064.",
+    "usedIn": [
+      {
+        "name": "Large language models",
+        "detail": "Default optimizer for training GPT-style transformers and their fine-tuning",
+        "url": ""
+      },
+      {
+        "name": "Computer vision",
+        "detail": "Standard choice for training ResNets, Vision Transformers, and diffusion models",
+        "url": ""
+      },
+      {
+        "name": "Recommendation systems",
+        "detail": "Used in deep learning ranking models with sparse embedding gradients",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "adamw",
     "flashattention",

@@ -5,7 +5,113 @@
   "type": "concept",
   "definition": "AI-assisted reverse engineering (AIARE) is a branch of computer science that leverages artificial intelligence (AI), notably machine learning (ML) strategies, to augment and automate the process of reverse engineering.",
   "details": "The latter involves breaking down a product, system, or process to comprehend its structure, design, and functionality. AIARE was primarily introduced in the early years of the 21st century, witnessing substantial advancements from the mid-2010s onwards.",
-  "story": "Imagine a chef tasting every ingredient before it goes into the pot, deciding what belongs and what would ruin the broth. Better ingredients make a better meal, and the same is true here. Every machine is shaped by what it was shown, so someone has to choose that material with care. It is the raw material; the model is only ever as good as what it was fed. And that is AI-assisted reverse engineering — the unglamorous work everything else stands on.",
+  "explainer": {
+    "lead": "AI-assisted reverse engineering uses machine learning to help people work out how a product or system is built and behaves. It can make software and hardware analysis faster and more approachable, but its explanations and generated code still need careful checking.",
+    "tiers": {
+      "eli5": "Imagine taking apart a complicated toy to learn how its pieces work together. An AI helper can spot familiar pieces, guess what they do, and explain the toy in simpler words. It can save a lot of time, but it might sometimes explain a piece incorrectly, so a person still needs to check.",
+      "practitioner": "A typical workflow feeds low-level output from a tool such as Ghidra, or data about an integrated circuit, into a model trained or prompted for the analysis task. Chat interfaces such as ChatGPT can produce summaries, explanations, and more readable decompiled source code. Generated code must be validated because it can contain new bugs, while inconsistent zero-shot results often require the user to supply good reference data.",
+      "paperLevel": "AIARE applies supervised, unsupervised, reinforcement, or deep learning to infer system components, functions, interconnections, structures, and potential vulnerabilities during reverse engineering. These settings support labeled component recognition, pattern discovery in unlabeled data, trial-and-error modeling of behavior, and high-dimensional integrated-circuit analysis. Known limits include erroneous generated code and inconsistent zero-shot inference without reference data in the prompt."
+    },
+    "example": "An analyst examining an unfamiliar binary uses Ghidra to obtain low-level code, then asks an AI model to explain the routines and produce more readable source code. The model may highlight a possible vulnerability and summarize how the components interact, but the analyst must test both claims because the rewritten code could contain bugs absent from the original.",
+    "usedIn": [
+      {
+        "name": "Cybersecurity",
+        "detail": "Supports vulnerability discovery, malware detection, and faster incident response.",
+        "url": ""
+      },
+      {
+        "name": "Software development",
+        "detail": "Helps analyze components and behavior for modification or improved compatibility.",
+        "url": ""
+      },
+      {
+        "name": "Hardware design and analysis",
+        "detail": "Deep learning can examine integrated-circuit layouts and connections with less manual effort.",
+        "url": ""
+      }
+    ],
+    "intuition": "Reverse engineering produces large amounts of difficult, low-level evidence. Machine learning acts as a pattern-finding assistant that turns some of that evidence into component labels, structural descriptions, vulnerability leads, and readable explanations.",
+    "howItWorks": [
+      "Break down the target system and collect code, behavioral data, or hardware-layout information.",
+      "Apply a suitable learning method, using labeled examples, unlabeled patterns, trial and error, or deep learning.",
+      "Infer components, connections, functions, structures, or possible vulnerabilities.",
+      "Present findings as decompiled code, summaries, and human-readable explanations.",
+      "Validate the results against the original system before relying on them."
+    ],
+    "whyItMatters": "Manual reverse engineering is slow and highly specialized, especially for intricate software and hardware. AIARE can reduce that effort, broaden access through plain-language interaction, and accelerate security work and hardware analysis.",
+    "misconceptions": [
+      "Readable AI-generated code is not necessarily equivalent to the original; rewriting can introduce errors.",
+      "The AI does not reliably understand an unfamiliar system from a bare prompt, because zero-shot results can be inconsistent without reference data."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "target",
+          "label": "Target system",
+          "note": "Software, hardware, or a process under examination"
+        },
+        {
+          "id": "evidence",
+          "label": "Analysis data",
+          "note": "Low-level code, behavior, labels, or circuit layouts"
+        },
+        {
+          "id": "learning",
+          "label": "Learning methods",
+          "note": "Supervised, unsupervised, reinforcement, or deep learning"
+        },
+        {
+          "id": "findings",
+          "label": "System findings",
+          "note": "Components, structures, behavior, and possible vulnerabilities"
+        },
+        {
+          "id": "explanation",
+          "label": "Readable output",
+          "note": "Decompiled source, summaries, and explanations"
+        },
+        {
+          "id": "validation",
+          "label": "Human validation",
+          "note": "Checks generated code and inferred behavior"
+        }
+      ],
+      "edges": [
+        {
+          "from": "target",
+          "to": "evidence",
+          "label": "examined as"
+        },
+        {
+          "from": "evidence",
+          "to": "learning",
+          "label": "analyzed by"
+        },
+        {
+          "from": "learning",
+          "to": "findings",
+          "label": "infers"
+        },
+        {
+          "from": "findings",
+          "to": "explanation",
+          "label": "presented as"
+        },
+        {
+          "from": "explanation",
+          "to": "validation",
+          "label": "checked by"
+        }
+      ],
+      "caption": "AIARE turns reverse-engineering evidence into inferred findings and readable output, followed by validation."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: AI-assisted reverse engineering",
+        "url": "https://en.wikipedia.org/wiki/AI-assisted_reverse_engineering"
+      }
+    ]
+  },
   "related": [
     "ai-assisted-software-development",
     "ai-assisted-targeting-in-the-gaza-strip",

@@ -5,7 +5,92 @@
   "type": "concept",
   "definition": "In computer vision, the bag-of-words (BoW) model, sometimes called bag-of-visual-words model (BoVW), can be applied to image classification or retrieval, by treating image features as words.",
   "details": "In document classification, a bag of words is a sparse vector of occurrence counts of words; that is, a sparse histogram over the vocabulary. In computer vision, a bag of visual words is a vector of occurrence counts of a vocabulary of local image features.",
-  "story": "Picture a child pointing at pictures in a book — cat, car, cloud — learning to see by seeing a thousand examples. It turns a picture into an understanding: this is a cat, that is a stop sign. What your eyes do without thinking, the machine does one careful layer at a time. It is eyes made of arithmetic — pixels become edges, edges become shapes, shapes become meaning. That pixel-to-meaning climb is Bag-of-words model in computer vision.",
+  "explainer": {
+    "lead": "The bag-of-visual-words model turns an image into a histogram that counts how often different local features appear. This gives image classification and retrieval systems a fixed-length summary they can compare or learn from.",
+    "tiers": {
+      "eli5": "Imagine sorting the little pieces of a picture into a few kinds, such as particular edges or patches, and counting each kind. You can then describe the whole picture with those counts instead of keeping every piece in its original place. Pictures with similar counts may be treated as similar.",
+      "practitioner": "Use it by building a vocabulary of local image features, assigning each detected feature to a visual word, and producing an occurrence-count vector for classification or retrieval. The vocabulary and feature-to-word assignment determine what the histogram captures. Because the representation keeps counts rather than feature locations, spatial arrangement is not retained.",
+      "paperLevel": "For local features f_1, ..., f_n and a vocabulary V = {v_1, ..., v_K}, let q(f_i) assign feature i to a visual word. The image representation is h_j = sum_{i=1}^n 1[q(f_i) = j], yielding a count histogram over the vocabulary, analogous to the sparse word-count vector used in document classification. The representation discards feature positions and depends on the chosen vocabulary and assignment."
+    },
+    "example": "Suppose a vocabulary contains three visual words, and an image has 15 local features assigned to them in groups of 8, 2, and 5. Its bag-of-visual-words vector is [8, 2, 5], which can then be compared with other image histograms or used as classification input.",
+    "usedIn": [
+      {
+        "name": "Image classification",
+        "detail": "A visual-word histogram serves as the image representation supplied to a classifier.",
+        "url": ""
+      },
+      {
+        "name": "Image retrieval",
+        "detail": "Images can be represented by their local-feature counts so their histograms can be compared.",
+        "url": ""
+      }
+    ],
+    "intuition": "Just as a document can be summarized by counting its words, an image can be summarized by counting occurrences from a vocabulary of local visual features. The result describes what kinds of features appear, not where they appear.",
+    "howItWorks": [
+      "Extract local image features from the images.",
+      "Construct a vocabulary whose entries act as visual words.",
+      "Assign each image feature to a visual word.",
+      "Count the assignments to form a histogram over the vocabulary.",
+      "Use that vector for image classification or retrieval."
+    ],
+    "whyItMatters": "It adapts the word-count representation from document classification to images, providing a fixed-length vector based on local features for classification and retrieval.",
+    "misconceptions": [
+      "The visual words are not ordinary written words; they are entries in a vocabulary of local image features.",
+      "The histogram records feature occurrences, not their positions or arrangement in the image."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "image",
+          "label": "Input image",
+          "note": "Image to represent"
+        },
+        {
+          "id": "features",
+          "label": "Local features",
+          "note": "Features extracted from the image"
+        },
+        {
+          "id": "vocabulary",
+          "label": "Visual vocabulary",
+          "note": "Entries acting as visual words"
+        },
+        {
+          "id": "histogram",
+          "label": "Count histogram",
+          "note": "Occurrence count for each visual word"
+        },
+        {
+          "id": "task",
+          "label": "Classification retrieval",
+          "note": "Tasks using the image vector"
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "features",
+          "label": "extract"
+        },
+        {
+          "from": "features",
+          "to": "vocabulary",
+          "label": "assign"
+        },
+        {
+          "from": "vocabulary",
+          "to": "histogram",
+          "label": "count"
+        },
+        {
+          "from": "histogram",
+          "to": "task",
+          "label": "represent"
+        }
+      ],
+      "caption": "Local image features are mapped to visual words and counted, producing a vector for classification or retrieval."
+    }
+  },
   "related": [
     "computer-vision",
     "bag-of-words-model",

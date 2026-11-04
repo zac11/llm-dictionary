@@ -5,7 +5,130 @@
   "type": "algorithm",
   "definition": "The bacterial colony optimization algorithm is an optimization algorithm which is based on a lifecycle model that simulates some typical behaviors of E.",
   "details": "coli bacteria during their whole lifecycle, including chemotaxis, communication, elimination, reproduction, and migration. The bacterial foraging algorithm (BFA) is a biologically inspired swarm intelligence optimization approach that mimics bacteria's foraging activity to gather the most energy available throughout the search phase. Since its introduction in 2002, it has garnered widespread interest from scholars.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. And that is Bacterial colony optimization — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "Bacterial colony optimization is a population-based way to search for a good solution by imitating stages in an E. coli colony’s lifecycle. It matters because its mix of movement, information sharing, elimination, reproduction, and migration offers several ways to explore and improve candidate solutions.",
+    "tiers": {
+      "eli5": "Imagine a group of hikers looking for the lowest point in a foggy valley. They try small steps, share what they find, give more chances to promising searchers, drop poor ones, and sometimes move somewhere new. Bacterial colony optimization uses a similar idea, with computer-generated candidate answers playing the part of the hikers.",
+      "practitioner": "Use it as a population-based optimizer by supplying an objective function, a search space, and a stopping rule, then applying the lifecycle-inspired updates repeatedly. Chemotaxis and communication guide search, while elimination, reproduction, and migration reshape the population; these mechanisms add tuning choices and can require many objective evaluations.",
+      "paperLevel": "For an objective f: X -> R, the algorithm seeks x* in argmin_{x in X} f(x) through population updates modeled on chemotaxis, communication, elimination, reproduction, and migration. It should be distinguished from the bacterial foraging algorithm, which specifically models bacteria’s energy-gathering foraging behavior and was introduced in 2002."
+    },
+    "example": "To minimize f(x) = x^2 on [-5, 5], start with candidates such as x = 3, x = -1.8, and x = 0.7. Movement and communication can produce candidates closer to zero, elimination removes weak ones, reproduction favors low scores, and migration explores other locations; a run might return x = 0.02 with f(x) = 0.0004.",
+    "usedIn": [
+      {
+        "name": "Numerical optimization",
+        "detail": "Searches a defined space of candidate values for one with a strong objective score.",
+        "url": ""
+      },
+      {
+        "name": "Swarm intelligence research",
+        "detail": "Provides a lifecycle-based counterpart to biologically inspired foraging methods.",
+        "url": ""
+      }
+    ],
+    "goal": "Find a candidate solution that minimizes or maximizes an objective by evolving a simulated bacterial colony.",
+    "inputs": [
+      "An objective function",
+      "A search space",
+      "An initial candidate population",
+      "Lifecycle and stopping settings"
+    ],
+    "outputs": [
+      "The best candidate found",
+      "Its objective score"
+    ],
+    "steps": [
+      "Initialize a population of candidate solutions and evaluate each one.",
+      "Apply chemotaxis-inspired movement to explore nearby candidates.",
+      "Use communication to share information within the colony.",
+      "Eliminate poorly performing candidates.",
+      "Reproduce promising candidates to strengthen useful search regions.",
+      "Apply migration to relocate candidates and continue searching.",
+      "Repeat until the stopping rule is met, then return the best result."
+    ],
+    "tradeoffs": [
+      "Several lifecycle operators give the search multiple ways to explore and improve.",
+      "Those operators also introduce settings that must be chosen and tuned.",
+      "A large population or long run can require many objective evaluations.",
+      "Migration can broaden exploration but may move candidates away from promising regions."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "population",
+          "label": "Candidate population",
+          "note": "Possible solutions with objective scores"
+        },
+        {
+          "id": "chemotaxis",
+          "label": "Chemotaxis",
+          "note": "Moves candidates through the search space"
+        },
+        {
+          "id": "communication",
+          "label": "Communication",
+          "note": "Shares information among candidates"
+        },
+        {
+          "id": "elimination",
+          "label": "Elimination",
+          "note": "Removes poorly performing candidates"
+        },
+        {
+          "id": "reproduction",
+          "label": "Reproduction",
+          "note": "Creates candidates from promising ones"
+        },
+        {
+          "id": "migration",
+          "label": "Migration",
+          "note": "Relocates candidates for further exploration"
+        },
+        {
+          "id": "result",
+          "label": "Best solution",
+          "note": "Returned when the search stops"
+        }
+      ],
+      "edges": [
+        {
+          "from": "population",
+          "to": "chemotaxis",
+          "label": ""
+        },
+        {
+          "from": "chemotaxis",
+          "to": "communication",
+          "label": "moved candidates"
+        },
+        {
+          "from": "communication",
+          "to": "elimination",
+          "label": "informed colony"
+        },
+        {
+          "from": "elimination",
+          "to": "reproduction",
+          "label": "survivors"
+        },
+        {
+          "from": "reproduction",
+          "to": "migration",
+          "label": "new candidates"
+        },
+        {
+          "from": "migration",
+          "to": "population",
+          "label": "next cycle"
+        },
+        {
+          "from": "migration",
+          "to": "result",
+          "label": "when stopped"
+        }
+      ],
+      "caption": "The colony repeatedly passes through lifecycle-inspired updates before returning its best-scoring candidate."
+    }
+  },
   "related": [
     "ant-colony-optimization-algorithms",
     "bayesian-optimization",

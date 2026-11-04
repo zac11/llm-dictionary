@@ -5,7 +5,144 @@
   "type": "concept",
   "definition": "In machine learning, attention is a method that determines the importance of each component in a sequence relative to the other components in that sequence.",
   "details": "In natural language processing, importance is represented by \"soft\" weights assigned to each word in a sentence. More generally, attention encodes vectors called token embeddings across a fixed-width sequence that can range from tens to millions of tokens in size. Unlike \"hard\" weights, which are computed during the backwards training pass, \"soft\" weights exist only in the forward pass and therefore change with every step of the input. Earlier designs implemented the attention mechanism in a serial recurrent neural network (RNN) language translation system, but a more recent design, namely the transformer, removed the slower sequential RNN and relied more heavily on the faster parallel attention scheme. Inspired by ideas about attention in humans, the attention mechanism was developed to address the weaknesses of using information from the hidden layers of recurrent neural networks. Recurrent neural networks favor information contained in words at the end of a sentence and thus deemed more recent, thereby tending to attenuate the significance and associated predictive weight assigned to information earlier in the sentence. Attention allows a token equal access to any part of a sentence directly, rather than only through the previous state.",
-  "story": "Imagine a factory floor where each workstation can glance at every other workstation before doing its part. It is the blueprint that makes everything else possible. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. Structure decides what the model can even express — the blueprint before the bricks. That blueprint is Attention (machine learning).",
+  "explainer": {
+    "lead": "Attention lets a model decide which parts of a sequence matter most for the part it is currently processing. This direct access to earlier and later tokens helped transformers replace slower recurrent designs in many language models.",
+    "tiers": {
+      "eli5": "Imagine reading a sentence and underlining the words that help you understand one particular word. Attention gives a computer a similar way to make some words count more than others, and those choices can change for every sentence. It means an important word near the beginning does not have to be forgotten by the time the computer reaches the end.",
+      "practitioner": "Transformers commonly use scaled dot-product attention over token embeddings, often combining several attention mechanisms as multi-head attention. In autoregressive decoder self-attention, apply causal masking so a position cannot use future outputs. Without positional encoding, attention is permutation-invariant, so token order must be supplied separately.",
+      "paperLevel": "For queries Q, keys K, and values V, scaled dot-product attention is Attention(Q,K,V) = softmax(QK^T / sqrt(d_k)) V, with softmax applied independently to each row; the resulting weights combine the rows of V. Consequently, each output row lies in the convex hull of the value vectors. Attention without positional encoding is permutation-invariant, while autoregressive decoding requires causal masking to remove attention weights to future positions."
+    },
+    "example": "In the sentence “Mina fed the cat because it was hungry,” processing “it” can assign a large weight to “cat” and smaller weights to less relevant words. Its output is then a weighted mixture of the corresponding value vectors, rather than information passed only through the immediately preceding recurrent state.",
+    "usedIn": [
+      {
+        "name": "BERT",
+        "detail": "One of the frontier-model families after which attention-heavy transformer designs largely replaced RNNs.",
+        "url": ""
+      },
+      {
+        "name": "T5",
+        "detail": "A transformer-based language model named among the systems marking the shift away from RNN designs.",
+        "url": ""
+      },
+      {
+        "name": "GPT",
+        "detail": "A model family using transformer-style attention rather than relying on sequential recurrence.",
+        "url": ""
+      },
+      {
+        "name": "Machine translation",
+        "detail": "Early attention mechanisms were implemented in serial RNN translation systems to improve use of sentence information.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of squeezing a whole sentence into the previous recurrent state, attention lets each token look directly at other tokens. It assigns soft weights that express their relative importance for the current computation, so the useful mixture can change with every input.",
+    "howItWorks": [
+      "Represent the fixed-width input sequence as token-embedding vectors, and form query, key, and value matrices Q, K, and V.",
+      "Compare queries with keys using QK^T, dividing by sqrt(d_k) to scale the scores.",
+      "Add a mask when required; causal masking uses negative infinity for future positions so their weights become zero.",
+      "Apply softmax independently to each row, producing the attention weights.",
+      "Multiply the weights by V to produce a weighted combination of value vectors; several such heads can be concatenated in multi-head attention."
+    ],
+    "whyItMatters": "Attention counters the tendency of RNNs to favor recent words and weaken information from earlier in a sentence. Transformers removed the slower sequential RNN and relied more heavily on parallel attention, supporting sequences ranging from tens to millions of tokens.",
+    "misconceptions": [
+      "Attention weights are not fixed importance scores: these soft weights exist in the forward pass and change with the input.",
+      "Attention does not inherently understand word order; without positional encoding, it is permutation-invariant.",
+      "Causal masking is not always required: it specifically prevents decoder self-attention from attending to future outputs during autoregressive decoding."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "embeddings",
+          "label": "Token embeddings",
+          "note": "Vectors for the input sequence"
+        },
+        {
+          "id": "qkv",
+          "label": "Queries keys values",
+          "note": "Matrices Q, K, and V"
+        },
+        {
+          "id": "scores",
+          "label": "Scaled scores",
+          "note": "Compute QK^T / sqrt(d_k)"
+        },
+        {
+          "id": "mask",
+          "label": "Optional mask",
+          "note": "Block disallowed or future positions"
+        },
+        {
+          "id": "softmax",
+          "label": "Softmax weights",
+          "note": "Normalize each row of scores"
+        },
+        {
+          "id": "mix",
+          "label": "Weighted values",
+          "note": "Multiply the weights by V"
+        },
+        {
+          "id": "output",
+          "label": "Output vectors",
+          "note": "One weighted representation per query"
+        }
+      ],
+      "edges": [
+        {
+          "from": "embeddings",
+          "to": "qkv",
+          "label": ""
+        },
+        {
+          "from": "qkv",
+          "to": "scores",
+          "label": "Q and K"
+        },
+        {
+          "from": "scores",
+          "to": "mask",
+          "label": ""
+        },
+        {
+          "from": "mask",
+          "to": "softmax",
+          "label": ""
+        },
+        {
+          "from": "softmax",
+          "to": "mix",
+          "label": "weights"
+        },
+        {
+          "from": "qkv",
+          "to": "mix",
+          "label": "V"
+        },
+        {
+          "from": "mix",
+          "to": "output",
+          "label": ""
+        }
+      ],
+      "caption": "Scaled dot-product attention compares queries and keys, optionally masks positions, turns scores into weights, and mixes the value vectors."
+    },
+    "image": {
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/62/Attention_mechanism_overview.svg/960px-Attention_mechanism_overview.svg.png",
+      "alt": "Attention (machine learning) — Machine learning technique",
+      "width": 640,
+      "height": 477,
+      "credit": "Zhang, Aston and Lipton, Zachary C. and Li, Mu and Smola, Alexander J.",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Attention_mechanism_overview.svg"
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Attention (machine learning)",
+        "url": "https://en.wikipedia.org/wiki/Attention_(machine_learning)"
+      }
+    ]
+  },
   "related": [
     "machine-learning",
     "active-learning-machine-learning",

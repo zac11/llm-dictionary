@@ -2,10 +2,99 @@
   "term": "Bing Vision",
   "letter": "B",
   "category": "Computer vision",
-  "type": "concept",
+  "type": "tool",
   "definition": "Bing Vision is an image recognition application created by Microsoft which is installed on Windows Phones running version 7.5 and above, including Windows Phone 8.",
   "details": "It is a part of the Bing Mobile suite of services, and on most devices can be accessed using the search button. On Windows Phone 8.1 devices where Microsoft Cortana is available, it is only available through the lenses of the Camera app (as the search button now activates Cortana). Bing Vision can scan barcodes, QR codes, Microsoft Tags, books, CDs, and DVDs. Books, CDs, and DVDs are offered through Bing Shopping.",
-  "story": "Picture walking through a crowd and instantly picking out a familiar face without reading a single name tag. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. It turns a picture into an understanding: this is a cat, that is a stop sign. Sight, for a machine, is a long climb from raw light to a name. That pixel-to-meaning climb is Bing Vision.",
+  "explainer": {
+    "lead": "Bing Vision was Microsoft's image-recognition tool for Windows Phone, letting the camera identify codes and certain physical products. It brought barcode, QR code, and product scanning into the phone's built-in search and camera experience.",
+    "tiers": {
+      "eli5": "Bing Vision was like giving a Windows Phone a pair of eyes for special labels and products. You could point its camera at a barcode, QR code, book, CD, or DVD instead of typing a description. The phone could then recognize what it saw, with product results offered through Bing Shopping.",
+      "practitioner": "Bing Vision was built into Windows Phone 7.5 and later as part of Bing Mobile, rather than being a separate developer library. On most devices it opened through the search button; on Windows Phone 8.1 devices with Cortana, it was reached through Camera app lenses instead. Integrators and testers should account for that device-dependent entry point and for books, CDs, and DVDs being handled through Bing Shopping.",
+      "paperLevel": "Bing Vision can be represented as f(camera image) -> recognized code or product result, with supported inputs including barcodes, QR codes, Microsoft Tags, books, CDs, and DVDs. Its documented limits are its Windows Phone platform support and its device-dependent access path; no internal recognition model or scoring method is specified."
+    },
+    "example": "On a Windows Phone 8 handset, press the search button and point the camera at a book. Bing Vision scans the book, and its result is offered through Bing Shopping.",
+    "usedIn": [
+      {
+        "name": "Windows Phone 7.5 and Windows Phone 8",
+        "detail": "Bing Vision was installed as part of the Bing Mobile services and was usually accessible with the search button.",
+        "url": ""
+      },
+      {
+        "name": "Windows Phone 8.1 Camera app",
+        "detail": "On devices with Cortana, Bing Vision was available through Camera lenses because the search button activated Cortana.",
+        "url": ""
+      },
+      {
+        "name": "Bing Shopping",
+        "detail": "Recognized books, CDs, and DVDs were offered through Bing Shopping.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of describing an object by typing, you show it to the phone's camera. Bing Vision turns what the camera sees into a recognized code or product result.",
+    "howItWorks": [
+      "Open Bing Vision with the search button, or through Camera lenses on Windows Phone 8.1 devices with Cortana.",
+      "Point the camera at a supported code, book, CD, or DVD.",
+      "Bing Vision scans the image and recognizes the item or code.",
+      "For books, CDs, and DVDs, the product is offered through Bing Shopping."
+    ],
+    "whyItMatters": "It made visual search a built-in phone feature, reducing the need to type product names or code contents. It also shows an early integration of image recognition with mobile search and shopping.",
+    "misconceptions": [
+      "It was not limited to QR codes: it also scanned barcodes, Microsoft Tags, books, CDs, and DVDs.",
+      "The search button did not always open it; on Windows Phone 8.1 devices with Cortana, it was accessed through Camera lenses."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "target",
+          "label": "Code or product",
+          "note": "A supported code, book, CD, or DVD"
+        },
+        {
+          "id": "camera",
+          "label": "Phone camera",
+          "note": "Captures the item's image"
+        },
+        {
+          "id": "vision",
+          "label": "Bing Vision",
+          "note": "Scans and recognizes the target"
+        },
+        {
+          "id": "result",
+          "label": "Recognition result",
+          "note": "Returns the recognized code or item"
+        },
+        {
+          "id": "shopping",
+          "label": "Bing Shopping",
+          "note": "Offers book, CD, and DVD results"
+        }
+      ],
+      "edges": [
+        {
+          "from": "target",
+          "to": "camera",
+          "label": "image"
+        },
+        {
+          "from": "camera",
+          "to": "vision",
+          "label": "scan"
+        },
+        {
+          "from": "vision",
+          "to": "result",
+          "label": "recognition"
+        },
+        {
+          "from": "result",
+          "to": "shopping",
+          "label": "products"
+        }
+      ],
+      "caption": "Bing Vision turned a camera view of a supported target into a recognition result, with product results passed to Bing Shopping."
+    }
+  },
   "related": [
     "active-vision",
     "bag-of-words-model-in-computer-vision",

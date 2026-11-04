@@ -5,7 +5,96 @@
   "type": "concept",
   "definition": "Best arm identification (BAI) is a sequential one-player game where the player has to find the best action (arm) among a list of actions (arms) by collecting information in the most efficient way.",
   "details": "It is a multi-armed bandit game as a player only gets information about an arm by playing it. The most common objective in multi-armed bandit games is to minimize the regret (i.e., play the best action as much as possible), but in BAI, the goal is to find the best arm as efficiently as possible. This problem naturally arises in scenarios such as adaptive clinical trials where the number of patients is limited and the quantification of the confidence in a treatment is important. It also arises in hyperparameter optimization where the goal is to find the optimal choice of hyperparameters for an algorithm with the smallest possible number of experiments, as it can be costly in terms of time, energy, or money.",
-  "story": "Imagine a factory floor where each workstation can glance at every other workstation before doing its part. It is the blueprint that makes everything else possible. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. Structure decides what the model can even express — the blueprint before the bricks. And that shape of the machine — Best arm identification — is what makes everything else possible.",
+  "explainer": {
+    "lead": "Best arm identification is about finding the best option through repeated tests while using as few tests as possible. It matters when each experiment consumes a limited budget, such as patients in a clinical trial or time and money in hyperparameter search.",
+    "tiers": {
+      "eli5": "Imagine trying several games to discover which one gives you the most points, but you only have a few turns. Each turn teaches you something about just the game you chose. Best arm identification means using those turns wisely so you can finish with a confident pick instead of simply collecting points.",
+      "practitioner": "Use best arm identification when the deliverable is a recommended option rather than strong performance during exploration, such as selecting hyperparameters under a fixed experiment budget. Repeatedly choose an arm, observe its outcome, update the comparison, and stop when the evidence or budget supports a recommendation. A common pitfall is optimizing cumulative reward instead of identification efficiency, or stopping before uncertainty about the leading arms has been adequately addressed.",
+      "paperLevel": "Given K arms, the learner sequentially selects an arm and observes information only for that arm, then aims to return the best arm efficiently. This contrasts with regret minimization, where the objective is to play the best arm as often as possible during learning. Efficiency is central because observations may be limited or costly, and applications such as adaptive clinical trials also require confidence in the selected treatment."
+    },
+    "example": "Suppose an algorithm has three hyperparameter settings and only enough time for a small number of training runs. Each run tests one setting and reveals its result; later runs focus on resolving uncertainty among the leading settings. The process ends by recommending the setting judged best, rather than maximizing results accumulated across all the test runs.",
+    "usedIn": [
+      {
+        "name": "Adaptive clinical trials",
+        "detail": "Compare treatments when the number of patients is limited and confidence in the recommended treatment matters.",
+        "url": ""
+      },
+      {
+        "name": "Hyperparameter optimization",
+        "detail": "Find a strong hyperparameter choice with as few costly experiments as possible.",
+        "url": ""
+      }
+    ],
+    "intuition": "Spend experiments where they most help distinguish the promising options, rather than treating every option equally or chasing the largest total reward. The final recommendation is the prize, not performance during the search.",
+    "howItWorks": [
+      "Start with a set of arms, each representing one available action.",
+      "Choose an arm and play it to obtain information about that arm alone.",
+      "Use the observations to compare the arms and guide the next choice.",
+      "Continue until the available budget or confidence supports selecting the best arm."
+    ],
+    "whyItMatters": "It makes experimentation more efficient when tests are expensive in time, energy, money, or patient participation. It also separates the goal of making a good final choice from the goal of performing well during every exploratory trial.",
+    "misconceptions": [
+      "It is not the usual regret-minimization objective: playing the current favorite as often as possible is not the main goal.",
+      "It is not a single simultaneous comparison: information about an arm is obtained by sequentially playing that arm."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "arms",
+          "label": "Available arms",
+          "note": "The actions to compare"
+        },
+        {
+          "id": "select",
+          "label": "Select an arm",
+          "note": "Choose the next experiment"
+        },
+        {
+          "id": "observe",
+          "label": "Observe outcome",
+          "note": "Gain information only about the chosen arm"
+        },
+        {
+          "id": "compare",
+          "label": "Compare evidence",
+          "note": "Update which arms look best"
+        },
+        {
+          "id": "recommend",
+          "label": "Recommend best",
+          "note": "Return the selected arm"
+        }
+      ],
+      "edges": [
+        {
+          "from": "arms",
+          "to": "select",
+          "label": ""
+        },
+        {
+          "from": "select",
+          "to": "observe",
+          "label": "play"
+        },
+        {
+          "from": "observe",
+          "to": "compare",
+          "label": ""
+        },
+        {
+          "from": "compare",
+          "to": "select",
+          "label": "continue"
+        },
+        {
+          "from": "compare",
+          "to": "recommend",
+          "label": "stop"
+        }
+      ],
+      "caption": "The learner repeatedly tests one arm at a time, then stops to recommend the arm it identifies as best."
+    }
+  },
   "related": [
     "language-identification",
     "native-language-identification",

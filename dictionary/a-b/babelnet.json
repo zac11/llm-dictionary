@@ -5,7 +5,118 @@
   "type": "concept",
   "definition": "BabelNet is a multilingual lexical-semantic knowledge graph, ontology and encyclopedic dictionary developed at the NLP group of the Sapienza University of Rome under the supervision of Roberto Navigli.",
   "details": "BabelNet was automatically created by linking Wikipedia to the most popular computational lexicon of the English language, WordNet. The integration is done using an automatic mapping and by filling in lexical gaps in resource-poor languages by using statistical machine translation. The result is an encyclopedic dictionary that provides concepts and named entities lexicalized in many languages and connected with large amounts of semantic relations. Additional lexicalizations and definitions are added by linking to free-license wordnets, OmegaWiki, the English Wiktionary, Wikidata, FrameNet, VerbNet and others. Similarly to WordNet, BabelNet groups words in different languages into sets of synonyms, called Babel synsets. For each Babel synset, BabelNet provides short definitions (called glosses) in many languages harvested from both WordNet and Wikipedia.",
-  "story": "Imagine an art restorer who can spot a single cracked tile in a vast mosaic. What your eyes do without thinking, the machine does one careful layer at a time. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. The model looks the way you look at a crowd and finds the one face you know. That pixel-to-meaning climb is BabelNet.",
+  "explainer": {
+    "lead": "BabelNet connects meanings and named entities across languages in one large lexical-semantic knowledge graph. It gives researchers a shared way to look up synonyms, short definitions, and semantic relations without treating each language as a separate vocabulary.",
+    "tiers": {
+      "eli5": "Imagine a giant set of index cards, where each card holds different words for the same idea in many languages, plus a short explanation. BabelNet builds these cards by joining Wikipedia with WordNet and other word resources. It also uses automatic translation to help fill missing words in languages with fewer resources.",
+      "practitioner": "Use Babel synsets as meaning-level identifiers when working with multilingual concepts or named entities, then retrieve their lexicalizations, glosses, and semantic relations. It is useful when a task needs links across languages rather than English-only WordNet senses. Because construction relies on automatic mappings and statistical machine translation, validate noisy mappings and expect uneven coverage in resource-poor languages.",
+      "paperLevel": "BabelNet can be represented as a multilingual lexical-semantic graph G = (V, E), where V contains Babel synsets for concepts and named entities and E contains semantic relations. Synsets are constructed through automatic Wikipedia–WordNet mapping, enriched with resources including free-license wordnets, OmegaWiki, Wiktionary, Wikidata, FrameNet, and VerbNet, while statistical machine translation fills lexical gaps. Automatic integration can introduce mapping or translation errors, and lexical coverage varies across languages."
+    },
+    "example": "For the named entity Rome, BabelNet can group its names across languages in a Babel synset and associate that synset with short definitions. The same representation can then be reached through different languages and connected to other synsets by semantic relations.",
+    "usedIn": [
+      {
+        "name": "Multilingual natural language processing",
+        "detail": "Provides cross-language concepts, named entities, synonyms, and semantic relations.",
+        "url": ""
+      },
+      {
+        "name": "Lexical-semantic research",
+        "detail": "Supplies meaning-level Babel synsets with glosses gathered from WordNet and Wikipedia.",
+        "url": ""
+      },
+      {
+        "name": "Resource-poor language processing",
+        "detail": "Uses statistical machine translation to add lexicalizations where existing resources have gaps.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of keeping every language's dictionary separate, BabelNet organizes words around the meanings they share. A Babel synset acts like a multilingual hub for one concept or named entity.",
+    "howItWorks": [
+      "Automatically map Wikipedia entries to WordNet meanings.",
+      "Group synonyms across languages into Babel synsets.",
+      "Attach multilingual glosses harvested from WordNet and Wikipedia.",
+      "Add lexicalizations and definitions from other linked lexical resources.",
+      "Fill some lexical gaps with statistical machine translation and connect synsets through semantic relations."
+    ],
+    "whyItMatters": "It combines encyclopedic coverage of named entities with WordNet-style organization of word meanings. Its multilingual synsets and gap-filling approach also extend lexical-semantic information beyond English and into languages with fewer handcrafted resources.",
+    "misconceptions": [
+      "BabelNet is not simply a translated copy of WordNet; it also integrates Wikipedia and several other resources.",
+      "A Babel synset groups synonyms for a meaning or entity, not every sense of an ambiguous word.",
+      "Its contents are not entirely manually curated; automatic mapping and machine translation play central roles."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "wikipedia",
+          "label": "Wikipedia",
+          "note": "Concepts, entities, and glosses"
+        },
+        {
+          "id": "wordnet",
+          "label": "WordNet",
+          "note": "English synonym sets and glosses"
+        },
+        {
+          "id": "mapping",
+          "label": "Automatic mapping",
+          "note": "Links Wikipedia to WordNet"
+        },
+        {
+          "id": "resources",
+          "label": "Lexical resources",
+          "note": "Additional words and definitions"
+        },
+        {
+          "id": "translation",
+          "label": "Machine translation",
+          "note": "Fills lexical gaps"
+        },
+        {
+          "id": "synsets",
+          "label": "Babel synsets",
+          "note": "Multilingual synonyms and glosses"
+        },
+        {
+          "id": "graph",
+          "label": "Semantic graph",
+          "note": "Relations connect synsets"
+        }
+      ],
+      "edges": [
+        {
+          "from": "wikipedia",
+          "to": "mapping",
+          "label": "entries"
+        },
+        {
+          "from": "wordnet",
+          "to": "mapping",
+          "label": "senses"
+        },
+        {
+          "from": "mapping",
+          "to": "synsets",
+          "label": "integrates"
+        },
+        {
+          "from": "resources",
+          "to": "synsets",
+          "label": "enriches"
+        },
+        {
+          "from": "translation",
+          "to": "synsets",
+          "label": "lexicalizes"
+        },
+        {
+          "from": "synsets",
+          "to": "graph",
+          "label": "connects"
+        }
+      ],
+      "caption": "BabelNet builds multilingual synsets from mapped and translated lexical information, then links them through semantic relations."
+    }
+  },
   "related": [
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",
     "accelerated-linear-algebra",

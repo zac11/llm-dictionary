@@ -5,7 +5,97 @@
   "type": "concept",
   "definition": "Bootstrap aggregating, also called bagging (from bootstrap aggregating) or bootstrapping, is a machine learning (ML) ensemble meta-algorithm designed to improve the stability and accuracy of ML classification and regression algorithms.",
   "details": "It also reduces variance and overfitting. Although it is usually applied to decision tree methods, it can be used with any type of method. Bagging is a special case of the ensemble averaging approach.",
-  "story": "Think of a referee whose job is to be completely honest about who touched the ball last. Before trusting a machine, someone has to measure how good it really is — fairly and honestly. It is the exam that separates “it sounds good” from “it actually is good”. What gets measured is what actually gets better. That shared ruler is Bootstrap aggregating.",
+  "explainer": {
+    "lead": "Bagging builds several models from different resampled versions of the same training data, then combines their answers. This can make predictions more stable and accurate while reducing variance and overfitting.",
+    "tiers": {
+      "eli5": "Imagine asking several friends to guess the answer after giving each one a slightly different mix of the same clues, then combining their guesses. Bagging does this with computer models: each learns from its own mixed-up copy of the examples, and the group gives the final answer. A group can be less easily thrown off by odd examples than one model alone.",
+      "practitioner": "Create multiple bootstrap samples, fit the same kind of base learner to each, and average regression outputs or combine classification votes. It is usually applied to decision trees but works with other methods; its main benefits are lower variance, less overfitting, and greater stability. Do not confuse the resampling step with the complete ensemble procedure.",
+      "paperLevel": "Given training data D, draw B bootstrap samples D_1, ..., D_B and train a model T_b on each. For regression, f_bag(x) = (1/B) * sum_b T_b(x); for classification, aggregate the models' predictions, commonly by voting. Bagging is a special case of ensemble averaging, intended to improve stability and accuracy while reducing variance and overfitting, and is not restricted to decision trees."
+    },
+    "example": "To estimate house prices from 100 training examples, create 30 bootstrap samples of 100 draws each and train one decision tree per sample. For a new house, each tree predicts a price, and bagging returns the average of those 30 prices.",
+    "usedIn": [
+      {
+        "name": "Classification",
+        "detail": "Models trained on different bootstrap samples combine their predictions to produce a class label.",
+        "url": ""
+      },
+      {
+        "name": "Regression",
+        "detail": "The predictions of models trained on bootstrap samples are averaged to produce a numerical answer.",
+        "url": ""
+      },
+      {
+        "name": "Decision tree methods",
+        "detail": "The usual setting for bagging, where combining trees can reduce variance and overfitting.",
+        "url": ""
+      }
+    ],
+    "intuition": "A single model can be sensitive to the particular examples it sees. Training on different resampled versions of the data and combining the results smooths out some of that sensitivity.",
+    "howItWorks": [
+      "Start with one training dataset.",
+      "Draw several bootstrap samples from it.",
+      "Train a separate model on each sample.",
+      "Average regression predictions or combine classification votes."
+    ],
+    "whyItMatters": "Bagging offers a general way to make classification and regression less variable and less prone to overfitting. It is especially associated with decision trees but can be applied to other learning methods.",
+    "misconceptions": [
+      "Bagging is not just drawing a bootstrap sample; it also trains multiple models and aggregates them.",
+      "It is not limited to decision trees, although they are its usual application.",
+      "The combined prediction is not produced by one model trained on all the samples at once."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data",
+          "label": "Training data",
+          "note": "The original examples"
+        },
+        {
+          "id": "samples",
+          "label": "Bootstrap samples",
+          "note": "Several resampled datasets"
+        },
+        {
+          "id": "models",
+          "label": "Base models",
+          "note": "One model per sample"
+        },
+        {
+          "id": "aggregate",
+          "label": "Prediction aggregate",
+          "note": "Average or combine votes"
+        },
+        {
+          "id": "output",
+          "label": "Final prediction",
+          "note": "The ensemble answer"
+        }
+      ],
+      "edges": [
+        {
+          "from": "data",
+          "to": "samples",
+          "label": "resample"
+        },
+        {
+          "from": "samples",
+          "to": "models",
+          "label": "train"
+        },
+        {
+          "from": "models",
+          "to": "aggregate",
+          "label": "predict"
+        },
+        {
+          "from": "aggregate",
+          "to": "output",
+          "label": ""
+        }
+      ],
+      "caption": "Bagging resamples one dataset, trains separate models, and combines their predictions."
+    }
+  },
   "related": [
     "a-r-d-prasad",
     "abeba-birhane",

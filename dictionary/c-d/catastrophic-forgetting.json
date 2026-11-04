@@ -5,7 +5,117 @@
   "type": "concept",
   "definition": "The tendency of a neural network to lose previously learned information when it is trained on new data or tasks.",
   "details": "Catastrophic forgetting is a challenge in continual and fine-tuning scenarios, motivating techniques like rehearsal, regularization-based methods, or parameter-efficient fine-tuning that preserve prior knowledge.",
-  "story": "Think of a hiker descending a foggy hill in the dark, taking small steps and feeling for the steepest way down. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. It is the same loop you use to learn anything: try, miss, correct, try again. Skill, for a model, is just error pushed down until it is small enough to ignore. That steady, miss-by-miss improvement is Catastrophic Forgetting.",
+  "explainer": {
+    "lead": "Catastrophic forgetting happens when a neural network learns something new and, in the process, loses knowledge it had before. It matters whenever a model is expected to adapt over time without abandoning earlier skills.",
+    "tiers": {
+      "eli5": "Imagine practicing a new song so much that you forget how to play an old one. A neural network can do something similar: after learning a new task, it may become worse at a task it previously knew. Methods such as reviewing old material can help it remember.",
+      "practitioner": "Catastrophic forgetting is a concern in continual learning and when fine-tuning an existing model on new data or tasks. Rehearsal, regularization-based methods, and parameter-efficient fine-tuning are used to preserve prior knowledge. A practical check is to evaluate earlier tasks after adaptation, since improvement on the new task alone can hide regression.",
+      "paperLevel": "Let a network be trained on task A and then on task B; catastrophic forgetting occurs when training on B causes a loss of previously learned information, observable as degraded behavior or performance on A. It is a central challenge in continual and fine-tuning scenarios. Rehearsal, regularization-based methods, and parameter-efficient fine-tuning are approaches motivated by the need to retain prior knowledge."
+    },
+    "example": "A neural network first learns to classify images of cats and dogs. It is then trained on car images and learns that task, but afterward misclassifies many cats and dogs it previously handled correctly: its new training has caused it to forget earlier knowledge.",
+    "usedIn": [
+      {
+        "name": "Continual learning",
+        "detail": "Models learn new tasks while earlier knowledge must be preserved.",
+        "url": ""
+      },
+      {
+        "name": "Neural network fine-tuning",
+        "detail": "Adapting a trained model to new data can degrade earlier capabilities.",
+        "url": ""
+      },
+      {
+        "name": "Parameter-efficient fine-tuning",
+        "detail": "Used as an approach to adapt models while preserving prior knowledge.",
+        "url": ""
+      }
+    ],
+    "intuition": "Training changes a neural network to fit its current data. When that training focuses on a new task, the changes can interfere with what the network learned earlier.",
+    "howItWorks": [
+      "A network learns an earlier task.",
+      "Training then begins on new data or a new task.",
+      "The network changes to fit the new training objective.",
+      "Those changes disrupt previously learned information.",
+      "The network becomes worse at the earlier task."
+    ],
+    "whyItMatters": "Updating a model should not require sacrificing capabilities it already has. Catastrophic forgetting makes continual learning and fine-tuning harder and motivates methods designed to retain earlier knowledge.",
+    "misconceptions": [
+      "It is not merely failure to learn the new task; the defining problem is losing earlier knowledge.",
+      "Forgetting need not mean every earlier capability disappears; previously learned information or performance can be lost to varying degrees."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "old-data",
+          "label": "Earlier task data",
+          "note": "Data used for initial learning"
+        },
+        {
+          "id": "old-training",
+          "label": "Initial training",
+          "note": "The network learns the earlier task"
+        },
+        {
+          "id": "trained-network",
+          "label": "Trained network",
+          "note": "Prior knowledge is present"
+        },
+        {
+          "id": "new-data",
+          "label": "New task data",
+          "note": "Data for subsequent adaptation"
+        },
+        {
+          "id": "new-training",
+          "label": "New training",
+          "note": "The network adapts to the new task"
+        },
+        {
+          "id": "updated-network",
+          "label": "Updated network",
+          "note": "New learning is acquired"
+        },
+        {
+          "id": "lost-knowledge",
+          "label": "Forgotten knowledge",
+          "note": "Earlier information or performance is lost"
+        }
+      ],
+      "edges": [
+        {
+          "from": "old-data",
+          "to": "old-training",
+          "label": ""
+        },
+        {
+          "from": "old-training",
+          "to": "trained-network",
+          "label": ""
+        },
+        {
+          "from": "trained-network",
+          "to": "new-training",
+          "label": ""
+        },
+        {
+          "from": "new-data",
+          "to": "new-training",
+          "label": ""
+        },
+        {
+          "from": "new-training",
+          "to": "updated-network",
+          "label": ""
+        },
+        {
+          "from": "updated-network",
+          "to": "lost-knowledge",
+          "label": "interference"
+        }
+      ],
+      "caption": "Learning a new task can interfere with knowledge acquired during earlier training."
+    }
+  },
   "related": [
     "exploding-gradient-problem",
     "llm-observability",

@@ -5,7 +5,118 @@
   "type": "concept",
   "definition": "In applied mathematics, branch and price is a method of combinatorial optimization for solving integer linear programming (ILP) and mixed integer linear programming (MILP) problems with many variables.",
   "details": "The method is a hybrid of branch and bound and column generation methods.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. And that is Branch and price — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "Branch and price tackles optimization problems with so many possible variables that listing them all at once is impractical. It combines adding useful variables only when needed with a systematic search for an integer solution.",
+    "tiers": {
+      "eli5": "Imagine choosing the best mix of thousands of possible delivery plans without writing every plan on your list. You start with a few, add promising new ones as you discover them, and then split the choices into smaller cases until every decision is a clear yes or no.",
+      "practitioner": "Use it for an ILP or MILP whose formulation has a very large number of variables. Implement column generation for the relaxed problem and embed it within branch and bound, taking care that branching still allows new columns to be generated correctly. The main pitfalls are managing the huge variable set and coordinating pricing with branching.",
+      "paperLevel": "For an ILP written as min c^T x subject to Ax = b and x integer, branch and price applies when A has too many columns to handle explicitly. Column generation solves restricted problems and prices omitted columns, while branch and bound enforces integrality; the method extends to MILP, where only some variables must be integer."
+    },
+    "example": "Suppose a model has 10,000 possible plans but starts with only 20. Column generation adds promising omitted plans until no further improvement is found; if the result uses half of each of two plans, branching separates those choices and continues the search until the selected plans are whole decisions.",
+    "usedIn": [
+      {
+        "name": "Integer linear programming",
+        "detail": "Solving ILP formulations with very many variables.",
+        "url": ""
+      },
+      {
+        "name": "Mixed integer linear programming",
+        "detail": "Handling MILP models where only some variables must be integer.",
+        "url": ""
+      },
+      {
+        "name": "Combinatorial optimization",
+        "detail": "Searching large discrete decision spaces without explicitly using every variable.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of carrying every possible variable through the whole search, work with a small set and add variables only when they can improve the solution. Then use branching to remove fractional choices and reach an integer answer.",
+    "howItWorks": [
+      "Start with a manageable subset of the problem's variables.",
+      "Solve the current restricted problem.",
+      "Use column generation to look for omitted variables that could improve it, and add them.",
+      "If the solution is fractional, branch and bound splits the search into smaller cases.",
+      "Repeat pricing and branching until an integer solution is established."
+    ],
+    "whyItMatters": "It makes very large ILP and MILP formulations more tractable by avoiding an explicit search over every variable from the outset. Its strength comes from combining variable generation with a systematic integer search.",
+    "misconceptions": [
+      "It is not just branch and bound: column generation is an essential part of the method.",
+      "It does not require all variables to be present in the initial problem.",
+      "It is not limited to pure ILP; it also applies to MILP."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "restricted",
+          "label": "Restricted problem",
+          "note": "Contains a manageable subset of variables."
+        },
+        {
+          "id": "solve",
+          "label": "Solve relaxation",
+          "note": "Produces the current solution and pricing information."
+        },
+        {
+          "id": "pricing",
+          "label": "Price new columns",
+          "note": "Searches omitted variables for possible improvements."
+        },
+        {
+          "id": "fractional",
+          "label": "Check integrality",
+          "note": "Tests whether integer requirements are satisfied."
+        },
+        {
+          "id": "branch",
+          "label": "Branch search",
+          "note": "Splits fractional cases into smaller problems."
+        },
+        {
+          "id": "integer",
+          "label": "Integer solution",
+          "note": "The search finishes with whole decisions."
+        }
+      ],
+      "edges": [
+        {
+          "from": "restricted",
+          "to": "solve",
+          "label": ""
+        },
+        {
+          "from": "solve",
+          "to": "pricing",
+          "label": "pricing data"
+        },
+        {
+          "from": "pricing",
+          "to": "restricted",
+          "label": "new columns"
+        },
+        {
+          "from": "pricing",
+          "to": "fractional",
+          "label": "no improvement"
+        },
+        {
+          "from": "fractional",
+          "to": "branch",
+          "label": "fractional"
+        },
+        {
+          "from": "branch",
+          "to": "restricted",
+          "label": "subproblems"
+        },
+        {
+          "from": "fractional",
+          "to": "integer",
+          "label": "integral"
+        }
+      ],
+      "caption": "Column generation improves the restricted problem, while branching handles fractional solutions."
+    }
+  },
   "related": [
     "branch-and-bound",
     "branch-and-cut",

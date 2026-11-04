@@ -5,7 +5,119 @@
   "type": "concept",
   "definition": "An alternating decision tree (ADTree) is a machine learning method for classification.",
   "details": "It generalizes decision trees and has connections to boosting. An ADTree consists of an alternation of decision nodes, which specify a predicate condition, and prediction nodes, which contain a single number. An instance is classified by an ADTree by following all paths for which all decision nodes are true, and summing any prediction nodes that are traversed.",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. And that idea, made concrete, is Alternating decision tree.",
+  "explainer": {
+    "lead": "An alternating decision tree is a classifier that combines a tree’s structure with boosting’s numeric scores. Instead of sending an example down just one branch, it follows every branch whose conditions hold and adds the scores encountered. This structure can show relationships between attributes that an unstructured collection of boosted weak learners may obscure.",
+    "tiers": {
+      "eli5": "Imagine a clubhouse with several paths, where some gates open only if a statement about you is true. You walk through every path whose gates all open and collect the numbers along the way. Adding those numbers gives a final score: its sign chooses the category, and a larger magnitude means greater confidence.",
+      "practitioner": "Use an ADTree for binary classification when you want boosted numeric rules organized in a tree; implementations are available in Weka and JBoost. Score an instance by traversing all decision nodes whose predicates hold, summing every prediction node reached, and using the score’s sign for the class. Treat individual node scores cautiously during interpretation because boosting reweights the data at each iteration.",
+      "paperLevel": "An ADTree alternates predicate decision nodes with numeric prediction nodes, with prediction nodes at both the root and leaves; its score is f(x) = sum of the values at all prediction nodes on paths whose decision predicates are satisfied. Training uses instances (x_i, y_i), where y_i is in {-1, +1}, and instance weights w_i; each rule has precondition p, condition c, and two scores, returning 0 when p fails. ADTrees were introduced by Yoav Freund and Llew Mason, with clarifications and optimizations by Bernhard Pfahringer, Geoffrey Holmes and Richard Kirkby. A limitation for interpretation is that node scores reflect the data reweighting at each iteration."
+    },
+    "example": "In a tree built with JBoost on the spambase dataset, spam was coded as 1 and regular email as −1. One instance’s traversed prediction nodes summed to 0.657; because this score was positive, the instance was classified as spam, with the score’s magnitude indicating confidence.",
+    "usedIn": [
+      {
+        "name": "Weka",
+        "detail": "Provides an implementation of alternating decision trees.",
+        "url": ""
+      },
+      {
+        "name": "JBoost",
+        "detail": "Implements ADTrees and was used to construct the article’s example tree.",
+        "url": ""
+      },
+      {
+        "name": "Spam classification",
+        "detail": "A JBoost-built ADTree was demonstrated on the spambase dataset from the UCI Machine Learning Repository.",
+        "url": ""
+      }
+    ],
+    "intuition": "Think of the tree as a set of nested rules rather than a single route to a leaf. Every applicable rule contributes a number, so separate predictions and combinations of conditions can be represented in one structured classifier.",
+    "howItWorks": [
+      "Start with training instances, binary labels and instance weights.",
+      "Build rules with a precondition, a condition and two numeric scores.",
+      "Arrange alternating decision and prediction nodes, with prediction nodes at the root and leaves.",
+      "For a new instance, follow every path on which all decision predicates are true.",
+      "Sum the traversed prediction values and use the score’s sign for classification."
+    ],
+    "whyItMatters": "ADTrees connect decision-tree structure with boosting instead of producing an unstructured set of independent hypotheses. Requiring later hypotheses to build on earlier ones makes parent–child relationships visible and can help reveal correlations between attributes.",
+    "misconceptions": [
+      "An instance does not follow only one path, as it would in CART or C4.5.",
+      "A prediction node contains a numeric score, not a final class label.",
+      "An individual node’s score should not be read as an isolated effect because the data is reweighted between iterations."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "instance",
+          "label": "Input instance",
+          "note": "An attribute vector to classify."
+        },
+        {
+          "id": "root",
+          "label": "Root prediction",
+          "note": "A numeric value that contributes to the score."
+        },
+        {
+          "id": "decision",
+          "label": "Decision node",
+          "note": "Tests a predicate condition."
+        },
+        {
+          "id": "prediction",
+          "label": "Prediction nodes",
+          "note": "Values reached along every valid path."
+        },
+        {
+          "id": "sum",
+          "label": "Sum scores",
+          "note": "Adds all traversed prediction values."
+        },
+        {
+          "id": "class",
+          "label": "Classification",
+          "note": "The sign selects the class; magnitude measures confidence."
+        }
+      ],
+      "edges": [
+        {
+          "from": "instance",
+          "to": "root",
+          "label": "enters"
+        },
+        {
+          "from": "root",
+          "to": "decision",
+          "label": "next test"
+        },
+        {
+          "from": "decision",
+          "to": "prediction",
+          "label": "true paths"
+        },
+        {
+          "from": "root",
+          "to": "sum",
+          "label": "value"
+        },
+        {
+          "from": "prediction",
+          "to": "sum",
+          "label": "values"
+        },
+        {
+          "from": "sum",
+          "to": "class",
+          "label": "final score"
+        }
+      ],
+      "caption": "Classification follows all paths whose predicates hold, then sums every prediction value encountered."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Alternating decision tree",
+        "url": "https://en.wikipedia.org/wiki/Alternating_decision_tree"
+      }
+    ]
+  },
   "related": [
     "decision-tree",
     "decision-tree-learning",

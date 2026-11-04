@@ -5,7 +5,141 @@
   "type": "algorithm",
   "definition": "In multi-armed bandit problems, IMED (for Indexed Minimum Empirical Divergence) is an algorithm developed in 2015 by Junya Honda and Akimichi Takemura.",
   "details": "It is the first algorithm proved to be asymptotically optimal respect to the problem-dependant Lai–Robbins lower bound for distributions in ( − ∞ , 1 ] {\\displaystyle (-\\infty ,1]} .",
-  "story": "Imagine a video game where the only feedback is the score ticking up or down — and you learn by playing a million rounds. Instead of being told the rules, it discovers them by living with the consequences. The machine is not handed the answers — it tries things, earns a reward or a miss, and slowly figures out what works. Reward, not instructions, is the teacher. That learn-by-reward loop is Algorithm IMED.",
+  "explainer": {
+    "lead": "IMED is a rule for choosing repeatedly among several options whose rewards are initially unknown. It gives each option a score based on its observed results and how often it has been tried, then chooses the lowest score. This provides a principled way to balance exploring alternatives with using the current favourite while limiting long-run regret.",
+    "tiers": {
+      "eli5": "Imagine several snack machines, and you do not know which one gives the best treats. IMED keeps notes on what each machine has given you and how many times you have tried it. Each turn, it gives the machines scores and tries the one with the smallest score, so a promising machine gets used often without forgotten machines being ignored.",
+      "practitioner": "IMED can serve as the arm-selection policy in a bandit loop, with empirical distributions, pull counts, and the current best empirical mean updated after every observation. Each turn requires evaluating K_inf for every arm, so those divergence calculations are central to an implementation. Its optimality result is asymptotic and tied to the stated distribution setting, not a guarantee for every finite run.",
+      "paperLevel": "At turn t, IMED selects argmin_a I_a(t), where I_a(t) = N_a(t) K_inf(nu_hat_a(t), mu_hat_star(t)) + ln(N_a(t)); K_inf(nu, mu, D) is the infimum of KL(nu, nu_tilde) over admissible distributions nu_tilde with mean greater than mu. Regret is R_T = sum_a Delta_a E[N_a(T)], with Delta_a = mu_star - mu_a. Introduced by Junya Honda and Akimichi Takemura in 2015, IMED was the first algorithm proved asymptotically optimal with respect to the problem-dependent Lai–Robbins lower bound for distributions in (-infinity, 1]."
+    },
+    "example": "Suppose a two-arm problem has current IMED indices of 2.1 for arm A and 1.4 for arm B. IMED pulls arm B because its index is smaller, records the resulting observation, updates B's empirical distribution and pull count, and then recomputes both indices for the next turn.",
+    "usedIn": [
+      {
+        "name": "Clinical trials",
+        "detail": "An application area for multi-armed bandit algorithms making sequential choices from observations.",
+        "url": ""
+      },
+      {
+        "name": "Recommender systems",
+        "detail": "An application area for bandit algorithms that repeatedly select among alternatives as feedback arrives.",
+        "url": ""
+      },
+      {
+        "name": "Telecommunications",
+        "detail": "A field listed as using multi-armed bandit algorithms for sequential decision problems.",
+        "url": ""
+      },
+      {
+        "name": "Agriculture",
+        "detail": "A field listed as an application area for multi-armed bandit algorithms.",
+        "url": ""
+      }
+    ],
+    "goal": "Choose an arm at every turn using only earlier actions and observations, so that regret grows as little as possible. This means learning which arm has the highest mean while still playing the current best-looking arm often.",
+    "inputs": [
+      "A set of K arms with unknown distributions",
+      "A distribution family D known to the player",
+      "Previous actions and observations (a_s, X_s) for s < t"
+    ],
+    "outputs": [
+      "The arm a_t to pull at the current turn",
+      "An updated action-observation history after the new result is recorded"
+    ],
+    "steps": [
+      "Maintain each arm's empirical distribution and number of pulls, together with the highest current empirical mean.",
+      "For every arm, compute N_a(t) times K_inf(nu_hat_a(t), mu_hat_star(t)).",
+      "Add ln(N_a(t)) to obtain that arm's IMED index.",
+      "Pull the arm with the smallest index.",
+      "Observe X_t from the chosen arm, add the action and observation to the history, and repeat."
+    ],
+    "tradeoffs": [
+      "The index balances evidence that an arm could be optimal against a penalty for having pulled that arm many times.",
+      "Asymptotic optimality applies to the stated Lai–Robbins setting and distributions in (-infinity, 1], rather than guaranteeing minimal regret at every finite time."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "history",
+          "label": "Past pulls",
+          "note": "Earlier actions and observations"
+        },
+        {
+          "id": "estimates",
+          "label": "Update estimates",
+          "note": "Empirical distributions, pull counts, and best mean"
+        },
+        {
+          "id": "indices",
+          "label": "Compute indices",
+          "note": "Calculate an IMED index for every arm"
+        },
+        {
+          "id": "select",
+          "label": "Select minimum",
+          "note": "Choose the arm with the smallest index"
+        },
+        {
+          "id": "pull",
+          "label": "Pull arm",
+          "note": "Receive an observation from its distribution"
+        },
+        {
+          "id": "record",
+          "label": "Record outcome",
+          "note": "Add the action and observation to history"
+        }
+      ],
+      "edges": [
+        {
+          "from": "history",
+          "to": "estimates",
+          "label": "summarize"
+        },
+        {
+          "from": "estimates",
+          "to": "indices",
+          "label": "score arms"
+        },
+        {
+          "from": "indices",
+          "to": "select",
+          "label": "compare"
+        },
+        {
+          "from": "select",
+          "to": "pull",
+          "label": "chosen arm"
+        },
+        {
+          "from": "pull",
+          "to": "record",
+          "label": "observation"
+        },
+        {
+          "from": "record",
+          "to": "history",
+          "label": "next turn"
+        }
+      ],
+      "caption": "IMED repeatedly turns the observation history into per-arm indices, pulls the lowest-index arm, and records the result."
+    },
+    "image": {
+      "src": "https://upload.wikimedia.org/wikipedia/commons/3/3f/RunIMED.gif",
+      "alt": "Algorithm IMED — Algorithm for the multi-armed bandit problem",
+      "width": 640,
+      "height": 914,
+      "credit": "Adrien PREVOST",
+      "license": "CC0",
+      "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "page": "https://commons.wikimedia.org/wiki/File:RunIMED.gif"
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Algorithm IMED",
+        "url": "https://en.wikipedia.org/wiki/Algorithm_IMED"
+      }
+    ]
+  },
   "related": [
     "actor-critic-algorithm",
     "algorithm-selection",

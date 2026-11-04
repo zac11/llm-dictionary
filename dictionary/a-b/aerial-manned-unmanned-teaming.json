@@ -5,7 +5,139 @@
   "type": "concept",
   "definition": "Aerial manned-unmanned teaming is the collaborative operation of manned and unmanned aircraft systems, typically in military contexts.",
   "details": "The human pilot or crew of a manned aircraft controls, coordinates, or supervises one or more autonomous or semi-autonomous loyal wingman drones or unmanned fighter aircraft with loyal wingman capabilities or other types of unmanned combat aerial vehicles (UCAVs) to improve situational awareness, reduce risk, better perform in complex environments, and possibly reduce the need for crewed units. Examples of the concept include the loyal wingman drone also known as collaborative combat aircraft (CCA). Loyal wingman drones are intended to operate with manned combat aircraft, including sixth-generation fighters, and use an artificial intelligence (AI) \"autonomy package\" to increase its ability to operate without explicit human direction.",
-  "story": "Think of a lightbulb moment: the idea was always there, but someone had to point a finger at it. Behind the jargon is an idea you could explain to a friend over coffee. At its heart it is a simple notion, once you strip away the fancy name. Once you see it, you cannot unsee it. And that idea, made concrete, is Aerial manned-unmanned teaming.",
+  "explainer": {
+    "lead": "Aerial manned-unmanned teaming is how military aircraft crews now direct robot wingmen from the cockpit, turning one pilot into the commander of a small air force. The idea is to make human judgment decisive while letting cheap, expendable drones handle the sensing, shooting, and risking.",
+    "tiers": {
+      "eli5": "Imagine you're playing a video game with a friend, but instead of one character on screen, you control a whole squad—some are you, some are smart robots that follow your orders. The pilot in a real jet does the same thing: tells drone 'wingmen' where to go and what to watch for, while the drones do the dangerous stuff like flying ahead to spot enemies or carrying extra weapons.",
+      "practitioner": "In practice, a manned platform—typically a fighter or command aircraft—uses data links to task one or more CCAs or loyal wingman drones with roles like sensor, shooter, or electronic-warfare pod. Operators work through supervisory control interfaces rather than stick-and-throttle piloting, approving or denying machine-initiated actions. Pitfalls include latency in decision loops, degraded-link contingencies, and the complexity of certifying AI autonomy packages for contested electromagnetic environments.",
+      "paperLevel": "Manned-Unmanned Teaming (MUM-T) is defined by the U.S. Army Aviation Center of Excellence as \"the synchronized employment of soldier, manned and unmanned air and ground vehicles, robotics, and sensors to achieve enhanced situational understanding, greater lethality, and improved survivability.\" NATO STANAG 4586 (2002) formalized five Levels of Interoperability (LOI), from basic remote control (Level 1) to self-launch and recovery (Level 5), with higher levels exploring single-operator control of multiple platforms via AI-assisted formation flight and networked autonomous systems. Limits include the trade-off between affordability and survivability, and the unresolved command-and-authority frameworks for autonomous engagement."
+    },
+    "example": "In June 2026, a Turkish M-346FA fighter crew directed a Bayraktar Kızılelma drone to autonomously take off, join formation, change position, separate for independent maneuvering, and rejoin—all under the manned crew's supervisory direction without direct stick-and-throttle control of the drone.",
+    "usedIn": [
+      {
+        "name": "US Air Force Collaborative Combat Aircraft program",
+        "detail": "Plans over $8.9 billion from FY2025–2029 for autonomous fighters working alongside crewed sixth-generation aircraft; increment 1 focuses on sensor/targeting and munitions carriage, increment 2 on stealth and electronic attack.",
+        "url": ""
+      },
+      {
+        "name": "Kratos XQ-58 Valkyrie",
+        "detail": "Transitioned from experimental testbed to operational loyal wingman platform after USMC selection in January 2026.",
+        "url": ""
+      },
+      {
+        "name": "Boeing MQ-28 Ghost Bat",
+        "detail": "Early exploration of attritable loyal wingman design for teaming with manned fighters.",
+        "url": ""
+      },
+      {
+        "name": "Bayraktar Kızılelma",
+        "detail": "Demonstrated autonomous takeoff, formation flight, and rejoining with manned M-346FA in June 2026 testing with Leonardo.",
+        "url": ""
+      }
+    ],
+    "intuition": "A pilot's attention and survivability are scarce; the drones' bodies and sensors are cheap. Teaming swaps the scarce resource for the abundant one.",
+    "howItWorks": [
+      "A human crew in a manned aircraft sets mission objectives and rules of engagement.",
+      "The manned platform tasks one or more drones via data link—assigning roles like sensor, shooter, or decoy.",
+      "Each drone's onboard AI autonomy package handles flight control, formation keeping, and target recognition without continuous human micromanagement.",
+      "The human operator supervises, approves or denies lethal decisions, and redirects the team as threats evolve.",
+      "If communications degrade, higher-autonomy drones can continue their mission independently based on pre-authorized parameters."
+    ],
+    "whyItMatters": "It extends a single pilot's reach and mass while reducing risk to human life; it also forces hard choices about how much autonomy to grant machines in lethal contexts.",
+    "misconceptions": [
+      "That Collaborative Combat Aircraft are meant to be expendable—USAF Secretary Frank Kendall clarified that 'affordable mass' does not mean attritable, and platforms need sufficient intelligence and defenses to survive.",
+      "That loyal wingmen and UCAVs are identical—CCAs are specifically subordinate teammates for manned platforms, while UCAVs are higher-performance aircraft designed for independent operations.",
+      "That the pilot directly flies each drone—modern MUM-T emphasizes supervisory control with AI handling execution, not remote piloting."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "pilot",
+          "label": "Human crew",
+          "note": "Mission commander in manned aircraft"
+        },
+        {
+          "id": "manned",
+          "label": "Manned fighter",
+          "note": "Sixth-gen fighter or command aircraft"
+        },
+        {
+          "id": "datalink",
+          "label": "Data link",
+          "note": "NATO STANAG 4586 or equivalent"
+        },
+        {
+          "id": "ai",
+          "label": "AI autonomy package",
+          "note": "Onboard drone flight and targeting"
+        },
+        {
+          "id": "drone1",
+          "label": "Loyal wingman",
+          "note": "CAA with sensors and weapons"
+        },
+        {
+          "id": "drone2",
+          "label": "Second drone",
+          "note": "Additional teammate for mass"
+        }
+      ],
+      "edges": [
+        {
+          "from": "pilot",
+          "to": "manned",
+          "label": "commands from"
+        },
+        {
+          "from": "manned",
+          "to": "datalink",
+          "label": "tasks via"
+        },
+        {
+          "from": "datalink",
+          "to": "ai",
+          "label": "supervisory orders"
+        },
+        {
+          "from": "ai",
+          "to": "drone1",
+          "label": "controls"
+        },
+        {
+          "from": "ai",
+          "to": "drone2",
+          "label": "controls"
+        },
+        {
+          "from": "drone1",
+          "to": "manned",
+          "label": "sensor feed"
+        },
+        {
+          "from": "drone2",
+          "to": "manned",
+          "label": "sensor feed"
+        }
+      ],
+      "caption": "Supervisory control flow in aerial manned-unmanned teaming: the human crew tasks drones through a data link, while onboard AI handles execution and returns sensor data."
+    },
+    "image": {
+      "src": "https://upload.wikimedia.org/wikipedia/commons/2/23/H%C3%BCrjet%2C_Anka-3_ve_H%C3%BCrku%C5%9F.jpg",
+      "alt": "Aerial manned-unmanned teaming — Collaboration of autonomous and human systems",
+      "width": 640,
+      "height": 480,
+      "credit": "UnknownYazar",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:H%C3%BCrjet,_Anka-3_ve_H%C3%BCrku%C5%9F.jpg"
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Aerial manned-unmanned teaming",
+        "url": "https://en.wikipedia.org/wiki/Aerial_manned-unmanned_teaming"
+      }
+    ]
+  },
   "related": [
     "afghan-girls-robotics-team",
     "anthrobotics",

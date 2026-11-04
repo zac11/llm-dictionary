@@ -5,7 +5,96 @@
   "type": "concept",
   "definition": "Artificial intelligence for video surveillance utilizes computer software programs that analyze the audio and images from video surveillance cameras in order to recognize humans, vehicles, objects, attributes, and events.",
   "details": "Security contractors program the software to define restricted areas within the camera's view (such as a fenced off area, a parking lot but not the sidewalk or public street outside the lot) and program for times of day (such as after the close of business) for the property being protected by the camera surveillance. The artificial intelligence (\"A.I.\") sends an alert if it detects a trespasser breaking the \"rule\" set that no person is allowed in that area during that time of day. The A.I. program functions by using machine vision. Machine vision is a series of algorithms, or mathematical procedures, which work like a flow-chart or series of questions to compare the object seen with hundreds of thousands of stored reference images of humans in different postures, angles, positions and movements. The A.I. asks itself if the observed object moves like the reference images, whether it is approximately the same size height relative to width, if it has the characteristic two arms and two legs, if it moves with similar speed, and if it is vertical instead of horizontal. Many other questions are possible, such as the degree to which the object is reflective, the degree to which it is stea",
-  "story": "Picture a child pointing at pictures in a book — cat, car, cloud — learning to see by seeing a thousand examples. It turns a picture into an understanding: this is a cat, that is a stop sign. What your eyes do without thinking, the machine does one careful layer at a time. It is eyes made of arithmetic — pixels become edges, edges become shapes, shapes become meaning. And that is Artificial intelligence for video surveillance — giving a machine the gift of sight.",
+  "explainer": {
+    "lead": "AI for video surveillance turns camera images and audio into automatic checks for people, vehicles, objects, attributes, and events. It can alert security staff when activity breaks a rule, such as someone entering a closed property after business hours.",
+    "tiers": {
+      "eli5": "It is like a watchful guard who follows a very specific checklist. If a camera watches a closed parking lot at night, the software can notice a person inside the lot and raise an alert. It can be told to ignore the public sidewalk outside.",
+      "practitioner": "Security contractors configure camera-specific rules for restricted regions and times of day, then route detected violations to alerts. The described recognition pipeline uses machine-vision comparisons against large collections of human reference images, checking posture, proportions, movement, orientation, and speed. Careful zone and schedule configuration is essential because the alert logic follows those boundaries.",
+      "paperLevel": "In plain-text terms: alert = 1 if the observed audio or images contain a recognized entity or event and violate rule(area, time), and 0 otherwise. The described image-based classifier compares observed features—such as movement, height-to-width ratio, two arms and two legs, speed, and vertical orientation—with stored human reference images covering varied postures, angles, positions, and movements. Its decisions therefore depend on the programmed rules, reference comparisons, and feature tests."
+    },
+    "example": "A parking lot is marked as restricted after business closes, while its sidewalk and the public street remain outside the rule. When the software recognizes a person moving within the lot during that period, it sends a trespass alert; activity on the excluded sidewalk does not violate that rule.",
+    "usedIn": [
+      {
+        "name": "Fenced property surveillance",
+        "detail": "Detecting people inside a designated restricted area and alerting security contractors.",
+        "url": ""
+      },
+      {
+        "name": "Parking-lot monitoring",
+        "detail": "Watching the lot while excluding the sidewalk and public street outside it.",
+        "url": ""
+      },
+      {
+        "name": "After-hours site security",
+        "detail": "Applying trespassing rules only during configured periods, such as after the close of business.",
+        "url": ""
+      }
+    ],
+    "intuition": "The system combines recognition with simple security instructions: decide what the camera is seeing, then check whether it is somewhere or sometime it should not be. Its job is not merely to record footage, but to flag activity that matches a programmed rule.",
+    "howItWorks": [
+      "Capture audio and images from surveillance cameras.",
+      "Compare observed objects with stored reference images using machine-vision algorithms and feature checks.",
+      "Apply rules defining restricted camera-view areas and the times when those restrictions apply.",
+      "Send an alert when a recognized person, object, or event breaks a rule."
+    ],
+    "whyItMatters": "It allows surveillance software to watch for specific violations and notify security personnel automatically. Defining both places and times lets one camera protect a property without applying the same restriction to public areas outside it.",
+    "misconceptions": [
+      "It does not need to understand a scene like a human; the described system relies on programmed questions and comparisons with reference images.",
+      "An alert is not based on presence alone: it depends on a configured area and time rule being violated."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "camera",
+          "label": "Surveillance camera",
+          "note": "Captures audio and images."
+        },
+        {
+          "id": "vision",
+          "label": "Machine vision",
+          "note": "Tests features and movement."
+        },
+        {
+          "id": "references",
+          "label": "Reference images",
+          "note": "Provides stored comparison examples."
+        },
+        {
+          "id": "rules",
+          "label": "Area-time rules",
+          "note": "Defines restricted zones and schedules."
+        },
+        {
+          "id": "alert",
+          "label": "Security alert",
+          "note": "Signals a detected rule violation."
+        }
+      ],
+      "edges": [
+        {
+          "from": "camera",
+          "to": "vision",
+          "label": "observations"
+        },
+        {
+          "from": "references",
+          "to": "vision",
+          "label": "comparisons"
+        },
+        {
+          "from": "vision",
+          "to": "rules",
+          "label": "recognition"
+        },
+        {
+          "from": "rules",
+          "to": "alert",
+          "label": "violation"
+        }
+      ],
+      "caption": "Recognized activity is checked against configured area and time rules before an alert is sent."
+    }
+  },
   "related": [
     "artificial-intelligence",
     "aaai-conference-on-artificial-intelligence",

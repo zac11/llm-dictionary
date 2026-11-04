@@ -2,10 +2,126 @@
   "term": "Amazon Rekognition",
   "letter": "A",
   "category": "Machine learning",
-  "type": "concept",
+  "type": "tool",
   "definition": "Amazon Rekognition is a cloud-based software as a service (SaaS) computer vision platform that was launched in 2016.",
   "details": "It has been sold to, and used by, a number of United States government agencies, including U.S. Immigration and Customs Enforcement (ICE) and Orlando, Florida police, as well as private entities.",
-  "story": "Imagine an art restorer who can spot a single cracked tile in a vast mosaic. What your eyes do without thinking, the machine does one careful layer at a time. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. The model looks the way you look at a crowd and finds the one face you know. And that is Amazon Rekognition — giving a machine the gift of sight.",
+  "explainer": {
+    "lead": "Amazon Rekognition is a cloud service, launched in 2016, that analyzes images and video for faces, people, text, celebrities and unsafe content. It matters because the same tools can support family-photo research or reading street signs, while their use by law enforcement has raised concerns about false matches, bias and surveillance.",
+    "tiers": {
+      "eli5": "Imagine showing a computer a picture and asking it to find faces, read words or spot objects. Rekognition lets people send pictures and videos over the internet for that kind of analysis, and it can also learn to look for particular faces from a labelled collection. Its answers can be wrong, so a match is not proof of who someone is.",
+      "practitioner": "Use the hosted service for tasks such as facial-attribute detection, people tracking in video, text detection and unsafe-content detection. For face identification, import pre-labelled faces into SearchFaces, train a model on that collection and query it with new images through its API. Confidence settings matter: Amazon recommended that law enforcement use only matches rated at 99% confidence, while disputing ACLU tests conducted at 80%. Treat matches as candidates rather than proof, because tests reported false matches and a January 2019 MIT study found substantially worse gender classification for darker-skinned women.",
+      "paperLevel": "Amazon Rekognition is a cloud-based software-as-a-service computer-vision platform combining algorithms pre-trained on Amazon or partner data with user-trained models, notably SearchFaces for face identification, comparison and similarity search. A January 2019 peer-reviewed MIT study reported that it classified darker-skinned women as men 31% of the time while making no such errors for light-skinned men; Amazon attributed the findings to misinterpreted results and an improper default confidence threshold. ACLU tests also produced false mugshot matches for lawmakers, with Amazon objecting that results below its recommended 99% threshold had not been dismissed."
+    },
+    "example": "Mapillary used Rekognition to examine city images and read parking signs. The detected text could distinguish instructions such as no stopping, no parking or parking only during specified hours.",
+    "usedIn": [
+      {
+        "name": "Washington County Sheriff's Office",
+        "detail": "Began using Rekognition in late 2017 to identify suspects' faces and logged more than 1,000 facial searches in 2018.",
+        "url": ""
+      },
+      {
+        "name": "Mapillary",
+        "detail": "Used text detection to read parking-sign instructions such as no stopping, no parking and permitted parking hours.",
+        "url": ""
+      },
+      {
+        "name": "FamilySearch",
+        "detail": "Used it to help users see which ancestors they most resembled in family photographs.",
+        "url": ""
+      },
+      {
+        "name": "FBI Project Tyr",
+        "detail": "A disclosed initiative to customize Rekognition to identify nudity, weapons, explosives and other information in lawfully acquired media.",
+        "url": ""
+      }
+    ],
+    "intuition": "Rekognition offers computer vision as a remote service rather than requiring every user to build and train a vision system. Users can choose ready-made analyses or supply labelled faces to create a custom face-search model.",
+    "howItWorks": [
+      "Choose a pre-trained capability or a custom face-search workflow.",
+      "For custom search, import images with pre-labelled faces into SearchFaces.",
+      "Train a model on that collection and expose it as a cloud API.",
+      "Submit new images or video and receive results such as face matches, facial attributes, tracked people or detected text."
+    ],
+    "whyItMatters": "It makes several computer-vision capabilities available without users building the underlying models themselves. Its government and police adoption also shows why accuracy, confidence thresholds, unequal error rates and oversight matter when automated matches affect people.",
+    "misconceptions": [
+      "It is not solely a facial-recognition product; it also detects text, tracks people and identifies unsafe visual content.",
+      "A confidence score is not certainty that a face match is correct.",
+      "Its custom face search requires a user-supplied database of pre-labelled faces rather than identifying everyone automatically."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "media",
+          "label": "Images and video",
+          "note": "Media submitted for analysis"
+        },
+        {
+          "id": "pretrained",
+          "label": "Pre-trained algorithms",
+          "note": "Ready-made face, people, text and content analyses"
+        },
+        {
+          "id": "faces",
+          "label": "Labelled face images",
+          "note": "A user's custom face database"
+        },
+        {
+          "id": "custom",
+          "label": "SearchFaces model",
+          "note": "A model trained on the supplied faces"
+        },
+        {
+          "id": "api",
+          "label": "Cloud API",
+          "note": "Accepts queries and returns analysis results"
+        },
+        {
+          "id": "results",
+          "label": "Analysis results",
+          "note": "Matches, attributes, paths, text or content labels"
+        }
+      ],
+      "edges": [
+        {
+          "from": "media",
+          "to": "pretrained",
+          "label": "analyze"
+        },
+        {
+          "from": "faces",
+          "to": "custom",
+          "label": "train"
+        },
+        {
+          "from": "media",
+          "to": "api",
+          "label": "query"
+        },
+        {
+          "from": "pretrained",
+          "to": "api",
+          "label": ""
+        },
+        {
+          "from": "custom",
+          "to": "api",
+          "label": ""
+        },
+        {
+          "from": "api",
+          "to": "results",
+          "label": "return"
+        }
+      ],
+      "caption": "Rekognition routes media through pre-trained analyses or a custom SearchFaces model and exposes the results through a cloud API."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Amazon Rekognition",
+        "url": "https://en.wikipedia.org/wiki/Amazon_Rekognition"
+      }
+    ]
+  },
   "related": [
     "a-r-d-prasad",
     "abeba-birhane",

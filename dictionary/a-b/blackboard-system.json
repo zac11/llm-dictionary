@@ -5,7 +5,90 @@
   "type": "concept",
   "definition": "A blackboard system is an artificial intelligence approach based on the blackboard architectural model, where a common knowledge base, the \"blackboard\", is iteratively updated by a diverse group of specialist knowledge sources, starting with a problem specification and ending with a solution.",
   "details": "Each knowledge source updates the blackboard with a partial solution when its internal constraints match the blackboard state. In this way, the specialists work together to solve the problem. The blackboard model was originally designed as a way to handle complex, ill-defined problems, where the solution is the sum of its parts.",
-  "story": "Think of a lightbulb moment: the idea was always there, but someone had to point a finger at it. Behind the jargon is an idea you could explain to a friend over coffee. At its heart it is a simple notion, once you strip away the fancy name. Once you see it, you cannot unsee it. And that idea, made concrete, is Blackboard system.",
+  "explainer": {
+    "lead": "A blackboard system lets several specialists solve different parts of a difficult problem by sharing one workspace. Each contributes when it can, gradually turning an initial problem description into a complete solution.",
+    "tiers": {
+      "eli5": "Imagine a group solving a big puzzle on a classroom blackboard. One person writes down a clue, another uses it to solve a small section, and someone else builds on that. They keep taking turns until the puzzle is finished.",
+      "practitioner": "Implement the blackboard as shared state and each knowledge source as a specialist that checks whether its constraints match that state. When a match occurs, the specialist writes a partial solution that may enable further contributions. This suits complex, ill-defined problems, but the shared state and activation conditions require careful design.",
+      "paperLevel": "Given an initial problem specification, a blackboard system maintains shared state B and a set of knowledge sources K. A source k in K can update B with a partial solution when its internal constraints match B; iteration continues until B represents a solution. The approach targets complex, ill-defined problems whose solutions are composed from partial contributions."
+    },
+    "example": "To plan a trip, the blackboard starts with a destination, dates, and budget. A transport specialist adds affordable train times, a lodging specialist uses those times to propose a nearby hotel, and a budget specialist checks the combined cost and adjusts the plan until all the pieces fit.",
+    "intuition": "It is like experts gathered around a shared board: none has to solve everything alone, and each new piece of information can create an opening for another expert.",
+    "howItWorks": [
+      "Write the problem specification on the shared blackboard.",
+      "Let each specialist knowledge source inspect the current blackboard state.",
+      "When a source's internal constraints match, let it add a partial solution.",
+      "Use those updates to trigger further specialist contributions.",
+      "Stop when the accumulated contributions form a solution."
+    ],
+    "whyItMatters": "The model breaks a complex, ill-defined problem into contributions from different specialists without requiring one component to understand the whole task. Their partial solutions combine through the blackboard.",
+    "misconceptions": [
+      "The blackboard is shared problem state, not a single all-purpose expert.",
+      "A partial solution is a contribution, not necessarily the final answer."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "problem",
+          "label": "Problem specification",
+          "note": "The starting state of the task"
+        },
+        {
+          "id": "blackboard",
+          "label": "Shared blackboard",
+          "note": "Common state and partial solutions"
+        },
+        {
+          "id": "source-a",
+          "label": "Specialist source A",
+          "note": "Contributes when its constraints match"
+        },
+        {
+          "id": "source-b",
+          "label": "Specialist source B",
+          "note": "Builds on available contributions"
+        },
+        {
+          "id": "solution",
+          "label": "Complete solution",
+          "note": "The combined result of the updates"
+        }
+      ],
+      "edges": [
+        {
+          "from": "problem",
+          "to": "blackboard",
+          "label": "initializes"
+        },
+        {
+          "from": "blackboard",
+          "to": "source-a",
+          "label": "state"
+        },
+        {
+          "from": "blackboard",
+          "to": "source-b",
+          "label": "state"
+        },
+        {
+          "from": "source-a",
+          "to": "blackboard",
+          "label": "partial solution"
+        },
+        {
+          "from": "source-b",
+          "to": "blackboard",
+          "label": "partial solution"
+        },
+        {
+          "from": "blackboard",
+          "to": "solution",
+          "label": "converges to"
+        }
+      ],
+      "caption": "Specialist knowledge sources read the shared state and iteratively add partial solutions until the blackboard contains a complete solution."
+    }
+  },
   "related": [
     "biohybrid-system",
     "clinical-decision-support-system",

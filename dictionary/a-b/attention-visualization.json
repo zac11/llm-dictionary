@@ -5,7 +5,98 @@
   "type": "concept",
   "definition": "Techniques for visualizing which tokens a transformer model's attention mechanism is focusing on when processing a given input.",
   "details": "Attention visualization can offer intuitive (though sometimes misleading) insight into a model's processing, and has been used both as an interpretability tool and, more critically, studied for how faithfully it actually reflects the model's true decision-making process.",
-  "story": "Imagine a factory floor where each workstation can glance at every other workstation before doing its part. It is the blueprint that makes everything else possible. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. Structure decides what the model can even express — the blueprint before the bricks. That blueprint is Attention Visualization.",
+  "explainer": {
+    "lead": "Attention visualization turns a transformer's internal attention weights into pictures, often showing lines or colors that connect related tokens. It can make model behavior easier to inspect, but a striking pattern is not automatically a faithful explanation of why the model made a decision.",
+    "tiers": {
+      "eli5": "Imagine reading a sentence and highlighting the words you look at most while thinking about one particular word. Attention visualization makes a similar kind of highlight map for a transformer. The map can reveal interesting patterns, but it does not always tell the whole story of how the model reached its answer.",
+      "practitioner": "Practitioners inspect attention matrices for selected inputs, often comparing layers and attention heads to look for token-to-token patterns. These views are useful for exploration and debugging alongside other behavioral checks. Treat strong or weak attention as a clue rather than proof of a token's causal importance.",
+      "paperLevel": "For a chosen query token i, visualization typically displays its attention weights A_ij over key tokens j, where the weights across j sum to 1; heatmaps and token-link diagrams are common representations. Weights may be examined by layer and head to expose different learned patterns. Attention weights alone need not faithfully represent the model's decision process, so interpretive claims require additional evidence."
+    },
+    "example": "For the input \"The cat chased the mouse\", a heatmap for the token \"chased\" might show a strong connection to \"mouse\" and a weaker one to \"The\". This suggests that the selected attention head links those tokens, but further tests are needed to establish how that link affects the model's output.",
+    "usedIn": [
+      {
+        "name": "Transformer interpretability",
+        "detail": "Exploring which input tokens receive attention in different layers and heads.",
+        "url": ""
+      },
+      {
+        "name": "Model debugging",
+        "detail": "Generating hypotheses about unexpected token interactions for further testing.",
+        "url": ""
+      },
+      {
+        "name": "Explanation research",
+        "detail": "Studying whether attention patterns faithfully reflect model decision-making.",
+        "url": ""
+      }
+    ],
+    "intuition": "A transformer's attention mechanism assigns weights between tokens, and visualization makes those numerical relationships visible. This offers an intuitive window into model processing while leaving open whether the visible pattern explains the final output.",
+    "howItWorks": [
+      "Run the transformer on a chosen input.",
+      "Select a layer, attention head, and token of interest.",
+      "Read that token's attention weights over the other tokens.",
+      "Encode weight strength with colors, cells, or connecting lines.",
+      "Inspect the pattern without equating it with a causal explanation."
+    ],
+    "whyItMatters": "Attention visualization makes otherwise opaque numerical computations accessible to inspection and discussion. Its value lies both in generating interpretability hypotheses and in prompting scrutiny of whether attention-based explanations are trustworthy.",
+    "misconceptions": [
+      "High attention does not prove high causal influence.",
+      "A readable attention map is not necessarily a complete explanation.",
+      "One layer or head may not represent the model's overall processing."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "tokens",
+          "label": "Input tokens",
+          "note": "The text supplied to the transformer."
+        },
+        {
+          "id": "attention",
+          "label": "Attention mechanism",
+          "note": "Computes token-to-token weights."
+        },
+        {
+          "id": "weights",
+          "label": "Attention weights",
+          "note": "Values selected by layer and head."
+        },
+        {
+          "id": "visual",
+          "label": "Visual encoding",
+          "note": "Maps values to colors or lines."
+        },
+        {
+          "id": "interpretation",
+          "label": "Cautious interpretation",
+          "note": "Forms hypotheses without assuming faithfulness."
+        }
+      ],
+      "edges": [
+        {
+          "from": "tokens",
+          "to": "attention",
+          "label": ""
+        },
+        {
+          "from": "attention",
+          "to": "weights",
+          "label": "produces"
+        },
+        {
+          "from": "weights",
+          "to": "visual",
+          "label": "mapped to"
+        },
+        {
+          "from": "visual",
+          "to": "interpretation",
+          "label": "supports"
+        }
+      ],
+      "caption": "Attention visualization turns selected internal weights into an inspectable pattern, followed by cautious interpretation."
+    }
+  },
   "related": [
     "attention",
     "feature-visualization",
