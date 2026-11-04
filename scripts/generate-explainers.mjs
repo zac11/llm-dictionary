@@ -5,6 +5,12 @@
 //        node --env-file=.env scripts/generate-explainers.mjs --type person --limit 50
 //        node --env-file=.env scripts/generate-explainers.mjs --all --concurrency 4
 //        node scripts/generate-explainers.mjs --only transformer --dry-run   (print the prompt)
+//        node --env-file=.env scripts/generate-explainers.mjs --all --compact --model kimi-k2.6 --max-tokens 2000000
+//
+//  --compact writes only what the reading-level tabs show (lead, ELI5 /
+//  Practitioner / Paper-level, example, Used in) for --batch entries per call
+//  (default 10) with a short Wikipedia excerpt: a fraction of the tokens of the
+//  full layout. --max-tokens stops the run once reported usage reaches it.
 //
 //  Facts come from the entry and its Wikipedia article (cached in
 //  data/wikipedia/); the writing comes from the OpenAI-compatible model set by
@@ -20,7 +26,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { completionOptions, getLlmConfig } from '../netlify/functions/ask.mjs';
 import { normalizeTerm } from '../src/term-schema.js';
-import { buildMessages, parseExplainerReply } from './explainer-prompt.mjs';
+import { buildCompactMessages, buildMessages, parseCompactReply, parseExplainerReply } from './explainer-prompt.mjs';
 import { cachedWikipedia } from './wikipedia.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -41,6 +47,12 @@ const CONCURRENCY = Math.max(1, Number(option('concurrency', '3')) || 3);
 const FORCE = flag('force');
 const DRY_RUN = flag('dry-run');
 const ALL = flag('all');
+const COMPACT = flag('compact');
+const BATCH = COMPACT ? Math.max(1, Number(option('batch', '10')) || 10) : 1;
+const MODEL = option('model');
+const MAX_TOKENS = Number(option('max-tokens', '0')) || Infinity;
+const usage = { prompt: 0, completion: 0, calls: 0 };
+const usedTokens = () => usage.prompt + usage.completion;
 const MAX_ATTEMPTS = 6;
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -89,6 +101,9 @@ async function complete(config, messages) {
     });
     if (!response.ok) throw new Error(`LLM ${response.status}: ${(await response.text()).slice(0, 200)}`);
     const data = await response.json();
+    usage.calls++;
+    usage.prompt += data.usage?.prompt_tokens || 0;
+    usage.completion += data.usage?.completion_tokens || 0;
     return data.choices?.[0]?.message?.content || '';
   } finally {
     clearTimeout(timer);
@@ -100,7 +115,8 @@ async function main() {
     console.error('Pick entries with --only <slugs>, --type <type>, --limit <n> or --all.');
     process.exit(1);
   }
-  const config = getLlmConfig();
+  const base = getLlmConfig();
+  const config = base && MODEL ? { ...base, model: MODEL } : base;
   if (!config && !DRY_RUN) {
     console.error('Set LLM_API_KEY, LLM_BASE_URL and LLM_MODEL (e.g. node --env-file=.env …).');
     process.exit(1);
@@ -138,7 +154,7 @@ async function main() {
         console.log(`  ✓ ${entry.slug} (${type})${rateLimitedRetries ? ` [429 retries so far: ${rateLimitedRetries}]` : ''}`);
         return;
       } catch (error) {
-        const rateLimited = /^LLM 429/.test(error.message);
+        const rateLimited = /^LLM 429/.test(error.message) && !/quota|balance|suspended/i.test(error.message);
         if (attempt === MAX_ATTEMPTS || (!rateLimited && attempt >= 2)) {
           failed++;
           console.log(`  ✗ ${entry.slug}: ${error.message}`);
@@ -152,15 +168,58 @@ async function main() {
     }
   };
 
+  const workBatch = async (items) => {
+    const batch = [];
+    for (const item of items) batch.push({ ...item, wiki: await cachedWikipedia(item.entry, CACHE).catch(() => null) });
+    const messages = buildCompactMessages(batch);
+    if (DRY_RUN) {
+      console.log(`\n=== ${batch.map((b) => b.entry.slug).join(', ')} ===\n${messages[1].content}`);
+      return;
+    }
+    for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+      try {
+        const results = parseCompactReply(await complete(config, messages), batch);
+        for (const { path, raw, entry } of batch) {
+          const { explainer, issues } = results.get(entry.slug);
+          if (!explainer) {
+            failed++;
+            console.log(`  ✗ ${entry.slug}: ${issues.join('; ')}`);
+            continue;
+          }
+          writeFileSync(path, `${JSON.stringify(applyExplainer(raw, entry.type, explainer), null, 2)}\n`);
+          written++;
+          console.log(`  ✓ ${entry.slug} [tokens so far: ${usedTokens()}]`);
+        }
+        return;
+      } catch (error) {
+        const rateLimited = /^LLM 429/.test(error.message) && !/quota|balance|suspended/i.test(error.message);
+        if (attempt === MAX_ATTEMPTS || (!rateLimited && attempt >= 2)) {
+          failed += batch.length;
+          console.log(`  ✗ ${batch.map((b) => b.entry.slug).join(', ')}: ${error.message.slice(0, 160)}`);
+          return;
+        }
+        if (rateLimited) {
+          rateLimitedRetries++;
+          await sleep(2000 * attempt + Math.random() * 2000);
+        }
+      }
+    }
+  };
+
   const pending = [...queue];
   await Promise.all(
     Array.from({ length: CONCURRENCY }, async () => {
-      while (pending.length) await work(pending.shift());
+      while (pending.length && usedTokens() < MAX_TOKENS) {
+        if (COMPACT) await workBatch(pending.splice(0, BATCH));
+        else await work(pending.shift());
+      }
     })
   );
+  if (usedTokens() >= MAX_TOKENS) console.log(`\nstopped at the --max-tokens budget; ${pending.length} entries left`);
 
   if (DRY_RUN) return;
   console.log(`\nwritten: ${written}, failed: ${failed}, rate-limited retries: ${rateLimitedRetries}`);
+  console.log(`tokens: ${usage.prompt} in + ${usage.completion} out over ${usage.calls} calls (${written ? Math.round(usedTokens() / written) : 0} per entry written)`);
   if (retyped.length) console.log(`\nretyped (${retyped.length}):\n  ${retyped.join('\n  ')}`);
   if (weak.length) console.log(`\nneeds a look (${weak.length}):\n  ${weak.join('\n  ')}`);
 }
