@@ -5,7 +5,117 @@
   "type": "concept",
   "definition": "Group method of data handling (GMDH) is a family of inductive, self-organizing algorithms for mathematical modelling that automatically determines the structure and parameters of models based on empirical data.",
   "details": "GMDH iteratively generates and evaluates candidate models, often using polynomial functions, and selects the best-performing ones based on an external criterion. This process builds feedforward networks of optimal complexity, adapting to the noise level in the data and minimising overfitting, ensuring that the resulting model is accurate and generalizable. GMDH is used in such fields as machine learning, forecasting, optimization and pattern recognition, due to its ability to handle complex, nonlinear relationships in data. Its inductive nature allows it to discover patterns and interdependencies without requiring strong a priori assumptions, making it particularly effective for highly complex systems. By balancing model complexity and accuracy through self-organization, GMDH ensures that the model reflects the underlying relationships in data. This approach has influenced modern machine learning techniques and is recognised as one of the earliest approaches to automated machine learning and deep learning. A GMDH model with multiple inputs and one output is a subset of components of the base function (1): Y ( x 1 , … , x n ) = a 0 + ∑ i = 1 m a i f i {\\displaystyle Y(x_{1},\\dots ,x",
-  "story": "Imagine a factory floor where each workstation can glance at every other workstation before doing its part. It is the blueprint that makes everything else possible. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. Structure decides what the model can even express — the blueprint before the bricks. And that shape of the machine — Group method of data handling — is what makes everything else possible.",
+  "explainer": {
+    "lead": "Group method of data handling (GMDH) is a way to grow a mathematical model from data instead of fixing its whole structure in advance. It keeps the candidates that perform best under an external criterion, aiming for a model that captures complex relationships without becoming unnecessarily complicated.",
+    "tiers": {
+      "eli5": "Imagine trying different recipes for predicting something, then keeping only the tastiest ones and combining them into new recipes. GMDH does this with small mathematical models, repeatedly testing and combining the best ones. It tries to find a recipe that is accurate without adding ingredients it does not need.",
+      "practitioner": "A practical setup feeds multivariate data into polynomial candidate generation, scores candidates with an external criterion, and carries the best performers into subsequent layers. Watch the choice of criterion and evaluation setup: the goal is complexity suited to the data's noise level, not merely the best fit on the examples used to build the model.",
+      "paperLevel": "For multiple inputs and one output, a GMDH model is a subset of components of Y(x1,...,xn) = a0 + sum(i=1..m) ai fi. Candidate models are inductively generated, evaluated by an external criterion, and selected into a feedforward network. The procedure seeks a balance between accuracy and complexity that adapts to noise and limits overfitting."
+    },
+    "example": "To predict a building's electricity use from temperature, humidity, and wind speed, GMDH might first test simple polynomial candidates based on those inputs. Candidates that score best under the external criterion are retained and combined in later layers, producing a model that can represent nonlinear effects without requiring the full network structure to be specified beforehand.",
+    "usedIn": [
+      {
+        "name": "Forecasting",
+        "detail": "Builds predictive models from empirical data while adapting their complexity.",
+        "url": ""
+      },
+      {
+        "name": "Pattern recognition",
+        "detail": "Discovers patterns and interdependencies in complex, nonlinear data.",
+        "url": ""
+      },
+      {
+        "name": "Optimization",
+        "detail": "Supports mathematical modelling where relationships between variables are complicated.",
+        "url": ""
+      },
+      {
+        "name": "Machine learning",
+        "detail": "Provides an early self-organizing approach to automated model construction.",
+        "url": ""
+      }
+    ],
+    "intuition": "Rather than guessing one complete model, start with many small possibilities and let selection shape the result. Repeated testing and combination can reveal nonlinear relationships while discouraging needless complexity.",
+    "howItWorks": [
+      "Start with empirical data containing inputs and an output to model.",
+      "Generate candidate models, often using polynomial functions.",
+      "Evaluate the candidates with an external criterion.",
+      "Keep the best performers and use them to form further candidates.",
+      "Stop with a feedforward model whose complexity balances fit and generalization."
+    ],
+    "whyItMatters": "GMDH automates both model structure and parameter selection, reducing the need for strong prior assumptions about the system being modelled. Its self-organizing search for optimal complexity made it an early approach to automated machine learning and deep learning.",
+    "misconceptions": [
+      "GMDH is not one fixed polynomial equation; it is a family of inductive algorithms that construct models.",
+      "A more complex network is not automatically better; selection aims to balance accuracy, noise, and generalization."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data",
+          "label": "Empirical data",
+          "note": "Inputs and observed output"
+        },
+        {
+          "id": "candidates",
+          "label": "Candidate models",
+          "note": "Often polynomial functions"
+        },
+        {
+          "id": "criterion",
+          "label": "External criterion",
+          "note": "Scores candidate performance"
+        },
+        {
+          "id": "selected",
+          "label": "Selected models",
+          "note": "Best-performing candidates survive"
+        },
+        {
+          "id": "layer",
+          "label": "Next layer",
+          "note": "Survivors seed new candidates"
+        },
+        {
+          "id": "model",
+          "label": "Final model",
+          "note": "Feedforward network of suitable complexity"
+        }
+      ],
+      "edges": [
+        {
+          "from": "data",
+          "to": "candidates",
+          "label": "generates"
+        },
+        {
+          "from": "candidates",
+          "to": "criterion",
+          "label": "evaluates"
+        },
+        {
+          "from": "criterion",
+          "to": "selected",
+          "label": "selects"
+        },
+        {
+          "from": "selected",
+          "to": "layer",
+          "label": "combines"
+        },
+        {
+          "from": "layer",
+          "to": "candidates",
+          "label": "iterates"
+        },
+        {
+          "from": "selected",
+          "to": "model",
+          "label": "builds"
+        }
+      ],
+      "caption": "GMDH repeatedly generates, evaluates, and selects candidates, growing a feedforward model from the survivors."
+    }
+  },
   "related": [
     "data",
     "ablation-artificial-intelligence",

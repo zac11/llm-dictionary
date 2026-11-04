@@ -5,6 +5,72 @@
   "type": "concept",
   "definition": "Models trained so any point on a noise trajectory maps directly to the clean data, enabling one-to-four step generation, either distilled from a diffusion teacher or trained standalone.",
   "details": "Models trained so any point on a noise trajectory maps directly to the clean data, enabling one-to-four step generation, either distilled from a diffusion teacher or trained standalone. A main route to real-time generation.",
+  "explainer": {
+    "lead": "Consistency models generate clean data directly from points on a noise trajectory, instead of requiring a long sequence of denoising steps. They can produce results in one to four steps, making them a key approach to real-time generation.",
+    "tiers": {
+      "eli5": "Imagine slowly revealing a picture hidden behind fog, but being able to jump straight to the clear picture from any amount of fog. A consistency model learns that shortcut, so it can make a picture in just a few moves. It can learn the shortcut from another model or learn it on its own.",
+      "practitioner": "Use a consistency model when generation latency matters and one-to-four-step output is desirable. Training can either distill a diffusion teacher or proceed standalone; distillation adds the teacher as a training dependency. At inference, the model maps a sampled trajectory point directly toward clean data rather than executing a long denoising chain.",
+      "paperLevel": "The central constraint is a direct mapping f(x_t, t) = x_0 for points x_t on a noise trajectory, where x_0 denotes clean data. The model can be learned by distillation from a diffusion teacher or by standalone training. This supports generation in one to four steps."
+    },
+    "example": "Given an image partway along a noise trajectory, a consistency model predicts the clean image directly. It does not need to repeatedly remove small amounts of noise before returning that image.",
+    "usedIn": [
+      {
+        "name": "Real-time generation",
+        "detail": "One-to-four-step generation makes consistency models a main route to low-latency output.",
+        "url": ""
+      },
+      {
+        "name": "Generative media pipelines",
+        "detail": "A direct trajectory-to-data mapping can replace a long iterative denoising process.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of learning only the next small step out of noise, the model learns where the whole trajectory should end. Every noisy point therefore points directly to the same clean-data destination.",
+    "howItWorks": [
+      "Start with a point on a noise trajectory.",
+      "Train the model to map that point directly to clean data.",
+      "Apply the same consistency objective across trajectory points.",
+      "Learn the mapping either from a diffusion teacher or with standalone training.",
+      "Generate the final output in one to four steps."
+    ],
+    "whyItMatters": "Reducing generation to one to four steps removes much of the waiting associated with long sampling trajectories. That makes real-time generative media more practical.",
+    "misconceptions": [
+      "A diffusion teacher is optional: consistency models can also be trained standalone.",
+      "The model is not simply taking a few ordinary denoising steps; it learns a direct mapping to clean data."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "trajectory",
+          "label": "Noise trajectory",
+          "note": "Any noisy point can serve as input."
+        },
+        {
+          "id": "model",
+          "label": "Consistency model",
+          "note": "Learns a direct trajectory-to-data mapping."
+        },
+        {
+          "id": "output",
+          "label": "Clean data",
+          "note": "Produced in one to four steps."
+        }
+      ],
+      "edges": [
+        {
+          "from": "trajectory",
+          "to": "model",
+          "label": "noisy point"
+        },
+        {
+          "from": "model",
+          "to": "output",
+          "label": "direct mapping"
+        }
+      ],
+      "caption": "A consistency model jumps from a point on the noise trajectory to clean data."
+    }
+  },
   "related": [
     "trajectory"
   ],

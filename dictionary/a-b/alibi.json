@@ -8,6 +8,93 @@
   ],
   "definition": "Adding a distance-proportional penalty to attention scores instead of positional embeddings.",
   "details": "Adding a distance-proportional penalty to attention scores instead of positional embeddings. Simple, and extrapolates to longer sequences than trained on.",
+  "explainer": {
+    "lead": "ALiBi, short for Attention with Linear Biases, tells an attention mechanism to prefer nearby positions by subtracting a penalty that grows with distance. This removes the need for positional embeddings and offers a simple way to handle sequences longer than those used in training.",
+    "tiers": {
+      "eli5": "Imagine listening to people seated along a row: the farther away someone is, the more you turn down their voice. ALiBi does something similar with words, giving attention a stronger distance penalty for words that are farther apart. Because this rule works at any distance, it can still be applied when the row becomes longer than it was during practice.",
+      "practitioner": "Apply ALiBi as an additive, distance-proportional penalty on attention scores instead of using positional embeddings. Its main practical appeal is simplicity and extrapolation to sequences longer than the training length; that extrapolation is not a guarantee of good output quality, so longer-context behavior still needs testing.",
+      "paperLevel": "In plain-text notation, modifiedScore(i,j) = originalScore(i,j) - m * distance(i,j), where m controls the linear distance penalty. The resulting biased scores replace positional embeddings in the attention calculation. The rule can be evaluated at distances beyond training, although extrapolation does not by itself establish performance on arbitrarily long sequences."
+    },
+    "example": "Suppose position 5 has an original attention score of 2.0 for both position 4 and position 2, and the penalty strength is 1. Position 4 is one step away, so its score becomes 1.0; position 2 is three steps away, so its score becomes -1.0. The nearer position now receives the higher score.",
+    "usedIn": [
+      {
+        "name": "Transformer attention",
+        "detail": "Adds distance-based penalties to attention scores in place of positional embeddings.",
+        "url": ""
+      },
+      {
+        "name": "Long-sequence inference",
+        "detail": "Provides a simple scoring rule that can extend beyond the sequence lengths used during training.",
+        "url": ""
+      }
+    ],
+    "intuition": "Distance becomes a direct part of attention: positions farther away receive a larger penalty. Because the penalty is a simple linear rule rather than a learned position for each training location, it can also be calculated for unseen distances.",
+    "howItWorks": [
+      "Compute the usual attention score between two positions.",
+      "Measure how far apart those positions are.",
+      "Multiply that distance by a penalty strength.",
+      "Subtract the penalty from the attention score.",
+      "Use the biased scores for attention, without positional embeddings."
+    ],
+    "whyItMatters": "ALiBi replaces positional embeddings with one straightforward rule. Its distance-based scores can be computed for longer sequences than the model saw during training, supporting length extrapolation.",
+    "misconceptions": [
+      "ALiBi is not a positional embedding; it modifies attention scores directly.",
+      "Longer-sequence extrapolation does not guarantee good results at every length.",
+      "The penalty changes attention scores rather than removing distant positions from consideration."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "scores",
+          "label": "Attention scores",
+          "note": "Original scores between positions"
+        },
+        {
+          "id": "distance",
+          "label": "Position distance",
+          "note": "Separation between the two positions"
+        },
+        {
+          "id": "penalty",
+          "label": "Linear penalty",
+          "note": "Penalty grows with distance"
+        },
+        {
+          "id": "biased",
+          "label": "Biased scores",
+          "note": "Penalty subtracted from original scores"
+        },
+        {
+          "id": "attention",
+          "label": "Attention weights",
+          "note": "Weights computed from biased scores"
+        }
+      ],
+      "edges": [
+        {
+          "from": "distance",
+          "to": "penalty",
+          "label": "scales"
+        },
+        {
+          "from": "scores",
+          "to": "biased",
+          "label": "input"
+        },
+        {
+          "from": "penalty",
+          "to": "biased",
+          "label": "subtracts"
+        },
+        {
+          "from": "biased",
+          "to": "attention",
+          "label": "determines"
+        }
+      ],
+      "caption": "ALiBi subtracts a distance-based penalty from attention scores before attention weights are computed."
+    }
+  },
   "related": [
     "attention"
   ],

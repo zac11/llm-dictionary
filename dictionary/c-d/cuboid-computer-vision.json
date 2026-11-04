@@ -5,7 +5,98 @@
   "type": "concept",
   "definition": "In computer vision, the term cuboid is used to describe a small spatiotemporal volume extracted for purposes of behavior recognition.",
   "details": "The cuboid is regarded as a basic geometric primitive type and is used to depict three-dimensional objects within a three dimensional representation of a flat, two dimensional image.",
-  "story": "Picture walking through a crowd and instantly picking out a familiar face without reading a single name tag. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. It turns a picture into an understanding: this is a cat, that is a stop sign. Sight, for a machine, is a long climb from raw light to a name. That pixel-to-meaning climb is Cuboid (computer vision).",
+  "explainer": {
+    "lead": "In computer vision, a cuboid is a small block of visual data with width, height, and duration. It lets a system examine what happens in one part of a scene over a short time, which is useful for recognizing behavior.",
+    "tiers": {
+      "eli5": "Imagine cutting a tiny rectangular piece out of a video, keeping several moments rather than just one picture. That piece is like a small box: it covers part of the picture and a short stretch of time. A computer can study it to help understand an action.",
+      "practitioner": "Use a cuboid as a spatiotemporal patch defined by its image position, spatial size, and temporal extent. Its contents can then be described and supplied to a behavior-recognition process. The patch captures only its selected region and time span, so placement and extent determine what evidence is available.",
+      "paperLevel": "For video coordinates (x, y, t), a cuboid can be written as C = [x, x + w) × [y, y + h) × [t, t + d), where w and h are spatial dimensions and d is duration. It is a finite spatiotemporal volume used for behavior recognition; the term also denotes a geometric primitive for depicting three-dimensional objects. The definition alone does not specify a feature descriptor or recognition method."
+    },
+    "example": "In a video of a person raising a hand, select a rectangle around the hand and keep it over the frames covering the beginning of the movement. The resulting block is a spatiotemporal cuboid containing both the hand's appearance and its change over that interval.",
+    "usedIn": [
+      {
+        "name": "Behavior recognition",
+        "detail": "Small spatiotemporal volumes provide localized visual evidence across time.",
+        "url": ""
+      },
+      {
+        "name": "Three-dimensional object representation",
+        "detail": "Cuboids serve as basic geometric primitives for depicting objects in a 3D interpretation of a flat image.",
+        "url": ""
+      }
+    ],
+    "intuition": "A single image rectangle shows where something is, while a cuboid also preserves a short interval in which it changes. The same box shape can also act as a simple primitive for representing a three-dimensional object.",
+    "howItWorks": [
+      "Start with video frames arranged in space and time.",
+      "Choose a small rectangular image region.",
+      "Keep that region across a short sequence of frames.",
+      "Treat the resulting width-by-height-by-time block as a cuboid.",
+      "Use its contents as input to behavior recognition."
+    ],
+    "whyItMatters": "It provides a simple unit for analyzing local appearance together with temporal change. It also connects video analysis with the broader use of cuboids as simple 3D geometric primitives.",
+    "misconceptions": [
+      "A cuboid is a volume of data or a geometric primitive, not a complete recognition algorithm.",
+      "A spatiotemporal cuboid includes time, unlike an ordinary rectangle in one image.",
+      "It need not contain an entire object or action."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "video",
+          "label": "Video frames",
+          "note": "Images ordered through time"
+        },
+        {
+          "id": "region",
+          "label": "Image region",
+          "note": "A small spatial rectangle"
+        },
+        {
+          "id": "interval",
+          "label": "Time interval",
+          "note": "A short frame sequence"
+        },
+        {
+          "id": "cuboid",
+          "label": "Spatiotemporal cuboid",
+          "note": "Width, height, and duration"
+        },
+        {
+          "id": "recognition",
+          "label": "Behavior recognition",
+          "note": "Uses the extracted volume"
+        }
+      ],
+      "edges": [
+        {
+          "from": "video",
+          "to": "region",
+          "label": ""
+        },
+        {
+          "from": "video",
+          "to": "interval",
+          "label": ""
+        },
+        {
+          "from": "region",
+          "to": "cuboid",
+          "label": "spatial extent"
+        },
+        {
+          "from": "interval",
+          "to": "cuboid",
+          "label": "temporal extent"
+        },
+        {
+          "from": "cuboid",
+          "to": "recognition",
+          "label": ""
+        }
+      ],
+      "caption": "A spatial region and a time interval together define a cuboid extracted from video."
+    }
+  },
   "related": [
     "computer-vision",
     "bag-of-words-model-in-computer-vision",

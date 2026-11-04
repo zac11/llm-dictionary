@@ -5,7 +5,126 @@
   "type": "algorithm",
   "definition": "Column generation or delayed column generation is an efficient algorithm for solving large linear programs.",
   "details": "The overarching idea is that many linear programs are too large to consider all the variables explicitly. The idea is thus to start by solving the considered program with only a subset of its variables. Then iteratively, variables that have the potential to improve the objective function are added to the program. Once it is possible to demonstrate that adding new variables would no longer improve the value of the objective function, the procedure stops. The hope when applying a column generation algorithm is that only a very small fraction of the variables will be generated. This hope is supported by the fact that in the optimal solution, most variables will be non-basic and assume a value of zero, so the optimal solution can be found without them. In many cases, this method allows to solve large linear programs that would otherwise be intractable. The classical example of a problem where it is successfully used is the cutting stock problem. One particular technique in linear programming which uses this kind of approach is the Dantzig–Wolfe decomposition algorithm. Additionally, column generation has been applied to many problems such as crew scheduling, vehicle routing, and the capacitated p-median problem.",
-  "story": "Think of a jazz musician who has heard so many solos that a new one simply falls out of their fingers. Given a starting line, the machine imagines what comes next — a word, a note, a patch of a picture. It makes new things by recombining everything it has ever seen. Creation, here, is memory recombined at speed. That next-word, next-stroke magic is Column generation.",
+  "explainer": {
+    "lead": "Column generation solves enormous linear programs without listing every variable up front. It works with a small subset, adds variables only when they could improve the answer, and stops once no further improvement is possible.",
+    "tiers": {
+      "eli5": "Imagine planning a trip with millions of possible routes, far too many to write down. You compare a small handful, add a new route only when it looks better, and keep going until none of the new routes would help. This can reveal a good plan without ever considering most of the possibilities.",
+      "practitioner": "Start with a restricted linear program containing a manageable subset of variables, then repeatedly solve it and add variables that could improve the objective. Stop only when you can demonstrate that no remaining variable would help. The practical benefit depends on needing only a small fraction of the variables; otherwise, repeated expansion may not make the problem tractable.",
+      "paperLevel": "For a linear program with a very large variable set J, solve the restricted program over a subset S of J, then augment S with variables having the potential to improve the objective. Terminate when it is certified that no variable in J\\S can improve the objective value. The approach is motivated by optimal solutions in which most variables are non-basic and equal zero; Dantzig–Wolfe decomposition is one technique using this approach."
+    },
+    "example": "For a cutting-stock problem, begin with only a few cutting patterns rather than every possible pattern. Solve the restricted problem, add a pattern that could improve the objective, and repeat; when no additional pattern can help, the current solution is final.",
+    "usedIn": [
+      {
+        "name": "Cutting stock",
+        "detail": "The classical example of successful column generation.",
+        "url": ""
+      },
+      {
+        "name": "Crew scheduling",
+        "detail": "Applied to large crew-scheduling problems.",
+        "url": ""
+      },
+      {
+        "name": "Vehicle routing",
+        "detail": "Used for routing problems with many possible variables.",
+        "url": ""
+      },
+      {
+        "name": "Capacitated p-median",
+        "detail": "Another problem to which column generation has been applied.",
+        "url": ""
+      }
+    ],
+    "goal": "Find an optimal solution to a large linear program while explicitly considering only a small fraction of its variables.",
+    "inputs": [
+      "A linear program too large to handle with every variable included",
+      "An initial subset of its variables"
+    ],
+    "outputs": [
+      "An optimal solution once no new variable can improve the objective",
+      "The subset of variables generated during the procedure"
+    ],
+    "steps": [
+      "Choose a small initial subset of the program's variables.",
+      "Solve the restricted program using only that subset.",
+      "Look for additional variables that could improve the objective.",
+      "Add promising variables and solve the updated program again.",
+      "Stop when you can demonstrate that no new variable would improve the objective."
+    ],
+    "tradeoffs": [
+      "Can make otherwise intractable large linear programs solvable.",
+      "Requires repeatedly solving and updating the restricted program.",
+      "Works best when only a very small fraction of variables must be generated.",
+      "Stopping requires proof that no remaining variable can improve the objective."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "large-lp",
+          "label": "Large linear program",
+          "note": "Too many variables to include explicitly"
+        },
+        {
+          "id": "subset",
+          "label": "Initial variable subset",
+          "note": "A manageable starting selection"
+        },
+        {
+          "id": "restricted",
+          "label": "Solve restricted program",
+          "note": "Optimize using current variables"
+        },
+        {
+          "id": "test",
+          "label": "Find improving variables",
+          "note": "Check whether additions could help"
+        },
+        {
+          "id": "add",
+          "label": "Add variables",
+          "note": "Expand the restricted program"
+        },
+        {
+          "id": "optimal",
+          "label": "Return solution",
+          "note": "No addition can improve the objective"
+        }
+      ],
+      "edges": [
+        {
+          "from": "large-lp",
+          "to": "subset",
+          "label": "start small"
+        },
+        {
+          "from": "subset",
+          "to": "restricted",
+          "label": ""
+        },
+        {
+          "from": "restricted",
+          "to": "test",
+          "label": ""
+        },
+        {
+          "from": "test",
+          "to": "add",
+          "label": "improvement possible"
+        },
+        {
+          "from": "add",
+          "to": "restricted",
+          "label": "solve again"
+        },
+        {
+          "from": "test",
+          "to": "optimal",
+          "label": "none remain"
+        }
+      ],
+      "caption": "Column generation repeatedly expands and solves a restricted program until no new variable can improve its objective."
+    }
+  },
   "related": [
     "referring-expression-generation",
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",

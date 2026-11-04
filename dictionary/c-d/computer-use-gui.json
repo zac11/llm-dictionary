@@ -5,6 +5,103 @@
   "type": "concept",
   "definition": "Agents that operate software the human way: reading screenshots or accessibility trees, clicking, typing, and navigating browsers and desktops.",
   "details": "Agents that operate software the human way: reading screenshots or accessibility trees, clicking, typing, and navigating browsers and desktops. Unlocks the long tail of software without APIs; current frontier work centers on reliability, speed, and safe handling of credentials and irreversible actions.",
+  "explainer": {
+    "lead": "Computer use agents control ordinary graphical software by looking at what is on screen and issuing mouse and keyboard actions. This lets them automate programs that offer no API, but their usefulness depends on reliability, speed, and safeguards around sensitive or irreversible steps.",
+    "tiers": {
+      "eli5": "Imagine a helper who uses a computer by looking at the screen, moving the mouse, and typing, just like you do. You could ask it to find an invoice in a website and download it, even if the website has no special shortcut for programs. It still needs careful supervision so it does not click the wrong thing or expose a password.",
+      "practitioner": "An engineer supplies a task and lets the agent iterate between screenshots or accessibility-tree observations and GUI actions such as clicking, typing, and navigation. This is useful for browser and desktop workflows without APIs, but stale observations, misclicks, latency, and compounding errors can undermine a run. Credentials need controlled handling, and consequential steps such as submission, deletion, or payment warrant confirmation or other restrictions.",
+      "paperLevel": "A computer-use agent can be described as a policy π(a_t | g, o_t, h_t), where g is the task, o_t is a screenshot or accessibility-tree observation, h_t is interaction history, and a_t is a GUI action such as click, type, or navigate. Executing a_t changes the software state and produces a new observation, forming a closed perception-action loop. Central limits are reliable grounding and execution, speed, secure credential handling, and control of irreversible actions."
+    },
+    "example": "To update a customer's shipping address in a legacy web application with no API, the agent finds the customer record, clicks Edit, replaces the address, and checks the entered values. Before the final submission, it pauses for approval rather than risking an unwanted change.",
+    "usedIn": [
+      {
+        "name": "Browser workflows",
+        "detail": "Navigating websites and completing tasks through their visible interfaces.",
+        "url": ""
+      },
+      {
+        "name": "Desktop automation",
+        "detail": "Operating desktop applications with mouse and keyboard actions.",
+        "url": ""
+      },
+      {
+        "name": "Software without APIs",
+        "detail": "Reaching the long tail of programs that cannot readily be automated through an API.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of asking a program to perform a task through a special programming interface, the agent uses the same graphical interface a person would. It repeatedly looks, acts, and checks the resulting screen.",
+    "howItWorks": [
+      "Receive a task and observe the current screen or accessibility tree.",
+      "Choose the next GUI action, such as a click, text entry, or navigation.",
+      "Execute the action in the browser or desktop application.",
+      "Read the updated interface and check progress toward the task.",
+      "Repeat until finished, or pause when credentials, uncertainty, or an irreversible action require care."
+    ],
+    "whyItMatters": "It makes automation possible across software that lacks APIs, greatly expanding the range of tasks an agent can attempt. The same direct control also makes safe handling of mistakes, credentials, and irreversible actions especially important.",
+    "misconceptions": [
+      "It is not API automation: the agent acts through the user interface.",
+      "Reading a screen does not guarantee that the agent will act reliably.",
+      "GUI access does not make unrestricted credential use or irreversible actions safe."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "task",
+          "label": "User task",
+          "note": "The requested outcome"
+        },
+        {
+          "id": "agent",
+          "label": "Computer-use agent",
+          "note": "Chooses actions from observations"
+        },
+        {
+          "id": "actions",
+          "label": "GUI actions",
+          "note": "Click, type, and navigate"
+        },
+        {
+          "id": "software",
+          "label": "Software interface",
+          "note": "Browser or desktop application"
+        },
+        {
+          "id": "observation",
+          "label": "Screen observation",
+          "note": "Screenshot or accessibility tree"
+        }
+      ],
+      "edges": [
+        {
+          "from": "task",
+          "to": "agent",
+          "label": "goal"
+        },
+        {
+          "from": "agent",
+          "to": "actions",
+          "label": "selects"
+        },
+        {
+          "from": "actions",
+          "to": "software",
+          "label": "operates"
+        },
+        {
+          "from": "software",
+          "to": "observation",
+          "label": "updates"
+        },
+        {
+          "from": "observation",
+          "to": "agent",
+          "label": "feedback"
+        }
+      ],
+      "caption": "The agent closes the loop between observing a graphical interface and acting on it."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

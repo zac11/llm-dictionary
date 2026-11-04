@@ -5,7 +5,93 @@
   "type": "concept",
   "definition": "In statistical learning theory, the principle of empirical risk minimization defines a family of learning algorithms based on evaluating performance over a known and fixed dataset.",
   "details": "The core idea is based on an application of the law of large numbers; more specifically, we cannot know exactly how well a predictive algorithm will work in practice (i.e. the \"true risk\") because we do not know the true distribution of the data, but we can instead estimate and optimize the performance of the algorithm on a known set of training data. The performance over the known set of training data is referred to as the \"empirical risk\".",
-  "story": "Imagine a driving test that every new model has to pass before it is allowed on the road. It is the exam that separates “it sounds good” from “it actually is good”. A fair scoreboard keeps everyone honest. It is the exam that keeps everyone honest. That shared ruler is Empirical risk minimization.",
+  "explainer": {
+    "lead": "Empirical risk minimization is a way to choose a predictive algorithm when the real data distribution is unknown. Instead of optimizing unknowable future performance, it minimizes measured error on a fixed training dataset.",
+    "tiers": {
+      "eli5": "Imagine practicing for a quiz with a stack of old questions. You cannot know exactly which questions will appear next, so you choose the answering method that makes the fewest mistakes on your practice stack. Empirical risk minimization uses the same idea with training data.",
+      "practitioner": "Apply it by measuring each candidate predictor's loss on a known training set and selecting the one with the lowest empirical risk. The main pitfall is treating that training-set score as a guarantee of future performance: the true data distribution remains unknown, so the empirical risk is only an estimate.",
+      "paperLevel": "For training pairs (x_i, y_i), i = 1..n, and loss L, empirical risk is R_hat(f) = (1/n) * sum_i L(f(x_i), y_i), and ERM chooses f to minimize R_hat(f). The true risk is expectation under the unknown data distribution; the law of large numbers motivates using the training average as an estimate, but minimizing it does not establish the true risk."
+    },
+    "example": "Suppose two email classifiers are evaluated on the same 1,000 labeled training emails: classifier A misclassifies 40 and classifier B misclassifies 25. Their empirical risks are 0.040 and 0.025, so ERM selects B. This does not tell us exactly how either classifier will perform on future emails.",
+    "usedIn": [
+      {
+        "name": "Statistical learning",
+        "detail": "Provides a principle for designing learning algorithms around performance on known training data.",
+        "url": ""
+      },
+      {
+        "name": "Predictive modeling",
+        "detail": "Used to choose a predictor by minimizing its measured loss over a fixed dataset.",
+        "url": ""
+      }
+    ],
+    "intuition": "You cannot directly score a predictor on all future data, so you use the data you have as a stand-in. Its average training loss is the empirical risk, and ERM favors the predictor that makes that risk smallest.",
+    "howItWorks": [
+      "Start with a known, fixed set of training data.",
+      "Choose a way to measure a predictor's errors or loss on each example.",
+      "Average those losses to obtain the predictor's empirical risk.",
+      "Compare candidate predictors and select one that minimizes this empirical risk.",
+      "Remember that future performance depends on the unknown true data distribution."
+    ],
+    "whyItMatters": "ERM turns an impossible direct optimization of unknown real-world performance into a computable objective on available data. It therefore supplies a common foundation for learning algorithms based on training-set evaluation.",
+    "misconceptions": [
+      "The lowest empirical risk does not guarantee the lowest true risk on future data.",
+      "ERM is a principle defining a family of learning algorithms, not one specific algorithm.",
+      "Empirical risk is an estimate based on training data, not the true risk itself."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data",
+          "label": "Fixed training data",
+          "note": "The known examples available for learning."
+        },
+        {
+          "id": "score",
+          "label": "Evaluate predictor",
+          "note": "Measure its loss on each training example."
+        },
+        {
+          "id": "risk",
+          "label": "Empirical risk",
+          "note": "Average performance over the training set."
+        },
+        {
+          "id": "minimize",
+          "label": "Minimize risk",
+          "note": "Compare candidates using the same objective."
+        },
+        {
+          "id": "predictor",
+          "label": "Chosen predictor",
+          "note": "The candidate with lowest empirical risk."
+        }
+      ],
+      "edges": [
+        {
+          "from": "data",
+          "to": "score",
+          "label": "examples"
+        },
+        {
+          "from": "score",
+          "to": "risk",
+          "label": "average loss"
+        },
+        {
+          "from": "risk",
+          "to": "minimize",
+          "label": ""
+        },
+        {
+          "from": "minimize",
+          "to": "predictor",
+          "label": ""
+        }
+      ],
+      "caption": "ERM replaces unknown true risk with average loss on fixed training data, then minimizes that estimate."
+    }
+  },
   "related": [
     "structural-risk-minimization",
     "empirical-dynamic-modeling",

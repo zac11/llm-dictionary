@@ -5,6 +5,102 @@
   "type": "concept",
   "definition": "Whether the stated reasoning actually reflects the computation that produced the answer.",
   "details": "Whether the stated reasoning actually reflects the computation that produced the answer. Models can reach answers for unstated reasons while emitting plausible rationales, which matters for debugging, auditing, and any safety scheme that monitors the chain of thought (see Chain-of-Thought Monitorability).",
+  "explainer": {
+    "lead": "Chain-of-thought faithfulness asks whether a model's explanation describes the reasoning that actually produced its answer. A fluent, sensible rationale can still be invented after the fact, which matters when people rely on explanations for debugging, auditing, or safety monitoring.",
+    "tiers": {
+      "eli5": "Imagine a student copies an answer from a friend, then writes some maths working that looks convincing. The working may be correct, but it is not how the student got the answer. Chain-of-thought faithfulness is about whether an AI's shown working tells the real story, not just a believable one.",
+      "practitioner": "Treat emitted rationales as claims about the computation, not automatic evidence of it. Faithfulness is relevant when debugging model behaviour, auditing decisions, or building safety schemes that monitor chains of thought. A correct answer and a coherent rationale do not remove the risk that the answer was reached for unstated reasons.",
+      "paperLevel": "Let z be the computation that produces answer y, and let r be the stated rationale; faithfulness concerns whether r accurately reflects the factors in z that produced y. Plausibility and consistency with y are not sufficient. Unfaithful rationales limit explanations used for debugging and auditing, and can undermine safety schemes based on chain-of-thought monitoring."
+    },
+    "example": "A model answers 51 to 17 × 3, but its answer was driven by an unstated pattern while it writes, “I rounded 17 to 20, calculated 60, and subtracted 9.” The arithmetic story is plausible and reaches 51, yet it is unfaithful because it does not describe what produced the answer.",
+    "usedIn": [
+      {
+        "name": "Model debugging",
+        "detail": "Helps assess whether an explanation identifies the real reason behind an answer.",
+        "url": ""
+      },
+      {
+        "name": "Model auditing",
+        "detail": "Distinguishes an accurate account of behaviour from a plausible post-hoc rationale.",
+        "url": ""
+      },
+      {
+        "name": "AI safety monitoring",
+        "detail": "Relevant to schemes that inspect chains of thought for unstated or unsafe reasons for an answer.",
+        "url": ""
+      }
+    ],
+    "intuition": "An explanation should describe the route the model actually took, not merely offer a reasonable route to the same destination. The key distinction is between sounding justified and faithfully reporting the answer-producing computation.",
+    "howItWorks": [
+      "Identify the computation that produced the answer.",
+      "Read the rationale emitted alongside that answer.",
+      "Compare the stated reasons with the actual answer-producing factors.",
+      "Treat matching explanations as faithful and plausible but unrelated explanations as unfaithful."
+    ],
+    "whyItMatters": "If rationales are unfaithful, they can hide the real causes of mistakes or other behaviour. That weakens debugging and auditing, and it limits safety approaches that assume monitoring the chain of thought reveals why an answer was produced.",
+    "misconceptions": [
+      "A correct answer does not imply a faithful rationale.",
+      "A coherent or convincing rationale is not necessarily faithful.",
+      "Faithfulness concerns the actual computation, not whether the explanation would justify the answer for someone else."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input question",
+          "note": "The prompt given to the model."
+        },
+        {
+          "id": "computation",
+          "label": "Actual computation",
+          "note": "The factors that really produce the answer."
+        },
+        {
+          "id": "answer",
+          "label": "Model answer",
+          "note": "The output produced by that computation."
+        },
+        {
+          "id": "rationale",
+          "label": "Stated rationale",
+          "note": "The explanation emitted for the answer."
+        },
+        {
+          "id": "check",
+          "label": "Faithfulness check",
+          "note": "Does the rationale reflect the actual computation?"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "computation",
+          "label": ""
+        },
+        {
+          "from": "computation",
+          "to": "answer",
+          "label": "produces"
+        },
+        {
+          "from": "answer",
+          "to": "rationale",
+          "label": "accompanied by"
+        },
+        {
+          "from": "computation",
+          "to": "check",
+          "label": "actual basis"
+        },
+        {
+          "from": "rationale",
+          "to": "check",
+          "label": "stated basis"
+        }
+      ],
+      "caption": "Faithfulness compares the explanation with the computation that produced the answer, not merely with the answer itself."
+    }
+  },
   "related": [
     "chain-of-thought",
     "chain-of-thought-monitorability"

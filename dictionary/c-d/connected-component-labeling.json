@@ -5,7 +5,98 @@
   "type": "concept",
   "definition": "Connected-component labeling (CCL), connected-component analysis (CCA), blob extraction, region labeling, blob discovery, or region extraction is an algorithmic application of graph theory, where subsets of connected components are uniquely labeled based on a given heuristic.",
   "details": "Connected-component labeling is not to be confused with segmentation. Connected-component labeling is used in computer vision to detect connected regions in binary digital images, although color images and data with higher dimensionality can also be processed. When integrated into an image recognition system or human-computer interaction interface, connected component labeling can operate on a variety of information. Blob extraction is generally performed on the resulting binary image from a thresholding step, but it can be applicable to gray-scale and color images as well. Blobs may be counted, filtered, and tracked. Blob extraction is related to but distinct from blob detection.",
-  "story": "Picture a child pointing at pictures in a book — cat, car, cloud — learning to see by seeing a thousand examples. It turns a picture into an understanding: this is a cat, that is a stop sign. What your eyes do without thinking, the machine does one careful layer at a time. It is eyes made of arithmetic — pixels become edges, edges become shapes, shapes become meaning. And that is Connected-component labeling — giving a machine the gift of sight.",
+  "explainer": {
+    "lead": "Connected-component labeling finds groups of connected elements in an image and gives each group its own label. It turns a foreground-and-background picture into separate regions that software can count, filter, or track.",
+    "tiers": {
+      "eli5": "Imagine a page with several separate ink splashes. You color one splash red, another blue, and so on, making sure touching parts of the same splash get the same color. Connected-component labeling does this with image regions so a computer can tell them apart.",
+      "practitioner": "It is commonly run on the binary image produced by thresholding, then the labeled regions can be counted, filtered, or tracked. Gray-scale and color images, as well as higher-dimensional data, can also be processed. Poor thresholding can split or merge regions before labeling, and the connectivity heuristic determines which elements belong together.",
+      "paperLevel": "Given image elements and a connectivity heuristic, partition the relevant elements into connected components C1, ..., Ck and assign every element in Ci the unique label i. In computer vision this is usually applied to connected regions in binary digital images, although color images and higher-dimensional data are also applicable. The resulting partition depends on the chosen connectivity heuristic and on any preceding thresholding step."
+    },
+    "example": "Suppose thresholding produces a binary image with two separate islands of foreground pixels. Labeling assigns every pixel in the first island label 1 and every pixel in the second island label 2, while background remains distinct. Software can then report that there are two blobs and process each independently.",
+    "usedIn": [
+      {
+        "name": "Computer vision",
+        "detail": "Detecting connected regions in binary digital images.",
+        "url": ""
+      },
+      {
+        "name": "Image recognition systems",
+        "detail": "Producing labeled regions that can be counted, filtered, or tracked.",
+        "url": ""
+      },
+      {
+        "name": "Human-computer interaction interfaces",
+        "detail": "Extracting connected regions as part of an interface's image-processing pipeline.",
+        "url": ""
+      }
+    ],
+    "intuition": "Treat connected foreground elements as one region, separate from other regions, and assign a different label to each. The image then records not just where foreground exists, but which foreground region each element belongs to.",
+    "howItWorks": [
+      "Start with an image, commonly the binary result of thresholding.",
+      "Use a connectivity heuristic to decide which elements belong to the same region.",
+      "Find each separate connected component.",
+      "Assign a unique label to every component and to its elements.",
+      "Use the labeled regions for operations such as counting, filtering, or tracking."
+    ],
+    "whyItMatters": "It provides a direct way to turn connected image regions into individually identifiable objects for later processing. The same labeled output supports counting, filtering, and tracking.",
+    "misconceptions": [
+      "It is not the same task as segmentation.",
+      "Blob extraction is related to, but distinct from, blob detection.",
+      "It is not limited to binary images; gray-scale, color, and higher-dimensional data can also be processed."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input image",
+          "note": "Often binary after thresholding"
+        },
+        {
+          "id": "connectivity",
+          "label": "Connectivity heuristic",
+          "note": "Defines which elements connect"
+        },
+        {
+          "id": "components",
+          "label": "Connected components",
+          "note": "Separate connected regions"
+        },
+        {
+          "id": "labels",
+          "label": "Unique labels",
+          "note": "One label per component"
+        },
+        {
+          "id": "operations",
+          "label": "Region operations",
+          "note": "Count, filter, or track blobs"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "components",
+          "label": ""
+        },
+        {
+          "from": "connectivity",
+          "to": "components",
+          "label": "guides grouping"
+        },
+        {
+          "from": "components",
+          "to": "labels",
+          "label": ""
+        },
+        {
+          "from": "labels",
+          "to": "operations",
+          "label": ""
+        }
+      ],
+      "caption": "Connected-component labeling groups image elements using a connectivity heuristic, labels each group, and exposes the regions for further processing."
+    }
+  },
   "related": [
     "accord-net",
     "active-appearance-model",

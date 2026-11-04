@@ -5,7 +5,117 @@
   "type": "concept",
   "definition": "Data-centric AI is an approach within artificial intelligence that emphasizes on improving the quality, consistency and representativeness of the data used to train machine learning models, rather than focusing primarily on optimizing model architectures or algorithms.",
   "details": "This idea has gained traction as researchers and practitioners have come to believe that many performance limitations of machine learning systems stem from issues such as noisy labels, biased datasets, and lack of coverage in the data. Data-centric AI involves disciplined approach to data cleaning, augmentation, labeling, and governance that improves model performance and reliability in applications such as computer vision, natural language processing, and further.",
-  "story": "Picture a librarian organizing a million slips of paper so that any one of them can be found in a heartbeat. The examples a machine reads become the world it believes in. Better ingredients make a better meal, and the same is true here. Garbage in, garbage out — and the reverse: clean, representative data makes the model quietly brilliant. And that is Data-centric AI — the unglamorous work everything else stands on.",
+  "explainer": {
+    "lead": "Data-centric AI improves machine learning systems by fixing and strengthening their training data, rather than treating data as fixed and repeatedly changing the model. It matters because noisy labels, biased datasets, and missing coverage can limit performance no matter how carefully a model is tuned.",
+    "tiers": {
+      "eli5": "Imagine teaching someone to recognize animals using a stack of picture cards. If some cards have the wrong names, show only one kind of dog, or are too blurry to see, giving the student a harder quiz will not solve the problem. Data-centric AI means correcting the cards, adding useful new ones, and making sure the whole set gives clear and fair lessons.",
+      "practitioner": "In practice, teams inspect datasets, clean noisy examples, correct or improve labels, augment underrepresented cases, and establish governance around data changes. These steps can be applied in computer vision and natural language processing pipelines, with model comparisons used to check whether a data revision actually improves performance and reliability. Common pitfalls include introducing new bias through augmentation, cleaning inconsistently, and assuming more data alone will fix poor quality or coverage.",
+      "paperLevel": "A plain-text formulation is: given a model family and training procedure, improve a dataset D through cleaning, labeling, augmentation, and governance to obtain D', with the goal of improving model performance and reliability. The approach treats data quality, consistency, and representativeness as primary optimization targets rather than focusing mainly on architectures or algorithms. Its limits depend on the data intervention: better labels cannot supply missing coverage, augmentation can introduce artifacts, and improvements in one dataset or application do not establish universal gains."
+    },
+    "example": "Suppose an image classifier often fails on a group of objects because many training labels are noisy and few images cover that group. A data-centric response is to correct the labels, add or augment suitable examples, and retrain while keeping the model architecture largely unchanged; any gain can then be assessed against the earlier dataset.",
+    "usedIn": [
+      {
+        "name": "Computer vision",
+        "detail": "Used to improve image datasets through cleaning, better labels, augmentation, and broader coverage.",
+        "url": ""
+      },
+      {
+        "name": "Natural language processing",
+        "detail": "Used to make text training data more consistent and representative so models can perform more reliably.",
+        "url": ""
+      }
+    ],
+    "intuition": "A model learns patterns from the examples it is given, so flawed or incomplete examples can impose a ceiling on what it learns. Improving those examples can sometimes help more than changing the architecture or algorithm.",
+    "howItWorks": [
+      "Inspect the data for noisy labels, bias, and gaps in coverage.",
+      "Clean problematic examples and make labeling more consistent.",
+      "Augment or add data where coverage is weak.",
+      "Govern data changes and evaluate whether they improve performance and reliability."
+    ],
+    "whyItMatters": "Many practical machine learning limitations originate in the data rather than the model itself. Disciplined data work can improve performance and reliability while making bias and coverage problems easier to address directly.",
+    "misconceptions": [
+      "It does not mean model architectures and algorithms are unimportant; it shifts primary attention to the data.",
+      "More data is not automatically better if labels are noisy or coverage remains poor.",
+      "Data cleaning alone is not the whole approach; labeling, augmentation, and governance also matter."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "raw-data",
+          "label": "Raw training data",
+          "note": "Examples may have noise, bias, or gaps."
+        },
+        {
+          "id": "inspect",
+          "label": "Inspect data",
+          "note": "Find label and coverage problems."
+        },
+        {
+          "id": "improve",
+          "label": "Clean and label",
+          "note": "Correct examples and improve consistency."
+        },
+        {
+          "id": "augment",
+          "label": "Augment coverage",
+          "note": "Add useful variation or missing cases."
+        },
+        {
+          "id": "govern",
+          "label": "Govern changes",
+          "note": "Keep data work disciplined and traceable."
+        },
+        {
+          "id": "train",
+          "label": "Train model",
+          "note": "Learn from the improved dataset."
+        },
+        {
+          "id": "evaluate",
+          "label": "Evaluate results",
+          "note": "Check performance and reliability."
+        }
+      ],
+      "edges": [
+        {
+          "from": "raw-data",
+          "to": "inspect",
+          "label": "review"
+        },
+        {
+          "from": "inspect",
+          "to": "improve",
+          "label": "issues"
+        },
+        {
+          "from": "improve",
+          "to": "augment",
+          "label": "clean data"
+        },
+        {
+          "from": "augment",
+          "to": "govern",
+          "label": "revisions"
+        },
+        {
+          "from": "govern",
+          "to": "train",
+          "label": "dataset"
+        },
+        {
+          "from": "train",
+          "to": "evaluate",
+          "label": "model"
+        },
+        {
+          "from": "evaluate",
+          "to": "inspect",
+          "label": "feedback"
+        }
+      ],
+      "caption": "An iterative loop in which better-governed data, rather than repeated model changes alone, drives improvement."
+    }
+  },
   "related": [
     "ai-data-center",
     "acl-data-collection-initiative",

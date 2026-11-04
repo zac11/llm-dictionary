@@ -5,7 +5,103 @@
   "type": "concept",
   "definition": "A table used to evaluate classification models by showing counts of true positives, true negatives, false positives, and false negatives.",
   "details": "Confusion matrices allow computation of derived metrics like precision, recall, and F1 score, and help diagnose specific types of model errors.",
-  "story": "Picture a scoreboard at a science fair: you need a fair, agreed way to tell who actually won. A fair scoreboard keeps everyone honest. Before trusting a machine, someone has to measure how good it really is — fairly and honestly. A good metric is a ruler that does not bend when you lean on it. And that, done honestly, is Confusion Matrix.",
+  "explainer": {
+    "lead": "A confusion matrix compares a classifier’s predictions with the correct answers and sorts them into four kinds of outcome. It shows not only how many mistakes were made, but which kinds, helping you choose and interpret measures such as precision, recall, and F1 score.",
+    "tiers": {
+      "eli5": "Imagine sorting a pile of red and blue marbles into two cups. You can check each marble to see which ones you sorted correctly and which ones ended up in the wrong cup. A confusion matrix puts those counts into a small table, so you can see exactly where the sorting went wrong.",
+      "practitioner": "After running a classifier on labeled examples, count true positives, true negatives, false positives, and false negatives to build the matrix. Use it to inspect class-specific errors and calculate precision, recall, and F1 score rather than relying only on an overall correctness count. When comparing models or settings, check whether the balance between false positives and false negatives suits the task.",
+      "paperLevel": "For binary classification, a confusion matrix is a 2×2 table with entries TP, TN, FP, and FN, counting correct positive, correct negative, incorrectly positive, and incorrectly negative predictions. Precision = TP/(TP+FP), recall = TP/(TP+FN), and F1 = 2TP/(2TP+FP+FN). The matrix preserves error-type information that is lost when results are reduced to a single score."
+    },
+    "example": "Suppose 100 test emails produce 40 true positives, 45 true negatives, 5 false positives, and 10 false negatives. Precision is 40/(40+5) ≈ 0.889, recall is 40/(40+10) = 0.8, and F1 is 80/(80+5+10) ≈ 0.842. The matrix also makes clear that 10 positive emails were missed while 5 negative emails triggered false alarms.",
+    "usedIn": [
+      {
+        "name": "Spam filtering",
+        "detail": "Separates correctly flagged spam from legitimate messages incorrectly flagged as spam.",
+        "url": ""
+      },
+      {
+        "name": "Medical screening",
+        "detail": "Distinguishes missed positive cases from false alarms in classification results.",
+        "url": ""
+      },
+      {
+        "name": "Image classification",
+        "detail": "Shows which predicted labels were correct and which kinds of mistakes occurred.",
+        "url": ""
+      }
+    ],
+    "intuition": "An overall score can hide very different failure patterns. A confusion matrix lays predictions against actual labels so that correct decisions and each type of error remain visible.",
+    "howItWorks": [
+      "Run the classifier on examples whose correct labels are known.",
+      "Compare each predicted label with its actual label.",
+      "Count true positives, true negatives, false positives, and false negatives.",
+      "Place the four counts in a table of predictions versus actual labels.",
+      "Inspect the error pattern or derive precision, recall, and F1 score."
+    ],
+    "whyItMatters": "It turns evaluation into a diagnosis of model behavior rather than a single pass-or-fail number. That helps reveal whether a model is mainly producing false alarms, missing positive cases, or both.",
+    "misconceptions": [
+      "A confusion matrix is not itself a performance score; it is a set of counts from which scores can be calculated.",
+      "False positives and false negatives are different errors, and treating them as interchangeable can hide an important weakness.",
+      "A large number of correct predictions does not guarantee that both kinds of error are acceptably low."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "examples",
+          "label": "Labeled examples",
+          "note": "Inputs with known correct labels"
+        },
+        {
+          "id": "classifier",
+          "label": "Classifier",
+          "note": "Produces a predicted label"
+        },
+        {
+          "id": "comparison",
+          "label": "Label comparison",
+          "note": "Matches predictions with actual labels"
+        },
+        {
+          "id": "matrix",
+          "label": "Four counts",
+          "note": "TP, TN, FP, and FN"
+        },
+        {
+          "id": "metrics",
+          "label": "Derived metrics",
+          "note": "Precision, recall, and F1"
+        }
+      ],
+      "edges": [
+        {
+          "from": "examples",
+          "to": "classifier",
+          "label": "inputs"
+        },
+        {
+          "from": "examples",
+          "to": "comparison",
+          "label": "actual labels"
+        },
+        {
+          "from": "classifier",
+          "to": "comparison",
+          "label": "predictions"
+        },
+        {
+          "from": "comparison",
+          "to": "matrix",
+          "label": "counts"
+        },
+        {
+          "from": "matrix",
+          "to": "metrics",
+          "label": "calculates"
+        }
+      ],
+      "caption": "Predictions and actual labels are compared to form four counts, which support error analysis and derived metrics."
+    }
+  },
   "related": [
     "a-b-testing",
     "ablation-study",

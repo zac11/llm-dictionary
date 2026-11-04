@@ -5,7 +5,108 @@
   "type": "concept",
   "definition": "A separate, typically smaller model used specifically to check the inputs or outputs of a primary model against safety or policy constraints.",
   "details": "Guardrail models offload safety-related classification from the main generative model, allowing dedicated, often faster and more specialized filtering as part of a layered safety architecture.",
-  "story": "Picture guardrails on a mountain road — not there to slow you down on the straightaways, but to keep you from flying off the cliff. It is the habit of asking, before every launch, what could go wrong — and then doing something about it. Think of it as the quiet rule that a tool should be useful without being dangerous. It is the difference between “it works” and “it is safe to put in front of people.” That deliberate caution is Guardrail Model.",
+  "explainer": {
+    "lead": "A guardrail model is a dedicated safety checker that sits alongside a primary AI model. It examines prompts or generated answers so the main model can focus on its task while specialized filtering handles policy and safety decisions.",
+    "tiers": {
+      "eli5": "Imagine a shop with a person who makes things and a separate checker who makes sure each order and finished item follows the rules. The checker is usually smaller and quicker, and can stop a request or answer before it goes any further. This gives the shop more than one chance to catch a problem.",
+      "practitioner": "Deploy a guardrail model as a separate classification stage before generation, after generation, or both. Its decisions can allow, block, or route content for further handling, while the primary model remains responsible for generation. A key pitfall is treating this single layer as the complete safety architecture rather than one specialized filter within it.",
+      "paperLevel": "Let M be the primary generative model and G a separate guardrail model: G evaluates an input x, an output y, or both against safety or policy constraints and returns a filtering decision. This separates safety classification from generation and permits a smaller, faster, more specialized G. Its coverage is limited to the checks and placement chosen for that layer."
+    },
+    "example": "A user sends a chatbot a prompt that violates its safety policy. An input guardrail model flags the prompt, so the primary model is not asked to generate an answer and the user receives a refusal instead; for an allowed prompt, a second check can inspect the generated answer before it is displayed.",
+    "usedIn": [
+      {
+        "name": "Generative AI applications",
+        "detail": "Checks user prompts or model answers before they are accepted or shown.",
+        "url": ""
+      },
+      {
+        "name": "Layered safety systems",
+        "detail": "Provides a dedicated filtering layer alongside the primary generative model.",
+        "url": ""
+      }
+    ],
+    "intuition": "Think of a specialist inspector working beside a general-purpose producer: the producer handles the main task, while the inspector concentrates only on whether a request or result breaks the rules. Separating these jobs allows safety checks to be faster and more specialized.",
+    "howItWorks": [
+      "A user prompt arrives at the primary model's input path.",
+      "A guardrail model can classify the prompt against safety or policy constraints.",
+      "If the prompt passes, the primary model generates a response.",
+      "The same or another guardrail model can check that response.",
+      "The system releases the response only if the applicable checks allow it."
+    ],
+    "whyItMatters": "Guardrail models move safety classification out of the main generative model and into a dedicated component. This supports specialized, often faster filtering and makes the checks one layer in a broader safety architecture.",
+    "misconceptions": [
+      "A guardrail model is not the primary model generating the answer.",
+      "It need not check only outputs; it can check inputs, outputs, or both.",
+      "It is one safety layer, not a guarantee that every unsafe result will be caught."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "prompt",
+          "label": "User prompt",
+          "note": "Input to the system"
+        },
+        {
+          "id": "input-check",
+          "label": "Input guardrail",
+          "note": "Checks policy constraints"
+        },
+        {
+          "id": "primary",
+          "label": "Primary model",
+          "note": "Generates the response"
+        },
+        {
+          "id": "output-check",
+          "label": "Output guardrail",
+          "note": "Checks generated content"
+        },
+        {
+          "id": "response",
+          "label": "Allowed response",
+          "note": "Released to the user"
+        },
+        {
+          "id": "block",
+          "label": "Block request",
+          "note": "Stops disallowed content"
+        }
+      ],
+      "edges": [
+        {
+          "from": "prompt",
+          "to": "input-check",
+          "label": "prompt"
+        },
+        {
+          "from": "input-check",
+          "to": "primary",
+          "label": "allowed"
+        },
+        {
+          "from": "input-check",
+          "to": "block",
+          "label": "flagged"
+        },
+        {
+          "from": "primary",
+          "to": "output-check",
+          "label": "draft"
+        },
+        {
+          "from": "output-check",
+          "to": "response",
+          "label": "allowed"
+        },
+        {
+          "from": "output-check",
+          "to": "block",
+          "label": "flagged"
+        }
+      ],
+      "caption": "Dedicated guardrail models can filter both the prompt and the primary model's generated response."
+    }
+  },
   "related": [
     "constitutional-reward-model",
     "model-collapse",

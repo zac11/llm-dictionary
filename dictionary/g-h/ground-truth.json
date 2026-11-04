@@ -5,7 +5,113 @@
   "type": "concept",
   "definition": "The verified, correct answer or label against which a model's predictions are compared during evaluation.",
   "details": "Ground truth data is typically produced through careful human annotation, expert labeling, or verified external sources, and its quality directly determines how meaningful evaluation results are.",
-  "story": "Picture a scoreboard at a science fair: you need a fair, agreed way to tell who actually won. A fair scoreboard keeps everyone honest. Before trusting a machine, someone has to measure how good it really is — fairly and honestly. A good metric is a ruler that does not bend when you lean on it. That shared ruler is Ground Truth.",
+  "explainer": {
+    "lead": "When an AI system gives an answer, ground truth is the trusted reference used to judge whether that answer is right. Without reliable references, evaluation scores can look precise while saying little about real performance.",
+    "tiers": {
+      "eli5": "Ground truth is like the answer key for a test: it tells you what the correct answers should be. If a computer says a photo shows a dog, you check the answer key to see whether the photo really does show a dog.",
+      "practitioner": "In evaluation, each model prediction is compared with a ground-truth label or answer from careful human annotation, expert labeling, or a verified external source. Teams commonly apply this to labeled validation and test examples when calculating evaluation results. Poor or inconsistent annotations weaken the reference itself, so checking label quality is as important as checking the model.",
+      "paperLevel": "For an input x, let y be its verified ground-truth target and y_hat = f(x) be the model prediction; evaluation compares y_hat with y using the chosen comparison or metric. The resulting measurements are meaningful only to the extent that the ground-truth data provides accurate, appropriate references."
+    },
+    "example": "An expert verifies that an evaluation image shows a cat, so its ground-truth label is \"cat\". If the model predicts \"dog\", the comparison records an error; if it predicts \"cat\", the comparison records a match.",
+    "usedIn": [
+      {
+        "name": "Image classification",
+        "detail": "Verified image labels provide the correct categories against which predicted categories are checked.",
+        "url": ""
+      },
+      {
+        "name": "Speech recognition",
+        "detail": "Verified transcripts serve as references for evaluating a system's transcribed text.",
+        "url": ""
+      },
+      {
+        "name": "Medical image analysis",
+        "detail": "Expert labels can provide references for assessing predictions about medical images.",
+        "url": ""
+      }
+    ],
+    "intuition": "Ground truth is the evaluation answer key: a trusted target for each example, rather than another model output. Comparing predictions with these targets turns individual agreements and disagreements into an assessment of performance.",
+    "howItWorks": [
+      "Collect the examples to be evaluated.",
+      "Establish correct labels or answers through careful annotation, expert labeling, or verified external sources.",
+      "Run the model on the same examples and record its predictions.",
+      "Compare each prediction with its ground-truth target.",
+      "Aggregate the comparisons into evaluation results."
+    ],
+    "whyItMatters": "Ground truth supplies the standard that makes evaluation possible, and its quality directly limits how meaningful the results are. Careful verification helps ensure that reported performance reflects genuine model behavior rather than unreliable reference labels.",
+    "misconceptions": [
+      "Ground truth is not the model's prediction or confidence score.",
+      "A label does not become reliable ground truth merely because a person supplied it; its quality still matters.",
+      "Ground truth is not just the evaluation score; it is the reference data used in producing that score."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "examples",
+          "label": "Evaluation examples",
+          "note": "Inputs used to assess the model"
+        },
+        {
+          "id": "verification",
+          "label": "Careful verification",
+          "note": "Human, expert, or external-source labeling"
+        },
+        {
+          "id": "truth",
+          "label": "Ground truth",
+          "note": "Verified labels or answers"
+        },
+        {
+          "id": "model",
+          "label": "Model",
+          "note": "Processes the evaluation inputs"
+        },
+        {
+          "id": "comparison",
+          "label": "Prediction comparison",
+          "note": "Checks predictions against verified targets"
+        },
+        {
+          "id": "results",
+          "label": "Evaluation results",
+          "note": "Aggregated assessment of performance"
+        }
+      ],
+      "edges": [
+        {
+          "from": "examples",
+          "to": "verification",
+          "label": "labeling"
+        },
+        {
+          "from": "verification",
+          "to": "truth",
+          "label": "verified targets"
+        },
+        {
+          "from": "examples",
+          "to": "model",
+          "label": "inputs"
+        },
+        {
+          "from": "model",
+          "to": "comparison",
+          "label": "predictions"
+        },
+        {
+          "from": "truth",
+          "to": "comparison",
+          "label": "references"
+        },
+        {
+          "from": "comparison",
+          "to": "results",
+          "label": "matches errors"
+        }
+      ],
+      "caption": "Evaluation compares model predictions with verified ground-truth targets for the same examples."
+    }
+  },
   "related": [
     "a-b-testing",
     "ablation-study",

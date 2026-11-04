@@ -8,6 +8,86 @@
   ],
   "definition": "Directly controlling reasoning length at inference: capping thinking tokens, or forcing continued deliberation by suppressing the end-of-thinking token (the \"wait\" trick).",
   "details": "Directly controlling reasoning length at inference: capping thinking tokens, or forcing continued deliberation by suppressing the end-of-thinking token (the \"wait\" trick). The product knob that trades latency and cost against accuracy per query.",
+  "explainer": {
+    "lead": "Budget forcing is a way to control how long an AI model deliberates before answering. It can stop reasoning at a token limit or make it continue, letting each query trade accuracy against response time and compute cost.",
+    "tiers": {
+      "eli5": "Imagine telling someone, \"You have two minutes to solve this puzzle,\" or, when they stop early, \"Wait—check it again.\" Budget forcing does something similar with an AI's thinking: it sets a limit or asks it to keep going. More thinking may help, but it also takes longer and costs more.",
+      "practitioner": "At inference, set a per-query thinking-token budget and stop generation when it is exhausted, or suppress the end-of-thinking token and insert a continuation such as \"Wait\" to extend deliberation. Tune the budget against measured accuracy, latency, and cost. A hard cap can cut off useful reasoning, while forced continuation can spend tokens without improving the answer.",
+      "paperLevel": "Let B be the thinking-token budget and L the number of reasoning tokens generated. Budget forcing directly controls L at inference: terminate deliberation when L reaches B, or suppress the end-of-thinking token so generation continues beyond the model's initial stopping point, typically with a \"Wait\" continuation. It changes test-time compute without changing model weights; additional deliberation is not guaranteed to improve accuracy."
+    },
+    "example": "For a difficult math query, a system allows 2,000 thinking tokens. If the model tries to finish after 800 tokens, the system suppresses that stopping signal and inserts \"Wait\", prompting further checking; if deliberation reaches 2,000 tokens, it is capped and the model answers.",
+    "intuition": "A reasoning model may stop before doing enough checking, or keep thinking after extra tokens would add little value. Budget forcing treats deliberation length as a control knob rather than leaving it entirely to the model.",
+    "howItWorks": [
+      "Send the query and choose a thinking-token budget.",
+      "Let the model generate its reasoning normally.",
+      "If the budget is exhausted, end thinking and produce the answer.",
+      "To extend thinking, suppress the end-of-thinking token and add a continuation such as \"Wait\".",
+      "Compare accuracy, latency, and cost to choose the budget."
+    ],
+    "whyItMatters": "It makes test-time compute adjustable per query instead of fixed. That gives applications a direct way to balance answer quality against how long users wait and how much each request costs.",
+    "misconceptions": [
+      "A larger budget does not guarantee a better answer.",
+      "Budget forcing controls inference-time deliberation; it does not retrain the model.",
+      "The token cap limits generated thinking, not necessarily the difficulty of the problem."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "query",
+          "label": "User query",
+          "note": "Starts a single inference request."
+        },
+        {
+          "id": "reason",
+          "label": "Model deliberates",
+          "note": "Generates thinking tokens."
+        },
+        {
+          "id": "budget",
+          "label": "Budget controller",
+          "note": "Tracks tokens and stopping signals."
+        },
+        {
+          "id": "wait",
+          "label": "Force continuation",
+          "note": "Suppresses ending and inserts \"Wait\"."
+        },
+        {
+          "id": "answer",
+          "label": "Final answer",
+          "note": "Produced when deliberation ends or is capped."
+        }
+      ],
+      "edges": [
+        {
+          "from": "query",
+          "to": "reason",
+          "label": ""
+        },
+        {
+          "from": "reason",
+          "to": "budget",
+          "label": "thinking tokens"
+        },
+        {
+          "from": "budget",
+          "to": "wait",
+          "label": "extend"
+        },
+        {
+          "from": "wait",
+          "to": "reason",
+          "label": "continue"
+        },
+        {
+          "from": "budget",
+          "to": "answer",
+          "label": "stop or cap"
+        }
+      ],
+      "caption": "The controller either ends deliberation at the budget or forces another round of thinking."
+    }
+  },
   "related": [
     "inference",
     "latency",

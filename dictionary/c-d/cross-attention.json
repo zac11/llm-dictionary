@@ -5,6 +5,112 @@
   "type": "concept",
   "definition": "Attention where queries come from one sequence and keys/values from another, such as a decoder attending to an encoder's output (translation, Whisper-style ASR) or a language model attending to image features in a VLM.",
   "details": "Attention where queries come from one sequence and keys/values from another, such as a decoder attending to an encoder's output (translation, Whisper-style ASR) or a language model attending to image features in a VLM.",
+  "explainer": {
+    "lead": "Cross-attention lets one sequence look up relevant information in another sequence. It is how a translation decoder can consult the source sentence, or how a language model can use features extracted from an image.",
+    "tiers": {
+      "eli5": "Imagine writing a book report while looking back at the book: your questions come from the report you are writing, but the answers come from the book. Cross-attention works similarly, helping one sequence find useful details in another. This is different from self-attention, where a sequence looks within itself.",
+      "practitioner": "In an encoder–decoder transformer, project decoder states into queries and encoder outputs into keys and values, using appropriate padding or causal masks. In VLMs, language states can similarly attend to image features. Check that query and key dimensions match, and remember that computation and memory grow with the product of the two sequence lengths.",
+      "paperLevel": "For target representations X and source representations Y, cross-attention uses Q = XW_Q, K = YW_K, and V = YW_V, then computes Attention(Q,K,V) = softmax(QK^T / sqrt(d_k))V. Each target position therefore produces a weighted combination of source values. Unlike self-attention, Q comes from a different sequence than K and V; cost scales with the product of their lengths."
+    },
+    "example": "While translating an English sentence into French, the decoder has already generated part of the French output. Its current state forms a query, the encoded English words supply keys and values, and cross-attention produces a weighted summary of the source sentence to help choose the next French token.",
+    "usedIn": [
+      {
+        "name": "Machine translation",
+        "detail": "A decoder attends to the encoder's representation of the source sentence while producing the translation.",
+        "url": ""
+      },
+      {
+        "name": "Whisper-style speech recognition",
+        "detail": "The text decoder cross-attends to encoded speech features while generating a transcript.",
+        "url": ""
+      },
+      {
+        "name": "Vision-language models",
+        "detail": "A language model attends to image features so its text output can use visual information.",
+        "url": ""
+      }
+    ],
+    "intuition": "Cross-attention is a learned lookup between two sequences: one side asks what it needs, and the other side supplies the information. Each query can focus on the source positions most useful for its current output.",
+    "howItWorks": [
+      "Turn states from the target sequence into queries.",
+      "Turn states from the source sequence into keys and values.",
+      "Compare each query with every allowed source key to obtain attention weights.",
+      "Combine the source values using those weights and pass the result onward."
+    ],
+    "whyItMatters": "It gives a model a direct, content-dependent way to use information produced by another sequence or modality. This connects encoders to decoders and lets language processing incorporate inputs such as speech or images.",
+    "misconceptions": [
+      "Cross-attention is not self-attention: self-attention draws queries, keys, and values from the same sequence.",
+      "It does not require different modalities; two text sequences, such as a source sentence and its translation, are enough.",
+      "It does not retrieve one fixed source position; attention weights can distribute across many positions."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "target",
+          "label": "Target sequence",
+          "note": "States that need outside information"
+        },
+        {
+          "id": "queries",
+          "label": "Query projection",
+          "note": "Produces queries from target states"
+        },
+        {
+          "id": "source",
+          "label": "Source sequence",
+          "note": "Encoded information to consult"
+        },
+        {
+          "id": "keys-values",
+          "label": "Key-value projections",
+          "note": "Produces keys and values from source states"
+        },
+        {
+          "id": "weights",
+          "label": "Attention weights",
+          "note": "Queries are compared with source keys"
+        },
+        {
+          "id": "output",
+          "label": "Context output",
+          "note": "Weighted source values return to the target model"
+        }
+      ],
+      "edges": [
+        {
+          "from": "target",
+          "to": "queries",
+          "label": "target states"
+        },
+        {
+          "from": "source",
+          "to": "keys-values",
+          "label": "source states"
+        },
+        {
+          "from": "queries",
+          "to": "weights",
+          "label": "queries"
+        },
+        {
+          "from": "keys-values",
+          "to": "weights",
+          "label": "keys"
+        },
+        {
+          "from": "weights",
+          "to": "output",
+          "label": "weights"
+        },
+        {
+          "from": "keys-values",
+          "to": "output",
+          "label": "values"
+        }
+      ],
+      "caption": "Queries flow from the target sequence, while keys and values flow from the source sequence; their interaction produces a context vector for the target."
+    }
+  },
   "related": [
     "attention",
     "language-model"

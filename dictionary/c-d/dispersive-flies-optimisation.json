@@ -5,7 +5,118 @@
   "type": "algorithm",
   "definition": "Dispersive flies optimisation (DFO) is a bare-bones swarm intelligence algorithm which is inspired by the swarming behaviour of flies hovering over food sources.",
   "details": "DFO is a simple optimiser which works by iteratively trying to improve a candidate solution with regard to a numerical measure that is calculated by a fitness function. Each member of the population, a fly or an agent, holds a candidate solution whose suitability can be evaluated by their fitness value. Optimisation problems are often formulated as either minimisation or maximisation problems. DFO was introduced with the intention of analysing a simplified swarm intelligence algorithm with the fewest tunable parameters and components. In the first work on DFO, this algorithm was compared against a few other existing swarm intelligence techniques using error, efficiency and diversity measures. It is shown that despite the simplicity of the algorithm, which only uses agents’ position vectors at time t to generate the position vectors for time t + 1, it exhibits a competitive performance. Since its inception, DFO has been used in a variety of applications including medical imaging and image analysis as well as data mining and machine learning.",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. And that idea, made concrete, is Dispersive flies optimisation.",
+  "explainer": {
+    "lead": "Dispersive flies optimisation is a simple way to search for good numerical answers using a population of candidate solutions, inspired by flies swarming over food. It is notable for needing very few components and tunable parameters while still performing competitively in its initial comparisons.",
+    "tiers": {
+      "eli5": "Imagine several flies looking for the tastiest spot, with each fly standing for one possible answer. Give every answer a score, then use the flies’ current positions to make a new set of guesses. Repeating this can lead to a much better answer.",
+      "practitioner": "Provide a fitness function, formulate the task as minimisation or maximisation, and initialise a population of position vectors. Each iteration uses only the current positions to generate the next population, so implementation is deliberately lightweight. Evaluate error, efficiency and population diversity where relevant, and do not treat competitive results in the initial comparisons as a guarantee for every problem.",
+      "paperLevel": "For an objective f(x), DFO maintains a population P_t = {x_1,t, ..., x_n,t} and evaluates each candidate by f(x_i,t). Its defining simplification is that P_{t+1} is generated using only the position vectors in P_t, with iteration intended to improve fitness under minimisation or maximisation. The original evaluation compared DFO with a few existing swarm intelligence techniques using error, efficiency and diversity measures, reporting competitive performance despite its minimal design."
+    },
+    "example": "To minimise f(x) = x^2, start three flies at x = -2, 1 and 3, whose fitness values are 4, 1 and 9. DFO uses those current positions to generate a new population and scores it again; if a later candidate is x = 0.2, its fitness is 0.04, making it a substantially better solution for this minimisation task.",
+    "usedIn": [
+      {
+        "name": "Medical imaging",
+        "detail": "Applied to numerical optimisation tasks in medical imaging.",
+        "url": ""
+      },
+      {
+        "name": "Image analysis",
+        "detail": "Used as an optimiser within image-analysis applications.",
+        "url": ""
+      },
+      {
+        "name": "Data mining",
+        "detail": "Used to search for candidate solutions scored by a fitness function.",
+        "url": ""
+      },
+      {
+        "name": "Machine learning",
+        "detail": "Applied to optimisation problems arising in machine-learning work.",
+        "url": ""
+      }
+    ],
+    "goal": "Iteratively improve a population of candidate solutions with respect to a numerical fitness function, for either minimisation or maximisation.",
+    "inputs": [
+      "A fitness function that scores candidate solutions",
+      "An initial population of agent position vectors",
+      "A minimisation or maximisation objective"
+    ],
+    "outputs": [
+      "An improved candidate solution",
+      "The fitness value associated with that solution"
+    ],
+    "steps": [
+      "Initialise a population of flies, each holding a candidate position vector.",
+      "Evaluate every candidate with the fitness function.",
+      "Use the population’s position vectors at time t to generate positions for time t + 1.",
+      "Evaluate the new candidates and repeat the position-update process.",
+      "Return an improved candidate solution according to the optimisation objective."
+    ],
+    "tradeoffs": [
+      "Very few tunable parameters and components",
+      "Uses only current position vectors to form the next population",
+      "Simple design with competitive initial results",
+      "Initial comparisons covered only a few other swarm techniques",
+      "Requires repeated numerical fitness evaluations"
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "population",
+          "label": "Fly population",
+          "note": "Candidate position vectors at time t"
+        },
+        {
+          "id": "fitness",
+          "label": "Fitness evaluation",
+          "note": "Scores each candidate numerically"
+        },
+        {
+          "id": "update",
+          "label": "Position update",
+          "note": "Creates positions for time t + 1"
+        },
+        {
+          "id": "iterate",
+          "label": "Repeat search",
+          "note": "Evaluates and improves candidates"
+        },
+        {
+          "id": "solution",
+          "label": "Improved solution",
+          "note": "A candidate with its fitness value"
+        }
+      ],
+      "edges": [
+        {
+          "from": "population",
+          "to": "fitness",
+          "label": "candidates"
+        },
+        {
+          "from": "population",
+          "to": "update",
+          "label": "positions"
+        },
+        {
+          "from": "update",
+          "to": "iterate",
+          "label": "new population"
+        },
+        {
+          "from": "fitness",
+          "to": "iterate",
+          "label": "scores"
+        },
+        {
+          "from": "iterate",
+          "to": "solution",
+          "label": "result"
+        }
+      ],
+      "caption": "DFO repeatedly turns the current population’s positions into new candidates and evaluates their fitness."
+    }
+  },
   "related": [
     "a-r-d-prasad",
     "abeba-birhane",

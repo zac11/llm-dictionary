@@ -5,6 +5,118 @@
   "type": "concept",
   "definition": "Detecting AI-generated or manipulated face media via artifacts, inconsistencies, or learned forensic features — an arms race with generators.",
   "details": "Detecting AI-generated or manipulated face media via artifacts, inconsistencies, or learned forensic features — an arms race with generators.",
+  "explainer": {
+    "lead": "Deepfake detection is the task of deciding whether face images or videos have been generated or manipulated by AI. It helps platforms, investigators, and identity systems treat convincing synthetic media with appropriate caution, but improving generators make reliable detection an ongoing challenge.",
+    "tiers": {
+      "eli5": "A deepfake detector is like someone checking whether a photograph of a face has been cleverly altered. It looks for odd details or patterns that do not fit, then warns that the picture or video may be fake. As fakers learn to hide those clues, the checkers have to keep learning too.",
+      "practitioner": "In practice, face crops or sampled video frames are passed to a classifier trained to separate authentic media from generated or manipulated media, sometimes using temporal inconsistencies across frames. Deployments often feed a risk score into moderation or review workflows rather than treating it as proof. A major pitfall is distribution shift: new generators and manipulation methods can invalidate cues learned from older examples.",
+      "paperLevel": "Given face media x, detection learns a decision function f(x) that estimates whether x is authentic or AI-generated/manipulated, using visible artifacts, internal inconsistencies, or learned forensic features. Video formulations may also compare information across frames. The task is non-stationary because detector training and generator improvement influence one another, so evidence about known manipulation methods may not generalize to unseen ones."
+    },
+    "example": "An identity-verification service receives a short face video, samples its frames, and analyzes them for manipulation artifacts and inconsistencies over time. A high manipulation score sends the submission for additional checks instead of accepting the video at face value.",
+    "usedIn": [
+      {
+        "name": "Social media moderation",
+        "detail": "Flagging suspicious face media for further review.",
+        "url": ""
+      },
+      {
+        "name": "Identity verification",
+        "detail": "Checking whether submitted face images or videos show signs of manipulation.",
+        "url": ""
+      },
+      {
+        "name": "Journalistic verification",
+        "detail": "Adding forensic evidence when assessing questionable visual material.",
+        "url": ""
+      },
+      {
+        "name": "Digital investigations",
+        "detail": "Helping investigators prioritize media that warrants closer examination.",
+        "url": ""
+      }
+    ],
+    "intuition": "A fabricated face can carry clues left by the generation or editing process, either in a single image or in the way it changes over time. Detectors learn to recognize those clues, while generators can improve by removing them.",
+    "howItWorks": [
+      "Obtain the face image or video to assess.",
+      "Examine visual artifacts and internal inconsistencies.",
+      "For video, compare relevant evidence across frames.",
+      "Use learned forensic features to estimate authenticity.",
+      "Return a detection result or risk score for the next decision."
+    ],
+    "whyItMatters": "Convincing manipulated face media can undermine trust in visual evidence and weaken face-based checks. Detection provides a forensic signal, although its usefulness depends on keeping pace with changing generators.",
+    "misconceptions": [
+      "A detection score is not absolute proof that media is fake or authentic.",
+      "A detector trained on known fakes may miss a new generation method.",
+      "Detection is an ongoing contest, not a problem solved once."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "media",
+          "label": "Face media",
+          "note": "Image or video under assessment"
+        },
+        {
+          "id": "frames",
+          "label": "Face frames",
+          "note": "Relevant visual evidence is prepared"
+        },
+        {
+          "id": "artifacts",
+          "label": "Artifact analysis",
+          "note": "Looks for generation or editing traces"
+        },
+        {
+          "id": "consistency",
+          "label": "Consistency analysis",
+          "note": "Checks conflicting visual or temporal cues"
+        },
+        {
+          "id": "detector",
+          "label": "Learned detector",
+          "note": "Combines forensic features for classification"
+        },
+        {
+          "id": "result",
+          "label": "Detection result",
+          "note": "Authenticity estimate or risk score"
+        }
+      ],
+      "edges": [
+        {
+          "from": "media",
+          "to": "frames",
+          "label": "input"
+        },
+        {
+          "from": "frames",
+          "to": "artifacts",
+          "label": "visual cues"
+        },
+        {
+          "from": "frames",
+          "to": "consistency",
+          "label": "frame evidence"
+        },
+        {
+          "from": "artifacts",
+          "to": "detector",
+          "label": "features"
+        },
+        {
+          "from": "consistency",
+          "to": "detector",
+          "label": "features"
+        },
+        {
+          "from": "detector",
+          "to": "result",
+          "label": "prediction"
+        }
+      ],
+      "caption": "Face media flows through forensic analyses into a learned detector, which produces an authenticity estimate or risk score."
+    }
+  },
   "citation": {
     "title": "DeepFake Detection",
     "authors": [],

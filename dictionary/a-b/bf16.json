@@ -5,6 +5,103 @@
   "type": "concept",
   "definition": "Computing in 16-bit while keeping master weights and sensitive accumulations in 32-bit, roughly doubling speed and halving memory.",
   "details": "Computing in 16-bit while keeping master weights and sensitive accumulations in 32-bit, roughly doubling speed and halving memory. BF16's wide exponent range removed the loss-scaling headaches of FP16 and is now the default.",
+  "explainer": {
+    "lead": "BF16 training does most computation in a compact 16-bit number format while keeping important values, such as master weights and sensitive accumulations, in 32-bit. This can roughly double speed and halve memory use, without the loss-scaling complications associated with FP16.",
+    "tiers": {
+      "eli5": "It is like doing most of your maths with shorter numbers so the work takes less space and time, while keeping the important answers written down carefully. BF16 can still represent very large and very small numbers, which helps avoid some problems caused by shorter formats. This makes it useful for training large AI models.",
+      "practitioner": "Use BF16 for the main training computations while retaining FP32 master weights and FP32 accumulation where numerical sensitivity requires it. Its wide exponent range removes the loss-scaling workflow needed with FP16, but the speed and memory gains are approximate rather than guaranteed for every workload. Do not assume that every value in a BF16 training run is stored in 16 bits.",
+      "paperLevel": "Let w32 denote master weights. A training step casts the values used by supported operations to BF16, performs those operations in 16-bit, and keeps sensitive accumulations and the master-weight update in FP32. BF16's wide exponent range avoids FP16's loss-scaling requirement, while the stated benefits are roughly 2x speed and 0.5x memory use rather than universal guarantees."
+    },
+    "example": "During one training step, a layer performs its main matrix computation using BF16 values. A sensitive accumulation within the step remains in FP32, and the resulting weight update is applied to the layer's FP32 master weights rather than replacing them with a BF16-only copy.",
+    "usedIn": [
+      {
+        "name": "Large-model training",
+        "detail": "Reduces the memory footprint of 16-bit computation while preserving FP32 master weights.",
+        "url": ""
+      },
+      {
+        "name": "Training optimization",
+        "detail": "Speeds up supported computations without FP16-style loss scaling.",
+        "url": ""
+      },
+      {
+        "name": "Memory-constrained training",
+        "detail": "Uses the approximately halved memory cost of 16-bit computation to ease memory pressure.",
+        "url": ""
+      }
+    ],
+    "intuition": "Use smaller numbers for the bulk of the arithmetic, but do not trust those smaller numbers with every part of training. BF16 supplies the wide exponent range, while FP32 safeguards master weights and accumulations that are particularly sensitive to precision.",
+    "howItWorks": [
+      "Keep the master copy of the model weights in FP32.",
+      "Use BF16 values for the main training computations.",
+      "Perform sensitive accumulations in FP32.",
+      "Apply the resulting updates to the FP32 master weights.",
+      "Repeat this pattern throughout training without FP16 loss scaling."
+    ],
+    "whyItMatters": "BF16 combines the speed and memory advantages of 16-bit computation with safeguards for numerically sensitive state. Its wide exponent range removed FP16's loss-scaling headaches and helped make BF16 the default for this style of training.",
+    "misconceptions": [
+      "BF16 training does not mean that every weight and calculation uses 16 bits.",
+      "BF16 is not simply FP16 with a different name; it avoids FP16's loss-scaling requirement through its wide exponent range.",
+      "Roughly twice the speed and half the memory are approximate benefits, not guarantees for every workload."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "master",
+          "label": "FP32 master weights",
+          "note": "Retained as the 32-bit reference copy."
+        },
+        {
+          "id": "cast",
+          "label": "BF16 values",
+          "note": "Compact values prepared for computation."
+        },
+        {
+          "id": "compute",
+          "label": "16-bit computation",
+          "note": "Performs the bulk of the training arithmetic."
+        },
+        {
+          "id": "accumulate",
+          "label": "FP32 accumulation",
+          "note": "Protects sensitive sums and reductions."
+        },
+        {
+          "id": "update",
+          "label": "Weight update",
+          "note": "Writes the update back to master weights."
+        }
+      ],
+      "edges": [
+        {
+          "from": "master",
+          "to": "cast",
+          "label": "cast"
+        },
+        {
+          "from": "cast",
+          "to": "compute",
+          "label": "inputs"
+        },
+        {
+          "from": "compute",
+          "to": "accumulate",
+          "label": "results"
+        },
+        {
+          "from": "accumulate",
+          "to": "update",
+          "label": "update values"
+        },
+        {
+          "from": "update",
+          "to": "master",
+          "label": "FP32 update"
+        }
+      ],
+      "caption": "BF16 handles the main computation, while FP32 preserves master weights and sensitive accumulations."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

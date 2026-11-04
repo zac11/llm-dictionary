@@ -8,6 +8,87 @@
   ],
   "definition": "Converting written text into phoneme sequences for TTS front-ends and pronunciation modeling.",
   "details": "Converting written text into phoneme sequences for TTS front-ends and pronunciation modeling. For Arabic, G2P is only well-defined after diacritization, which is why tashkeel quality directly gates Arabic TTS quality, and why many modern systems learn pronunciation implicitly from audio instead.",
+  "explainer": {
+    "lead": "Grapheme-to-phoneme conversion, or G2P, turns written words into sequences of speech sounds. It helps speech systems pronounce text instead of merely recognizing its letters, making it an important part of text-to-speech and pronunciation modeling.",
+    "tiers": {
+      "eli5": "Writing shows letters, but speaking uses sounds, and the two do not always match neatly. G2P is like giving a speech robot a pronunciation guide: it changes a written word into the sounds it should say. Those sounds can then be turned into spoken audio.",
+      "practitioner": "Use G2P in a TTS front-end to produce the phoneme sequence consumed by later speech-generation stages. For Arabic, handle diacritization first and monitor its quality closely, because missing or incorrect tashkeel directly limits pronunciation and TTS quality. Many modern systems instead learn pronunciation implicitly from audio, so an explicit G2P stage is not always present.",
+      "paperLevel": "G2P defines a mapping G2P(w) = p, where w is written text and p is its corresponding phoneme sequence. For Arabic, this mapping is only well-defined after diacritization, making tashkeel quality a direct constraint on Arabic TTS quality. An alternative used by many modern systems is to learn pronunciation implicitly from audio rather than construct an explicit phoneme sequence."
+    },
+    "example": "The written word \"ship\" can be converted to the phoneme sequence /ʃ ɪ p/: four letters become three speech sounds, with \"sh\" represented by /ʃ/.",
+    "usedIn": [
+      {
+        "name": "Text-to-speech front-ends",
+        "detail": "Convert input text into phonemes before later stages generate speech.",
+        "url": ""
+      },
+      {
+        "name": "Pronunciation modeling",
+        "detail": "Represent the sound sequence associated with written text.",
+        "url": ""
+      },
+      {
+        "name": "Arabic text-to-speech",
+        "detail": "Depend on diacritization to make the G2P mapping well-defined.",
+        "url": ""
+      }
+    ],
+    "intuition": "G2P bridges the gap between how language is written and how it is pronounced. Its output is a sound sequence, not audio.",
+    "howItWorks": [
+      "Start with written text.",
+      "Determine the pronunciation represented by that text.",
+      "Map the text to an ordered sequence of phonemes.",
+      "Pass the phonemes to a TTS system or pronunciation model."
+    ],
+    "whyItMatters": "A TTS system needs pronunciation information to speak written text correctly. In Arabic, poor diacritization can undermine G2P and therefore directly reduce speech quality.",
+    "misconceptions": [
+      "G2P is not a simple one-letter-to-one-sound conversion.",
+      "It produces phonemes, not spoken audio.",
+      "Undiacritized Arabic text does not always provide a well-defined G2P target."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "text",
+          "label": "Written text",
+          "note": "Words supplied as input"
+        },
+        {
+          "id": "g2p",
+          "label": "G2P conversion",
+          "note": "Maps writing to pronunciation"
+        },
+        {
+          "id": "phonemes",
+          "label": "Phoneme sequence",
+          "note": "Ordered speech-sound symbols"
+        },
+        {
+          "id": "tts",
+          "label": "Speech generation",
+          "note": "Uses pronunciation to produce speech"
+        }
+      ],
+      "edges": [
+        {
+          "from": "text",
+          "to": "g2p",
+          "label": "graphemes"
+        },
+        {
+          "from": "g2p",
+          "to": "phonemes",
+          "label": "pronunciation"
+        },
+        {
+          "from": "phonemes",
+          "to": "tts",
+          "label": "sound sequence"
+        }
+      ],
+      "caption": "G2P converts written text into phonemes for downstream speech generation."
+    }
+  },
   "related": [
     "diacritization"
   ],

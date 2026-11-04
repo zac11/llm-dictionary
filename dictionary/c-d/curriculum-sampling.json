@@ -5,7 +5,102 @@
   "type": "concept",
   "definition": "A data sampling strategy that changes which examples or data sources are prioritized over the course of training, often shifting emphasis as training progresses.",
   "details": "Curriculum sampling can be used in large-scale pretraining to emphasize higher-quality or more relevant data sources at particular stages of training, distinct from but related to curriculum learning based on example difficulty.",
-  "story": "Imagine a sketch artist who starts with static and, stroke by stroke, sharpens it into a face. The result feels creative because it is memory, reshuffled at speed. Given a starting line, the machine imagines what comes next — a word, a note, a patch of a picture. The model dreams a little, then cleans up the dream. That next-word, next-stroke magic is Curriculum Sampling.",
+  "explainer": {
+    "lead": "Curriculum sampling changes the mix of training data as a model learns, rather than keeping every source at the same sampling rate throughout. It lets trainers emphasize more useful or relevant material at the stages where they want it to matter most.",
+    "tiers": {
+      "eli5": "Imagine learning to cook by starting with simple meals, then spending more time on the dishes you most want to master. Curriculum sampling does something similar with a model's training data: the training plan changes how often different data sources appear over time. The model keeps learning, but its study materials shift.",
+      "practitioner": "Implement it in the data loader by assigning source-specific sampling probabilities for each training stage and changing them according to a schedule. Track the realized source mix as well as the configured weights, and make transitions deliberately so the intended emphasis is clear. Do not confuse changing source proportions with ordering individual examples by difficulty.",
+      "paperLevel": "For data source s at training stage t, curriculum sampling selects examples using a stage-dependent distribution p_t(s), with p_t changing as training progresses. A schedule can therefore increase the probability of higher-quality or more relevant sources at chosen stages. This defines a sampling policy over the training mixture, distinct from a difficulty-based curriculum over individual examples."
+    },
+    "example": "Suppose pretraining uses a general text corpus and a smaller collection of carefully selected reference texts. An early stage might draw 80% of examples from the general corpus and 20% from the reference texts, while a later stage draws 40% from each. The datasets stay the same, but the reference texts receive more emphasis later.",
+    "usedIn": [
+      {
+        "name": "Large-scale pretraining",
+        "detail": "Adjusts the share of different data sources as pretraining progresses.",
+        "url": ""
+      },
+      {
+        "name": "Multi-source model training",
+        "detail": "Gives higher-quality or more relevant sources greater emphasis during selected stages.",
+        "url": ""
+      }
+    ],
+    "intuition": "A fixed data mixture treats every training stage alike, but the data a trainer wants to emphasize can change over time. Curriculum sampling turns that changing emphasis into a schedule for drawing examples.",
+    "howItWorks": [
+      "Divide the available training data into sources or groups.",
+      "Choose initial sampling probabilities for those groups.",
+      "Train while drawing examples according to the current probabilities.",
+      "At scheduled points, change the probabilities to emphasize different groups.",
+      "Continue training under the updated data mixture."
+    ],
+    "whyItMatters": "It gives trainers a direct way to control when particular data sources influence training. In large-scale pretraining, that can reserve greater emphasis for higher-quality or more relevant material without using only that material from the start.",
+    "misconceptions": [
+      "It is not necessarily curriculum learning based on example difficulty; the schedule can prioritize whole data sources instead.",
+      "It is not just one-time data filtering, because the sampling mixture changes during training."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "sources",
+          "label": "Data sources",
+          "note": "Available training groups"
+        },
+        {
+          "id": "schedule",
+          "label": "Stage schedule",
+          "note": "Sets changing priorities"
+        },
+        {
+          "id": "weights",
+          "label": "Sampling weights",
+          "note": "Current source probabilities"
+        },
+        {
+          "id": "sampler",
+          "label": "Data sampler",
+          "note": "Draws from sources"
+        },
+        {
+          "id": "batch",
+          "label": "Training batch",
+          "note": "Current data mixture"
+        },
+        {
+          "id": "model",
+          "label": "Model update",
+          "note": "Learns from the batch"
+        }
+      ],
+      "edges": [
+        {
+          "from": "schedule",
+          "to": "weights",
+          "label": "updates"
+        },
+        {
+          "from": "weights",
+          "to": "sampler",
+          "label": "controls"
+        },
+        {
+          "from": "sources",
+          "to": "sampler",
+          "label": "examples"
+        },
+        {
+          "from": "sampler",
+          "to": "batch",
+          "label": "draws"
+        },
+        {
+          "from": "batch",
+          "to": "model",
+          "label": "trains"
+        }
+      ],
+      "caption": "The stage schedule changes sampling weights, which control the mixture of source data in each training batch."
+    }
+  },
   "related": [
     "curriculum-learning",
     "active-learning",

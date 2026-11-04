@@ -5,6 +5,108 @@
   "type": "concept",
   "definition": "Automatically completing forms with AI — extracting and mapping information into structured fields.",
   "details": "Automatically completing forms with AI — extracting and mapping information into structured fields.",
+  "explainer": {
+    "lead": "AI form fill turns information from documents, messages, or other sources into entries for a form’s structured fields. It saves people from repeatedly copying details by hand, although uncertain or missing values still need checking.",
+    "tiers": {
+      "eli5": "Imagine a helper who reads a note and puts each detail into the right box on a worksheet. AI form fill does something similar: it might find your name and address in a document, then place them in the matching form fields. It can make a mistake or miss something, so a person may still need to check its work.",
+      "practitioner": "An engineer can treat AI form fill as an extraction-and-mapping pipeline that produces values for a predefined set of fields. Field types, required fields, missing information, and ambiguous matches need explicit handling so that a plausible guess is not silently accepted. Review before submission is especially important when an incorrect value could have serious consequences.",
+      "paperLevel": "Given source information S and target fields F = {f1, ..., fn}, AI form fill produces a mapping from each field to an extracted value, a normalized representation of that value, or an unresolved state. The task combines locating relevant information in S with deciding which target field it belongs to. Ambiguous sources, missing values, and incorrect field mappings limit whether the output can be used without review."
+    },
+    "example": "Given the message “Name: Maya Chen; email: maya.chen@example.com; appointment: 14 March,” the system places “Maya Chen” in the full-name field, “maya.chen@example.com” in the email field, and “14 March” in the appointment-date field. If the form requires a year that the message does not provide, that part remains unresolved rather than being invented.",
+    "usedIn": [
+      {
+        "name": "Document-processing workflows",
+        "detail": "Transferring information from documents into structured records.",
+        "url": ""
+      },
+      {
+        "name": "Online application workflows",
+        "detail": "Placing supplied personal or organizational details into application fields.",
+        "url": ""
+      },
+      {
+        "name": "Administrative data entry",
+        "detail": "Reducing repeated copying of information between records and forms.",
+        "url": ""
+      }
+    ],
+    "intuition": "A form is a set of labeled boxes, while the information needed to complete it may be scattered across unstructured material. AI form fill finds each relevant piece of information and decides which box it belongs in.",
+    "howItWorks": [
+      "Read the source information and identify the target form fields.",
+      "Extract candidate values from the source.",
+      "Match each value to the appropriate field.",
+      "Convert values to the expected field format where needed.",
+      "Flag missing or uncertain entries for review."
+    ],
+    "whyItMatters": "It can reduce repetitive manual entry and make information easier to move into structured systems. Clear handling of uncertainty matters because a neatly completed form can still contain wrong values.",
+    "misconceptions": [
+      "It is more than autocomplete: it also extracts information and maps it to fields.",
+      "A completed field is not necessarily a correct field.",
+      "Missing information should not be treated as permission to invent a value."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "source",
+          "label": "Source information",
+          "note": "Unstructured details to place in a form"
+        },
+        {
+          "id": "fields",
+          "label": "Form fields",
+          "note": "The target labels and expected formats"
+        },
+        {
+          "id": "extract",
+          "label": "Value extraction",
+          "note": "Find candidate values in the source"
+        },
+        {
+          "id": "map",
+          "label": "Field mapping",
+          "note": "Match values to the appropriate fields"
+        },
+        {
+          "id": "review",
+          "label": "Uncertainty check",
+          "note": "Flag missing or ambiguous entries"
+        },
+        {
+          "id": "output",
+          "label": "Completed form",
+          "note": "Structured values ready for checking or use"
+        }
+      ],
+      "edges": [
+        {
+          "from": "source",
+          "to": "extract",
+          "label": "text and data"
+        },
+        {
+          "from": "extract",
+          "to": "map",
+          "label": "candidate values"
+        },
+        {
+          "from": "fields",
+          "to": "map",
+          "label": "field definitions"
+        },
+        {
+          "from": "map",
+          "to": "review",
+          "label": "mapped values"
+        },
+        {
+          "from": "review",
+          "to": "output",
+          "label": "checked entries"
+        }
+      ],
+      "caption": "AI form fill extracts candidate values, maps them to defined fields, and passes unresolved entries through an uncertainty check."
+    }
+  },
   "citation": {
     "title": "AI Starter Guide",
     "authors": [],

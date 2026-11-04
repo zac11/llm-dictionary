@@ -8,7 +8,103 @@
   ],
   "definition": "The process of annotating raw data with the correct outputs, categories, or attributes needed for supervised training or evaluation.",
   "details": "Data labeling can be performed by human annotators, crowdsourcing platforms, or increasingly by other AI models, and its quality and consistency directly impact downstream model performance.",
-  "story": "Picture a librarian organizing a million slips of paper so that any one of them can be found in a heartbeat. The examples a machine reads become the world it believes in. Better ingredients make a better meal, and the same is true here. Garbage in, garbage out — and the reverse: clean, representative data makes the model quietly brilliant. That care with the raw material is Data Labeling.",
+  "explainer": {
+    "lead": "Data labeling turns raw examples into examples with answers, such as adding a category to an image or an attribute to a piece of text. These labels give supervised models something to learn from and provide a reference for judging their performance.",
+    "tiers": {
+      "eli5": "Data labeling is like putting the answers on a set of practice cards. A picture of a dog gets the answer \"dog,\" so a computer can practice guessing and check whether it is right. Clear, consistent answers help it learn; confusing answers can teach it the wrong lesson.",
+      "practitioner": "Engineers use labeling to build supervised training sets and evaluation sets, with work assigned to human annotators, crowdsourcing platforms, or AI models. Written labeling guidelines, consistency checks, and review of disagreements help catch ambiguous instructions and incorrect labels. Model-generated labels can reduce manual work but still need quality control because their errors can enter the dataset.",
+      "paperLevel": "Given raw inputs x_i, data labeling constructs targets y_i to form a dataset D = {(x_i, y_i)}, where y_i may represent an output, category, or attribute. The resulting targets supervise training or serve as references during evaluation. Annotation errors and inconsistency limit the reliability of both learned behavior and measured performance."
+    },
+    "example": "For a street photo containing two pedestrians, an annotator draws one box around each pedestrian and marks both boxes with the category \"pedestrian.\" Those boxes and categories become the target outputs for training or evaluating an object detector.",
+    "usedIn": [
+      {
+        "name": "Computer vision",
+        "detail": "Images and videos receive categories, object locations, or other visual attributes for supervised training and evaluation.",
+        "url": ""
+      },
+      {
+        "name": "Language processing",
+        "detail": "Text is annotated with categories or attributes that models learn to predict.",
+        "url": ""
+      },
+      {
+        "name": "Crowdsourced data preparation",
+        "detail": "Crowdsourcing platforms distribute annotation tasks across human workers.",
+        "url": ""
+      }
+    ],
+    "intuition": "A supervised model needs examples of both a question and its desired answer. Labeling supplies that answer by attaching the appropriate output, category, or attribute to each raw example.",
+    "howItWorks": [
+      "Collect the raw data that needs labels.",
+      "Define the categories, outputs, or attributes annotators should apply.",
+      "Have humans, crowd workers, or AI models annotate the examples.",
+      "Check the labels for correctness and consistency.",
+      "Use the labeled data for supervised training or evaluation."
+    ],
+    "whyItMatters": "Labels determine what a supervised model is asked to learn and what its predictions are compared against during evaluation. Poor-quality or inconsistent labels can therefore weaken downstream model performance.",
+    "misconceptions": [
+      "Labeling data is not the same as training a model.",
+      "More labels do not compensate for incorrect or inconsistent ones.",
+      "AI-generated labels still require quality checks."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "raw-data",
+          "label": "Raw data",
+          "note": "Unlabeled examples enter the process."
+        },
+        {
+          "id": "labelers",
+          "label": "Human or AI",
+          "note": "Annotators apply outputs, categories, or attributes."
+        },
+        {
+          "id": "labeled-data",
+          "label": "Labeled data",
+          "note": "Each example is paired with a target."
+        },
+        {
+          "id": "quality-check",
+          "label": "Quality checks",
+          "note": "Correctness and consistency are reviewed."
+        },
+        {
+          "id": "training-eval",
+          "label": "Training or evaluation",
+          "note": "Targets supervise learning or score predictions."
+        }
+      ],
+      "edges": [
+        {
+          "from": "raw-data",
+          "to": "labelers",
+          "label": "examples"
+        },
+        {
+          "from": "labelers",
+          "to": "labeled-data",
+          "label": "annotations"
+        },
+        {
+          "from": "labeled-data",
+          "to": "quality-check",
+          "label": "review"
+        },
+        {
+          "from": "quality-check",
+          "to": "labelers",
+          "label": "fix issues"
+        },
+        {
+          "from": "quality-check",
+          "to": "training-eval",
+          "label": "approved data"
+        }
+      ],
+      "caption": "Raw examples receive labels, pass through quality checks, and become targets for supervised training or evaluation."
+    }
+  },
   "related": [
     "data-curation",
     "data-leakage",

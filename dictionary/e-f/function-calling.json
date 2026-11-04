@@ -8,7 +8,91 @@
   ],
   "definition": "A capability where a language model can output a structured request to invoke a specific external function or tool, along with the appropriate arguments.",
   "details": "Function calling lets applications give an LLM access to defined capabilities (like checking a calendar or querying a database), with the actual function execution typically handled by the surrounding application rather than the model itself.",
-  "story": "Think of a chess player who never commits to a move blindly — they consider the board, try an action, watch what changes, and only then decide what is next. The machine stops just answering one question and starts getting a job done, step by step, checking its work along the way. It plans a little, acts a little, looks at the result, and then decides what to do next. The model stops being a one-shot answer machine and becomes a coworker that checks its own work. That loop of reason, act, and observe is Function Calling.",
+  "explainer": {
+    "lead": "Function calling lets a language model ask an application to perform a specific action, such as checking a calendar, instead of only replying with text. It connects language understanding to external capabilities while leaving the actual execution to the application.",
+    "tiers": {
+      "eli5": "Imagine telling a helper, \"Please check whether I'm free on Friday,\" instead of asking them to guess. The helper writes a neat request for the calendar, and another person opens the calendar and brings back the answer. The helper decides what to ask for, but does not do the checking itself.",
+      "practitioner": "An application exposes named functions and their expected arguments, then parses the model's structured call and executes it in application code. Typical uses include calendar operations and database queries. The surrounding system must handle execution and should not assume that a proposed function name or argument set is valid.",
+      "paperLevel": "Given available functions T and input context x, the model produces a structured call (f, a), where f is in T and a are its arguments; the host application executes f(a). This separates call generation from execution. The mechanism provides an interface to external capabilities, but it does not by itself guarantee that the selected function or arguments are correct."
+    },
+    "example": "For \"Am I free on Friday?\", the model could output a call to check_calendar with the argument date=\"Friday\". The application runs that calendar function, rather than the model opening the calendar itself.",
+    "usedIn": [
+      {
+        "name": "Calendar applications",
+        "detail": "A model can request a defined availability-checking function when a user asks about their schedule.",
+        "url": ""
+      },
+      {
+        "name": "Database applications",
+        "detail": "A model can formulate a structured database query for the surrounding application to run.",
+        "url": ""
+      }
+    ],
+    "intuition": "The model acts as a translator between a person's request and a precise instruction an application can carry out. It chooses the function and supplies arguments, rather than performing the external action itself.",
+    "howItWorks": [
+      "The application defines available functions, such as checking a calendar or querying a database.",
+      "The model receives the user's request and the available capabilities.",
+      "It outputs a structured request naming a function and providing arguments.",
+      "The surrounding application invokes that function and handles its execution."
+    ],
+    "whyItMatters": "It gives language-model applications a controlled way to use external capabilities through defined interfaces. This lets a model participate in useful tasks while the application retains responsibility for executing actions.",
+    "misconceptions": [
+      "The model does not normally execute the function; the surrounding application does.",
+      "A function call is a structured request for an action, not an ordinary text answer claiming the action happened."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "user",
+          "label": "User request",
+          "note": "A task expressed in natural language"
+        },
+        {
+          "id": "model",
+          "label": "Language model",
+          "note": "Selects a function and arguments"
+        },
+        {
+          "id": "call",
+          "label": "Structured call",
+          "note": "Function name plus arguments"
+        },
+        {
+          "id": "app",
+          "label": "Host application",
+          "note": "Receives and executes the request"
+        },
+        {
+          "id": "tool",
+          "label": "External function",
+          "note": "Checks a calendar or queries a database"
+        }
+      ],
+      "edges": [
+        {
+          "from": "user",
+          "to": "model",
+          "label": "request"
+        },
+        {
+          "from": "model",
+          "to": "call",
+          "label": "outputs"
+        },
+        {
+          "from": "call",
+          "to": "app",
+          "label": "invocation"
+        },
+        {
+          "from": "app",
+          "to": "tool",
+          "label": "executes"
+        }
+      ],
+      "caption": "The model generates the call, while the application executes the external function."
+    }
+  },
   "related": [
     "function-signature-for-tool-use",
     "agent-registry",

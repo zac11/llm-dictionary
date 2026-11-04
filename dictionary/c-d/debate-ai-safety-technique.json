@@ -5,7 +5,113 @@
   "type": "concept",
   "definition": "A proposed alignment technique in which two AI systems argue opposing sides of a question in front of a human or AI judge, aiming to surface truthful information more reliably than a single model's unchallenged output.",
   "details": "AI debate is explored as a potential scalable oversight mechanism, on the theory that it may be easier to judge which side of a well-structured debate is correct than to independently verify a complex claim from scratch.",
-  "story": "Picture guardrails on a mountain road — not there to slow you down on the straightaways, but to keep you from flying off the cliff. It is the habit of asking, before every launch, what could go wrong — and then doing something about it. Think of it as the quiet rule that a tool should be useful without being dangerous. It is the difference between “it works” and “it is safe to put in front of people.” And that is Debate (AI Safety technique) — the reason we can move fast without breaking things, or people.",
+  "explainer": {
+    "lead": "Debate is a proposed AI safety technique that replaces a single, unchallenged answer with an argument between two AI systems. A human or AI judge decides which side is more convincing, with the goal of making truthful answers easier to identify on difficult questions.",
+    "tiers": {
+      "eli5": "Imagine two classmates arguing about whether a bridge is safe, while you listen and decide who makes the better case. One tries to show why it is safe, and the other looks for problems the first one missed. AI debate uses the same idea to help a judge spot mistakes, though the smartest-sounding argument is not guaranteed to be true.",
+      "practitioner": "In an evaluation or oversight workflow, give two AI systems opposing positions on the same question, collect their arguments and rebuttals, and ask a human or AI judge to select a side. The setup is intended for claims that are costly to verify independently. A key pitfall is that judging can reward persuasive framing or overlook a shared error, so debate should not be treated as proof of correctness.",
+      "paperLevel": "Given a question q, systems A and B produce opposing arguments, and a judge J selects a side after evaluating their exchange. The oversight hypothesis is that discriminating between competing cases may be easier than constructing an independent verification of q from scratch. Debate remains a proposed alignment mechanism, and its central limitation is that a judge's selection need not track truth when both systems err or when persuasiveness diverges from accuracy."
+    },
+    "example": "For the question “Does this storage design keep data available if one server fails?”, one AI argues that replication across three servers preserves access. The other points out that all three servers share one power supply, so that failure can take every copy offline; the judge uses that rebuttal to reject the availability claim.",
+    "usedIn": [
+      {
+        "name": "Scalable oversight research",
+        "detail": "Explored as a way for judges to supervise AI answers to questions that are difficult to verify directly.",
+        "url": ""
+      },
+      {
+        "name": "AI alignment research",
+        "detail": "Studied as a possible route to eliciting truthful information through adversarial argument rather than trusting one model.",
+        "url": ""
+      },
+      {
+        "name": "Complex claim evaluation",
+        "detail": "Applied conceptually to settings where comparing opposing cases may be easier than checking every part of a claim independently.",
+        "url": ""
+      }
+    ],
+    "intuition": "A single model can omit inconvenient evidence or make an unchecked mistake. Opposing arguments give a judge two attempts to expose weaknesses, turning verification into a comparison between cases.",
+    "howItWorks": [
+      "Pose a question whose answer needs oversight.",
+      "Assign two AI systems opposing sides.",
+      "Let them present arguments and challenge each other's claims.",
+      "Give the exchange to a human or AI judge.",
+      "Use the judge's decision as the overseer's assessment."
+    ],
+    "whyItMatters": "As AI systems tackle claims that people cannot cheaply check alone, direct approval of an answer becomes a weak safeguard. Debate is proposed as a way to scale oversight by helping judges find relevant evidence and flaws.",
+    "misconceptions": [
+      "Winning a debate does not establish that a claim is true.",
+      "The judge can be another AI system; a human judge is not required.",
+      "Debate is a proposed oversight technique, not a guarantee of alignment."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "question",
+          "label": "Question",
+          "note": "A claim requiring oversight"
+        },
+        {
+          "id": "side-a",
+          "label": "AI side A",
+          "note": "Builds one case"
+        },
+        {
+          "id": "side-b",
+          "label": "AI side B",
+          "note": "Builds the opposing case"
+        },
+        {
+          "id": "exchange",
+          "label": "Argument exchange",
+          "note": "Arguments and rebuttals"
+        },
+        {
+          "id": "judge",
+          "label": "Human or AI judge",
+          "note": "Compares the two cases"
+        },
+        {
+          "id": "decision",
+          "label": "Judged side",
+          "note": "The oversight assessment"
+        }
+      ],
+      "edges": [
+        {
+          "from": "question",
+          "to": "side-a",
+          "label": ""
+        },
+        {
+          "from": "question",
+          "to": "side-b",
+          "label": ""
+        },
+        {
+          "from": "side-a",
+          "to": "exchange",
+          "label": "argument"
+        },
+        {
+          "from": "side-b",
+          "to": "exchange",
+          "label": "rebuttal"
+        },
+        {
+          "from": "exchange",
+          "to": "judge",
+          "label": "transcript"
+        },
+        {
+          "from": "judge",
+          "to": "decision",
+          "label": "selects"
+        }
+      ],
+      "caption": "Two AI systems turn one question into competing cases, which a judge compares to reach an assessment."
+    }
+  },
   "related": [
     "ai-safety",
     "existential-risk-ai",

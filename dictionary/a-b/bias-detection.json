@@ -5,6 +5,108 @@
   "type": "concept",
   "definition": "Identifying unwanted demographic, political, or representational bias in data or model outputs.",
   "details": "Identifying unwanted demographic, political, or representational bias in data or model outputs. Techniques range from association tests on embeddings to template-based probes of generated text.",
+  "explainer": {
+    "lead": "Bias detection means testing data or model outputs for unwanted patterns tied to demographics, politics, or how groups are represented. It helps turn a vague concern that a system is unfair into specific examples and measurements that people can examine.",
+    "tiers": {
+      "eli5": "Imagine a storyteller who always makes one group the heroes and another group the villains, even when the story is otherwise the same. Bias detection is like checking many stories to spot that pattern. It does not fix the storyteller, but it shows where a closer look is needed.",
+      "practitioner": "Apply association tests to embeddings and template-based probes to generated text, changing only the demographic or political attribute of interest while keeping the surrounding wording controlled. Review both source data and outputs, and treat flagged results as evidence for investigation rather than proof of every downstream behavior. A limited template set can miss bias, and a passing result does not establish that a system is unbiased.",
+      "paperLevel": "Given data or model outputs, an attribute A, and a criterion for unwanted bias, estimate associations or output differences involving A and flag departures from that criterion. Embedding association tests and controlled text probes measure different objects, so an association in an embedding need not appear identically in generated text. Conclusions depend on the chosen attributes, templates, and bias criterion and cannot establish the absence of untested bias."
+    },
+    "example": "A tester uses the same template to ask a text generator to describe a successful employee, changing only the demographic label between runs. If one version repeatedly produces confident leadership language while another repeatedly produces passive or negative language, that pattern is flagged as possible representational bias for review.",
+    "usedIn": [
+      {
+        "name": "Language model evaluation",
+        "detail": "Template-based probes compare generated text across demographic or political attributes.",
+        "url": ""
+      },
+      {
+        "name": "Embedding analysis",
+        "detail": "Association tests look for unwanted relationships encoded in word or text representations.",
+        "url": ""
+      },
+      {
+        "name": "Dataset auditing",
+        "detail": "Training or evaluation data can be examined for unwanted demographic and representational patterns.",
+        "url": ""
+      },
+      {
+        "name": "Content review",
+        "detail": "Generated text can be checked for recurring stereotypes or uneven portrayals before further human review.",
+        "url": ""
+      }
+    ],
+    "intuition": "If changing only a group label systematically changes how a model describes people, that recurring difference is a signal worth investigating. Bias detection looks for such signals rather than relying on isolated impressions.",
+    "howItWorks": [
+      "Choose the data or model outputs to examine.",
+      "Define the demographic, political, or representational pattern of concern.",
+      "Run embedding association tests or controlled template probes.",
+      "Compare the resulting associations or generated responses.",
+      "Flag systematic differences for closer review."
+    ],
+    "whyItMatters": "Detection can reveal repeated patterns that are difficult to notice from individual examples. It gives developers and reviewers concrete evidence to examine before deciding whether data, prompts, or models need to change.",
+    "misconceptions": [
+      "Finding a bias signal is not the same as removing it.",
+      "Passing one set of tests does not prove a system is unbiased.",
+      "Not every measured difference is automatically unwanted bias."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "inputs",
+          "label": "Data and outputs",
+          "note": "Material selected for testing"
+        },
+        {
+          "id": "embeddings",
+          "label": "Association tests",
+          "note": "Measure relationships in embeddings"
+        },
+        {
+          "id": "probes",
+          "label": "Template probes",
+          "note": "Compare controlled generated responses"
+        },
+        {
+          "id": "patterns",
+          "label": "Systematic patterns",
+          "note": "Recurring differences of concern"
+        },
+        {
+          "id": "review",
+          "label": "Review findings",
+          "note": "Interpret flagged evidence"
+        }
+      ],
+      "edges": [
+        {
+          "from": "inputs",
+          "to": "embeddings",
+          "label": "embeddings"
+        },
+        {
+          "from": "inputs",
+          "to": "probes",
+          "label": "text"
+        },
+        {
+          "from": "embeddings",
+          "to": "patterns",
+          "label": ""
+        },
+        {
+          "from": "probes",
+          "to": "patterns",
+          "label": ""
+        },
+        {
+          "from": "patterns",
+          "to": "review",
+          "label": ""
+        }
+      ],
+      "caption": "Different tests turn data or outputs into comparable evidence, which then requires interpretation."
+    }
+  },
   "citation": {
     "title": "Bias Detection",
     "authors": [],

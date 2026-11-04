@@ -5,7 +5,112 @@
   "type": "concept",
   "definition": "When information from outside the training dataset, particularly from the test or evaluation set, inadvertently influences model training, leading to overly optimistic performance estimates.",
   "details": "Data leakage is a common and often subtle pitfall in ML pipelines, and can occur through improper data splitting, duplicate records across splits, or benchmark contamination in large web-scraped training corpora.",
-  "story": "Think of a historian sorting through boxes of letters, building a picture of an era one sentence at a time. Every machine is shaped by what it was shown, so someone has to choose that material with care. The examples a machine reads become the world it believes in. The words a model reads become the world it believes in. That care with the raw material is Data Leakage.",
+  "explainer": {
+    "lead": "Data leakage happens when a model gets accidental help from information it should not have during training. This can make test results look strong even though the model will perform worse on genuinely new data.",
+    "tiers": {
+      "eli5": "It is like studying for a quiz with a few of the quiz answers mixed into your notes. You might do very well on that quiz without really learning the subject. In machine learning, this can happen when test examples or clues from them slip into training.",
+      "practitioner": "Keep evaluation data untouched: split and remove duplicate records before fitting any preprocessing, then fit transformations only on training data. Check splits carefully and consider whether web-scraped training data may contain benchmark examples. A high validation or test score should be treated cautiously if any pipeline step used information from outside the training set.",
+      "paperLevel": "Given D_train and held-out D_test, leakage occurs when the learned parameters or fitted pipeline transformations depend on D_test, or on other information unavailable when the model is used. Consequently, performance estimated on D_test need not estimate generalization to unseen data and can be overly optimistic. Leakage can arise from improper splitting, records duplicated across splits, or evaluation material present in large web-scraped training corpora."
+    },
+    "example": "Suppose you compute a feature's mean and standard deviation using all 1,000 rows, then reserve 200 of those rows for testing. The training transformation has already used information from the test rows, so the resulting test score can overstate performance on genuinely unseen data.",
+    "usedIn": [
+      {
+        "name": "Machine-learning evaluation",
+        "detail": "Train, validation, and test splits are checked so evaluation data cannot influence fitting.",
+        "url": ""
+      },
+      {
+        "name": "Data preprocessing",
+        "detail": "Transformations are fitted on training data rather than on the complete dataset.",
+        "url": ""
+      },
+      {
+        "name": "Large language model benchmarks",
+        "detail": "Web-scraped training corpora may contain benchmark material, complicating score interpretation.",
+        "url": ""
+      }
+    ],
+    "intuition": "A fair test measures how a model handles information it has not influenced or seen before. Leakage breaks that separation by letting outside information shape training, so the evaluation becomes an unreliable guide to future performance.",
+    "howItWorks": [
+      "Data or another information source enters an ML pipeline.",
+      "An improper split, duplicate record, preprocessing step, or contaminated corpus exposes training to outside information.",
+      "The model or its fitted transformations use that information.",
+      "Evaluation produces an overly optimistic performance estimate."
+    ],
+    "whyItMatters": "Leakage can make a weak model appear ready for use and can mislead comparisons between models. It is especially troublesome because the pipeline may look correct while the evaluation is quietly compromised.",
+    "misconceptions": [
+      "Leakage does not require test labels to be copied directly into training; test data influencing preprocessing also counts.",
+      "It is not the same as a security breach or accidental disclosure of private data.",
+      "A separate test file alone does not prevent leakage if duplicates or contaminated examples cross the split."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data",
+          "label": "Source data",
+          "note": "Records entering the pipeline"
+        },
+        {
+          "id": "split",
+          "label": "Data split",
+          "note": "Separates training and testing"
+        },
+        {
+          "id": "train",
+          "label": "Training pipeline",
+          "note": "Fits transformations and model"
+        },
+        {
+          "id": "test",
+          "label": "Held-out test",
+          "note": "Should remain untouched"
+        },
+        {
+          "id": "score",
+          "label": "Performance estimate",
+          "note": "Becomes overly optimistic"
+        },
+        {
+          "id": "leak",
+          "label": "Leaked information",
+          "note": "Test clues or duplicates"
+        }
+      ],
+      "edges": [
+        {
+          "from": "data",
+          "to": "split",
+          "label": ""
+        },
+        {
+          "from": "split",
+          "to": "train",
+          "label": "training data"
+        },
+        {
+          "from": "split",
+          "to": "test",
+          "label": "test data"
+        },
+        {
+          "from": "train",
+          "to": "score",
+          "label": ""
+        },
+        {
+          "from": "test",
+          "to": "score",
+          "label": ""
+        },
+        {
+          "from": "leak",
+          "to": "train",
+          "label": "improper influence"
+        }
+      ],
+      "caption": "Leakage lets information that should stay outside training influence the fitted pipeline, distorting evaluation."
+    }
+  },
   "related": [
     "data-curation",
     "data-labeling",

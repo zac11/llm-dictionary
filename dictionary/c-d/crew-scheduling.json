@@ -5,7 +5,92 @@
   "type": "concept",
   "definition": "Crew scheduling is the process of assigning crews to operate transportation systems, such as rail lines or airlines..",
   "details": "Crew scheduling is the process of assigning crews to operate transportation systems, such as rail lines or airlines.",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. That is Crew scheduling — a small key that opens a big door.",
+  "explainer": {
+    "lead": "Crew scheduling is the task of deciding which workers will operate which trips or services in a transportation system. A good schedule gives every service the crew it needs while making workable assignments for the people involved.",
+    "tiers": {
+      "eli5": "Imagine a railway with many trains and a group of drivers. Crew scheduling is like making a fair, workable rota so every train has a driver and nobody is expected to be in two places at once. It helps turn a list of journeys into a plan people can actually carry out.",
+      "practitioner": "Engineers model services as duties that require crews, then search for assignments that satisfy coverage and feasibility requirements. The main pitfalls are producing overlapping or otherwise unworkable duties and creating a schedule that is difficult to adjust when operations change.",
+      "paperLevel": "Given a set of services S and crews C, choose assignments so that each required service is covered and each crew's assigned sequence is feasible. With binary x_(s,c) indicating whether crew c operates service s, basic coverage can be written as sum_c x_(s,c) = 1 for every s in S, alongside constraints defining feasible crew schedules. Larger instances are difficult because sequencing and feasibility constraints link many assignment decisions."
+    },
+    "example": "Suppose a small rail operator has three morning trains—A, B, and C—and two available drivers. If Driver 1 can operate A and then B without an overlap, while Driver 2 operates C, every train is covered and neither driver receives two simultaneous duties.",
+    "usedIn": [
+      {
+        "name": "Rail lines",
+        "detail": "Assigning train crews to operate scheduled rail services.",
+        "url": ""
+      },
+      {
+        "name": "Airlines",
+        "detail": "Assigning flight crews to operate airline services.",
+        "url": ""
+      }
+    ],
+    "intuition": "A transportation timetable says what must run; crew scheduling decides who will run it. The challenge is to cover the required work without giving any crew an impossible combination of assignments.",
+    "howItWorks": [
+      "List the transportation services that need crews.",
+      "Identify the crews available to take assignments.",
+      "Check which services each crew can feasibly operate.",
+      "Assign crews so that all required services are covered.",
+      "Produce each crew's schedule for use in operations."
+    ],
+    "whyItMatters": "Without a crew schedule, a transportation timetable is not an operating plan: services may lack crews, or crews may receive assignments they cannot carry out. Scheduling connects planned services with the people needed to run them.",
+    "misconceptions": [
+      "It is not the passenger timetable: the timetable lists services, while crew scheduling assigns people to operate them.",
+      "It is not simply filling empty slots; assignments must also form feasible schedules for individual crews."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "services",
+          "label": "Required services",
+          "note": "Trips or duties that need crews"
+        },
+        {
+          "id": "crews",
+          "label": "Available crews",
+          "note": "People who can take assignments"
+        },
+        {
+          "id": "assign",
+          "label": "Crew assignment",
+          "note": "Match crews with feasible services"
+        },
+        {
+          "id": "schedules",
+          "label": "Crew schedules",
+          "note": "Work assigned to each crew"
+        },
+        {
+          "id": "operations",
+          "label": "Transport operations",
+          "note": "Covered services ready to operate"
+        }
+      ],
+      "edges": [
+        {
+          "from": "services",
+          "to": "assign",
+          "label": "work demand"
+        },
+        {
+          "from": "crews",
+          "to": "assign",
+          "label": "availability"
+        },
+        {
+          "from": "assign",
+          "to": "schedules",
+          "label": "assignments"
+        },
+        {
+          "from": "schedules",
+          "to": "operations",
+          "label": "staffing"
+        }
+      ],
+      "caption": "Crew scheduling combines required services with available crews to produce workable assignments."
+    }
+  },
   "related": [
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",
     "accelerated-linear-algebra",

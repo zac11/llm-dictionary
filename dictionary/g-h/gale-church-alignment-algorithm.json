@@ -5,7 +5,107 @@
   "type": "algorithm",
   "definition": "In computational linguistics and natural language processing, the Gale–Church algorithm is a method for aligning corresponding sentences in a parallel corpus.",
   "details": "It works on the principle that equivalent sentences should roughly correspond in length; that is, longer sentences in one language should correspond to longer sentences in the other language. The algorithm was described in a 1993 paper by William A. Gale and Kenneth W. Church of AT&amp;T Bell Laboratories.",
-  "story": "Picture guardrails on a mountain road — not there to slow you down on the straightaways, but to keep you from flying off the cliff. It is the habit of asking, before every launch, what could go wrong — and then doing something about it. Think of it as the quiet rule that a tool should be useful without being dangerous. It is the difference between “it works” and “it is safe to put in front of people.” That deliberate caution is Gale–Church alignment algorithm.",
+  "explainer": {
+    "lead": "Gale–Church alignment finds which sentences on one side of a bilingual text correspond to sentences on the other. Its key cue is sentence length, making it useful for turning parallel text into matched sentence pairs.",
+    "tiers": {
+      "eli5": "Imagine matching strips of paper written in two languages, without needing to read either language. A long strip usually belongs with another long strip, and a short strip with another short strip. Gale–Church uses this idea to line up sentences that say the same thing.",
+      "practitioner": "Apply it to the two language sides of a parallel corpus when you require sentence correspondences rather than translations or word alignments. Review alignments where equivalent sentences differ substantially in length, because length is the algorithm's central cue. The output is aligned bilingual text for subsequent processing.",
+      "paperLevel": "Given source sentences s_1,...,s_m and target sentences t_1,...,t_n, infer an alignment A pairing corresponding sentences, using length(s_i) approximately corresponding to length(t_j) as the central criterion. William A. Gale and Kenneth W. Church of AT&T Bell Laboratories described the algorithm in a 1993 paper. Its stated assumption is that equivalent sentences roughly correspond in length, which limits the cue when that relationship does not hold."
+    },
+    "example": "Suppose the English side contains the short sentence “The cat sleeps.” and the much longer sentence “The cat sleeps beside the warm window while rain falls outside.” The other side has one short and one long equivalent sentence; Gale–Church uses their relative lengths to pair short with short and long with long.",
+    "usedIn": [
+      {
+        "name": "Parallel corpus construction",
+        "detail": "Matching corresponding sentences across the two language sides of a corpus.",
+        "url": ""
+      },
+      {
+        "name": "Natural language processing",
+        "detail": "Preparing aligned bilingual sentence pairs for language-processing work.",
+        "url": ""
+      },
+      {
+        "name": "Computational linguistics",
+        "detail": "Structuring parallel text into sentence-level correspondences.",
+        "url": ""
+      }
+    ],
+    "goal": "Align each sentence in one language with its corresponding sentence in the other language of a parallel corpus.",
+    "inputs": [
+      "Sentences from one language side",
+      "Sentences from the other language side",
+      "Sentence lengths for comparison"
+    ],
+    "outputs": [
+      "Corresponding sentence pairs",
+      "An aligned parallel corpus"
+    ],
+    "steps": [
+      "Take sentences from both language sides.",
+      "Consider candidate sentence pairings.",
+      "Compare the lengths of candidate sentences.",
+      "Prefer pairings whose lengths roughly correspond.",
+      "Output the selected sentence alignments."
+    ],
+    "tradeoffs": [
+      "Uses a simple length-based cue",
+      "Produces sentence-level, not word-level, alignments",
+      "Depends on equivalent sentences having roughly corresponding lengths",
+      "Length agreement alone does not establish meaning"
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "source",
+          "label": "Source sentences",
+          "note": "One language side"
+        },
+        {
+          "id": "target",
+          "label": "Target sentences",
+          "note": "Other language side"
+        },
+        {
+          "id": "candidates",
+          "label": "Candidate pairings",
+          "note": "Possible sentence matches"
+        },
+        {
+          "id": "lengths",
+          "label": "Length comparison",
+          "note": "Checks rough correspondence"
+        },
+        {
+          "id": "aligned",
+          "label": "Aligned sentence pairs",
+          "note": "Selected correspondences"
+        }
+      ],
+      "edges": [
+        {
+          "from": "source",
+          "to": "candidates",
+          "label": "sentences"
+        },
+        {
+          "from": "target",
+          "to": "candidates",
+          "label": "sentences"
+        },
+        {
+          "from": "candidates",
+          "to": "lengths",
+          "label": "pair lengths"
+        },
+        {
+          "from": "lengths",
+          "to": "aligned",
+          "label": "best matches"
+        }
+      ],
+      "caption": "Sentences from both language sides are compared by length to produce sentence-level alignments."
+    }
+  },
   "related": [
     "alignment",
     "actor-critic-algorithm",

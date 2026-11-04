@@ -5,6 +5,139 @@
   "type": "concept",
   "definition": "Cache memory is a small-sized type of volatile computer memory that provides high-speed data storage and access to the processor and stores frequently used data and instructions.",
   "details": "Cache memory is a small-sized type of volatile computer memory that provides high-speed data storage and access to the processor and stores frequently used data and instructions.",
+  "explainer": {
+    "lead": "Cache memory is a small, fast holding area close to a processor for data and instructions it is likely to need again. It saves trips to slower memory, so programs can spend less time waiting.",
+    "tiers": {
+      "eli5": "Imagine doing homework with a huge bookcase across the room and a tiny shelf beside your desk. You keep the books you use most on the small shelf so you can grab them quickly. Cache memory does that for a computer, keeping useful information nearby instead of fetching it from slower memory every time.",
+      "practitioner": "CPU caches exploit temporal and spatial locality, so data layout and repeated access patterns strongly affect hit rate and latency. Write-back caches reduce immediate backing-store writes but add dirty-data tracking and eviction costs, while write-through caches update both stores synchronously. Watch for stale copies across caches, costly misses, and replacement or prefetching choices that do not match the workload.",
+      "paperLevel": "A cache is a pool of entries (tag, data), where each entry copies data from a backing store and its tag identifies that data; hit rate H = cache hits / total accesses. A miss requires a more expensive backing-store access, usually followed by insertion into the cache and possible eviction under a replacement policy. Effectiveness is bounded by the capacity–speed trade-off and workload locality, and multiple cached copies require coherence mechanisms to prevent stale data."
+    },
+    "example": "Suppose a CPU requests data whose tag is absent from its L1 cache: that is a miss, so the data is fetched through the memory hierarchy and copied into the cache. If the CPU requests the same data again before it is evicted, the matching tag produces a hit and avoids another trip to slower main memory.",
+    "usedIn": [
+      {
+        "name": "CPUs",
+        "detail": "Small caches on or near the processor hold instructions and data, often in cascaded levels.",
+        "url": ""
+      },
+      {
+        "name": "GPUs",
+        "detail": "Texture and other caches support graphics and general-purpose computation.",
+        "url": ""
+      },
+      {
+        "name": "Disk and solid-state drives",
+        "detail": "Hardware caches reduce access latency and can combine small transfers into larger requests.",
+        "url": ""
+      },
+      {
+        "name": "Web browsers and servers",
+        "detail": "Software caches keep copies of requested content so later requests can be answered faster.",
+        "url": ""
+      }
+    ],
+    "intuition": "Keeping a small supply of likely-to-be-reused information close at hand is often faster than maintaining only a much larger, slower store. This works because programs commonly reuse recent data and access data stored near previous requests.",
+    "howItWorks": [
+      "A client such as a CPU first checks the cache for a tag matching the requested data.",
+      "On a hit, the cached copy is returned without consulting the slower backing store.",
+      "On a miss, the data is retrieved from the backing store and usually copied into the cache.",
+      "If space is needed, a replacement policy such as least recently used selects an entry to evict.",
+      "A write policy controls when changes reach the backing store."
+    ],
+    "whyItMatters": "Caching bridges the gap between fast processors and larger, slower storage, improving latency and often throughput. Its small size keeps it cost-effective, while locality allows many requests to be served without reaching the backing store.",
+    "misconceptions": [
+      "A cache miss does not mean the data is lost; it means the data must be fetched from the backing store.",
+      "A bigger cache is not automatically better, because capacity and speed involve a design trade-off.",
+      "Cache memory is temporary working storage, not a permanent place to keep files."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "cpu",
+          "label": "CPU request",
+          "note": "Requests data from a backing-store location."
+        },
+        {
+          "id": "lookup",
+          "label": "Cache lookup",
+          "note": "Compares the request with cached entry tags."
+        },
+        {
+          "id": "hit",
+          "label": "Cached data",
+          "note": "A matching tag produces a fast cache hit."
+        },
+        {
+          "id": "store",
+          "label": "Backing store",
+          "note": "Slower memory supplies data after a miss."
+        },
+        {
+          "id": "fill",
+          "label": "Cache fill",
+          "note": "Retrieved data is copied into the cache."
+        },
+        {
+          "id": "replace",
+          "label": "Replacement policy",
+          "note": "Chooses an existing entry to evict when space is needed."
+        }
+      ],
+      "edges": [
+        {
+          "from": "cpu",
+          "to": "lookup",
+          "label": "requested tag"
+        },
+        {
+          "from": "lookup",
+          "to": "hit",
+          "label": "hit"
+        },
+        {
+          "from": "hit",
+          "to": "cpu",
+          "label": "data"
+        },
+        {
+          "from": "lookup",
+          "to": "store",
+          "label": "miss"
+        },
+        {
+          "from": "store",
+          "to": "fill",
+          "label": "retrieved data"
+        },
+        {
+          "from": "fill",
+          "to": "cpu",
+          "label": "data"
+        },
+        {
+          "from": "replace",
+          "to": "fill",
+          "label": "frees space"
+        }
+      ],
+      "caption": "A request is answered directly on a cache hit; on a miss, data comes from the backing store and is usually cached for future requests."
+    },
+    "image": {
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3d/Cache%2Cbasic.svg/960px-Cache%2Cbasic.svg.png",
+      "alt": "Cache (computing) — Additional storage that enables faster access to main storage",
+      "width": 640,
+      "height": 280,
+      "credit": "Traced by Stannered",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "page": "https://commons.wikimedia.org/wiki/File:Cache,basic.svg"
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Cache (computing)",
+        "url": "https://en.wikipedia.org/wiki/Cache_(computing)"
+      }
+    ]
+  },
   "citation": {
     "title": "Math Glossary for AI (François Fleuret notes)",
     "authors": [],

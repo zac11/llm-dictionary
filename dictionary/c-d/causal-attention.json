@@ -8,6 +8,98 @@
   ],
   "definition": "Attention restricted so each token can only see previous tokens, enforcing the autoregressive property needed for generation.",
   "details": "Attention restricted so each token can only see previous tokens, enforcing the autoregressive property needed for generation. Implemented with a triangular attention mask.",
+  "explainer": {
+    "lead": "Causal attention lets a model use the tokens it has already seen while blocking access to tokens that come later. This prevents future information from leaking into each prediction, which is essential for generating a sequence one token at a time.",
+    "tiers": {
+      "eli5": "Imagine reading a story through a small window that only shows the words up to where you are, never the words ahead. Causal attention gives a model that same limited view, so it must guess what comes next without peeking. It is like solving a puzzle using only the clues revealed so far.",
+      "practitioner": "Apply a triangular causal mask to self-attention so each position can attend only to itself and earlier positions. In practice, future-position scores are blocked before the attention weights are computed. Check the mask's diagonal and indexing carefully: an off-by-one error can either hide the current token or leak the next one.",
+      "paperLevel": "For attention scores S_ij at query position i and key position j, set S_ij = -infinity when j > i before applying softmax. Then the output is h_i = sum over j <= i of alpha_ij v_j, where alpha_ij are the normalized attention weights. This enforces the autoregressive property, but also means a representation at position i cannot use information from later tokens."
+    },
+    "example": "For the sequence \"The cat sits\", the row for \"cat\" can attend to \"The\" and \"cat\", but its connection to \"sits\" is masked. The model therefore forms that representation without using the later word.",
+    "usedIn": [
+      {
+        "name": "Autoregressive language models",
+        "detail": "Used to keep each next-token prediction dependent only on the prefix already available.",
+        "url": ""
+      },
+      {
+        "name": "Token-by-token text generation",
+        "detail": "Allows newly generated text to extend a sequence without attending to tokens that do not yet exist.",
+        "url": ""
+      },
+      {
+        "name": "Sequential generation",
+        "detail": "Supports generation in left-to-right order while preventing future positions from influencing earlier ones.",
+        "url": ""
+      }
+    ],
+    "intuition": "A token should be able to learn from the past, but not cheat by looking into the future. Causal attention turns that rule into a fixed pattern of allowed and blocked connections.",
+    "howItWorks": [
+      "Compute attention scores between token positions.",
+      "Apply a triangular mask that blocks every connection from a position to a later position.",
+      "Keep connections to earlier positions and the current position available.",
+      "Turn the remaining scores into attention weights and combine the corresponding token values.",
+      "Use the resulting representations for autoregressive next-token prediction."
+    ],
+    "whyItMatters": "Without this restriction, training could use future tokens that would be unavailable during generation. The mask aligns training-time attention with token-by-token generation and preserves the autoregressive property.",
+    "misconceptions": [
+      "Causal attention is not attention with no mask: unrestricted self-attention can use later tokens.",
+      "The mask blocks future positions, not earlier context.",
+      "Causal attention supplies the information constraint; it is not by itself the whole text-generation procedure."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "tokens",
+          "label": "Token sequence",
+          "note": "Tokens ordered from earliest to latest."
+        },
+        {
+          "id": "scores",
+          "label": "Attention scores",
+          "note": "Scores between query and key positions."
+        },
+        {
+          "id": "mask",
+          "label": "Triangular mask",
+          "note": "Blocks every key position after the query."
+        },
+        {
+          "id": "weights",
+          "label": "Causal weights",
+          "note": "Attention remains only over allowed positions."
+        },
+        {
+          "id": "outputs",
+          "label": "Token outputs",
+          "note": "Representations used for next-token prediction."
+        }
+      ],
+      "edges": [
+        {
+          "from": "tokens",
+          "to": "scores",
+          "label": ""
+        },
+        {
+          "from": "scores",
+          "to": "mask",
+          "label": ""
+        },
+        {
+          "from": "mask",
+          "to": "weights",
+          "label": "future blocked"
+        },
+        {
+          "from": "weights",
+          "to": "outputs",
+          "label": ""
+        }
+      ],
+      "caption": "A triangular mask removes future-position connections before attention weights produce token representations."
+    }
+  },
   "related": [
     "attention-mask",
     "attention",

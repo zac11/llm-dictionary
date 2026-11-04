@@ -5,7 +5,108 @@
   "type": "concept",
   "definition": "A metric that measures the similarity between two vectors by computing the cosine of the angle between them, commonly used to compare embeddings.",
   "details": "Cosine similarity ranges from -1 to 1 and is widely used in semantic search and recommendation systems because it captures directional similarity independent of vector magnitude.",
-  "story": "Imagine a driving test that every new model has to pass before it is allowed on the road. It is the exam that separates “it sounds good” from “it actually is good”. A fair scoreboard keeps everyone honest. It is the exam that keeps everyone honest. That shared ruler is Cosine Similarity.",
+  "explainer": {
+    "lead": "Cosine similarity compares two vectors by looking at the direction they point, rather than how long they are. This makes it useful for comparing embeddings in tasks such as semantic search and recommendations.",
+    "tiers": {
+      "eli5": "Imagine two arrows starting at the same point. If they point the same way, they are very similar; if they point in opposite directions, they are very different. Cosine similarity turns the angle between the arrows into a score from -1 to 1, and making an arrow longer does not change that score.",
+      "practitioner": "Use cosine similarity to rank or compare embedding vectors in semantic search and recommendation systems. It captures directional agreement while discarding vector magnitude, so it is unsuitable when length itself carries information you need. Handle zero vectors explicitly, because the denominator in the calculation would be zero.",
+      "paperLevel": "For vectors A and B, cosine similarity is cos(theta) = (A · B) / (||A|| ||B||), equivalently sum_i(A_i B_i) divided by sqrt(sum_i A_i^2) sqrt(sum_i B_i^2). It lies in [-1, 1] and is invariant to positive rescaling of either vector, but it is undefined when either vector has zero norm."
+    },
+    "example": "For A = (1, 1) and B = (1, 0), the dot product is 1, while the vector lengths are sqrt(2) and 1. Their cosine similarity is therefore 1 / sqrt(2), approximately 0.707, reflecting the 45-degree angle between them.",
+    "usedIn": [
+      {
+        "name": "Semantic search",
+        "detail": "Compares embedding vectors to find items whose directions are similar to a query embedding.",
+        "url": ""
+      },
+      {
+        "name": "Recommendation systems",
+        "detail": "Compares embeddings to identify directionally similar items or preferences.",
+        "url": ""
+      }
+    ],
+    "intuition": "Picture each vector as an arrow: a small angle means the arrows point in nearly the same direction and receive a high score. Because only the angle matters, doubling one arrow's length leaves the similarity unchanged.",
+    "howItWorks": [
+      "Start with two vectors of the same dimension.",
+      "Multiply their corresponding components and add the results to get the dot product.",
+      "Calculate each vector's length, then multiply the two lengths together.",
+      "Divide the dot product by that product of lengths.",
+      "Interpret the result: 1 means the same direction, 0 means perpendicular, and -1 means opposite directions."
+    ],
+    "whyItMatters": "It provides a simple way to compare embeddings without letting differences in vector magnitude dominate the result. That property is especially useful when ranking candidates in semantic search and recommendation systems.",
+    "misconceptions": [
+      "A score of 1 does not mean the vectors are identical; they can have different lengths and still point in the same direction.",
+      "Cosine similarity does not preserve information carried by vector magnitude, because magnitude is divided out.",
+      "A score of 0 means the vectors are perpendicular, not that either vector is zero."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "vectors",
+          "label": "Two vectors",
+          "note": "Embeddings A and B"
+        },
+        {
+          "id": "dot",
+          "label": "Dot product",
+          "note": "Sum matching products"
+        },
+        {
+          "id": "norms",
+          "label": "Vector lengths",
+          "note": "Compute both norms"
+        },
+        {
+          "id": "divide",
+          "label": "Normalize product",
+          "note": "Divide by length product"
+        },
+        {
+          "id": "score",
+          "label": "Similarity score",
+          "note": "Value from -1 to 1"
+        },
+        {
+          "id": "compare",
+          "label": "Compare embeddings",
+          "note": "Use in search or recommendations"
+        }
+      ],
+      "edges": [
+        {
+          "from": "vectors",
+          "to": "dot",
+          "label": "components"
+        },
+        {
+          "from": "vectors",
+          "to": "norms",
+          "label": "components"
+        },
+        {
+          "from": "dot",
+          "to": "divide",
+          "label": "numerator"
+        },
+        {
+          "from": "norms",
+          "to": "divide",
+          "label": "denominator"
+        },
+        {
+          "from": "divide",
+          "to": "score",
+          "label": ""
+        },
+        {
+          "from": "score",
+          "to": "compare",
+          "label": ""
+        }
+      ],
+      "caption": "Cosine similarity divides the vectors' dot product by the product of their lengths, producing a directional similarity score."
+    }
+  },
   "related": [
     "api-key",
     "approximate-nearest-neighbor-search",

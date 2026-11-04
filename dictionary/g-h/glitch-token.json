@@ -5,7 +5,82 @@
   "type": "concept",
   "definition": "In large language models (LLMs), a glitch token is token that causes unexpected or \"glitchy\" outputs when used in a prompt.",
   "details": "Such output may include the model misunderstanding meanings of words, refusing to respond or generating repetitive or unrelated text. Prompts that cause this behaviour may look completely normal.",
-  "story": "Imagine learning a language by reading every book in the library and noticing, over time, which words travel together. It does not memorize a rulebook; it absorbs a library. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It is fluency built from pattern, not from memorized rules. That pattern-earned fluency is Glitch token.",
+  "explainer": {
+    "lead": "A glitch token is a token that makes a large language model behave unexpectedly when it appears in a prompt. It matters because an ordinary-looking request can produce confusion, refusal, repetition, or unrelated text.",
+    "tiers": {
+      "eli5": "Imagine a vending machine that normally works fine, but one strange button makes it beep or give you the wrong snack. A glitch token is like that button for a language model: put it in a request, and the answer may become confused or nonsensical. The request can otherwise look completely normal.",
+      "practitioner": "Glitch tokens are relevant when testing prompts and investigating unreliable model behaviour. If a normal-looking prompt leads to refusals, repetition, unrelated text, or misunderstood wording, an engineer can treat a glitch token as one possible explanation rather than assuming the request itself was unclear. Unusual output alone does not establish that a glitch token was involved.",
+      "paperLevel": "For an LLM, a token t is a glitch token when its inclusion in a prompt induces unexpected output behaviour. Observed behaviours can include semantic misunderstanding, refusal to respond, repetition, and generation of unrelated text. The definition does not require the prompt to appear abnormal or prescribe one particular output failure."
+    },
+    "example": "A user submits an ordinary-looking question containing the placeholder ⟨glitch token⟩. Instead of answering the question, the model repeatedly emits an unrelated phrase, even though the rest of the prompt is clear.",
+    "usedIn": [
+      {
+        "name": "LLM behaviour testing",
+        "detail": "Checking whether particular tokens trigger unexpected responses in otherwise normal prompts.",
+        "url": ""
+      },
+      {
+        "name": "Prompt debugging",
+        "detail": "Investigating refusals, repetition, unrelated answers, and apparent misunderstandings.",
+        "url": ""
+      }
+    ],
+    "intuition": "Most prompt tokens produce ordinary behaviour, but some act like hidden triggers for erratic responses. The surprising part is that the surrounding prompt need not look strange.",
+    "howItWorks": [
+      "A user supplies a prompt containing the token.",
+      "The prompt can look completely normal to the user.",
+      "The token disrupts the model's response behaviour.",
+      "The model may misunderstand words, refuse to respond, or generate repetitive or unrelated text."
+    ],
+    "whyItMatters": "Glitch tokens show that a clear, normal-looking prompt can still produce unreliable behaviour. Recognizing them helps explain failures that cannot be diagnosed from the visible wording alone.",
+    "misconceptions": [
+      "A glitch-token prompt does not have to look unusual.",
+      "Not every repetitive, unrelated, or refused response proves that a glitch token caused it.",
+      "A glitch token has no single required failure pattern."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "prompt",
+          "label": "Normal-looking prompt",
+          "note": "Contains a glitch token"
+        },
+        {
+          "id": "token",
+          "label": "Glitch token",
+          "note": "Acts as an unexpected trigger"
+        },
+        {
+          "id": "model",
+          "label": "Language model",
+          "note": "Processes the prompt"
+        },
+        {
+          "id": "output",
+          "label": "Glitchy output",
+          "note": "Confusion, refusal, repetition, or unrelated text"
+        }
+      ],
+      "edges": [
+        {
+          "from": "prompt",
+          "to": "model",
+          "label": "input"
+        },
+        {
+          "from": "token",
+          "to": "model",
+          "label": "included in"
+        },
+        {
+          "from": "model",
+          "to": "output",
+          "label": "generates"
+        }
+      ],
+      "caption": "A glitch token inside an otherwise normal prompt can lead to several kinds of unexpected output."
+    }
+  },
   "related": [
     "token",
     "ai-tiger",

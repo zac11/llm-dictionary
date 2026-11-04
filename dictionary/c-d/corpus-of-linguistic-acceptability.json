@@ -5,7 +5,112 @@
   "type": "benchmark",
   "definition": "Corpus of Linguistic Acceptability (CoLA) is a dataset the primary purpose of which is to serve as a benchmark for evaluating the ability of artificial neural networks, including large language models, to judge the grammatical correctness of sentences.",
   "details": "It consists of 10,657 English sentences from published linguistics literature that were manually labeled either as grammatical or ungrammatical.",
-  "story": "Picture a translator at the United Nations, listening to one language and whispering the meaning into another in real time. It figures out meaning by noticing which words like to travel together. It does not memorize a rulebook; it absorbs a library. Meaning lives in company — a word is known by the words it keeps. That pattern-earned fluency is Corpus of Linguistic Acceptability.",
+  "explainer": {
+    "lead": "CoLA tests whether an AI system can tell a grammatical English sentence from an ungrammatical one. Its 10,657 manually labeled examples give researchers a shared way to compare neural networks and large language models on this narrow but useful language skill.",
+    "tiers": {
+      "eli5": "Imagine a teacher giving a computer a stack of sentences and asking, “Does this sound like proper English?” CoLA is that stack: 10,657 sentences, each already marked grammatical or ungrammatical by people. You can check the computer’s answers against those marks to see how often it gets the right answer.",
+      "practitioner": "Use CoLA as a binary sentence-classification benchmark: given one English sentence, predict grammatical or ungrammatical, then compare predictions with the manual labels. A simple evaluation is accuracy over the supplied sentences, although a model’s score should not be treated as a general measure of language understanding. Its examples come from published linguistics literature, so performance may not carry over to conversational text or other languages.",
+      "paperLevel": "Formally, CoLA provides D = {(x_i, y_i)} for i = 1...10657, where x_i is an English sentence drawn from published linguistics literature and y_i is a manually assigned binary acceptability label. A model learns or is prompted to produce a label f(x_i), and simple accuracy is sum_i 1[f(x_i) = y_i] / 10657. The benchmark isolates sentence-level grammatical acceptability in English; binary labels and its literature-based sample limit what can be inferred about broader linguistic competence."
+    },
+    "example": "In a miniature four-sentence evaluation, suppose a model matches the manual labels on three sentences and disagrees on one. Its accuracy is 3 / 4 = 75%; this illustrates the calculation and is not a reported CoLA result.",
+    "usedIn": [
+      {
+        "name": "Neural network evaluation",
+        "detail": "Comparing models on grammatical-versus-ungrammatical sentence classification.",
+        "url": ""
+      },
+      {
+        "name": "Large language model evaluation",
+        "detail": "Testing whether language models can reproduce human grammatical-acceptability judgments.",
+        "url": ""
+      },
+      {
+        "name": "Computational linguistics",
+        "detail": "Studying how learned language representations handle sentences discussed in linguistics research.",
+        "url": ""
+      }
+    ],
+    "measures": "CoLA measures a model’s ability to judge the grammatical acceptability of individual English sentences. Each sentence has one manually assigned label: grammatical or ungrammatical.",
+    "howScored": [
+      "The model receives a sentence and predicts either grammatical or ungrammatical.",
+      "Each prediction is compared with the sentence’s manual label.",
+      "One simple summary is accuracy: correct predictions divided by all evaluated sentences."
+    ],
+    "formula": "Accuracy = number of correct label predictions / number of evaluated sentences",
+    "caveats": [
+      "It covers English sentences, not multilingual grammatical judgment.",
+      "Its examples come from published linguistics literature rather than a general sample of everyday writing.",
+      "Binary acceptability labels do not capture every nuance of human grammatical judgment.",
+      "A strong result does not by itself demonstrate broad language understanding."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "literature",
+          "label": "Linguistics literature",
+          "note": "Source of the English sentences"
+        },
+        {
+          "id": "corpus",
+          "label": "CoLA corpus",
+          "note": "10,657 sentences"
+        },
+        {
+          "id": "labels",
+          "label": "Manual labels",
+          "note": "Grammatical or ungrammatical"
+        },
+        {
+          "id": "model",
+          "label": "Neural model",
+          "note": "Predicts a label for each sentence"
+        },
+        {
+          "id": "comparison",
+          "label": "Label comparison",
+          "note": "Checks predictions against manual judgments"
+        },
+        {
+          "id": "score",
+          "label": "Evaluation score",
+          "note": "Summarizes labeling performance"
+        }
+      ],
+      "edges": [
+        {
+          "from": "literature",
+          "to": "corpus",
+          "label": "sentences"
+        },
+        {
+          "from": "corpus",
+          "to": "labels",
+          "label": "annotation"
+        },
+        {
+          "from": "corpus",
+          "to": "model",
+          "label": "input"
+        },
+        {
+          "from": "model",
+          "to": "comparison",
+          "label": "predictions"
+        },
+        {
+          "from": "labels",
+          "to": "comparison",
+          "label": "reference"
+        },
+        {
+          "from": "comparison",
+          "to": "score",
+          "label": "results"
+        }
+      ],
+      "caption": "CoLA pairs literature-derived sentences with manual acceptability labels, then compares those labels with a model’s predictions."
+    }
+  },
   "related": [
     "american-national-corpus",
     "asosoft-text-corpus",

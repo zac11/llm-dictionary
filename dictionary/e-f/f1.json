@@ -2,9 +2,97 @@
   "term": "F1",
   "letter": "F",
   "category": "Evaluation and Benchmarks",
-  "type": "concept",
+  "type": "metric",
   "definition": "Span- and token-overlap metrics from the QA tradition: exact match is strict string equality with the gold answer, F1 gives partial credit for overlapping tokens.",
   "details": "Span- and token-overlap metrics from the QA tradition: exact match is strict string equality with the gold answer, F1 gives partial credit for overlapping tokens.",
+  "explainer": {
+    "lead": "F1 scores a predicted answer by how much its wording overlaps the gold answer, giving partial credit when the answer is not exactly right. It is often used alongside exact match in question answering: exact match checks strict string equality, while F1 compares tokens.",
+    "tiers": {
+      "eli5": "Imagine checking two lists of words to see how many they share. If an answer has some of the right words but is not worded exactly like the answer key, F1 can still give it some points. An answer with none of the key's words gets no points.",
+      "practitioner": "Use F1 when evaluating question-answering outputs that need partial credit for token overlap, and pair it with exact match when strict string equality also matters. Compute overlap token by token, then combine token precision and recall. Watch for answers that score well through shared words without expressing the intended answer.",
+      "paperLevel": "For predicted token set P and gold token set G, token precision is |P ∩ G| / |P| and token recall is |P ∩ G| / |G|. F1 = 2PR / (P + R), equivalently 2|P ∩ G| / (|P| + |G|), and ranges from 0 to 1. It measures lexical overlap rather than answer correctness in general, while exact match remains strict string equality."
+    },
+    "example": "For the prediction “the white cat” and gold answer “white cat”, the shared tokens are “white” and “cat”. Precision is 2/3 and recall is 1, so F1 is 0.8; exact match is 0 because the strings differ.",
+    "usedIn": [
+      {
+        "name": "Question answering",
+        "detail": "Compares predicted answers with gold answers when partial credit is useful.",
+        "url": ""
+      },
+      {
+        "name": "Answer-span evaluation",
+        "detail": "Scores overlap between a predicted answer span and the gold span.",
+        "url": ""
+      }
+    ],
+    "measures": "F1 measures token overlap between a predicted answer and its gold answer. It balances how much of the prediction is correct with how much of the gold answer was recovered.",
+    "howScored": [
+      "Compare the predicted and gold tokens.",
+      "Count tokens appearing in both answers.",
+      "Compute precision as overlap divided by predicted tokens.",
+      "Compute recall as overlap divided by gold tokens.",
+      "Take the harmonic mean of precision and recall."
+    ],
+    "formula": "Precision = |P ∩ G| / |P|; Recall = |P ∩ G| / |G|; F1 = 2 × Precision × Recall / (Precision + Recall). Here P is the predicted token set and G is the gold token set.",
+    "caveats": [
+      "Shared words can earn credit without establishing correctness.",
+      "Different wording can score below exact equality.",
+      "F1 does not reward tokens absent from the gold answer.",
+      "It should not be confused with exact match."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "prediction",
+          "label": "Predicted answer",
+          "note": "Provides predicted tokens."
+        },
+        {
+          "id": "gold",
+          "label": "Gold answer",
+          "note": "Provides reference tokens."
+        },
+        {
+          "id": "overlap",
+          "label": "Token overlap",
+          "note": "Counts shared tokens."
+        },
+        {
+          "id": "pr",
+          "label": "Precision recall",
+          "note": "Measures prediction and gold coverage."
+        },
+        {
+          "id": "f1",
+          "label": "F1 score",
+          "note": "Combines precision and recall."
+        }
+      ],
+      "edges": [
+        {
+          "from": "prediction",
+          "to": "overlap",
+          "label": "tokens"
+        },
+        {
+          "from": "gold",
+          "to": "overlap",
+          "label": "tokens"
+        },
+        {
+          "from": "overlap",
+          "to": "pr",
+          "label": "counts"
+        },
+        {
+          "from": "pr",
+          "to": "f1",
+          "label": "harmonic mean"
+        }
+      ],
+      "caption": "F1 turns shared answer tokens into precision, recall, and a single overlap score."
+    }
+  },
   "related": [
     "token",
     "exact-match"

@@ -5,7 +5,96 @@
   "type": "concept",
   "definition": "A technique that caps the magnitude of gradients during training to prevent instability from exploding gradients.",
   "details": "Gradient clipping is especially important when training recurrent networks and large transformers, where occasional large gradients can otherwise destabilize optimization.",
-  "story": "Imagine teaching a friend to shoot a basketball. They miss, and you walk them backwards through the shot — elbow, wrist, release — to find what needs fixing. It is the same loop you use to learn anything: try, miss, correct, try again. Underneath all the magic is a patient process of small improvements. It is learning from every miss instead of repeating the same mistake. That steady, miss-by-miss improvement is Gradient Clipping.",
+  "explainer": {
+    "lead": "Gradient clipping limits unusually large gradients before they are used to update a model. It helps keep training stable when a single update would otherwise be far too large, especially in recurrent networks and large transformers.",
+    "tiers": {
+      "eli5": "Imagine correcting a steering wheel while driving: a small turn can help, but one sudden huge turn could send you off the road. Gradient clipping limits how big that correction can be. The model still learns in the same general direction, but an unusually large signal cannot produce an equally huge update.",
+      "practitioner": "Compute gradients as usual, compare their magnitude with a chosen threshold, and rescale oversized gradients before the optimizer step. The threshold is a training setting: a very low cap clips frequently and strongly restricts updates, while a very high cap rarely intervenes. Clipping an oversized gradient preserves its direction but reduces its magnitude.",
+      "paperLevel": "For gradient g and threshold tau, norm-based clipping leaves g unchanged when ||g|| <= tau; otherwise it uses g_clipped = tau * g / ||g||. Thus ||g_clipped|| = tau and the direction is preserved. The threshold must be chosen, and clipping limits gradient magnitude rather than explaining why an unusually large gradient occurred."
+    },
+    "example": "Suppose a gradient is the vector (3, 4), whose magnitude is 5, and the cap is 1. Rescaling gives (0.6, 0.8), which has magnitude 1 and points in the same direction.",
+    "usedIn": [
+      {
+        "name": "Recurrent network training",
+        "detail": "Helps prevent occasional large gradients from destabilizing optimization.",
+        "url": ""
+      },
+      {
+        "name": "Large transformer training",
+        "detail": "Caps oversized gradients so they do not produce excessively large updates.",
+        "url": ""
+      }
+    ],
+    "intuition": "Gradient clipping acts like a safety limit on each oversized learning signal. It keeps the direction of the signal while reducing its size to a chosen maximum.",
+    "howItWorks": [
+      "Compute the gradients for the model parameters.",
+      "Measure the gradient's magnitude.",
+      "If the magnitude exceeds the cap, rescale the gradient to that cap.",
+      "Pass the clipped or unchanged gradient to the optimizer for the update."
+    ],
+    "whyItMatters": "Occasional exploding gradients can destabilize optimization. Capping them makes training recurrent networks and large transformers less vulnerable to these oversized updates.",
+    "misconceptions": [
+      "It does not shrink every gradient; gradients already within the cap remain unchanged.",
+      "It clips gradients, not the model's weights or activations."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "gradients",
+          "label": "Computed gradients",
+          "note": "Learning signals from training"
+        },
+        {
+          "id": "magnitude",
+          "label": "Measure magnitude",
+          "note": "Compare size with the cap"
+        },
+        {
+          "id": "rescale",
+          "label": "Rescale oversized gradients",
+          "note": "Reduce magnitude, preserve direction"
+        },
+        {
+          "id": "unchanged",
+          "label": "Keep small gradients",
+          "note": "Leave gradients within cap unchanged"
+        },
+        {
+          "id": "update",
+          "label": "Optimizer update",
+          "note": "Apply the resulting gradients"
+        }
+      ],
+      "edges": [
+        {
+          "from": "gradients",
+          "to": "magnitude",
+          "label": ""
+        },
+        {
+          "from": "magnitude",
+          "to": "rescale",
+          "label": "Above cap"
+        },
+        {
+          "from": "magnitude",
+          "to": "unchanged",
+          "label": "Within cap"
+        },
+        {
+          "from": "rescale",
+          "to": "update",
+          "label": ""
+        },
+        {
+          "from": "unchanged",
+          "to": "update",
+          "label": ""
+        }
+      ],
+      "caption": "Gradient clipping checks gradient magnitude and limits only oversized gradients before the optimizer updates the model."
+    }
+  },
   "related": [
     "clip",
     "gradient-accumulation",

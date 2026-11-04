@@ -5,6 +5,46 @@
   "type": "concept",
   "definition": "The capacity tradeoff where adding more languages to a fixed-size model dilutes per-language quality.",
   "details": "The capacity tradeoff where adding more languages to a fixed-size model dilutes per-language quality. The argument for regionally focused models (strong Arabic-English bilinguals such as the Jais and Fanar lineages, and Gulf-focused efforts like ALLaM) over thin coverage of 200 languages.",
+  "explainer": {
+    "lead": "A fixed-size model has limited capacity, so covering more languages can leave less room for each one. This tradeoff is why a focused Arabic-English model may be preferable to thin coverage across 200 languages.",
+    "tiers": {
+      "eli5": "Imagine one backpack that must hold notebooks for every language you want to learn. Two languages can each get a thick notebook, but 200 languages may get only a few pages each. The curse of multilinguality is the worry that adding languages makes the model less good at each one.",
+      "practitioner": "When comparing models at a fixed size, assess quality on the languages you actually need rather than treating language count as the main goal. For Arabic-English work, focused lineages such as Jais and Fanar illustrate the alternative to broad, thin coverage; ALLaM illustrates a Gulf-focused effort. Do not assume that adding a language necessarily hurts quality, because the term describes a capacity tradeoff rather than an unavoidable outcome.",
+      "paperLevel": "Let C denote fixed model capacity and L the number of languages covered. The curse of multilinguality is the tradeoff in which increasing L causes languages to compete for C, potentially reducing per-language quality; C/L is useful intuition for dilution, not a formal allocation law. It motivates regionally focused models, including strong Arabic-English bilingual lineages such as Jais and Fanar and the Gulf-focused ALLaM effort. It does not establish that every additional language must degrade performance."
+    },
+    "example": "Suppose the same fixed-size model is first designed for Arabic and English, then redesigned to cover 200 languages without growing. The second version must spread its capacity across far more languages, so its Arabic quality may be weaker than that of a focused Arabic-English alternative.",
+    "usedIn": [
+      {
+        "name": "Jais and Fanar",
+        "detail": "Arabic-English bilingual lineages illustrating a focused alternative to thin coverage across many languages.",
+        "url": ""
+      },
+      {
+        "name": "ALLaM",
+        "detail": "A Gulf-focused effort reflecting the case for regional concentration.",
+        "url": ""
+      },
+      {
+        "name": "Arabic and multilingual NLP",
+        "detail": "A design consideration when choosing between regional language quality and broader language coverage.",
+        "url": ""
+      }
+    ],
+    "intuition": "Think of model capacity as a fixed budget: every added language makes a claim on that budget. With enough languages, the budget available to represent each one can become too thin to sustain the same quality.",
+    "howItWorks": [
+      "Start with a model whose size and capacity are fixed.",
+      "Add more languages that the same model must cover.",
+      "The languages compete for the model's limited capacity.",
+      "Per-language quality can fall as coverage becomes thinner.",
+      "A regionally focused model can instead devote its capacity to fewer languages."
+    ],
+    "whyItMatters": "It gives a concrete reason to prefer strong regional models when quality in Arabic and English matters more than nominal coverage of 200 languages. It also separates useful language coverage from language count alone.",
+    "misconceptions": [
+      "It does not mean multilingual models are inherently bad or that adding a language always reduces quality.",
+      "It is specifically a fixed-capacity tradeoff, not a claim that language coverage can never be expanded.",
+      "A larger language count is not by itself evidence of better per-language quality."
+    ]
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

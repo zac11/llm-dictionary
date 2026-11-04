@@ -6,101 +6,100 @@
   "definition": "A capsule neural network (CapsNet) is a machine learning system that is a type of artificial neural network (ANN) that can be used to better model hierarchical relationships.",
   "details": "The approach is an attempt to more closely mimic biological neural organization. The idea is to add structures called \"capsules\" to a convolutional neural network (CNN), and to reuse output from several of those capsules to form more stable (with respect to various perturbations) representations for higher capsules. The output is a vector consisting of the probability of an observation, and a pose for that observation. This vector is similar to what is done for example when doing classification with localization in CNNs. Among other benefits, capsnets address the \"Picasso problem\" in image recognition: images that have all the right parts but that are not in the correct spatial relationship (e.g., in a \"face\", the positions of the mouth and one eye are switched). For image recognition, capsnets exploit the fact that while viewpoint changes have nonlinear effects at the pixel level, they have linear effects at the part/object level. This can be compared to inverting the rendering of an object of multiple parts.",
   "explainer": {
-    "lead": "A capsule neural network, or CapsNet, is a neural network design for recognizing objects while keeping track of how their parts are arranged. It aims to represent both what has been observed and its pose, helping it avoid treating a scrambled collection of parts as a correctly assembled object.",
+    "lead": "A capsule neural network, or CapsNet, groups neural activity into capsules that represent both whether something is present and how it is positioned or oriented. By preserving these part-to-object relationships, it aims to recognize structured objects more reliably under changes in viewpoint and other perturbations.",
     "tiers": {
-      "eli5": "Imagine recognizing a face not just by finding eyes, a nose, and a mouth, but also by checking whether they are in sensible places. A capsule neural network groups information into little teams that pass what they find to bigger teams. This helps it tell a normal face from one where an eye and the mouth have swapped positions.",
-      "practitioner": "CapsNets extend convolutional neural networks with capsules whose outputs are reused to build higher-level representations. For vision tasks, the output contains an observation probability and a pose, making the architecture relevant when classification must also preserve spatial relationships. A key consideration is whether the model captures part-to-object arrangement rather than merely detecting all the parts.",
-      "paperLevel": "A CapsNet augments a CNN with capsules and reuses outputs from several lower capsules to form higher-capsule representations that are more stable under perturbations. Its output can be written as y = (p, pose), where p is the probability of an observation and pose describes that observation. The design exploits the idea that viewpoint changes are nonlinear at pixel level but linear at the part/object level, although the entry does not establish performance limits."
+      "eli5": "Imagine recognizing a face not just by finding eyes, a nose, and a mouth, but also by checking where each part belongs. A CapsNet works a bit like that: its small groups of detectors report what they found and its pose. This helps it notice a scrambled face where all the parts are present but an eye and the mouth have swapped places.",
+      "practitioner": "A CapsNet is built by adding capsules to a convolutional neural network and combining several capsule outputs to form higher-level representations. Each output vector carries an observation probability and a pose, so an image-recognition implementation must handle both rather than only a class score. A useful failure test is an image with the correct parts in incorrect spatial relationships, although this description does not prescribe a particular training procedure or capsule-combination algorithm.",
+      "paperLevel": "A capsule produces a vector that can be written informally as v = [p(observation), pose(observation)]. Outputs from multiple lower-level capsules are reused to construct higher-level capsule representations intended to remain stable under perturbations. For vision, the motivating transformation is that viewpoint changes are nonlinear in pixel space but linear at the part/object level; no specific training objective or combination rule is fixed by this definition."
     },
     "usedIn": [
       {
         "name": "Image recognition",
-        "detail": "Used to model part-to-object spatial relationships and address images whose parts are present but incorrectly arranged.",
+        "detail": "Represents visual parts and their spatial relationships so that recognition can account for viewpoint changes.",
         "url": ""
       },
       {
         "name": "Classification with localization",
-        "detail": "Its vector output, combining an observation probability with a pose, resembles the information needed when identifying and locating an observation.",
+        "detail": "Its probability-and-pose output resembles the combined class and location information used in CNN classification with localization.",
         "url": ""
       }
     ],
     "components": [
       {
         "name": "Convolutional neural network",
-        "detail": "Provides the base network to which capsule structures are added."
+        "detail": "Provides the underlying image-processing network to which capsule structures are added."
       },
       {
-        "name": "Lower capsules",
-        "detail": "Produce outputs representing observations that can be reused by higher-level capsules."
+        "name": "Lower-level capsules",
+        "detail": "Represent observations as vectors containing a probability and a pose rather than only a single activation."
       },
       {
-        "name": "Higher capsules",
-        "detail": "Combine outputs from several lower capsules into representations intended to remain stable under various perturbations."
+        "name": "Higher-level capsules",
+        "detail": "Reuse outputs from several lower-level capsules to build representations that are more stable under perturbations."
       },
       {
-        "name": "Output vector",
-        "detail": "Contains the probability of an observation together with a pose for that observation."
+        "name": "Probability and pose output",
+        "detail": "Reports how likely an observation is together with its pose, retaining information about spatial configuration."
       }
     ],
     "flow": [
-      "An observation is processed by the convolutional neural network containing capsule structures.",
-      "Several lower capsules produce outputs describing what they have observed.",
-      "Those outputs are reused to form more stable representations in higher capsules.",
-      "The network emits a vector containing the observation probability and its pose."
+      "An image enters the convolutional neural network.",
+      "Lower-level capsules produce vectors describing observation probabilities and poses.",
+      "Several of these vectors are reused to form higher-level capsule representations.",
+      "The resulting part-to-object representation supports recognition while preserving spatial relationships."
     ],
-    "lineage": "CapsNets build on convolutional neural networks by adding capsules and drawing inspiration from biological neural organization. They extend part detection with hierarchical spatial relationships, addressing the 'Picasso problem' in which all the right parts are present but incorrectly arranged.",
-    "whyItMatters": "Recognizing parts alone can produce false matches when their arrangement is wrong. CapsNets aim to preserve hierarchical and pose information, offering a way to reason about how parts form whole objects as viewpoints and other conditions change.",
+    "whyItMatters": "CapsNets target the Picasso problem: a face with the right features but a switched mouth and eye can contain all the expected parts without being arranged like a face. Their hierarchical pose representations are also motivated by the simpler, linear effects of viewpoint changes at the part/object level, comparable to inverting the rendering of a multipart object.",
     "diagram": {
       "nodes": [
         {
-          "id": "observation",
-          "label": "Input observation",
-          "note": "An image or other observation enters the network."
+          "id": "image",
+          "label": "Input image",
+          "note": "Pixels containing visual parts"
         },
         {
           "id": "cnn",
-          "label": "Convolutional base",
-          "note": "The CNN foundation into which capsules are added."
+          "label": "Convolutional network",
+          "note": "Processes the input image"
         },
         {
-          "id": "lower-capsules",
+          "id": "lower",
           "label": "Lower capsules",
-          "note": "Produce outputs for reuse by higher capsules."
+          "note": "Encode probability and pose"
         },
         {
-          "id": "higher-capsules",
+          "id": "higher",
           "label": "Higher capsules",
-          "note": "Build more stable hierarchical representations."
+          "note": "Combine several capsule outputs"
         },
         {
           "id": "output",
-          "label": "Probability and pose",
-          "note": "The output vector describes the observation and its pose."
+          "label": "Object representation",
+          "note": "Preserves hierarchical spatial relationships"
         }
       ],
       "edges": [
         {
-          "from": "observation",
+          "from": "image",
           "to": "cnn",
-          "label": "input"
+          "label": "pixels"
         },
         {
           "from": "cnn",
-          "to": "lower-capsules",
+          "to": "lower",
           "label": "features"
         },
         {
-          "from": "lower-capsules",
-          "to": "higher-capsules",
-          "label": "reused outputs"
+          "from": "lower",
+          "to": "higher",
+          "label": "pose vectors"
         },
         {
-          "from": "higher-capsules",
+          "from": "higher",
           "to": "output",
-          "label": "representation"
+          "label": "stable encoding"
         }
       ],
-      "caption": "Capsule outputs are reused across levels, ending in a vector that represents both an observation's probability and its pose."
+      "caption": "Capsules pass probability-and-pose vectors upward to form hierarchical object representations."
     }
   },
   "related": [

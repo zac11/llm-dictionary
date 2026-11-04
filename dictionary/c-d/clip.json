@@ -2,10 +2,123 @@
   "term": "CLIP",
   "letter": "C",
   "category": "Architecture",
-  "type": "concept",
+  "type": "model",
   "definition": "Contrastive Language-Image Pretraining, a model trained to align images and text descriptions in a shared embedding space using contrastive learning.",
   "details": "CLIP learns to associate images with their natural-language descriptions from large web-scraped datasets, enabling zero-shot image classification and forming a key building block for many text-to-image and multimodal systems.",
-  "story": "Think of an orchestra warming up: no single instrument carries the piece, but together they make the sound. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. The layout decides what the machine can even attempt, before it learns a single thing. The shape of the machine is half the idea. And that shape of the machine — CLIP — is what makes everything else possible.",
+  "explainer": {
+    "lead": "CLIP connects pictures and language by placing them in the same numerical space, where matching images and descriptions lie close together. This lets it classify images using written labels without task-specific retraining, and makes it useful inside larger multimodal systems.",
+    "tiers": {
+      "eli5": "Imagine matching photos to the right captions by putting both on the same giant map. A photo of a dog and the words \"a dog\" end up near each other, while unrelated captions are farther away. Once CLIP has learned this map, it can compare a new photo with labels it was never specially trained to use.",
+      "practitioner": "Use CLIP by encoding an image and candidate text labels, then comparing their embeddings for zero-shot classification or image-text retrieval. It supplies representations rather than generating captions or images, and results depend on how well the image and wording fit what it learned from web-scraped pairs. It can also serve as a building block in larger text-to-image or multimodal pipelines.",
+      "paperLevel": "For image I and text T, encoders produce embeddings f(I) and g(T) in a shared space, with compatibility commonly expressed as s(I,T) = cos(f(I), g(T)). Contrastive pretraining on large web-scraped image-text datasets increases similarity for matched pairs and decreases it for mismatched pairs. Comparing one image embedding with embeddings of class descriptions enables zero-shot classification."
+    },
+    "example": "Given a photograph of a dog and the labels \"a dog\", \"a car\", and \"a tree\", CLIP encodes all four inputs. The photograph should have the highest similarity to \"a dog\", allowing that label to be selected without a dog-specific training stage.",
+    "usedIn": [
+      {
+        "name": "Zero-shot image classification",
+        "detail": "Ranks written class descriptions against an image without training a separate classifier for those classes.",
+        "url": ""
+      },
+      {
+        "name": "Text-to-image systems",
+        "detail": "Provides aligned image-language representations as a building block in larger systems.",
+        "url": ""
+      },
+      {
+        "name": "Multimodal systems",
+        "detail": "Connects visual and natural-language inputs through shared embeddings.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Image encoder: turns a picture into an embedding",
+        "detail": ""
+      },
+      {
+        "name": "Text encoder: turns a description into an embedding",
+        "detail": ""
+      },
+      {
+        "name": "Shared embedding space: makes the two representations comparable",
+        "detail": ""
+      },
+      {
+        "name": "Contrastive objective: separates matching and mismatched pairs",
+        "detail": ""
+      }
+    ],
+    "flow": [
+      "Collect images paired with natural-language descriptions from large web-scraped datasets.",
+      "Encode each image and its description into the shared embedding space.",
+      "Pull matched image-text pairs closer while pushing mismatched pairs apart.",
+      "At inference, compare an image embedding with embeddings of candidate text labels."
+    ],
+    "origin": "CLIP is pretrained through contrastive learning on large web-scraped collections of images and their natural-language descriptions.",
+    "whyItMatters": "It turns natural-language descriptions into flexible visual categories, reducing the need for a separately trained classifier for every label set. The same image-text alignment also supplies a foundation for other multimodal and text-to-image systems.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "image",
+          "label": "Input image",
+          "note": "A picture to represent"
+        },
+        {
+          "id": "text",
+          "label": "Text description",
+          "note": "A caption or candidate label"
+        },
+        {
+          "id": "image-encoder",
+          "label": "Image encoder",
+          "note": "Creates a visual embedding"
+        },
+        {
+          "id": "text-encoder",
+          "label": "Text encoder",
+          "note": "Creates a language embedding"
+        },
+        {
+          "id": "shared-space",
+          "label": "Shared embeddings",
+          "note": "Places images and text together"
+        },
+        {
+          "id": "similarity",
+          "label": "Similarity comparison",
+          "note": "Matches images with descriptions"
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "image-encoder",
+          "label": ""
+        },
+        {
+          "from": "text",
+          "to": "text-encoder",
+          "label": ""
+        },
+        {
+          "from": "image-encoder",
+          "to": "shared-space",
+          "label": ""
+        },
+        {
+          "from": "text-encoder",
+          "to": "shared-space",
+          "label": ""
+        },
+        {
+          "from": "shared-space",
+          "to": "similarity",
+          "label": "compare"
+        }
+      ],
+      "caption": "CLIP encodes images and text separately, then compares their representations in one shared embedding space."
+    }
+  },
   "related": [
     "google-clips",
     "gradient-clipping",

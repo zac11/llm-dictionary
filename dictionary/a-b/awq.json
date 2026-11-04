@@ -2,9 +2,90 @@
   "term": "AWQ",
   "letter": "A",
   "category": "AI/ML glossary",
-  "type": "concept",
+  "type": "algorithm",
   "definition": "Activation-aware Weight Quantization, an alogorithm for quantizing LLMs like GPTQ.",
   "details": "Activation-aware Weight Quantization, an alogorithm for quantizing LLMs like GPTQ.",
+  "explainer": {
+    "lead": "AWQ, or Activation-aware Weight Quantization, is an algorithm for compressing large language models by quantizing their weights. It uses information about activations to guide that process, helping make LLMs less demanding to run.",
+    "tiers": {
+      "eli5": "A big language model has a huge collection of numbers, and storing every number precisely takes a lot of space. AWQ is like packing a suitcase more carefully: it watches which parts are used most during the model's work and takes extra care when squeezing those parts into a smaller form.",
+      "practitioner": "Apply AWQ to a trained LLM when reducing weight precision for deployment. Its activation-aware step distinguishes it from simply rounding every weight without considering model activity; as with GPTQ, check the quantized model's behavior rather than assuming compression alone guarantees acceptable results.",
+      "paperLevel": "Given trained weights W and activation information X, AWQ constructs quantized weights Q(W) using activation awareness to guide weight quantization. The activation-aware criterion is the central feature; the result is a lower-precision representation of the LLM's weights."
+    },
+    "example": "For an LLM whose full-precision weights are too large for the intended deployment, AWQ examines its activation information before quantizing the weights. The resulting model uses quantized weights rather than storing every original weight at full precision.",
+    "usedIn": [
+      {
+        "name": "Large language models",
+        "detail": "AWQ quantizes LLM weights to produce a more compact model representation.",
+        "url": ""
+      },
+      {
+        "name": "LLM quantization",
+        "detail": "It is an alternative within the same general area of model compression as GPTQ.",
+        "url": ""
+      }
+    ],
+    "goal": "Quantize the weights of a trained large language model while using activation information to guide the compression.",
+    "inputs": [
+      "A trained LLM and its weights",
+      "Information about the model's activations"
+    ],
+    "outputs": [
+      "An activation-aware quantized version of the LLM's weights"
+    ],
+    "steps": [
+      "Start with the trained LLM weights.",
+      "Examine activation information associated with the model.",
+      "Use that information to guide how the weights are quantized.",
+      "Produce the lower-precision weight representation."
+    ],
+    "tradeoffs": [
+      "Activation-aware quantization requires activation information in addition to the weights.",
+      "Quantization reduces weight precision, so the compressed model should be evaluated for the intended task."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "weights",
+          "label": "Trained weights",
+          "note": "The original LLM parameters"
+        },
+        {
+          "id": "activations",
+          "label": "Activation information",
+          "note": "Guides the quantization choices"
+        },
+        {
+          "id": "awq",
+          "label": "AWQ quantization",
+          "note": "Compresses weights with activation awareness"
+        },
+        {
+          "id": "quantized",
+          "label": "Quantized weights",
+          "note": "A lower-precision LLM representation"
+        }
+      ],
+      "edges": [
+        {
+          "from": "weights",
+          "to": "awq",
+          "label": ""
+        },
+        {
+          "from": "activations",
+          "to": "awq",
+          "label": "guides"
+        },
+        {
+          "from": "awq",
+          "to": "quantized",
+          "label": ""
+        }
+      ],
+      "caption": "AWQ combines trained weights with activation information to produce quantized LLM weights."
+    }
+  },
   "related": [
     "quantization"
   ],

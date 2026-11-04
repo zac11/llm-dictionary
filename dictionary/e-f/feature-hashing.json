@@ -5,7 +5,92 @@
   "type": "concept",
   "definition": "In machine learning, feature hashing, also known as the hashing trick (by analogy to the kernel trick), is a fast and space-efficient way of vectorizing features, i.e.",
   "details": "turning arbitrary features into indices in a vector or matrix. It works by applying a hash function to the features and using their hash values as indices directly (after a modulo operation), rather than looking the indices up in an associative array. In addition to its use for encoding non-numeric values, feature hashing can also be used for dimensionality reduction. This trick is often attributed to Weinberger et al. (2009), but there exists a much earlier description of this method published by John Moody in 1989.",
-  "story": "Picture a librarian organizing a million slips of paper so that any one of them can be found in a heartbeat. The examples a machine reads become the world it believes in. Better ingredients make a better meal, and the same is true here. Garbage in, garbage out — and the reverse: clean, representative data makes the model quietly brilliant. That care with the raw material is Feature hashing.",
+  "explainer": {
+    "lead": "Feature hashing turns arbitrary features into positions in a fixed-size vector or matrix, without maintaining a lookup table for every possible feature. It is a fast, space-efficient way to vectorize non-numeric values and can also reduce dimensionality.",
+    "tiers": {
+      "eli5": "Imagine a fixed row of numbered boxes and a rule that turns each feature's name into a box number. You can then place features into boxes without first making a directory of every name you might see. Sometimes two names point to the same box, but using fewer boxes saves space.",
+      "practitioner": "Hash each feature, take the hash modulo the chosen vector size, and use the result as its index. This avoids maintaining an associative array and keeps the representation at a fixed dimension. The main pitfall is collisions: distinct features can map to the same index, with smaller vectors generally leaving less room to separate them.",
+      "paperLevel": "For feature f and output dimension d, compute i = h(f) mod d and use i as the feature's component in a vector or matrix. The method is often attributed to Weinberger et al. (2009), although John Moody published a description in 1989. Its mapping is not guaranteed to be one-to-one because different features can collide at the same index."
+    },
+    "example": "Suppose the output has 5 positions and the feature \"color=blue\" hashes to 17. Since 17 mod 5 = 2, that feature is placed at index 2, with no dictionary entry needed to assign its position.",
+    "usedIn": [
+      {
+        "name": "Non-numeric feature encoding",
+        "detail": "Converts arbitrary feature names or values directly into numeric vector or matrix indices.",
+        "url": ""
+      },
+      {
+        "name": "Dimensionality reduction",
+        "detail": "Maps features into a chosen fixed-size representation rather than assigning every feature its own dimension.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of deciding in advance which column belongs to every possible feature, let a hash function make that decision on demand. A fixed-size output bounds the space needed, at the cost of allowing different features to share an index.",
+    "howItWorks": [
+      "Start with an arbitrary feature and choose the output dimension d.",
+      "Apply a hash function to the feature to obtain a hash value.",
+      "Take that value modulo d to produce an index within the output.",
+      "Use the index directly in the vector or matrix, without consulting an associative array."
+    ],
+    "whyItMatters": "It makes feature vectorization fast and space-efficient while supporting arbitrary features and a fixed output size. The same approach can reduce dimensionality when giving every feature a separate dimension would require too much space.",
+    "misconceptions": [
+      "Feature hashing does not guarantee a unique index for every feature; collisions can occur.",
+      "It is not limited to encoding non-numeric values, since it can also be used for dimensionality reduction.",
+      "The output size is chosen in advance rather than growing as new feature names appear."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "features",
+          "label": "Arbitrary features",
+          "note": "Feature names or values enter the process."
+        },
+        {
+          "id": "hash",
+          "label": "Hash function",
+          "note": "Each feature is converted into a hash value."
+        },
+        {
+          "id": "modulo",
+          "label": "Modulo d",
+          "note": "The hash is fitted to the fixed output size."
+        },
+        {
+          "id": "index",
+          "label": "Vector index",
+          "note": "The result directly selects a position."
+        },
+        {
+          "id": "vector",
+          "label": "Vector or matrix",
+          "note": "Features are represented without an index lookup table."
+        }
+      ],
+      "edges": [
+        {
+          "from": "features",
+          "to": "hash",
+          "label": "hash"
+        },
+        {
+          "from": "hash",
+          "to": "modulo",
+          "label": "hash value"
+        },
+        {
+          "from": "modulo",
+          "to": "index",
+          "label": "remainder"
+        },
+        {
+          "from": "index",
+          "to": "vector",
+          "label": "selects"
+        }
+      ],
+      "caption": "Feature hashing maps each feature through a hash and modulo operation directly into a fixed-size representation."
+    }
+  },
   "related": [
     "feature-importance",
     "feature-machine-learning",

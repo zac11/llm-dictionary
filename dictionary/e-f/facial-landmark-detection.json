@@ -5,6 +5,97 @@
   "type": "concept",
   "definition": "Localizing key facial points — eye corners, nose tip, jaw contour — used for alignment, expression analysis, and face editing.",
   "details": "Localizing key facial points — eye corners, nose tip, jaw contour — used for alignment, expression analysis, and face editing.",
+  "explainer": {
+    "lead": "Facial landmark detection finds meaningful points on a face, such as the eye corners, nose tip, and jaw contour. These points give software a geometric map of the face, making tasks like alignment, expression analysis, and face editing more precise.",
+    "tiers": {
+      "eli5": "Imagine putting small stickers on the corners of someone’s eyes, the tip of their nose, and along their jaw in a photo. A computer can learn to place those stickers in the right spots by itself. Once it knows where everything is, it can straighten the face, study a smile, or help edit the picture.",
+      "practitioner": "A detector typically takes a face image or cropped face and returns an ordered set of landmark coordinates, often with one index per facial feature. Downstream code uses those coordinates for geometric alignment, expression features, or edit placement. Check performance under occlusion, unusual poses, and changing lighting, since misplaced points can propagate errors into every later stage.",
+      "paperLevel": "Given a face image I, landmark detection estimates L = {(x_i, y_i)} for i = 1,...,N, where each ordered point corresponds to a predefined facial location. The output encodes facial geometry rather than identity. Accuracy can degrade when landmarks are hidden, the face is strongly posed, or image conditions make feature boundaries unclear."
+    },
+    "example": "For a slightly tilted portrait, the detector returns both eye corners, the nose tip, and points along the jaw. The eye coordinates can guide a rotation that makes the eyes level, while the same point set can support expression analysis or place an edit around the mouth.",
+    "usedIn": [
+      {
+        "name": "Face alignment",
+        "detail": "Landmarks guide geometric transforms that place facial features in consistent positions.",
+        "url": ""
+      },
+      {
+        "name": "Expression analysis",
+        "detail": "Changes around the eyes, mouth, and other points provide input for analyzing facial expressions.",
+        "url": ""
+      },
+      {
+        "name": "Face editing",
+        "detail": "Located features act as reference points for applying edits to the appropriate parts of a face.",
+        "url": ""
+      }
+    ],
+    "intuition": "A face becomes easier for software to manipulate when it is represented by a small set of named geometric points. Landmark detection supplies that shared map, so later steps do not have to work directly from every pixel.",
+    "howItWorks": [
+      "Provide an image containing a face, often cropped to the face region.",
+      "Apply a landmark predictor to locate predefined facial features.",
+      "Return ordered image coordinates for points such as eye corners, nose tip, and jaw contour.",
+      "Pass the coordinates to alignment, expression-analysis, or editing code."
+    ],
+    "whyItMatters": "Landmarks turn facial appearance into explicit geometry that downstream systems can compare and manipulate. This provides a common foundation for alignment, expression analysis, and localized face edits.",
+    "misconceptions": [
+      "It is not face recognition: locating facial points does not by itself identify a person.",
+      "It is not just face detection: a face box gives a region, while landmarks give precise feature locations.",
+      "Landmarks are estimates and may be inaccurate or hidden, rather than perfect anatomical measurements."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "image",
+          "label": "Face image",
+          "note": "Input portrait or cropped face"
+        },
+        {
+          "id": "predictor",
+          "label": "Landmark predictor",
+          "note": "Locates predefined facial features"
+        },
+        {
+          "id": "points",
+          "label": "Point coordinates",
+          "note": "Ordered facial geometry"
+        },
+        {
+          "id": "alignment",
+          "label": "Face alignment",
+          "note": "Normalizes feature positions"
+        },
+        {
+          "id": "applications",
+          "label": "Analysis and editing",
+          "note": "Uses points for expressions or edits"
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "predictor",
+          "label": "pixels"
+        },
+        {
+          "from": "predictor",
+          "to": "points",
+          "label": "locations"
+        },
+        {
+          "from": "points",
+          "to": "alignment",
+          "label": "geometry"
+        },
+        {
+          "from": "points",
+          "to": "applications",
+          "label": "geometry"
+        }
+      ],
+      "caption": "A landmark predictor converts face pixels into feature coordinates that downstream tasks can use."
+    }
+  },
   "related": [
     "alignment"
   ],

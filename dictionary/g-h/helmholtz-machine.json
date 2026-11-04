@@ -5,7 +5,97 @@
   "type": "concept",
   "definition": "The Helmholtz machine (named after Hermann von Helmholtz and his concept of Helmholtz free energy) is a type of artificial neural network that can account for the hidden structure of a set of data by being trained to create a generative model of the original data.",
   "details": "The hope is that by learning economical representations of the data, the underlying structure of the generative model should reasonably approximate the hidden structure of the data set. A Helmholtz machine contains two networks, a bottom-up recognition network that takes the data as input and produces a distribution over hidden variables, and a top-down generative network that generates values of the hidden variables and the data itself. Helmholtz machines are a type of learning architectures using both feedback and feedforward to ensure quality of learned models. Helmholtz machines are usually trained using an unsupervised learning algorithm, such as the wake-sleep algorithm. They are a precursor to variational autoencoders, which are instead trained using backpropagation. Helmholtz machines may also be used in applications requiring a supervised learning algorithm (e.g. character recognition, or position-invariant recognition of an object within a field).",
-  "story": "Imagine a factory floor where each workstation can glance at every other workstation before doing its part. It is the blueprint that makes everything else possible. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. Structure decides what the model can even express — the blueprint before the bricks. That blueprint is Helmholtz machine.",
+  "explainer": {
+    "lead": "A Helmholtz machine is a neural network design that learns to explain data by building a model of how that data could be generated. It can uncover useful hidden structure without labeled examples, making it an early approach to learning compact, generative representations.",
+    "tiers": {
+      "eli5": "Imagine looking at lots of drawings and trying to figure out the simple ideas behind them, such as loops and straight lines. A Helmholtz machine has one part that looks for those hidden ideas and another that uses them to imagine a drawing. By practicing, it tries to find simple explanations that can recreate what it sees.",
+      "practitioner": "Use a bottom-up recognition network to infer a distribution over hidden variables and a top-down generative network to generate hidden variables and data. Training is typically unsupervised with an algorithm such as wake-sleep, although supervised applications are also possible. It is a precursor to the variational autoencoder, not a VAE trained with backpropagation.",
+      "paperLevel": "A Helmholtz machine combines a recognition network q(h|x), which maps observed data x to a distribution over hidden variables h, with a generative network p(h,x) that generates hidden variables and observations. The objective is to learn economical representations whose generative structure approximates the data's hidden structure. It is usually trained unsupervised, for example with wake-sleep, rather than with the backpropagation training used for variational autoencoders."
+    },
+    "example": "For a dataset of character images, the recognition network takes an image and infers a distribution over hidden variables that might explain it. The generative network works in the opposite direction, producing hidden-variable values and a character image; training seeks representations that economically account for the collection of characters.",
+    "usedIn": [
+      {
+        "name": "Unsupervised representation learning",
+        "detail": "Learns economical hidden representations that aim to capture structure in an unlabeled dataset.",
+        "url": ""
+      },
+      {
+        "name": "Character recognition",
+        "detail": "Can be applied in settings that require supervised learning.",
+        "url": ""
+      },
+      {
+        "name": "Object recognition",
+        "detail": "Can support position-invariant recognition of an object within a field.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of only classifying an observation, the machine tries to discover a compact hidden explanation that could have produced it. Learning both to interpret data and to recreate it encourages that explanation to reflect the dataset's underlying structure.",
+    "howItWorks": [
+      "Present observed data to the bottom-up recognition network.",
+      "The recognition network produces a distribution over possible hidden variables.",
+      "The top-down generative network generates values of hidden variables and the data itself.",
+      "Train the two networks, usually with an unsupervised algorithm such as wake-sleep, so the learned representations economically account for the data."
+    ],
+    "whyItMatters": "It combines recognition and generation in one learning architecture and can learn hidden structure without labels. It also forms part of the path toward variational autoencoders.",
+    "misconceptions": [
+      "It is not a single one-way network: it has separate bottom-up recognition and top-down generative networks.",
+      "It is not simply a variational autoencoder; it is a precursor and is usually trained with methods such as wake-sleep rather than backpropagation.",
+      "It is not limited to supervised tasks, although applications such as character recognition can use supervised learning."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data",
+          "label": "Observed data",
+          "note": "Input examples to be explained"
+        },
+        {
+          "id": "recognition",
+          "label": "Recognition network",
+          "note": "Bottom-up inference from data"
+        },
+        {
+          "id": "hidden",
+          "label": "Hidden variables",
+          "note": "Economical latent explanation"
+        },
+        {
+          "id": "generative",
+          "label": "Generative network",
+          "note": "Top-down model of the data"
+        },
+        {
+          "id": "generated",
+          "label": "Generated data",
+          "note": "Data produced by the model"
+        }
+      ],
+      "edges": [
+        {
+          "from": "data",
+          "to": "recognition",
+          "label": "input"
+        },
+        {
+          "from": "recognition",
+          "to": "hidden",
+          "label": "distribution"
+        },
+        {
+          "from": "generative",
+          "to": "hidden",
+          "label": "generates"
+        },
+        {
+          "from": "generative",
+          "to": "generated",
+          "label": "generates"
+        }
+      ],
+      "caption": "The recognition network infers hidden variables from data, while the generative network produces hidden variables and data."
+    }
+  },
   "related": [
     "boltzmann-machine",
     "committee-machine",

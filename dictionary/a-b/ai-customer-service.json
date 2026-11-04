@@ -5,6 +5,118 @@
   "type": "concept",
   "definition": "Applying AI to support — chatbots, ticket triage, agent assistance, and automated resolution.",
   "details": "Applying AI to support — chatbots, ticket triage, agent assistance, and automated resolution.",
+  "explainer": {
+    "lead": "AI customer service uses software to handle parts of a support conversation, from answering routine questions to sorting tickets and helping human agents. It can make support faster and available at more hours, while leaving difficult or sensitive cases to people.",
+    "tiers": {
+      "eli5": "It is like having a helper at a shop's front desk who can answer common questions and point people to the right counter. If a question is unusual or the helper is unsure, a person takes over. This can shorten waits without removing human help.",
+      "practitioner": "Teams apply it in chatbots, ticket classification and routing, suggested replies for agents, and automated handling of well-defined requests. Useful settings include clear escalation rules, confidence thresholds, and access only to the customer information each task requires. Pitfalls include plausible but incorrect answers, misrouted tickets, and automation loops that prevent customers from reaching a person.",
+      "paperLevel": "A simple formulation is f(request, context) -> {answer, ticket_route, agent_suggestion, escalation}, where the system may automate a response or assist a human. Its behavior can be assessed through resolution, routing, escalation, and answer-quality outcomes. Known limits include misunderstanding requests, producing incorrect responses, and failing on cases outside its configured knowledge or procedures."
+    },
+    "example": "A customer writes, “My package has not arrived.” The AI classifies it as a delivery issue and provides the available tracking help; if the tracking information shows an exception that needs review, it creates a routed ticket and gives the human agent the conversation context.",
+    "usedIn": [
+      {
+        "name": "Customer support teams",
+        "detail": "Chatbots answer routine questions, while other requests become support tickets.",
+        "url": ""
+      },
+      {
+        "name": "Contact centers",
+        "detail": "Ticket triage routes incoming requests, and agent assistance suggests useful responses.",
+        "url": ""
+      },
+      {
+        "name": "IT help desks",
+        "detail": "Common requests can receive automated help, with unresolved issues passed to support staff.",
+        "url": ""
+      }
+    ],
+    "intuition": "Many support requests repeat familiar patterns, so software can recognize the request and take a useful first step. The aim is not always full automation: sometimes the best output is a correctly routed ticket or a draft response for an agent.",
+    "howItWorks": [
+      "A customer submits a question or problem through a support channel.",
+      "The AI interprets the request and uses available context to decide what kind of help is needed.",
+      "It answers a routine request, sorts and routes a ticket, or suggests a response to a human agent.",
+      "Uncertain, complex, or unsuccessful cases are escalated to a person.",
+      "The request ends with an automated resolution or a human-handled outcome."
+    ],
+    "whyItMatters": "Routine requests can be handled sooner, tickets can reach the right team with less manual sorting, and agents can spend more time on problems that need judgment. Clear handoffs to people are essential when automation cannot resolve the request reliably.",
+    "misconceptions": [
+      "It does not necessarily replace human agents; agent assistance and escalation are part of the approach.",
+      "A fluent chatbot answer is not guaranteed to be correct or to resolve the customer's problem.",
+      "Automated resolution is only one use, alongside ticket triage and support for human agents."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "request",
+          "label": "Customer request",
+          "note": "A question or problem enters support."
+        },
+        {
+          "id": "understand",
+          "label": "Request understanding",
+          "note": "AI interprets the request and its context."
+        },
+        {
+          "id": "automated",
+          "label": "Automated help",
+          "note": "Routine requests receive direct assistance."
+        },
+        {
+          "id": "triage",
+          "label": "Ticket triage",
+          "note": "Other requests are classified and routed."
+        },
+        {
+          "id": "agent",
+          "label": "Human agent",
+          "note": "A person handles escalated or complex cases."
+        },
+        {
+          "id": "resolution",
+          "label": "Resolution",
+          "note": "The request is answered or otherwise resolved."
+        }
+      ],
+      "edges": [
+        {
+          "from": "request",
+          "to": "understand",
+          "label": "message"
+        },
+        {
+          "from": "understand",
+          "to": "automated",
+          "label": "routine case"
+        },
+        {
+          "from": "understand",
+          "to": "triage",
+          "label": "support ticket"
+        },
+        {
+          "from": "automated",
+          "to": "resolution",
+          "label": "answer"
+        },
+        {
+          "from": "automated",
+          "to": "agent",
+          "label": "escalation"
+        },
+        {
+          "from": "triage",
+          "to": "agent",
+          "label": "routed ticket"
+        },
+        {
+          "from": "agent",
+          "to": "resolution",
+          "label": "human help"
+        }
+      ],
+      "caption": "AI can answer directly, route a ticket, or assist a human, with escalation connecting automation to human support."
+    }
+  },
   "citation": {
     "title": "AI Starter Guide",
     "authors": [],

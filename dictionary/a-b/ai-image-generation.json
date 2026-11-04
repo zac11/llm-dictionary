@@ -5,6 +5,118 @@
   "type": "concept",
   "definition": "Creating images from text or other inputs with generative models — diffusion systems like DALL·E, Midjourney, and Stable Diffusion.",
   "details": "Creating images from text or other inputs with generative models — diffusion systems like DALL·E, Midjourney, and Stable Diffusion.",
+  "explainer": {
+    "lead": "AI image generation uses a generative model to turn a written description into a new picture, and some systems can also learn from a small set of example images. It makes visual ideas much faster to explore, although a polished result is not guaranteed to match every detail of the request.",
+    "tiers": {
+      "eli5": "Imagine an artist who has studied huge numbers of pictures together with their descriptions. You ask for “a red school bus under a blue sky,” and the artist gradually turns a fuzzy beginning into a picture that fits your words. It can invent a new scene rather than simply finding an existing picture, but it may still get some details wrong.",
+      "practitioner": "A typical pipeline encodes the prompt, generates an image in a compressed latent space with diffusion, and decodes or upscales the result into pixels. Tools and models in this area include DALL-E 2, Imagen, Stable Diffusion, and Midjourney; textual inversion can personalize a model with a small set of images of a new object. Check semantic alignment as well as visual quality, and account for the limits and controversial content that can come with large web-scraped training datasets.",
+      "paperLevel": "Formally, a text-to-image model learns a conditional distribution p(image | prompt): a pretrained language or vision-language model produces a text embedding, and a generative image model conditions on that embedding, commonly performing latent diffusion before an autoencoder decodes the result. alignDRAW, introduced by University of Toronto researchers in 2015, was the first modern text-to-image model; GAN-based generation followed in 2016, and diffusion became popular after 2020. Known limits include imperfect prompt alignment and coherent detail, dependence on massive paired image-text datasets, and the difficulty of evaluating quality, diversity, and alignment together."
+    },
+    "example": "A user enters “an all black bird with a distinct thick, rounded bill.” The text encoder represents the bird's color and bill shape, and the image generator produces a bird picture guided by those features; early GAN-based systems demonstrated this kind of generation using narrow bird and flower datasets.",
+    "usedIn": [
+      {
+        "name": "DALL-E 2",
+        "detail": "OpenAI's 2022 system generates more complex and realistic images than its predecessor.",
+        "url": ""
+      },
+      {
+        "name": "Stable Diffusion",
+        "detail": "Publicly released in August 2022, it is a prominent diffusion-based image generator.",
+        "url": ""
+      },
+      {
+        "name": "Midjourney",
+        "detail": "A text-to-image system whose 2022 output approached photographic and human-drawn art quality.",
+        "url": ""
+      },
+      {
+        "name": "Text-to-video platforms",
+        "detail": "Systems such as Runway, Imagen Video, and Phenaki extend prompting to video generation.",
+        "url": ""
+      }
+    ],
+    "intuition": "The model learns statistical connections between words and visual features from large collections of captioned images. Given a new prompt, it uses those connections to construct an image conditioned on the description rather than retrieving a finished picture.",
+    "howItWorks": [
+      "Encode the natural-language prompt into a numerical text embedding.",
+      "Condition a diffusion-based image generator on that embedding.",
+      "Generate the image in a compressed latent space rather than directly in pixels.",
+      "Decode the latent representation, often with auxiliary upscaling, to produce the final image."
+    ],
+    "whyItMatters": "By 2022, leading systems were producing output considered to approach the quality of real photographs and human-drawn art, opening new ways to create and personalize visual material. Their growth also makes training-data ethics and reliable evaluation important, because web-scraped datasets can contain controversial content and image quality alone does not establish prompt alignment.",
+    "misconceptions": [
+      "Modern systems do not merely assemble collages from existing clipart; that describes earlier approaches.",
+      "A realistic image is not necessarily faithful to every part of the prompt.",
+      "Image quality alone does not measure diversity or semantic alignment."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "prompt",
+          "label": "Text prompt",
+          "note": "A natural-language image description"
+        },
+        {
+          "id": "encoder",
+          "label": "Text encoder",
+          "note": "A pretrained language or vision-language model"
+        },
+        {
+          "id": "diffusion",
+          "label": "Latent diffusion",
+          "note": "Generates an image conditioned on the embedding"
+        },
+        {
+          "id": "decoder",
+          "label": "Image decoder",
+          "note": "Converts the latent representation into pixels"
+        },
+        {
+          "id": "image",
+          "label": "Generated image",
+          "note": "The final picture, sometimes after upscaling"
+        }
+      ],
+      "edges": [
+        {
+          "from": "prompt",
+          "to": "encoder",
+          "label": "description"
+        },
+        {
+          "from": "encoder",
+          "to": "diffusion",
+          "label": "text embedding"
+        },
+        {
+          "from": "diffusion",
+          "to": "decoder",
+          "label": "latent image"
+        },
+        {
+          "from": "decoder",
+          "to": "image",
+          "label": "pixels"
+        }
+      ],
+      "caption": "A typical latent-diffusion text-to-image pipeline, from prompt encoding to a decoded image."
+    },
+    "image": {
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/36/Astronaut_Riding_a_Horse_Hiroshige_%28SD3.5%29.webp/960px-Astronaut_Riding_a_Horse_Hiroshige_%28SD3.5%29.webp",
+      "alt": "Text-to-image model — Machine learning model",
+      "width": 640,
+      "height": 640,
+      "credit": "VulcanSphere",
+      "license": "Public domain",
+      "licenseUrl": "",
+      "page": "https://commons.wikimedia.org/wiki/File:Astronaut_Riding_a_Horse_Hiroshige_(SD3.5).webp"
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Text-to-image model",
+        "url": "https://en.wikipedia.org/wiki/Text-to-image_model"
+      }
+    ]
+  },
   "related": [
     "dall-e",
     "midjourney",

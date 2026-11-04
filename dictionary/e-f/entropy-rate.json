@@ -5,7 +5,103 @@
   "type": "concept",
   "definition": "In the mathematical theory of probability, the entropy rate or source information rate of a stochastic process is, informally, the time density of the average information in a stochastic process.",
   "details": "For stochastic processes with a countable index, the entropy rate H ( X ) {\\displaystyle H(X)} is the limit of the joint entropy of n {\\displaystyle n} members of the process X k {\\displaystyle X_{k}} divided by n {\\displaystyle n} , as n {\\displaystyle n} tends to infinity: H ( X ) = lim n → ∞ 1 n H ( X 1 , X 2 , … X n ) {\\displaystyle H(X)=\\lim _{n\\to \\infty }{\\frac {1}{n}}H(X_{1},X_{2},\\dots X_{n})} when the limit exists. An alternative, related quantity is: H ′ ( X ) = lim n → ∞ H ( X n | X n − 1 , X n − 2 , … X 1 ) {\\displaystyle H'(X)=\\lim _{n\\to \\infty }H(X_{n}|X_{n-1},X_{n-2},\\dots X_{1})} For strongly stationary stochastic processes, H ( X ) = H ′ ( X ) {\\displaystyle H(X)=H'(X)} . The entropy rate can be thought of as a general property of stochastic sources; this is the asymptotic equipartition property. The entropy rate may be used to estimate the complexity of stochastic processes. It is used in diverse applications ranging from characterizing the complexity of languages, blind source separation, through to optimizing quantizers and data compression algorithms. For example, a maximum entropy rate criterion may be used for feature selection in machine learning.",
-  "story": "Picture a librarian organizing a million slips of paper so that any one of them can be found in a heartbeat. The examples a machine reads become the world it believes in. Better ingredients make a better meal, and the same is true here. Garbage in, garbage out — and the reverse: clean, representative data makes the model quietly brilliant. And that is Entropy rate — the unglamorous work everything else stands on.",
+  "explainer": {
+    "lead": "Entropy rate measures how much new information a random process produces per step over the long run. It gives a way to compare the complexity of random sources and is useful in tasks such as data compression, quantizer design, and feature selection.",
+    "tiers": {
+      "eli5": "Imagine a machine telling an endless story, one word at a time. Entropy rate is the average amount of fresh information each new word adds: a story that keeps repeating itself adds little, while one with many unpredictable turns adds more. It looks at the whole long story, not just one surprising word.",
+      "practitioner": "Entropy rate can summarize the long-run complexity of a stochastic sequence, with applications including compression, quantizer optimization, blind source separation, and maximum-entropy-rate feature selection. Do not assume that the per-symbol joint-entropy limit and the limiting conditional entropy are interchangeable without strong stationarity. Finite observations describe the sampled sequence, whereas entropy rate is an asymptotic property and requires the relevant limit to exist.",
+      "paperLevel": "For a countably indexed process, H(X) = lim_{n→∞} (1/n) H(X_1, ..., X_n), when the limit exists. A related quantity is H'(X) = lim_{n→∞} H(X_n | X_{n-1}, ..., X_1); for strongly stationary processes, H(X) = H'(X). The asymptotic equipartition property connects entropy rate with a general property of stochastic sources."
+    },
+    "example": "For independent tosses of a fair coin, n tosses produce 2^n equally likely sequences, so their joint entropy is n bits. Dividing by n gives 1 bit for every n, and therefore the entropy rate is 1 bit per toss.",
+    "usedIn": [
+      {
+        "name": "Language analysis",
+        "detail": "Used to characterize the complexity of languages modeled as stochastic processes.",
+        "url": ""
+      },
+      {
+        "name": "Data compression",
+        "detail": "Used in the study and optimization of data compression algorithms.",
+        "url": ""
+      },
+      {
+        "name": "Blind source separation",
+        "detail": "Applied as an information-theoretic quantity when separating unknown mixed sources.",
+        "url": ""
+      },
+      {
+        "name": "Machine-learning feature selection",
+        "detail": "A maximum entropy rate criterion can be used to choose features.",
+        "url": ""
+      }
+    ],
+    "intuition": "A single random variable has an entropy, but a process unfolds over time and its symbols can depend on earlier ones. Entropy rate averages the information in longer and longer blocks, capturing the process's long-run information per symbol.",
+    "howItWorks": [
+      "Take the first n symbols of the stochastic process.",
+      "Compute their joint entropy, including dependencies among symbols.",
+      "Divide that joint entropy by n to get information per symbol.",
+      "Let n tend to infinity; the limiting value is the entropy rate.",
+      "For strongly stationary processes, the limiting conditional entropy of the next symbol gives the same value."
+    ],
+    "whyItMatters": "It reduces an entire stochastic source to a long-run information density that can help estimate process complexity. The same quantity supports applications from language analysis and source separation to compression and feature selection.",
+    "misconceptions": [
+      "It is not always just the entropy of one symbol: dependencies across the sequence affect the rate.",
+      "The joint-entropy and conditional-entropy limits are not universally interchangeable; their equality is stated for strongly stationary processes.",
+      "The rate is defined only when the relevant limit exists."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "process",
+          "label": "Stochastic process",
+          "note": "A sequence of random symbols"
+        },
+        {
+          "id": "block",
+          "label": "First n symbols",
+          "note": "X_1 through X_n"
+        },
+        {
+          "id": "entropy",
+          "label": "Joint entropy",
+          "note": "Information in the whole block"
+        },
+        {
+          "id": "average",
+          "label": "Divide by n",
+          "note": "Average information per symbol"
+        },
+        {
+          "id": "limit",
+          "label": "Long-run limit",
+          "note": "Entropy rate as n grows"
+        }
+      ],
+      "edges": [
+        {
+          "from": "process",
+          "to": "block",
+          "label": "sample"
+        },
+        {
+          "from": "block",
+          "to": "entropy",
+          "label": "measure"
+        },
+        {
+          "from": "entropy",
+          "to": "average",
+          "label": "normalize"
+        },
+        {
+          "from": "average",
+          "to": "limit",
+          "label": "n → ∞"
+        }
+      ],
+      "caption": "Entropy rate averages the joint information in increasingly long blocks of a stochastic process."
+    }
+  },
   "related": [
     "maximum-entropy-markov-model",
     "a-r-d-prasad",

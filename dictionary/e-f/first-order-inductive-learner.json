@@ -5,7 +5,104 @@
   "type": "algorithm",
   "definition": "In machine learning, first-order inductive learner (FOIL) is a rule-based learning algorithm.",
   "details": "In machine learning, first-order inductive learner (FOIL) is a rule-based learning algorithm.",
-  "story": "Picture an engineer at a cluttered workbench, turning a clever idea over in their hands until it finally clicks. At its heart it is a simple notion, once you strip away the fancy name. A small key that opens a much bigger door. It is one of those ideas that feels obvious only after someone shows it to you. And that idea, made concrete, is First-order inductive learner.",
+  "explainer": {
+    "lead": "FOIL is a machine-learning algorithm that learns if–then rules from examples. Its results can be read as statements about relationships, making it useful when people need to inspect what the learner has found.",
+    "tiers": {
+      "eli5": "Imagine learning family rules by looking at a family tree. You might notice that your parent's parent is your grandparent and write that down as a rule. FOIL does something similar: it looks at examples and tries to find rules that explain them.",
+      "practitioner": "FOIL is applied to examples expressed through properties and relationships, with the learned rules providing both predictions and an inspectable explanation. Data must be prepared in a suitable relational form, and the search for rules can become demanding as the number of examples and possible relationships grows.",
+      "paperLevel": "FOIL is a rule-based inductive learner whose hypotheses can be written as first-order clauses, such as grandparent(X,Z) :- parent(X,Y), parent(Y,Z). Learning proceeds from examples toward rules that describe them, with variables standing for entities. The rule search can be expensive, and the result depends on the available examples and relations."
+    },
+    "example": "Given parent(Ann,Bob), parent(Bob,Cid), and other family examples, FOIL could learn grandparent(X,Z) :- parent(X,Y), parent(Y,Z). Because Ann is Bob's parent and Bob is Cid's parent, the rule concludes that Ann is Cid's grandparent.",
+    "goal": "Learn readable rules that capture patterns in relational examples and can be applied to new cases.",
+    "inputs": [
+      "Training examples",
+      "Properties and relationships expressed in first-order form"
+    ],
+    "outputs": [
+      "A set of learned if–then rules",
+      "Conclusions produced by applying those rules"
+    ],
+    "steps": [
+      "Provide examples and their known relationships",
+      "Construct candidate rules from those relationships",
+      "Check candidates against the examples",
+      "Retain rules that explain the examples",
+      "Apply the learned rules to new cases"
+    ],
+    "tradeoffs": [
+      "Learned rules are relatively easy for people to read",
+      "First-order rules can express relationships between entities",
+      "Searching possible rules can become expensive",
+      "Results depend on how examples and relationships are represented"
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "examples",
+          "label": "Training examples",
+          "note": "Known cases and relationships"
+        },
+        {
+          "id": "candidates",
+          "label": "Candidate rules",
+          "note": "Possible first-order rules"
+        },
+        {
+          "id": "check",
+          "label": "Example checking",
+          "note": "Test rules against known cases"
+        },
+        {
+          "id": "rules",
+          "label": "Learned rules",
+          "note": "Retained if–then statements"
+        },
+        {
+          "id": "new",
+          "label": "New cases",
+          "note": "Unseen relational facts"
+        },
+        {
+          "id": "conclusions",
+          "label": "Rule conclusions",
+          "note": "Results from applying the rules"
+        }
+      ],
+      "edges": [
+        {
+          "from": "examples",
+          "to": "candidates",
+          "label": "guide"
+        },
+        {
+          "from": "candidates",
+          "to": "check",
+          "label": ""
+        },
+        {
+          "from": "examples",
+          "to": "check",
+          "label": "test against"
+        },
+        {
+          "from": "check",
+          "to": "rules",
+          "label": "retain"
+        },
+        {
+          "from": "rules",
+          "to": "conclusions",
+          "label": "apply"
+        },
+        {
+          "from": "new",
+          "to": "conclusions",
+          "label": ""
+        }
+      ],
+      "caption": "FOIL uses examples to select rules, then applies those rules to new cases."
+    }
+  },
   "related": [
     "inductive-logic-programming",
     "variable-order-bayesian-network",

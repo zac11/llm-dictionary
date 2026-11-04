@@ -5,6 +5,97 @@
   "type": "concept",
   "definition": "Estimating an object’s full 3D rotation and translation (6 degrees of freedom) relative to the camera — key for robotic grasping and AR.",
   "details": "Estimating an object’s full 3D rotation and translation (6 degrees of freedom) relative to the camera — key for robotic grasping and AR.",
+  "explainer": {
+    "lead": "6D pose estimation tells a computer both where an object is and which way it is facing, all relative to the camera. That complete description lets a robot align its gripper with an object or place a virtual object convincingly in an augmented-reality scene.",
+    "tiers": {
+      "eli5": "Imagine reaching for a cup: knowing where it is helps, but you also need to know which way its handle points. Six-dimensional pose estimation gives a computer both kinds of information from a camera. It is like getting directions for moving to the cup and turning your hand to match it.",
+      "practitioner": "In robotic grasping and AR pipelines, the output is a camera-relative 3D rotation together with a 3D translation. Applications must use both parts consistently: a correct position with the wrong orientation can still misalign a grasp or virtual overlay. It is also important to keep the camera-relative coordinate frame explicit when consuming the result.",
+      "paperLevel": "Formally, the task is to estimate an object pose q = (R, t) relative to the camera, where R in SO(3) is a 3D rotation and t in R^3 is a translation. Rotation contributes three degrees of freedom and translation contributes three, giving six in total. The estimate describes rigid placement and orientation, rather than object identity or shape alone."
+    },
+    "example": "For a mug, the estimate might say that it is 30 cm in front of the camera, shifted 10 cm right and 5 cm up, and rotated 90 degrees around its vertical axis. A robot can then approach the mug's location while turning its gripper to match the handle's orientation.",
+    "usedIn": [
+      {
+        "name": "Robotic grasping",
+        "detail": "Aligns a robot's grasp with an object's position and orientation.",
+        "url": ""
+      },
+      {
+        "name": "Augmented reality",
+        "detail": "Uses camera-relative object pose to place virtual content consistently.",
+        "url": ""
+      }
+    ],
+    "intuition": "A location answers “where is it?”, but not “which way is it turned?”. Combining three rotation values with three translation values gives the complete camera-relative placement of a rigid object.",
+    "howItWorks": [
+      "Observe the object through the camera.",
+      "Estimate its 3D rotation: three rotational degrees of freedom.",
+      "Estimate its 3D translation: three positional degrees of freedom.",
+      "Return both together as the object's six-degree-of-freedom pose."
+    ],
+    "whyItMatters": "Many physical and visual interactions depend on orientation as much as position. A full 6D pose supplies the camera-relative information needed to align a robotic grasp or an augmented-reality placement with the object.",
+    "misconceptions": [
+      "It is not just 3D object detection: detection can locate an object without fully specifying its rotation.",
+      "The six dimensions are not six separate objects or camera angles; they are three rotations plus three translations.",
+      "A camera-relative pose is not automatically a pose in a robot's or world's coordinate frame."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "camera",
+          "label": "Camera observation",
+          "note": "The object is observed from the camera's viewpoint."
+        },
+        {
+          "id": "rotation",
+          "label": "3D rotation",
+          "note": "Estimates three rotational degrees of freedom."
+        },
+        {
+          "id": "translation",
+          "label": "3D translation",
+          "note": "Estimates three positional degrees of freedom."
+        },
+        {
+          "id": "pose",
+          "label": "6D object pose",
+          "note": "Combines rotation and translation relative to the camera."
+        },
+        {
+          "id": "application",
+          "label": "Grasping or AR",
+          "note": "Uses the full pose for alignment."
+        }
+      ],
+      "edges": [
+        {
+          "from": "camera",
+          "to": "rotation",
+          "label": "orientation"
+        },
+        {
+          "from": "camera",
+          "to": "translation",
+          "label": "position"
+        },
+        {
+          "from": "rotation",
+          "to": "pose",
+          "label": ""
+        },
+        {
+          "from": "translation",
+          "to": "pose",
+          "label": ""
+        },
+        {
+          "from": "pose",
+          "to": "application",
+          "label": ""
+        }
+      ],
+      "caption": "Camera observations yield rotation and translation estimates, which together form the object's 6D pose."
+    }
+  },
   "related": [
     "robotic-grasping"
   ],

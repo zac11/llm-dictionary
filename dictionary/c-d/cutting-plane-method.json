@@ -5,7 +5,118 @@
   "type": "concept",
   "definition": "In mathematical optimization, the cutting-plane method is any of a variety of optimization methods that iteratively refine a feasible set or objective function by means of linear inequalities, termed cuts.",
   "details": "Such procedures are commonly used to find integer solutions to mixed integer linear programming (MILP) problems, as well as to solve general, not necessarily differentiable convex optimization problems. The use of cutting planes to solve MILP was introduced by Ralph E. Gomory. Cutting plane methods for MILP work by solving a non-integer linear program, the linear relaxation of the given integer program. The theory of Linear Programming dictates that under mild assumptions (if the linear program has an optimal solution, and if the feasible region does not contain a line), one can always find an extreme point or a corner point that is optimal. The obtained optimum is tested for being an integer solution. If it is not, there is guaranteed to exist a linear inequality that separates the optimum from the convex hull of the true feasible set. Finding such an inequality is the separation problem, and such an inequality is a cut. A cut can be added to the relaxed linear program. Then, the current non-integer solution is no longer feasible to the relaxation. This process is repeated until an optimal integer solution is found. Cutting-plane methods for general convex continuous optimization and variants are known under various names: Kelley's method, Kelley–Cheney–Goldstein method, and bundle methods. They are popularly used for non-differentiable convex minimization, where a convex objective function and its subgradient can be evaluated efficiently but usual gradient methods for differentiable optimization can not be used. This situation is most typical for the concave maximization of Lagrangian dual functions. Another common situation is the application of the Dantzig–Wolfe decomposition to a structured optimization problem in which formulations with an exponential number of variables are obtained. Generating these variables on demand by means of delayed column generation is identical to performing a cutting plane on the respective dual problem.",
-  "story": "Imagine teaching a friend to shoot a basketball. They miss, and you walk them backwards through the shot — elbow, wrist, release — to find what needs fixing. It is the same loop you use to learn anything: try, miss, correct, try again. Underneath all the magic is a patient process of small improvements. It is learning from every miss instead of repeating the same mistake. That steady, miss-by-miss improvement is Cutting-plane method.",
+  "explainer": {
+    "lead": "Cutting-plane methods solve hard optimization problems by starting with an easier approximation and tightening it with carefully chosen inequalities. They are especially useful when fractional answers are easy to compute but the required answer must use whole numbers.",
+    "tiers": {
+      "eli5": "Imagine drawing a loop around all the allowed answers, then relaxing the rules so the loop is easier to work with. If the best point you find breaks the original rules, you add a straight boundary that excludes that point without excluding any valid answer. Keep doing this until the best remaining point follows the rules.",
+      "practitioner": "For MILP, repeatedly solve the linear relaxation, test its optimum for integrality, and invoke a separation routine to add a valid cut when needed. The main costs are repeated relaxation solves and finding useful cuts; for non-differentiable convex problems, related Kelley and bundle methods instead use objective and subgradient evaluations.",
+      "paperLevel": "Given a fractional relaxation optimum x*, a cut is an inequality a^T x <= b such that a^T x* > b while a^T x <= b for every x in the convex hull of the true feasible set. Ralph E. Gomory introduced cutting planes for MILP; continuous convex variants include Kelley's method, the Kelley–Cheney–Goldstein method, and bundle methods. Practical difficulty centers on solving the separation problem and repeatedly updating the relaxation."
+    },
+    "example": "Maximize x + y subject to x + y <= 1.5 with x and y each binary; the relaxation can return x = 0.5, y = 1 with value 1.5. The valid cut x + y <= 1 excludes that fractional point without removing any binary solution, and the tightened problem has integer optimum value 1 at (1, 0) or (0, 1).",
+    "usedIn": [
+      {
+        "name": "Mixed-integer linear programming",
+        "detail": "Tightens linear relaxations until an optimal integer solution is obtained.",
+        "url": ""
+      },
+      {
+        "name": "Non-differentiable convex optimization",
+        "detail": "Builds linear approximations when objective and subgradient evaluations are available.",
+        "url": ""
+      },
+      {
+        "name": "Lagrangian dual optimization",
+        "detail": "Supports concave maximization of dual functions that may not be differentiable.",
+        "url": ""
+      },
+      {
+        "name": "Dantzig–Wolfe decomposition",
+        "detail": "Delayed column generation in the primal corresponds to cutting planes in the dual.",
+        "url": ""
+      }
+    ],
+    "intuition": "Replace a difficult feasible region with an easier one, then shave off invalid optima using linear inequalities. Every cut must preserve the true feasible solutions while making the current invalid optimum impossible.",
+    "howItWorks": [
+      "Form the linear relaxation of the integer program.",
+      "Solve the relaxation and select an optimal extreme point.",
+      "Stop if that point satisfies the integer requirements.",
+      "Otherwise, solve the separation problem to find an inequality that excludes the point but no true feasible solution.",
+      "Add the cut and solve the tightened relaxation again."
+    ],
+    "whyItMatters": "Cuts let solvers retain the computational convenience of linear programming while progressively recovering integer feasibility. The same refinement idea also handles convex problems for which ordinary gradient methods cannot be used.",
+    "misconceptions": [
+      "A cut may discard valid integer solutions: valid cuts preserve the entire true feasible set.",
+      "One cut always finishes the job: the process generally repeats until an optimal integer solution is found.",
+      "Cutting planes are only for MILP: related methods also address general convex, including non-differentiable, optimization."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "milp",
+          "label": "Integer program",
+          "note": "Original problem with integer requirements"
+        },
+        {
+          "id": "relaxation",
+          "label": "Linear relaxation",
+          "note": "Integer requirements temporarily removed"
+        },
+        {
+          "id": "optimum",
+          "label": "Relaxed optimum",
+          "note": "An optimal extreme point"
+        },
+        {
+          "id": "separation",
+          "label": "Separation problem",
+          "note": "Finds an inequality excluding a fractional optimum"
+        },
+        {
+          "id": "cut",
+          "label": "Valid cut",
+          "note": "Preserves every true feasible solution"
+        },
+        {
+          "id": "integer",
+          "label": "Integer solution",
+          "note": "Reached when the optimum satisfies integrality"
+        }
+      ],
+      "edges": [
+        {
+          "from": "milp",
+          "to": "relaxation",
+          "label": "relax"
+        },
+        {
+          "from": "relaxation",
+          "to": "optimum",
+          "label": "solve"
+        },
+        {
+          "from": "optimum",
+          "to": "integer",
+          "label": "if integral"
+        },
+        {
+          "from": "optimum",
+          "to": "separation",
+          "label": "if fractional"
+        },
+        {
+          "from": "separation",
+          "to": "cut",
+          "label": ""
+        },
+        {
+          "from": "cut",
+          "to": "relaxation",
+          "label": "tighten"
+        }
+      ],
+      "caption": "Each fractional relaxed optimum triggers a cut that tightens the next relaxation."
+    }
+  },
   "related": [
     "active-set-method",
     "augmented-lagrangian-method",

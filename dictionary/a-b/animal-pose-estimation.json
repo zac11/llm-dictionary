@@ -5,6 +5,98 @@
   "type": "concept",
   "definition": "Estimating body keypoints of animals — flies, mice, primates — enabling behavioral quantification in neuroscience and agriculture (e.g. DeepLabCut).",
   "details": "Estimating body keypoints of animals — flies, mice, primates — enabling behavioral quantification in neuroscience and agriculture (e.g. DeepLabCut).",
+  "explainer": {
+    "lead": "Animal pose estimation locates body keypoints in images of animals such as flies, mice, and primates. Turning visible posture into coordinates makes animal behavior easier to quantify in neuroscience and agriculture.",
+    "tiers": {
+      "eli5": "Imagine placing stickers on an animal's joints and other body parts, then asking a computer to find those stickers in a picture. The computer reports where each point is, showing the animal's pose. Researchers can use many of these poses to measure behavior instead of describing every movement by hand.",
+      "practitioner": "Apply a pose-estimation system such as DeepLabCut to animal images and use the predicted body keypoints as inputs to behavioral measurements. Check the predicted points before calculating behavior, since keypoint errors carry into downstream results. Settings and keypoint definitions need to fit the animal and the behavior being studied.",
+      "paperLevel": "Given an animal image I, estimate a set of body keypoints K = {(x_i, y_i)}, where each pair gives the image coordinates of one anatomical point. The resulting poses support quantitative behavioral analysis in domains including neuroscience and agriculture. DeepLabCut is an example associated with this task."
+    },
+    "example": "For an image of a mouse, the system estimates the coordinates of its chosen body keypoints. Those coordinates describe the mouse's pose and can feed a quantitative behavioral analysis.",
+    "usedIn": [
+      {
+        "name": "Neuroscience",
+        "detail": "Body keypoints provide a basis for quantifying animal behavior.",
+        "url": ""
+      },
+      {
+        "name": "Agriculture",
+        "detail": "Estimated poses support measurement of animal behavior.",
+        "url": ""
+      },
+      {
+        "name": "DeepLabCut",
+        "detail": "An example of a system used for animal pose estimation.",
+        "url": ""
+      }
+    ],
+    "intuition": "An animal's posture can be summarized by the locations of selected body points. Estimating those locations converts a picture into coordinates that can be measured and compared.",
+    "howItWorks": [
+      "Provide an image containing an animal.",
+      "Identify the animal's selected body keypoints.",
+      "Estimate each keypoint's image coordinates.",
+      "Combine the coordinates into a pose.",
+      "Use the poses to quantify behavior."
+    ],
+    "whyItMatters": "It gives researchers a numerical representation of animal posture, supporting behavioral quantification in neuroscience and agriculture across animals as different as flies, mice, and primates.",
+    "misconceptions": [
+      "It estimates body keypoints, not an animal's species.",
+      "A predicted pose is not by itself an interpretation of behavior.",
+      "It is not limited to primates or laboratory mammals."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "image",
+          "label": "Animal image",
+          "note": "A fly, mouse, primate, or other animal."
+        },
+        {
+          "id": "estimator",
+          "label": "Pose estimator",
+          "note": "Locates selected body keypoints."
+        },
+        {
+          "id": "keypoints",
+          "label": "Body keypoints",
+          "note": "Image coordinates for anatomical points."
+        },
+        {
+          "id": "pose",
+          "label": "Estimated pose",
+          "note": "Keypoints combined into a posture."
+        },
+        {
+          "id": "behavior",
+          "label": "Behavior quantification",
+          "note": "Poses support behavioral measurement."
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "estimator",
+          "label": "input"
+        },
+        {
+          "from": "estimator",
+          "to": "keypoints",
+          "label": "predicts"
+        },
+        {
+          "from": "keypoints",
+          "to": "pose",
+          "label": "forms"
+        },
+        {
+          "from": "pose",
+          "to": "behavior",
+          "label": "enables"
+        }
+      ],
+      "caption": "Animal images become body-keypoint coordinates, poses, and finally quantitative behavioral measurements."
+    }
+  },
   "citation": {
     "title": "Animal Pose Estimation",
     "authors": [],

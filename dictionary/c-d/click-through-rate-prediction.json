@@ -5,6 +5,113 @@
   "type": "concept",
   "definition": "Predicting the probability a user clicks an item or ad — the ranking engine behind online advertising and recommendation.",
   "details": "Predicting the probability a user clicks an item or ad — the ranking engine behind online advertising and recommendation.",
+  "explainer": {
+    "lead": "Click-through rate prediction estimates how likely a particular user is to click a particular item in a particular situation. Advertising and recommendation systems use these estimates to decide which items deserve the most prominent positions.",
+    "tiers": {
+      "eli5": "Imagine a librarian guessing which book on a display you will pick up, based on you, the books, and where you are looking. A computer does something similar with ads or recommendations: it gives each item a chance of being clicked, then helps put the most promising ones first.",
+      "practitioner": "Train a supervised model on impressions labeled by whether a click occurred, using available user, item, and context features, then score candidates at serving time for ranking. Watch for selection bias in logged exposure data, delayed or sparse feedback, probability miscalibration, and the risk that optimizing clicks alone promotes clickbait.",
+      "paperLevel": "The task is to estimate p = P(click = 1 | user, item, context), usually from logged impressions with binary click outcomes. The estimate can support candidate ranking and expected-click calculations, but observational training data reflect previous exposure and ranking decisions, so high predictive accuracy does not by itself establish user satisfaction or causal advertising value."
+    },
+    "example": "For one user and one ad in the current context, a model predicts a click probability of 0.04. If comparable impressions occurred 1,000 times, that estimate corresponds to about 40 expected clicks; another candidate scored at 0.02 would correspond to about 20, before other ranking factors are considered.",
+    "usedIn": [
+      {
+        "name": "Online advertising",
+        "detail": "Scores candidate ads so predicted click likelihood can inform their placement and ranking.",
+        "url": ""
+      },
+      {
+        "name": "Recommender systems",
+        "detail": "Helps rank recommended items by the chance that the current user will click them.",
+        "url": ""
+      },
+      {
+        "name": "Sponsored search",
+        "detail": "Estimates click likelihood for ads shown in response to a search and its surrounding context.",
+        "url": ""
+      }
+    ],
+    "intuition": "A click is easier to predict when the system considers the match among the user, the item, and the situation rather than treating every impression alike. The output is a probability for one potential impression, not merely an item's historical number of clicks.",
+    "howItWorks": [
+      "Collect impressions and record whether each one produced a click.",
+      "Describe each impression with available user, item, and context features.",
+      "Train a model to map those features to a click probability.",
+      "Score the eligible items for a new impression.",
+      "Use the probabilities, alongside other ranking considerations, to order the items."
+    ],
+    "whyItMatters": "Large systems often have many more candidate items than available display positions. Click-through estimates provide a comparable score for narrowing and ordering those candidates, although clicks alone are an incomplete measure of usefulness or quality.",
+    "misconceptions": [
+      "Click-through rate is not a click count: it concerns clicks relative to opportunities to click.",
+      "A prediction of 0.04 does not guarantee four clicks in every 100 impressions; it expresses an expected rate.",
+      "The highest predicted click probability is not necessarily the best overall recommendation, because clicks do not capture every aspect of quality or satisfaction."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "impression",
+          "label": "Potential impression",
+          "note": "User, item, and context"
+        },
+        {
+          "id": "features",
+          "label": "Feature builder",
+          "note": "Represents the impression"
+        },
+        {
+          "id": "model",
+          "label": "CTR model",
+          "note": "Learns from click outcomes"
+        },
+        {
+          "id": "probability",
+          "label": "Click probability",
+          "note": "Estimated chance of a click"
+        },
+        {
+          "id": "ranking",
+          "label": "Candidate ranking",
+          "note": "Orders eligible items"
+        },
+        {
+          "id": "outcome",
+          "label": "Click outcome",
+          "note": "Observed after display"
+        }
+      ],
+      "edges": [
+        {
+          "from": "impression",
+          "to": "features",
+          "label": "describes"
+        },
+        {
+          "from": "features",
+          "to": "model",
+          "label": "features"
+        },
+        {
+          "from": "model",
+          "to": "probability",
+          "label": "scores"
+        },
+        {
+          "from": "probability",
+          "to": "ranking",
+          "label": "informs"
+        },
+        {
+          "from": "ranking",
+          "to": "outcome",
+          "label": "display"
+        },
+        {
+          "from": "outcome",
+          "to": "model",
+          "label": "training feedback"
+        }
+      ],
+      "caption": "A model scores each potential impression, its probabilities inform ranking, and observed outcomes provide further training examples."
+    }
+  },
   "citation": {
     "title": "Click-Through Rate Prediction",
     "authors": [],

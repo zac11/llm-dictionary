@@ -5,7 +5,45 @@
   "type": "concept",
   "definition": "Double descent in statistics and machine learning is the phenomenon where a model's error rate on the test set initially decreases with the number of parameters, then peaks, then decreases again.",
   "details": "This phenomenon has been considered surprising, as it contradicts assumptions about overfitting in classical machine learning. The increase usually occurs near the interpolation threshold, where the number of parameters is the same as the number of training data points (the model is just large enough to fit the training data). Or, more precisely, it is the maximum number of samples on which the model/training procedure achieves approximately on average 0 training error.",
-  "story": "Imagine a factory floor where each workstation can glance at every other workstation before doing its part. It is the blueprint that makes everything else possible. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. Structure decides what the model can even express — the blueprint before the bricks. And that shape of the machine — Double descent — is what makes everything else possible.",
+  "explainer": {
+    "lead": "Double descent is a surprising pattern in which making a model larger first improves its test performance, then worsens it, and then improves it again. It challenges the simple expectation that a model with enough parameters to fit its training data perfectly must generalize poorly.",
+    "tiers": {
+      "eli5": "Imagine practicing for a quiz with longer and longer study guides. A slightly bigger guide helps, one particular size seems to make you memorize the practice answers and do worse on new questions, but an even bigger guide somehow helps again. Double descent is that two-part improvement pattern in a model's mistakes on new examples.",
+      "practitioner": "When comparing models with different parameter counts, track training and test error across the whole range rather than assuming the first performance peak is the final limit. Watch especially for the interpolation threshold, where training error is approximately zero; do not treat the nearby test-error peak as proof that every larger model will overfit.",
+      "paperLevel": "Let p denote parameter count and E_test(p) test error: double descent means E_test initially decreases, reaches a peak, and decreases again as p grows. The peak usually occurs near the interpolation threshold, informally where p matches the number of training points, or more precisely at the maximum sample count for which the model and training procedure achieve approximately zero average training error. It is an observed error-curve pattern, not a guarantee that every model or training procedure exhibits it."
+    },
+    "example": "Suppose a fixed training set contains 1,000 examples and successively larger models are evaluated on the same test set. Test error might fall from 20% to 12%, climb to 18% near the point where the model has about 1,000 parameters and reaches approximately zero training error, then fall to 9% as parameters increase further.",
+    "usedIn": [
+      {
+        "name": "Statistics",
+        "detail": "Describes how test error can change as a statistical model gains parameters.",
+        "url": ""
+      },
+      {
+        "name": "Machine learning",
+        "detail": "Helps frame generalization in models large enough to fit their training data.",
+        "url": ""
+      },
+      {
+        "name": "Model evaluation",
+        "detail": "Provides a pattern to look for when comparing training and test error across model sizes.",
+        "url": ""
+      }
+    ],
+    "intuition": "Classical overfitting suggests that test error should keep rising once a model becomes complex enough to memorize the training data. Double descent adds a second act: beyond that difficult region, still larger models can become better at unseen data.",
+    "howItWorks": [
+      "Start with a relatively small model and increase its number of parameters.",
+      "Test error initially falls as the model gains capacity.",
+      "Near the interpolation threshold, the model can achieve approximately zero training error and test error rises to a peak.",
+      "With further increases in parameters, test error falls again, producing the second descent."
+    ],
+    "whyItMatters": "It shows that parameter count alone does not determine whether a model will generalize well. The pattern also cautions against stopping an analysis of model size at the first test-error peak.",
+    "misconceptions": [
+      "Double descent does not mean training error rises and falls; the pattern described here is in test error.",
+      "It does not mean every sufficiently large model will improve.",
+      "The interpolation threshold is not always exactly one parameter per training example; the training procedure and achievable training error matter."
+    ]
+  },
   "related": [
     "adaptive-coordinate-descent",
     "differentially-private-stochastic-gradient-descent",

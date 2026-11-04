@@ -5,7 +5,108 @@
   "type": "concept",
   "definition": "Force control is the control of the force with which a machine or the manipulator of a robot acts on an object or its environment.",
   "details": "By controlling the contact force, damage to the machine as well as to the objects to be processed and injuries when handling people can be prevented. In manufacturing tasks, it can compensate for errors and reduce wear by maintaining a uniform contact force. Force control achieves more consistent results than position control, which is also used in machine control. Force control can be used as an alternative to the usual motion control, but is usually used in a complementary way, in the form of hybrid control concepts. The acting force for control is usually measured via force transducers or estimated via the motor current. Force control has been the subject of research for almost three decades and is increasingly opening up further areas of application thanks to advances in sensor and actuator technology and new control concepts. Force control is particularly suitable for contact tasks that serve to mechanically process workpieces, but it is also used in telemedicine, service robot and the scanning of surfaces. For force measurement, force sensors exist that can measure forces and torques in all three spatial directions. Alternatively, the forces can also be estimated without sensors, e.g. on the basis of the motor currents. Indirect force control by modeling the robot as a mechanical resistance (impedance) and direct force control in parallel or hybrid concepts are used as control concepts. Adaptive approaches, fuzzy controllers and machine learning for force control are currently the subject of research.",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. And that idea, made concrete, is Force control.",
+  "explainer": {
+    "lead": "Force control lets a machine regulate how hard it pushes, pulls, or presses on something. This helps robots work safely and consistently during physical contact, rather than simply following a fixed path.",
+    "tiers": {
+      "eli5": "Imagine wiping a table: you try to keep the same gentle pressure even when your hand moves over bumps. Force control helps a robot do something similar by sensing or estimating its push and adjusting it, so it does not press too lightly or too hard.",
+      "practitioner": "In a robot cell, contact force can be measured with force or force-torque transducers, including sensors covering forces and torques in all three spatial directions, or estimated from motor currents. Direct force control and indirect impedance-based control are used, often alongside motion control in parallel or hybrid schemes. A position-only setup can produce uneven contact, extra wear, or damage when task geometry is imperfect.",
+      "paperLevel": "Let F_d be the desired contact force and F the measured or estimated force; direct force control adjusts actuation to reduce e_F = F_d - F. Indirect force control instead models the robot as a mechanical impedance, while parallel or hybrid concepts combine force and motion control. Adaptive approaches, fuzzy controllers, and machine learning for force control remain research topics."
+    },
+    "example": "During mechanical finishing of a workpiece, a force sensor reports the contact force between the tool and surface. If the tool begins pressing too hard or too lightly, the controller changes the robot's actuation to restore the target force, producing more uniform contact and reducing wear.",
+    "usedIn": [
+      {
+        "name": "Manufacturing",
+        "detail": "Maintains uniform contact during mechanical workpiece processing, compensating for errors and reducing wear.",
+        "url": ""
+      },
+      {
+        "name": "Telemedicine",
+        "detail": "Regulates physical interaction forces in remotely operated robotic tasks.",
+        "url": ""
+      },
+      {
+        "name": "Service robotics",
+        "detail": "Helps prevent damage and injuries when robots handle objects or interact with people.",
+        "url": ""
+      },
+      {
+        "name": "Surface scanning",
+        "detail": "Controls contact while a robot moves across a surface.",
+        "url": ""
+      }
+    ],
+    "intuition": "A path tells a robot where to go; force control tells it how firmly to interact once it gets there. By continually correcting contact force, the robot can tolerate imperfect positioning without pressing unpredictably.",
+    "howItWorks": [
+      "Choose a desired contact force for the task.",
+      "Bring the manipulator into contact with the object or environment.",
+      "Measure force with a transducer or estimate it from motor current.",
+      "Compare the actual force with the desired force.",
+      "Adjust actuation, often together with motion control, to maintain contact."
+    ],
+    "whyItMatters": "Controlling contact force can prevent damage to machines and workpieces and reduce injuries when people are handled. It also gives more consistent contact-task results than position control alone and supports applications beyond manufacturing.",
+    "misconceptions": [
+      "Force control is not the same as position control: one regulates contact force, while the other regulates movement or location.",
+      "It does not always require a force sensor; force can also be estimated from motor currents.",
+      "It usually complements motion control in hybrid concepts rather than replacing it entirely."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "target",
+          "label": "Desired force",
+          "note": "Sets the contact-force goal."
+        },
+        {
+          "id": "controller",
+          "label": "Force controller",
+          "note": "Compares desired and actual force."
+        },
+        {
+          "id": "robot",
+          "label": "Robot actuation",
+          "note": "Adjusts the manipulator's action."
+        },
+        {
+          "id": "contact",
+          "label": "Contact task",
+          "note": "Interacts with an object or environment."
+        },
+        {
+          "id": "feedback",
+          "label": "Force feedback",
+          "note": "Measures force or estimates it from motor current."
+        }
+      ],
+      "edges": [
+        {
+          "from": "target",
+          "to": "controller",
+          "label": "force goal"
+        },
+        {
+          "from": "controller",
+          "to": "robot",
+          "label": "commands"
+        },
+        {
+          "from": "robot",
+          "to": "contact",
+          "label": "contact force"
+        },
+        {
+          "from": "contact",
+          "to": "feedback",
+          "label": "interaction"
+        },
+        {
+          "from": "feedback",
+          "to": "controller",
+          "label": "actual force"
+        }
+      ],
+      "caption": "A force-control loop regulates physical contact using sensed or estimated force feedback."
+    }
+  },
   "related": [
     "hierarchical-control-system",
     "intelligent-control",

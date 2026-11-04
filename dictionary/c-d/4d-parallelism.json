@@ -5,6 +5,103 @@
   "type": "concept",
   "definition": "Combining data, tensor, pipeline (and expert or sequence) parallelism in one topology-aware layout.",
   "details": "Combining data, tensor, pipeline (and expert or sequence) parallelism in one topology-aware layout. Frontier training runs are as much distributed-systems engineering as ML.",
+  "explainer": {
+    "lead": "4D parallelism is a way to divide one large training job across many devices using several kinds of parallelism at once. Its topology-aware layout matters because frontier training depends on distributed-systems engineering as much as on machine learning.",
+    "tiers": {
+      "eli5": "Imagine a huge school project split among many teams: teams get different pieces of work, share the hardest pieces, and handle different stages. 4D parallelism organizes all that sharing so the teams can finish together without getting in each other’s way.",
+      "practitioner": "Apply it by mapping data, tensor, and pipeline parallel groups onto one device layout, with expert or sequence parallelism included where needed. Make the layout topology-aware, since device placement and communication are central to the training system.",
+      "paperLevel": "A basic device mesh can be written as D = d × t × p, where d, t, and p are the data-, tensor-, and pipeline-parallel degrees. Each device has coordinates in this combined layout, with expert or sequence parallelism adding another dimension when used; the layout must also reflect system topology."
+    },
+    "example": "In one hypothetical training job, data-parallel groups receive different mini-batches, tensor-parallel devices share each group’s model computations, and pipeline-parallel devices handle successive stages. A single topology-aware mapping places all of these groups on the device mesh rather than configuring each strategy independently.",
+    "usedIn": [
+      {
+        "name": "Frontier model training",
+        "detail": "Coordinates several parallelism strategies across the devices used for a large training run.",
+        "url": ""
+      },
+      {
+        "name": "Large-scale distributed training",
+        "detail": "Treats device layout and communication topology as part of the training-system design.",
+        "url": ""
+      }
+    ],
+    "intuition": "No single way of splitting a training job has to do all the work. Data, tensor, and pipeline parallelism can divide different parts of the job simultaneously, while a topology-aware layout decides how those divisions sit on the available devices.",
+    "howItWorks": [
+      "Use data parallelism to distribute training data across groups.",
+      "Use tensor parallelism to divide model computations within devices.",
+      "Use pipeline parallelism to assign different model stages to different devices.",
+      "Add expert or sequence parallelism when the training setup uses it.",
+      "Map the combined parallel groups onto devices with the system topology in mind."
+    ],
+    "whyItMatters": "It provides one coordinated way to organize the many devices involved in frontier training. This makes clear why such runs require substantial distributed-systems engineering alongside ML work.",
+    "misconceptions": [
+      "It is not four copies of the same model; the axes divide different aspects of training.",
+      "The name does not restrict every setup to exactly data, tensor, and pipeline parallelism, because expert or sequence parallelism may also be included.",
+      "Topology awareness is part of the layout, not a separate kind of model parallelism."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "job",
+          "label": "Training job",
+          "note": "One distributed training run"
+        },
+        {
+          "id": "data",
+          "label": "Data axis",
+          "note": "Distributes training data"
+        },
+        {
+          "id": "tensor",
+          "label": "Tensor axis",
+          "note": "Divides model computations"
+        },
+        {
+          "id": "pipeline",
+          "label": "Pipeline axis",
+          "note": "Assigns model stages"
+        },
+        {
+          "id": "mesh",
+          "label": "Device mesh",
+          "note": "Topology-aware combined placement"
+        }
+      ],
+      "edges": [
+        {
+          "from": "job",
+          "to": "data",
+          "label": "split by"
+        },
+        {
+          "from": "job",
+          "to": "tensor",
+          "label": "split by"
+        },
+        {
+          "from": "job",
+          "to": "pipeline",
+          "label": "split by"
+        },
+        {
+          "from": "data",
+          "to": "mesh",
+          "label": "mapped onto"
+        },
+        {
+          "from": "tensor",
+          "to": "mesh",
+          "label": "mapped onto"
+        },
+        {
+          "from": "pipeline",
+          "to": "mesh",
+          "label": "mapped onto"
+        }
+      ],
+      "caption": "The parallelism axes are combined in one topology-aware device layout."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

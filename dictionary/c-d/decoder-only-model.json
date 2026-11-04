@@ -2,10 +2,99 @@
   "term": "Decoder-Only Model",
   "letter": "D",
   "category": "Architecture",
-  "type": "concept",
+  "type": "architecture",
   "definition": "A transformer variant that uses only the decoder stack, generating output autoregressively without a separate encoder.",
   "details": "Most modern large language models, including the GPT family, use decoder-only architectures because they are well suited to open-ended text generation.",
-  "story": "Imagine a sketch artist who starts with static and, stroke by stroke, sharpens it into a face. The result feels creative because it is memory, reshuffled at speed. Given a starting line, the machine imagines what comes next — a word, a note, a patch of a picture. The model dreams a little, then cleans up the dream. That next-word, next-stroke magic is Decoder-Only Model.",
+  "explainer": {
+    "lead": "A decoder-only model writes text one piece at a time, using what it has already written to choose what comes next. This simple setup underlies many modern large language models, including the GPT family, and fits open-ended text generation especially well.",
+    "tiers": {
+      "eli5": "Imagine finishing a story by adding one word at a time. Each time, you reread everything written so far before choosing the next word. A decoder-only model works like that, using one main stack of parts rather than needing a separate reader first.",
+      "practitioner": "Provide the existing token sequence to the decoder stack, take its next-token prediction, and append the selected token before repeating. Generation is autoregressive, so each new token depends on the sequence produced so far and must be generated in order. There is no separate encoder stage.",
+      "paperLevel": "Given tokens y_1 through y_(t-1), a decoder-only transformer models p(y_t | y_1, ..., y_(t-1)) and generates output autoregressively. The architecture uses the decoder stack without a separate encoder. Its sequential generation process means later tokens cannot be produced before their predecessors."
+    },
+    "example": "Given the text “I would like some”, the model might predict “tea” and append it. It then processes “I would like some tea” to predict the next token, continuing until the response is complete.",
+    "usedIn": [
+      {
+        "name": "GPT family",
+        "detail": "Uses decoder-only architectures for text generation.",
+        "url": ""
+      },
+      {
+        "name": "Modern large language models",
+        "detail": "Many use this architecture because it suits open-ended text generation.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Decoder stack: processes the token sequence built so far.",
+        "detail": ""
+      },
+      {
+        "name": "Next-token prediction: chooses what to add to the sequence.",
+        "detail": ""
+      },
+      {
+        "name": "No separate encoder: the model does not use a distinct encoding stage.",
+        "detail": ""
+      }
+    ],
+    "flow": [
+      "Start with the input tokens.",
+      "Pass the sequence through the decoder stack.",
+      "Predict and append the next token.",
+      "Repeat using the extended sequence."
+    ],
+    "lineage": "The GPT family is a prominent example of this architecture. Decoder-only designs are now common among large language models intended for open-ended text generation.",
+    "whyItMatters": "Decoder-only models provide a direct way to generate text autoregressively without a separate encoder. Their suitability for open-ended generation has made them a common architecture for modern large language models.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "tokens",
+          "label": "Current tokens",
+          "note": "The input and any text generated so far."
+        },
+        {
+          "id": "decoder",
+          "label": "Decoder stack",
+          "note": "Processes the current token sequence."
+        },
+        {
+          "id": "prediction",
+          "label": "Next-token prediction",
+          "note": "Predicts the token that comes next."
+        },
+        {
+          "id": "append",
+          "label": "Append token",
+          "note": "Adds the selected token to the sequence."
+        }
+      ],
+      "edges": [
+        {
+          "from": "tokens",
+          "to": "decoder",
+          "label": "sequence"
+        },
+        {
+          "from": "decoder",
+          "to": "prediction",
+          "label": "representation"
+        },
+        {
+          "from": "prediction",
+          "to": "append",
+          "label": "next token"
+        },
+        {
+          "from": "append",
+          "to": "tokens",
+          "label": "repeat"
+        }
+      ],
+      "caption": "Autoregressive generation repeatedly extends the sequence without a separate encoder."
+    }
+  },
   "related": [
     "encoder-only-model",
     "dense-model",

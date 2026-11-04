@@ -5,7 +5,93 @@
   "type": "concept",
   "definition": "The process of identifying and removing duplicate or near-duplicate records from a dataset.",
   "details": "Deduplication of training data has been shown to improve language model training efficiency and reduce issues like memorization of specific repeated text, making it a standard preprocessing step for large text corpora.",
-  "story": "Think of a historian sorting through boxes of letters, building a picture of an era one sentence at a time. Every machine is shaped by what it was shown, so someone has to choose that material with care. The examples a machine reads become the world it believes in. The words a model reads become the world it believes in. That care with the raw material is Deduplication.",
+  "explainer": {
+    "lead": "Deduplication cleans a dataset by removing repeated or nearly repeated records. For language models, this can make training more efficient and reduce the memorization of text that appears over and over.",
+    "tiers": {
+      "eli5": "Imagine your folder contains several copies of the same worksheet. You only need one to study from, so you put the extra copies aside; deduplication does something similar for computer data.",
+      "practitioner": "Apply deduplication while preparing text corpora by identifying exact or near-duplicate records and retaining a representative of each group. The matching rule matters: a near-duplicate rule that is too broad can discard genuinely different records, so inspect flagged examples before applying it at scale.",
+      "paperLevel": "Given a dataset D and a criterion for judging records duplicate or near-duplicate, deduplication produces D' ⊆ D by retaining selected representatives and removing records judged redundant. Training-data deduplication can improve language-model training efficiency and reduce memorization of specific repeated text. Results depend on the duplicate criterion, especially for near-duplicates, where distinct records may be mistakenly grouped."
+    },
+    "example": "A training corpus contains four copies of an article: three are identical, and the fourth has the same body but a different title. Exact matching removes two of the identical copies, while a near-duplicate rule can also flag the differently titled copy, leaving one article instead of four.",
+    "usedIn": [
+      {
+        "name": "Language model training",
+        "detail": "Repeated training text is removed to improve training efficiency and reduce memorization of specific passages.",
+        "url": ""
+      },
+      {
+        "name": "Large text corpus preparation",
+        "detail": "Deduplication is a standard preprocessing step before the corpus is used for training.",
+        "url": ""
+      }
+    ],
+    "intuition": "Repeated records add extra copies of substantially the same information. Keeping a representative instead lets the dataset cover that information without carrying all the redundancy.",
+    "howItWorks": [
+      "Start with the records in the dataset.",
+      "Compare records to find exact or near duplicates.",
+      "Group records judged to contain the same content.",
+      "Keep a representative and remove the redundant copies.",
+      "Use the remaining records as the deduplicated dataset."
+    ],
+    "whyItMatters": "For language models, less repeated training text can improve training efficiency and reduce problems such as memorizing specific repeated passages. It is therefore a standard preprocessing step for large text corpora.",
+    "misconceptions": [
+      "Deduplication is not limited to byte-for-byte matches; it can also address near-duplicate records.",
+      "It does not mean deleting every repeated word or phrase; the unit being assessed is the record.",
+      "Near-duplicate removal is not automatically safe, because a broad matching rule can treat genuinely different records as duplicates."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "raw",
+          "label": "Original dataset",
+          "note": "Records may include repeated content."
+        },
+        {
+          "id": "compare",
+          "label": "Compare records",
+          "note": "Find exact or near duplicates."
+        },
+        {
+          "id": "groups",
+          "label": "Duplicate groups",
+          "note": "Redundant records are grouped together."
+        },
+        {
+          "id": "keep",
+          "label": "Keep representatives",
+          "note": "Select records to retain."
+        },
+        {
+          "id": "clean",
+          "label": "Deduplicated dataset",
+          "note": "Redundant copies have been removed."
+        }
+      ],
+      "edges": [
+        {
+          "from": "raw",
+          "to": "compare",
+          "label": "records"
+        },
+        {
+          "from": "compare",
+          "to": "groups",
+          "label": "matches"
+        },
+        {
+          "from": "groups",
+          "to": "keep",
+          "label": ""
+        },
+        {
+          "from": "keep",
+          "to": "clean",
+          "label": "retained data"
+        }
+      ],
+      "caption": "Deduplication identifies redundant records, retains representatives, and produces a cleaned dataset."
+    }
+  },
   "related": [
     "common-crawl",
     "data-curation",

@@ -5,6 +5,145 @@
   "type": "architecture",
   "definition": "An autoencoder is a type of neural network used to learn efficient encodings.",
   "details": "An autoencoder is a type of neural network used to learn efficient encodings. The denoising autoencoder is a variant that is trained to use the encoded representation to reconstruct the input from a corrupted version of it.",
+  "explainer": {
+    "lead": "An autoencoder is a neural network that squeezes an input into a compact representation and then uses that representation to rebuild the input. A denoising autoencoder adds a useful twist: it receives a corrupted input but is trained to reconstruct the original, teaching the representation to survive noise or missing information.",
+    "tiers": {
+      "eli5": "Imagine copying a drawing onto a tiny note and then asking a friend to recreate the drawing from that note. Now imagine smudging the drawing before making the note, but still asking your friend to recreate the clean original. Learning to do that is the idea behind a denoising autoencoder.",
+      "practitioner": "Train the encoder and decoder together with a reconstruction loss, using the clean input as the target. For denoising, apply the chosen corruption to the network input while leaving that target unchanged; reconstructing the corrupted input instead would not train denoising. Check both reconstruction quality and whether the learned encoding is useful for the intended downstream task.",
+      "paperLevel": "A standard autoencoder learns h = f_theta(x) and x_hat = g_phi(h), with f_theta the encoder and g_phi the decoder. A denoising autoencoder instead computes h = f_theta(x_tilde), where x_tilde is a corrupted version of x, and trains g_phi(h) to reconstruct x; a common objective is E[||x - g_phi(f_theta(x_tilde))||^2]. Its defining distinction is therefore the mismatch between corrupted network input and clean reconstruction target."
+    },
+    "example": "Suppose the clean input is [0.8, 0.2, 0.6] and corruption replaces its middle value with zero, giving [0.8, 0, 0.6]. The network encodes this corrupted vector and decodes a reconstruction, while training compares that reconstruction with [0.8, 0.2, 0.6], not with the corrupted vector.",
+    "usedIn": [
+      {
+        "name": "Representation learning",
+        "detail": "Autoencoders learn efficient encodings by requiring the original input to be reconstructed from them.",
+        "url": ""
+      },
+      {
+        "name": "Denoising",
+        "detail": "Denoising autoencoders learn to recover clean inputs from corrupted versions.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Corruption process",
+        "detail": "In the denoising variant, produces a corrupted copy of the clean input."
+      },
+      {
+        "name": "Encoder",
+        "detail": "Maps the input to an encoded representation."
+      },
+      {
+        "name": "Encoding",
+        "detail": "Carries the information retained for reconstruction."
+      },
+      {
+        "name": "Decoder",
+        "detail": "Uses the encoding to produce a reconstruction."
+      },
+      {
+        "name": "Reconstruction objective",
+        "detail": "Compares the reconstruction with the clean original input during training."
+      }
+    ],
+    "flow": [
+      "Start with a clean input and, for denoising training, create a corrupted copy.",
+      "Pass the corrupted copy through the encoder to obtain an encoding.",
+      "Pass the encoding through the decoder to obtain a reconstruction.",
+      "Compare the reconstruction with the clean original.",
+      "Update the encoder and decoder to reduce the reconstruction error."
+    ],
+    "lineage": "The denoising autoencoder is a variant of the standard autoencoder, changing the training input from clean to corrupted data while retaining the clean input as the reconstruction target.",
+    "whyItMatters": "Autoencoders provide a direct way to learn efficient encodings through reconstruction. The denoising variant makes that task harder by requiring recovery of the clean input despite corruption.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "clean",
+          "label": "Clean input",
+          "note": "Original data x"
+        },
+        {
+          "id": "corrupt",
+          "label": "Corruption",
+          "note": "Produces x_tilde"
+        },
+        {
+          "id": "noisy",
+          "label": "Corrupted input",
+          "note": "Network input"
+        },
+        {
+          "id": "encoder",
+          "label": "Encoder",
+          "note": "Maps input to h"
+        },
+        {
+          "id": "code",
+          "label": "Encoding",
+          "note": "Representation h"
+        },
+        {
+          "id": "decoder",
+          "label": "Decoder",
+          "note": "Produces x_hat"
+        },
+        {
+          "id": "rebuild",
+          "label": "Reconstruction",
+          "note": "Estimated clean input"
+        },
+        {
+          "id": "loss",
+          "label": "Training loss",
+          "note": "Compares x and x_hat"
+        }
+      ],
+      "edges": [
+        {
+          "from": "clean",
+          "to": "corrupt",
+          "label": ""
+        },
+        {
+          "from": "corrupt",
+          "to": "noisy",
+          "label": ""
+        },
+        {
+          "from": "noisy",
+          "to": "encoder",
+          "label": ""
+        },
+        {
+          "from": "encoder",
+          "to": "code",
+          "label": ""
+        },
+        {
+          "from": "code",
+          "to": "decoder",
+          "label": ""
+        },
+        {
+          "from": "decoder",
+          "to": "rebuild",
+          "label": ""
+        },
+        {
+          "from": "rebuild",
+          "to": "loss",
+          "label": ""
+        },
+        {
+          "from": "clean",
+          "to": "loss",
+          "label": "target"
+        }
+      ],
+      "caption": "Denoising training feeds a corrupted input to the autoencoder but uses the clean input as the reconstruction target."
+    }
+  },
   "related": [
     "autoencoder",
     "neural-network"

@@ -5,7 +5,118 @@
   "type": "concept",
   "definition": "Evolutionary data mining, or genetic data mining is an umbrella term for any data mining using evolutionary algorithms.",
   "details": "While it can be used for mining data from DNA sequences, it is not limited to biological contexts and can be used in any classification-based prediction scenario, which helps \"predict the value ... of a user-specified goal attribute based on the values of other attributes.\" For instance, a banking institution might want to predict whether a customer's credit would be \"good\" or \"bad\" based on their age, income and current savings. Evolutionary algorithms for data mining work by creating a series of random rules to be checked against a training dataset. The rules which most closely fit the data are selected and are mutated. The process is iterated many times and eventually, a rule will arise that approaches 100% similarity with the training data. This rule is then checked against a test dataset, which was previously invisible to the genetic algorithm.",
-  "story": "Imagine a chef tasting every ingredient before it goes into the pot, deciding what belongs and what would ruin the broth. Better ingredients make a better meal, and the same is true here. Every machine is shaped by what it was shown, so someone has to choose that material with care. It is the raw material; the model is only ever as good as what it was fed. That care with the raw material is Evolutionary data mining.",
+  "explainer": {
+    "lead": "Evolutionary data mining uses an evolutionary algorithm to search for rules that explain data and support predictions. Instead of designing one rule by hand, it repeatedly generates, tests, selects, and changes candidate rules until it finds a strong fit.",
+    "tiers": {
+      "eli5": "Imagine making up lots of simple guessing rules, such as “people with high savings have good credit.” You keep the rules that guess best, change them a little, and try again many times. Finally, you test the winning rule on new examples it has never seen.",
+      "practitioner": "Apply it to classification tasks by evolving candidate rules against a training dataset, using agreement with the data to guide selection and mutation. Keep a separate test dataset completely hidden during evolution so the final rule can be evaluated on unseen cases. A rule approaching perfect training accuracy may still generalize poorly, so test performance matters more than training fit alone.",
+      "paperLevel": "Evolutionary data mining is an umbrella term for data mining procedures that use evolutionary algorithms, also called genetic data mining in this context. A population of initially random candidate rules is evaluated on training data; high-fitting rules are selected and mutated over many iterations. The resulting rule is evaluated on a previously unseen test set, since near-perfect training fit does not establish generalization."
+    },
+    "example": "A bank wants to classify credit as good or bad using a customer's age, income, and current savings. It evolves random rules based on those attributes, selecting and mutating the ones that best match the training examples. The final rule is then checked against separate customer records that the algorithm has not previously seen.",
+    "usedIn": [
+      {
+        "name": "Banking",
+        "detail": "Predicting whether a customer's credit is good or bad from attributes such as age, income, and current savings.",
+        "url": ""
+      },
+      {
+        "name": "DNA sequence analysis",
+        "detail": "Mining biological sequence data, although the approach is not limited to biological problems.",
+        "url": ""
+      }
+    ],
+    "intuition": "Let many imperfect rules compete, keep the ones that fit the training data best, and mutate them to explore better versions. Repeating this cycle gradually turns a random collection of rules into a candidate predictor.",
+    "howItWorks": [
+      "Create an initial set of random candidate rules.",
+      "Check each rule against a training dataset.",
+      "Select the rules that most closely fit the data and mutate them.",
+      "Repeat evaluation, selection, and mutation for many iterations.",
+      "Test the final rule on a dataset that was hidden throughout training."
+    ],
+    "whyItMatters": "It offers a way to discover classification rules through iterative search rather than specifying every rule manually. Evaluating the result on unseen data shows whether the discovered rule works beyond the examples used to create it.",
+    "misconceptions": [
+      "It is not limited to genetics or DNA; the “evolutionary” part describes the rule-search process.",
+      "It does not start with a carefully designed rule; the initial rules are random.",
+      "Near-perfect agreement with training data does not guarantee accurate predictions on new data."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "random-rules",
+          "label": "Random rules",
+          "note": "Initial candidate classification rules"
+        },
+        {
+          "id": "training-data",
+          "label": "Training data",
+          "note": "Examples used to assess rule fit"
+        },
+        {
+          "id": "evaluate",
+          "label": "Evaluate rules",
+          "note": "Compare candidates with training examples"
+        },
+        {
+          "id": "select",
+          "label": "Select best",
+          "note": "Keep the closest-fitting candidates"
+        },
+        {
+          "id": "mutate",
+          "label": "Mutate rules",
+          "note": "Change selected rules for the next iteration"
+        },
+        {
+          "id": "final-rule",
+          "label": "Final rule",
+          "note": "Candidate produced after repeated iterations"
+        },
+        {
+          "id": "test-data",
+          "label": "Unseen test data",
+          "note": "Held-out examples for final evaluation"
+        }
+      ],
+      "edges": [
+        {
+          "from": "random-rules",
+          "to": "evaluate",
+          "label": "candidates"
+        },
+        {
+          "from": "training-data",
+          "to": "evaluate",
+          "label": "examples"
+        },
+        {
+          "from": "evaluate",
+          "to": "select",
+          "label": "fitness"
+        },
+        {
+          "from": "select",
+          "to": "mutate",
+          "label": "best rules"
+        },
+        {
+          "from": "mutate",
+          "to": "evaluate",
+          "label": "next iteration"
+        },
+        {
+          "from": "evaluate",
+          "to": "final-rule",
+          "label": "after iterations"
+        },
+        {
+          "from": "test-data",
+          "to": "final-rule",
+          "label": "final check"
+        }
+      ],
+      "caption": "Candidate rules evolve against training data, while the test data remains hidden until the final rule is checked."
+    }
+  },
   "related": [
     "data-mining",
     "cyborg-data-mining",

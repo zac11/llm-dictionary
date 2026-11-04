@@ -5,6 +5,97 @@
   "type": "concept",
   "definition": "A lookup table mapping discrete IDs (tokens, users, items) to dense trainable vectors.",
   "details": "A lookup table mapping discrete IDs (tokens, users, items) to dense trainable vectors. The first layer of every language model; the output projection is sometimes tied to it (weight tying) to save parameters.",
+  "explainer": {
+    "lead": "An embedding layer turns discrete IDs, such as token or user IDs, into numerical vectors that a neural network can process. Its vectors are learned during training, and the layer is the first stop for input tokens in a language model.",
+    "tiers": {
+      "eli5": "Think of a wall of numbered pigeonholes, one for each word, user, or item. Each pigeonhole holds a short list of numbers, and the network uses that list instead of the ID. During training, those numbers are adjusted so they become more useful for the task.",
+      "practitioner": "Configure the table with vocabulary size V and embedding dimension d, then feed it integer IDs to retrieve dense vectors for the rest of the network. Its V × d parameters can make memory usage substantial for large vocabularies. In language models, output-projection weights can optionally be tied to the embedding weights to reduce the parameter count.",
+      "paperLevel": "For V discrete IDs and embedding dimension d, the layer stores a trainable matrix E in R^(V × d); the representation of ID i is e_i = E[i]. The table therefore has Vd parameters, so its storage grows with both vocabulary size and dimension. Weight tying optionally reuses E in the output projection instead of maintaining a separate projection matrix."
+    },
+    "example": "Suppose the token \"cat\" has ID 42 in a model using three-dimensional embeddings. The layer selects row 42 of its table, which might be [0.2, -0.7, 1.1], and sends that vector to the next layer.",
+    "usedIn": [
+      {
+        "name": "Language models",
+        "detail": "The embedding layer maps input token IDs to vectors as the model's first layer.",
+        "url": ""
+      },
+      {
+        "name": "Recommender systems",
+        "detail": "User and item IDs can be mapped to trainable vectors for subsequent processing.",
+        "url": ""
+      }
+    ],
+    "intuition": "An ID is only a label, not a useful numerical input. An embedding layer gives each ID its own learned vector, allowing the network to work with tokens, users, or items as continuous representations.",
+    "howItWorks": [
+      "Assign every token, user, or item a discrete integer ID.",
+      "Create a table with one dense vector, or row, for each possible ID.",
+      "For each input ID, retrieve its corresponding row from the table.",
+      "Pass the retrieved vector to the next part of the neural network.",
+      "Update the vectors during training; in some language models, also reuse the table for the output projection."
+    ],
+    "whyItMatters": "It provides a simple trainable bridge between discrete symbols and the continuous computations of neural networks. Weight tying can also reduce parameters by sharing this table with a language model's output projection.",
+    "misconceptions": [
+      "An embedding vector is not the ID itself converted into a number; it is a separate trainable row with a chosen dimension.",
+      "Weight tying is optional, not a requirement of every embedding layer."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "ids",
+          "label": "Discrete IDs",
+          "note": "Token, user, or item identifiers"
+        },
+        {
+          "id": "table",
+          "label": "Embedding table",
+          "note": "One trainable vector per ID"
+        },
+        {
+          "id": "vectors",
+          "label": "Dense vectors",
+          "note": "Rows selected by lookup"
+        },
+        {
+          "id": "network",
+          "label": "Neural network",
+          "note": "Processes the embedded inputs"
+        },
+        {
+          "id": "projection",
+          "label": "Output projection",
+          "note": "Sometimes shares the embedding weights"
+        }
+      ],
+      "edges": [
+        {
+          "from": "ids",
+          "to": "table",
+          "label": "select rows"
+        },
+        {
+          "from": "table",
+          "to": "vectors",
+          "label": "lookup"
+        },
+        {
+          "from": "vectors",
+          "to": "network",
+          "label": "input"
+        },
+        {
+          "from": "network",
+          "to": "projection",
+          "label": "output"
+        },
+        {
+          "from": "table",
+          "to": "projection",
+          "label": "optional tying"
+        }
+      ],
+      "caption": "IDs select trainable vectors from the embedding table; a language model may also tie its output projection to that table."
+    }
+  },
   "related": [
     "language-model"
   ],

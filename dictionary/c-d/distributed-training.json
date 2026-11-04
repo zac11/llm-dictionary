@@ -5,7 +5,117 @@
   "type": "concept",
   "definition": "The practice of training a model across multiple GPUs, TPUs, or machines simultaneously to handle models or datasets too large for a single device.",
   "details": "Distributed training strategies include data parallelism (splitting the data across devices), model parallelism (splitting the model itself), and pipeline parallelism, often combined for training the largest LLMs.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. And that is Distributed Training — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "Distributed training spreads the work of training one model across several GPUs, TPUs, or machines. It makes training possible when the model or dataset is too large for a single device.",
+    "tiers": {
+      "eli5": "Imagine a school project too big for one desk, so several people work on it at their own desks. They can each take part of the materials, or each handle a different part of the project, to build one shared result.",
+      "practitioner": "Engineers run training across multiple GPUs, TPUs, or machines when a single device cannot hold the workload. Data parallelism splits the data, model parallelism splits the model, and pipeline parallelism provides another way to divide the work; these strategies are often combined for the largest LLMs.",
+      "paperLevel": "Given devices D = {d1, ..., dn}, distributed training performs one model-training workload across D rather than on a single device. Data parallelism partitions the training data across devices, while model parallelism partitions the model; pipeline parallelism is another strategy, and the approaches can be combined. Its scope is training models or datasets too large for one device, including the largest LLMs."
+    },
+    "example": "Suppose a training job uses four GPUs because its dataset is too large for one device. With data parallelism, each GPU receives a different quarter of the data; if the model itself also needs dividing, model or pipeline parallelism can be added.",
+    "usedIn": [
+      {
+        "name": "Large language model training",
+        "detail": "The largest LLMs often use combinations of data, model, and pipeline parallelism.",
+        "url": ""
+      },
+      {
+        "name": "Multi-GPU and TPU training",
+        "detail": "Training is spread across several accelerators when one device is insufficient.",
+        "url": ""
+      },
+      {
+        "name": "Multi-machine training",
+        "detail": "The workload can extend beyond one machine to handle very large models or datasets.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of asking one device to hold and process everything, divide the training workload among many devices. The division can follow the data, the model, or pipeline stages.",
+    "howItWorks": [
+      "Identify whether the dataset, the model, or both exceed a single device's capacity.",
+      "Connect multiple GPUs, TPUs, or machines for the training run.",
+      "Use data parallelism to give different devices different portions of the data.",
+      "Use model or pipeline parallelism when the model itself must be divided.",
+      "Combine strategies when training the largest LLMs."
+    ],
+    "whyItMatters": "It expands training beyond the capacity of one device, allowing larger models and datasets to be handled. Combining parallelism strategies is especially important for the largest LLMs.",
+    "misconceptions": [
+      "Distributed training does not always mean splitting the data; the model itself can also be split.",
+      "Data, model, and pipeline parallelism are not mutually exclusive and are often combined."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "workload",
+          "label": "Training workload",
+          "note": "A model or dataset too large for one device"
+        },
+        {
+          "id": "data",
+          "label": "Data parallelism",
+          "note": "Splits training data"
+        },
+        {
+          "id": "model",
+          "label": "Model parallelism",
+          "note": "Splits the model"
+        },
+        {
+          "id": "pipeline",
+          "label": "Pipeline parallelism",
+          "note": "Divides work into pipeline stages"
+        },
+        {
+          "id": "devices",
+          "label": "Multiple devices",
+          "note": "GPUs, TPUs, or machines train together"
+        },
+        {
+          "id": "llm",
+          "label": "Largest LLMs",
+          "note": "Often combine the strategies"
+        }
+      ],
+      "edges": [
+        {
+          "from": "workload",
+          "to": "data",
+          "label": "split data"
+        },
+        {
+          "from": "workload",
+          "to": "model",
+          "label": "split model"
+        },
+        {
+          "from": "workload",
+          "to": "pipeline",
+          "label": "split stages"
+        },
+        {
+          "from": "data",
+          "to": "devices",
+          "label": ""
+        },
+        {
+          "from": "model",
+          "to": "devices",
+          "label": ""
+        },
+        {
+          "from": "pipeline",
+          "to": "devices",
+          "label": ""
+        },
+        {
+          "from": "devices",
+          "to": "llm",
+          "label": "combined strategies"
+        }
+      ],
+      "caption": "Distributed training divides data, the model, or pipeline stages across multiple devices, often combining these approaches for the largest LLMs."
+    }
+  },
   "related": [
     "mixed-precision-training",
     "api-key",

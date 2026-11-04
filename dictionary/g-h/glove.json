@@ -5,7 +5,91 @@
   "type": "concept",
   "definition": "A word embedding technique that learns vector representations by factorizing a matrix of global word co-occurrence statistics.",
   "details": "GloVe (Global Vectors) combines the benefits of matrix-factorization and local context-window methods to produce embeddings that capture both global corpus statistics and local semantic relationships.",
-  "story": "Picture an architect laying out a building where every room has to know which other rooms matter to it. The layout decides what the machine can even attempt, before it learns a single thing. It is the blueprint that makes everything else possible. It is the difference between a row of isolated cubicles and one big room where everyone can hear each other. That blueprint is GloVe.",
+  "explainer": {
+    "lead": "GloVe turns patterns in how words occur together into numeric vectors. This gives computers a compact way to represent words and their relationships using statistics gathered across an entire corpus.",
+    "tiers": {
+      "eli5": "Imagine keeping a giant notebook of which words show up together, like noticing that “peanut butter” and “jelly” often share a sentence. GloVe studies the whole notebook and gives each word its own list of numbers. A computer can then compare those number lists instead of treating every word as an unrelated label.",
+      "practitioner": "Apply GloVe by building a global co-occurrence matrix from a corpus and factorizing it to obtain word vectors. It is useful when you want representations informed by both corpus-wide statistics and local semantic relationships. Keep in mind that the vectors reflect the co-occurrence patterns in the corpus used to produce them.",
+      "paperLevel": "Formally, let X be a matrix of global word co-occurrence statistics; GloVe factorizes X to learn a vector representation for each word. The approach combines matrix factorization with advantages associated with local context-window methods. Its representations are consequently shaped by the co-occurrence evidence available in the training corpus."
+    },
+    "example": "Suppose “coffee” and “cup” often occur together in a corpus, while “coffee” and “bicycle” rarely do. The co-occurrence matrix records this difference, and factorization learns vectors that reflect the stronger association between “coffee” and “cup.”",
+    "usedIn": [
+      {
+        "name": "Natural language processing",
+        "detail": "Provides vector representations of words for computational language tasks.",
+        "url": ""
+      },
+      {
+        "name": "Semantic relationship analysis",
+        "detail": "Represents words using corpus statistics that capture local semantic relationships.",
+        "url": ""
+      }
+    ],
+    "intuition": "Words that occur together reveal something about how they are used. GloVe uses those patterns across an entire corpus, rather than looking only through a small local context window, to build word vectors.",
+    "howItWorks": [
+      "Count how often words occur together across the corpus.",
+      "Organize those global counts into a word co-occurrence matrix.",
+      "Factorize the matrix to learn a vector for each word.",
+      "Use the vectors to represent global statistics and local semantic relationships."
+    ],
+    "whyItMatters": "GloVe bridges two useful sources of information: corpus-wide co-occurrence statistics and local semantic relationships. The result is a word representation grounded in observed language use.",
+    "misconceptions": [
+      "GloVe is not based only on local context windows; it factorizes global co-occurrence statistics.",
+      "Its vectors are learned numeric representations, not hand-written dictionary definitions."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "corpus",
+          "label": "Text corpus",
+          "note": "Provides examples of word usage."
+        },
+        {
+          "id": "counts",
+          "label": "Co-occurrence counts",
+          "note": "Record which words occur together."
+        },
+        {
+          "id": "matrix",
+          "label": "Global matrix",
+          "note": "Organizes corpus-wide statistics."
+        },
+        {
+          "id": "factorization",
+          "label": "Matrix factorization",
+          "note": "Learns compact representations."
+        },
+        {
+          "id": "vectors",
+          "label": "Word vectors",
+          "note": "Encode global and local relationships."
+        }
+      ],
+      "edges": [
+        {
+          "from": "corpus",
+          "to": "counts",
+          "label": "count words"
+        },
+        {
+          "from": "counts",
+          "to": "matrix",
+          "label": "organize"
+        },
+        {
+          "from": "matrix",
+          "to": "factorization",
+          "label": "factorize"
+        },
+        {
+          "from": "factorization",
+          "to": "vectors",
+          "label": "learn"
+        }
+      ],
+      "caption": "GloVe converts corpus-wide word co-occurrences into learned vector representations."
+    }
+  },
   "related": [
     "autoregressive-model",
     "chinchilla-scaling",

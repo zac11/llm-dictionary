@@ -5,6 +5,107 @@
   "type": "concept",
   "definition": "Using AI to assist software development — code completion, generation, review, and debugging via tools like Copilot.",
   "details": "Using AI to assist software development — code completion, generation, review, and debugging via tools like Copilot.",
+  "explainer": {
+    "lead": "AI for software programming means using an AI assistant alongside a developer to write, complete, review, and debug code. It can reduce repetitive work and offer a second pair of eyes, but the developer still needs to judge and test its suggestions.",
+    "tiers": {
+      "eli5": "It is like having a very quick writing partner while building with digital Lego. You describe what you want, and it suggests some pieces or points out a possible mistake. You still have to check that the finished model holds together and does what you wanted.",
+      "practitioner": "Developers use assistants such as Copilot for inline completion, generating code from a request, reviewing changes, and exploring debugging ideas. The surrounding code and the developer's instructions provide context, while review and testing remain necessary because a plausible suggestion can still be incorrect. Treat generated edits as proposed changes rather than trusted code.",
+      "paperLevel": "Given development context c, including existing code and a developer request, an assistant produces a candidate software artifact a: c -> a. The artifact may be a completion, generated code, a review comment, or a debugging suggestion. The central limitation is that producing a plausible artifact does not establish its correctness, so external evaluation and developer verification are still required."
+    },
+    "example": "A developer asks an assistant for a function that calculates an order total from a list of item prices. The assistant drafts the function, the developer notices that it does not handle an empty list clearly, and a follow-up suggestion adds that case. The developer then runs examples through the function before accepting the change.",
+    "usedIn": [
+      {
+        "name": "Copilot",
+        "detail": "An example of an AI tool used to assist with programming tasks such as code completion and generation.",
+        "url": ""
+      },
+      {
+        "name": "Application development",
+        "detail": "AI suggestions can help developers complete repetitive code or draft an implementation from a request.",
+        "url": ""
+      },
+      {
+        "name": "Code review and debugging",
+        "detail": "AI assistants can propose review comments and possible fixes for developers to investigate and test.",
+        "url": ""
+      }
+    ],
+    "intuition": "The assistant acts as a collaborator that turns development context into suggestions. It speeds up proposing code and possible fixes, while the developer supplies judgment, checks behavior, and decides what to accept.",
+    "howItWorks": [
+      "The developer provides a request, existing code, or another piece of development context.",
+      "The AI assistant proposes a completion, code fragment, review comment, or debugging idea.",
+      "The developer inspects the suggestion and edits or rejects anything unsuitable.",
+      "The resulting code is tested and debugged before being accepted into the software."
+    ],
+    "whyItMatters": "It can make routine programming work faster and bring assistance into writing, reviewing, and debugging code. Its value depends on keeping verification in the loop, since a useful-looking suggestion may not implement the intended behavior.",
+    "misconceptions": [
+      "It does not remove the need for a developer to understand requirements and check the result.",
+      "Generated code is not automatically correct merely because it looks plausible.",
+      "It covers more than writing new code: completion, review, and debugging are also part of the idea."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "context",
+          "label": "Code and request",
+          "note": "The developer supplies the task and surrounding code."
+        },
+        {
+          "id": "assistant",
+          "label": "AI assistant",
+          "note": "Produces a programming suggestion from the context."
+        },
+        {
+          "id": "proposal",
+          "label": "Proposed change",
+          "note": "A completion, code draft, review comment, or debugging idea."
+        },
+        {
+          "id": "review",
+          "label": "Developer review",
+          "note": "The developer accepts, edits, or rejects the proposal."
+        },
+        {
+          "id": "testing",
+          "label": "Test and debug",
+          "note": "Checks whether the code behaves as intended."
+        },
+        {
+          "id": "software",
+          "label": "Accepted code",
+          "note": "Verified changes become part of the software."
+        }
+      ],
+      "edges": [
+        {
+          "from": "context",
+          "to": "assistant",
+          "label": "context"
+        },
+        {
+          "from": "assistant",
+          "to": "proposal",
+          "label": "suggests"
+        },
+        {
+          "from": "proposal",
+          "to": "review",
+          "label": "inspects"
+        },
+        {
+          "from": "review",
+          "to": "testing",
+          "label": "revises"
+        },
+        {
+          "from": "testing",
+          "to": "software",
+          "label": "verifies"
+        }
+      ],
+      "caption": "AI proposes programming assistance, while developer review and testing determine what is accepted."
+    }
+  },
   "related": [
     "ai-copilot"
   ],

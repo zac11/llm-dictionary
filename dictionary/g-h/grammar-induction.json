@@ -5,7 +5,86 @@
   "type": "concept",
   "definition": "Grammar induction (or grammatical inference) is the process in machine learning of learning a formal grammar (usually as a collection of re-write rules or productions or alternatively as a finite-state machine or automaton of some kind) from a set of observations, thus constructing a model which accounts for the characteristics of the observed objects.",
   "details": "More generally, grammatical inference is that branch of machine learning where the instance space consists of discrete combinatorial objects such as strings, trees and graphs.",
-  "story": "Think of a lightbulb moment: the idea was always there, but someone had to point a finger at it. Behind the jargon is an idea you could explain to a friend over coffee. At its heart it is a simple notion, once you strip away the fancy name. Once you see it, you cannot unsee it. And that idea, made concrete, is Grammar induction.",
+  "explainer": {
+    "lead": "Grammar induction learns a compact set of rules that could have produced a collection of observed examples. It turns strings, trees, or graphs into a model of their structure, rather than requiring someone to write every rule by hand.",
+    "tiers": {
+      "eli5": "Imagine seeing several necklaces made from coloured beads and figuring out the pattern used to make them. Grammar induction does something similar: it looks at examples and works out rules that describe how their pieces fit together.",
+      "practitioner": "Apply it when observations are discrete structures such as strings, trees, or graphs and the desired output is an interpretable structural model. Choose a representation such as rewrite rules or a finite-state automaton, then check whether the learned model accounts for the observed examples rather than merely storing them.",
+      "paperLevel": "Given a set of observations O from an instance space of discrete combinatorial objects, grammatical inference learns a formal grammar G, typically a set of productions, or an automaton A that models characteristics of O. The instance space may contain strings, trees, or graphs."
+    },
+    "example": "From the strings ab, aabb, and aaabbb, a learner could infer the productions S -> aSb and S -> the empty string. These rules generate equal numbers of a's and b's, with every a before every b, and also account for all three observations.",
+    "usedIn": [
+      {
+        "name": "String structure learning",
+        "detail": "Learning rewrite rules or automata from observed strings.",
+        "url": ""
+      },
+      {
+        "name": "Tree structure learning",
+        "detail": "Modelling observations whose instances are trees.",
+        "url": ""
+      },
+      {
+        "name": "Graph structure learning",
+        "detail": "Modelling observations whose instances are graphs.",
+        "url": ""
+      }
+    ],
+    "intuition": "A grammar is a recipe for building structured objects, and induction means working backwards from finished objects to a recipe. The learned recipe should account for the patterns visible in the observations.",
+    "howItWorks": [
+      "Collect observations such as strings, trees, or graphs.",
+      "Choose a model form: productions or an automaton.",
+      "Infer rules or transitions that fit the observations.",
+      "Use the resulting grammar as a model of their structure."
+    ],
+    "whyItMatters": "It provides a way to learn explicit structural models from examples instead of constructing every grammar manually. The result can be a set of productions or an automaton, depending on the chosen representation.",
+    "misconceptions": [
+      "It learns a grammar from observations; it is not simply handwriting one.",
+      "It is not limited to strings: trees and graphs can also be instances."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "observations",
+          "label": "Observed examples",
+          "note": "Strings, trees, or graphs"
+        },
+        {
+          "id": "representation",
+          "label": "Model representation",
+          "note": "Productions or an automaton"
+        },
+        {
+          "id": "induction",
+          "label": "Grammar induction",
+          "note": "Infers structure from examples"
+        },
+        {
+          "id": "grammar",
+          "label": "Learned grammar",
+          "note": "Models the observed objects"
+        }
+      ],
+      "edges": [
+        {
+          "from": "observations",
+          "to": "induction",
+          "label": "examples"
+        },
+        {
+          "from": "representation",
+          "to": "induction",
+          "label": "model form"
+        },
+        {
+          "from": "induction",
+          "to": "grammar",
+          "label": "learns"
+        }
+      ],
+      "caption": "Grammar induction turns observations and a chosen model representation into a learned structural model."
+    }
+  },
   "related": [
     "affix-grammar-over-a-finite-lattice",
     "artificial-grammar-learning",

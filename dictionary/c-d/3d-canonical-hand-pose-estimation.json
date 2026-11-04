@@ -5,6 +5,92 @@
   "type": "concept",
   "definition": "Estimating hand joint positions in a normalized, canonical 3D space independent of camera view — a step toward consistent hand modeling.",
   "details": "Estimating hand joint positions in a normalized, canonical 3D space independent of camera view — a step toward consistent hand modeling.",
+  "explainer": {
+    "lead": "3D canonical hand pose estimation represents the positions of hand joints in a shared, normalized 3D coordinate system rather than relative to the camera. This makes hand poses easier to model consistently when the viewing angle changes.",
+    "tiers": {
+      "eli5": "Imagine describing a hand as if it were always placed in the same position on a table, no matter where you stand to look at it. The goal is to record where its joints are in that standard arrangement, so turning the camera does not make the same pose look completely different.",
+      "practitioner": "Use a canonical joint representation when poses from different camera views need a common reference frame. The main pitfalls are confusing normalized coordinates with camera-space coordinates and assuming that canonicalization alone resolves ambiguous or poorly observed joint positions.",
+      "paperLevel": "Given a hand observation, estimate J_can = {j_i}, where j_i = (x_i, y_i, z_i) is a hand joint expressed in a normalized canonical coordinate system independent of camera view. The representation supports consistent hand modeling across views; it does not by itself specify how joint visibility or pose ambiguity is handled."
+    },
+    "example": "The same hand pose is photographed once from the front and once from the side. Although the images and camera-relative joint coordinates differ, canonical estimation aims to describe the wrist, knuckles, and fingertips in the same normalized 3D frame for both views.",
+    "usedIn": [
+      {
+        "name": "Consistent hand modeling",
+        "detail": "Provides a shared 3D joint representation instead of a separate camera-relative description for every view.",
+        "url": ""
+      },
+      {
+        "name": "Cross-view hand pose analysis",
+        "detail": "Places observations from different viewing angles into a common canonical frame.",
+        "url": ""
+      }
+    ],
+    "intuition": "A hand should not need a new coordinate description every time the camera moves. Canonical pose estimation separates the hand's 3D joint layout from the viewpoint used to observe it.",
+    "howItWorks": [
+      "Observe a hand from a camera view.",
+      "Estimate the 3D positions of its joints.",
+      "Express those joints in a normalized canonical coordinate system.",
+      "Use the resulting view-independent pose for consistent hand modeling."
+    ],
+    "whyItMatters": "A common coordinate system reduces viewpoint-dependent variation in the pose representation. That gives hand modeling a more consistent target across camera views.",
+    "misconceptions": [
+      "It is not simply ordinary camera-space 3D pose estimation; the output uses a canonical frame.",
+      "View independence does not mean every input image uniquely determines the hand's 3D pose.",
+      "Canonicalizing joint positions is not the same as recognizing a gesture or action."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "observation",
+          "label": "Hand observation",
+          "note": "A hand seen from a particular camera view"
+        },
+        {
+          "id": "joints",
+          "label": "3D joint estimation",
+          "note": "Estimate hand joint positions"
+        },
+        {
+          "id": "canonical",
+          "label": "Canonical normalization",
+          "note": "Remove dependence on the camera frame"
+        },
+        {
+          "id": "pose",
+          "label": "Canonical hand pose",
+          "note": "Joints in a shared normalized 3D space"
+        },
+        {
+          "id": "modeling",
+          "label": "Consistent modeling",
+          "note": "Use a common representation across views"
+        }
+      ],
+      "edges": [
+        {
+          "from": "observation",
+          "to": "joints",
+          "label": "image evidence"
+        },
+        {
+          "from": "joints",
+          "to": "canonical",
+          "label": "3D joints"
+        },
+        {
+          "from": "canonical",
+          "to": "pose",
+          "label": "normalized pose"
+        },
+        {
+          "from": "pose",
+          "to": "modeling",
+          "label": "shared frame"
+        }
+      ],
+      "caption": "Joint estimates are placed in a normalized canonical frame before being used for consistent hand modeling."
+    }
+  },
   "citation": {
     "title": "3D Canonical Hand Pose Estimation",
     "authors": [],

@@ -5,7 +5,103 @@
   "type": "concept",
   "definition": "In information science, formal concept analysis (FCA) is a principled way of deriving a concept hierarchy or formal ontology from a collection of objects and their properties.",
   "details": "Each concept in the hierarchy represents the objects sharing some set of properties; and each sub-concept in the hierarchy represents a subset of the objects (as well as a superset of the properties) in the concepts above it. The term was introduced by Rudolf Wille in 1981, and builds on the mathematical theory of lattices and ordered sets that was developed by Garrett Birkhoff and others in the 1930s. Formal concept analysis finds practical application in fields including data mining, text mining, machine learning, knowledge management, semantic web, software development, chemistry and biology.",
-  "story": "Think of a lightbulb moment: the idea was always there, but someone had to point a finger at it. Behind the jargon is an idea you could explain to a friend over coffee. At its heart it is a simple notion, once you strip away the fancy name. Once you see it, you cannot unsee it. And that idea, made concrete, is Formal concept analysis.",
+  "explainer": {
+    "lead": "Formal concept analysis turns a table of objects and their properties into an organised hierarchy of concepts. It helps reveal meaningful groupings and how broader and narrower ideas relate, without requiring those groupings to be chosen in advance.",
+    "tiers": {
+      "eli5": "Imagine sorting your toys by features such as red, wheeled or soft. Some toys share exactly the same features, and smaller groups usually have more features in common; formal concept analysis draws these groups as a family tree-like map. It is a way of letting the objects and their features show you the categories.",
+      "practitioner": "An engineer starts with an object–property table, derives each concept as a matching set of objects and shared properties, and orders concepts by inclusion of their object sets. The resulting lattice can support data exploration, text analysis, machine-learning work and knowledge organisation. A key pitfall is treating the lattice as a simple tree: a concept can sit below more than one broader concept.",
+      "paperLevel": "For objects G, properties M and incidence relation I, a formal concept is a pair (A, B), with A contained in G and B contained in M, such that A contains exactly the objects having every property in B and B contains exactly the properties shared by every object in A. Concepts are ordered by (A1, B1) <= (A2, B2) when A1 is contained in A2, equivalently when B2 is contained in B1, producing a lattice. Rudolf Wille introduced the term in 1981, building on lattice and ordered-set theory developed by Garrett Birkhoff and others in the 1930s."
+    },
+    "example": "Suppose Song A is guitar and upbeat, Song B is guitar and calm, and Song C is piano and calm. One concept contains Songs A and B with the shared property guitar, another contains Songs B and C with calm, and a narrower concept contains only Song B with guitar and calm; thus the Song B concept sits below both the guitar and calm concepts.",
+    "usedIn": [
+      {
+        "name": "Data mining",
+        "detail": "Finds groups of records characterised by shared attributes and orders those groups by generality.",
+        "url": ""
+      },
+      {
+        "name": "Text mining",
+        "detail": "Organises texts and their shared terms or features into concept hierarchies.",
+        "url": ""
+      },
+      {
+        "name": "Machine learning",
+        "detail": "Provides structured object–property groupings that can support learning and analysis.",
+        "url": ""
+      },
+      {
+        "name": "Knowledge management",
+        "detail": "Derives formal concept structures that can help organise knowledge and ontologies.",
+        "url": ""
+      }
+    ],
+    "intuition": "A concept has two sides: the objects it covers and the properties they all share. Moving down the hierarchy covers fewer objects but demands more shared properties, so the table itself determines which concepts are broader or narrower.",
+    "howItWorks": [
+      "List the objects and the properties used to describe them.",
+      "Record which object has which property in a table.",
+      "Pair each object set with all properties its members share, keeping complete object–property pairs.",
+      "Order the concepts so fewer objects and more properties appear lower down.",
+      "Read the resulting lattice as a concept hierarchy or formal ontology."
+    ],
+    "whyItMatters": "FCA gives a principled link between examples and descriptions, making groupings inspectable rather than just assigning loose labels. Its hierarchy also captures overlapping classifications, which is useful for exploring data and constructing formal ontologies.",
+    "misconceptions": [
+      "A concept is not just a property label; it pairs an object set with the properties exactly shared by that set.",
+      "The hierarchy is not necessarily a tree, because one concept can have several broader concepts above it.",
+      "Narrower concepts contain fewer objects but more properties, not fewer of both."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "objects",
+          "label": "Objects and properties",
+          "note": "The items to organise and their descriptions"
+        },
+        {
+          "id": "context",
+          "label": "Object–property table",
+          "note": "Records which properties each object has"
+        },
+        {
+          "id": "concepts",
+          "label": "Formal concepts",
+          "note": "Complete pairs of object sets and shared properties"
+        },
+        {
+          "id": "lattice",
+          "label": "Concept lattice",
+          "note": "Orders concepts by objects lost and properties gained"
+        },
+        {
+          "id": "ontology",
+          "label": "Concept hierarchy",
+          "note": "Supports exploration or a formal ontology"
+        }
+      ],
+      "edges": [
+        {
+          "from": "objects",
+          "to": "context",
+          "label": "tabulate"
+        },
+        {
+          "from": "context",
+          "to": "concepts",
+          "label": "derive"
+        },
+        {
+          "from": "concepts",
+          "to": "lattice",
+          "label": "order"
+        },
+        {
+          "from": "lattice",
+          "to": "ontology",
+          "label": "interpret"
+        }
+      ],
+      "caption": "FCA derives object–property concepts from a table and orders them into a lattice."
+    }
+  },
   "related": [
     "affinity-analysis",
     "archetypal-analysis",

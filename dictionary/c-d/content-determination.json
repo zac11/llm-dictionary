@@ -5,7 +5,91 @@
   "type": "concept",
   "definition": "Content determination is the subtask of natural language generation (NLG) that involves deciding on the information to be communicated in a generated text.",
   "details": "It is closely related to the task of document structuring.",
-  "story": "Think of a jazz musician who has heard so many solos that a new one simply falls out of their fingers. Given a starting line, the machine imagines what comes next — a word, a note, a patch of a picture. It makes new things by recombining everything it has ever seen. Creation, here, is memory recombined at speed. That next-word, next-stroke magic is Content determination.",
+  "explainer": {
+    "lead": "Content determination is the part of natural language generation that decides what information a text should communicate. It matters because a well-written message can still fail if it includes irrelevant details or leaves out something important.",
+    "tiers": {
+      "eli5": "Imagine telling a friend about your day: you first decide which things are worth mentioning before choosing the exact words. Content determination is that choosing step for a computer writing text. It helps the computer include useful information instead of telling everything it knows.",
+      "practitioner": "In an NLG pipeline, content determination selects the information to communicate before later stages organize and express it. It should be guided by the intended message so the output is neither overloaded nor missing essential information. It is closely related to document structuring, but selection and arrangement are distinct concerns.",
+      "paperLevel": "Content determination is the NLG subtask that, given available information, selects the information to be communicated in the generated text. In plain-text notation, it can be viewed as choosing a selected content set S from the available information. It is distinct from, and closely related to, document structuring."
+    },
+    "example": "Suppose a weather-text system knows the day's high temperature, rain forecast, wind speed, and humidity. For a short update, content determination might select the high temperature and rain forecast while leaving out wind speed and humidity; the chosen information can then be organized and written as text.",
+    "usedIn": [
+      {
+        "name": "Natural language generation",
+        "detail": "Content determination selects the information that a generated text will communicate.",
+        "url": ""
+      },
+      {
+        "name": "Document structuring",
+        "detail": "This closely related task works alongside content determination when planning generated documents.",
+        "url": ""
+      }
+    ],
+    "intuition": "Before deciding how to say something, a writer must decide what is worth saying. Content determination gives an NLG system that same selectivity, turning available information into the intended content of a message.",
+    "howItWorks": [
+      "Start with the information available to the NLG system.",
+      "Decide which information the generated text should communicate.",
+      "Exclude information that will not be part of the message.",
+      "Pass the selected content on for closely related structuring and later text generation."
+    ],
+    "whyItMatters": "It determines the substance of the generated message, shaping whether the result communicates the needed information without including everything available. Its choices also provide the material that document structuring and subsequent generation must work with.",
+    "misconceptions": [
+      "It is not the same as document structuring: determining content selects what to communicate, while the two tasks are closely related.",
+      "It is not choosing the final wording of a sentence; it concerns the information the text will convey."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "available",
+          "label": "Available information",
+          "note": "Information the NLG system can draw on"
+        },
+        {
+          "id": "determine",
+          "label": "Content determination",
+          "note": "Decides what the text will communicate"
+        },
+        {
+          "id": "selected",
+          "label": "Selected content",
+          "note": "Information chosen for the message"
+        },
+        {
+          "id": "structure",
+          "label": "Document structuring",
+          "note": "A closely related generation task"
+        },
+        {
+          "id": "text",
+          "label": "Generated text",
+          "note": "Text communicating the selected information"
+        }
+      ],
+      "edges": [
+        {
+          "from": "available",
+          "to": "determine",
+          "label": ""
+        },
+        {
+          "from": "determine",
+          "to": "selected",
+          "label": "selects"
+        },
+        {
+          "from": "selected",
+          "to": "structure",
+          "label": ""
+        },
+        {
+          "from": "structure",
+          "to": "text",
+          "label": ""
+        }
+      ],
+      "caption": "Content determination selects the information that subsequent NLG work turns into generated text."
+    }
+  },
   "related": [
     "ai-generated-violent-extremist-content",
     "artificial-intelligence-content-detection",

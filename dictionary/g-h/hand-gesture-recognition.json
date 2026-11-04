@@ -5,6 +5,98 @@
   "type": "concept",
   "definition": "Interpreting hand poses and movements from images or video as commands or signs.",
   "details": "Interpreting hand poses and movements from images or video as commands or signs. It enables touchless interfaces, sign-language input, and AR/VR interaction.",
+  "explainer": {
+    "lead": "Hand gesture recognition lets a computer understand what a person’s hands are doing in an image or video. It can turn a pose or movement into an input, making touchless controls, sign-language input, and AR/VR interaction possible.",
+    "tiers": {
+      "eli5": "Imagine a friend who understands when you wave, point, or give a thumbs-up. A computer can learn to watch your hands through a camera and respond in a similar way. You might move your hand through the air to control something without touching a screen.",
+      "practitioner": "Engineers apply it by taking poses or motion from camera images and mapping them to gestures, commands, or signs. Systems need to handle variation in hand appearance, viewpoint, lighting, and occlusion, and a detected hand is not enough on its own: the output must match the application’s gesture vocabulary. Temporal consistency matters when gestures are defined by movement rather than a single pose.",
+      "paperLevel": "Given an image I or image sequence I_1,...,I_T, hand gesture recognition estimates a gesture label y or a time-varying output sequence representing commands or signs. The task may concern static hand poses, movements, or both. Difficulties include visual ambiguity, occlusion, and variation in viewpoint, lighting, and hand appearance."
+    },
+    "example": "A camera watches a user at a touchless interface. The user holds up an open hand and then moves it to the right; the system recognizes that movement as a swipe gesture and uses it to advance to the next screen.",
+    "usedIn": [
+      {
+        "name": "Touchless interfaces",
+        "detail": "Hand poses or movements can serve as commands without physical contact with a control surface.",
+        "url": ""
+      },
+      {
+        "name": "Sign-language input",
+        "detail": "Hand configurations and movements can be interpreted as signs for computer input.",
+        "url": ""
+      },
+      {
+        "name": "AR/VR interaction",
+        "detail": "Users can interact with virtual content through hand poses and movements captured visually.",
+        "url": ""
+      }
+    ],
+    "intuition": "The computer learns to connect visible patterns in a hand’s shape or motion with meanings chosen by the application. A still pose can represent one gesture, while a sequence of changing poses can represent another.",
+    "howItWorks": [
+      "Capture one or more images containing the person’s hand.",
+      "Locate the hand and describe its visible pose, such as its shape and arrangement.",
+      "For movement-based gestures, track how the hand changes across video frames.",
+      "Match the observed pose or motion to a known gesture.",
+      "Translate that gesture into a command or sign for the application."
+    ],
+    "whyItMatters": "It provides a way to communicate with computers through natural hand movements when touching a keyboard, screen, or controller is unnecessary or undesirable. It also supports visual input for signs and interaction with virtual environments.",
+    "misconceptions": [
+      "Detecting a hand is not the same as recognizing what its pose or movement means.",
+      "Recognizing individual signs is not automatically a complete translation of a sign language.",
+      "A gesture need not be static; many gestures are defined by changes over time."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "camera",
+          "label": "Camera input",
+          "note": "Images or video show the hand."
+        },
+        {
+          "id": "hand",
+          "label": "Hand observation",
+          "note": "The visible hand is located."
+        },
+        {
+          "id": "pose",
+          "label": "Pose and motion",
+          "note": "Shape and changes across frames are represented."
+        },
+        {
+          "id": "recognition",
+          "label": "Gesture recognition",
+          "note": "Observations are matched to a known gesture."
+        },
+        {
+          "id": "output",
+          "label": "Command or sign",
+          "note": "The recognized gesture is passed to an application."
+        }
+      ],
+      "edges": [
+        {
+          "from": "camera",
+          "to": "hand",
+          "label": "frames"
+        },
+        {
+          "from": "hand",
+          "to": "pose",
+          "label": "observations"
+        },
+        {
+          "from": "pose",
+          "to": "recognition",
+          "label": "features"
+        },
+        {
+          "from": "recognition",
+          "to": "output",
+          "label": "gesture"
+        }
+      ],
+      "caption": "Images or video become hand observations, then pose or motion information, and finally a recognized command or sign."
+    }
+  },
   "citation": {
     "title": "Hand Gesture Recognition",
     "authors": [],

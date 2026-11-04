@@ -5,7 +5,123 @@
   "type": "concept",
   "definition": "The process of detecting and filtering harmful, inappropriate, or policy-violating content, often using a combination of automated classifiers and human review.",
   "details": "Content moderation systems for AI applications often use dedicated classifier models to flag problematic inputs or outputs before they reach or leave the main language model.",
-  "story": "Imagine a new medicine that works brilliantly in the lab but still has to be tested on real people before anyone takes it. Think of it as the quiet rule that a tool should be useful without being dangerous. The idea is simple: before something powerful is let loose, someone checks that it will not do real harm to real people. Rules and red-teaming are the brakes that make the speed trustworthy. And that is Content Moderation — the reason we can move fast without breaking things, or people.",
+  "explainer": {
+    "lead": "Content moderation is the safety check that looks for harmful, inappropriate, or policy-breaking material. In AI applications, it helps decide what should reach a language model and what its answers are allowed to contain.",
+    "tiers": {
+      "eli5": "Content moderation is like having a careful hall monitor check notes before they are passed along. The monitor follows a list of rules and stops notes that break them, while letting the others through. A computer can do the first check, and a person can look again when the decision is difficult.",
+      "practitioner": "Dedicated classifiers can screen user inputs before they reach the main language model and screen generated outputs before they are returned. Teams typically combine classifier scores and policy thresholds with human review for flagged or uncertain cases. The main pitfalls are missed violations, over-blocking acceptable content, and treating a classifier’s decision as a complete understanding of context.",
+      "paperLevel": "For a content policy P, a moderation system maps content x to an action such as allow, flag, or filter, often using a classifier score and a decision threshold. In an AI pipeline, this mapping can be applied to both model inputs and model outputs, with uncertain or flagged cases escalated to human reviewers. Its effectiveness is limited by classifier errors and the trade-off between failing to detect violations and incorrectly blocking compliant content."
+    },
+    "example": "A user sends an AI assistant a message that violates the application’s content policy. The input classifier flags it, so the message is filtered instead of being passed to the main language model; for an allowed message, the assistant’s draft answer is checked once more before it is shown.",
+    "usedIn": [
+      {
+        "name": "AI chat applications",
+        "detail": "Screen user messages and generated replies for content that violates application policies.",
+        "url": ""
+      },
+      {
+        "name": "Language-model APIs",
+        "detail": "Add classifier-based checks around requests and responses handled by a main model.",
+        "url": ""
+      },
+      {
+        "name": "User-generated content platforms",
+        "detail": "Detect and filter submissions that are harmful, inappropriate, or against platform rules.",
+        "url": ""
+      }
+    ],
+    "intuition": "Think of moderation as a set of policy checkpoints around an AI system. Automated classifiers handle the initial screening, while people can review cases that need closer judgment.",
+    "howItWorks": [
+      "Define which kinds of content are harmful, inappropriate, or forbidden by policy.",
+      "Send an incoming user input to a dedicated moderation classifier.",
+      "Allow acceptable input to reach the main language model, or flag and filter violating input.",
+      "Check the model’s generated output with another moderation pass before returning it.",
+      "Send selected flagged cases to human reviewers for further assessment."
+    ],
+    "whyItMatters": "Moderation gives AI applications a practical way to enforce content policies at both entry and exit points. Combining automation with human review helps manage large volumes without relying entirely on either classifiers or people.",
+    "misconceptions": [
+      "Content moderation is not just deleting content: it can also detect, flag, filter, or route material for review.",
+      "A moderation classifier is separate from the main language model and does not guarantee that every violation will be caught.",
+      "Automation does not eliminate human review, especially for flagged or difficult cases."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "User input",
+          "note": "Content submitted to the AI application"
+        },
+        {
+          "id": "input-check",
+          "label": "Input classifier",
+          "note": "Checks the input against policy"
+        },
+        {
+          "id": "review",
+          "label": "Human review",
+          "note": "Examines selected flagged cases"
+        },
+        {
+          "id": "model",
+          "label": "Language model",
+          "note": "Processes content allowed through"
+        },
+        {
+          "id": "output-check",
+          "label": "Output classifier",
+          "note": "Screens the generated response"
+        },
+        {
+          "id": "response",
+          "label": "Allowed response",
+          "note": "Returned after passing moderation"
+        },
+        {
+          "id": "filtered",
+          "label": "Filtered content",
+          "note": "Blocked rather than passed onward"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "input-check",
+          "label": ""
+        },
+        {
+          "from": "input-check",
+          "to": "model",
+          "label": "allowed"
+        },
+        {
+          "from": "input-check",
+          "to": "filtered",
+          "label": "violating"
+        },
+        {
+          "from": "input-check",
+          "to": "review",
+          "label": "flagged"
+        },
+        {
+          "from": "model",
+          "to": "output-check",
+          "label": "draft"
+        },
+        {
+          "from": "output-check",
+          "to": "response",
+          "label": "allowed"
+        },
+        {
+          "from": "output-check",
+          "to": "filtered",
+          "label": "violating"
+        }
+      ],
+      "caption": "A typical AI moderation flow, with policy checks before and after the main language model."
+    }
+  },
   "related": [
     "watermarking-ai-generated-content",
     "adversarial-example",

@@ -5,7 +5,98 @@
   "type": "concept",
   "definition": "A rating system, originally developed for chess, adapted to rank AI models based on the outcomes of pairwise comparisons between their outputs.",
   "details": "Elo ratings are used in platforms like Chatbot Arena to rank language models based on aggregated human preference votes from many pairwise 'battles' between model outputs.",
-  "story": "Picture a scoreboard at a science fair: you need a fair, agreed way to tell who actually won. A fair scoreboard keeps everyone honest. Before trusting a machine, someone has to measure how good it really is — fairly and honestly. A good metric is a ruler that does not bend when you lean on it. And that, done honestly, is Elo Rating (for model comparison).",
+  "explainer": {
+    "lead": "Elo rating turns head-to-head comparisons into a leaderboard: models gain or lose rating as their outputs win or lose against others. It gives people a simple way to compare many models without testing every one on a single fixed task.",
+    "tiers": {
+      "eli5": "Imagine two players showing you their drawings, and you pick the one you like better. Each model gets a score that changes as it wins or loses these match-ups. After lots of people judge lots of match-ups, the scores can be used to make a leaderboard.",
+      "practitioner": "In Chatbot Arena, Elo ratings are computed from aggregated human votes on pairwise model-output battles. Use the resulting ranking as a preference signal within that comparison setting, not as a standalone measure of correctness or performance on every task. Small numbers of battles and differences in the models or comparisons included can affect how a ranking should be interpreted.",
+      "paperLevel": "Each model is assigned a scalar rating derived from the outcomes of pairwise comparisons, with ratings updated across many battles to produce an ordering. In this setting, the measured outcome is aggregated human preference, so the rating does not by itself establish factual accuracy, task-specific capability, or performance outside the comparison pool."
+    },
+    "example": "Models A and B each answer the same prompt, and voters prefer A's answer. A gains rating while B loses rating; after many such battles involving other models, their updated ratings place them on a shared leaderboard.",
+    "usedIn": [
+      {
+        "name": "Chess",
+        "detail": "The original setting for the rating system, where players are ranked using head-to-head results.",
+        "url": ""
+      },
+      {
+        "name": "Chatbot Arena",
+        "detail": "Language models are ranked using aggregated human preference votes from pairwise output battles.",
+        "url": ""
+      },
+      {
+        "name": "Language model evaluation",
+        "detail": "Pairwise comparisons between model outputs are converted into relative model rankings.",
+        "url": ""
+      }
+    ],
+    "intuition": "Comparing two outputs at a time is often easier than assigning every model an absolute score. Elo combines many such wins and losses into one rating per model.",
+    "howItWorks": [
+      "Select two models and collect their outputs for a comparison.",
+      "Ask people which output they prefer, recording the battle outcome.",
+      "Update the models' ratings from the result.",
+      "Repeat across many battles and aggregate the votes.",
+      "Order the models by their resulting ratings."
+    ],
+    "whyItMatters": "It provides a practical way to turn large numbers of subjective pairwise judgments into a single, easy-to-read ranking. This makes it useful for comparing language models whose outputs are evaluated by human preference.",
+    "misconceptions": [
+      "A higher Elo rating does not necessarily mean more factually accurate outputs; it reflects the comparisons and preferences being aggregated.",
+      "One battle does not establish a reliable ranking; the ratings come from many aggregated comparisons.",
+      "The rating is relative to the comparison setting, not a universal score for every task."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "models",
+          "label": "Two models",
+          "note": "Produce outputs for comparison."
+        },
+        {
+          "id": "battle",
+          "label": "Pairwise battle",
+          "note": "The two outputs are compared."
+        },
+        {
+          "id": "votes",
+          "label": "Human votes",
+          "note": "People express output preferences."
+        },
+        {
+          "id": "update",
+          "label": "Rating update",
+          "note": "Battle outcomes change model ratings."
+        },
+        {
+          "id": "leaderboard",
+          "label": "Model leaderboard",
+          "note": "Aggregated ratings produce an ordering."
+        }
+      ],
+      "edges": [
+        {
+          "from": "models",
+          "to": "battle",
+          "label": "outputs"
+        },
+        {
+          "from": "battle",
+          "to": "votes",
+          "label": "comparison"
+        },
+        {
+          "from": "votes",
+          "to": "update",
+          "label": "outcomes"
+        },
+        {
+          "from": "update",
+          "to": "leaderboard",
+          "label": "ratings"
+        }
+      ],
+      "caption": "Human preferences from repeated pairwise battles are aggregated into model ratings and a leaderboard."
+    }
+  },
   "related": [
     "baseline-model",
     "model-evaluation",

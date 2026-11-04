@@ -5,7 +5,107 @@
   "type": "concept",
   "definition": "A technique for evaluating model performance by repeatedly partitioning data into different training and validation splits and averaging results across the splits.",
   "details": "Cross-validation (such as k-fold cross-validation) provides a more robust estimate of a model's generalization performance than a single train-test split, particularly useful for smaller datasets.",
-  "story": "Think of a referee whose job is to be completely honest about who touched the ball last. Before trusting a machine, someone has to measure how good it really is — fairly and honestly. It is the exam that separates “it sounds good” from “it actually is good”. What gets measured is what actually gets better. And that, done honestly, is Cross-Validation.",
+  "explainer": {
+    "lead": "Cross-validation checks a model by giving different parts of the data turns as the validation set, then averaging the scores. This produces a more dependable estimate of generalization than one train-test split, especially when data is limited.",
+    "tiers": {
+      "eli5": "Imagine studying flashcards by hiding a few, learning from the rest, and then testing yourself on the hidden ones. You repeat this until every card has had a turn in the test, then average your scores. That average gives you a fairer idea of how well you learned than one test with just a few cards.",
+      "practitioner": "In k-fold cross-validation, split the data into k parts, train on k−1 parts, and evaluate on the remaining part. Repeat until every part has served as validation data, then average the k scores rather than relying on one fold. This is particularly useful for smaller datasets, where a single split can give an unrepresentative result.",
+      "paperLevel": "Partition dataset D into k subsets D₁, …, Dₖ. For each i, train on D \\ Dᵢ and evaluate on Dᵢ, giving score sᵢ; the cross-validation estimate is CV = (1/k) Σᵢ sᵢ. It provides a more robust generalization estimate than a single train-test split, though it remains an estimate rather than a guarantee of future performance."
+    },
+    "example": "With five-fold cross-validation, suppose the five validation accuracies are 80%, 84%, 78%, 82%, and 86%. Their average is (80 + 84 + 78 + 82 + 86) / 5 = 82%, so the cross-validation estimate is 82% accuracy.",
+    "usedIn": [
+      {
+        "name": "Machine learning model evaluation",
+        "detail": "Used to estimate generalization by averaging performance over repeated training and validation splits.",
+        "url": ""
+      },
+      {
+        "name": "Small-dataset modeling",
+        "detail": "Especially useful when limited data makes the outcome of one train-test split less dependable.",
+        "url": ""
+      }
+    ],
+    "intuition": "One validation split may be unusually easy or difficult, so its score can be misleading. Rotating which data is held out and averaging the results reduces dependence on that single partition.",
+    "howItWorks": [
+      "Divide the dataset into k parts, called folds.",
+      "Hold out one fold for validation and train on the remaining folds.",
+      "Record the model's score on the held-out fold.",
+      "Repeat until every fold has been used once for validation.",
+      "Average the recorded scores to estimate generalization performance."
+    ],
+    "whyItMatters": "It uses the available data for both training and validation across different rounds, producing a more robust performance estimate than a single split. This is particularly valuable for smaller datasets.",
+    "misconceptions": [
+      "It is not just one train-test split: each fold takes a turn as validation data.",
+      "The averaged score is an estimate of generalization, not a guarantee of future performance."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "dataset",
+          "label": "Full dataset",
+          "note": "The available examples"
+        },
+        {
+          "id": "folds",
+          "label": "k folds",
+          "note": "Data divided into k parts"
+        },
+        {
+          "id": "train",
+          "label": "Training folds",
+          "note": "All folds except the held-out one"
+        },
+        {
+          "id": "model",
+          "label": "Fitted model",
+          "note": "Trained anew for each split"
+        },
+        {
+          "id": "validate",
+          "label": "Validation fold",
+          "note": "Produces one held-out score"
+        },
+        {
+          "id": "average",
+          "label": "Average score",
+          "note": "Combines scores after all folds rotate"
+        }
+      ],
+      "edges": [
+        {
+          "from": "dataset",
+          "to": "folds",
+          "label": "partition"
+        },
+        {
+          "from": "folds",
+          "to": "train",
+          "label": "k−1 folds"
+        },
+        {
+          "from": "train",
+          "to": "model",
+          "label": "fit"
+        },
+        {
+          "from": "folds",
+          "to": "validate",
+          "label": "hold out"
+        },
+        {
+          "from": "model",
+          "to": "validate",
+          "label": "evaluate"
+        },
+        {
+          "from": "validate",
+          "to": "average",
+          "label": "repeat"
+        }
+      ],
+      "caption": "Each fold takes a turn as validation data, and the resulting scores are averaged."
+    }
+  },
   "related": [
     "cross-validation-statistics",
     "a-b-testing",

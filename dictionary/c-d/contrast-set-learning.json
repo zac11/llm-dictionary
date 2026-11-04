@@ -5,7 +5,92 @@
   "type": "concept",
   "definition": "Contrast set learning is a form of association rule learning that seeks to identify meaningful differences between separate groups by reverse-engineering the key predictors that identify for each particular group.",
   "details": "For example, given a set of attributes for a pool of students (labeled by degree type), a contrast set learner would identify the contrasting features between students seeking bachelor's degrees and those working toward PhD degrees.",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. That is Contrast set learning — a small key that opens a big door.",
+  "explainer": {
+    "lead": "Contrast set learning looks for the attribute patterns that make one labeled group different from another. It is useful when the question is not just “Can I predict the group?” but “What specifically distinguishes this group?”",
+    "tiers": {
+      "eli5": "Imagine comparing students working toward different degrees. Instead of only guessing which group each student belongs to, you look for clues that make the groups different, such as patterns in their courses or activities. Those contrasting clues help explain what sets each group apart.",
+      "practitioner": "Apply it as an association-rule-learning task when records have both attributes and group labels. Compare candidate attribute patterns across groups and retain those that meaningfully identify a particular group. Check that the reported contrasts genuinely separate the groups, and do not treat a distinguishing pattern as evidence of causation.",
+      "paperLevel": "Given labeled examples (x, g), where x contains attributes and g ∈ G is a group label, learn contrast sets C_i: attribute patterns that distinguish group g_i from the other groups. The objective is to reverse-engineer the key predictors associated with each group, rather than merely produce group predictions. The results depend on the supplied attributes and labels, and a contrast alone does not establish causation."
+    },
+    "example": "Suppose student records include degree type, courses taken, and academic activities. A contrast set learner might compare bachelor’s and PhD students and identify a pattern involving research-methods courses and research activities that distinguishes the PhD group, while identifying a different course pattern associated with the bachelor’s group.",
+    "usedIn": [
+      {
+        "name": "Degree-program comparison",
+        "detail": "Finding attribute patterns that contrast bachelor’s-degree students with PhD students.",
+        "url": ""
+      },
+      {
+        "name": "Student attribute analysis",
+        "detail": "Using labeled student records to identify the features associated with each degree group.",
+        "url": ""
+      }
+    ],
+    "intuition": "A standard prediction task asks which group an example belongs to; contrast set learning asks which patterns make that group distinctive. The learned contrasts therefore provide a direct description of differences between groups.",
+    "howItWorks": [
+      "Collect records with attributes and a label identifying each record’s group.",
+      "Separate the records according to their group labels.",
+      "Generate candidate attribute patterns, or contrast sets, from the records.",
+      "Compare each pattern across groups to see whether it meaningfully distinguishes one group.",
+      "Report the key contrasting predictors associated with each group."
+    ],
+    "whyItMatters": "It turns group differences into explicit attribute patterns, helping explain what characterizes each group rather than only predicting its label.",
+    "misconceptions": [
+      "It is not merely group classification: its goal is to identify the contrasts that characterize each group.",
+      "A distinguishing attribute pattern does not by itself show that the attribute causes group membership."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "records",
+          "label": "Labeled records",
+          "note": "Attributes plus a group label"
+        },
+        {
+          "id": "groups",
+          "label": "Separate groups",
+          "note": "Divide records by label"
+        },
+        {
+          "id": "candidates",
+          "label": "Candidate patterns",
+          "note": "Possible attribute contrast sets"
+        },
+        {
+          "id": "compare",
+          "label": "Compare groups",
+          "note": "Test which group each pattern distinguishes"
+        },
+        {
+          "id": "contrasts",
+          "label": "Group contrasts",
+          "note": "Key predictors for each group"
+        }
+      ],
+      "edges": [
+        {
+          "from": "records",
+          "to": "groups",
+          "label": "group labels"
+        },
+        {
+          "from": "groups",
+          "to": "candidates",
+          "label": "attributes"
+        },
+        {
+          "from": "candidates",
+          "to": "compare",
+          "label": ""
+        },
+        {
+          "from": "compare",
+          "to": "contrasts",
+          "label": "meaningful differences"
+        }
+      ],
+      "caption": "Contrast set learning compares attribute patterns across labeled groups to identify what distinguishes each group."
+    }
+  },
   "related": [
     "action-model-learning",
     "active-learning-machine-learning",

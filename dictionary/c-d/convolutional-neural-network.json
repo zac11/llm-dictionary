@@ -10,7 +10,110 @@
   ],
   "definition": "A neural network that uses learned filters sliding over its input, especially effective for images and other grid data.",
   "details": "Convolutions share weights across spatial locations and build hierarchical features, from edges in early layers to whole objects in later ones. LeNet demonstrated the approach on handwritten digits, and deeper CNNs powered the modern computer-vision revolution. They remain central in vision pipelines even as Transformers gain ground.",
-  "story": "Imagine an art restorer who can spot a single cracked tile in a vast mosaic. What your eyes do without thinking, the machine does one careful layer at a time. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. The model looks the way you look at a crowd and finds the one face you know. And that is Convolutional Neural Network — giving a machine the gift of sight.",
+  "explainer": {
+    "lead": "A convolutional neural network learns small pattern detectors that it reuses across an image or another grid. This makes it especially good at turning raw pixels into increasingly useful visual features, from simple edges to whole objects.",
+    "tiers": {
+      "eli5": "Imagine looking for shapes in a picture with a small magnifying glass, moving it over every part instead of learning a separate way to look at each spot. A CNN learns what its magnifying glasses should look for, then combines simple clues like edges into bigger clues like objects.",
+      "practitioner": "CNNs apply learned filters across grid-shaped inputs, with weight sharing reducing the need for separate parameters at every location. They are used to build hierarchical visual representations and remain common in vision pipelines, though Transformers are increasingly competitive. Their design is most naturally suited to spatially structured data such as images.",
+      "paperLevel": "For a 2D input x, a convolutional layer can be written as y_k(i,j) = sum_c sum_(u,v) w_k,c(u,v) x_c(i+u,j+v) + b_k, producing feature map k from learned filter weights w and bias b. Sharing w across locations builds hierarchical features, from edges to objects. LeNet demonstrated the approach on handwritten digits; CNNs are strongest for grid data and now share vision work with Transformers."
+    },
+    "usedIn": [
+      {
+        "name": "Handwritten-digit recognition",
+        "detail": "LeNet demonstrated convolutional networks on handwritten digits.",
+        "url": ""
+      },
+      {
+        "name": "Computer vision",
+        "detail": "Deeper CNNs helped power modern image-understanding systems.",
+        "url": ""
+      },
+      {
+        "name": "Grid-structured data",
+        "detail": "Sliding filters and shared weights suit inputs with spatial structure.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Input grid",
+        "detail": "The image or other spatially arranged data entering the network."
+      },
+      {
+        "name": "Learned filters",
+        "detail": "Small sets of weights that detect local patterns wherever they occur."
+      },
+      {
+        "name": "Feature maps",
+        "detail": "The responses produced as filters slide across their inputs."
+      },
+      {
+        "name": "Layer hierarchy",
+        "detail": "Successive layers combine early edge-like features into higher-level object features."
+      }
+    ],
+    "flow": [
+      "An image or other grid enters the network.",
+      "Each learned filter slides across the grid, reusing the same weights at every location.",
+      "The filter responses form feature maps for the next layer.",
+      "Later layers combine earlier features into increasingly high-level representations."
+    ],
+    "origin": "LeNet demonstrated convolutional networks on handwritten digits.",
+    "lineage": "Deeper CNNs powered the modern computer-vision revolution and remain central to vision pipelines, even as Transformers gain ground.",
+    "whyItMatters": "Weight sharing lets a CNN learn local patterns once and recognize them across an entire input. Its hierarchical features made neural networks especially effective for vision.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input image",
+          "note": "Grid of pixel values"
+        },
+        {
+          "id": "filters",
+          "label": "Sliding filters",
+          "note": "Shared learned weights"
+        },
+        {
+          "id": "maps",
+          "label": "Feature maps",
+          "note": "Responses at each location"
+        },
+        {
+          "id": "early",
+          "label": "Early features",
+          "note": "Patterns such as edges"
+        },
+        {
+          "id": "late",
+          "label": "Later features",
+          "note": "Higher-level object features"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "filters",
+          "label": "pixels"
+        },
+        {
+          "from": "filters",
+          "to": "maps",
+          "label": "responses"
+        },
+        {
+          "from": "maps",
+          "to": "early",
+          "label": "features"
+        },
+        {
+          "from": "early",
+          "to": "late",
+          "label": "hierarchy"
+        }
+      ],
+      "caption": "Shared filters turn grid inputs into feature maps, which deeper layers combine into a visual hierarchy."
+    }
+  },
   "related": [
     "neural-network",
     "region-based-convolutional-neural-networks",

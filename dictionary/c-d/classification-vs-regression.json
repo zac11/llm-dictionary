@@ -5,6 +5,107 @@
   "type": "concept",
   "definition": "Classification predicts a category (spam or not, which intent, which dialect); regression predicts a continuous value (price, duration, score).",
   "details": "Classification predicts a category (spam or not, which intent, which dialect); regression predicts a continuous value (price, duration, score). The choice determines the loss function and output layer design.",
+  "explainer": {
+    "lead": "Classification and regression are two ways to frame a prediction problem: one chooses a category, while the other estimates a number on a continuous scale. Choosing between them matters because it shapes both the model's output and the loss function used to train it.",
+    "tiers": {
+      "eli5": "Classification is like sorting mail into labelled boxes, such as \"spam\" or \"not spam.\" Regression is like guessing how long a trip will take, where the answer can be 12 minutes, 12.5 minutes, or another value. The right choice depends on whether you want a label or a number.",
+      "practitioner": "Frame the target as classification when labels such as spam, intent, or dialect are required, and as regression when targets such as price, duration, or score are continuous. Then match the output layer and loss function to that target type. A common pitfall is treating category codes as continuous numbers simply because they are written as digits.",
+      "paperLevel": "Given an input x, classification learns a prediction among categorical outcomes, whereas regression predicts a continuous-valued target. The task formulation constrains the output-layer design and the loss used to compare predictions with targets. Confusing categorical and continuous targets can therefore make both the outputs and training objective inappropriate."
+    },
+    "example": "For a customer-support message, a classifier could predict the category \"refund request.\" A regressor using a continuous target could instead predict that handling the message will take 12.5 minutes.",
+    "usedIn": [
+      {
+        "name": "Email filtering",
+        "detail": "Classification predicts whether a message is spam or not.",
+        "url": ""
+      },
+      {
+        "name": "Language understanding",
+        "detail": "Classification identifies a user's intent or which dialect is being used.",
+        "url": ""
+      },
+      {
+        "name": "Property valuation",
+        "detail": "Regression estimates a continuous price.",
+        "url": ""
+      },
+      {
+        "name": "Service planning",
+        "detail": "Regression estimates durations, such as how long a task will take.",
+        "url": ""
+      }
+    ],
+    "intuition": "Ask whether the answer belongs in a labelled bucket or on a number line. Categories call for classification; continuous quantities call for regression.",
+    "howItWorks": [
+      "Define the prediction target.",
+      "Decide whether it is categorical or continuous.",
+      "Choose classification for a category or regression for a continuous value.",
+      "Design the output layer and loss function to match that choice."
+    ],
+    "whyItMatters": "This choice determines what kind of answer the model can produce and how its errors are measured during training. Framing the target incorrectly leads to an unsuitable output layer and loss function.",
+    "misconceptions": [
+      "A numeric category code does not make the task regression.",
+      "The same input can support either task; the target determines the choice.",
+      "Classification does not estimate a continuous value such as price or duration."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input data",
+          "note": "The example to make a prediction about."
+        },
+        {
+          "id": "target",
+          "label": "Prediction target",
+          "note": "Decide what the model must predict."
+        },
+        {
+          "id": "classification",
+          "label": "Classification",
+          "note": "Predict a category."
+        },
+        {
+          "id": "regression",
+          "label": "Regression",
+          "note": "Predict a continuous value."
+        },
+        {
+          "id": "design",
+          "label": "Output and loss",
+          "note": "Match training design to the task."
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "target",
+          "label": "frames"
+        },
+        {
+          "from": "target",
+          "to": "classification",
+          "label": "category"
+        },
+        {
+          "from": "target",
+          "to": "regression",
+          "label": "continuous"
+        },
+        {
+          "from": "classification",
+          "to": "design",
+          "label": ""
+        },
+        {
+          "from": "regression",
+          "to": "design",
+          "label": ""
+        }
+      ],
+      "caption": "The target type selects classification or regression, which in turn shapes the output layer and loss function."
+    }
+  },
   "related": [
     "loss-function"
   ],

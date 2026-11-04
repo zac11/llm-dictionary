@@ -5,7 +5,93 @@
   "type": "concept",
   "definition": "The compact representation for quasi-Newton methods is a matrix decomposition, which is typically used in gradient based optimization algorithms or for solving nonlinear systems.",
   "details": "The decomposition uses a low-rank representation for the direct and/or inverse Hessian or the Jacobian of a nonlinear system. Because of this, the compact representation is often used for large problems and constrained optimization.",
-  "story": "Imagine teaching a friend to shoot a basketball. They miss, and you walk them backwards through the shot — elbow, wrist, release — to find what needs fixing. It is the same loop you use to learn anything: try, miss, correct, try again. Underneath all the magic is a patient process of small improvements. It is learning from every miss instead of repeating the same mistake. That steady, miss-by-miss improvement is Compact quasi-Newton representation.",
+  "explainer": {
+    "lead": "A compact quasi-Newton representation is a space-saving way to describe the matrix approximation used in many optimization and nonlinear-system calculations. Its low-rank form makes it especially useful for large problems and constrained optimization.",
+    "tiers": {
+      "eli5": "Imagine trying to improve a huge machine without writing down how every part affects every other part. You keep a short summary of the most important relationships instead. A compact quasi-Newton representation does something similar, helping a computer take useful steps without keeping the whole giant table.",
+      "practitioner": "Use the decomposition to represent a direct or inverse Hessian, or a Jacobian, through low-rank factors rather than an explicit full matrix. It fits gradient-based optimization, nonlinear-system solving, and large or constrained problems. Remember that it is a matrix representation: the approximation can concern the Hessian, its inverse, or a Jacobian, depending on the calculation.",
+      "paperLevel": "Let A denote a direct or inverse Hessian approximation, or the Jacobian of a nonlinear system. A compact quasi-Newton representation encodes A with a low-rank matrix decomposition instead of storing an explicit full matrix. The resulting approximation is used in gradient-based optimization or nonlinear-system solution, with the compact form making large and constrained problems natural settings."
+    },
+    "example": "Consider minimizing a function with thousands of variables using a gradient-based method. Instead of forming a full matrix relating every variable to every other variable, the method keeps a low-rank decomposition of the inverse Hessian approximation and uses that representation when computing its optimization steps.",
+    "usedIn": [
+      {
+        "name": "Gradient-based optimization",
+        "detail": "Represents the Hessian approximation used to guide optimization steps.",
+        "url": ""
+      },
+      {
+        "name": "Nonlinear-system solving",
+        "detail": "Provides a compact low-rank representation of the system Jacobian.",
+        "url": ""
+      },
+      {
+        "name": "Large-scale problems",
+        "detail": "Avoids relying on an explicit full Hessian or Jacobian representation.",
+        "url": ""
+      },
+      {
+        "name": "Constrained optimization",
+        "detail": "Uses the same compact matrix representation in settings with constraints.",
+        "url": ""
+      }
+    ],
+    "intuition": "A full Hessian or Jacobian can be unwieldy when a problem is large. The compact representation keeps a low-rank decomposition of the needed approximation, preserving a useful matrix description without representing the full matrix directly.",
+    "howItWorks": [
+      "Identify the matrix to approximate: a direct Hessian, an inverse Hessian, or a Jacobian.",
+      "Express that approximation using a low-rank matrix decomposition.",
+      "Keep the decomposition as the compact quasi-Newton representation.",
+      "Use the represented matrix in a gradient-based optimization algorithm or a nonlinear-system solve.",
+      "Apply the same approach to large-scale or constrained problems where a compact form is valuable."
+    ],
+    "whyItMatters": "It gives optimization and nonlinear-system methods a practical way to handle Hessian or Jacobian approximations in large problems. Its usefulness also extends to constrained optimization.",
+    "misconceptions": [
+      "It is not limited to inverse Hessians; it can represent direct Hessians and Jacobians too.",
+      "It is a matrix representation, not a separate optimization objective.",
+      "Low-rank does not mean the underlying problem is small; the representation is often chosen for large problems."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "matrix",
+          "label": "Matrix approximation",
+          "note": "Direct or inverse Hessian, or a Jacobian"
+        },
+        {
+          "id": "decomposition",
+          "label": "Low-rank decomposition",
+          "note": "Expresses the matrix in compact form"
+        },
+        {
+          "id": "representation",
+          "label": "Compact representation",
+          "note": "Stores the quasi-Newton matrix description"
+        },
+        {
+          "id": "application",
+          "label": "Numerical calculation",
+          "note": "Optimization step or nonlinear-system solve"
+        }
+      ],
+      "edges": [
+        {
+          "from": "matrix",
+          "to": "decomposition",
+          "label": "factorize"
+        },
+        {
+          "from": "decomposition",
+          "to": "representation",
+          "label": "encode"
+        },
+        {
+          "from": "representation",
+          "to": "application",
+          "label": "apply"
+        }
+      ],
+      "caption": "A low-rank decomposition turns a Hessian or Jacobian approximation into a compact representation for optimization or nonlinear-system calculations."
+    }
+  },
   "related": [
     "gauss-newton-algorithm",
     "multimodal-representation-learning",

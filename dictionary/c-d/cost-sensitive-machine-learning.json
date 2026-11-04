@@ -5,7 +5,85 @@
   "type": "concept",
   "definition": "Cost-sensitive machine learning is an approach within machine learning that considers varying costs associated with different types of errors.",
   "details": "This method diverges from traditional approaches by introducing a cost matrix, explicitly specifying the penalties or benefits for each type of prediction error. The inherent difficulty which cost-sensitive machine learning tackles is that minimizing different kinds of classification errors is a multi-objective optimization problem.",
-  "story": "Think of a lightbulb moment: the idea was always there, but someone had to point a finger at it. Behind the jargon is an idea you could explain to a friend over coffee. At its heart it is a simple notion, once you strip away the fancy name. Once you see it, you cannot unsee it. And that idea, made concrete, is Cost-sensitive machine learning.",
+  "explainer": {
+    "lead": "Cost-sensitive machine learning treats different prediction mistakes as having different consequences. Instead of chasing the fewest errors overall, it aims for the decisions with the lowest total cost, which matters when one kind of mistake is far more serious than another.",
+    "tiers": {
+      "eli5": "Imagine a smoke alarm: a false alarm is annoying, but missing a real fire can be dangerous. Cost-sensitive machine learning teaches a computer that these mistakes are not equally bad. It uses a table of penalties so the computer can choose predictions that cause the least trouble overall.",
+      "practitioner": "Define a cost matrix for the relevant prediction outcomes, then use it when training or selecting a classifier and when evaluating results. Compare candidate models by expected or observed total cost on validation data rather than error rate alone. The main pitfalls are choosing unrealistic costs and treating a multi-objective trade-off as though a single accuracy figure captured it.",
+      "paperLevel": "For classes y and predictions y', a cost matrix C specifies C[y, y'] as the penalty or benefit of that outcome. A natural objective is to minimize expected cost R(h) = sum over x, y of P(x, y) C[y, h(x)], rather than simply minimizing the number of misclassifications. Reducing different kinds of classification error can conflict, making the underlying problem multi-objective and dependent on how the costs are specified."
+    },
+    "example": "Suppose a screening classifier misses a disease in 2 cases, with each miss assigned a cost of 100, while another classifier misses only 1 case but produces 10 false alarms costing 5 each. Their costs are 200 and 150 respectively, so the second classifier is preferred under this matrix even though it makes more errors overall.",
+    "intuition": "Not every wrong answer causes the same harm. Cost-sensitive learning puts those differences directly into the learning problem, so a model can accept more cheap mistakes to avoid expensive ones.",
+    "howItWorks": [
+      "Identify the possible true classes and predictions.",
+      "Assign each outcome a penalty or benefit in a cost matrix.",
+      "Train or select a predictor using those costs.",
+      "Compare outcomes by total cost, not just error count."
+    ],
+    "whyItMatters": "A lower error count does not necessarily mean a better decision when mistakes have unequal consequences. The cost matrix makes those consequences explicit and turns model comparison into a question about total expected cost.",
+    "misconceptions": [
+      "It is not the same as maximizing accuracy.",
+      "A false positive and false negative need not share a cost.",
+      "It does not remove trade-offs between error types."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "outcomes",
+          "label": "Prediction outcomes",
+          "note": "True classes paired with possible predictions"
+        },
+        {
+          "id": "matrix",
+          "label": "Cost matrix",
+          "note": "Penalties or benefits for each outcome"
+        },
+        {
+          "id": "learner",
+          "label": "Cost-sensitive learner",
+          "note": "Uses costs while training or selecting a predictor"
+        },
+        {
+          "id": "predictions",
+          "label": "Model predictions",
+          "note": "Class decisions with unequal error consequences"
+        },
+        {
+          "id": "total",
+          "label": "Total cost",
+          "note": "Cost-based result used to compare models"
+        }
+      ],
+      "edges": [
+        {
+          "from": "outcomes",
+          "to": "matrix",
+          "label": "define costs"
+        },
+        {
+          "from": "matrix",
+          "to": "learner",
+          "label": "guide learning"
+        },
+        {
+          "from": "learner",
+          "to": "predictions",
+          "label": ""
+        },
+        {
+          "from": "predictions",
+          "to": "total",
+          "label": ""
+        },
+        {
+          "from": "matrix",
+          "to": "total",
+          "label": "score outcomes"
+        }
+      ],
+      "caption": "A cost matrix connects possible prediction outcomes to both model learning and cost-based evaluation."
+    }
+  },
   "related": [
     "machine-learning",
     "active-learning-machine-learning",

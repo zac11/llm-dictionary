@@ -5,6 +5,98 @@
   "type": "concept",
   "definition": "Detecting unusual or anomalous sounds in an audio stream, often with only normal examples available for training.",
   "details": "Detecting unusual or anomalous sounds in an audio stream, often with only normal examples available for training. Used in machine-health monitoring, surveillance, and bioacoustics.",
+  "explainer": {
+    "lead": "Acoustic novelty detection listens for sounds that differ from what a system has learned to expect. It can raise an early warning when a machine, place, or habitat produces an unusual noise, even when no examples of that exact problem were available during training.",
+    "tiers": {
+      "eli5": "Imagine knowing the usual hum of your refrigerator so well that a new rattling sound immediately catches your attention. Acoustic novelty detection teaches a computer to do something similar: learn ordinary sounds, then notice when a sound does not fit. It can spot a surprise without being taught every possible surprise beforehand.",
+      "practitioner": "Train on audio representing normal operation, score incoming sounds by how far they depart from that normal pattern, and apply a threshold to decide when to alert. This is useful when abnormal recordings are rare or unavailable, such as in machine-health monitoring. A key pitfall is treating every unfamiliar sound as a fault, since harmless variation can also look novel.",
+      "paperLevel": "Given training audio X = {x_1, ..., x_n} drawn from normal conditions, learn a novelty score s(x); flag a new sound x when s(x) > tau. The setting is typically one-sided because training provides normal examples rather than a representative set of anomalies. Performance is limited by variation within normal audio and by the choice of tau, which controls the balance between missed novelties and false alarms."
+    },
+    "example": "A monitoring system is trained on recordings of a machine's normal hum. When the microphone later captures a new rattling sound, its novelty score rises above the threshold and the system flags that segment for inspection.",
+    "usedIn": [
+      {
+        "name": "Machine-health monitoring",
+        "detail": "Listening for unfamiliar machine sounds that may signal a change from normal operation.",
+        "url": ""
+      },
+      {
+        "name": "Surveillance",
+        "detail": "Flagging unusual sounds in an audio stream for further attention.",
+        "url": ""
+      },
+      {
+        "name": "Bioacoustics",
+        "detail": "Detecting sounds that depart from the expected acoustic patterns in environmental recordings.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of learning what every possible abnormal sound is like, learn what normal sounds like and notice meaningful departures from it. This makes the approach useful when anomalies are rare, unexpected, or hard to collect.",
+    "howItWorks": [
+      "Collect audio examples of normal conditions.",
+      "Learn a representation of their typical acoustic pattern.",
+      "Score each incoming sound by its departure from that pattern.",
+      "Compare the score with a chosen threshold.",
+      "Flag sounds above the threshold as novel."
+    ],
+    "whyItMatters": "It can reveal unexpected acoustic events without requiring a training example of every possible event. That is valuable for monitoring machines, surroundings, and environmental sound recordings.",
+    "misconceptions": [
+      "A novelty alert does not by itself identify what caused the sound.",
+      "An unfamiliar sound is not necessarily dangerous or faulty.",
+      "It is different from recognizing or transcribing spoken words."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "normal-audio",
+          "label": "Normal audio",
+          "note": "Training examples from ordinary conditions"
+        },
+        {
+          "id": "normal-model",
+          "label": "Normal sound model",
+          "note": "Represents expected acoustic patterns"
+        },
+        {
+          "id": "incoming-audio",
+          "label": "Incoming audio",
+          "note": "New sounds from the audio stream"
+        },
+        {
+          "id": "novelty-score",
+          "label": "Novelty score",
+          "note": "Measures departure from normal"
+        },
+        {
+          "id": "alert",
+          "label": "Novelty alert",
+          "note": "Raised when the score passes the threshold"
+        }
+      ],
+      "edges": [
+        {
+          "from": "normal-audio",
+          "to": "normal-model",
+          "label": "training"
+        },
+        {
+          "from": "normal-model",
+          "to": "novelty-score",
+          "label": ""
+        },
+        {
+          "from": "incoming-audio",
+          "to": "novelty-score",
+          "label": ""
+        },
+        {
+          "from": "novelty-score",
+          "to": "alert",
+          "label": "above threshold"
+        }
+      ],
+      "caption": "A model learned from normal audio scores incoming sounds and flags sufficiently unusual ones."
+    }
+  },
   "citation": {
     "title": "Acoustic Novelty Detection",
     "authors": [],

@@ -5,7 +5,109 @@
   "type": "algorithm",
   "definition": "A constructive heuristic is a type of heuristic method which starts with an empty solution and repeatedly extends the current solution until a complete solution is obtained.",
   "details": "It differs from local search heuristics which start with a complete solution and then try to improve the current solution further via local moves. Examples of some famous problems that are solved using constructive heuristics are the flow shop scheduling, the vehicle routing problem and the open shop problem.",
-  "story": "Picture an engineer at a cluttered workbench, turning a clever idea over in their hands until it finally clicks. At its heart it is a simple notion, once you strip away the fancy name. A small key that opens a much bigger door. It is one of those ideas that feels obvious only after someone shows it to you. That is Constructive heuristic — a small key that opens a big door.",
+  "explainer": {
+    "lead": "A constructive heuristic builds a solution from nothing, adding one piece at a time until the solution is complete. It is useful for problems such as scheduling jobs or planning vehicle routes, where assembling a workable answer directly can be more natural than starting with a complete answer and repairing it.",
+    "tiers": {
+      "eli5": "Imagine planning a delivery trip by adding one stop at a time to an empty list. You keep adding stops until every delivery is included, and then your route is ready.",
+      "practitioner": "Use a constructive heuristic when a schedule, route, or other solution can be assembled incrementally from an empty state. The extension rule matters because early choices shape the final result; unlike local search, the basic procedure does not start with a complete solution and improve it through local moves.",
+      "paperLevel": "Start with an empty partial solution S0 = ∅ and repeatedly apply S(t+1) = extend(S(t)) until S(t) satisfies the problem's completeness condition. This contrasts with local search, which begins with a complete solution and applies local moves to improve it. The constructive procedure itself ends at completeness rather than performing that subsequent improvement phase."
+    },
+    "example": "Suppose a vehicle must visit stops A, B, and C. Starting with an empty route, the heuristic adds A, then B, then C; the resulting route A → B → C is complete because every required stop has been included.",
+    "usedIn": [
+      {
+        "name": "Flow shop scheduling",
+        "detail": "A job schedule can be built by adding jobs until the schedule is complete.",
+        "url": ""
+      },
+      {
+        "name": "Vehicle routing",
+        "detail": "Routes can be constructed by adding stops until all required visits are included.",
+        "url": ""
+      },
+      {
+        "name": "Open shop scheduling",
+        "detail": "A complete schedule can be assembled through repeated extensions of a partial schedule.",
+        "url": ""
+      }
+    ],
+    "goal": "Produce a complete solution by repeatedly extending an initially empty solution.",
+    "inputs": [
+      "A problem instance, such as jobs to schedule or stops to visit",
+      "A rule for choosing and applying each extension"
+    ],
+    "outputs": [
+      "A complete solution, such as a schedule or route",
+      "A solution determined by the sequence of chosen extensions"
+    ],
+    "steps": [
+      "Start with an empty solution.",
+      "Choose an extension using the heuristic.",
+      "Add it to the current partial solution.",
+      "Repeat until the solution is complete."
+    ],
+    "tradeoffs": [
+      "Early extension choices shape the final solution.",
+      "The procedure stops at completeness rather than improving the result through local moves.",
+      "It differs from local search, which requires a complete starting solution."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "empty",
+          "label": "Empty solution",
+          "note": "Begin with nothing scheduled or routed."
+        },
+        {
+          "id": "choose",
+          "label": "Choose extension",
+          "note": "Apply the heuristic's choice rule."
+        },
+        {
+          "id": "extend",
+          "label": "Extend solution",
+          "note": "Add the selected piece."
+        },
+        {
+          "id": "check",
+          "label": "Solution complete?",
+          "note": "Check whether anything remains to add."
+        },
+        {
+          "id": "output",
+          "label": "Complete solution",
+          "note": "Return the finished schedule or route."
+        }
+      ],
+      "edges": [
+        {
+          "from": "empty",
+          "to": "choose",
+          "label": ""
+        },
+        {
+          "from": "choose",
+          "to": "extend",
+          "label": "selected piece"
+        },
+        {
+          "from": "extend",
+          "to": "check",
+          "label": "partial solution"
+        },
+        {
+          "from": "check",
+          "to": "choose",
+          "label": "no"
+        },
+        {
+          "from": "check",
+          "to": "output",
+          "label": "yes"
+        }
+      ],
+      "caption": "A constructive heuristic repeatedly extends a partial solution until it is complete."
+    }
+  },
   "related": [
     "admissible-heuristic",
     "computational-heuristic-intelligence",

@@ -5,7 +5,93 @@
   "type": "concept",
   "definition": "Techniques for adapting a model trained on data from one domain (the source) to perform well on a different but related domain (the target).",
   "details": "Domain adaptation is important when the distribution of deployment data differs from training data, such as adapting a model trained on formal text to perform well on informal social-media text.",
-  "story": "Imagine teaching a friend to shoot a basketball. They miss, and you walk them backwards through the shot — elbow, wrist, release — to find what needs fixing. It is the same loop you use to learn anything: try, miss, correct, try again. Underneath all the magic is a patient process of small improvements. It is learning from every miss instead of repeating the same mistake. And that is Domain Adaptation — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "Domain adaptation helps a model keep working when the data it meets in deployment differs from the data it learned from. It matters because even a related change, such as moving from formal writing to casual social-media posts, can make a model less reliable.",
+    "tiers": {
+      "eli5": "Imagine learning to understand book language, then trying to understand your friends' short, slang-filled messages. Domain adaptation is like practising with those messages so you can use what you already know without getting confused by the new style.",
+      "practitioner": "Apply domain adaptation when training data comes from a source distribution but deployment data comes from a different, related target distribution. Adapt the source-trained model for the target setting, then evaluate it on data representative of deployment rather than relying only on source-domain results. Check that the domains are genuinely related and watch for adaptation that improves some target cases while harming others.",
+      "paperLevel": "Let the source data have distribution P_s and the target data have distribution P_t, where P_s differs from P_t but the domains are related. Domain adaptation seeks a predictor that performs well on P_t by adapting knowledge learned from source training data. Its usefulness depends on the relationship between the domains; a distribution difference alone does not establish that adaptation will succeed."
+    },
+    "example": "A text model is trained on formal writing but performs poorly on informal social-media posts. Domain adaptation adjusts that model for the social-media target domain, aiming to preserve useful language knowledge while improving its handling of informal text.",
+    "usedIn": [
+      {
+        "name": "Social-media text processing",
+        "detail": "Adapting models trained on formal text to handle informal social-media writing.",
+        "url": ""
+      },
+      {
+        "name": "Model deployment under data shift",
+        "detail": "Adjusting trained models when deployment data follows a different distribution from their training data.",
+        "url": ""
+      }
+    ],
+    "intuition": "A model can learn useful patterns in one setting and still struggle when the style or distribution of the data changes. Domain adaptation reuses what was learned in the source domain while adjusting the model for the related target domain.",
+    "howItWorks": [
+      "Train a model on data from the source domain.",
+      "Identify the related target domain where the model will be used.",
+      "Account for the difference between the source and target data distributions.",
+      "Adapt the source-trained model for the target domain.",
+      "Evaluate its performance on target-domain data."
+    ],
+    "whyItMatters": "Deployment data often differs from training data, so strong source-domain performance may not carry over. Domain adaptation provides a way to address that mismatch without treating the target task as entirely unrelated.",
+    "misconceptions": [
+      "It is not simply assuming that a source-trained model will work unchanged on new data.",
+      "It is not meant for arbitrary unrelated domains; the source and target should be related.",
+      "A different data distribution does not guarantee that adaptation will produce good target performance."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "source-data",
+          "label": "Source data",
+          "note": "Training data from the source domain"
+        },
+        {
+          "id": "source-model",
+          "label": "Source-trained model",
+          "note": "Learns from source-domain patterns"
+        },
+        {
+          "id": "target-data",
+          "label": "Target data",
+          "note": "Related data with a different distribution"
+        },
+        {
+          "id": "adaptation",
+          "label": "Domain adaptation",
+          "note": "Adjusts the model for the target domain"
+        },
+        {
+          "id": "target-model",
+          "label": "Adapted model",
+          "note": "Evaluated for target-domain performance"
+        }
+      ],
+      "edges": [
+        {
+          "from": "source-data",
+          "to": "source-model",
+          "label": "training"
+        },
+        {
+          "from": "source-model",
+          "to": "adaptation",
+          "label": "learned model"
+        },
+        {
+          "from": "target-data",
+          "to": "adaptation",
+          "label": "target setting"
+        },
+        {
+          "from": "adaptation",
+          "to": "target-model",
+          "label": "adapted model"
+        }
+      ],
+      "caption": "Domain adaptation transfers learning from a source domain to a related target domain with a different data distribution."
+    }
+  },
   "related": [
     "active-learning",
     "backpropagation",

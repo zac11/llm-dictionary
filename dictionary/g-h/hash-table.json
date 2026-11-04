@@ -5,6 +5,134 @@
   "type": "concept",
   "definition": "A hash table, or a hash map, is a data structure that implements an associative array abstract data type, a structure that can map keys to values.",
   "details": "A hash table, or a hash map, is a data structure that implements an associative array abstract data type, a structure that can map keys to values. A hash table uses a hash function to compute an index into an array of buckets or slots, from which the desired value can be found.",
+  "explainer": {
+    "lead": "A hash table stores key–value pairs so you can usually find a value without searching through every item. It turns a key into an array position, making it useful for dictionaries, caches, sets, and database indexes.",
+    "tiers": {
+      "eli5": "Imagine a wall of numbered boxes and a rule that tells you which box should hold each labelled item. To find the item later, you apply the same rule to its label instead of opening every box. Sometimes two labels point to the same box, so the table needs a way to keep both items and tell them apart.",
+      "practitioner": "Hash tables appear directly as Python dictionaries, Java HashMap, C++ unordered_map, and Go maps, and they underpin common lookup, cache, set, and indexing work. Keep an eye on collisions and load factor: implementations commonly resize and rehash as the table fills, especially because open-addressed tables degrade sharply as their load factor approaches 1. Average constant-time operations do not remove the cost of collisions or occasional resizing.",
+      "paperLevel": "A hash function h: U -> {0, ..., m-1} maps each key x to an array location A[h(x)], where m is the number of buckets and n stored pairs give load factor alpha = n/m. Because practical hash functions can collide, implementations use methods such as separate chaining or open addressing and verify the stored key during lookup. In a well-dimensioned table, average lookup time is independent of n, while insertion and deletion can have amortized constant average cost; performance deteriorates as load factor rises, particularly for open addressing near alpha = 1."
+    },
+    "example": "Suppose a table has 8 slots and h(\"cat\") = 3. Inserting the pair (\"cat\", 10) places that key and value at slot 3; looking up \"cat\" hashes it to 3 again, checks the stored key, and returns 10. If another key also hashes to 3, the table uses its collision strategy and key comparisons rather than assuming either value is correct.",
+    "usedIn": [
+      {
+        "name": "Python dictionaries",
+        "detail": "A built-in hash table structure that hides hashing details from the programmer.",
+        "url": ""
+      },
+      {
+        "name": "Database indexing",
+        "detail": "Hash tables support fast location of records through keys.",
+        "url": ""
+      },
+      {
+        "name": "Caches",
+        "detail": "Keys map to saved values so repeated lookups can avoid a full search.",
+        "url": ""
+      },
+      {
+        "name": "Sets",
+        "detail": "Hashing supports membership checks without scanning every stored element.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of searching a whole collection, use a key to calculate where its value should be. The table trades extra memory and an imperfect hash function for fast average lookup.",
+    "howItWorks": [
+      "Store entries in an array of m buckets or slots, with each key unique.",
+      "Apply a hash function h to key x to compute the index h(x).",
+      "Go to that array position and compare keys to find the requested value.",
+      "Resolve collisions with separate chaining or by probing other slots through open addressing.",
+      "Resize and rehash when needed to keep the load factor n/m under control."
+    ],
+    "whyItMatters": "Hash tables often provide faster average search, insertion, and deletion than other table lookup structures. Their built-in forms in many programming languages make associative arrays and related operations practical without requiring programmers to manage hashing themselves.",
+    "misconceptions": [
+      "A hash function does not guarantee a different slot for every key; collisions are normal and must be handled.",
+      "Fast average lookup is not unconditional: performance depends on the hash function, collision handling, and load factor.",
+      "A slot cannot be identified by its value alone; the key is stored too so lookups can resolve collisions correctly."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "key",
+          "label": "Input key",
+          "note": "The key used for insertion or lookup."
+        },
+        {
+          "id": "hash",
+          "label": "Hash function",
+          "note": "Computes h(x), an array index."
+        },
+        {
+          "id": "array",
+          "label": "Bucket array",
+          "note": "Contains m buckets or slots."
+        },
+        {
+          "id": "collision",
+          "label": "Collision handling",
+          "note": "Uses chaining or probing when indices coincide."
+        },
+        {
+          "id": "entry",
+          "label": "Stored pair",
+          "note": "Holds the key and its associated value."
+        },
+        {
+          "id": "value",
+          "label": "Returned value",
+          "note": "Produced after the stored key is verified."
+        }
+      ],
+      "edges": [
+        {
+          "from": "key",
+          "to": "hash",
+          "label": "hashed"
+        },
+        {
+          "from": "hash",
+          "to": "array",
+          "label": "index"
+        },
+        {
+          "from": "array",
+          "to": "collision",
+          "label": "if needed"
+        },
+        {
+          "from": "array",
+          "to": "entry",
+          "label": "locates"
+        },
+        {
+          "from": "collision",
+          "to": "entry",
+          "label": "finds"
+        },
+        {
+          "from": "entry",
+          "to": "value",
+          "label": "key match"
+        }
+      ],
+      "caption": "A key is hashed to an array position; collision handling and key verification lead to the correct value."
+    },
+    "image": {
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7d/Hash_table_3_1_1_0_1_0_0_SP.svg/960px-Hash_table_3_1_1_0_1_0_0_SP.svg.png",
+      "alt": "Hash table — Associative array for storing key–value pairs",
+      "width": 640,
+      "height": 467,
+      "credit": "Jorge Stolfi",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Hash_table_3_1_1_0_1_0_0_SP.svg"
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Hash table",
+        "url": "https://en.wikipedia.org/wiki/Hash_table"
+      }
+    ]
+  },
   "citation": {
     "title": "Math Glossary for AI (François Fleuret notes)",
     "authors": [],

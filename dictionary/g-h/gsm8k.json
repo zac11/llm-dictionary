@@ -2,9 +2,90 @@
   "term": "GSM8K",
   "letter": "G",
   "category": "Evaluation and Benchmarks",
-  "type": "concept",
+  "type": "benchmark",
   "definition": "Math benchmarks: grade-school word problems (GSM8K) and competition problems (MATH).",
   "details": "Math benchmarks: grade-school word problems (GSM8K) and competition problems (MATH). Historically the proving grounds for chain-of-thought and reasoning RL; both are near-saturated for frontier reasoning models, pushing evaluation toward harder sets (AIME-level and beyond).",
+  "explainer": {
+    "lead": "GSM8K is a benchmark of grade-school math word problems used to test whether AI models can turn a short story into calculations and a correct answer. It became an important test bed for step-by-step reasoning, although frontier reasoning models now perform so well that harder benchmarks are increasingly needed.",
+    "tiers": {
+      "eli5": "GSM8K is like a big math quiz made of little stories, such as sharing apples or buying pencils. A computer has to understand the story, do the right calculations, and give the answer. It helps people see whether the computer can reason through simple school math.",
+      "practitioner": "Use GSM8K to compare models on elementary mathematical reasoning, including systems trained or prompted for chain-of-thought and reasoning reinforcement learning. Report performance consistently across compared models, and avoid treating a high score as evidence of broader mathematical competence. For frontier reasoning models, near-saturation limits its ability to reveal meaningful differences.",
+      "paperLevel": "GSM8K evaluates a model on grade-school mathematical word problems; benchmark performance can be summarized as accuracy = number of problems answered correctly / total number of problems. It has historically been used to study chain-of-thought and reasoning reinforcement learning. Near-saturation among frontier reasoning models reduces headroom and motivates evaluation on AIME-level and harder problem sets."
+    },
+    "example": "For “Mia has 3 boxes with 4 pencils in each and gives away 2 pencils. How many remain?”, a model calculates 3 × 4 = 12 and then 12 − 2 = 10. The final answer is 10 pencils.",
+    "usedIn": [
+      {
+        "name": "Chain-of-thought research",
+        "detail": "A historical testing ground for models that work through grade-school problems step by step.",
+        "url": ""
+      },
+      {
+        "name": "Reasoning reinforcement learning",
+        "detail": "Used to evaluate reasoning systems trained with reinforcement learning.",
+        "url": ""
+      },
+      {
+        "name": "Frontier model evaluation",
+        "detail": "Used to compare mathematical reasoning, though high scores now leave limited room to separate top systems.",
+        "url": ""
+      }
+    ],
+    "measures": "GSM8K measures whether a model can solve grade-school math word problems. It tests the combination of reading the problem, selecting the needed operations, and producing the correct result.",
+    "howScored": [
+      "Give the model each word problem.",
+      "Check whether its final answer is correct.",
+      "Report the fraction of problems solved correctly."
+    ],
+    "formula": "Accuracy = correct answers / total problems.",
+    "typicalResults": "Frontier reasoning models have driven GSM8K close to saturation. This makes it less useful for distinguishing their abilities and pushes evaluation toward harder mathematics sets.",
+    "caveats": [
+      "A high score does not establish broad mathematical reasoning ability.",
+      "Near-saturation can hide differences between frontier models.",
+      "It should not be confused with MATH, which uses competition problems."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "problems",
+          "label": "Word problems",
+          "note": "Grade-school mathematical stories"
+        },
+        {
+          "id": "model",
+          "label": "Model reasoning",
+          "note": "Interprets and calculates"
+        },
+        {
+          "id": "answer",
+          "label": "Final answer",
+          "note": "The proposed numerical result"
+        },
+        {
+          "id": "score",
+          "label": "Accuracy score",
+          "note": "Fraction answered correctly"
+        }
+      ],
+      "edges": [
+        {
+          "from": "problems",
+          "to": "model",
+          "label": "prompts"
+        },
+        {
+          "from": "model",
+          "to": "answer",
+          "label": "produces"
+        },
+        {
+          "from": "answer",
+          "to": "score",
+          "label": "checked"
+        }
+      ],
+      "caption": "GSM8K turns each model’s answers to grade-school word problems into an overall accuracy score."
+    }
+  },
   "related": [
     "chain-of-thought"
   ],

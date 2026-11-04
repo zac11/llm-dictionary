@@ -2,10 +2,125 @@
   "term": "Distributional Soft Actor Critic",
   "letter": "D",
   "category": "Artificial Intelligence",
-  "type": "concept",
+  "type": "algorithm",
   "definition": "Distributional Soft Actor Critic (DSAC) is a suite of model-free off-policy reinforcement learning algorithms, tailored for learning decision-making or control policies in complex systems with continuous action spaces.",
   "details": "Distinct from traditional methods that focus solely on expected returns, DSAC algorithms are designed to learn a Gaussian distribution over stochastic returns, called value distribution. This focus on Gaussian value distribution learning notably diminishes value overestimations, which in turn boosts policy performance. Additionally, the value distribution learned by DSAC can also be used for risk-aware policy learning. From a technical standpoint, DSAC is essentially a distributional adaptation of the well-established soft actor-critic (SAC) method. To date, the DSAC family comprises two iterations: the original DSAC-v1 and its successor, DSAC-T (also known as DSAC-v2), with the latter demonstrating superior capabilities over the Soft Actor-Critic (SAC) in Mujoco benchmark tasks. The source code for DSAC-T can be found at the following URL: Jingliang-Duan/DSAC-T. Both iterations have been integrated into an advanced, Pytorch-powered reinforcement learning toolkit named GOPS: GOPS (General Optimal control Problem Solver).",
-  "story": "Imagine a video game where the only feedback is the score ticking up or down — and you learn by playing a million rounds. Instead of being told the rules, it discovers them by living with the consequences. The machine is not handed the answers — it tries things, earns a reward or a miss, and slowly figures out what works. Reward, not instructions, is the teacher. That learn-by-reward loop is Distributional Soft Actor Critic.",
+  "explainer": {
+    "lead": "Distributional Soft Actor Critic (DSAC) is a family of reinforcement-learning algorithms for controlling systems whose actions vary continuously, such as joint torques. Instead of estimating only an action's average return, it learns a spread of possible returns, helping reduce overoptimistic value estimates and supporting risk-aware decisions.",
+    "tiers": {
+      "eli5": "Imagine choosing how hard to push a swing: the same push might not always produce the same result. DSAC learns both a typical outcome and how much outcomes can vary, rather than trusting one average score. That fuller picture can help it choose actions without being fooled by an unusually lucky result.",
+      "practitioner": "Use DSAC for model-free, off-policy continuous-control problems when return variability or risk matters, with DSAC-T as the newer iteration. DSAC-T code is available as Jingliang-Duan/DSAC-T, and both DSAC versions are included in the PyTorch-based GOPS toolkit. Keep in mind that its value distribution is Gaussian, and DSAC-T's reported advantage over SAC is on MuJoCo benchmark tasks rather than a guarantee for every control problem.",
+      "paperLevel": "DSAC is a distributional adaptation of soft actor-critic: for a state-action pair, it models the stochastic return as a Gaussian value distribution Z(s,a), instead of learning only its expectation Q(s,a)=E[Z(s,a)]. The family is model-free and off-policy, and comprises DSAC-v1 and DSAC-T, also called DSAC-v2. Learning the return distribution is intended to reduce value overestimation and can also supply distributional information for risk-aware policy learning."
+    },
+    "example": "Consider a simulated MuJoCo robot choosing continuous joint torques. If one torque choice sometimes produces a high return but performs poorly on other attempts, an expected-value-only critic can become overoptimistic; DSAC instead fits a Gaussian return distribution whose center and spread reflect those outcomes. The policy can then be improved using that fuller estimate, and its spread can also inform risk-aware learning.",
+    "usedIn": [
+      {
+        "name": "Continuous control",
+        "detail": "Learning decision-making and control policies for complex systems with continuous action spaces.",
+        "url": ""
+      },
+      {
+        "name": "MuJoCo benchmarks",
+        "detail": "DSAC-T has demonstrated stronger performance than Soft Actor-Critic on MuJoCo benchmark tasks.",
+        "url": ""
+      },
+      {
+        "name": "GOPS",
+        "detail": "Both DSAC iterations are integrated into the PyTorch-powered General Optimal control Problem Solver toolkit.",
+        "url": ""
+      }
+    ],
+    "goal": "Learn an effective continuous-action policy while representing uncertainty in returns, reducing value overestimation, and enabling risk-aware policy learning.",
+    "inputs": [
+      "States and continuous actions from the control system",
+      "Observed returns and other off-policy experience",
+      "A Gaussian model of the stochastic return distribution"
+    ],
+    "outputs": [
+      "A learned continuous-action control policy",
+      "A Gaussian value distribution for returns",
+      "Distributional information usable for risk-aware learning"
+    ],
+    "steps": [
+      "Collect experience by interacting with the system or using off-policy data.",
+      "Learn a Gaussian distribution over stochastic returns instead of estimating only expected return.",
+      "Use that value distribution to guide actor-critic policy improvement and reduce overestimation.",
+      "Optionally use the learned return variability to make policy learning risk-aware."
+    ],
+    "tradeoffs": [
+      "It represents returns with a Gaussian distribution rather than an arbitrary return distribution.",
+      "It is tailored to continuous action spaces, not discrete-action control.",
+      "Risk-aware learning is an additional use of the value distribution, not an automatic guarantee of safe behavior.",
+      "DSAC-T's reported improvement over SAC is specifically from MuJoCo benchmark tasks."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "environment",
+          "label": "Control system",
+          "note": "Provides states and returns from interaction."
+        },
+        {
+          "id": "experience",
+          "label": "Off-policy experience",
+          "note": "Supplies interaction data for learning."
+        },
+        {
+          "id": "critic",
+          "label": "Gaussian value critic",
+          "note": "Models the distribution of stochastic returns."
+        },
+        {
+          "id": "actor",
+          "label": "Policy actor",
+          "note": "Improves decisions using distributional values."
+        },
+        {
+          "id": "actions",
+          "label": "Continuous actions",
+          "note": "Applies the learned controls to the system."
+        },
+        {
+          "id": "risk",
+          "label": "Risk-aware learning",
+          "note": "Can additionally use return variability."
+        }
+      ],
+      "edges": [
+        {
+          "from": "environment",
+          "to": "experience",
+          "label": "states, returns"
+        },
+        {
+          "from": "experience",
+          "to": "critic",
+          "label": "learning data"
+        },
+        {
+          "from": "critic",
+          "to": "actor",
+          "label": "value distribution"
+        },
+        {
+          "from": "actor",
+          "to": "actions",
+          "label": "controls"
+        },
+        {
+          "from": "actions",
+          "to": "environment",
+          "label": "interaction"
+        },
+        {
+          "from": "critic",
+          "to": "risk",
+          "label": "return spread"
+        }
+      ],
+      "caption": "DSAC learns a Gaussian return distribution from off-policy experience, uses it to improve a continuous-action policy, and can also feed its variability into risk-aware learning."
+    }
+  },
   "related": [
     "actor-critic-algorithm",
     "distributional-relational-database",

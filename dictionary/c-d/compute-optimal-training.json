@@ -8,6 +8,97 @@
   ],
   "definition": "The finding that for a fixed compute budget, model size and training tokens should scale together (roughly 20 tokens per parameter under original assumptions).",
   "details": "The finding that for a fixed compute budget, model size and training tokens should scale together (roughly 20 tokens per parameter under original assumptions). Earlier models were undertrained on data; Chinchilla reset the recipe.",
+  "explainer": {
+    "lead": "Compute-optimal training is a way to decide how large a language model should be and how much text it should train on when computing resources are fixed. Known as Chinchilla, it showed that spending the whole budget on a bigger model can be worse than training a smaller one on more data.",
+    "tiers": {
+      "eli5": "Imagine you have a fixed amount of time to study for a test. Building a huge set of notes is not helpful if you never have time to read them, so you need a balance between how many notes you make and how long you spend studying them. Chinchilla gives the same kind of advice for training language models: balance the model’s size with the amount of training text.",
+      "practitioner": "When planning pretraining under a fixed compute budget, choose parameter count and training-token count together rather than maximizing either one alone. The original Chinchilla assumptions give a rough starting point of 20 tokens per parameter, but the ratio should not be treated as assumption-free or universal.",
+      "paperLevel": "For a fixed compute budget, compute-optimal training selects parameter count N and training-token count D so that both scale together; under the original Chinchilla assumptions, this gives D approximately 20N. Its central conclusion is that earlier models were undertrained on data. The numerical ratio is tied to those original assumptions rather than being an unconditional constant."
+    },
+    "example": "Under the original rough rule, a model with 1 billion parameters would be paired with about 20 billion training tokens. If the same fixed budget were spent mainly on adding parameters, the larger model could end up undertrained.",
+    "usedIn": [
+      {
+        "name": "Large language model pretraining",
+        "detail": "Guides the balance between parameter count and training-token count.",
+        "url": ""
+      },
+      {
+        "name": "Fixed-budget training planning",
+        "detail": "Helps allocate limited computation between a larger model and more training data.",
+        "url": ""
+      }
+    ],
+    "intuition": "A model cannot benefit from extra parameters if it sees too little training data. With limited compute, a smaller, better-trained model can therefore be a better choice than a larger, undertrained one.",
+    "howItWorks": [
+      "Start with the fixed compute budget.",
+      "Treat model size and training tokens as linked choices.",
+      "Scale both together instead of maximizing model size alone.",
+      "Under the original assumptions, aim for roughly 20 tokens per parameter."
+    ],
+    "whyItMatters": "Chinchilla reset the training recipe by showing that earlier models were undertrained on data. It makes training-data quantity a first-order design decision alongside model size.",
+    "misconceptions": [
+      "Bigger is not automatically better under a fixed compute budget.",
+      "The 20-to-1 ratio is a rough result under original assumptions, not a universal law.",
+      "Compute-optimal training concerns both model size and tokens, not data quantity alone."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "budget",
+          "label": "Fixed compute budget",
+          "note": "Sets the available training resources."
+        },
+        {
+          "id": "size",
+          "label": "Model size",
+          "note": "The chosen parameter count."
+        },
+        {
+          "id": "tokens",
+          "label": "Training tokens",
+          "note": "The amount of training data seen."
+        },
+        {
+          "id": "balance",
+          "label": "Joint scaling",
+          "note": "Size and tokens increase together."
+        },
+        {
+          "id": "recipe",
+          "label": "Balanced recipe",
+          "note": "Avoids spending the budget on an undertrained larger model."
+        }
+      ],
+      "edges": [
+        {
+          "from": "budget",
+          "to": "size",
+          "label": "allocates"
+        },
+        {
+          "from": "budget",
+          "to": "tokens",
+          "label": "allocates"
+        },
+        {
+          "from": "size",
+          "to": "balance",
+          "label": ""
+        },
+        {
+          "from": "tokens",
+          "to": "balance",
+          "label": ""
+        },
+        {
+          "from": "balance",
+          "to": "recipe",
+          "label": ""
+        }
+      ],
+      "caption": "A fixed budget is divided between model size and training tokens, which are scaled together."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

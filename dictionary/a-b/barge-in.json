@@ -5,6 +5,127 @@
   "type": "concept",
   "definition": "The specific capability of letting a user interrupt system speech, requiring echo cancellation (so the system does not hear itself), instant playback stop, and graceful dialog-state repair.",
   "details": "The specific capability of letting a user interrupt system speech, requiring echo cancellation (so the system does not hear itself), instant playback stop, and graceful dialog-state repair.",
+  "explainer": {
+    "lead": "Barge-in lets someone interrupt a voice system while it is still speaking, just as people naturally cut into a conversation. It matters because a system that must finish every response before listening can feel slow and difficult to control.",
+    "tiers": {
+      "eli5": "Imagine a friend reading a long list when you already know what you want, so you say, “Wait, just tell me the last one.” A voice system with barge-in can do the same thing: stop talking, hear you clearly instead of confusing its own voice with yours, and continue without getting lost.",
+      "practitioner": "During speech playback, run acoustic echo cancellation so output audio is not mistaken for user input, then stop playback immediately when an interruption is accepted. The dialog manager must also repair its state—for example, discarding the unfinished response while retaining enough context to handle the new request. Common pitfalls are echo-triggered false interruptions, delayed playback shutdown, and continuing a dialog as though the interrupted response had been fully delivered.",
+      "paperLevel": "In plain-text state notation, barge-in is the transition system_speaking + user_interrupts -> playback_stopped + user_listening + repaired_dialog_state. Its required functions are acoustic echo cancellation, immediate playback termination, and dialog-state repair; its key limits are residual echo, interruption latency, and inconsistent assumptions about what the user heard."
+    },
+    "example": "An assistant is reading a five-day forecast when the user says, “Stop—just tell me whether I need an umbrella today.” Echo cancellation keeps the forecast audio from being treated as speech, playback stops, and the assistant records that the forecast was interrupted before answering the umbrella question.",
+    "usedIn": [
+      {
+        "name": "Voice assistants",
+        "detail": "Users can cut off a long spoken answer and issue a new request.",
+        "url": ""
+      },
+      {
+        "name": "Telephone voice agents",
+        "detail": "Callers can interrupt menus or explanations instead of waiting for playback to finish.",
+        "url": ""
+      },
+      {
+        "name": "In-car voice interfaces",
+        "detail": "Occupants can redirect or stop spoken guidance without waiting through the full response.",
+        "url": ""
+      }
+    ],
+    "intuition": "A conversational system should not have to finish its own sentence before it can listen. Barge-in restores that basic conversational control while preventing the system’s outgoing speech from becoming a false user interruption.",
+    "howItWorks": [
+      "Play the system’s spoken response while continuing to monitor the microphone.",
+      "Use echo cancellation to separate possible user speech from the system’s own audio.",
+      "When an interruption is accepted, stop speech playback immediately.",
+      "Repair the dialog state to reflect the unfinished response, then process the user’s new input."
+    ],
+    "whyItMatters": "It makes spoken interaction faster and gives users a direct way to correct, redirect, or stop a system. Without dialog-state repair, however, an interruption can leave the system behaving as if the user heard information that was never spoken.",
+    "misconceptions": [
+      "Barge-in is not simply detecting any loud sound; the system’s own playback must first be handled through echo cancellation.",
+      "Stopping the audio alone is not enough, because the dialog state also needs to reflect the interruption.",
+      "Barge-in does not mean the system was never listening; microphone monitoring can continue while speech is playing."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "playback",
+          "label": "System playback",
+          "note": "The response currently being spoken"
+        },
+        {
+          "id": "user",
+          "label": "User interruption",
+          "note": "Speech arriving during playback"
+        },
+        {
+          "id": "microphone",
+          "label": "Microphone input",
+          "note": "User speech mixed with system echo"
+        },
+        {
+          "id": "aec",
+          "label": "Echo cancellation",
+          "note": "Removes the system’s own audio"
+        },
+        {
+          "id": "detector",
+          "label": "Interruption detection",
+          "note": "Accepts speech as a user interruption"
+        },
+        {
+          "id": "stop",
+          "label": "Stop playback",
+          "note": "Ends system speech immediately"
+        },
+        {
+          "id": "dialog",
+          "label": "Dialog-state repair",
+          "note": "Updates context and handles the new turn"
+        }
+      ],
+      "edges": [
+        {
+          "from": "user",
+          "to": "microphone",
+          "label": ""
+        },
+        {
+          "from": "playback",
+          "to": "microphone",
+          "label": "echo"
+        },
+        {
+          "from": "playback",
+          "to": "aec",
+          "label": "reference audio"
+        },
+        {
+          "from": "microphone",
+          "to": "aec",
+          "label": ""
+        },
+        {
+          "from": "aec",
+          "to": "detector",
+          "label": "cleaned speech"
+        },
+        {
+          "from": "detector",
+          "to": "stop",
+          "label": ""
+        },
+        {
+          "from": "stop",
+          "to": "dialog",
+          "label": ""
+        },
+        {
+          "from": "detector",
+          "to": "dialog",
+          "label": "new user turn"
+        }
+      ],
+      "caption": "Barge-in combines echo-safe interruption detection, immediate playback shutdown, and repair of the conversation state."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

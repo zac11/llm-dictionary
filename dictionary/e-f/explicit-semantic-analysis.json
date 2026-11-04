@@ -5,7 +5,98 @@
   "type": "concept",
   "definition": "In natural language processing and information retrieval, explicit semantic analysis (ESA) is a vectoral representation of text (individual words or entire documents) that uses a document corpus as a knowledge base.",
   "details": "Specifically, in ESA, a word is represented as a column vector in the tf–idf matrix of the text corpus and a document (string of words) is represented as the centroid of the vectors representing its words. Typically, the text corpus is English Wikipedia, though other corpora including the Open Directory Project have been used. ESA was designed by Evgeniy Gabrilovich and Shaul Markovitch as a means of improving text categorization and has been used by this pair of researchers to compute what they refer to as \"semantic relatedness\" by means of cosine similarity between the aforementioned vectors, collectively interpreted as a space of \"concepts explicitly defined and described by humans\", where Wikipedia articles (or ODP entries, or otherwise titles of documents in the knowledge base corpus) are equated with concepts. The name \"explicit semantic analysis\" contrasts with latent semantic analysis (LSA), because the use of a knowledge base makes it possible to assign human-readable labels to the concepts that make up the vector space.",
-  "story": "Picture a translator at the United Nations, listening to one language and whispering the meaning into another in real time. It figures out meaning by noticing which words like to travel together. It does not memorize a rulebook; it absorbs a library. Meaning lives in company — a word is known by the words it keeps. And that is Explicit semantic analysis — teaching a machine to read between the lines.",
+  "explainer": {
+    "lead": "Explicit semantic analysis turns words and documents into numerical vectors whose dimensions correspond to documents in a knowledge base, often Wikipedia articles. This makes the representation easier to interpret: each dimension has a human-readable title, and document similarity can be measured with cosine similarity.",
+    "tiers": {
+      "eli5": "Imagine describing every word by how strongly it connects to each article in a huge encyclopedia. To describe a whole sentence, you blend the descriptions of its words together. You can then compare two sentences by seeing how similar those blends are, while still using article titles to understand the description.",
+      "practitioner": "Build a tf–idf matrix over a knowledge-base corpus, use its columns as word vectors, and represent a document by the centroid of its word vectors. Wikipedia is the typical corpus, although the Open Directory Project has also been used; cosine similarity between document vectors gives a semantic-relatedness score. Unlike latent representations, the dimensions remain tied to explicitly titled corpus documents.",
+      "paperLevel": "Given a knowledge-base corpus, ESA represents word w by v_w, its column in the corpus tf–idf matrix, and represents text T as the centroid v_T = (1/|T|) sum_{w in T} v_w. Evgeniy Gabrilovich and Shaul Markovitch designed ESA for text categorization and computed semantic relatedness as cos(v_T, v_S). Corpus documents are treated as explicitly defined concepts, so the axes retain human-readable labels, and the representation depends on the chosen corpus."
+    },
+    "example": "For the document “solar eclipse,” ESA takes the tf–idf column vectors for “solar” and “eclipse” from a Wikipedia-based matrix and averages them. It builds a vector for “lunar eclipse” in the same way, then uses cosine similarity between the two vectors as their semantic-relatedness score; the vector dimensions correspond to titled Wikipedia articles.",
+    "usedIn": [
+      {
+        "name": "Text categorization",
+        "detail": "ESA was designed to improve categorization by representing text through concepts from a document corpus.",
+        "url": ""
+      },
+      {
+        "name": "Semantic relatedness",
+        "detail": "Gabrilovich and Markovitch used cosine similarity between ESA vectors to measure how related texts are.",
+        "url": ""
+      },
+      {
+        "name": "Natural language processing and information retrieval",
+        "detail": "ESA provides an interpretable vector representation for individual words and entire documents.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of describing text with anonymous numerical features, ESA describes it through a collection of explicitly named concepts. A word or document becomes a pattern of associations with knowledge-base documents, such as Wikipedia articles.",
+    "howItWorks": [
+      "Choose a document corpus as the knowledge base and treat each document as a named concept.",
+      "Build the corpus tf–idf matrix.",
+      "Represent each word by its column vector in that matrix.",
+      "Represent a document by the centroid of its word vectors.",
+      "Compare document vectors with cosine similarity to compute semantic relatedness."
+    ],
+    "whyItMatters": "ESA combines vector-based text comparison with dimensions that people can inspect and name. The contrast with latent semantic analysis is that its concepts are explicitly defined and described by humans rather than left as unlabeled latent dimensions.",
+    "misconceptions": [
+      "ESA is not simply another name for latent semantic analysis; its dimensions are explicit, human-labeled corpus documents.",
+      "A document is represented by the centroid of its word vectors, not necessarily by the vector of one matching encyclopedia article.",
+      "Wikipedia is typical but not required; other corpora, including the Open Directory Project, have been used."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "corpus",
+          "label": "Knowledge-base corpus",
+          "note": "Documents provide explicitly named concepts."
+        },
+        {
+          "id": "matrix",
+          "label": "Tf–idf matrix",
+          "note": "Columns encode words across corpus documents."
+        },
+        {
+          "id": "words",
+          "label": "Word vectors",
+          "note": "Each word takes its matrix column."
+        },
+        {
+          "id": "document",
+          "label": "Document vector",
+          "note": "The centroid of the document's word vectors."
+        },
+        {
+          "id": "similarity",
+          "label": "Cosine similarity",
+          "note": "Compares document vectors for semantic relatedness."
+        }
+      ],
+      "edges": [
+        {
+          "from": "corpus",
+          "to": "matrix",
+          "label": "build"
+        },
+        {
+          "from": "matrix",
+          "to": "words",
+          "label": "columns"
+        },
+        {
+          "from": "words",
+          "to": "document",
+          "label": "average"
+        },
+        {
+          "from": "document",
+          "to": "similarity",
+          "label": "compare"
+        }
+      ],
+      "caption": "ESA moves from an explicitly labeled corpus to word and document vectors, then compares those vectors."
+    }
+  },
   "related": [
     "latent-semantic-analysis",
     "semantic-analysis-computational",

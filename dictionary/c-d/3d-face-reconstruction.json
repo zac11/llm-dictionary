@@ -5,6 +5,97 @@
   "type": "concept",
   "definition": "Recovering a 3D mesh of a face — geometry, expression, sometimes texture — from 2D images, typically via parametric models such as 3DMM.",
   "details": "Recovering a 3D mesh of a face — geometry, expression, sometimes texture — from 2D images, typically via parametric models such as 3DMM.",
+  "explainer": {
+    "lead": "3D face reconstruction turns flat face images into a mesh that describes facial shape and expression, and sometimes surface appearance. This makes it possible to view, animate, or edit a face as a three-dimensional object rather than only as pixels.",
+    "tiers": {
+      "eli5": "Imagine making a bendy clay model of someone’s face from a photograph. The computer estimates the face’s shape and expression, then builds a mesh you can turn around to view from another angle.",
+      "practitioner": "A typical pipeline fits a parametric model such as a 3DMM to one or more input images, producing geometry and expression parameters and optionally texture. The main pitfalls are treating a fitted model as exact anatomy, losing detail not represented by the model, and confusing estimated texture with reliable geometry.",
+      "paperLevel": "Given images I, the task is to estimate a face mesh M and optionally texture T, commonly by optimizing 3DMM parameters p so that the projection of M(p) is consistent with I. A 2D projection does not uniquely determine 3D geometry, so the result depends on model constraints and may omit fine shape or appearance detail."
+    },
+    "example": "Given a frontal portrait, a system fits a 3DMM to recover a neutral head shape and a smiling expression. It outputs a mesh of that smiling face and, if texture is also reconstructed, an image-derived surface appearance that can be viewed from the side.",
+    "usedIn": [
+      {
+        "name": "Facial animation",
+        "detail": "Provides face geometry and expression parameters that can be manipulated in 3D.",
+        "url": ""
+      },
+      {
+        "name": "Avatar creation",
+        "detail": "Builds an image-derived face mesh that can represent a person as a digital character.",
+        "url": ""
+      },
+      {
+        "name": "Computer vision research",
+        "detail": "Studies how facial geometry, expression, and appearance can be recovered from 2D observations.",
+        "url": ""
+      }
+    ],
+    "intuition": "A photograph shows a projection of a face, not its full shape. Reconstruction uses prior knowledge about faces, often encoded in a 3DMM, to choose a plausible 3D mesh whose appearance agrees with the images.",
+    "howItWorks": [
+      "Take one or more 2D face images as input.",
+      "Estimate parametric face properties, commonly including geometry and expression with a 3DMM.",
+      "Generate a 3D face mesh from those parameters.",
+      "When required, estimate texture and check the result by projecting it back into the image view."
+    ],
+    "whyItMatters": "It bridges ordinary face images and editable 3D representations. A mesh can be rotated or have its expression changed through parameters, operations that a flat image does not directly provide.",
+    "misconceptions": [
+      "It does not recover a uniquely determined face from every image: different 3D shapes can produce similar 2D projections.",
+      "The output is not always textured; texture reconstruction is optional.",
+      "A visually convincing fit is not necessarily an exact measurement of the person’s real geometry."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "images",
+          "label": "2D face images",
+          "note": "One or more input views"
+        },
+        {
+          "id": "fitting",
+          "label": "Parameter estimation",
+          "note": "Fits a plausible face to the images"
+        },
+        {
+          "id": "3dmm",
+          "label": "3DMM",
+          "note": "Parametric facial shape and expression model"
+        },
+        {
+          "id": "mesh",
+          "label": "3D face mesh",
+          "note": "Recovered geometry and expression"
+        },
+        {
+          "id": "texture",
+          "label": "Optional texture",
+          "note": "Surface appearance when reconstructed"
+        }
+      ],
+      "edges": [
+        {
+          "from": "images",
+          "to": "fitting",
+          "label": "observations"
+        },
+        {
+          "from": "3dmm",
+          "to": "fitting",
+          "label": "face prior"
+        },
+        {
+          "from": "fitting",
+          "to": "mesh",
+          "label": "parameters"
+        },
+        {
+          "from": "mesh",
+          "to": "texture",
+          "label": "surface"
+        }
+      ],
+      "caption": "Images and a parametric face model guide estimation of a 3D mesh, with texture added in some reconstructions."
+    }
+  },
   "citation": {
     "title": "3D Face Reconstruction",
     "authors": [],

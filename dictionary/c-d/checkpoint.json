@@ -5,7 +5,108 @@
   "type": "concept",
   "definition": "A saved snapshot of a model's weights (and often optimizer state) at a particular point during training.",
   "details": "Checkpoints allow training to be resumed after interruption, enable comparison of model performance at different training stages, and let practitioners select the best-performing version of a model.",
-  "story": "Imagine teaching a friend to shoot a basketball. They miss, and you walk them backwards through the shot — elbow, wrist, release — to find what needs fixing. It is the same loop you use to learn anything: try, miss, correct, try again. Underneath all the magic is a patient process of small improvements. It is learning from every miss instead of repeating the same mistake. And that is Checkpoint — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "A checkpoint is a saved snapshot of a model partway through training, usually including its weights and sometimes its optimizer state. It gives you a way to recover from interruptions, compare training stages, and keep the version that performs best.",
+    "tiers": {
+      "eli5": "Imagine saving your progress in a video game: if the power goes out, you can restart from your save instead of the beginning. Training an AI model works similarly, with checkpoints saving its progress at different moments. You can also try those saved versions and choose the one that works best.",
+      "practitioner": "During a training run, save checkpoints at chosen stages and evaluate them to select the best-performing model. Include optimizer state when exact resumption matters; saving weights alone can change the subsequent training trajectory. Keep enough checkpoints for recovery and comparison without assuming that the latest one is the best.",
+      "paperLevel": "A checkpoint C_t records model parameters theta_t at training step t and may also include optimizer state O_t, giving C_t = (theta_t, O_t). Resuming from C_t restores this state, while checkpoints from multiple steps provide candidates for performance-based selection. A checkpoint preserves training state, not a guarantee of good performance, and omitting O_t can prevent exact continuation of the original run."
+    },
+    "example": "A training run saves checkpoints after steps 1,000, 2,000, and 3,000 before stopping unexpectedly. The team resumes from step 3,000, then evaluates all three saved models and selects the step-2,000 checkpoint because it performs best.",
+    "usedIn": [
+      {
+        "name": "Long model-training runs",
+        "detail": "Resume after an interruption instead of restarting from the beginning.",
+        "url": ""
+      },
+      {
+        "name": "Model evaluation",
+        "detail": "Compare performance at different training stages.",
+        "url": ""
+      },
+      {
+        "name": "Model selection",
+        "detail": "Retain and choose the best-performing saved version.",
+        "url": ""
+      }
+    ],
+    "intuition": "Training gradually changes a model, so a checkpoint works like a save point: it preserves one moment in that process. Later, you can continue from that moment or treat the saved model as a candidate for use.",
+    "howItWorks": [
+      "Train the model to a chosen point.",
+      "Save its weights, and optimizer state if needed.",
+      "Repeat to capture later training stages.",
+      "Resume from a checkpoint after an interruption.",
+      "Evaluate checkpoints and select the best performer."
+    ],
+    "whyItMatters": "Checkpoints limit lost training progress and make intermediate models available for comparison. They also prevent the newest saved model from being the only option when an earlier stage performs better.",
+    "misconceptions": [
+      "The latest checkpoint is not necessarily the best model.",
+      "Weights alone may not reproduce training exactly when resumed.",
+      "A checkpoint is a saved state, not a promise of good performance."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "train",
+          "label": "Training run",
+          "note": "Updates the model over time."
+        },
+        {
+          "id": "save",
+          "label": "Save snapshot",
+          "note": "Captures a chosen training stage."
+        },
+        {
+          "id": "checkpoint",
+          "label": "Checkpoint",
+          "note": "Stores weights and often optimizer state."
+        },
+        {
+          "id": "resume",
+          "label": "Resume training",
+          "note": "Continues after an interruption."
+        },
+        {
+          "id": "compare",
+          "label": "Compare stages",
+          "note": "Evaluates different saved models."
+        },
+        {
+          "id": "select",
+          "label": "Select model",
+          "note": "Keeps the best-performing version."
+        }
+      ],
+      "edges": [
+        {
+          "from": "train",
+          "to": "save",
+          "label": "training state"
+        },
+        {
+          "from": "save",
+          "to": "checkpoint",
+          "label": "snapshot"
+        },
+        {
+          "from": "checkpoint",
+          "to": "resume",
+          "label": "restore"
+        },
+        {
+          "from": "checkpoint",
+          "to": "compare",
+          "label": "candidates"
+        },
+        {
+          "from": "compare",
+          "to": "select",
+          "label": "best result"
+        }
+      ],
+      "caption": "A checkpoint supports both recovery and selection among training stages."
+    }
+  },
   "related": [
     "active-learning",
     "backpropagation",

@@ -5,6 +5,113 @@
   "type": "concept",
   "definition": "Processing long audio by windowing it into overlapping chunks with context carry-over, merging transcripts at boundaries.",
   "details": "Processing long audio by windowing it into overlapping chunks with context carry-over, merging transcripts at boundaries. How offline models like Whisper serve long recordings and how streaming systems bound their memory.",
+  "explainer": {
+    "lead": "Chunked inference lets a speech model handle recordings much longer than it could comfortably process in one pass. The audio is read in overlapping sections, with useful context passed between them, so transcription can continue without memory growing with the entire recording.",
+    "tiers": {
+      "eli5": "Imagine reading a very long story by looking at a few pages at a time, with some pages repeated so you do not lose the plot. A speech model can listen to a long recording the same way, remembering a little from each part and joining the pieces into one transcript. This keeps the job manageable without cutting sentences off at the edges.",
+      "practitioner": "For offline long-form transcription with models such as Whisper, split the audio into overlapping windows, carry decoding context where supported, and merge the resulting text at the boundaries. Streaming systems use the same basic idea to keep the active audio and state bounded. Chunk size, overlap, and boundary merging need care: poorly aligned outputs can repeat or drop words, and carried context does not guarantee perfect continuity.",
+      "paperLevel": "Given audio x, construct overlapping windows x_1, ..., x_n and compute y_i = f(x_i, c_{i-1}), where c_{i-1} is context carried from earlier windows; the final transcript is Merge(y_1, ..., y_n). Overlap supplies local acoustic context, while carry-over supplies information beyond the current window. The main limits are duplication or omission during merging, imperfect context transfer, and the trade-off between window size, overlap, computation, and available context."
+    },
+    "example": "For a 60-minute meeting, suppose the audio is split into 30-second windows with 5 seconds of overlap. The model transcribes each window while carrying context forward, then joins the outputs so a sentence appearing in two overlapping windows appears only once in the final transcript.",
+    "usedIn": [
+      {
+        "name": "Whisper transcription",
+        "detail": "Long recordings can be processed in windows rather than decoded as one continuous input.",
+        "url": ""
+      },
+      {
+        "name": "Streaming speech recognition",
+        "detail": "Bounded chunks and carried state keep memory from growing with the full session.",
+        "url": ""
+      },
+      {
+        "name": "Meeting and lecture transcription",
+        "detail": "Extended recordings are transcribed section by section and joined into a single output.",
+        "url": ""
+      }
+    ],
+    "intuition": "A long recording is easier to handle as a sequence of manageable listening windows. Overlap and carried context preserve continuity, while boundary merging hides the seams.",
+    "howItWorks": [
+      "Divide the audio into fixed-length windows.",
+      "Make neighbouring windows overlap at their edges.",
+      "Run the speech model on each window in order.",
+      "Carry relevant context into the next window.",
+      "Merge partial transcripts and resolve duplicated boundary text."
+    ],
+    "whyItMatters": "It makes long-form transcription practical for offline models and gives streaming systems a way to bound memory. Overlap and context carry-over reduce the information lost at arbitrary chunk boundaries.",
+    "misconceptions": [
+      "Chunking alone does not guarantee accurate joins; boundary merging still matters.",
+      "Overlapping windows do not remove the need for context carry-over.",
+      "Bounded memory does not by itself make a system real-time."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "audio",
+          "label": "Long audio",
+          "note": "The complete recording"
+        },
+        {
+          "id": "chunks",
+          "label": "Overlapping chunks",
+          "note": "Windows share boundary audio"
+        },
+        {
+          "id": "model",
+          "label": "Speech model",
+          "note": "Processes one window at a time"
+        },
+        {
+          "id": "context",
+          "label": "Carried context",
+          "note": "Information passed between windows"
+        },
+        {
+          "id": "partials",
+          "label": "Partial transcripts",
+          "note": "Text produced for each window"
+        },
+        {
+          "id": "merged",
+          "label": "Merged transcript",
+          "note": "Boundaries resolved into one output"
+        }
+      ],
+      "edges": [
+        {
+          "from": "audio",
+          "to": "chunks",
+          "label": "windowing"
+        },
+        {
+          "from": "chunks",
+          "to": "model",
+          "label": "audio"
+        },
+        {
+          "from": "context",
+          "to": "model",
+          "label": "prior state"
+        },
+        {
+          "from": "model",
+          "to": "context",
+          "label": "carry over"
+        },
+        {
+          "from": "model",
+          "to": "partials",
+          "label": "text"
+        },
+        {
+          "from": "partials",
+          "to": "merged",
+          "label": "merge"
+        }
+      ],
+      "caption": "Audio flows through overlapping windows; context links successive model runs, and partial transcripts are merged at their boundaries."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

@@ -2,10 +2,91 @@
   "term": "CMUcam",
   "letter": "C",
   "category": "Computer vision",
-  "type": "concept",
+  "type": "tool",
   "definition": "A CMUcam is a low cost computer vision device intended for robotics research.",
   "details": "CMUcams consist of a small video camera and a microcontroller with a serial interface. While other digital cameras typically use a much higher bandwidth connector, the CMUcam's lightweight interface allows it to be accessed by microcontrollers. More importantly, the on-board microprocessor supports simple image processing and color blob tracking, making rudimentary computer vision capable in systems that would previously have far too little power to do such a thing. It has been used in past years by the high-school FIRST Robotics Competition as a way of letting participants' robots track field elements and navigate autonomously. The CMUcam also has an extremely small form factor. For these reasons, it is relatively popular for making small, mobile robots. The original design was originally made by Carnegie Mellon University, who has licensed it to various manufacturers.",
-  "story": "Imagine an art restorer who can spot a single cracked tile in a vast mosaic. What your eyes do without thinking, the machine does one careful layer at a time. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. The model looks the way you look at a crowd and finds the one face you know. And that is CMUcam — giving a machine the gift of sight.",
+  "explainer": {
+    "lead": "CMUcam is a compact, low-cost camera with its own microcontroller, designed to give small robots basic vision. By processing images on board and communicating over a simple serial connection, it lets modest robot controllers track objects without handling a full video stream.",
+    "tiers": {
+      "eli5": "CMUcam is like a tiny pair of eyes with a small brain attached. Instead of sending every picture to a robot and making the robot figure everything out, it can spot a colored object itself. It then sends the robot simple information through a small connection, helping the robot follow or find that object.",
+      "practitioner": "A CMUcam connects to a robot's microcontroller through a lightweight serial interface rather than a high-bandwidth camera connector. Use its on-board image processing and color blob tracking for simple tasks such as following colored field elements; its main limitation is that it supports rudimentary vision, not general-purpose image analysis.",
+      "paperLevel": "CMUcam can be represented as an embedded vision device D = (C, P, S), where C is a small video camera, P is an on-board microcontroller performing simple image processing and color blob tracking, and S is a serial interface to an external controller. Its compact form factor and local processing reduce the bandwidth and computation required of the host, while restricting it to rudimentary computer-vision tasks."
+    },
+    "example": "In a FIRST Robotics Competition robot, a CMUcam can track a colored field element on board. Its serial connection allows the robot's small controller to use that tracking information to navigate autonomously without processing a full camera feed itself.",
+    "usedIn": [
+      {
+        "name": "FIRST Robotics Competition",
+        "detail": "High-school teams used CMUcam to let robots track field elements and navigate autonomously.",
+        "url": ""
+      },
+      {
+        "name": "Small mobile robots",
+        "detail": "Its small form factor and limited processing demands make it suitable for compact robotic platforms.",
+        "url": ""
+      },
+      {
+        "name": "Robotics research",
+        "detail": "It provides a low-cost way to add basic computer vision to research systems.",
+        "url": ""
+      }
+    ],
+    "intuition": "Put a little visual intelligence inside the camera so the robot does not need a powerful computer or a fast video connection. The camera handles a narrow vision job and returns useful, lightweight results to the robot's controller.",
+    "howItWorks": [
+      "A small video camera captures images of the robot's surroundings.",
+      "The on-board microcontroller performs simple image processing.",
+      "Color blob tracking identifies a colored region relevant to the task.",
+      "A serial interface makes the device accessible to the robot's microcontroller.",
+      "The robot uses the vision result for actions such as tracking or autonomous navigation."
+    ],
+    "whyItMatters": "CMUcam made rudimentary computer vision practical on robots whose controllers previously had too little processing power for it. Its low cost, lightweight interface, and tiny size were especially useful for small mobile platforms.",
+    "misconceptions": [
+      "It is not just a small camera: the on-board microcontroller performs image processing and color blob tracking.",
+      "It is not intended to provide general-purpose, high-performance computer vision.",
+      "Its serial interface is a deliberate lightweight design, not a high-bandwidth video connection."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "camera",
+          "label": "Video camera",
+          "note": "Captures nearby images"
+        },
+        {
+          "id": "processor",
+          "label": "On-board microcontroller",
+          "note": "Processes images and tracks color blobs"
+        },
+        {
+          "id": "serial",
+          "label": "Serial interface",
+          "note": "Provides lightweight communication"
+        },
+        {
+          "id": "robot",
+          "label": "Robot controller",
+          "note": "Uses results for robot behavior"
+        }
+      ],
+      "edges": [
+        {
+          "from": "camera",
+          "to": "processor",
+          "label": "images"
+        },
+        {
+          "from": "processor",
+          "to": "serial",
+          "label": "vision results"
+        },
+        {
+          "from": "serial",
+          "to": "robot",
+          "label": "serial data"
+        }
+      ],
+      "caption": "CMUcam processes camera images locally before communicating with a robot's controller over a serial interface."
+    }
+  },
   "related": [
     "accord-net",
     "active-appearance-model",

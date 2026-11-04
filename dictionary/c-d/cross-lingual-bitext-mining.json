@@ -5,6 +5,92 @@
   "type": "concept",
   "definition": "Mining pairs of sentences that are translations of each other from comparable (non-parallel) multilingual corpora.",
   "details": "Mining pairs of sentences that are translations of each other from comparable (non-parallel) multilingual corpora. Sentence embedding spaces such as LASER let these pairs be found at scale, producing training data for machine translation.",
+  "explainer": {
+    "lead": "Cross-lingual bitext mining finds sentences in different languages that mean the same thing, even when the texts were not created as translations. It turns comparable multilingual writing into sentence pairs that can help train machine translation systems.",
+    "tiers": {
+      "eli5": "Imagine two huge piles of stories written in different languages. Your job is to find sentences that tell exactly the same thing and place them side by side. Those matched pairs can help a computer learn how to translate.",
+      "practitioner": "Encode sentences into a multilingual embedding space, then retrieve likely translation pairs across the comparable corpora. LASER is one example of an embedding approach that supports this at scale; the resulting pairs can become machine-translation training data, so false matches matter.",
+      "paperLevel": "Given comparable, non-parallel corpora C1 and C2, cross-lingual bitext mining seeks pairs (x, y), with x in C1 and y in C2, such that y is a translation of x. Sentence embeddings map candidates into a shared space for large-scale pair discovery; the task remains one of identifying true translations rather than assuming the corpora are already aligned."
+    },
+    "example": "An English corpus contains “The library closes at six,” and a comparable French corpus contains “La bibliothèque ferme à dix-huit heures.” Mining identifies them as a translation pair, which can then be added to machine-translation training data.",
+    "usedIn": [
+      {
+        "name": "Machine translation",
+        "detail": "Mined sentence pairs provide training data for translation systems.",
+        "url": ""
+      },
+      {
+        "name": "LASER",
+        "detail": "Its sentence embedding space can be used to find translation pairs at scale.",
+        "url": ""
+      }
+    ],
+    "intuition": "Comparable texts may discuss similar things without providing ready-made translations. A shared sentence embedding space helps bring matching meanings together across languages so likely pairs can be found.",
+    "howItWorks": [
+      "Collect comparable, non-parallel corpora in different languages.",
+      "Encode their sentences in a multilingual sentence embedding space.",
+      "Search across languages for likely translation pairs.",
+      "Keep the mined pairs for use as machine-translation training data."
+    ],
+    "whyItMatters": "It creates parallel sentence data from corpora that were not originally aligned, expanding the material available for training machine translation systems.",
+    "misconceptions": [
+      "Comparable corpora are not already parallel: their sentences still have to be matched.",
+      "Similar-looking sentences are not necessarily translations; retrieved pairs can be false matches.",
+      "Bitext mining produces sentence pairs, not the translation model itself."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "corpora",
+          "label": "Comparable corpora",
+          "note": "Non-parallel texts in different languages"
+        },
+        {
+          "id": "embeddings",
+          "label": "Sentence embeddings",
+          "note": "A shared multilingual space such as LASER"
+        },
+        {
+          "id": "search",
+          "label": "Cross-lingual search",
+          "note": "Find likely translation pairs"
+        },
+        {
+          "id": "bitext",
+          "label": "Mined bitext",
+          "note": "Aligned sentence pairs"
+        },
+        {
+          "id": "training",
+          "label": "MT training",
+          "note": "Pairs become translation training data"
+        }
+      ],
+      "edges": [
+        {
+          "from": "corpora",
+          "to": "embeddings",
+          "label": "sentences"
+        },
+        {
+          "from": "embeddings",
+          "to": "search",
+          "label": "vectors"
+        },
+        {
+          "from": "search",
+          "to": "bitext",
+          "label": "matches"
+        },
+        {
+          "from": "bitext",
+          "to": "training",
+          "label": "pairs"
+        }
+      ],
+      "caption": "Comparable texts are encoded, matched across languages, and turned into training pairs."
+    }
+  },
   "related": [
     "embedding",
     "machine-translation",

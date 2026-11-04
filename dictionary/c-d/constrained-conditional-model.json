@@ -2,10 +2,106 @@
   "term": "Constrained conditional model",
   "letter": "C",
   "category": "Machine learning",
-  "type": "tool",
+  "type": "concept",
   "definition": "A constrained conditional model (CCM) is a machine learning and inference framework that augments the learning of conditional (probabilistic or discriminative) models with declarative constraints.",
   "details": "The constraint can be used as a way to incorporate expressive prior knowledge into the model and bias the assignments made by the learned model to satisfy these constraints. The framework can be used to support decisions in an expressive output space while maintaining modularity and tractability of training and inference. Models of this kind have recently attracted much attention within the natural language processing (NLP) community. Formulating problems as constrained optimization problems over the output of learned models has several advantages. It allows one to focus on the modeling of problems by providing the opportunity to incorporate domain-specific knowledge as global constraints using a first order language. Using this declarative framework frees the developer from low level feature engineering while capturing the problem's domain-specific properties and guarantying exact inference. From a machine learning perspective it allows decoupling the stage of model generation (learning) from that of the constrained inference stage, thus helping to simplify the learning stage while improving the quality of the solutions. For example, in the case of generating compressed sentences,",
-  "story": "Think of a hiker descending a foggy hill in the dark, taking small steps and feeling for the steepest way down. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. It is the same loop you use to learn anything: try, miss, correct, try again. Skill, for a model, is just error pushed down until it is small enough to ignore. That steady, miss-by-miss improvement is Constrained conditional model.",
+  "explainer": {
+    "lead": "A constrained conditional model combines a learned predictor with explicit rules about which outputs are acceptable. This lets domain knowledge guide decisions without making the learning stage handle every requirement itself.",
+    "tiers": {
+      "eli5": "Imagine choosing words to shorten a sentence while following rules that keep the result sensible. A learned model suggests which words are useful, and the rules reject choices that do not fit. Together, they help produce a shorter sentence that still makes sense.",
+      "practitioner": "Train a conditional or discriminative model as usual, then perform inference as constrained optimization over its outputs. Express domain knowledge declaratively, using a first-order language for global constraints, rather than encoding every requirement through low-level features. This keeps learning modular while allowing constraints to bias the final assignments.",
+      "paperLevel": "Given an input x and a learned conditional model with output score f(x,y), constrained inference selects y* = argmax_y f(x,y) subject to declarative constraints C(x,y). Model learning and constrained inference can be decoupled, supporting expressive output spaces while maintaining modular, tractable training and inference and providing exact inference within the constrained formulation."
+    },
+    "example": "To compress \"The committee approved the plan yesterday,\" a learned model may favor removing \"yesterday\" and keeping the main content words. A constraint can require words needed for a coherent sentence to be selected together, leading constrained inference to choose \"The committee approved the plan\" rather than an incoherent collection of individually high-scoring words.",
+    "usedIn": [
+      {
+        "name": "Natural language processing",
+        "detail": "Used to add expressive domain knowledge and global output requirements to learned NLP models.",
+        "url": ""
+      },
+      {
+        "name": "Sentence compression",
+        "detail": "Learned word-level decisions can be combined with constraints so the selected words form an acceptable compressed sentence.",
+        "url": ""
+      }
+    ],
+    "intuition": "Let the learned model judge which outputs look promising, and let declarative constraints rule out combinations that violate known requirements. The two parts work together without requiring the learner to rediscover all domain knowledge from data.",
+    "howItWorks": [
+      "Learn a conditional probabilistic or discriminative model.",
+      "Use it to score possible assignments in the output space.",
+      "State domain-specific requirements as declarative global constraints.",
+      "Optimize over the model's outputs while enforcing those constraints.",
+      "Return the highest-scoring assignment that satisfies them."
+    ],
+    "whyItMatters": "CCMs make prior knowledge explicit and keep it separate from model training. This can simplify learning, reduce reliance on low-level feature engineering, and improve decisions in expressive structured output spaces.",
+    "misconceptions": [
+      "The constraints need not be learned; they can encode prior domain knowledge declaratively.",
+      "Learning and constrained inference need not be one tightly coupled stage.",
+      "Constraints guide the final assignments rather than replacing the learned conditional model."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input problem",
+          "note": "The instance requiring a structured decision."
+        },
+        {
+          "id": "model",
+          "label": "Learned model",
+          "note": "A conditional probabilistic or discriminative predictor."
+        },
+        {
+          "id": "scores",
+          "label": "Output scores",
+          "note": "Learned preferences over possible assignments."
+        },
+        {
+          "id": "constraints",
+          "label": "Declarative constraints",
+          "note": "Global rules expressing domain knowledge."
+        },
+        {
+          "id": "inference",
+          "label": "Constrained inference",
+          "note": "Optimization over scores subject to the rules."
+        },
+        {
+          "id": "output",
+          "label": "Valid decision",
+          "note": "The selected satisfying assignment."
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "model",
+          "label": "learned scoring"
+        },
+        {
+          "from": "model",
+          "to": "scores",
+          "label": "produces"
+        },
+        {
+          "from": "scores",
+          "to": "inference",
+          "label": "objective"
+        },
+        {
+          "from": "constraints",
+          "to": "inference",
+          "label": "restricts"
+        },
+        {
+          "from": "inference",
+          "to": "output",
+          "label": "selects"
+        }
+      ],
+      "caption": "Learning supplies output preferences, while declarative constraints shape the inference stage that selects the final decision."
+    }
+  },
   "related": [
     "constellation-model",
     "constrained-clustering",

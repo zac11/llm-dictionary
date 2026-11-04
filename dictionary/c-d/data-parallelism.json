@@ -5,7 +5,98 @@
   "type": "concept",
   "definition": "A distributed training approach where the same model is replicated across multiple devices, each processing a different subset of the training data in parallel.",
   "details": "Data parallelism is one of the simplest and most common distributed training strategies, with gradients synchronized across devices after each step.",
-  "story": "Picture a librarian organizing a million slips of paper so that any one of them can be found in a heartbeat. The examples a machine reads become the world it believes in. Better ingredients make a better meal, and the same is true here. Garbage in, garbage out — and the reverse: clean, representative data makes the model quietly brilliant. That care with the raw material is Data Parallelism.",
+  "explainer": {
+    "lead": "Data parallelism speeds up model training by letting several devices work on different pieces of the data at the same time. Each device keeps a copy of the model, and their results are synchronized so all copies continue learning together.",
+    "tiers": {
+      "eli5": "Imagine several students checking different pages of the same huge workbook, then sharing what they learned before moving on. In model training, each computer works on a different group of examples, but they all keep matching copies of the model. This lets the group finish the work sooner than one computer working alone.",
+      "practitioner": "Practitioners replicate the model across devices, give each replica a different data shard or mini-batch portion, and synchronize gradients after every training step before applying the update. It suits multi-device training when the full model fits on each device. Key pitfalls are synchronization overhead and idle time caused by slower devices.",
+      "paperLevel": "For D devices with shared parameters theta, device i computes a local gradient g_i from its own data subset. Gradients are synchronized and aggregated, then the same update is applied to every replica so their parameters remain identical. The approach requires each device to hold the whole model, and gradient synchronization can limit the speed gained from adding devices."
+    },
+    "example": "Suppose four devices train the same model on a batch of 400 examples. Each device processes 100 examples and computes a gradient; the gradients are then synchronized and aggregated, and all four model copies receive the same update before the next batch.",
+    "usedIn": [
+      {
+        "name": "Multi-GPU model training",
+        "detail": "Each GPU processes a different portion of the training data while holding a copy of the model.",
+        "url": ""
+      },
+      {
+        "name": "Distributed neural-network training",
+        "detail": "Multiple devices train replicas in parallel and synchronize gradients after each step.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of making one device process every training example, divide the examples among several devices. The model is duplicated rather than split, and gradient synchronization combines what each copy learns.",
+    "howItWorks": [
+      "Place an identical copy of the model on each device.",
+      "Give every device a different subset of the training data.",
+      "Compute local gradients on all devices in parallel.",
+      "Synchronize and aggregate the gradients after the step.",
+      "Apply the same update so every model copy stays aligned."
+    ],
+    "whyItMatters": "It makes training faster by spreading data processing across multiple devices without dividing the model itself. Its simplicity and regular synchronization make it a common starting point for distributed training.",
+    "misconceptions": [
+      "Data parallelism splits the data, not the model; every device holds a full model copy.",
+      "The devices do not train independent final models because their gradients and updates are synchronized.",
+      "Adding devices does not guarantee matching speed gains because synchronization takes time."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "batch",
+          "label": "Training batch",
+          "note": "Examples are divided into different subsets."
+        },
+        {
+          "id": "device-a",
+          "label": "Model replica A",
+          "note": "Processes subset A and computes local gradients."
+        },
+        {
+          "id": "device-b",
+          "label": "Model replica B",
+          "note": "Processes subset B and computes local gradients."
+        },
+        {
+          "id": "sync",
+          "label": "Gradient synchronization",
+          "note": "Local gradients are gathered and aggregated."
+        },
+        {
+          "id": "update",
+          "label": "Shared model update",
+          "note": "The same update keeps all replicas aligned."
+        }
+      ],
+      "edges": [
+        {
+          "from": "batch",
+          "to": "device-a",
+          "label": "subset A"
+        },
+        {
+          "from": "batch",
+          "to": "device-b",
+          "label": "subset B"
+        },
+        {
+          "from": "device-a",
+          "to": "sync",
+          "label": "gradients"
+        },
+        {
+          "from": "device-b",
+          "to": "sync",
+          "label": "gradients"
+        },
+        {
+          "from": "sync",
+          "to": "update",
+          "label": "aggregate"
+        }
+      ],
+      "caption": "Replicas process different data subsets in parallel, then synchronize gradients for a shared update."
+    }
+  },
   "related": [
     "data-sharding",
     "model-parallelism",

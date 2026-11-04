@@ -5,6 +5,118 @@
   "type": "concept",
   "definition": "Dense Passage Retrieval — a dual-encoder retriever that embeds questions and passages independently so nearest-neighbor search can do open-domain QA (Karpukhin et al., 2020).",
   "details": "Dense Passage Retrieval — a dual-encoder retriever that embeds questions and passages independently so nearest-neighbor search can do open-domain QA (Karpukhin et al., 2020).",
+  "explainer": {
+    "lead": "Dense Passage Retrieval (DPR) finds relevant text by turning questions and passages into numerical vectors. Because passages can be encoded in advance, a question can be matched against a large collection with nearest-neighbor search for open-domain question answering.",
+    "tiers": {
+      "eli5": "Imagine every question and every passage gets its own set of coordinates on a map. A useful passage should land close to the question, so finding an answer starts with looking nearby instead of reading every passage. This makes searching a huge collection much more practical.",
+      "practitioner": "Encode the passage collection once and store the vectors for nearest-neighbor search; at query time, encode only the question and retrieve the closest passages. The question and passage encoders are separate, so their outputs must be compatible for similarity comparison. Retrieval quality depends on how well those embeddings place relevant question–passage pairs near one another.",
+      "paperLevel": "DPR, introduced by Karpukhin et al. in 2020, uses two encoders, E_Q and E_P, to map a question q and passage p independently into vectors. Retrieval selects passages whose vectors E_P(p) are nearest to E_Q(q) under the chosen vector-similarity measure. This separates offline passage encoding and indexing from online question encoding and nearest-neighbor search."
+    },
+    "example": "For the question “What is the capital of France?”, DPR encodes the question into a vector and searches the passage index. A passage stating “Paris is the capital of France” is retrieved when its precomputed vector is among the nearest matches.",
+    "usedIn": [
+      {
+        "name": "Open-domain question answering",
+        "detail": "Retrieves relevant passages from a broad text collection for a natural-language question.",
+        "url": ""
+      },
+      {
+        "name": "Dense passage retrieval",
+        "detail": "Ranks passages by the proximity of their vectors to an independently encoded question vector.",
+        "url": ""
+      },
+      {
+        "name": "Large-scale nearest-neighbor search",
+        "detail": "Searches precomputed passage embeddings instead of comparing the question with every passage from scratch.",
+        "url": ""
+      }
+    ],
+    "intuition": "Questions and useful passages can be represented as points in the same vector space, with relevance expressed by closeness. Encoding the two sides independently makes large-scale retrieval efficient.",
+    "howItWorks": [
+      "Encode every passage with the passage encoder.",
+      "Store the resulting passage vectors in a searchable index.",
+      "Encode an incoming question with the separate question encoder.",
+      "Run nearest-neighbor search between the question vector and passage vectors.",
+      "Return the closest passages for open-domain question answering."
+    ],
+    "whyItMatters": "DPR turns open-domain passage retrieval into vector search, allowing passages to be processed before questions arrive. That makes retrieval over large collections more practical while using learned representations rather than exact wording alone.",
+    "misconceptions": [
+      "DPR is a retriever, not by itself a complete answer-generating system.",
+      "It does not encode a question and passage together; the two encoders process them independently.",
+      "Nearest-neighbor search compares learned vectors, not just matching keywords."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "question",
+          "label": "Question",
+          "note": "Input at query time"
+        },
+        {
+          "id": "q-encoder",
+          "label": "Question encoder",
+          "note": "Encodes questions independently"
+        },
+        {
+          "id": "q-vector",
+          "label": "Question vector",
+          "note": "Dense query representation"
+        },
+        {
+          "id": "passages",
+          "label": "Passage collection",
+          "note": "Text prepared in advance"
+        },
+        {
+          "id": "p-encoder",
+          "label": "Passage encoder",
+          "note": "Encodes passages independently"
+        },
+        {
+          "id": "p-vectors",
+          "label": "Passage vectors",
+          "note": "Searchable dense representations"
+        },
+        {
+          "id": "search",
+          "label": "Nearest-neighbor search",
+          "note": "Returns the closest passages"
+        }
+      ],
+      "edges": [
+        {
+          "from": "question",
+          "to": "q-encoder",
+          "label": ""
+        },
+        {
+          "from": "q-encoder",
+          "to": "q-vector",
+          "label": ""
+        },
+        {
+          "from": "q-vector",
+          "to": "search",
+          "label": "query vector"
+        },
+        {
+          "from": "passages",
+          "to": "p-encoder",
+          "label": ""
+        },
+        {
+          "from": "p-encoder",
+          "to": "p-vectors",
+          "label": ""
+        },
+        {
+          "from": "p-vectors",
+          "to": "search",
+          "label": "indexed vectors"
+        }
+      ],
+      "caption": "DPR encodes questions and passages separately, then retrieves passages whose vectors are closest to the question vector."
+    }
+  },
   "related": [
     "vector-search"
   ],

@@ -5,6 +5,81 @@
   "type": "concept",
   "definition": "Restoring the optional short-vowel diacritics omitted in standard Arabic writing, which disambiguate pronunciation and meaning.",
   "details": "Restoring the optional short-vowel diacritics omitted in standard Arabic writing, which disambiguate pronunciation and meaning. Errors can flip word senses, so it matters for TTS and reading aids.",
+  "explainer": {
+    "lead": "Arabic is usually written without the small marks that show short vowels, so readers often infer pronunciation and meaning from context. Arabic text diacritization restores those marks, helping speech systems and reading aids interpret text correctly.",
+    "tiers": {
+      "eli5": "Imagine reading a sentence with some vowels missing and having to guess them from the other words. Arabic readers often do this because small vowel marks are usually left out. Diacritization puts those marks back so a word is easier to pronounce and understand.",
+      "practitioner": "Apply diacritization before text-to-speech or in reading aids when pronunciation and word sense must be explicit. Evaluate outputs in sentence context, since a plausible vowel pattern can still select the wrong meaning. Pay particular attention to errors that change word senses rather than merely altering pronunciation.",
+      "paperLevel": "Given an undiacritized Arabic character sequence x, the task is to predict a diacritized sequence y that restores the optional short-vowel marks while preserving the written text. The restored marks disambiguate pronunciation and meaning. A central limitation is contextual ambiguity: locally plausible diacritics can produce an incorrect word sense."
+    },
+    "example": "The undiacritized form كتب can become كَتَبَ (kataba, “he wrote”) or كُتُب (kutub, “books”). Restoring the wrong vowel marks changes both pronunciation and meaning.",
+    "usedIn": [
+      {
+        "name": "Text-to-speech",
+        "detail": "Restored vowel marks help determine how Arabic text should be pronounced.",
+        "url": ""
+      },
+      {
+        "name": "Reading aids",
+        "detail": "Diacritics make pronunciation and word meaning clearer to readers.",
+        "url": ""
+      }
+    ],
+    "intuition": "The written letters provide much of the word, while the missing vowel marks supply cues needed to choose its pronunciation and intended meaning.",
+    "howItWorks": [
+      "Start with standard Arabic text that omits optional short-vowel diacritics.",
+      "Use the word and its surrounding sentence context to consider possible readings.",
+      "Insert the short-vowel marks for the selected reading.",
+      "Return the original text with those diacritics added."
+    ],
+    "whyItMatters": "A diacritization error can flip a word’s sense, not just make its pronunciation slightly awkward. That makes the task important for intelligible speech output and dependable reading support.",
+    "misconceptions": [
+      "It is not translation or transliteration; the Arabic text remains in place while vowel marks are restored.",
+      "A fluent-looking result is not necessarily correct, because an ambiguous word may receive diacritics for the wrong sense."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Undiacritized text",
+          "note": "Arabic writing without optional short-vowel marks"
+        },
+        {
+          "id": "context",
+          "label": "Sentence context",
+          "note": "Clues to the intended reading"
+        },
+        {
+          "id": "restore",
+          "label": "Restore diacritics",
+          "note": "Select and insert short-vowel marks"
+        },
+        {
+          "id": "output",
+          "label": "Diacritized text",
+          "note": "Clearer pronunciation and meaning"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "restore",
+          "label": "letters"
+        },
+        {
+          "from": "context",
+          "to": "restore",
+          "label": "disambiguates"
+        },
+        {
+          "from": "restore",
+          "to": "output",
+          "label": "adds marks"
+        }
+      ],
+      "caption": "Diacritization uses the text and its context to restore vowel marks."
+    }
+  },
   "citation": {
     "title": "Arabic Text Diacritization",
     "authors": [],

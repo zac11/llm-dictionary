@@ -5,6 +5,97 @@
   "type": "concept",
   "definition": "In programming, a closure is a technique for implementing lexically scoped name binding in a language with first-class functions.",
   "details": "In programming, a closure is a technique for implementing lexically scoped name binding in a language with first-class functions. Operationally, a closure is a record storing a function together with an environment that binds each of the function's non-local variables to its corresponding value.",
+  "explainer": {
+    "lead": "A closure lets a function carry the variable bindings it needs, even when the function is used somewhere else. This makes functions passed around as values behave according to the lexical scope where they were created.",
+    "tiers": {
+      "eli5": "Imagine a toy robot that carries a small backpack of notes. When you send the robot somewhere else, it can still read those notes to do its job. A closure is like the robot and its backpack: the instructions travel together with the information they need.",
+      "practitioner": "Use closures when creating, returning, or passing functions that depend on non-local variables from their lexical scope. The function retains an environment binding those variables, so review that captured environment when reasoning about later calls. Treating a closure as code alone can make its behavior difficult to predict.",
+      "paperLevel": "A closure can be represented as a pair (f, E), where f is a function and E is an environment mapping each non-local variable of f to its corresponding value. This record implements lexically scoped name binding in a language with first-class functions."
+    },
+    "example": "In pseudocode, makeAdder(n) returns a function add(x) that computes x + n. Calling makeAdder(3) creates a closure whose environment binds n to 3, so the returned function gives 7 for add(4) and 13 for add(10).",
+    "usedIn": [
+      {
+        "name": "Programming-language implementations",
+        "detail": "Support lexical scoping when functions are first-class values.",
+        "url": ""
+      },
+      {
+        "name": "Function factories",
+        "detail": "Create functions that retain bindings from the scope that produced them.",
+        "url": ""
+      },
+      {
+        "name": "Higher-order programming",
+        "detail": "Preserve needed variable bindings as functions are passed or returned.",
+        "url": ""
+      }
+    ],
+    "intuition": "A function's code is not always enough to run it: it may also refer to variables defined outside itself. A closure packages that code with the environment supplying those variables.",
+    "howItWorks": [
+      "Define a function inside a lexical scope containing variables it uses.",
+      "Identify those variables as non-local to the function.",
+      "Store the function together with an environment binding each non-local variable to its value.",
+      "When the function is called later, resolve its non-local names through that stored environment."
+    ],
+    "whyItMatters": "Closures make first-class functions compatible with lexical scope, allowing functions to be moved or returned without losing the meanings of their non-local names.",
+    "misconceptions": [
+      "A closure is not merely a function; it also includes an environment.",
+      "The environment contains bindings for the function's non-local variables, not every name in the program.",
+      "A closure can still use its stored environment when called outside the scope where it was created."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "function",
+          "label": "Function code",
+          "note": "Contains references to non-local variables."
+        },
+        {
+          "id": "scope",
+          "label": "Lexical scope",
+          "note": "Provides the variables surrounding the function."
+        },
+        {
+          "id": "environment",
+          "label": "Variable environment",
+          "note": "Binds each non-local name to its value."
+        },
+        {
+          "id": "closure",
+          "label": "Closure record",
+          "note": "Stores the function and environment together."
+        },
+        {
+          "id": "call",
+          "label": "Later function call",
+          "note": "Resolves non-local names using the stored environment."
+        }
+      ],
+      "edges": [
+        {
+          "from": "function",
+          "to": "closure",
+          "label": "stored with"
+        },
+        {
+          "from": "scope",
+          "to": "environment",
+          "label": "supplies bindings"
+        },
+        {
+          "from": "environment",
+          "to": "closure",
+          "label": "stored with"
+        },
+        {
+          "from": "closure",
+          "to": "call",
+          "label": "used by"
+        }
+      ],
+      "caption": "A closure combines function code with the environment needed to resolve its non-local variables."
+    }
+  },
   "citation": {
     "title": "Math Glossary for AI (François Fleuret notes)",
     "authors": [],

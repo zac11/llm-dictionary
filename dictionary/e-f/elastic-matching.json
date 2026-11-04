@@ -5,7 +5,93 @@
   "type": "concept",
   "definition": "Elastic matching is one of the pattern recognition techniques in computer science.",
   "details": "Elastic matching (EM) is also known as deformable template, flexible matching, or nonlinear template matching. Elastic matching can be defined as an optimization problem of two-dimensional warping specifying corresponding pixels between subjected images.",
-  "story": "Think of a lightbulb moment: the idea was always there, but someone had to point a finger at it. Behind the jargon is an idea you could explain to a friend over coffee. At its heart it is a simple notion, once you strip away the fancy name. Once you see it, you cannot unsee it. And that idea, made concrete, is Elastic matching.",
+  "explainer": {
+    "lead": "Elastic matching is a pattern-recognition technique for comparing images whose features do not line up exactly. It looks for a two-dimensional warping that puts pixels into correspondence, making it useful when a rigid overlay would leave features misaligned.",
+    "tiers": {
+      "eli5": "Imagine two drawings of the same shape, but one has been gently stretched or bent. Elastic matching works out how to move parts of one drawing so its points line up with the other. Instead of requiring every point to move in exactly the same way, it allows the positions to change across the picture.",
+      "practitioner": "Apply elastic matching when two-dimensional images need pixel correspondences but cannot be aligned adequately by a fixed overlay. Treat the task as an optimization problem whose solution is a warping between the subject images. A key pitfall is judging the result only by visual flexibility: the useful output is the correspondence specified by the optimized warp.",
+      "paperLevel": "Elastic matching, also called deformable template, flexible matching, or nonlinear template matching, is formulated as an optimization problem over a two-dimensional warping. Given subject images, the warping specifies corresponding pixels between them. This formulation defines the correspondence objective, not a single universal optimization algorithm or image feature representation."
+    },
+    "example": "Suppose a curved line lies two pixels farther right near the top of one image than in another, while the bottom ends already agree. An elastic match can warp the upper part horizontally to establish correspondences along the line without shifting the bottom end by the same amount.",
+    "usedIn": [
+      {
+        "name": "Pattern recognition",
+        "detail": "Used as a technique for comparing visual patterns when their pixels do not initially correspond.",
+        "url": ""
+      },
+      {
+        "name": "Two-dimensional image comparison",
+        "detail": "Used to estimate a warping that maps pixels between subject images.",
+        "url": ""
+      }
+    ],
+    "intuition": "A rigid comparison assumes that matching features already occupy compatible positions, while elastic matching lets the spatial arrangement deform. The goal is to find a two-dimensional warp that explains which pixels in one image correspond to pixels in another.",
+    "howItWorks": [
+      "Start with the two images to be compared.",
+      "Represent a possible alignment as a two-dimensional warping.",
+      "Use the warping to specify corresponding pixels between the images.",
+      "Search for a warping that solves the matching optimization problem.",
+      "Use the resulting pixel correspondences as the elastic match."
+    ],
+    "whyItMatters": "It turns spatial mismatch into an explicit correspondence problem rather than requiring the images to match at identical coordinates. That makes nonlinear image differences part of the matching process itself.",
+    "misconceptions": [
+      "It is not limited to shifting or rotating an entire image; its warping is two-dimensional and can vary across the image.",
+      "Elastic matching is not one uniquely specified optimizer: it is a matching formulation based on optimizing a warping.",
+      "A deformable template and elastic matching are names for the same general technique, not necessarily separate methods."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "image-a",
+          "label": "First image",
+          "note": "One subject image enters the match."
+        },
+        {
+          "id": "image-b",
+          "label": "Second image",
+          "note": "The other image supplies pixels to correspond."
+        },
+        {
+          "id": "warp",
+          "label": "Candidate warping",
+          "note": "A two-dimensional spatial mapping."
+        },
+        {
+          "id": "optimize",
+          "label": "Matching optimization",
+          "note": "Searches for the elastic match."
+        },
+        {
+          "id": "correspondence",
+          "label": "Pixel correspondences",
+          "note": "The optimized warp links image pixels."
+        }
+      ],
+      "edges": [
+        {
+          "from": "image-a",
+          "to": "optimize",
+          "label": "pixels"
+        },
+        {
+          "from": "image-b",
+          "to": "optimize",
+          "label": "pixels"
+        },
+        {
+          "from": "warp",
+          "to": "optimize",
+          "label": "mapping"
+        },
+        {
+          "from": "optimize",
+          "to": "correspondence",
+          "label": "solution"
+        }
+      ],
+      "caption": "Elastic matching optimizes a two-dimensional warping to produce pixel correspondences between two images."
+    }
+  },
   "related": [
     "a-r-d-prasad",
     "abeba-birhane",

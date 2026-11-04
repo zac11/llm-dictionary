@@ -2,9 +2,123 @@
   "term": "GLaM",
   "letter": "G",
   "category": "AI/ML glossary",
-  "type": "concept",
+  "type": "model",
   "definition": "Generalist Language Model, a family of language models which uses a sparsely activated mixture-of-experts architecture to scale the model capacity while also incurring substantially less training cost compared to dense variants.",
   "details": "Generalist Language Model, a family of language models which uses a sparsely activated mixture-of-experts architecture to scale the model capacity while also incurring substantially less training cost compared to dense variants.",
+  "explainer": {
+    "lead": "GLaM, short for Generalist Language Model, is a family of language models built around sparsely activated mixture-of-experts. Its central appeal is greater model capacity without making every part of the model work on every input, reducing training cost relative to dense variants.",
+    "tiers": {
+      "eli5": "Imagine a huge team of language helpers, but only a few are called over for each word instead of everyone joining in. This gives the team many different skills without doing the full team's work every time. GLaM uses that idea to build a larger language model while keeping training cheaper than a similarly scaled approach where everything is always active.",
+      "practitioner": "GLaM applies sparse mixture-of-experts scaling to language modeling: inputs activate only selected experts rather than the full model. The main engineering concern is that capacity and computation are no longer the same thing, so total parameter count alone does not describe training cost. Sparse activation also makes expert selection and workload distribution important implementation concerns.",
+      "paperLevel": "GLaM is a family of language models using a sparsely activated mixture-of-experts architecture. For an input x, computation can be summarized as y = sum over selected experts i of g_i(x) E_i(x), with only a small subset active rather than every expert. Its purpose is to increase capacity while substantially reducing training cost compared with dense variants; the supplied description does not establish quality or efficiency guarantees for every scale or workload."
+    },
+    "example": "While predicting the next word after \"The cat sat on the\", GLaM sends the current representation through only a selected subset of its experts. The remaining experts do no work for that step, so the model can contain many experts without paying to run all of them.",
+    "usedIn": [
+      {
+        "name": "Language modeling",
+        "detail": "Provides a way to scale language-model capacity through conditional use of experts.",
+        "url": ""
+      },
+      {
+        "name": "Mixture-of-experts research",
+        "detail": "Illustrates sparse activation as an alternative to making every model component process every input.",
+        "url": ""
+      },
+      {
+        "name": "Large-scale model training",
+        "detail": "Targets lower training cost than dense variants while expanding available model capacity.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "A shared language-model backbone that processes the input.",
+        "detail": ""
+      },
+      {
+        "name": "Multiple expert modules that provide additional model capacity.",
+        "detail": ""
+      },
+      {
+        "name": "A sparse selection mechanism that activates only some experts for a given input.",
+        "detail": ""
+      },
+      {
+        "name": "A combination stage that merges selected expert outputs into the model's continuing computation.",
+        "detail": ""
+      }
+    ],
+    "flow": [
+      "An input enters the language model.",
+      "The sparse mixture-of-experts layer selects relevant experts instead of activating them all.",
+      "The selected experts process the input while the others remain inactive.",
+      "Their contributions are combined and passed onward for language prediction."
+    ],
+    "origin": "The name GLaM expands to Generalist Language Model and refers to a family of models rather than a single dense network.",
+    "whyItMatters": "GLaM separates model capacity from the amount of computation performed for each activation. That makes sparse expert scaling a route to larger language models with substantially lower training cost than dense variants.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input tokens",
+          "note": "Text enters the language model."
+        },
+        {
+          "id": "router",
+          "label": "Sparse selection",
+          "note": "Only selected experts are activated."
+        },
+        {
+          "id": "active",
+          "label": "Active experts",
+          "note": "Selected modules process the representation."
+        },
+        {
+          "id": "idle",
+          "label": "Inactive experts",
+          "note": "Unused experts contribute no work for this input."
+        },
+        {
+          "id": "combine",
+          "label": "Combine outputs",
+          "note": "Active expert contributions are merged."
+        },
+        {
+          "id": "prediction",
+          "label": "Language prediction",
+          "note": "Processing continues toward the model output."
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "router",
+          "label": ""
+        },
+        {
+          "from": "router",
+          "to": "active",
+          "label": "selected"
+        },
+        {
+          "from": "router",
+          "to": "idle",
+          "label": "not selected"
+        },
+        {
+          "from": "active",
+          "to": "combine",
+          "label": ""
+        },
+        {
+          "from": "combine",
+          "to": "prediction",
+          "label": ""
+        }
+      ],
+      "caption": "GLaM increases capacity with many experts but activates only a sparse selection for each input."
+    }
+  },
   "related": [
     "language-model",
     "mixture-of-experts"

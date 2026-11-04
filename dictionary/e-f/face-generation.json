@@ -5,6 +5,117 @@
   "type": "concept",
   "definition": "Synthesizing realistic human faces — GANs (StyleGAN) and diffusion models produce faces used for avatars, datasets, and misuse alike.",
   "details": "Synthesizing realistic human faces — GANs (StyleGAN) and diffusion models produce faces used for avatars, datasets, and misuse alike.",
+  "explainer": {
+    "lead": "Face generation uses AI models to create images of human faces rather than capture them with a camera. It can supply avatars and synthetic datasets, but the same realism can also enable deception and other misuse.",
+    "tiers": {
+      "eli5": "Imagine studying many portraits and then drawing a person who does not exist. Face generation lets a computer do something similar, creating a new face from patterns it has learned. These pictures can be useful for games and research, but they can also fool people.",
+      "practitioner": "StyleGAN and diffusion models are used to sample synthetic face images for avatars or dataset construction. A typical workflow generates candidates, reviews their visual quality, and checks whether their intended use creates privacy, consent, or deception concerns. Realistic output alone does not establish that an image is suitable for training, evaluation, or publication.",
+      "paperLevel": "Face generation learns a parametric distribution p_theta(x) over face images and samples synthetic images x ~ p_theta(x). StyleGAN represents the GAN approach, while diffusion models provide another generative approach. Visual realism is not by itself evidence of provenance, consent, dataset quality, or safe use."
+    },
+    "example": "A character artist uses StyleGAN to generate several candidate faces and selects one as the basis for a game avatar. The chosen image is synthetic, but the artist still checks its quality and how it will be presented before publishing it.",
+    "usedIn": [
+      {
+        "name": "Avatar creation",
+        "detail": "Synthetic faces can serve as visual identities for digital characters and profiles.",
+        "url": ""
+      },
+      {
+        "name": "Synthetic image datasets",
+        "detail": "Generated faces can be collected as images for dataset-building workflows.",
+        "url": ""
+      },
+      {
+        "name": "Deceptive content",
+        "detail": "Realistic synthetic faces can be misused to make a fabricated identity appear credible.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of retrieving a photograph, the model constructs a new face from visual patterns it has learned. The result can look photographic while depicting no identifiable photographed person.",
+    "howItWorks": [
+      "A generative model learns recurring visual patterns from face images.",
+      "Generation begins with a random input or noise.",
+      "A GAN such as StyleGAN or a diffusion model turns that input into a face image.",
+      "The synthetic image can then be selected for an avatar, added to a dataset, or misused."
+    ],
+    "whyItMatters": "Face generation makes realistic face imagery available without photographing a new subject for every image. That convenience supports creative and dataset work while also lowering the effort needed to produce misleading visual identities.",
+    "misconceptions": [
+      "Face generation creates images; it is not the same task as recognizing or identifying a face.",
+      "A realistic generated face is not automatically a photograph of a real person.",
+      "Calling an image synthetic does not by itself resolve consent, provenance, or misuse concerns."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "faces",
+          "label": "Face images",
+          "note": "Visual examples provide face patterns."
+        },
+        {
+          "id": "training",
+          "label": "Model training",
+          "note": "A GAN or diffusion model learns from the examples."
+        },
+        {
+          "id": "noise",
+          "label": "Random input",
+          "note": "A new sample begins with randomness."
+        },
+        {
+          "id": "generator",
+          "label": "Face generator",
+          "note": "The learned model constructs an image."
+        },
+        {
+          "id": "output",
+          "label": "Synthetic face",
+          "note": "The output is a generated face image."
+        },
+        {
+          "id": "uses",
+          "label": "Avatars and datasets",
+          "note": "Generated images can support creative and data work."
+        },
+        {
+          "id": "misuse",
+          "label": "Potential misuse",
+          "note": "Realistic faces can also support deception."
+        }
+      ],
+      "edges": [
+        {
+          "from": "faces",
+          "to": "training",
+          "label": "examples"
+        },
+        {
+          "from": "training",
+          "to": "generator",
+          "label": "learned model"
+        },
+        {
+          "from": "noise",
+          "to": "generator",
+          "label": "sample"
+        },
+        {
+          "from": "generator",
+          "to": "output",
+          "label": "image"
+        },
+        {
+          "from": "output",
+          "to": "uses",
+          "label": ""
+        },
+        {
+          "from": "output",
+          "to": "misuse",
+          "label": ""
+        }
+      ],
+      "caption": "A generative model learns from face images and turns random input into synthetic faces, which can have constructive or harmful uses."
+    }
+  },
   "citation": {
     "title": "Face Generation",
     "authors": [],

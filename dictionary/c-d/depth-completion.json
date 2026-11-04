@@ -5,6 +5,98 @@
   "type": "concept",
   "definition": "Densifying sparse depth measurements (e.g.",
   "details": "Densifying sparse depth measurements (e.g. from LiDAR) into a full depth map guided by RGB images.",
+  "explainer": {
+    "lead": "Depth completion fills in the missing parts of a sparse depth measurement, such as scattered LiDAR returns, to produce a depth value for every pixel. An RGB image supplies visual clues about object shapes and boundaries, helping turn a handful of distance readings into a usable depth map.",
+    "tiers": {
+      "eli5": "Imagine a picture with only a few dots telling you how far away things are. Depth completion uses the picture’s shapes and edges to fill in the distances between those dots, like completing a connect-the-dots drawing. The result shows how far away every part of the scene is.",
+      "practitioner": "A typical system takes an RGB image and an aligned sparse depth map, with invalid pixels marked as missing, and predicts a dense depth map. Accurate camera–LiDAR calibration and image–depth alignment are important; otherwise visual boundaries can guide predictions toward the wrong locations. Sparse coverage and ambiguous surfaces can still produce errors.",
+      "paperLevel": "Given an RGB image I and a sparse depth map S defined on a subset of pixels Omega, depth completion learns or computes D_hat = f(I, S), where D_hat provides a depth estimate at every pixel and should agree with S on Omega. The RGB input helps resolve scene structure that sparse measurements alone do not constrain. Performance depends on measurement coverage and quality, and misalignment between I and S can introduce systematic errors."
+    },
+    "example": "A LiDAR scan of a street provides distance readings at only scattered points on a car, the road, and nearby buildings. Guided by the aligned camera image, depth completion fills the gaps to estimate distances across the car’s full visible surface, the road between returns, and the building walls, producing one depth value per pixel.",
+    "usedIn": [
+      {
+        "name": "Autonomous driving",
+        "detail": "Turns sparse LiDAR returns into dense scene depth with guidance from camera images.",
+        "url": ""
+      },
+      {
+        "name": "Mobile robotics",
+        "detail": "Provides pixel-level distance estimates from sparse depth sensing for scene perception.",
+        "url": ""
+      },
+      {
+        "name": "3D scene understanding",
+        "detail": "Supplies dense depth maps that describe the geometry visible in an RGB view.",
+        "url": ""
+      }
+    ],
+    "intuition": "Sparse depth gives reliable distances at a few locations, while the RGB image shows where surfaces and object boundaries lie. Combining them lets nearby appearance and depth evidence guide estimates for pixels with no measurement.",
+    "howItWorks": [
+      "Collect an RGB image and sparse depth measurements for the same scene.",
+      "Align the depth values with their corresponding image pixels and mark unsampled pixels as missing.",
+      "Use the measured depths together with RGB features such as object shapes and boundaries.",
+      "Predict a depth value for every pixel, including those without measurements.",
+      "Return the resulting dense depth map."
+    ],
+    "whyItMatters": "It converts sparse sensor output into a dense geometric representation of the visible scene. This makes the limited depth measurements available at pixel-level detail while using RGB information to guide the missing regions.",
+    "misconceptions": [
+      "It is not ordinary image super-resolution: the missing values are distances, not RGB pixels.",
+      "The RGB image guides the estimate but does not itself provide measured depth.",
+      "A complete output map does not mean every predicted depth is equally reliable."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "rgb",
+          "label": "RGB image",
+          "note": "Visual shapes and boundaries"
+        },
+        {
+          "id": "sparse",
+          "label": "Sparse depth",
+          "note": "Scattered measured distances"
+        },
+        {
+          "id": "align",
+          "label": "Aligned inputs",
+          "note": "Depth matched to image pixels"
+        },
+        {
+          "id": "complete",
+          "label": "Depth completion",
+          "note": "Estimates missing depth values"
+        },
+        {
+          "id": "dense",
+          "label": "Dense depth map",
+          "note": "One estimated depth per pixel"
+        }
+      ],
+      "edges": [
+        {
+          "from": "rgb",
+          "to": "align",
+          "label": "visual guidance"
+        },
+        {
+          "from": "sparse",
+          "to": "align",
+          "label": "measurements"
+        },
+        {
+          "from": "align",
+          "to": "complete",
+          "label": ""
+        },
+        {
+          "from": "complete",
+          "to": "dense",
+          "label": "prediction"
+        }
+      ],
+      "caption": "Aligned RGB appearance and sparse depth measurements are combined to predict a full depth map."
+    }
+  },
   "citation": {
     "title": "Depth Completion",
     "authors": [],

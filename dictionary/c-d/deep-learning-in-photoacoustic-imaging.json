@@ -5,7 +5,103 @@
   "type": "concept",
   "definition": "Photoacoustic imaging (PA) is based on the photoacoustic effect, in which optical absorption causes a rise in temperature, which causes a subsequent rise in pressure via thermo-elastic expansion.",
   "details": "This pressure rise propagates through the tissue and is sensed via ultrasonic transducers. Due to the proportionality between the optical absorption, the rise in temperature, and the rise in pressure, the ultrasound pressure wave signal can be used to quantify the original optical energy deposition within the tissue. Photoacoustic imaging has applications of deep learning in both photoacoustic computed tomography (PACT) and photoacoustic microscopy (PAM). PACT utilizes wide-field optical excitation and an array of unfocused ultrasound transducers. Similar to other computed tomography methods, the sample is imaged at multiple view angles, which are then used to perform an inverse reconstruction algorithm based on the detection geometry (typically through universal backprojection, modified delay-and-sum, or time reversal ) to elicit the initial pressure distribution within the tissue. PAM on the other hand uses focused ultrasound detection combined with weakly focused optical excitation (acoustic resolution PAM or AR-PAM) or tightly focused optical excitation (optical resolution PAM or OR-PAM). PAM typically captures images point-by-point via a mechanical raster scanning pattern. At each scanned point, the acoustic time-of-flight provides axial resolution while the acoustic focusing yields lateral resolution.",
-  "story": "Picture a child pointing at pictures in a book — cat, car, cloud — learning to see by seeing a thousand examples. It turns a picture into an understanding: this is a cat, that is a stop sign. What your eyes do without thinking, the machine does one careful layer at a time. It is eyes made of arithmetic — pixels become edges, edges become shapes, shapes become meaning. And that is Deep learning in photoacoustic imaging — giving a machine the gift of sight.",
+  "explainer": {
+    "lead": "Deep learning in photoacoustic imaging combines learned computational methods with an imaging technique that turns absorbed light into detectable ultrasound. It is used in photoacoustic computed tomography and photoacoustic microscopy, which differ in how they illuminate tissue and collect the resulting pressure waves.",
+    "tiers": {
+      "eli5": "Imagine shining light into tissue and listening for the tiny sound made when the tissue absorbs that light, warms up, and expands. Microphones designed for ultrasound pick up the sound, and a computer uses it to work out where the light was absorbed. Deep learning is one way to help with this computer processing, using either large-area imaging or point-by-point scanning.",
+      "practitioner": "Deep learning can be applied in both PACT and PAM pipelines. In PACT, wide-field optical excitation and an array of unfocused transducers provide multi-view measurements for geometry-dependent inverse reconstruction, conventionally using universal backprojection, modified delay-and-sum, or time reversal. In PAM, account for focused ultrasound detection, AR-PAM or OR-PAM optical focusing, and mechanical raster scanning; axial information comes from acoustic time-of-flight, while lateral resolution is described in terms of acoustic focusing.",
+      "paperLevel": "Photoacoustic signal formation follows absorbed optical energy ∝ temperature rise ∝ pressure rise, with the pressure wave propagating through tissue and measured by ultrasonic transducers. The detected pressure can therefore quantify the original optical energy deposition. PACT estimates the initial pressure distribution through an inverse reconstruction determined by the detection geometry, whereas PAM forms images point by point using acoustic time-of-flight and focused detection."
+    },
+    "example": "In a PACT scan, wide-field light excites a sample and an array of unfocused transducers records pressure waves at multiple view angles. A reconstruction based on the detection geometry, using a method such as universal backprojection, modified delay-and-sum, or time reversal, estimates the initial pressure distribution; this pressure signal reflects the original optical energy deposition, and deep learning can be applied in the imaging pipeline.",
+    "usedIn": [
+      {
+        "name": "Photoacoustic computed tomography",
+        "detail": "Uses wide-field optical excitation and multi-view ultrasound detection, followed by inverse reconstruction of the initial pressure distribution.",
+        "url": ""
+      },
+      {
+        "name": "Photoacoustic microscopy",
+        "detail": "Builds images through mechanical raster scanning, with acoustic-resolution and optical-resolution variants.",
+        "url": ""
+      }
+    ],
+    "intuition": "Tissue briefly converts absorbed light into heat and then into pressure through thermo-elastic expansion. Listening to that pressure reveals the optical energy deposited inside the tissue, while deep learning provides learned processing within the imaging pipeline.",
+    "howItWorks": [
+      "Light is absorbed by tissue, producing a temperature rise.",
+      "Thermo-elastic expansion converts that temperature rise into a pressure rise.",
+      "The pressure wave travels through the tissue and is detected by ultrasonic transducers.",
+      "PACT reconstructs an initial pressure distribution from multiple view angles; PAM instead collects measurements point by point.",
+      "Deep learning is applied within either PACT or PAM, alongside the physical measurement and reconstruction process."
+    ],
+    "whyItMatters": "The approach connects optical absorption with ultrasound measurements, allowing optical energy deposition inside tissue to be quantified. Its two main imaging configurations support both multi-view tomographic reconstruction and finely focused, point-by-point microscopy.",
+    "misconceptions": [
+      "The ultrasound is generated by light absorption in the tissue, not simply transmitted into the body as in a conventional pulse-echo description.",
+      "PACT and PAM are not interchangeable: PACT uses wide-field excitation and multi-view reconstruction, while PAM typically uses mechanical raster scanning.",
+      "Deep learning is an application within photoacoustic imaging; it does not change the underlying photoacoustic effect."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "light",
+          "label": "Optical excitation",
+          "note": "Light enters the tissue."
+        },
+        {
+          "id": "absorption",
+          "label": "Optical absorption",
+          "note": "Absorbed energy raises temperature."
+        },
+        {
+          "id": "expansion",
+          "label": "Thermo-elastic expansion",
+          "note": "Heating produces a pressure rise."
+        },
+        {
+          "id": "wave",
+          "label": "Pressure wave",
+          "note": "Ultrasound propagates through tissue."
+        },
+        {
+          "id": "detectors",
+          "label": "Ultrasonic transducers",
+          "note": "Sensors record the pressure signal."
+        },
+        {
+          "id": "reconstruction",
+          "label": "Image formation",
+          "note": "PACT reconstruction or PAM raster scanning forms an image."
+        }
+      ],
+      "edges": [
+        {
+          "from": "light",
+          "to": "absorption",
+          "label": ""
+        },
+        {
+          "from": "absorption",
+          "to": "expansion",
+          "label": "heating"
+        },
+        {
+          "from": "expansion",
+          "to": "wave",
+          "label": ""
+        },
+        {
+          "from": "wave",
+          "to": "detectors",
+          "label": ""
+        },
+        {
+          "from": "detectors",
+          "to": "reconstruction",
+          "label": "pressure signals"
+        }
+      ],
+      "caption": "Photoacoustic imaging converts absorbed light into pressure signals, which are detected and processed into an image; deep learning can be applied in PACT or PAM."
+    }
+  },
   "related": [
     "deep-learning",
     "deep-learning-anti-aliasing",

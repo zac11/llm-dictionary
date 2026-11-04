@@ -5,6 +5,123 @@
   "type": "concept",
   "definition": "Applying AI to accounting — automated bookkeeping, invoice extraction, reconciliation, and anomaly detection.",
   "details": "Applying AI to accounting — automated bookkeeping, invoice extraction, reconciliation, and anomaly detection.",
+  "explainer": {
+    "lead": "AI accounting uses artificial intelligence to handle repetitive accounting work, such as turning invoices into records, keeping books up to date, and matching transactions. It can also flag unusual activity for closer inspection, helping people focus on entries that need judgment.",
+    "tiers": {
+      "eli5": "Imagine a helper that reads a pile of receipts and invoices, writes the important details into a notebook, and checks whether the numbers match. It can also point out something that looks odd, like a payment that does not fit the usual pattern. A person can then check the helper's work instead of doing every step by hand.",
+      "practitioner": "In practice, AI is applied to document extraction, draft bookkeeping entries, transaction matching, and anomaly flags within an accounting workflow. Outputs should be checked against the original invoices and account records, especially when extraction is uncertain or a match is ambiguous. A useful setup keeps exceptions visible for review rather than treating every generated entry or alert as correct.",
+      "paperLevel": "AI accounting can be described as a set of mappings: source documents -> extracted accounting fields, transactions -> proposed ledger entries, and account records -> matches or anomaly flags. It combines automation with detection rather than defining a single accounting algorithm. Its limits include extraction errors, incorrect matches, and anomaly flags that still require accounting judgment."
+    },
+    "example": "A supplier invoice arrives with a total of 480. The system extracts the supplier, line items, and total into a draft accounting record; during reconciliation, it cannot match that total to the recorded 408 transaction, so the difference is flagged for review instead of being silently treated as reconciled.",
+    "usedIn": [
+      {
+        "name": "Bookkeeping",
+        "detail": "Automating parts of the work involved in recording financial transactions.",
+        "url": ""
+      },
+      {
+        "name": "Invoice processing",
+        "detail": "Extracting information from invoices so it can be used in accounting records.",
+        "url": ""
+      },
+      {
+        "name": "Account reconciliation",
+        "detail": "Helping match transactions and records so differences can be investigated.",
+        "url": ""
+      },
+      {
+        "name": "Anomaly review",
+        "detail": "Flagging unusual accounting activity for closer examination.",
+        "url": ""
+      }
+    ],
+    "intuition": "Accounting contains many repeated comparisons and transfers of information, which makes parts of it suitable for automation. AI acts as an assistant that reads, records, matches, and flags, while questionable cases remain available for human review.",
+    "howItWorks": [
+      "Collect source material such as invoices and transaction records.",
+      "Extract the accounting details needed from each invoice.",
+      "Use the extracted details to support automated bookkeeping.",
+      "Compare records during reconciliation and identify mismatches.",
+      "Flag unusual entries or patterns for anomaly review."
+    ],
+    "whyItMatters": "It can reduce manual data entry and repetitive checking while directing attention to mismatches and unusual activity. That makes the handling of routine accounting work and exceptions more focused.",
+    "misconceptions": [
+      "It is not a single algorithm; it covers several accounting tasks.",
+      "An extracted invoice field or proposed match is not automatically correct.",
+      "An anomaly flag is a prompt for investigation, not proof of an accounting problem."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "sources",
+          "label": "Accounting sources",
+          "note": "Invoices and transaction records enter the workflow."
+        },
+        {
+          "id": "extract",
+          "label": "Invoice extraction",
+          "note": "Relevant invoice details are read into structured fields."
+        },
+        {
+          "id": "books",
+          "label": "Automated bookkeeping",
+          "note": "Extracted information supports accounting records."
+        },
+        {
+          "id": "reconcile",
+          "label": "Reconciliation",
+          "note": "Transactions and records are compared for matches."
+        },
+        {
+          "id": "anomalies",
+          "label": "Anomaly detection",
+          "note": "Unusual entries or patterns are flagged."
+        },
+        {
+          "id": "review",
+          "label": "Exception review",
+          "note": "Mismatches and flagged activity receive closer inspection."
+        }
+      ],
+      "edges": [
+        {
+          "from": "sources",
+          "to": "extract",
+          "label": "invoices"
+        },
+        {
+          "from": "extract",
+          "to": "books",
+          "label": "fields"
+        },
+        {
+          "from": "sources",
+          "to": "reconcile",
+          "label": "records"
+        },
+        {
+          "from": "books",
+          "to": "reconcile",
+          "label": "entries"
+        },
+        {
+          "from": "books",
+          "to": "anomalies",
+          "label": "entries"
+        },
+        {
+          "from": "reconcile",
+          "to": "review",
+          "label": "mismatches"
+        },
+        {
+          "from": "anomalies",
+          "to": "review",
+          "label": "flags"
+        }
+      ],
+      "caption": "AI supports the flow from source documents to bookkeeping, reconciliation, and review of exceptions."
+    }
+  },
   "related": [
     "anomaly-detection"
   ],

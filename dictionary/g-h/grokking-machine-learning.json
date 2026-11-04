@@ -5,7 +5,93 @@
   "type": "concept",
   "definition": "In machine learning, grokking, or delayed generalization, is a phenomenon observed in some settings where a model abruptly transitions from overfitting (performing well only on training data) to generalizing (performing well on both training and test data), after many training iterations with little or no improvement on the held-out data.",
   "details": "This contrasts with what is typically observed in machine learning, where generalization occurs gradually alongside improved performance on training data.",
-  "story": "Imagine teaching a friend to shoot a basketball. They miss, and you walk them backwards through the shot — elbow, wrist, release — to find what needs fixing. It is the same loop you use to learn anything: try, miss, correct, try again. Underneath all the magic is a patient process of small improvements. It is learning from every miss instead of repeating the same mistake. That steady, miss-by-miss improvement is Grokking (machine learning).",
+  "explainer": {
+    "lead": "Grokking is a surprising training pattern in which a model appears stuck memorizing its training data, then suddenly learns to handle unseen examples too. It shows why a long stretch without improvement on held-out data does not always mean that further training is useless.",
+    "tiers": {
+      "eli5": "Imagine practicing quiz questions until you can recite every answer, but you still cannot answer new questions. After much more practice, you suddenly understand the underlying pattern and can answer both old and new questions. That delayed jump from memorizing to understanding is like grokking.",
+      "practitioner": "Look for grokking by tracking training and held-out performance over many iterations: training performance becomes strong early, held-out performance stays flat, and then rises abruptly. A validation plateau alone does not establish grokking, so stopping early remains reasonable when compute is limited, and there is no guarantee that longer training will produce the transition.",
+      "paperLevel": "Let A_train(t) and A_test(t) denote training and test performance after t iterations. Grokking, or delayed generalization, involves high A_train with little or no A_test improvement for many iterations, followed by an abrupt transition to high performance on both. It has been observed only in some settings and contrasts with gradual generalization alongside improving training performance."
+    },
+    "example": "A model trained on a fixed set of arithmetic problems reaches high accuracy on those problems while its accuracy on fresh problems stays low for thousands of additional iterations. Then, over a comparatively short part of training, its accuracy on the fresh problems jumps to a high level while training accuracy remains high.",
+    "usedIn": [
+      {
+        "name": "Generalization research",
+        "detail": "Provides a setting for studying how models can move from overfitting to generalizing after extended training.",
+        "url": ""
+      },
+      {
+        "name": "Training-curve analysis",
+        "detail": "Gives researchers and engineers a pattern to consider when training performance is high but held-out performance remains flat.",
+        "url": ""
+      }
+    ],
+    "intuition": "A model can first become very good at the examples it has already seen without performing well on new ones. With continued training, it may then abruptly cross into a regime where it generalizes, rather than improving on new data gradually from the start.",
+    "howItWorks": [
+      "Train the model and measure performance on both training and held-out data.",
+      "Training performance improves until the model performs well on the examples it has seen.",
+      "Held-out performance shows little or no improvement for many further iterations.",
+      "Training continues beyond this apparent plateau.",
+      "Held-out performance abruptly improves, so the model performs well on both training and test data."
+    ],
+    "whyItMatters": "Grokking challenges the expectation that generalization should improve gradually alongside training performance. It also shows that the relationship between training progress and held-out performance can be delayed and difficult to judge from a plateau alone.",
+    "misconceptions": [
+      "Grokking is not simply ordinary overfitting: the defining feature is the later, abrupt improvement on held-out data.",
+      "A flat validation curve does not prove that grokking is occurring or that a later jump will happen.",
+      "Grokking does not mean every overfitted model will eventually generalize if training continues."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "training",
+          "label": "Continued training",
+          "note": "The model is updated over many iterations."
+        },
+        {
+          "id": "fit",
+          "label": "Training data fits",
+          "note": "Performance on seen examples becomes strong."
+        },
+        {
+          "id": "plateau",
+          "label": "Held-out plateau",
+          "note": "Unseen-data performance barely improves."
+        },
+        {
+          "id": "transition",
+          "label": "Abrupt transition",
+          "note": "Generalization appears after the delay."
+        },
+        {
+          "id": "generalize",
+          "label": "Both perform well",
+          "note": "Training and test performance are strong."
+        }
+      ],
+      "edges": [
+        {
+          "from": "training",
+          "to": "fit",
+          "label": "learns"
+        },
+        {
+          "from": "fit",
+          "to": "plateau",
+          "label": "overfits"
+        },
+        {
+          "from": "plateau",
+          "to": "transition",
+          "label": "more training"
+        },
+        {
+          "from": "transition",
+          "to": "generalize",
+          "label": "generalizes"
+        }
+      ],
+      "caption": "The hallmark sequence: strong training performance, a long held-out plateau, then an abrupt move to generalization."
+    }
+  },
   "related": [
     "machine-learning",
     "active-learning-machine-learning",

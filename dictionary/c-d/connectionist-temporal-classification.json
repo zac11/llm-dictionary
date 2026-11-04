@@ -5,7 +5,108 @@
   "type": "concept",
   "definition": "Connectionist temporal classification (CTC) is a loss function and output representation used to train neural networks on sequence-labelling tasks where the input and output are not aligned in time.",
   "details": "It can be used for tasks like on-line handwriting recognition or speech recognition. CTC refers to the outputs and scoring, and is independent of the underlying neural network structure. It was introduced in 2006. The input is a sequence of observations, and the outputs are a sequence of labels, which can include blank outputs. The difficulty of training comes from there being many more observations than there are labels. For example, in speech audio there can be multiple time slices which correspond to a single phoneme. Since we don't know the alignment of the observed sequence with the target labels we predict a probability distribution at each time step. A CTC network has a continuous output (e.g. softmax), which is fitted through training to model the probability of a label. CTC does not attempt to learn boundaries and timings: Label sequences are considered equivalent if they differ only in alignment, ignoring blanks. Equivalent label sequences can occur in many ways – which makes scoring a non-trivial task, but there is an efficient forward–backward algorithm for that. CTC scores can then be used with the back-propagation algorithm to update the neural network weights. Altern",
-  "story": "Picture an architect laying out a building where every room has to know which other rooms matter to it. The layout decides what the machine can even attempt, before it learns a single thing. It is the blueprint that makes everything else possible. It is the difference between a row of isolated cubicles and one big room where everyone can hear each other. And that shape of the machine — Connectionist temporal classification — is what makes everything else possible.",
+  "explainer": {
+    "lead": "Connectionist temporal classification (CTC) lets a neural network learn a sequence of labels without being told exactly where each label occurs in the input. It is useful when a short output, such as a sequence of phonemes, must be learned from a much longer stream of observations.",
+    "tiers": {
+      "eli5": "Imagine listening to someone stretch out a word and trying to write down its sounds. You know the sounds, but not exactly when each one starts or stops. CTC helps a computer learn them by considering the different ways the sounds could line up with what it hears.",
+      "practitioner": "CTC is applied by producing a continuous output, such as a softmax distribution, at every time step and fitting it with a CTC score rather than frame-level alignments. An efficient forward–backward algorithm computes the score, whose gradients can then update the network through back-propagation. It does not learn label boundaries or timings, and its scoring must account for many observation paths representing the same label sequence.",
+      "paperLevel": "For input x and target label sequence y, CTC models P(y|x) as the sum of the probabilities of all per-time-step output paths equivalent to y under alignment, ignoring blanks: P(y|x) = sum over paths pi compatible with y of product_t P(pi_t|x), with training based on this sequence score. Introduced in 2006, it is independent of the underlying network structure and uses an efficient forward–backward computation to make scoring tractable. It addresses unknown alignment rather than learning explicit boundaries and timings."
+    },
+    "example": "Suppose a single phoneme lasts for several audio time slices. One output path might repeat that phoneme across those slices and include blanks, while another places its labels and blanks differently; both can represent the same target sequence. CTC combines the scores of such compatible paths, so training does not need a manually marked start and end time for the phoneme.",
+    "usedIn": [
+      {
+        "name": "Speech recognition",
+        "detail": "Learns phoneme or other label sequences from audio streams in which several time slices may correspond to one label.",
+        "url": ""
+      },
+      {
+        "name": "On-line handwriting recognition",
+        "detail": "Maps a sequence of observations to labels without requiring the observations and labels to be aligned in time.",
+        "url": ""
+      }
+    ],
+    "intuition": "A long input can express the same short label sequence in many different timings. Instead of choosing one alignment in advance, CTC treats compatible alignments as equivalent and scores the target through all of them.",
+    "howItWorks": [
+      "Feed the network a sequence of observations, such as audio time slices.",
+      "At each time step, output a probability distribution over labels, including a blank output.",
+      "Group output paths that represent the same label sequence, differing only in alignment and blanks.",
+      "Use the forward–backward algorithm to efficiently score the target across its compatible paths.",
+      "Use that score with back-propagation to update the neural network weights."
+    ],
+    "whyItMatters": "CTC removes the need for pre-aligned training data in sequence-labelling tasks with many more observations than labels. It also separates the output representation and scoring method from the choice of neural network structure.",
+    "misconceptions": [
+      "CTC is not a particular neural network architecture; it defines outputs and scoring and can work with different network structures.",
+      "It does not discover explicit label boundaries or timings.",
+      "Blank outputs are part of the per-time-step output representation, not extra target labels that must be aligned manually."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "observations",
+          "label": "Input observations",
+          "note": "A long sequence, such as audio time slices."
+        },
+        {
+          "id": "network",
+          "label": "Neural network",
+          "note": "Processes observations with any suitable underlying structure."
+        },
+        {
+          "id": "probabilities",
+          "label": "Stepwise probabilities",
+          "note": "Continuous outputs over labels and blanks at each time step."
+        },
+        {
+          "id": "paths",
+          "label": "Compatible paths",
+          "note": "Different alignments can represent the same target sequence."
+        },
+        {
+          "id": "score",
+          "label": "Forward–backward score",
+          "note": "Efficiently combines the compatible path scores."
+        },
+        {
+          "id": "update",
+          "label": "Weight update",
+          "note": "Back-propagation uses the score to train the network."
+        }
+      ],
+      "edges": [
+        {
+          "from": "observations",
+          "to": "network",
+          "label": "sequence"
+        },
+        {
+          "from": "network",
+          "to": "probabilities",
+          "label": "predictions"
+        },
+        {
+          "from": "probabilities",
+          "to": "paths",
+          "label": "labels, blanks"
+        },
+        {
+          "from": "paths",
+          "to": "score",
+          "label": "alignments"
+        },
+        {
+          "from": "score",
+          "to": "update",
+          "label": "gradients"
+        },
+        {
+          "from": "update",
+          "to": "network",
+          "label": "training"
+        }
+      ],
+      "caption": "CTC scores a target label sequence across compatible per-time-step output paths, then uses that score to train the network."
+    }
+  },
   "related": [
     "ablation-artificial-intelligence",
     "adaline",

@@ -5,7 +5,107 @@
   "type": "concept",
   "definition": "A reward model trained to score outputs according to a defined set of principles, used within a Constitutional AI-style training pipeline.",
   "details": "Constitutional reward models formalize principle-based preferences into a trainable signal, extending the Constitutional AI approach beyond self-critique into the reward modeling stage of alignment training.",
-  "story": "Picture a parachute packed by a second pair of hands: nobody plans to need it, but everyone is glad it was checked. The idea is simple: before something powerful is let loose, someone checks that it will not do real harm to real people. It is the habit of asking, before every launch, what could go wrong — and then doing something about it. Caution is not the enemy of progress — it is the reason progress gets to keep going. And that is Constitutional Reward Model — the reason we can move fast without breaking things, or people.",
+  "explainer": {
+    "lead": "A constitutional reward model turns a written set of principles into a numerical score for an AI output. It gives Constitutional AI-style training a learned signal for preferring outputs that better follow those principles.",
+    "tiers": {
+      "eli5": "Imagine a judge with a checklist of rules for being helpful and avoiding harm. The judge reads different answers and gives higher scores to the ones that follow the checklist better. Those scores can then help train the answer-writer.",
+      "practitioner": "In a Constitutional AI-style pipeline, train the reward model on output comparisons or preferences derived from an explicit constitution, then use its scalar scores in later alignment training. Evaluate it on principle-grounded comparisons rather than treating its score as proof that an output is safe or correct.",
+      "paperLevel": "Given a constitution C, learn a reward function r_phi(x, y) whose scores reflect preferences over outputs y for input x as judged according to C. This extends Constitutional AI by moving principle-based evaluation into the reward-modeling stage; the resulting signal remains dependent on how the principles are expressed and operationalized."
+    },
+    "example": "For a dangerous request, one candidate answer gives detailed harmful instructions while another declines and offers benign safety information. Under principles favoring helpfulness without enabling harm, the second answer is preferred, so the reward model is trained to assign it the higher score.",
+    "usedIn": [
+      {
+        "name": "Constitutional AI-style training",
+        "detail": "Converts preferences grounded in a written constitution into a learned reward signal.",
+        "url": ""
+      },
+      {
+        "name": "Alignment training",
+        "detail": "Scores candidate outputs during the reward-modeling stage of a principle-based training pipeline.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of relying only on people to score every output, write down the principles first and train a model to judge outputs by them. The result is a reusable scoring function that represents those principle-based preferences.",
+    "howItWorks": [
+      "Define a constitution: the principles outputs are expected to follow.",
+      "Apply those principles when comparing or evaluating candidate outputs.",
+      "Train a reward model to predict the resulting principle-based preferences.",
+      "Use the model's scores as a reward signal in subsequent alignment training."
+    ],
+    "whyItMatters": "It makes an explicit set of principles part of the learned training signal, connecting Constitutional AI's self-critique idea with reward modeling. This provides a concrete way to optimize outputs against principle-based preferences.",
+    "misconceptions": [
+      "It is not the constitution itself; it is a model trained to score outputs according to that constitution.",
+      "It is not limited to generating self-critiques; its role is to provide reward-model scores.",
+      "A high score does not by itself guarantee that an output follows every principle in every situation."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "constitution",
+          "label": "Written principles",
+          "note": "The constitution guiding evaluation"
+        },
+        {
+          "id": "candidates",
+          "label": "Candidate outputs",
+          "note": "Responses to be compared"
+        },
+        {
+          "id": "preferences",
+          "label": "Principle-based preferences",
+          "note": "Which outputs better follow the principles"
+        },
+        {
+          "id": "reward-model",
+          "label": "Reward model",
+          "note": "Learns to predict those preferences"
+        },
+        {
+          "id": "scores",
+          "label": "Reward scores",
+          "note": "Numerical signals for each output"
+        },
+        {
+          "id": "alignment",
+          "label": "Alignment training",
+          "note": "Uses scores to improve future outputs"
+        }
+      ],
+      "edges": [
+        {
+          "from": "constitution",
+          "to": "preferences",
+          "label": "guides"
+        },
+        {
+          "from": "candidates",
+          "to": "preferences",
+          "label": "evaluated"
+        },
+        {
+          "from": "preferences",
+          "to": "reward-model",
+          "label": "training data"
+        },
+        {
+          "from": "candidates",
+          "to": "reward-model",
+          "label": "scored"
+        },
+        {
+          "from": "reward-model",
+          "to": "scores",
+          "label": "predicts"
+        },
+        {
+          "from": "scores",
+          "to": "alignment",
+          "label": "reward signal"
+        }
+      ],
+      "caption": "A constitution shapes preference data, which trains a reward model whose scores feed alignment training."
+    }
+  },
   "related": [
     "reward-model",
     "constitutional-classifier",

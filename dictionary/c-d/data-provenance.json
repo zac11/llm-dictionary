@@ -5,7 +5,121 @@
   "type": "concept",
   "definition": "The documented history and origin of a dataset, including where it came from, how it was collected, and any transformations applied to it.",
   "details": "Data provenance is important for assessing dataset quality, licensing compliance, and potential biases, and has become a more prominent concern as training datasets for LLMs have grown to enormous, often loosely documented scale.",
-  "story": "Picture a librarian organizing a million slips of paper so that any one of them can be found in a heartbeat. The examples a machine reads become the world it believes in. Better ingredients make a better meal, and the same is true here. Garbage in, garbage out — and the reverse: clean, representative data makes the model quietly brilliant. And that is Data Provenance — the unglamorous work everything else stands on.",
+  "explainer": {
+    "lead": "Data provenance is the trail that shows where a dataset came from and what happened to it along the way. It helps people judge whether the data is trustworthy, properly licensed, and likely to contain biases.",
+    "tiers": {
+      "eli5": "Imagine a recipe card that says where each ingredient came from and what you did to it before cooking. Data provenance is like that card for a dataset: it records where the data came from, how it was gathered, and how it was changed. This helps you decide whether you can trust and use the result.",
+      "practitioner": "In practice, teams keep provenance alongside a dataset as metadata or documentation, recording its origins, collection process, and each transformation. This supports quality review, license checks, and bias investigation, especially when combining or repeatedly processing data. A common pitfall is losing this trail as data passes through many pipelines or grows to enormous scale.",
+      "paperLevel": "A plain-text representation is P(D) = (O, C, T), where O identifies the dataset's origins, C describes collection, and T is the ordered set of transformations applied to produce D. Provenance supplies evidence for assessing quality, licensing compliance, and possible bias, but it does not itself establish any of these properties. At enormous scale, records may be incomplete or loosely documented, limiting what can be reconstructed."
+    },
+    "example": "A team collects text from several sources, removes duplicate entries, and then filters some records. Its provenance documentation lists the sources, describes the collection process, and records the deduplication and filtering steps, so a later reviewer can trace how the final dataset was produced.",
+    "usedIn": [
+      {
+        "name": "LLM training",
+        "detail": "Tracks the origins and processing of enormous training datasets whose documentation may be incomplete.",
+        "url": ""
+      },
+      {
+        "name": "Dataset quality assessment",
+        "detail": "Uses origin and transformation records to investigate errors and judge reliability.",
+        "url": ""
+      },
+      {
+        "name": "Licensing compliance",
+        "detail": "Helps reviewers check where data came from and whether its use is permitted.",
+        "url": ""
+      },
+      {
+        "name": "Bias analysis",
+        "detail": "Provides context about collection and processing that may reveal potential biases.",
+        "url": ""
+      }
+    ],
+    "intuition": "A dataset is easier to evaluate when its history travels with it. Provenance is that history: a record of origins, collection, and changes rather than just the final files.",
+    "howItWorks": [
+      "Record where the original data came from.",
+      "Document how it was collected.",
+      "Log each transformation applied to it.",
+      "Keep these records available for quality, licensing, and bias checks."
+    ],
+    "whyItMatters": "Without provenance, problems in a dataset can be difficult to trace and licensing or bias concerns harder to assess. This becomes especially important for LLM training data at enormous, loosely documented scale.",
+    "misconceptions": [
+      "Provenance is not the dataset itself; it is documentation about the dataset's history.",
+      "Keeping provenance records does not guarantee good quality, valid licensing, or freedom from bias."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "origins",
+          "label": "Data origins",
+          "note": "Where the data came from"
+        },
+        {
+          "id": "collection",
+          "label": "Collection process",
+          "note": "How the data was gathered"
+        },
+        {
+          "id": "transforms",
+          "label": "Transformations",
+          "note": "Changes applied to the data"
+        },
+        {
+          "id": "dataset",
+          "label": "Final dataset",
+          "note": "The resulting data"
+        },
+        {
+          "id": "record",
+          "label": "Provenance record",
+          "note": "Documentation of the full history"
+        },
+        {
+          "id": "review",
+          "label": "Dataset review",
+          "note": "Quality, licensing, and bias assessment"
+        }
+      ],
+      "edges": [
+        {
+          "from": "origins",
+          "to": "collection",
+          "label": ""
+        },
+        {
+          "from": "collection",
+          "to": "transforms",
+          "label": ""
+        },
+        {
+          "from": "transforms",
+          "to": "dataset",
+          "label": ""
+        },
+        {
+          "from": "origins",
+          "to": "record",
+          "label": "documents"
+        },
+        {
+          "from": "collection",
+          "to": "record",
+          "label": "documents"
+        },
+        {
+          "from": "transforms",
+          "to": "record",
+          "label": "documents"
+        },
+        {
+          "from": "record",
+          "to": "review",
+          "label": "supports"
+        }
+      ],
+      "caption": "Provenance follows data from its origins through collection and transformation, then supports review of the resulting dataset."
+    }
+  },
   "related": [
     "data-curation",
     "data-labeling",

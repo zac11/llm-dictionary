@@ -5,6 +5,82 @@
   "type": "concept",
   "definition": "The radial basis function kernel exp(−‖x−y‖²/2σ²) — the default similarity measure in SVMs and kernel density estimation.",
   "details": "The radial basis function kernel exp(−‖x−y‖²/2σ²) — the default similarity measure in SVMs and kernel density estimation.",
+  "explainer": {
+    "lead": "A Gaussian kernel turns the distance between two points into a similarity score between 0 and 1. Nearby points receive high scores and distant points receive low ones, making it useful for comparing examples in SVMs and estimating density.",
+    "tiers": {
+      "eli5": "Imagine judging how alike two houses are by how far apart they are on a map. Houses next door get a high similarity score, while houses far away get a score close to zero. The Gaussian kernel does this with numbers instead of houses, and a width setting controls how quickly the score fades with distance.",
+      "practitioner": "In SVMs and kernel density estimation, choose sigma to control how local the similarity is: small values make it decay quickly, while large values spread influence farther. Because the kernel uses squared Euclidean distance, feature scaling matters and unscaled large-range features can dominate the result.",
+      "paperLevel": "The Gaussian, or radial basis function, kernel is k(x, y) = exp(-||x - y||^2 / (2 sigma^2)), where sigma > 0 controls its width. It depends only on the distance between x and y and decreases toward zero as that distance grows."
+    },
+    "example": "With sigma = 1, x = 0, and y = 2, the squared distance is 4, so the score is exp(-4/2) = exp(-2), approximately 0.135. The points therefore have much less similarity than identical points, whose score is 1.",
+    "usedIn": [
+      {
+        "name": "Support vector machines",
+        "detail": "Compares examples through a distance-based similarity score.",
+        "url": ""
+      },
+      {
+        "name": "Kernel density estimation",
+        "detail": "Spreads probability density smoothly around observed points.",
+        "url": ""
+      }
+    ],
+    "intuition": "Treat closeness as similarity: identical points have similarity 1, and similarity smoothly approaches 0 as points move apart. Sigma decides whether “near” means a small neighborhood or a broad region.",
+    "howItWorks": [
+      "Take two input points, x and y.",
+      "Compute their squared Euclidean distance, ||x - y||^2.",
+      "Divide by 2 sigma^2 to account for kernel width.",
+      "Apply the negative exponential to obtain the similarity score."
+    ],
+    "whyItMatters": "It provides one smooth, widely used way to convert distances into similarities. That single idea supports both decision-making with SVMs and smooth density estimates.",
+    "misconceptions": [
+      "A larger sigma means a narrower kernel; actually, it makes similarity decay more slowly.",
+      "The score is a distance; actually, larger distances produce smaller similarities.",
+      "Sigma changes the maximum score; identical points still have similarity 1."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "points",
+          "label": "Two points",
+          "note": "Inputs x and y"
+        },
+        {
+          "id": "distance",
+          "label": "Squared distance",
+          "note": "Compute ||x - y||^2"
+        },
+        {
+          "id": "width",
+          "label": "Width scaling",
+          "note": "Divide by 2 sigma^2"
+        },
+        {
+          "id": "similarity",
+          "label": "Similarity score",
+          "note": "Apply negative exponential"
+        }
+      ],
+      "edges": [
+        {
+          "from": "points",
+          "to": "distance",
+          "label": ""
+        },
+        {
+          "from": "distance",
+          "to": "width",
+          "label": ""
+        },
+        {
+          "from": "width",
+          "to": "similarity",
+          "label": ""
+        }
+      ],
+      "caption": "The Gaussian kernel converts two points into a smoothly decaying similarity score."
+    }
+  },
   "related": [
     "kernel-density-estimation",
     "radial-basis-function-kernel",

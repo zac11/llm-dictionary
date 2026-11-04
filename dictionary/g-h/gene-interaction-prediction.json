@@ -5,6 +5,108 @@
   "type": "concept",
   "definition": "Predicting functional or physical interactions between genes or proteins — network biology for pathway discovery.",
   "details": "Predicting functional or physical interactions between genes or proteins — network biology for pathway discovery.",
+  "explainer": {
+    "lead": "Gene interaction prediction estimates which genes or proteins work together or physically interact. It helps researchers turn scattered biological measurements into candidate networks that can guide pathway discovery and further experiments.",
+    "tiers": {
+      "eli5": "Imagine trying to work out which classmates usually team up on projects by looking at their activities and friendships. Gene interaction prediction does something similar for genes or proteins: it gives each possible pair a score showing how likely they are to work together. Scientists can then investigate the most promising pairs instead of testing every possible combination.",
+      "practitioner": "A typical workflow represents each gene or protein with available biological features, scores candidate pairs with a statistical or deep-learning model, and ranks the predicted edges. The main pitfalls are treating functional association as physical binding, carrying biases from known interaction networks into new predictions, and reporting model scores without experimental confirmation.",
+      "paperLevel": "Given entities g_i and g_j, learn a scoring function f(g_i, g_j) that estimates the probability or strength of a functional or physical interaction; thresholded scores define a candidate network. Functional and physical edges are distinct prediction targets, and high scores remain hypotheses rather than evidence of a direct interaction. Evaluation can be limited by incomplete interaction labels and unequal knowledge across genes."
+    },
+    "example": "Suppose a model scores three gene pairs: A–B receives 0.91, B–C receives 0.74, and A–C receives 0.12. A researcher adds A–B and B–C to a candidate pathway network, leaves out A–C, and prioritizes A–B for experimental follow-up rather than treating the score as proof.",
+    "usedIn": [
+      {
+        "name": "Pathway discovery",
+        "detail": "Candidate interactions help researchers assemble genes or proteins into pathways for further study.",
+        "url": ""
+      },
+      {
+        "name": "Network biology",
+        "detail": "Predicted edges provide hypotheses about how molecular components connect within a larger network.",
+        "url": ""
+      },
+      {
+        "name": "Protein interaction mapping",
+        "detail": "Models prioritize protein pairs that may physically interact before experimental testing.",
+        "url": ""
+      }
+    ],
+    "intuition": "Genes and proteins do not act in isolation, so clues about them can help estimate whether a pair belongs to the same functional relationship or forms a physical contact. Prediction narrows an enormous set of possible pairs to a manageable set of candidates.",
+    "howItWorks": [
+      "Choose the entities and interaction type to predict, such as functional association or physical contact.",
+      "Build a representation for each gene or protein from the available biological information.",
+      "Score candidate pairs with a model trained or configured to recognize likely interactions.",
+      "Rank the pairs and assemble high-scoring edges into a candidate network.",
+      "Check promising interactions against independent evidence or new experiments."
+    ],
+    "whyItMatters": "Testing every possible gene or protein pair would be impractical, so prediction helps focus attention on plausible relationships. The resulting networks can suggest pathways and guide the design of more targeted experiments.",
+    "misconceptions": [
+      "A predicted functional interaction does not necessarily mean that two molecules physically touch.",
+      "A high model score is a hypothesis to investigate, not experimental proof.",
+      "A missing predicted edge does not establish that no interaction exists."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "entities",
+          "label": "Genes or proteins",
+          "note": "Entities whose interactions are under study"
+        },
+        {
+          "id": "features",
+          "label": "Entity representations",
+          "note": "Available information encoded for each entity"
+        },
+        {
+          "id": "model",
+          "label": "Pair-scoring model",
+          "note": "Estimates interaction likelihood for candidate pairs"
+        },
+        {
+          "id": "scores",
+          "label": "Ranked interactions",
+          "note": "Candidate edges ordered by predicted score"
+        },
+        {
+          "id": "network",
+          "label": "Candidate network",
+          "note": "Selected edges used to propose pathways"
+        },
+        {
+          "id": "validation",
+          "label": "Follow-up checks",
+          "note": "Independent evidence tests promising predictions"
+        }
+      ],
+      "edges": [
+        {
+          "from": "entities",
+          "to": "features",
+          "label": "encode"
+        },
+        {
+          "from": "features",
+          "to": "model",
+          "label": "compare pairs"
+        },
+        {
+          "from": "model",
+          "to": "scores",
+          "label": "score"
+        },
+        {
+          "from": "scores",
+          "to": "network",
+          "label": "select edges"
+        },
+        {
+          "from": "network",
+          "to": "validation",
+          "label": "test"
+        }
+      ],
+      "caption": "Gene interaction prediction turns information about individual entities into ranked candidate edges, a proposed network, and targets for follow-up."
+    }
+  },
   "citation": {
     "title": "Gene Interaction Prediction",
     "authors": [],

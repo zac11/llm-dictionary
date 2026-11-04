@@ -5,6 +5,87 @@
   "type": "concept",
   "definition": "Predicting per-pixel distance from the camera, monocular or stereo.",
   "details": "Predicting per-pixel distance from the camera, monocular or stereo. Learned depth enables 3D reconstruction, AR occlusion, and autonomous navigation.",
+  "explainer": {
+    "lead": "Depth estimation turns camera images into a distance map, giving every pixel an estimate of how far its visible surface is from the camera. That extra spatial information lets software rebuild scenes, place virtual objects convincingly, and help machines navigate.",
+    "tiers": {
+      "eli5": "Imagine closing one eye and guessing which things in a room are near or far, then comparing the view from both eyes to make a better guess. Depth estimation teaches a computer to do something similar with pictures. The result is like an image where every dot carries a distance instead of just a color.",
+      "practitioner": "A model takes either one image or a stereo pair and produces a dense depth map aligned with the input pixels. The output can feed 3D reconstruction, augmented-reality occlusion, or navigation pipelines. Check whether distances are relative or absolute, and validate estimates before using them for physical measurements or safety-critical decisions.",
+      "paperLevel": "Given an image I, or a stereo pair (I_left, I_right), depth estimation learns a function f_theta that predicts D_hat(u,v), the camera-to-surface distance at each pixel (u,v). Training minimizes a depth objective such as L(theta) = sum_(u,v) loss(D_hat(u,v), D(u,v)) when reference depth is available. Monocular prediction can lack absolute scale, while stereo prediction depends on estimating correspondence between views."
+    },
+    "example": "In an AR view, a mug is 1.2 metres from the camera and the back of a chair in front of it is 0.8 metres away. A depth map stores those distances at the corresponding pixels, so the renderer can hide the virtual mug wherever the nearer chair blocks it.",
+    "usedIn": [
+      {
+        "name": "3D reconstruction",
+        "detail": "Per-pixel distances provide geometric input for rebuilding the shape of a scene.",
+        "url": ""
+      },
+      {
+        "name": "Augmented reality",
+        "detail": "Scene depth lets real foreground surfaces hide parts of virtual objects.",
+        "url": ""
+      },
+      {
+        "name": "Autonomous navigation",
+        "detail": "Distance estimates help a moving system reason about the space around it.",
+        "url": ""
+      }
+    ],
+    "intuition": "A flat image records appearance but not distance directly; depth estimation adds that missing geometric dimension. A single-view system infers distance from visual cues, while a stereo system also compares two viewpoints.",
+    "howItWorks": [
+      "Capture one camera image for monocular estimation or two views for stereo estimation.",
+      "Analyze visual evidence in the image, or correspondence between the stereo views.",
+      "Predict one distance value for every pixel, producing a dense depth map.",
+      "Pass the depth map to reconstruction, rendering, or navigation software."
+    ],
+    "whyItMatters": "Per-pixel depth connects ordinary camera imagery with spatial reasoning. It enables applications that must understand scene shape or decide which objects lie in front of others.",
+    "misconceptions": [
+      "A depth map is not a color image: each value represents estimated distance, not appearance.",
+      "Monocular and stereo estimation use different inputs: one image versus a pair of views.",
+      "Depth estimation produces distances; turning them into a complete 3D reconstruction is a further task."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Camera input",
+          "note": "One image or a stereo pair"
+        },
+        {
+          "id": "model",
+          "label": "Depth estimator",
+          "note": "Infers distance from visual evidence"
+        },
+        {
+          "id": "depth",
+          "label": "Dense depth map",
+          "note": "One predicted distance per pixel"
+        },
+        {
+          "id": "uses",
+          "label": "Spatial applications",
+          "note": "Reconstruction, AR occlusion, or navigation"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "model",
+          "label": "images"
+        },
+        {
+          "from": "model",
+          "to": "depth",
+          "label": "predicts"
+        },
+        {
+          "from": "depth",
+          "to": "uses",
+          "label": "geometry"
+        }
+      ],
+      "caption": "Depth estimation converts camera imagery into per-pixel distances for downstream spatial tasks."
+    }
+  },
   "related": [
     "3d-reconstruction"
   ],

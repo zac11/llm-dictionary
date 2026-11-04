@@ -5,6 +5,84 @@
   "type": "concept",
   "definition": "The late-pretraining phase where the data mixture shifts toward the highest-quality sources (curated text, math, code) as the learning rate decays, disproportionately shaping final benchmark performance.",
   "details": "The late-pretraining phase where the data mixture shifts toward the highest-quality sources (curated text, math, code) as the learning rate decays, disproportionately shaping final benchmark performance.",
+  "explainer": {
+    "lead": "Annealing is the finishing stage of pretraining: the model sees a higher share of carefully selected text, math, and code while its learning rate gradually falls. This final stretch can have an outsized effect on benchmark results.",
+    "tiers": {
+      "eli5": "Imagine studying for a big test. Near the end, you stop skimming everything and spend more time on your clearest notes and hardest practice problems while making smaller changes to what you already know. Annealing is that final, focused study period for an AI model.",
+      "practitioner": "Apply annealing late in pretraining by shifting the data mixture toward curated text, math, and code as the learning-rate schedule decays. Track final benchmark performance, and treat the data change and learning-rate decay as parts of the phase rather than tuning the learning rate alone.",
+      "paperLevel": "Let eta_t be the learning rate and w_t(d) the sampling weight of data source d: during late pretraining, eta_t decays while w_t increases for high-quality curated text, math, and code. The definition gives no fixed cutoff, decay schedule, or mixture proportions, and its main empirical claim is that this phase disproportionately shapes final benchmark performance."
+    },
+    "example": "In the final segment of a pretraining run, a team reduces the share of general web text, gives curated explanations, mathematics, and code a larger share of each batch, and continues decaying the learning rate until training ends.",
+    "intuition": "The last part of training is a chance to refine what the model has learned using its best material, with smaller updates as training settles.",
+    "howItWorks": [
+      "Reach the late stage of pretraining.",
+      "Increase the share of curated text, math, and code in the data mixture.",
+      "Decay the learning rate as training continues.",
+      "Finish pretraining and assess the resulting benchmark performance."
+    ],
+    "whyItMatters": "Because this late phase can disproportionately influence final benchmark scores, choices about data quality and learning-rate decay near the end deserve special attention.",
+    "misconceptions": [
+      "Annealing is not just lowering the learning rate; the data mixture also shifts toward higher-quality sources.",
+      "It does not refer to an early or middle-pretraining stage."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "late",
+          "label": "Late pretraining",
+          "note": "The finishing stage begins."
+        },
+        {
+          "id": "mix",
+          "label": "Quality data mixture",
+          "note": "More curated text, math, and code."
+        },
+        {
+          "id": "decay",
+          "label": "Learning-rate decay",
+          "note": "Updates shrink as training proceeds."
+        },
+        {
+          "id": "model",
+          "label": "Final model",
+          "note": "Pretraining ends."
+        },
+        {
+          "id": "scores",
+          "label": "Benchmark performance",
+          "note": "Final results are especially sensitive to this phase."
+        }
+      ],
+      "edges": [
+        {
+          "from": "late",
+          "to": "mix",
+          "label": ""
+        },
+        {
+          "from": "late",
+          "to": "decay",
+          "label": ""
+        },
+        {
+          "from": "mix",
+          "to": "model",
+          "label": "training data"
+        },
+        {
+          "from": "decay",
+          "to": "model",
+          "label": "smaller updates"
+        },
+        {
+          "from": "model",
+          "to": "scores",
+          "label": ""
+        }
+      ],
+      "caption": "During annealing, a higher-quality data mixture and a decaying learning rate jointly shape the final model."
+    }
+  },
   "related": [
     "benchmark",
     "data-mixture",

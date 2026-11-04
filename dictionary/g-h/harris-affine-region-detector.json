@@ -5,7 +5,107 @@
   "type": "concept",
   "definition": "In the fields of computer vision and image analysis, the Harris affine region detector belongs to the category of feature detection.",
   "details": "Feature detection is a preprocessing step of several algorithms that rely on identifying characteristic points or interest points so to make correspondences between images, recognize textures, categorize objects or build panoramas.",
-  "story": "Picture a child pointing at pictures in a book — cat, car, cloud — learning to see by seeing a thousand examples. It turns a picture into an understanding: this is a cat, that is a stop sign. What your eyes do without thinking, the machine does one careful layer at a time. It is eyes made of arithmetic — pixels become edges, edges become shapes, shapes become meaning. That pixel-to-meaning climb is Harris affine region detector.",
+  "explainer": {
+    "lead": "The Harris affine region detector is a feature detector used to find characteristic interest points in images. These points give later algorithms useful locations for matching images, recognizing textures, categorizing objects, or assembling panoramas.",
+    "tiers": {
+      "eli5": "Imagine looking at two photos of the same building and trying to find matching spots, such as a distinctive window corner. This detector helps a computer pick out useful spots in a picture. Other programs can then compare those spots to recognize things or join photos into a panorama.",
+      "practitioner": "Use it as a preprocessing stage when a vision pipeline needs interest points rather than processing every image location indiscriminately. Its detected regions feed later stages such as cross-image correspondence, texture recognition, object categorization, or panorama construction. Do not treat detection alone as a complete matching or recognition system.",
+      "paperLevel": "Formally, its role is feature detection: given an image, produce characteristic interest-point regions for subsequent vision algorithms. Those regions can support correspondence between images and higher-level tasks including texture recognition, object categorization, and panorama construction. Detection is only the preprocessing stage; it does not by itself establish correspondences or perform recognition."
+    },
+    "example": "Suppose two photographs show the same building from different positions. The detector finds characteristic interest-point regions in each photograph, and a later correspondence stage uses those detections to identify matching locations; those matches can then help a panorama-building pipeline combine the photographs.",
+    "usedIn": [
+      {
+        "name": "Image correspondence",
+        "detail": "Provides characteristic points that later algorithms can use to make correspondences between images.",
+        "url": ""
+      },
+      {
+        "name": "Texture recognition",
+        "detail": "Supplies interest points as part of the preprocessing used by texture-recognition algorithms.",
+        "url": ""
+      },
+      {
+        "name": "Object categorization",
+        "detail": "Supports feature-based pipelines that categorize objects from characteristic image points.",
+        "url": ""
+      },
+      {
+        "name": "Panorama construction",
+        "detail": "Finds useful image locations for later processing that combines views into a panorama.",
+        "url": ""
+      }
+    ],
+    "intuition": "Some image locations are more distinctive and useful than others. Detecting those characteristic regions gives downstream algorithms a compact set of places to compare or analyze instead of treating every pixel as equally informative.",
+    "howItWorks": [
+      "Take an image as input.",
+      "Examine it for characteristic interest-point regions.",
+      "Output the detected regions as image features.",
+      "Pass those features to a later algorithm for correspondence, recognition, categorization, or panorama construction."
+    ],
+    "whyItMatters": "It supplies the distinctive image locations on which several feature-based vision algorithms depend. This makes it a useful preprocessing step for connecting visual information across images and for higher-level recognition tasks.",
+    "misconceptions": [
+      "It is not a complete image-matching system: detecting regions and establishing correspondences are separate stages.",
+      "It does not by itself recognize textures, categorize objects, or build panoramas; those tasks require additional algorithms.",
+      "An interest point is not necessarily an entire object or a semantically meaningful object part."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "image",
+          "label": "Input image",
+          "note": "The picture being analyzed"
+        },
+        {
+          "id": "detect",
+          "label": "Region detection",
+          "note": "Find characteristic image regions"
+        },
+        {
+          "id": "points",
+          "label": "Interest points",
+          "note": "Detected features for later processing"
+        },
+        {
+          "id": "match",
+          "label": "Image correspondences",
+          "note": "Relate useful locations across images"
+        },
+        {
+          "id": "task",
+          "label": "Vision task",
+          "note": "Recognition, categorization, or panorama construction"
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "detect",
+          "label": "pixels"
+        },
+        {
+          "from": "detect",
+          "to": "points",
+          "label": "regions"
+        },
+        {
+          "from": "points",
+          "to": "match",
+          "label": "features"
+        },
+        {
+          "from": "points",
+          "to": "task",
+          "label": "features"
+        },
+        {
+          "from": "match",
+          "to": "task",
+          "label": "matches"
+        }
+      ],
+      "caption": "Feature detection supplies interest-point regions to subsequent correspondence and vision-task stages."
+    }
+  },
   "related": [
     "hessian-affine-region-detector",
     "harris-corner-detector",

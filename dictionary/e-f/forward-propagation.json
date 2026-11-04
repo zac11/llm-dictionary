@@ -5,6 +5,103 @@
   "type": "concept",
   "definition": "Passing input data through a network’s layers to produce output — the inference direction whose loss is then minimized by backpropagation.",
   "details": "Passing input data through a network’s layers to produce output — the inference direction whose loss is then minimized by backpropagation.",
+  "explainer": {
+    "lead": "Forward propagation is the pass that turns an input into a neural network's prediction, one layer at a time. It lets a trained network make predictions and, during training, produces the output needed to measure error before backpropagation adjusts the weights.",
+    "tiers": {
+      "eli5": "Imagine passing a note through a row of people, with each person changing it according to their own instructions. The last person gives the final answer, such as whether a photo shows a cat. If that answer is wrong during practice, the network can later adjust those instructions to do better.",
+      "practitioner": "Apply each layer's weights, biases, and activation function in order, carrying the resulting tensors to the next layer. During training, retain the intermediate activations needed by backpropagation and compute the loss from the final output; during ordinary inference, the output is usually all that is needed. Common pitfalls include mismatched tensor shapes, using training-only layer behavior at inference, and accidentally discarding activations before gradient computation.",
+      "paperLevel": "For an L-layer feed-forward network, set a^(0) = x, then compute z^(l) = W^(l)a^(l-1) + b^(l) and a^(l) = f_l(z^(l)) for l = 1,...,L, yielding y_hat = a^(L). During training, a loss J(y_hat, y) quantifies the error and backpropagation uses this computation to obtain parameter gradients. Forward propagation itself makes no parameter updates, and its output depends on the current parameters and layer functions."
+    },
+    "example": "Take one neuron with inputs x = [2, 1], weights w = [0.5, 1], and bias b = -1. Its weighted sum is z = 0.5×2 + 1×1 - 1 = 1, and a sigmoid activation gives an output of about 0.73. If the target is 1 during training, the loss based on that difference is then passed into backpropagation.",
+    "usedIn": [
+      {
+        "name": "Image classification",
+        "detail": "Passes pixel data through a network to produce predicted class scores.",
+        "url": ""
+      },
+      {
+        "name": "Speech recognition",
+        "detail": "Turns audio-derived inputs into predictions used to generate text.",
+        "url": ""
+      },
+      {
+        "name": "Machine translation",
+        "detail": "Produces output predictions from representations of the source text.",
+        "url": ""
+      },
+      {
+        "name": "Recommendation systems",
+        "detail": "Maps user and item inputs to scores used to rank suggestions.",
+        "url": ""
+      }
+    ],
+    "intuition": "Each layer acts as a transformation: it receives values, changes them using its current parameters, and hands the result onward. Following these transformations from input to output gives the network's current answer.",
+    "howItWorks": [
+      "Place the input data in the network's first layer.",
+      "Compute each layer's weighted combinations using its current weights and biases.",
+      "Apply the layer's activation function and pass the resulting activations onward.",
+      "Read the last layer's activations as the prediction or output representation.",
+      "During training, compare the output with the target to compute a loss for backpropagation."
+    ],
+    "whyItMatters": "Forward propagation is the computation behind both neural-network inference and the prediction evaluated during training. Without it, there would be no output to use or loss from which backpropagation could calculate updates.",
+    "misconceptions": [
+      "Forward propagation does not itself train the network or update its weights.",
+      "Backpropagation is not simply forward propagation run in reverse; it calculates gradients from the loss.",
+      "Inference requires forward propagation, but it does not require a loss or backpropagation."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input data",
+          "note": "The example or features entering the network."
+        },
+        {
+          "id": "layer1",
+          "label": "First layer",
+          "note": "Transforms the input with its current parameters."
+        },
+        {
+          "id": "layer2",
+          "label": "Next layer",
+          "note": "Transforms the incoming activations again."
+        },
+        {
+          "id": "output",
+          "label": "Network output",
+          "note": "The prediction produced by the final layer."
+        },
+        {
+          "id": "loss",
+          "label": "Training loss",
+          "note": "Compares the prediction with the target."
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "layer1",
+          "label": "input"
+        },
+        {
+          "from": "layer1",
+          "to": "layer2",
+          "label": "activations"
+        },
+        {
+          "from": "layer2",
+          "to": "output",
+          "label": "activations"
+        },
+        {
+          "from": "output",
+          "to": "loss",
+          "label": "prediction"
+        }
+      ],
+      "caption": "Data moves forward through the layers; during training, the resulting prediction is also used to compute the loss."
+    }
+  },
   "related": [
     "backpropagation",
     "inference"

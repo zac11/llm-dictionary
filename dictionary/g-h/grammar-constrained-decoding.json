@@ -5,7 +5,108 @@
   "type": "concept",
   "definition": "A decoding technique that restricts a language model's token generation to only sequences that conform to a specified formal grammar (such as valid JSON).",
   "details": "Grammar-constrained decoding guarantees syntactically valid structured outputs by masking out tokens that would violate the grammar at each generation step, rather than relying solely on the model's learned tendency to follow formatting instructions.",
-  "story": "Imagine teaching a friend to shoot a basketball. They miss, and you walk them backwards through the shot — elbow, wrist, release — to find what needs fixing. It is the same loop you use to learn anything: try, miss, correct, try again. Underneath all the magic is a patient process of small improvements. It is learning from every miss instead of repeating the same mistake. And that is Grammar-Constrained Decoding — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "Grammar-constrained decoding makes a language model follow a formal grammar while it generates text. It is useful when output must be machine-readable, such as JSON, because invalid token choices are blocked instead of merely discouraged.",
+    "tiers": {
+      "eli5": "Imagine playing a word game where a referee crosses out every move that would break the rules. The player can still choose among the remaining moves, but the final result must follow the rulebook. This is how a language model can be made to produce properly structured text like JSON.",
+      "practitioner": "Use it during inference when a downstream application will parse the model's output, such as a JSON response. At each token step, combine the current prefix with the grammar to mask invalid choices, then generate from the remaining tokens. This guarantees syntactic conformance, but it does not ensure that values are meaningful, accurate, or appropriate for the application.",
+      "paperLevel": "Let L(G) be the language accepted by grammar G, and let x_<t be the generated prefix. At step t, assign zero probability to vocabulary items v for which x_<t concatenated with v has no continuation in L(G), then select among the remaining tokens. The method enforces syntactic validity at decoding time; it does not constrain semantics or guarantee factual correctness."
+    },
+    "example": "For JSON output such as `{\"city\":\"Paris\"}`, the prefix `{\"city\":\"Paris` can continue with characters in the string or a closing quote. Choices that would make the structure impossible to complete as valid JSON are masked, and `}` becomes available only after the string is closed.",
+    "usedIn": [
+      {
+        "name": "Structured data generation",
+        "detail": "Produces outputs such as JSON that conform to a specified grammar.",
+        "url": ""
+      },
+      {
+        "name": "Language model inference",
+        "detail": "Enforces formatting rules during generation rather than relying only on prompting.",
+        "url": ""
+      }
+    ],
+    "intuition": "A language model normally chooses tokens based on learned probabilities, so formatting mistakes remain possible. Grammar constraints act like a rule checker beside the decoder, removing choices that cannot lead to a valid result.",
+    "howItWorks": [
+      "Specify a formal grammar for the allowed output.",
+      "Track the text generated so far.",
+      "At each step, identify tokens that could still lead to a grammatical completion.",
+      "Mask every other token before the model chooses the next one.",
+      "Repeat until generation finishes with a valid sequence."
+    ],
+    "whyItMatters": "It turns syntactic validity into a property of the decoding process rather than a hopeful outcome of instructions. This makes structured outputs dependable for parsing, while leaving the model free to choose among valid content.",
+    "misconceptions": [
+      "It is stronger than simply asking for JSON in a prompt.",
+      "Syntactically valid output can still contain wrong values.",
+      "It changes token selection during inference, not the model's weights."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "grammar",
+          "label": "Formal grammar",
+          "note": "Defines valid output structure"
+        },
+        {
+          "id": "prefix",
+          "label": "Generated prefix",
+          "note": "Text produced so far"
+        },
+        {
+          "id": "checker",
+          "label": "Grammar checker",
+          "note": "Finds completable token choices"
+        },
+        {
+          "id": "mask",
+          "label": "Token mask",
+          "note": "Blocks invalid continuations"
+        },
+        {
+          "id": "model",
+          "label": "Language model",
+          "note": "Scores possible next tokens"
+        },
+        {
+          "id": "next",
+          "label": "Next token",
+          "note": "Selected from allowed choices"
+        }
+      ],
+      "edges": [
+        {
+          "from": "grammar",
+          "to": "checker",
+          "label": ""
+        },
+        {
+          "from": "prefix",
+          "to": "checker",
+          "label": ""
+        },
+        {
+          "from": "checker",
+          "to": "mask",
+          "label": "valid tokens"
+        },
+        {
+          "from": "model",
+          "to": "mask",
+          "label": "token scores"
+        },
+        {
+          "from": "mask",
+          "to": "next",
+          "label": ""
+        },
+        {
+          "from": "next",
+          "to": "prefix",
+          "label": "append"
+        }
+      ],
+      "caption": "At every generation step, the grammar and current prefix determine which model tokens may be selected."
+    }
+  },
   "related": [
     "greedy-decoding",
     "beam-search",

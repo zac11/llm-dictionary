@@ -5,6 +5,98 @@
   "type": "concept",
   "definition": "The condition of models whose internal decision process is opaque even to their creators: billions of parameters, no human-readable logic.",
   "details": "The condition of models whose internal decision process is opaque even to their creators: billions of parameters, no human-readable logic. The gap between what models do and what we can verify they do, and the motivation for the whole field.",
+  "explainer": {
+    "lead": "The black box problem arises when a model can produce useful answers but nobody, including its creators, can follow its internal reasoning in human-readable terms. It matters because observing that a model works is not the same as being able to explain or verify how it works.",
+    "tiers": {
+      "eli5": "Imagine a machine with billions of tiny dials that tells you whether a photo shows a cat. It may be right most of the time, but even its makers cannot turn all those dial settings into a simple story about its decision. That is like getting advice from someone who cannot explain why you should trust it.",
+      "practitioner": "Engineers encounter this when evaluating large parameterized models through inputs and outputs rather than readable decision rules. Testing can expose errors and changes in behavior, but good aggregate results do not explain an individual prediction. A common pitfall is treating an output-attribution or other explanation as proof that the model's complete internal process has been verified.",
+      "paperLevel": "Let y = f_theta(x), where theta is a very large parameter vector. The black box condition is that observers can evaluate x, y, and measurable behavior of f_theta, but cannot recover a human-readable account of the decision procedure from theta. Consequently, empirical performance bounds the observed gap between behavior and verification without closing it."
+    },
+    "example": "A loan model with billions of parameters rejects an application. Its developers can test similar applications and measure error rates, yet they cannot point to a complete human-readable sequence of rules that produced this particular rejection.",
+    "usedIn": [
+      {
+        "name": "Medical prediction",
+        "detail": "An opaque risk score may be difficult to justify or audit case by case.",
+        "url": ""
+      },
+      {
+        "name": "Credit decisions",
+        "detail": "A denial can be recorded without exposing human-readable decision logic.",
+        "url": ""
+      },
+      {
+        "name": "Large language models",
+        "detail": "Outputs can be tested while the internal basis for a particular answer remains opaque.",
+        "url": ""
+      }
+    ],
+    "intuition": "A model's parameters are numerical settings, not a written chain of reasons. When billions of them interact, knowing the training procedure and examining the output may still leave the internal decision process opaque.",
+    "howItWorks": [
+      "An input enters a model with many learned parameters.",
+      "Parameter interactions produce an output without readable logic.",
+      "Creators and users can compare outputs with expected results.",
+      "Those observations do not fully reveal why a decision occurred.",
+      "This leaves a gap between behavior and verification."
+    ],
+    "whyItMatters": "The gap makes it harder to verify individual decisions, diagnose their causes, and establish when an apparently successful model should be trusted. It is a central motivation for interpretability and explainability research.",
+    "misconceptions": [
+      "High accuracy does not make the internal decision process understandable.",
+      "Black box does not mean the output is always wrong.",
+      "A plausible explanation is not necessarily a complete account of the computation."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input data",
+          "note": "The case presented to the model."
+        },
+        {
+          "id": "model",
+          "label": "Opaque model",
+          "note": "Billions of interacting learned parameters."
+        },
+        {
+          "id": "output",
+          "label": "Model output",
+          "note": "A prediction or decision can be observed."
+        },
+        {
+          "id": "testing",
+          "label": "Behavioral testing",
+          "note": "Inputs and outputs can be compared and measured."
+        },
+        {
+          "id": "gap",
+          "label": "Verification gap",
+          "note": "Readable internal decision logic remains unavailable."
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "model",
+          "label": ""
+        },
+        {
+          "from": "model",
+          "to": "output",
+          "label": "produces"
+        },
+        {
+          "from": "output",
+          "to": "testing",
+          "label": "observed by"
+        },
+        {
+          "from": "testing",
+          "to": "gap",
+          "label": "cannot close"
+        }
+      ],
+      "caption": "Observers can test a model's behavior without gaining a complete human-readable account of its internal decisions."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

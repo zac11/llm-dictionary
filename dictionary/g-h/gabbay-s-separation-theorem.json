@@ -5,7 +5,112 @@
   "type": "concept",
   "definition": "In mathematical logic and computer science, Gabbay's separation theorem states that any formula in linear temporal logic (LTL) with past operators can be rewritten as a boolean combination of formulas that are only concerned with the past, present, or future.",
   "details": "This theorem was stated and proven by Dov Gabbay.",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. That is Gabbay's separation theorem — a small key that opens a big door.",
+  "explainer": {
+    "lead": "Gabbay's separation theorem is a normal-form result for linear temporal logic with past operators. It guarantees that a formula mixing references to different times can be reorganized, without changing its meaning, into separate past, present, and future parts joined by Boolean logic.",
+    "tiers": {
+      "eli5": "Imagine a story that jumps between yesterday, today, and tomorrow. The theorem says you can sort its claims into three piles—one for each time—then reconnect them with words like \"and,\" \"or,\" and \"not,\" while keeping the story's meaning the same.",
+      "practitioner": "An engineer working with LTL can use the theorem as a guarantee that formulas mixing past and future references have an equivalent separated form. The result concerns the existence and form of that rewriting; applying it still requires preserving equivalence and keeping each component restricted to its own time direction.",
+      "paperLevel": "For every LTL formula φ with past operators, there is an equivalent Boolean combination ψ of formulas that are pure past, pure present, or pure future. The theorem was stated and proven by Dov Gabbay. It does not remove temporal reasoning altogether; it separates the temporal references within an equivalent formula."
+    },
+    "example": "Consider the formula \"previously p AND eventually q.\" Its separated form has a past-only component, \"previously p,\" and a future-only component, \"eventually q,\" joined by AND; this simple case already displays the required separation.",
+    "usedIn": [
+      {
+        "name": "Mathematical logic",
+        "detail": "It characterizes a normal form for temporal formulas that mix references to different times.",
+        "url": ""
+      },
+      {
+        "name": "Computer science",
+        "detail": "It supports reasoning about linear temporal logic formulas that include past operators.",
+        "url": ""
+      }
+    ],
+    "intuition": "A statement about time can be easier to analyze when everything looking backward, everything about now, and everything looking forward are kept apart. Separation performs that organization while allowing Boolean connectives to combine the pieces.",
+    "howItWorks": [
+      "Start with an LTL formula that may refer to the past, present, and future.",
+      "Rewrite it into an equivalent collection of temporally restricted formulas.",
+      "Make each component refer only to the past, only to the present, or only to the future.",
+      "Join those components using Boolean connectives such as AND, OR, and NOT."
+    ],
+    "whyItMatters": "The theorem shows that mixing time directions in an LTL formula does not prevent an equivalent, systematically organized representation. It separates the temporal structure of a formula from the Boolean structure used to assemble its parts.",
+    "misconceptions": [
+      "It does not eliminate all temporal operators; it restricts where they can refer within each component.",
+      "It does not turn the formula into one pure-past, pure-present, or pure-future formula; the result may combine all three kinds.",
+      "The separated formula must be equivalent to the original, not merely describe a similar situation."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Mixed temporal formula",
+          "note": "An LTL formula with past operators"
+        },
+        {
+          "id": "separate",
+          "label": "Separation",
+          "note": "Rewrite while preserving equivalence"
+        },
+        {
+          "id": "past",
+          "label": "Pure past",
+          "note": "Refers only to the past"
+        },
+        {
+          "id": "present",
+          "label": "Pure present",
+          "note": "Refers only to the present"
+        },
+        {
+          "id": "future",
+          "label": "Pure future",
+          "note": "Refers only to the future"
+        },
+        {
+          "id": "output",
+          "label": "Boolean combination",
+          "note": "An equivalent separated formula"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "separate",
+          "label": "rewrite"
+        },
+        {
+          "from": "separate",
+          "to": "past",
+          "label": ""
+        },
+        {
+          "from": "separate",
+          "to": "present",
+          "label": ""
+        },
+        {
+          "from": "separate",
+          "to": "future",
+          "label": ""
+        },
+        {
+          "from": "past",
+          "to": "output",
+          "label": ""
+        },
+        {
+          "from": "present",
+          "to": "output",
+          "label": ""
+        },
+        {
+          "from": "future",
+          "to": "output",
+          "label": ""
+        }
+      ],
+      "caption": "Separation reorganizes a mixed-time formula into temporally restricted components joined by Boolean connectives."
+    }
+  },
   "related": [
     "kantorovich-theorem",
     "ugly-duckling-theorem",

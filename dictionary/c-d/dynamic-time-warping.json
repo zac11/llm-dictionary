@@ -5,7 +5,111 @@
   "type": "algorithm",
   "definition": "In time series analysis, dynamic time warping (DTW) is an algorithm for measuring similarity between two temporal sequences, which may vary in speed.",
   "details": "For instance, similarities in walking could be detected using DTW, even if one person was walking faster than the other, or if there were accelerations and decelerations during the course of an observation. DTW has been applied to temporal sequences of video, audio, and graphics data — indeed, any data that can be turned into a one-dimensional sequence can be analyzed with DTW. A well-known application has been automatic speech recognition, to cope with different speaking speeds. Other applications include speaker recognition and online signature recognition. It can also be used in partial shape matching applications. In general, DTW is a method that calculates an optimal match between two given sequences (e.g. time series) with certain restriction and rules: Every index from the first sequence must be matched with one or more indices from the other sequence, and vice versa The first index from the first sequence must be matched with the first index from the other sequence (but it does not have to be its only match) The last index from the first sequence must be matched with the last index from the other sequence (but it does not have to be its only match) The mapping of the indice",
-  "story": "Think of a lightbulb moment: the idea was always there, but someone had to point a finger at it. Behind the jargon is an idea you could explain to a friend over coffee. At its heart it is a simple notion, once you strip away the fancy name. Once you see it, you cannot unsee it. That is Dynamic time warping — a small key that opens a big door.",
+  "explainer": {
+    "lead": "Dynamic time warping compares two sequences whose corresponding events happen at different speeds. It finds a best match between their positions, allowing one position to match several in the other sequence, and uses that match to measure similarity.",
+    "tiers": {
+      "eli5": "Imagine two people walking the same route, but one stops to tie a shoe while the other keeps going. Dynamic time warping lines up matching moments even when their timing differs, like pairing the first person's steps with several slower or faster steps from the second person. This helps compare the journeys without expecting them to happen at exactly the same speed.",
+      "practitioner": "Turn each input into a one-dimensional sequence, define how dissimilar two individual entries are, and compute the lowest-cost alignment under the endpoint, coverage, and ordering rules. DTW is useful for speech, signatures, and other temporal data with accelerations and decelerations. Check that forcing the first and last entries to match suits the data, and remember that repeated matches are part of the alignment.",
+      "paperLevel": "For sequences x1...xm and y1...yn, choose an alignment pi of index pairs (i,j) that minimizes sum over (i,j) in pi of d(x_i,y_j). The alignment includes (1,1) and (m,n), covers every index in both sequences, and never moves backward in either sequence. The minimized cost measures dissimilarity; DTW accommodates nonlinear timing changes, but its boundary and coverage restrictions affect the result."
+    },
+    "example": "For A = [1, 2, 3] and B = [1, 1, 2, 3, 3], an alignment can match A1 with B1 and B2, A2 with B3, and A3 with B4 and B5. Both endpoints match, every index is covered, and the repeated values accommodate the different timing.",
+    "usedIn": [
+      {
+        "name": "Automatic speech recognition",
+        "detail": "Compares speech patterns despite different speaking speeds",
+        "url": ""
+      },
+      {
+        "name": "Speaker recognition",
+        "detail": "Aligns temporal speech sequences from speakers",
+        "url": ""
+      },
+      {
+        "name": "Online signature recognition",
+        "detail": "Compares signature sequences with varying writing speed",
+        "url": ""
+      },
+      {
+        "name": "Walking-pattern analysis",
+        "detail": "Detects similar walks despite pace changes, acceleration, or deceleration",
+        "url": ""
+      }
+    ],
+    "goal": "Find the best allowed correspondence between two temporal sequences and measure their similarity without requiring equal speed or identical spacing in time.",
+    "inputs": [
+      "Two temporal sequences",
+      "A way to compare individual entries from the sequences"
+    ],
+    "outputs": [
+      "An optimal alignment between sequence indices",
+      "A similarity or dissimilarity score based on that alignment"
+    ],
+    "steps": [
+      "Compare entries from the first sequence with entries from the second.",
+      "Match the first entries together and the last entries together.",
+      "Build an alignment that moves forward without skipping any index in either sequence.",
+      "Allow an index to match one or more indices in the other sequence when timing differs.",
+      "Choose the lowest-cost valid alignment and use its cost for the comparison."
+    ],
+    "tradeoffs": [
+      "It handles changes in speed, including acceleration and deceleration.",
+      "It works on video, audio, graphics, and other data reducible to a one-dimensional sequence.",
+      "Its required first-to-first and last-to-last matches may not suit sequences with different boundaries.",
+      "The result depends on how individual entries are compared and on the alignment rules."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "seq-a",
+          "label": "First sequence",
+          "note": "Temporal entries at one speed"
+        },
+        {
+          "id": "seq-b",
+          "label": "Second sequence",
+          "note": "Temporal entries at another speed"
+        },
+        {
+          "id": "costs",
+          "label": "Entry comparisons",
+          "note": "Dissimilarities between entries"
+        },
+        {
+          "id": "alignment",
+          "label": "Optimal alignment",
+          "note": "Best valid matching of indices"
+        },
+        {
+          "id": "score",
+          "label": "Similarity score",
+          "note": "Comparison based on alignment cost"
+        }
+      ],
+      "edges": [
+        {
+          "from": "seq-a",
+          "to": "costs",
+          "label": ""
+        },
+        {
+          "from": "seq-b",
+          "to": "costs",
+          "label": ""
+        },
+        {
+          "from": "costs",
+          "to": "alignment",
+          "label": "constrained match"
+        },
+        {
+          "from": "alignment",
+          "to": "score",
+          "label": ""
+        }
+      ],
+      "caption": "DTW compares entries, finds the best valid time alignment, and derives a similarity measure."
+    }
+  },
   "related": [
     "a-r-d-prasad",
     "abeba-birhane",

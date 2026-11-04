@@ -5,7 +5,103 @@
   "type": "concept",
   "definition": "A training approach where a model learns to map raw inputs directly to desired outputs, without relying on separately engineered intermediate processing stages.",
   "details": "End-to-end learning contrasts with traditional pipelines composed of multiple hand-designed, independently optimized stages, and has become dominant in deep learning as models have proven capable of learning entire complex mappings directly from data.",
-  "story": "Think of a hiker descending a foggy hill in the dark, taking small steps and feeling for the steepest way down. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. It is the same loop you use to learn anything: try, miss, correct, try again. Skill, for a model, is just error pushed down until it is small enough to ignore. And that is End-to-End Learning — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "End-to-end learning trains one model to turn an input into the final result, rather than splitting the job into separately designed stages. It matters because the model can learn the intermediate steps it needs directly from examples.",
+    "tiers": {
+      "eli5": "Imagine teaching someone to recognize dogs by showing them photos and saying “dog” or “not dog,” instead of first giving them separate lessons on edges, fur, ears, and tails. End-to-end learning works like that: the computer learns the whole route from the photo to the answer. It figures out useful intermediate clues while practicing the final task.",
+      "practitioner": "In practice, you train a single model on input–target pairs and optimize a loss measured on the final output, instead of independently tuning intermediate modules. This is commonly used for inputs such as images, audio, or text, with learned representations replacing hand-crafted features. The approach can demand substantial training data, and failures may be harder to localize because intermediate decisions are not exposed as separate pipeline outputs.",
+      "paperLevel": "Given paired examples (x_i, y_i), learn parameters theta for a single mapping f_theta: X -> Y by minimizing an objective such as sum_i L(f_theta(x_i), y_i), where x_i is the raw or minimally processed input and y_i is the desired output. Intermediate representations are optimized as part of this final-task objective rather than through separately engineered and optimized stages. This does not guarantee better performance: data requirements can be substantial, and the learned internal stages may be difficult to inspect or debug."
+    },
+    "example": "To build a cat detector, train a model on photographs labeled “cat” or “not cat.” It learns from pixels to the final label, discovering useful visual patterns during training rather than requiring a separate hand-designed module to extract edges, textures, and shapes first.",
+    "usedIn": [
+      {
+        "name": "Image recognition",
+        "detail": "A model can learn directly from image pixels and labels instead of relying on separately designed visual-feature stages.",
+        "url": ""
+      },
+      {
+        "name": "Speech recognition",
+        "detail": "Audio input can be mapped toward text output within one jointly trained model.",
+        "url": ""
+      },
+      {
+        "name": "Machine translation",
+        "detail": "Text in one language can be mapped to text in another using a model trained for the final translation task.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of telling a model exactly which intermediate steps to follow, give it examples of the complete task and let training discover useful internal steps. The whole mapping is optimized for the result you ultimately want.",
+    "howItWorks": [
+      "Collect examples pairing raw or minimally processed inputs with desired outputs.",
+      "Feed each input through one trainable model to produce a prediction.",
+      "Measure the difference between the prediction and the desired output.",
+      "Update the model’s parameters to reduce that difference across the training examples.",
+      "Use the trained model to map new inputs directly to final outputs."
+    ],
+    "whyItMatters": "Joint optimization lets every learned part of the model serve the final objective, avoiding the need to design and tune each intermediate stage independently. This approach has become dominant in deep learning as models have learned complex mappings directly from data.",
+    "misconceptions": [
+      "It does not mean the model has no internal stages; it means those stages are learned and trained together rather than separately engineered.",
+      "It does not necessarily eliminate all preprocessing or human design choices, such as the model structure and training objective.",
+      "End-to-end training is not automatically better: separate stages can be easier to inspect, and a single learned pipeline can be harder to diagnose."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Raw input",
+          "note": "An image, audio signal, or other input."
+        },
+        {
+          "id": "model",
+          "label": "Learned model",
+          "note": "One model learns the complete mapping."
+        },
+        {
+          "id": "prediction",
+          "label": "Model prediction",
+          "note": "The model’s output for the final task."
+        },
+        {
+          "id": "target",
+          "label": "Desired output",
+          "note": "The correct answer supplied for training."
+        },
+        {
+          "id": "loss",
+          "label": "Training loss",
+          "note": "Measures prediction error and guides updates."
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "model",
+          "label": "fed into"
+        },
+        {
+          "from": "model",
+          "to": "prediction",
+          "label": "produces"
+        },
+        {
+          "from": "prediction",
+          "to": "loss",
+          "label": "compared"
+        },
+        {
+          "from": "target",
+          "to": "loss",
+          "label": "compared"
+        },
+        {
+          "from": "loss",
+          "to": "model",
+          "label": "updates"
+        }
+      ],
+      "caption": "Training optimizes the whole input-to-output model using error on the final task."
+    }
+  },
   "related": [
     "federated-learning",
     "reinforcement-learning",

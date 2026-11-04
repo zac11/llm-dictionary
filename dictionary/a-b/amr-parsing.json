@@ -5,6 +5,103 @@
   "type": "concept",
   "definition": "Translating a sentence into Abstract Meaning Representation, a rooted graph of concepts and semantic relations.",
   "details": "Translating a sentence into Abstract Meaning Representation, a rooted graph of concepts and semantic relations. AMR abstracts away surface syntax so downstream systems can reason about meaning directly.",
+  "explainer": {
+    "lead": "AMR parsing turns a sentence into a graph that shows its concepts and how they relate. This gives downstream systems a meaning-focused representation without the details of surface syntax.",
+    "tiers": {
+      "eli5": "Imagine turning a sentence into a small map of ideas, with lines showing how the ideas connect. Two sentences can use different words or word orders but still produce similar maps when they mean the same thing. AMR parsing is the job of drawing that map.",
+      "practitioner": "An AMR parser is used at the start of a pipeline when downstream components need concepts and semantic relations rather than surface syntax. Its output is a rooted graph, so integration code should handle graph structure rather than assume a tree. A key pitfall is treating the graph as a grammatical parse or expecting it to preserve wording and word order.",
+      "paperLevel": "AMR parsing learns a mapping f(s) = G, where s is a sentence and G = (V, E, r) is a rooted graph: V contains concepts, E contains semantic relations, and r is the root. The representation abstracts away surface syntax so that downstream computation can operate directly on meaning."
+    },
+    "example": "For “The cat chased the dog,” an AMR parse can place the chasing concept at the root, connect the cat as the chaser, and connect the dog as the entity being chased. Surface details such as the articles are not the focus of the graph.",
+    "usedIn": [
+      {
+        "name": "Semantic analysis",
+        "detail": "Represents sentence meaning as concepts connected by semantic relations.",
+        "url": ""
+      },
+      {
+        "name": "Meaning-based reasoning systems",
+        "detail": "Consumes the resulting graph without depending on surface syntactic details.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of focusing on how a sentence is arranged, AMR parsing focuses on what it says. It packages that meaning into a connected, rooted graph.",
+    "howItWorks": [
+      "Read the input sentence.",
+      "Identify the concepts expressed in it.",
+      "Identify the semantic relations between those concepts.",
+      "Connect them into a graph and select its root.",
+      "Pass the graph to downstream meaning-based processing."
+    ],
+    "whyItMatters": "AMR parsing gives downstream systems a direct representation of sentence meaning. By abstracting away surface syntax, it lets them work with concepts and their semantic relationships instead.",
+    "misconceptions": [
+      "It is not the same as producing a syntactic parse of a sentence.",
+      "Its output is a rooted graph, not necessarily a tree.",
+      "It does more than extract isolated keywords: it also represents semantic relations."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "sentence",
+          "label": "Input sentence",
+          "note": "Surface text to interpret"
+        },
+        {
+          "id": "parser",
+          "label": "AMR parser",
+          "note": "Translates text into meaning"
+        },
+        {
+          "id": "graph",
+          "label": "Rooted meaning graph",
+          "note": "The AMR output"
+        },
+        {
+          "id": "concepts",
+          "label": "Concept nodes",
+          "note": "Ideas expressed by the sentence"
+        },
+        {
+          "id": "relations",
+          "label": "Semantic relations",
+          "note": "Connections between concepts"
+        },
+        {
+          "id": "downstream",
+          "label": "Downstream reasoning",
+          "note": "Operates directly on meaning"
+        }
+      ],
+      "edges": [
+        {
+          "from": "sentence",
+          "to": "parser",
+          "label": "text"
+        },
+        {
+          "from": "parser",
+          "to": "graph",
+          "label": "builds"
+        },
+        {
+          "from": "graph",
+          "to": "concepts",
+          "label": "contains"
+        },
+        {
+          "from": "graph",
+          "to": "relations",
+          "label": "contains"
+        },
+        {
+          "from": "graph",
+          "to": "downstream",
+          "label": "meaning"
+        }
+      ],
+      "caption": "AMR parsing converts a sentence into a rooted graph of concepts and semantic relations for downstream processing."
+    }
+  },
   "citation": {
     "title": "Amr Parsing",
     "authors": [],

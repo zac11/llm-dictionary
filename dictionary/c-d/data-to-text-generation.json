@@ -5,6 +5,81 @@
   "type": "concept",
   "definition": "Generating natural-language text from structured data — tables, graphs, records — used in report writing and dialogue grounding.",
   "details": "Generating natural-language text from structured data — tables, graphs, records — used in report writing and dialogue grounding.",
+  "explainer": {
+    "lead": "Data-to-text generation turns structured information, such as a table or database record, into readable natural language. It matters because people can often understand a clear sentence or report more easily than raw fields and values.",
+    "tiers": {
+      "eli5": "Imagine a robot reading a row in a spreadsheet and turning it into a sentence you would say to a friend. Instead of showing you separate boxes for names, dates, and numbers, it writes a short report using those facts. The important part is that the sentence should say only what the data supports.",
+      "practitioner": "A system takes a table, graph, or record as input and produces a report or a dialogue response grounded in that input. Engineering work centers on formatting the input, keeping generation tied to the supplied facts, and checking outputs for missing or unsupported values. Evaluation should cover both readability and faithfulness to the data.",
+      "paperLevel": "Formally, learn a mapping f: D -> T, where D is structured data such as a table, graph, or record and T is natural-language text. In probabilistic form, generation can be written as T* = arg max_T p(T | D). The output must be readable while remaining faithful to D."
+    },
+    "example": "Given the record {city: \"Oslo\", temperature: \"12°C\", condition: \"rain\"}, a system could generate: \"It is 12°C and raining in Oslo.\"",
+    "usedIn": [
+      {
+        "name": "Report writing",
+        "detail": "Turns structured records or tables into natural-language reports.",
+        "url": ""
+      },
+      {
+        "name": "Dialogue systems",
+        "detail": "Grounds responses in structured information rather than leaving the data unexpressed.",
+        "url": ""
+      }
+    ],
+    "intuition": "The idea is to translate facts from a machine-friendly structure into language people can read, without adding facts that were not present.",
+    "howItWorks": [
+      "Provide structured input, such as a table, graph, or record.",
+      "Use the relevant fields and values as the facts to express.",
+      "Generate natural-language text conditioned on that input.",
+      "Check that the wording is readable and consistent with the data."
+    ],
+    "whyItMatters": "It makes structured information accessible as prose and allows dialogue responses to be grounded in records, supporting communication without requiring people to interpret the raw data themselves.",
+    "misconceptions": [
+      "It is not summarization of an existing natural-language document; the input is structured data.",
+      "Fluent output does not guarantee correct output; every claim still needs to match the input."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data",
+          "label": "Structured data",
+          "note": "Tables, graphs, or records"
+        },
+        {
+          "id": "generator",
+          "label": "Text generator",
+          "note": "Produces language conditioned on the data"
+        },
+        {
+          "id": "text",
+          "label": "Natural-language text",
+          "note": "Readable wording grounded in the input"
+        },
+        {
+          "id": "use",
+          "label": "Report or dialogue",
+          "note": "Delivers the text to its application"
+        }
+      ],
+      "edges": [
+        {
+          "from": "data",
+          "to": "generator",
+          "label": "facts"
+        },
+        {
+          "from": "generator",
+          "to": "text",
+          "label": "generates"
+        },
+        {
+          "from": "text",
+          "to": "use",
+          "label": "supports"
+        }
+      ],
+      "caption": "Structured facts pass through a generator to become text for reports or grounded dialogue."
+    }
+  },
   "related": [
     "grounding",
     "natural-language"

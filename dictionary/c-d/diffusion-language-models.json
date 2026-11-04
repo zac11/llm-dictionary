@@ -5,6 +5,102 @@
   "type": "concept",
   "definition": "Generating text by iterative parallel denoising of masked or noised token blocks instead of left-to-right decoding, enabling order-agnostic infilling and very high throughput.",
   "details": "Generating text by iterative parallel denoising of masked or noised token blocks instead of left-to-right decoding, enabling order-agnostic infilling and very high throughput. Commercial-grade releases moved this from curiosity to a credible alternative decoding paradigm.",
+  "explainer": {
+    "lead": "Diffusion language models write text by repeatedly cleaning up masked or noisy tokens, updating many positions together rather than choosing one word at a time from left to right. This makes them a credible alternative for fast text generation and for filling gaps wherever they appear in a passage.",
+    "tiers": {
+      "eli5": "Imagine a sentence written on a whiteboard with several words smudged out. You make a first guess at lots of the missing words, then keep improving the guesses until the sentence looks right, instead of writing strictly from the first word to the last. This can also help when you need to fill a blank in the middle.",
+      "practitioner": "Apply this approach by representing a draft as masked or noised token blocks and running repeated denoising passes, with positions updated in parallel. Tune the number of denoising rounds and how much of the block is revised at each pass rather than relying on a single left-to-right decoding loop. Do not equate parallel updates with one-pass generation: throughput can be high, but the draft still needs iterative refinement.",
+      "paperLevel": "Let x_t denote a masked or noised token-block state. A learned denoiser produces x_(t-1) = D_theta(x_t), updating tokens in parallel until reaching clean text x_0, without requiring p(x) = product_i p(x_i | x_<i). The main computational distinction is iterative parallel refinement: decoding can offer very high throughput, but it is not a single forward pass."
+    },
+    "example": "To produce “The weather is pleasant today,” a model might begin with “The [MASK] [MASK] [MASK] today.” One pass could propose “weather” and “pleasant” in parallel, and a later pass could fill “is,” yielding the completed sentence without requiring those middle tokens to be generated in left-to-right order.",
+    "usedIn": [
+      {
+        "name": "Text generation",
+        "detail": "Producing a passage through repeated parallel denoising instead of sequential next-token decoding.",
+        "url": ""
+      },
+      {
+        "name": "Text infilling",
+        "detail": "Completing masked regions without requiring generation to proceed strictly from left to right.",
+        "url": ""
+      },
+      {
+        "name": "Commercial language systems",
+        "detail": "Commercial-grade releases have made this decoding paradigm a practical alternative rather than only a research curiosity.",
+        "url": ""
+      }
+    ],
+    "intuition": "Treat writing as restoring a damaged draft: begin with missing or corrupted tokens, predict several repairs together, and repeat until the text is clean. Because positions need not be resolved in reading order, the model can work on different parts of a passage at once.",
+    "howItWorks": [
+      "Start with a block of tokens that is masked or otherwise noised.",
+      "Use the current block as context and predict cleaner tokens at many positions in parallel.",
+      "Replace or refine the block with those predictions while retaining noise or masks where further work is needed.",
+      "Repeat the denoising passes until the block becomes the final text."
+    ],
+    "whyItMatters": "Parallel denoising offers a route to very high text-generation throughput while naturally supporting order-agnostic infilling. Commercial-grade releases have made it a credible alternative to conventional left-to-right decoding.",
+    "misconceptions": [
+      "Parallel generation does not mean every token is finalized in one pass; refinement is iterative.",
+      "Order-agnostic does not mean context-free: later denoising passes use the current token block as context.",
+      "It is not simply left-to-right decoding with a faster implementation; the generation procedure itself is different."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "noisy",
+          "label": "Noisy token block",
+          "note": "Text positions begin masked or noised."
+        },
+        {
+          "id": "denoise",
+          "label": "Parallel denoising",
+          "note": "Many positions are predicted together."
+        },
+        {
+          "id": "draft",
+          "label": "Refined draft",
+          "note": "The block contains cleaner token predictions."
+        },
+        {
+          "id": "repeat",
+          "label": "More refinement",
+          "note": "Remaining errors or masks receive further passes."
+        },
+        {
+          "id": "text",
+          "label": "Clean text",
+          "note": "Iteration ends with the generated passage."
+        }
+      ],
+      "edges": [
+        {
+          "from": "noisy",
+          "to": "denoise",
+          "label": "current state"
+        },
+        {
+          "from": "denoise",
+          "to": "draft",
+          "label": "token updates"
+        },
+        {
+          "from": "draft",
+          "to": "repeat",
+          "label": "if incomplete"
+        },
+        {
+          "from": "repeat",
+          "to": "denoise",
+          "label": "next pass"
+        },
+        {
+          "from": "draft",
+          "to": "text",
+          "label": "when clean"
+        }
+      ],
+      "caption": "A masked or noised token block is refined through repeated parallel denoising until it becomes clean text."
+    }
+  },
   "related": [
     "throughput",
     "token"

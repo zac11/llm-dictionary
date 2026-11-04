@@ -5,6 +5,97 @@
   "type": "concept",
   "definition": "Floating-point operations, the currency of compute.",
   "details": "Floating-point operations, the currency of compute. Training cost is estimated as ~6 x parameters x tokens FLOPs; regulation now even defines model tiers by training FLOPs. Comparing FLOPs to hardware peak throughput yields training-time estimates.",
+  "explainer": {
+    "lead": "FLOPs count the floating-point arithmetic needed to train or run an AI model. They turn model size and training data into a rough compute budget, helping teams estimate cost, time, and hardware needs.",
+    "tiers": {
+      "eli5": "Think of training an AI as doing an enormous pile of tiny maths problems. FLOPs tell you roughly how many problems are in the pile, while a computer's speed tells you how quickly it can work through them. This helps estimate whether training will take hours, days, or much longer.",
+      "practitioner": "For transformer training, estimate compute as roughly 6 times the parameter count times the training-token count. Divide that total by hardware peak throughput for an idealized training-time estimate, using accelerator specifications to compare setups. Real runs take longer because peak throughput is not sustained throughput.",
+      "paperLevel": "For N parameters and D training tokens, training compute is commonly approximated as C ≈ 6ND FLOPs. An idealized time estimate is T ≈ C/P_peak, where P_peak is hardware peak throughput in FLOP/s. These are approximations: FLOPs alone do not determine achieved throughput or wall-clock training time."
+    },
+    "example": "A 1-billion-parameter model trained on 10 billion tokens requires approximately 6 × 10^9 × 10^10 = 6 × 10^19 FLOPs. At a sustained 10^15 FLOP/s, that arithmetic would take about 60,000 seconds, or 16.7 hours; using only peak hardware throughput makes this an idealized estimate.",
+    "usedIn": [
+      {
+        "name": "LLM training planning",
+        "detail": "Estimates compute from a model's parameter count and training-token budget.",
+        "url": ""
+      },
+      {
+        "name": "AI hardware selection",
+        "detail": "Compares estimated training work with accelerator peak throughput.",
+        "url": ""
+      },
+      {
+        "name": "AI regulation",
+        "detail": "Training-FLOP thresholds can be used to define model tiers.",
+        "url": ""
+      }
+    ],
+    "intuition": "FLOPs are a way to count mathematical work rather than measure elapsed time. A bigger model or a larger token budget means more work, and hardware throughput determines how quickly that work could ideally be completed.",
+    "howItWorks": [
+      "Count the model's parameters.",
+      "Count the tokens used for training.",
+      "Estimate training compute as 6 × parameters × tokens.",
+      "Divide by hardware peak throughput for an idealized time estimate."
+    ],
+    "whyItMatters": "A common compute unit makes training plans and hardware options easier to compare before committing resources. Training-FLOP totals also provide a measurable basis for regulatory model tiers.",
+    "misconceptions": [
+      "FLOPs count operations; FLOP/s measures operations per second.",
+      "A FLOP estimate is not a guarantee of training time.",
+      "Peak hardware throughput is not necessarily achieved in practice."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "parameters",
+          "label": "Model parameters",
+          "note": "The number of trainable parameters."
+        },
+        {
+          "id": "tokens",
+          "label": "Training tokens",
+          "note": "The size of the training-token budget."
+        },
+        {
+          "id": "compute",
+          "label": "Training FLOPs",
+          "note": "Approximately 6 × parameters × tokens."
+        },
+        {
+          "id": "throughput",
+          "label": "Peak throughput",
+          "note": "Hardware capacity in FLOP/s."
+        },
+        {
+          "id": "time",
+          "label": "Time estimate",
+          "note": "Compute divided by throughput, idealized."
+        }
+      ],
+      "edges": [
+        {
+          "from": "parameters",
+          "to": "compute",
+          "label": "scale work"
+        },
+        {
+          "from": "tokens",
+          "to": "compute",
+          "label": "scale work"
+        },
+        {
+          "from": "compute",
+          "to": "time",
+          "label": "total work"
+        },
+        {
+          "from": "throughput",
+          "to": "time",
+          "label": "work rate"
+        }
+      ],
+      "caption": "Model and data scale determine estimated training work; hardware throughput turns that work into an idealized time estimate."
+    }
+  },
   "related": [
     "throughput"
   ],

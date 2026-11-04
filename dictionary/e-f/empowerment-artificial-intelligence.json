@@ -5,7 +5,88 @@
   "type": "concept",
   "definition": "Empowerment in the field of artificial intelligence formalises and quantifies (via information theory) the potential an agent perceives that it has to influence its environment.",
   "details": "An agent which follows an empowerment maximising policy, acts to maximise future options (typically up to some limited horizon). Empowerment can be used as a (pseudo) utility function that depends only on information gathered from the local environment to guide action, rather than seeking an externally imposed goal, thus is a form of intrinsic motivation. The empowerment formalism depends on a probabilistic model commonly used in artificial intelligence. An autonomous agent operates in the world by taking in sensory information and acting to change its state, or that of the environment, in a cycle of perceiving and acting known as the perception-action loop. Agent state and actions are modelled by random variables ( S : s ∈ S , A : a ∈ A {\\displaystyle S:s\\in {\\mathcal {S}},A:a\\in {\\mathcal {A}}} ) and time ( t {\\displaystyle t} ). The choice of action depends on the current state, and the future state depends on the choice of action, thus the perception-action loop unrolled in time forms a causal bayesian network.",
-  "story": "Picture hiring a brilliant new assistant on their first morning — smart, motivated, but with no idea how anything in your office actually works. It plans a little, acts a little, looks at the result, and then decides what to do next. It is the difference between a search engine and a helper who actually finishes the task. It is a loop of look, act, and learn — the same way you cook from a recipe you have never tried: add, taste, correct. And that habit of checking, acting, then checking again is Empowerment (artificial intelligence).",
+  "explainer": {
+    "lead": "Empowerment gives an agent a way to prefer situations where it can still do many things, using information theory to quantify its perceived influence on the environment. It can guide behaviour without an externally assigned goal, making it a form of intrinsic motivation.",
+    "tiers": {
+      "eli5": "Imagine a game character choosing between an open room with several exits and a cupboard with none. The open room is more empowering because it leaves more choices for what to do next. An agent using empowerment tries to keep useful options open rather than following a goal someone else gave it.",
+      "practitioner": "Empowerment can serve as a pseudo-utility for scoring actions by the future options they preserve, usually over a limited horizon and using only local environmental information. It requires a probabilistic model of how states and actions evolve; results therefore depend on that model and on the chosen horizon.",
+      "paperLevel": "Agent state and action are random variables, S with s ∈ S and A with a ∈ A, indexed by time t. The current state influences action choice, and that action influences the future state, so unrolling the perception-action loop produces a causal Bayesian network. Empowerment uses information theory within this model to quantify perceived potential influence, while maximisation is typically limited to a finite future horizon."
+    },
+    "example": "A robot using a local probabilistic model can prefer moving into an open area, from which several nearby positions remain reachable, over backing into a corner that leaves it few possible movements. It makes this choice without being assigned any particular destination.",
+    "usedIn": [
+      {
+        "name": "Autonomous agents",
+        "detail": "Guides perception-action behaviour by favouring actions that preserve future options.",
+        "url": ""
+      },
+      {
+        "name": "Intrinsic-motivation research",
+        "detail": "Provides a locally computed pseudo-utility instead of an externally imposed goal.",
+        "url": ""
+      }
+    ],
+    "intuition": "A situation is empowering when an agent can affect what happens next and still has many options available. Maximising empowerment means steering toward such situations rather than pursuing a fixed external objective.",
+    "howItWorks": [
+      "Sense the local environment and represent the agent's current state.",
+      "Choose actions according to the current state.",
+      "Use a probabilistic model to predict how actions affect future states.",
+      "Score the agent's perceived influence and future options using information theory.",
+      "Prefer actions that maximise empowerment over a limited horizon."
+    ],
+    "whyItMatters": "Empowerment offers a general way to guide action from local information when no external goal is supplied. It connects keeping options open with a quantitative, information-theoretic objective.",
+    "misconceptions": [
+      "It is not the same as maximising an externally assigned task reward.",
+      "It measures perceived potential influence, not guaranteed control of the environment.",
+      "It does not require unlimited foresight; the horizon is typically limited."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "state",
+          "label": "Agent state",
+          "note": "Current state represented by a random variable."
+        },
+        {
+          "id": "action",
+          "label": "Action choice",
+          "note": "Action selected according to the current state."
+        },
+        {
+          "id": "environment",
+          "label": "Environment",
+          "note": "Actions affect the environment or agent state."
+        },
+        {
+          "id": "senses",
+          "label": "Sensory input",
+          "note": "Local information closes the perception-action loop."
+        }
+      ],
+      "edges": [
+        {
+          "from": "state",
+          "to": "action",
+          "label": "conditions"
+        },
+        {
+          "from": "action",
+          "to": "environment",
+          "label": "changes"
+        },
+        {
+          "from": "environment",
+          "to": "senses",
+          "label": "produces"
+        },
+        {
+          "from": "senses",
+          "to": "state",
+          "label": "informs"
+        }
+      ],
+      "caption": "Unrolled over time, the perception-action loop forms a causal Bayesian network in which empowerment can evaluate future options."
+    }
+  },
   "related": [
     "artificial-intelligence",
     "applications-of-artificial-intelligence",

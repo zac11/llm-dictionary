@@ -5,7 +5,103 @@
   "type": "concept",
   "definition": "In the field of information retrieval, divergence from randomness (DFR) is a generalization of one of the very first models, Harter's 2-Poisson indexing-model.",
   "details": "It is one type of probabilistic model. It is used to measure the amount of information carried in documents. The 2-Poisson model is based on the hypothesis that the level of documents is related to a set of documents that contains words that occur to a relatively greater extent than in the rest of the documents. It is not a model, but a framework for weighting terms using probabilistic methods, and it has a special relationship for term weighting. Term weights serve as the standard of whether a specific word is in that set or not. Term weights are computed by measuring the divergence between a term distribution produced by a random process and the actual term distribution. Divergence from randomness models set up by instantiating the three main components of the framework: first selecting a basic randomness model, then applying the first normalization and at last normalizing the term frequencies.",
-  "story": "Picture a scoreboard at a science fair: you need a fair, agreed way to tell who actually won. A fair scoreboard keeps everyone honest. Before trusting a machine, someone has to measure how good it really is — fairly and honestly. A good metric is a ruler that does not bend when you lean on it. And that, done honestly, is Divergence-from-randomness model.",
+  "explainer": {
+    "lead": "Divergence from randomness (DFR) is a framework for deciding how informative a word is in a collection of documents. It compares the word’s actual distribution with one produced by a random process, using their difference to assign a term weight.",
+    "tiers": {
+      "eli5": "Imagine looking through a stack of school reports to find the ones about space. A word like “the” appears everywhere, but “comet” may bunch together in just a few reports. DFR notices that surprising bunching and gives the word more weight, helping show which documents carry information about that word.",
+      "practitioner": "Apply DFR by choosing a basic randomness model, comparing its term distribution with the observed distribution, and then applying the first normalization followed by term-frequency normalization. Treat it as a framework for constructing probabilistic term weights rather than a single fixed model. A high raw term frequency alone is not enough: the weight depends on divergence from the random distribution.",
+      "paperLevel": "In plain-text notation, a term weight is derived from w(t) = D(P_random(t), P_actual(t)), where D measures divergence between the random-process and observed term distributions. A DFR instantiation selects a basic randomness model, applies the first normalization, and then normalizes term frequencies. DFR generalizes Harter’s 2-Poisson indexing model, which hypothesizes a set of documents in which a term occurs relatively more often than in the remaining documents."
+    },
+    "example": "Suppose “comet” is concentrated in a small set of documents, while the chosen random process would spread it more evenly. The large divergence gives “comet” a higher weight, which can indicate membership in that set; a term whose actual distribution stays close to the random one receives less weight.",
+    "usedIn": [
+      {
+        "name": "Information retrieval",
+        "detail": "Provides probabilistic term weights based on how informative terms are in documents.",
+        "url": ""
+      },
+      {
+        "name": "Probabilistic term weighting",
+        "detail": "Supplies a framework built from a randomness model and two normalization stages.",
+        "url": ""
+      }
+    ],
+    "intuition": "A term is informative when its real pattern of occurrence differs markedly from what a random process would produce. DFR turns that difference into a weight rather than treating every occurrence as equally meaningful.",
+    "howItWorks": [
+      "Select a basic randomness model that produces an expected term distribution.",
+      "Measure the term’s actual distribution across the documents.",
+      "Compute the divergence between the random and actual distributions.",
+      "Apply the first normalization to the resulting term weight.",
+      "Normalize the term frequencies to complete the weighting."
+    ],
+    "whyItMatters": "DFR connects the amount of information a term carries to a probabilistic comparison, giving retrieval systems a principled way to weight terms. Its three-part framework also generalizes Harter’s early 2-Poisson indexing model.",
+    "misconceptions": [
+      "DFR is a weighting framework, not one single fixed model.",
+      "A DFR weight is not based on raw term frequency alone.",
+      "Term-frequency normalization follows the divergence calculation; it does not replace it."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "randomness",
+          "label": "Randomness model",
+          "note": "Produces the expected random term distribution."
+        },
+        {
+          "id": "documents",
+          "label": "Document collection",
+          "note": "Provides the actual term distribution."
+        },
+        {
+          "id": "divergence",
+          "label": "Divergence measure",
+          "note": "Compares the random and actual distributions."
+        },
+        {
+          "id": "raw-weight",
+          "label": "Initial term weight",
+          "note": "Represents information indicated by the divergence."
+        },
+        {
+          "id": "first-normalization",
+          "label": "First normalization",
+          "note": "Adjusts the initial probabilistic weight."
+        },
+        {
+          "id": "tf-normalization",
+          "label": "Frequency normalization",
+          "note": "Normalizes term frequencies for the final weighting."
+        }
+      ],
+      "edges": [
+        {
+          "from": "randomness",
+          "to": "divergence",
+          "label": "random distribution"
+        },
+        {
+          "from": "documents",
+          "to": "divergence",
+          "label": "actual distribution"
+        },
+        {
+          "from": "divergence",
+          "to": "raw-weight",
+          "label": "divergence"
+        },
+        {
+          "from": "raw-weight",
+          "to": "first-normalization",
+          "label": "weight"
+        },
+        {
+          "from": "first-normalization",
+          "to": "tf-normalization",
+          "label": "normalized weight"
+        }
+      ],
+      "caption": "DFR derives a term weight by comparing actual and random distributions, then applies the framework’s two normalization stages."
+    }
+  },
   "related": [
     "binary-independence-model",
     "boolean-model-of-information-retrieval",

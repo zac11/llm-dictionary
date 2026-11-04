@@ -5,7 +5,126 @@
   "type": "algorithm",
   "definition": "In computer science, divide and conquer, originally a political maxim, designates an algorithm design paradigm.",
   "details": "A divide-and-conquer algorithm recursively breaks down a problem into two or more sub-problems of the same or related type, until these become simple enough to be solved directly. The solutions to the sub-problems are then combined to give a solution to the original problem. The divide-and-conquer technique is the basis of efficient algorithms for many problems, such as sorting (e.g., quicksort, merge sort), multiplying large numbers (e.g., the Karatsuba algorithm), finding the closest pair of points, syntactic analysis (e.g., top-down parsers), SAT solving, and computing the discrete Fourier transform (FFT). Designing efficient divide-and-conquer algorithms can be difficult. As in mathematical induction, it is often necessary to generalize the problem to make it amenable to a recursive solution. The correctness of a divide-and-conquer algorithm is usually proved by mathematical induction, and its computational cost is often determined by solving recurrence relations.",
-  "story": "Picture an engineer at a cluttered workbench, turning a clever idea over in their hands until it finally clicks. At its heart it is a simple notion, once you strip away the fancy name. A small key that opens a much bigger door. It is one of those ideas that feels obvious only after someone shows it to you. And that idea, made concrete, is Divide-and-conquer algorithm.",
+  "explainer": {
+    "lead": "Divide and conquer solves a problem by splitting it into smaller versions of the same kind of problem, solving those, and combining their answers. It matters because this pattern supports efficient algorithms for tasks such as sorting, multiplying large numbers, and computing Fourier transforms.",
+    "tiers": {
+      "eli5": "Imagine sorting a big pile of cards by splitting it into smaller piles until each pile has just one card. Single-card piles are already sorted, so you can keep merging them into larger sorted piles. Eventually, all the cards are back together in order.",
+      "practitioner": "Implement three parts: a direct base case, recursive calls on smaller subproblems, and a combine step. This pattern appears in merge sort, quicksort, Karatsuba multiplication, and FFT algorithms. The main design challenge is choosing a useful split—sometimes after generalizing the problem—then checking correctness by induction and computational cost through a recurrence relation.",
+      "paperLevel": "For problem P, divide it into subproblems P_1, ..., P_k with k >= 2, solve each recursively until a directly solvable base case, and return Combine(Solve(P_1), ..., Solve(P_k)). A schematic cost recurrence is T(P) = sum_i T(P_i) + C(P), where C(P) covers division and combination, while correctness is usually established by mathematical induction. Efficient designs can be difficult because the original problem may need generalization before recursion applies."
+    },
+    "example": "To merge-sort [8, 3, 5, 1], split it into [8, 3] and [5, 1], then into single values. Merge [8] and [3] into [3, 8], and [5] and [1] into [1, 5]; merging those gives [1, 3, 5, 8].",
+    "usedIn": [
+      {
+        "name": "Sorting",
+        "detail": "Quicksort and merge sort recursively handle smaller sorting problems.",
+        "url": ""
+      },
+      {
+        "name": "Large-number arithmetic",
+        "detail": "The Karatsuba algorithm uses divide and conquer to multiply large numbers.",
+        "url": ""
+      },
+      {
+        "name": "Signal processing",
+        "detail": "The FFT applies the technique to computing the discrete Fourier transform.",
+        "url": ""
+      },
+      {
+        "name": "Computational geometry",
+        "detail": "The technique supports algorithms for finding the closest pair of points.",
+        "url": ""
+      }
+    ],
+    "goal": "Solve a problem by reducing it to directly solvable subproblems and assembling their solutions into the answer.",
+    "inputs": [
+      "A problem instance that can be split",
+      "A base-case test and direct solver",
+      "A rule for dividing and combining"
+    ],
+    "outputs": [
+      "Solutions to the subproblems",
+      "A combined solution to the original problem"
+    ],
+    "steps": [
+      "Test whether the problem is simple enough to solve directly.",
+      "Otherwise, split it into two or more related subproblems.",
+      "Apply the same procedure recursively to each subproblem.",
+      "Combine the subproblem solutions into the final answer."
+    ],
+    "tradeoffs": [
+      "It underlies efficient algorithms for many important problems.",
+      "Finding an effective recursive formulation can be difficult.",
+      "The problem may need generalization before recursion works.",
+      "Cost analysis typically requires solving recurrence relations."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "problem",
+          "label": "Original problem",
+          "note": "The full instance to solve"
+        },
+        {
+          "id": "divide",
+          "label": "Divide",
+          "note": "Split into smaller related instances"
+        },
+        {
+          "id": "sub-a",
+          "label": "Subproblem A",
+          "note": "Recurse until a base case"
+        },
+        {
+          "id": "sub-b",
+          "label": "Subproblem B",
+          "note": "Recurse until a base case"
+        },
+        {
+          "id": "combine",
+          "label": "Combine answers",
+          "note": "Assemble the partial solutions"
+        },
+        {
+          "id": "solution",
+          "label": "Final solution",
+          "note": "The answer to the original problem"
+        }
+      ],
+      "edges": [
+        {
+          "from": "problem",
+          "to": "divide",
+          "label": "instance"
+        },
+        {
+          "from": "divide",
+          "to": "sub-a",
+          "label": "smaller part"
+        },
+        {
+          "from": "divide",
+          "to": "sub-b",
+          "label": "smaller part"
+        },
+        {
+          "from": "sub-a",
+          "to": "combine",
+          "label": "answer"
+        },
+        {
+          "from": "sub-b",
+          "to": "combine",
+          "label": "answer"
+        },
+        {
+          "from": "combine",
+          "to": "solution",
+          "label": "merged"
+        }
+      ],
+      "caption": "Recursion reduces each branch to simple cases; their answers then flow back through the combine step."
+    }
+  },
   "related": [
     "actor-critic-algorithm",
     "algorithm-imed",

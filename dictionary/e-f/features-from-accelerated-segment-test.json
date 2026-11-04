@@ -2,10 +2,97 @@
   "term": "Features from accelerated segment test",
   "letter": "F",
   "category": "Computer vision",
-  "type": "concept",
+  "type": "algorithm",
   "definition": "Features from accelerated segment test (FAST) is a corner detection method, which could be used to extract feature points and later used to track and map objects in many computer vision tasks.",
   "details": "The FAST corner detector was originally developed by Edward Rosten and Tom Drummond, and was published in 2006. The most promising advantage of the FAST corner detector is its computational efficiency. Referring to its name, it is indeed faster than many other well-known feature extraction methods, such as difference of Gaussians (DoG) used by the SIFT, SUSAN and Harris detectors. Moreover, when machine learning techniques are applied, superior performance in terms of computation time and resources can be realised. The FAST corner detector is very suitable for real-time video processing application because of this high-speed performance.",
-  "story": "Picture a child pointing at pictures in a book — cat, car, cloud — learning to see by seeing a thousand examples. It turns a picture into an understanding: this is a cat, that is a stop sign. What your eyes do without thinking, the machine does one careful layer at a time. It is eyes made of arithmetic — pixels become edges, edges become shapes, shapes become meaning. That pixel-to-meaning climb is Features from accelerated segment test.",
+  "explainer": {
+    "lead": "FAST is a method for finding corners in images so they can serve as distinctive feature points. Its main attraction is speed, which makes it especially useful when video frames must be processed quickly for tasks such as tracking and mapping.",
+    "tiers": {
+      "eli5": "Imagine marking the pointy corners of shapes in a picture so you can recognize those spots again in the next picture. FAST does this quickly, helping a computer follow things as they move. It is like choosing easy-to-spot landmarks without spending too long examining the whole scene.",
+      "practitioner": "Use FAST to extract corner feature points before tracking or mapping stages, particularly when processing video in real time. Its principal advantage is computational efficiency, including when machine learning techniques are applied. Do not treat its speed advantage over DoG, SUSAN, and Harris as a claim that it always produces better features.",
+      "paperLevel": "FAST is a corner-detection algorithm whose output is a set of image feature points for downstream tasks such as object tracking and mapping. It was developed by Edward Rosten and Tom Drummond and published in 2006. Its defining practical strength is computational efficiency, with reported speed advantages over DoG-based SIFT feature extraction, SUSAN, and Harris; machine learning can further reduce computation time and resource use."
+    },
+    "example": "In a real-time video application, FAST can detect corner feature points in each incoming frame. Those points can then be used by later processing to track and map an object while keeping feature extraction fast.",
+    "usedIn": [
+      {
+        "name": "Real-time video processing",
+        "detail": "Its high-speed corner detection suits applications with tight per-frame processing budgets.",
+        "url": ""
+      },
+      {
+        "name": "Object tracking",
+        "detail": "Detected feature points can be followed to help track objects.",
+        "url": ""
+      },
+      {
+        "name": "Object mapping",
+        "detail": "Extracted feature points can support mapping objects in computer vision tasks.",
+        "url": ""
+      }
+    ],
+    "goal": "Extract corner feature points quickly enough to support demanding computer vision tasks, especially real-time video processing.",
+    "inputs": [
+      "An image containing visual structure",
+      "Video frames when processing a moving scene"
+    ],
+    "outputs": [
+      "Detected corner feature points",
+      "Features for subsequent tracking or mapping"
+    ],
+    "steps": [
+      "Provide an image or video frame to the detector.",
+      "Apply FAST to identify promising corner locations efficiently.",
+      "Use the detected corners as feature points.",
+      "Pass those points to later tracking or mapping stages."
+    ],
+    "tradeoffs": [
+      "Its strongest advantage is computational efficiency rather than a guarantee of superior detection quality.",
+      "It is faster than several established alternatives, including DoG-based SIFT extraction, SUSAN, and Harris.",
+      "Applying machine learning can improve computation time and resource use further."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "image",
+          "label": "Image or frame",
+          "note": "Visual input from a still image or video."
+        },
+        {
+          "id": "fast",
+          "label": "FAST detector",
+          "note": "Finds corners with high computational efficiency."
+        },
+        {
+          "id": "points",
+          "label": "Feature points",
+          "note": "Detected corners passed to later stages."
+        },
+        {
+          "id": "tasks",
+          "label": "Tracking and mapping",
+          "note": "Downstream computer vision uses."
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "fast",
+          "label": "pixels"
+        },
+        {
+          "from": "fast",
+          "to": "points",
+          "label": "corners"
+        },
+        {
+          "from": "points",
+          "to": "tasks",
+          "label": "features"
+        }
+      ],
+      "caption": "FAST sits between visual input and downstream tracking or mapping, rapidly turning images into corner feature points."
+    }
+  },
   "related": [
     "segment-anything",
     "speeded-up-robust-features",

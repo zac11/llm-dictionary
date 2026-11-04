@@ -8,7 +8,87 @@
   ],
   "definition": "A neural network in which information flows in one direction, from input to output, without cycles.",
   "details": "In transformer blocks, position-wise feedforward networks are applied after the attention layer to further transform each token's representation.",
-  "story": "Think of an orchestra warming up: no single instrument carries the piece, but together they make the sound. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. The layout decides what the machine can even attempt, before it learns a single thing. The shape of the machine is half the idea. And that shape of the machine — Feedforward Neural Network — is what makes everything else possible.",
+  "explainer": {
+    "lead": "A feedforward neural network processes information in one direction, from input to output, with no loops back to earlier parts. This straightforward structure also appears inside transformer blocks, where a position-wise network refines each token after attention.",
+    "tiers": {
+      "eli5": "Imagine a conveyor belt that carries information through several worktables, always moving forward and never circling back. Each table changes the information a little before passing it on. In a transformer, this happens separately for each word-like token after the token has gone through attention.",
+      "practitioner": "In a transformer block, apply the position-wise feedforward network after attention to transform each token representation. The network has no recurrent connections, so it does not itself route information back through time or earlier activations. Keep its role distinct from attention: attention supplies the preceding contextual processing, while the feedforward stage further transforms each position.",
+      "paperLevel": "A feedforward neural network is a directed acyclic computation mapping an input x to an output y, with no cyclic information flow. In a transformer block, the position-wise form computes h'_i = FFN(h_i) for each token position i after attention. Its defining structural limit is the absence of feedback cycles."
+    },
+    "components": [
+      {
+        "name": "Input",
+        "detail": "The representation entering the network, such as a token representation after attention in a transformer block."
+      },
+      {
+        "name": "Directed processing layers",
+        "detail": "Successive transformations pass information toward the output without feeding it back through a cycle."
+      },
+      {
+        "name": "Output",
+        "detail": "The final transformed representation produced by the forward computation."
+      },
+      {
+        "name": "Position-wise application",
+        "detail": "In transformer blocks, the feedforward network transforms each token's representation after the attention layer."
+      }
+    ],
+    "flow": [
+      "An input representation enters the network.",
+      "Directed processing stages transform it and pass it forward, without cycles.",
+      "The network emits its output representation.",
+      "In a transformer block, attention runs first and the position-wise feedforward network then transforms each token representation."
+    ],
+    "lineage": "Position-wise feedforward networks are a component of transformer blocks, following attention and further transforming token representations.",
+    "whyItMatters": "It provides a simple one-way computation for transforming representations and serves as a distinct processing stage inside transformer blocks.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input representation",
+          "note": "Information entering the network"
+        },
+        {
+          "id": "layers",
+          "label": "Directed layers",
+          "note": "Forward transformations with no cycles"
+        },
+        {
+          "id": "output",
+          "label": "Output representation",
+          "note": "The transformed result"
+        },
+        {
+          "id": "attention",
+          "label": "Attention layer",
+          "note": "Preceding stage in a transformer block"
+        },
+        {
+          "id": "ffn",
+          "label": "Position-wise FFN",
+          "note": "Transforms each token representation"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "layers",
+          "label": "forward"
+        },
+        {
+          "from": "layers",
+          "to": "output",
+          "label": "forward"
+        },
+        {
+          "from": "attention",
+          "to": "ffn",
+          "label": "token states"
+        }
+      ],
+      "caption": "The general one-way feedforward path, alongside its position after attention in a transformer block."
+    }
+  },
   "related": [
     "neural-network",
     "convolutional-neural-network",

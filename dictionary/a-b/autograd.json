@@ -5,6 +5,82 @@
   "type": "tool",
   "definition": "Autograd is a Python library that automatically differentiates native Python and Numpy code.",
   "details": "Autograd is a Python library that automatically differentiates native Python and Numpy code. It provides a flexible and efficient system for automatically computing gradients.",
+  "explainer": {
+    "lead": "Autograd calculates derivatives for functions written in native Python and NumPy, so you do not have to derive and code every gradient by hand. This makes it easier to use gradients in numerical programs while keeping the original function expressed in ordinary Python.",
+    "tiers": {
+      "eli5": "Imagine a curved hill whose height is calculated by a short computer recipe. Autograd can tell you how steep the hill is at a particular spot without you working out the steepness formula yourself. You give it the recipe and the spot, and it calculates the answer.",
+      "practitioner": "Use Autograd when a function is written in native Python or NumPy and you need its gradient computed automatically. A typical workflow is to define the function, request its derivative or gradient through Autograd, and evaluate that gradient at the required inputs. Its stated scope is Python and NumPy code, rather than every Python numerical framework.",
+      "paperLevel": "For a differentiable function f: R^n -> R implemented in supported Python or NumPy code, Autograd automatically computes its gradient, ∇f(x) = [∂f/∂x_1, ..., ∂f/∂x_n]. For a scalar input, this reduces to the ordinary derivative df/dx. The library's stated purpose is flexible and efficient automatic differentiation of native Python and NumPy code."
+    },
+    "example": "For the Python function f(x) = x**2, the derivative is df/dx = 2x. Autograd can compute this derivative from the function's implementation, and evaluating it at x = 3 gives 6.",
+    "usedIn": [
+      {
+        "name": "Python numerical programs",
+        "detail": "Computing gradients for functions written in native Python.",
+        "url": ""
+      },
+      {
+        "name": "NumPy-based calculations",
+        "detail": "Automatically differentiating numerical functions expressed with NumPy.",
+        "url": ""
+      }
+    ],
+    "intuition": "A function describes how its output changes when its inputs change; a derivative measures that change precisely at a chosen input. Autograd obtains that measurement directly from the function's Python or NumPy implementation, removing the need to write a separate derivative formula.",
+    "howItWorks": [
+      "Write the function using native Python or NumPy.",
+      "Give Autograd the function to differentiate.",
+      "Choose the input values where the derivative or gradient is needed.",
+      "Use the automatically computed gradient in the surrounding program."
+    ],
+    "whyItMatters": "Hand-derived gradients add extra work and can disagree with the function they are meant to describe. Automatic differentiation keeps gradient calculation tied to the Python or NumPy code itself.",
+    "misconceptions": [
+      "Autograd computes derivatives; it does not train a model by itself.",
+      "You still need to provide a function and the inputs at which to differentiate it.",
+      "The name Autograd refers to this Python library, not to every automatic differentiation tool."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "function",
+          "label": "Python NumPy function",
+          "note": "The calculation to differentiate."
+        },
+        {
+          "id": "autograd",
+          "label": "Autograd",
+          "note": "Automatically differentiates the function."
+        },
+        {
+          "id": "gradient",
+          "label": "Gradient function",
+          "note": "Calculates derivatives at chosen inputs."
+        },
+        {
+          "id": "value",
+          "label": "Gradient value",
+          "note": "The numerical derivative for those inputs."
+        }
+      ],
+      "edges": [
+        {
+          "from": "function",
+          "to": "autograd",
+          "label": "function code"
+        },
+        {
+          "from": "autograd",
+          "to": "gradient",
+          "label": "differentiates"
+        },
+        {
+          "from": "gradient",
+          "to": "value",
+          "label": "evaluates"
+        }
+      ],
+      "caption": "Autograd turns a Python or NumPy function into a way to calculate its gradient at chosen inputs."
+    }
+  },
   "citation": {
     "title": "Math Glossary for AI (François Fleuret notes)",
     "authors": [],

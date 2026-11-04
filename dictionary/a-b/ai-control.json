@@ -5,6 +5,108 @@
   "type": "concept",
   "definition": "Designing deployment protocols that stay safe even under the assumption the model may be adversarial: untrusted-model monitoring by weaker trusted models, sandboxing, action budgets, and tripwires.",
   "details": "Designing deployment protocols that stay safe even under the assumption the model may be adversarial: untrusted-model monitoring by weaker trusted models, sandboxing, action budgets, and tripwires. The engineering complement to alignment: don't only make the model trustworthy, make the system safe if it isn't.",
+  "explainer": {
+    "lead": "AI control is the practice of making a model’s deployment safer without assuming the model itself is trustworthy. It adds supervision, restrictions, and stopping mechanisms around the model so that dangerous behaviour can be caught or contained.",
+    "tiers": {
+      "eli5": "Imagine letting a very clever robot help in a workshop, but not giving it the keys to every room. A smaller supervisor watches its plans, it can use only certain tools, and an alarm stops the job if something looks wrong. AI control applies this idea to AI systems instead of simply hoping they will always behave.",
+      "practitioner": "In a deployment, route an untrusted model’s proposed actions through a weaker trusted monitor, execute permitted actions in a sandbox, and enforce action budgets and tripwires. These layers are especially relevant for tool-using agents, where individual actions can have external effects. A weak monitor may miss subtle evasion, and a sandbox or budget limits exposure rather than proving that the model is aligned.",
+      "paperLevel": "Let π_u be an untrusted, potentially adversarial model and π_t a weaker trusted monitor; design a deployment protocol D(π_u, π_t) that constrains executed actions using monitoring, sandboxing, action budgets, and tripwires. The safety objective concerns the complete protocol, not an assumption that π_u is benign. Control does not establish trustworthiness, and its protection can be limited by monitor failures and actions that remain available inside the sandbox."
+    },
+    "example": "A coding agent proposes reading a credential file and sending its contents to an external service. A trusted monitor flags the sequence, and a tripwire stops execution before the sandboxed agent can send anything; its remaining action budget is irrelevant because the run has been halted.",
+    "usedIn": [
+      {
+        "name": "Tool-using AI agents",
+        "detail": "Proposed tool calls can be monitored, budgeted, and run within restricted environments.",
+        "url": ""
+      },
+      {
+        "name": "Frontier model deployment",
+        "detail": "Deployment protocols can provide safeguards without treating the model as inherently trustworthy.",
+        "url": ""
+      },
+      {
+        "name": "AI safety engineering",
+        "detail": "Control complements alignment by addressing the system-level consequences of an untrustworthy model.",
+        "url": ""
+      }
+    ],
+    "intuition": "Do not rely only on making the model trustworthy; also design the surrounding system to remain safer if it is not. The model proposes actions, while separate deployment mechanisms decide what may happen and when to stop.",
+    "howItWorks": [
+      "Treat the deployed model as untrusted and potentially adversarial.",
+      "Have weaker trusted models inspect its proposed actions.",
+      "Run permitted actions inside a sandbox to restrict their effects.",
+      "Apply action budgets to limit how much the model can do.",
+      "Use tripwires to stop or escalate suspicious activity."
+    ],
+    "whyItMatters": "A capable model may behave in ways its developers did not intend, so model-level alignment alone may not be enough. Control adds containment and oversight at the point where model outputs become real actions.",
+    "misconceptions": [
+      "AI control is not the same as making a model aligned or trustworthy.",
+      "A weaker monitor does not guarantee detection of every adversarial action.",
+      "Sandboxing and action budgets reduce exposure but do not make every permitted action safe."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "model",
+          "label": "Untrusted model",
+          "note": "May behave adversarially."
+        },
+        {
+          "id": "proposal",
+          "label": "Proposed action",
+          "note": "An action awaiting approval."
+        },
+        {
+          "id": "monitor",
+          "label": "Trusted monitor",
+          "note": "A weaker model inspects the proposal."
+        },
+        {
+          "id": "gate",
+          "label": "Deployment gate",
+          "note": "Applies monitoring and action budgets."
+        },
+        {
+          "id": "sandbox",
+          "label": "Sandboxed execution",
+          "note": "Restricts the effects of permitted actions."
+        },
+        {
+          "id": "stop",
+          "label": "Tripwire stop",
+          "note": "Halts suspicious activity."
+        }
+      ],
+      "edges": [
+        {
+          "from": "model",
+          "to": "proposal",
+          "label": "generates"
+        },
+        {
+          "from": "proposal",
+          "to": "monitor",
+          "label": "inspects"
+        },
+        {
+          "from": "monitor",
+          "to": "gate",
+          "label": "assessment"
+        },
+        {
+          "from": "gate",
+          "to": "sandbox",
+          "label": "permits"
+        },
+        {
+          "from": "gate",
+          "to": "stop",
+          "label": "triggers"
+        }
+      ],
+      "caption": "Control places monitoring, limits, containment, and stopping mechanisms between an untrusted model and action execution."
+    }
+  },
   "related": [
     "alignment",
     "sandboxing"

@@ -5,6 +5,98 @@
   "type": "concept",
   "definition": "Combining data, tensor, pipeline (and expert or sequence) parallelism in one topology-aware layout.",
   "details": "Combining data, tensor, pipeline (and expert or sequence) parallelism in one topology-aware layout. Frontier training runs are as much distributed-systems engineering as ML.",
+  "explainer": {
+    "lead": "3D parallelism is a way to train a very large model by splitting the work across many accelerators in several complementary ways. It matters because frontier training depends as much on moving data efficiently through a distributed system as on the machine-learning algorithm itself.",
+    "tiers": {
+      "eli5": "Imagine a huge school project that no single person can finish alone. Some people each work on a different part of the project, some handle different pages, and others pass their finished sections to the next group. 3D parallelism organizes computer chips in a similar way so they can train one enormous model together without constantly getting in each other's way.",
+      "practitioner": "Choose data, tensor, and pipeline degrees whose product fits the accelerator count, then map them onto the hardware topology rather than treating every device as equally close. Expert or sequence parallelism can add further dimensions. The main pitfalls are communication-heavy tensor groups spanning slow links, pipeline imbalance or bubbles, and excessive memory use from replicated states.",
+      "paperLevel": "For N accelerators, the basic layout satisfies N = D × T × P, where D is data-parallel replicas, T is tensor-parallel shards per stage, and P is pipeline stages; expert or sequence parallelism introduces additional factors. The goal is to partition computation and state while assigning communication patterns to suitable parts of the hardware topology. Its effectiveness is limited by communication costs, stage imbalance, pipeline bubbles, and the memory needed for remaining replication."
+    },
+    "example": "With 32 accelerators, choose D = 2, T = 4, and P = 4. The model has four pipeline stages, each stage is sharded across four accelerators, and two complete pipelines process different data shards, giving 2 × 4 × 4 = 32 devices.",
+    "usedIn": [
+      {
+        "name": "Frontier model training",
+        "detail": "Coordinates many accelerators when a model and its training workload exceed what one device can handle.",
+        "url": ""
+      },
+      {
+        "name": "Mixture-of-experts training",
+        "detail": "Adds expert parallelism to the data, tensor, and pipeline layout.",
+        "url": ""
+      },
+      {
+        "name": "Long-sequence training",
+        "detail": "Can include sequence parallelism alongside the three main parallelism dimensions.",
+        "url": ""
+      }
+    ],
+    "intuition": "No single splitting strategy uses every accelerator well: data parallelism replicates model state, while tensor and pipeline parallelism divide the model in different directions. Combining them balances memory, computation, and communication, with the layout shaped by which devices can communicate fastest.",
+    "howItWorks": [
+      "Split the model into sequential pipeline stages and assign each stage to a device group.",
+      "Within each stage, use tensor parallelism to divide layer computations across devices.",
+      "Make data-parallel copies of that pipeline so different copies process different mini-batch shards.",
+      "Place communication-intensive groups on fast connections and arrange other dimensions across slower ones.",
+      "Pass activations between stages, communicate within tensor groups, and synchronize data-parallel updates."
+    ],
+    "whyItMatters": "It makes training runs feasible at scales where memory capacity and distributed communication are as important as model design. A topology-aware layout reduces the risk that expensive communication will leave accelerators idle.",
+    "misconceptions": [
+      "It does not always mean exactly three dimensions: expert or sequence parallelism can extend the layout.",
+      "It is not just adding more GPUs; the partitioning and communication layout determine whether those GPUs are used efficiently.",
+      "Increasing every parallelism degree is not automatically better, because communication and pipeline overheads can grow."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "batches",
+          "label": "Training mini-batches",
+          "note": "Input data is divided between data-parallel copies."
+        },
+        {
+          "id": "replicas",
+          "label": "Data-parallel pipelines",
+          "note": "Each copy processes a different data shard."
+        },
+        {
+          "id": "stages",
+          "label": "Pipeline stages",
+          "note": "Sequential model sections pass activations forward."
+        },
+        {
+          "id": "shards",
+          "label": "Tensor-parallel shards",
+          "note": "Devices within a stage divide layer computations."
+        },
+        {
+          "id": "update",
+          "label": "Synchronized update",
+          "note": "Data-parallel copies coordinate their training updates."
+        }
+      ],
+      "edges": [
+        {
+          "from": "batches",
+          "to": "replicas",
+          "label": "split data"
+        },
+        {
+          "from": "replicas",
+          "to": "stages",
+          "label": "run pipeline"
+        },
+        {
+          "from": "stages",
+          "to": "shards",
+          "label": "divide layers"
+        },
+        {
+          "from": "shards",
+          "to": "update",
+          "label": "gradients"
+        }
+      ],
+      "caption": "Data, pipeline, and tensor parallelism divide different parts of one training run; the dimensions are mapped onto the hardware topology."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

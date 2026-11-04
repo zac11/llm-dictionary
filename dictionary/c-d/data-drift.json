@@ -5,6 +5,98 @@
   "type": "concept",
   "definition": "Production inputs departing from training-time distributions (drift) or the input-output relationship itself changing (concept drift): new slang, new products, new attack patterns.",
   "details": "Production inputs departing from training-time distributions (drift) or the input-output relationship itself changing (concept drift): new slang, new products, new attack patterns. The reason deployed models decay and monitoring exists; detected via input statistics, embedding distributions, and rolling eval scores.",
+  "explainer": {
+    "lead": "Data drift is what happens when the data a deployed model sees stops resembling the data it learned from. It can quietly make predictions worse, which is why production models need ongoing monitoring rather than a one-time accuracy check.",
+    "tiers": {
+      "eli5": "Imagine learning to identify animals from a book full of farm pictures, then being taken to a zoo. The animals look different from your examples, so you may make more mistakes. Data drift is the model version of that surprise, and monitoring is how people notice it.",
+      "practitioner": "Teams monitor input statistics and embedding distributions for departures from training-time data, and track rolling evaluation scores for signs of decay. These checks fit language applications facing new slang, catalogs gaining new products, and security systems facing new attack patterns. A pitfall is treating a distribution alert as proof of failure: input drift and a changed input-output relationship are not the same thing.",
+      "paperLevel": "Input drift can be written as P_t(X) differing from P_train(X), while concept drift means P_t(Y|X) differs from P_train(Y|X). The first changes what inputs occur; the second changes the relationship the model must predict. Monitoring can use input statistics, embedding distributions, and rolling evaluation scores, but a change in inputs alone does not establish that predictive performance has fallen."
+    },
+    "example": "A detector trained on older attack messages starts receiving a new attack pattern. Its input statistics and embedding distribution shift away from training data, and its rolling evaluation score falls, alerting the team that the deployed model is decaying.",
+    "usedIn": [
+      {
+        "name": "Language applications",
+        "detail": "New slang can make production text differ from training text.",
+        "url": ""
+      },
+      {
+        "name": "Product catalogs",
+        "detail": "New products introduce inputs that an existing model may not represent well.",
+        "url": ""
+      },
+      {
+        "name": "Security systems",
+        "detail": "New attack patterns can shift both incoming data and evaluation results.",
+        "url": ""
+      }
+    ],
+    "intuition": "A model learns patterns from a snapshot of the world, but production data keeps moving. When the inputs change, or when the same inputs begin to imply different outputs, yesterday's patterns can become less reliable.",
+    "howItWorks": [
+      "Record the distributions and behavior represented by the training data.",
+      "Deploy the model and observe its production inputs.",
+      "Compare input statistics and embedding distributions with their training-time counterparts.",
+      "Track rolling evaluation scores to detect declining performance.",
+      "Distinguish changed inputs from a changed input-output relationship, known as concept drift."
+    ],
+    "whyItMatters": "Drift explains why a model that tested well before deployment can become less accurate afterward. Monitoring makes that decay visible so teams are not relying on stale assumptions about production data.",
+    "misconceptions": [
+      "Data drift is not limited to changed inputs; concept drift concerns the input-output relationship itself.",
+      "A shift in input distributions does not by itself prove that accuracy has dropped.",
+      "Passing pre-deployment evaluation does not remove the need for production monitoring."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "training",
+          "label": "Training data",
+          "note": "Baseline input and output patterns"
+        },
+        {
+          "id": "model",
+          "label": "Deployed model",
+          "note": "Applies learned patterns in production"
+        },
+        {
+          "id": "inputs",
+          "label": "Production inputs",
+          "note": "May depart from training distributions"
+        },
+        {
+          "id": "stats",
+          "label": "Drift monitors",
+          "note": "Compare input statistics and embeddings"
+        },
+        {
+          "id": "evals",
+          "label": "Rolling evaluations",
+          "note": "Track scores for performance decay"
+        }
+      ],
+      "edges": [
+        {
+          "from": "training",
+          "to": "model",
+          "label": "learned patterns"
+        },
+        {
+          "from": "inputs",
+          "to": "model",
+          "label": "live data"
+        },
+        {
+          "from": "inputs",
+          "to": "stats",
+          "label": "distributions"
+        },
+        {
+          "from": "model",
+          "to": "evals",
+          "label": "predictions"
+        }
+      ],
+      "caption": "Production monitoring compares changing inputs with training-time distributions and tracks model scores over time."
+    }
+  },
   "related": [
     "concept-drift",
     "embedding"

@@ -5,7 +5,82 @@
   "type": "tool",
   "definition": "Chainer is an open source deep learning framework written purely in Python on top of NumPy and CuPy Python libraries.",
   "details": "The development is led by Japanese venture company Preferred Networks in partnership with IBM, Intel, Microsoft, and Nvidia. Chainer is notable for its early adoption of \"define-by-run\" scheme, as well as its performance on large scale systems. The first version was released in June 2015 and has gained large popularity in Japan since then. Furthermore, in 2017, it was listed by KDnuggets in top 10 open source machine learning Python projects. In December 2019, Preferred Networks announced the transition of its development effort from Chainer to PyTorch and it will only provide maintenance patches after releasing v7.",
-  "story": "Picture an engineer at a cluttered workbench, turning a clever idea over in their hands until it finally clicks. At its heart it is a simple notion, once you strip away the fancy name. A small key that opens a much bigger door. It is one of those ideas that feels obvious only after someone shows it to you. That is Chainer — a small key that opens a big door.",
+  "explainer": {
+    "lead": "Chainer is a Python deep-learning framework that defines a model's computation as the code runs. Its define-by-run approach and performance on large-scale systems made it popular, especially in Japan, though development later shifted to PyTorch.",
+    "tiers": {
+      "eli5": "Chainer is like a building kit for teaching computers to recognize patterns. Instead of drawing the whole building plan before starting, it makes the plan while following your instructions. It was first released in June 2015.",
+      "practitioner": "Models are written in Python on top of NumPy and CuPy, with define-by-run constructing the computation graph during forward execution. This accommodates computation controlled by runtime Python code. Teams should account for Preferred Networks' December 2019 announcement: after v7, Chainer receives maintenance patches while development effort moves to PyTorch.",
+      "paperLevel": "Chainer uses define-by-run: for input x, the computation graph G(x) is constructed while the Python forward computation f(x) executes, rather than being fixed beforehand. The framework is implemented purely in Python on NumPy and CuPy and was noted for large-scale performance. Its current development limitation is maintenance-only support after v7."
+    },
+    "example": "For a small classifier, each forward pass executes the model's Python operations and builds the corresponding graph at runtime. If the input-dependent code takes a different path on another batch, the graph for that pass reflects that path.",
+    "usedIn": [
+      {
+        "name": "Python machine-learning projects",
+        "detail": "Chainer provides an open-source framework for building deep-learning systems with NumPy and CuPy.",
+        "url": ""
+      },
+      {
+        "name": "Large-scale deep-learning systems",
+        "detail": "Its performance on large-scale systems was one of its notable characteristics.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of requiring the entire computation to be declared before a model runs, Chainer follows the Python operations as they happen. This makes the computation definition closely match the executable model code.",
+    "howItWorks": [
+      "Write the deep-learning model in Python.",
+      "Perform its operations using the NumPy and CuPy foundations.",
+      "Build the computation graph during execution under define-by-run.",
+      "Use the resulting computation to train and run the model."
+    ],
+    "whyItMatters": "Chainer was an early adopter of define-by-run, an approach that ties model structure directly to runtime execution. Released in June 2015, it gained substantial popularity in Japan and was listed by KDnuggets among the top 10 open-source machine-learning Python projects in 2017.",
+    "misconceptions": [
+      "Chainer is a deep-learning framework, not a trained model.",
+      "Define-by-run does not mean there is no computation graph; the graph is built during execution.",
+      "Its development did not simply continue unchanged: Preferred Networks shifted its effort to PyTorch and limited Chainer to maintenance patches after v7."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "python-model",
+          "label": "Python model",
+          "note": "Model operations written as executable code"
+        },
+        {
+          "id": "array-ops",
+          "label": "NumPy and CuPy",
+          "note": "Libraries underlying the computations"
+        },
+        {
+          "id": "runtime-graph",
+          "label": "Runtime graph",
+          "note": "Computation graph built as execution proceeds"
+        },
+        {
+          "id": "training",
+          "label": "Model training",
+          "note": "Deep-learning computation used to fit the model"
+        }
+      ],
+      "edges": [
+        {
+          "from": "python-model",
+          "to": "array-ops",
+          "label": "executes with"
+        },
+        {
+          "from": "array-ops",
+          "to": "runtime-graph",
+          "label": "builds"
+        },
+        {
+          "from": "runtime-graph",
+          "to": "training",
+          "label": "supports"
+        }
+      ],
+      "caption": "Chainer's define-by-run flow: Python computations execute on NumPy and CuPy while the graph is constructed at runtime."
+    }
+  },
   "related": [
     "a-i-insight-forums",
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",

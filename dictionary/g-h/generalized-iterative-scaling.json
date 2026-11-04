@@ -5,7 +5,115 @@
   "type": "algorithm",
   "definition": "In statistics, generalized iterative scaling (GIS) and improved iterative scaling (IIS) are two early algorithms used to fit log-linear models, notably multinomial logistic regression (MaxEnt) classifiers and extensions of it such as MaxEnt Markov models and conditional random fields.",
   "details": "These algorithms have been largely surpassed by gradient-based methods such as L-BFGS and coordinate descent algorithms.",
-  "story": "Think of a lightbulb moment: the idea was always there, but someone had to point a finger at it. Behind the jargon is an idea you could explain to a friend over coffee. At its heart it is a simple notion, once you strip away the fancy name. Once you see it, you cannot unsee it. That is Generalized iterative scaling — a small key that opens a big door.",
+  "explainer": {
+    "lead": "Generalized iterative scaling (GIS) and improved iterative scaling (IIS) are algorithms for adjusting the weights of a log-linear model until its predictions fit training examples. They provided an early way to train MaxEnt classifiers and related sequence models, though gradient-based methods are now generally preferred.",
+    "tiers": {
+      "eli5": "Imagine tuning the knobs on a guessing machine so its answers match a stack of solved examples. GIS and IIS repeatedly check where the machine's guesses differ from those answers, turn the knobs, and check again. They were useful for teaching computers tasks such as sorting text into categories.",
+      "practitioner": "Use GIS or IIS to fit feature weights for multinomial logistic regression, MaxEnt Markov models, or conditional random fields. Each round uses the model's current predictions to revise the weights, then repeats until they settle. For new implementations, consider L-BFGS or coordinate descent instead, since these methods have largely superseded iterative scaling.",
+      "paperLevel": "A conditional log-linear model has the form p(y|x) = exp(sum_k lambda_k f_k(x,y)) / Z(x), where Z(x) normalizes over possible labels. GIS and IIS iteratively update the parameters lambda_k so that feature behavior under the fitted model agrees with the training data. Their main limitation is practical: they have been largely surpassed by gradient-based methods such as L-BFGS and by coordinate descent."
+    },
+    "example": "Suppose a MaxEnt classifier must label short headlines as sports or politics, and one feature fires when a headline contains \"goal\" and the candidate label is sports. If the training headlines show that this feature should favor sports more strongly than the current model does, an iterative-scaling update raises its weight. Repeating this process across all features and examples produces the fitted classifier.",
+    "usedIn": [
+      {
+        "name": "Multinomial logistic regression",
+        "detail": "Fitting MaxEnt classifiers that choose among multiple labels.",
+        "url": ""
+      },
+      {
+        "name": "MaxEnt Markov models",
+        "detail": "Training an extension of MaxEnt classification for labeled sequences.",
+        "url": ""
+      },
+      {
+        "name": "Conditional random fields",
+        "detail": "Fitting log-linear models for structured prediction tasks.",
+        "url": ""
+      }
+    ],
+    "goal": "Find feature weights that make a log-linear model reproduce the feature behavior observed in labeled training data.",
+    "inputs": [
+      "Labeled training examples",
+      "Features describing each example and possible label",
+      "Initial model weights"
+    ],
+    "outputs": [
+      "Fitted feature weights",
+      "A log-linear model ready to predict labels"
+    ],
+    "steps": [
+      "Start with an initial set of feature weights.",
+      "Use the current model to predict label probabilities for the training examples.",
+      "Compare the model's feature behavior with that observed in the data.",
+      "Update the weights using GIS or IIS.",
+      "Repeat the prediction-and-update cycle until the weights stabilize."
+    ],
+    "tradeoffs": [
+      "The same general fitting approach applies to MaxEnt classifiers and related structured models.",
+      "GIS and IIS have largely been surpassed by L-BFGS and coordinate descent algorithms."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data",
+          "label": "Labeled examples",
+          "note": "Training data and observed features"
+        },
+        {
+          "id": "weights",
+          "label": "Current weights",
+          "note": "Initial or updated feature parameters"
+        },
+        {
+          "id": "model",
+          "label": "Log-linear model",
+          "note": "Produces label probabilities"
+        },
+        {
+          "id": "compare",
+          "label": "Compare features",
+          "note": "Checks predictions against training behavior"
+        },
+        {
+          "id": "update",
+          "label": "Scaling update",
+          "note": "GIS or IIS revises the weights"
+        }
+      ],
+      "edges": [
+        {
+          "from": "data",
+          "to": "model",
+          "label": "examples"
+        },
+        {
+          "from": "weights",
+          "to": "model",
+          "label": "parameters"
+        },
+        {
+          "from": "model",
+          "to": "compare",
+          "label": "predictions"
+        },
+        {
+          "from": "data",
+          "to": "compare",
+          "label": "observations"
+        },
+        {
+          "from": "compare",
+          "to": "update",
+          "label": "differences"
+        },
+        {
+          "from": "update",
+          "to": "weights",
+          "label": "repeats"
+        }
+      ],
+      "caption": "Iterative scaling alternates between predicting with the current weights and updating those weights to better match the training data."
+    }
+  },
   "related": [
     "affine-scaling",
     "feature-scaling",

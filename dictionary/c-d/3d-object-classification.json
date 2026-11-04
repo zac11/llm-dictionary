@@ -5,6 +5,97 @@
   "type": "concept",
   "definition": "Classifying 3D objects — meshes, voxels, or point clouds — into categories, the 3D analogue of image classification.",
   "details": "Classifying 3D objects — meshes, voxels, or point clouds — into categories, the 3D analogue of image classification.",
+  "explainer": {
+    "lead": "3D object classification assigns a category, such as chair or car, to a three-dimensional object. It lets software work with shapes captured or stored as meshes, voxel grids, or point clouds rather than only flat images.",
+    "tiers": {
+      "eli5": "Imagine sorting a box of toy shapes into groups like cars, chairs, and animals. A computer can learn to do something similar with a 3D object, even when that object is stored as a collection of tiny points. It examines the object and chooses the group it belongs to.",
+      "practitioner": "Apply a classifier to a preprocessed mesh, voxel grid, or point cloud and map its output to one of the target categories. Keep preprocessing and category labels consistent between training and inference, and use an input pipeline suited to the chosen representation. Check malformed geometry and unexpected input formats rather than assuming every 3D file is ready to classify.",
+      "paperLevel": "Given a 3D object x represented as a mesh, voxel grid, or point cloud, the task is to learn or apply a function f(x) = y, where y is one label from a fixed set of object categories. It is the 3D analogue of assigning a class label to an entire image."
+    },
+    "example": "A point cloud captured from an office chair is passed to a classifier whose categories are chair, table, and lamp. The classifier outputs chair, assigning that single label to the entire point cloud.",
+    "usedIn": [
+      {
+        "name": "3D asset catalogues",
+        "detail": "Group stored meshes or other 3D models by object category.",
+        "url": ""
+      },
+      {
+        "name": "Robotics",
+        "detail": "Assign category labels to objects represented by three-dimensional sensor data.",
+        "url": ""
+      },
+      {
+        "name": "Computer vision",
+        "detail": "Extend whole-image classification to objects with explicit 3D geometry.",
+        "url": ""
+      }
+    ],
+    "intuition": "The goal is to recognize what a whole 3D object is, not merely to describe its file format. Different representations can carry the same underlying shape, so the classifier must map that shape to a semantic category.",
+    "howItWorks": [
+      "Start with one object represented as a mesh, voxel grid, or point cloud.",
+      "Prepare the object in the input form expected by the classifier.",
+      "Process its 3D structure to produce evidence for the possible categories.",
+      "Select a category label, such as chair, table, or car, for the whole object."
+    ],
+    "whyItMatters": "It provides a basic way to organize and interpret 3D data by object category. That makes collections of meshes, voxels, and point clouds usable for higher-level computer-vision tasks.",
+    "misconceptions": [
+      "It is not the same as locating an object or drawing a 3D bounding box around it.",
+      "A mesh, voxel grid, or point cloud is an input representation, not an object category.",
+      "Classifying a complete 3D object is different from labeling each of its individual points or parts."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "object",
+          "label": "3D object",
+          "note": "One object to categorize"
+        },
+        {
+          "id": "representation",
+          "label": "3D representation",
+          "note": "Mesh, voxels, or point cloud"
+        },
+        {
+          "id": "classifier",
+          "label": "Object classifier",
+          "note": "Processes the object's 3D structure"
+        },
+        {
+          "id": "scores",
+          "label": "Category evidence",
+          "note": "Evidence for the possible labels"
+        },
+        {
+          "id": "label",
+          "label": "Predicted category",
+          "note": "One label for the whole object"
+        }
+      ],
+      "edges": [
+        {
+          "from": "object",
+          "to": "representation",
+          "label": "encoded as"
+        },
+        {
+          "from": "representation",
+          "to": "classifier",
+          "label": "input"
+        },
+        {
+          "from": "classifier",
+          "to": "scores",
+          "label": "produces"
+        },
+        {
+          "from": "scores",
+          "to": "label",
+          "label": "selects"
+        }
+      ],
+      "caption": "A 3D object is encoded in a supported representation and mapped to one category label."
+    }
+  },
   "citation": {
     "title": "3D Object Classification",
     "authors": [],

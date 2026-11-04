@@ -2,12 +2,117 @@
   "term": "Character Error Rate",
   "letter": "C",
   "category": "Speech AI",
-  "type": "concept",
+  "type": "metric",
   "aka": [
     "CER"
   ],
   "definition": "The ASR accuracy metrics: edit distance (substitutions + insertions + deletions) divided by reference length, at word or character level.",
   "details": "The ASR accuracy metrics: edit distance (substitutions + insertions + deletions) divided by reference length, at word or character level. CER is fairer for morphologically rich or space-ambiguous languages; for Arabic, always report whether diacritics and normalization were applied, or numbers are not comparable.",
+  "explainer": {
+    "lead": "Character Error Rate measures how many character edits are needed to turn a speech recognizer's output into the reference transcript. It is especially useful when word boundaries are unclear or words take many forms, and lower scores mean fewer errors.",
+    "tiers": {
+      "eli5": "Imagine a friend writes down what you said, and you count every letter they must change, add, or remove to match your words. Divide that number of fixes by the number of letters in your original message. A smaller result means their writing was closer to what you said.",
+      "practitioner": "Use CER to evaluate ASR transcripts by aligning the hypothesis with the reference and counting character substitutions, insertions, and deletions. It is often fairer than word-level scoring for morphologically rich or space-ambiguous languages. For Arabic, report diacritic handling and normalization alongside every score; otherwise, results may not be comparable.",
+      "paperLevel": "CER = (S + I + D) / N, where S, I, and D are character substitutions, insertions, and deletions in the minimum edit alignment, and N is the reference length in characters. Zero indicates an exact match under the chosen preprocessing, while lower values indicate fewer edits. Comparisons depend on the reference length and character preprocessing, particularly diacritics and normalization in Arabic."
+    },
+    "example": "For reference \"kitten\" and hypothesis \"sitting\", the alignment needs two substitutions and one insertion: k→s, e→i, and adding g. Thus CER = (2 + 1 + 0) / 6 = 0.5, or 50%.",
+    "usedIn": [
+      {
+        "name": "Automatic speech recognition",
+        "detail": "Evaluating transcripts against reference text at character level.",
+        "url": ""
+      },
+      {
+        "name": "Morphologically rich languages",
+        "detail": "Reducing the emphasis on whole-word mismatches when words have many forms.",
+        "url": ""
+      },
+      {
+        "name": "Space-ambiguous languages",
+        "detail": "Scoring text without relying entirely on clear word boundaries.",
+        "url": ""
+      },
+      {
+        "name": "Arabic ASR evaluation",
+        "detail": "Reporting character accuracy together with diacritic and normalization choices.",
+        "url": ""
+      }
+    ],
+    "measures": "CER measures the character-level discrepancy between an ASR hypothesis and its reference transcript. It counts substitutions, insertions, and deletions relative to the reference length.",
+    "howScored": [
+      "Find the minimum character edits needed to make the hypothesis match the reference, add the three edit types, and divide by the number of characters in the reference. A score of 0 means no edits are needed; lower scores are better."
+    ],
+    "formula": "CER = (S + I + D) / N, with N equal to the reference character count.",
+    "typicalResults": "Lower CER is better, and 0 indicates an exact match after the chosen normalization. Scores should be compared only when the text preparation is comparable.",
+    "caveats": [
+      "For Arabic, state whether diacritics were retained or removed.",
+      "Report any normalization applied before scoring.",
+      "Different preprocessing choices can make numbers incomparable.",
+      "CER is the character-level counterpart of word-level error rate."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "reference",
+          "label": "Reference transcript",
+          "note": "The target text of length N"
+        },
+        {
+          "id": "hypothesis",
+          "label": "ASR hypothesis",
+          "note": "The recognizer's output"
+        },
+        {
+          "id": "alignment",
+          "label": "Edit alignment",
+          "note": "Find the minimum character edits"
+        },
+        {
+          "id": "counts",
+          "label": "Count edits",
+          "note": "Tally S, I, and D"
+        },
+        {
+          "id": "division",
+          "label": "Divide by N",
+          "note": "Normalize by reference length"
+        },
+        {
+          "id": "cer",
+          "label": "CER score",
+          "note": "Lower means fewer errors"
+        }
+      ],
+      "edges": [
+        {
+          "from": "reference",
+          "to": "alignment",
+          "label": "target text"
+        },
+        {
+          "from": "hypothesis",
+          "to": "alignment",
+          "label": "output text"
+        },
+        {
+          "from": "alignment",
+          "to": "counts",
+          "label": ""
+        },
+        {
+          "from": "counts",
+          "to": "division",
+          "label": ""
+        },
+        {
+          "from": "division",
+          "to": "cer",
+          "label": ""
+        }
+      ],
+      "caption": "CER compares two transcripts, counts minimum character edits, and normalizes the total by reference length."
+    }
+  },
   "related": [
     "accuracy"
   ],

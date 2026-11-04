@@ -5,7 +5,92 @@
   "type": "concept",
   "definition": "In computer vision, the fundamental matrix F {\\displaystyle \\mathbf {F} } is a 3×3 matrix which relates corresponding points in stereo images.",
   "details": "In epipolar geometry, with homogeneous image coordinates, x and x′, of corresponding points in a stereo image pair, Fx describes a line (an epipolar line) on which the corresponding point x′ on the other image must lie. That means, for all pairs of corresponding points holds x ′ ⊤ F x = 0. {\\displaystyle \\mathbf {x} '^{\\top }\\mathbf {Fx} =0.} Being of rank two and determined only up to scale, the fundamental matrix can be estimated given at least seven point correspondences. Its seven parameters represent the only geometric information about cameras that can be obtained through point correspondences alone. The term \"fundamental matrix\" was coined by QT Luong in his influential PhD thesis. It is sometimes also referred to as the \"bifocal tensor\". As a tensor it is a two-point tensor in that it is a bilinear form relating points in distinct coordinate systems. The above relation which defines the fundamental matrix was published in 1992 by both Olivier Faugeras and Richard Hartley. Although H. Christopher Longuet-Higgins' essential matrix satisfies a similar relationship, the essential matrix is a metric object pertaining to calibrated cameras, while the fundamental matrix describes ",
-  "story": "Imagine an art restorer who can spot a single cracked tile in a vast mosaic. What your eyes do without thinking, the machine does one careful layer at a time. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. The model looks the way you look at a crowd and finds the one face you know. And that is Fundamental matrix (computer vision) — giving a machine the gift of sight.",
+  "explainer": {
+    "lead": "The fundamental matrix connects matching points in two stereo images without requiring calibrated cameras. It turns a point in one image into a line in the other, narrowing where its match can be.",
+    "tiers": {
+      "eli5": "Imagine taking two photos of the same toy from different spots. The fundamental matrix is like a rule that takes a dot in the first photo and draws a line in the second where the same dot must appear. Once enough matching dots are known, that rule can be worked out.",
+      "practitioner": "Estimate F from at least seven point correspondences, then use Fx to constrain each candidate match x' to an epipolar line. Account for its rank-two form and arbitrary scale during estimation. Do not substitute the essential-matrix interpretation, which applies to calibrated cameras.",
+      "paperLevel": "For homogeneous image points x and x', the fundamental matrix is a 3×3 rank-two matrix F, defined up to scale, satisfying x'^T F x = 0. Its seven parameters capture the only camera geometry obtainable from point correspondences alone. The defining relation was published in 1992 by Olivier Faugeras and Richard Hartley, and QT Luong coined the term in his PhD thesis. Unlike Longuet-Higgins' essential matrix, it is not a metric object restricted to calibrated cameras."
+    },
+    "example": "Suppose x marks a visible corner in the left stereo image. Computing Fx gives a line in the right image, so the same corner x' must lie somewhere on that line rather than anywhere in the image; with at least seven such point pairs, F itself can be estimated.",
+    "usedIn": [
+      {
+        "name": "Stereo vision",
+        "detail": "Restricts the location of a point's correspondence in the second image to an epipolar line.",
+        "url": ""
+      },
+      {
+        "name": "Camera geometry from point matches",
+        "detail": "Represents the geometric information that corresponding image points alone provide about the cameras.",
+        "url": ""
+      }
+    ],
+    "intuition": "A point in one stereo image does not identify an exact matching point in the other, but it does identify a line that must contain that match. The fundamental matrix encodes this point-to-line relationship for the image pair.",
+    "howItWorks": [
+      "Represent matching image points x and x' in homogeneous coordinates.",
+      "Multiply x by the 3×3 matrix F to obtain the epipolar line Fx in the other image.",
+      "Require every correspondence to satisfy x'^T F x = 0.",
+      "Estimate F from at least seven correspondences, respecting its rank of two and arbitrary scale."
+    ],
+    "whyItMatters": "It expresses the geometry linking two images directly through point correspondences. This constrains stereo matching and captures all camera geometry available from those correspondences alone.",
+    "misconceptions": [
+      "It is not the essential matrix: the essential matrix is a metric object for calibrated cameras.",
+      "It does not locate the match exactly; it only identifies the epipolar line containing it.",
+      "It is not a full-rank, absolutely scaled matrix: F has rank two and is determined only up to scale."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "correspondences",
+          "label": "Point correspondences",
+          "note": "At least seven matched point pairs"
+        },
+        {
+          "id": "matrix",
+          "label": "Fundamental matrix F",
+          "note": "3×3, rank two, defined up to scale"
+        },
+        {
+          "id": "left-point",
+          "label": "Left point x",
+          "note": "Homogeneous image coordinates"
+        },
+        {
+          "id": "line",
+          "label": "Epipolar line Fx",
+          "note": "A line in the other image"
+        },
+        {
+          "id": "right-point",
+          "label": "Right point x'",
+          "note": "The correspondence must lie on the line"
+        }
+      ],
+      "edges": [
+        {
+          "from": "correspondences",
+          "to": "matrix",
+          "label": "estimate"
+        },
+        {
+          "from": "matrix",
+          "to": "line",
+          "label": "defines"
+        },
+        {
+          "from": "left-point",
+          "to": "line",
+          "label": "multiply by F"
+        },
+        {
+          "from": "line",
+          "to": "right-point",
+          "label": "must contain"
+        }
+      ],
+      "caption": "Point correspondences determine F, which maps a point in one image to the line containing its match in the other."
+    }
+  },
   "related": [
     "computer-vision",
     "bag-of-words-model-in-computer-vision",

@@ -5,6 +5,98 @@
   "type": "concept",
   "definition": "The backward pass in neural networks is the process where gradients are computed for network parameters, typically used for training via backpropagation.",
   "details": "The backward pass in neural networks is the process where gradients are computed for network parameters, typically used for training via backpropagation.",
+  "explainer": {
+    "lead": "The backward pass is how a neural network works out which parameters helped cause its error and how each should change. Without it, gradient-based training would have no way to turn a wrong prediction into useful adjustments.",
+    "tiers": {
+      "eli5": "Imagine a group of knobs controlling a guessing machine. After a wrong guess, the backward pass works backward through the machine to see how much each knob contributed. That tells the trainer which knobs to turn, and in which direction, for a better guess next time.",
+      "practitioner": "After a forward pass and loss calculation, calling the framework's backward operation typically populates parameter gradients; an optimizer then uses them for an update. This is standard in tools such as PyTorch and TensorFlow. Common pitfalls include forgetting to clear old gradients, accidentally detaching part of the computation graph, and updating parameters before gradients have been computed.",
+      "paperLevel": "For scalar loss L and parameters theta, the backward pass computes dL/dtheta by applying the chain rule through the network's operations. For a path L -> z -> theta, its basic form is dL/dtheta = (dL/dz)(dz/dtheta), with contributions summed when a value affects the loss through multiple paths. It computes gradients rather than performing the parameter update itself."
+    },
+    "example": "For one weight w with input x = 2, prediction y = 0.8, target t = 1, and loss L = (y - t)^2, the loss is 0.04 and dL/dy = 2(0.8 - 1) = -0.4. If y = wx, then dL/dw = -0.4 × 2 = -0.8, so gradient descent with a positive learning rate increases w.",
+    "usedIn": [
+      {
+        "name": "Image classification",
+        "detail": "Computes gradients so network parameters can reduce classification loss.",
+        "url": ""
+      },
+      {
+        "name": "Language modeling",
+        "detail": "Provides gradients for training networks to improve next-token predictions.",
+        "url": ""
+      },
+      {
+        "name": "Speech recognition",
+        "detail": "Supports gradient-based training of networks that map audio to text.",
+        "url": ""
+      }
+    ],
+    "intuition": "A network's loss shows how wrong its output is, while the backward pass traces that error back through the calculations. The resulting gradient for each parameter says how a small change in that parameter would affect the loss.",
+    "howItWorks": [
+      "Run the forward pass and calculate the loss.",
+      "Find how the loss changes with the output.",
+      "Apply the chain rule through each operation in reverse.",
+      "Accumulate a gradient for every trainable parameter.",
+      "Pass those gradients to an optimizer for the update."
+    ],
+    "whyItMatters": "The backward pass makes training large networks practical by reusing intermediate derivative calculations instead of treating every parameter independently. It supplies the gradients used by gradient-based optimizers to reduce the loss.",
+    "misconceptions": [
+      "It does not itself update the parameters.",
+      "A backward pass is not a second forward prediction.",
+      "Gradients describe local loss changes, not guaranteed improvements."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "loss",
+          "label": "Loss value",
+          "note": "Measures the prediction error."
+        },
+        {
+          "id": "output",
+          "label": "Output gradient",
+          "note": "Shows how output affects loss."
+        },
+        {
+          "id": "layers",
+          "label": "Reverse layers",
+          "note": "Applies the chain rule backward."
+        },
+        {
+          "id": "gradients",
+          "label": "Parameter gradients",
+          "note": "Collects derivatives for each parameter."
+        },
+        {
+          "id": "optimizer",
+          "label": "Optimizer update",
+          "note": "Uses gradients after the backward pass."
+        }
+      ],
+      "edges": [
+        {
+          "from": "loss",
+          "to": "output",
+          "label": "differentiate"
+        },
+        {
+          "from": "output",
+          "to": "layers",
+          "label": "propagate"
+        },
+        {
+          "from": "layers",
+          "to": "gradients",
+          "label": "accumulate"
+        },
+        {
+          "from": "gradients",
+          "to": "optimizer",
+          "label": "update"
+        }
+      ],
+      "caption": "Error derivatives flow backward through the network; the optimizer performs the separate update step."
+    }
+  },
   "related": [
     "backpropagation"
   ],

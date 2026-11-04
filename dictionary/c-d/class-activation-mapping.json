@@ -5,7 +5,112 @@
   "type": "concept",
   "definition": "Class activation mapping methods are explainable AI (XAI) techniques used to visualize the regions of an input image that are the most relevant for a particular task, especially image classification, in convolutional neural networks (CNNs).",
   "details": "These methods generate heatmaps by weighting the feature maps from a convolutional layer according to their relevance to the target class. CNNs are designed to process spatially structured data, such as images, exploiting a series of convolution, non-linear activation and pooling operations to extract relevant features contained in the so-called feature maps from input data. CNNs have proven to be highly effective in a variety of computer vision and image processing tasks. Despite their strengths, CNNs (and deep learning models more broadly) are described as black boxes due to their complex and non-transparent internal layers of representation. The need to interpret decision-making processes gave birth to XAI techniques. Class activation mapping methods were originally developed for class-discriminative scenarios to visualize which parts of the input image influenced the classification decision, namely to visually highlight the regions of those feature maps that contribute most strongly to the prediction of a given class. More advanced versions of these methods are not limited to image classification tasks, but have been extended also to several vision-related tasks, such as object detection, image captioning, visual question answering, image segmentation, and medical image interpretation.",
-  "story": "Think of an orchestra warming up: no single instrument carries the piece, but together they make the sound. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. The layout decides what the machine can even attempt, before it learns a single thing. The shape of the machine is half the idea. And that shape of the machine — Class activation mapping — is what makes everything else possible.",
+  "explainer": {
+    "lead": "Class activation mapping is a family of explainable AI techniques that turns a convolutional neural network’s internal visual features into a heatmap. It helps people see which parts of an image were most relevant to a prediction instead of treating the network’s decision process as entirely opaque.",
+    "tiers": {
+      "eli5": "Imagine showing a computer a photo and asking why it thinks there is a dog in it. Class activation mapping is like giving the computer a coloured highlighter so it can mark the parts of the photo that mattered most for that answer. The brightest marks show where its visual evidence was strongest.",
+      "practitioner": "Select a convolutional layer, weight its feature maps according to their relevance to the target class, and inspect the resulting heatmap with the input image. The approach was developed for CNN classification, while advanced variants support tasks such as detection, segmentation, captioning, visual question answering, and medical image interpretation. A heatmap exposes class-relevant regions but does not make every internal representation transparent.",
+      "paperLevel": "For target class c, let F_k be the feature maps from a convolutional layer and alpha_k(c) be weights expressing their relevance to that class; the activation map is H_c = sum_k alpha_k(c) F_k. The methods were originally developed for class-discriminative visualization of CNN image-classification decisions. Advanced versions extend the idea to other vision tasks, but the output remains a visualization of relevant regions rather than a complete account of the network’s internal representations."
+    },
+    "example": "For a photograph classified as a cat, the heatmap might most strongly highlight the cat’s face and ears, showing that those regions contributed heavily to the cat prediction.",
+    "usedIn": [
+      {
+        "name": "Image classification",
+        "detail": "Highlights image regions that contribute most strongly to a predicted class.",
+        "url": ""
+      },
+      {
+        "name": "Object detection",
+        "detail": "Advanced variants visualize relevant regions for detected objects.",
+        "url": ""
+      },
+      {
+        "name": "Medical image interpretation",
+        "detail": "Shows which areas of a medical image are relevant to a model’s output.",
+        "url": ""
+      },
+      {
+        "name": "Visual question answering",
+        "detail": "Advanced variants connect an answer with relevant visual regions.",
+        "url": ""
+      }
+    ],
+    "intuition": "A CNN stores visual features in spatial maps, and some of those features matter more for a particular class than others. Emphasizing the class-relevant maps produces a picture of where the network found supporting visual evidence.",
+    "howItWorks": [
+      "Pass the input image through the CNN.",
+      "Take feature maps from a convolutional layer.",
+      "Weight each map by its relevance to the target class.",
+      "Combine the weighted maps into a heatmap.",
+      "Inspect the highlighted regions against the original image."
+    ],
+    "whyItMatters": "It provides a direct visual way to examine decisions made by otherwise complex and non-transparent CNNs. That makes image-model behaviour easier to inspect across classification and, with advanced variants, several other vision tasks.",
+    "misconceptions": [
+      "It is not a verbal explanation or a complete view of the network; it is a heatmap of class-relevant regions.",
+      "The technique is not confined to classification in all its forms, although broader vision tasks require more advanced versions."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "image",
+          "label": "Input image",
+          "note": "Spatial visual data"
+        },
+        {
+          "id": "cnn",
+          "label": "CNN processing",
+          "note": "Convolution, activation and pooling"
+        },
+        {
+          "id": "maps",
+          "label": "Feature maps",
+          "note": "Features from a convolutional layer"
+        },
+        {
+          "id": "weights",
+          "label": "Class weights",
+          "note": "Relevance to the target class"
+        },
+        {
+          "id": "heatmap",
+          "label": "Activation heatmap",
+          "note": "Weighted feature maps combined"
+        },
+        {
+          "id": "regions",
+          "label": "Relevant regions",
+          "note": "Visual support for the prediction"
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "cnn",
+          "label": ""
+        },
+        {
+          "from": "cnn",
+          "to": "maps",
+          "label": "extracts"
+        },
+        {
+          "from": "maps",
+          "to": "heatmap",
+          "label": ""
+        },
+        {
+          "from": "weights",
+          "to": "heatmap",
+          "label": "weighting"
+        },
+        {
+          "from": "heatmap",
+          "to": "regions",
+          "label": "highlights"
+        }
+      ],
+      "caption": "Class activation mapping combines convolutional feature maps with target-class relevance weights to highlight important image regions."
+    }
+  },
   "related": [
     "latent-semantic-mapping",
     "learnable-function-class",

@@ -5,6 +5,97 @@
   "type": "concept",
   "definition": "Classifying text that attacks or demeans people based on protected characteristics.",
   "details": "Classifying text that attacks or demeans people based on protected characteristics. It is a core content-moderation task complicated by sarcasm, reclaimed slurs, coded language, and differing community norms.",
+  "explainer": {
+    "lead": "Hate speech detection is the task of deciding whether text attacks or demeans people because of protected characteristics. It supports content moderation, but sarcasm, reclaimed slurs, coded language, and differing community norms make the meaning of a message difficult to judge from keywords alone.",
+    "tiers": {
+      "eli5": "Imagine a school club where a helper watches for notes that cruelly put people down because of who they are. Hate speech detection tries to do that for writing online. It is tricky because a joke, a quote, or words reused by a community may not mean what they seem to mean at first glance.",
+      "practitioner": "Apply it as a text-classification task within a content-moderation workflow, with labels that reflect protected characteristics and the community's norms. Test cases involving sarcasm, reclaimed slurs, and coded language separately, since errors can both miss abuse and wrongly flag acceptable speech.",
+      "paperLevel": "Given a text x, predict a label y indicating whether x attacks or demeans people based on protected characteristics. The task is context-sensitive: sarcasm, reclaimed slurs, and coded language can obscure the intended label, while community norms can change the appropriate classification. These factors limit approaches that treat individual words as sufficient evidence."
+    },
+    "example": "For the comment \"People from [protected group] are vermin and do not belong here,\" the classifier should flag hate speech because the message demeans a group based on a protected characteristic. The word \"vermin\" alone would not be enough; its use in this attack supplies the crucial meaning.",
+    "usedIn": [
+      {
+        "name": "Social media moderation",
+        "detail": "Classifying posts and comments that may attack or demean protected groups.",
+        "url": ""
+      },
+      {
+        "name": "Discussion forums",
+        "detail": "Supporting review of conversations under community-specific norms.",
+        "url": ""
+      },
+      {
+        "name": "Online gaming chat",
+        "detail": "Identifying potentially abusive text, including abuse expressed through coded language.",
+        "url": ""
+      }
+    ],
+    "intuition": "The goal is to recognize attacks on people for who they are, not merely to find rude or unpleasant words. Meaning depends on wording, intent, and community context.",
+    "howItWorks": [
+      "Define the target classification using protected characteristics and community norms.",
+      "Provide a piece of text to a classifier.",
+      "Account for contextual challenges such as sarcasm, reclaimed slurs, and coded language.",
+      "Produce a classification for use in content moderation."
+    ],
+    "whyItMatters": "It gives content moderation a way to classify targeted abuse in text. Careful handling of context is essential so that coded attacks are not missed and reclaimed or sarcastic language is not automatically treated as hateful.",
+    "misconceptions": [
+      "Offensive text is not automatically hate speech; the target and protected characteristic matter.",
+      "A banned-word list cannot reliably handle sarcasm, reclaimed slurs, or coded language.",
+      "One classification standard does not necessarily fit every community."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "text",
+          "label": "Input text",
+          "note": "A post, comment, or chat message."
+        },
+        {
+          "id": "context",
+          "label": "Context cues",
+          "note": "Sarcasm, reclamation, coded language, and norms."
+        },
+        {
+          "id": "classifier",
+          "label": "Text classifier",
+          "note": "Assesses attacks based on protected characteristics."
+        },
+        {
+          "id": "label",
+          "label": "Predicted label",
+          "note": "The hate-speech classification."
+        },
+        {
+          "id": "moderation",
+          "label": "Content moderation",
+          "note": "Uses the classification in the moderation workflow."
+        }
+      ],
+      "edges": [
+        {
+          "from": "text",
+          "to": "classifier",
+          "label": ""
+        },
+        {
+          "from": "context",
+          "to": "classifier",
+          "label": ""
+        },
+        {
+          "from": "classifier",
+          "to": "label",
+          "label": ""
+        },
+        {
+          "from": "label",
+          "to": "moderation",
+          "label": ""
+        }
+      ],
+      "caption": "Text is classified in light of contextual challenges, and the resulting label supports content moderation."
+    }
+  },
   "related": [
     "content-moderation"
   ],

@@ -5,7 +5,113 @@
   "type": "concept",
   "definition": "An AI agent's ability to detect that an action or plan has failed and adapt its approach accordingly, rather than repeating the same mistake or giving up entirely.",
   "details": "Robust failure recovery is essential for reliable agentic systems operating in real-world, imperfect environments where tool calls can fail, information can be incomplete, and initial plans may need revision.",
-  "story": "Imagine handing a to-do list to a very clever intern who refuses to guess: before each step, they look around, check the result, and adjust. It is the difference between a search engine and a helper who actually finishes the task. The machine stops just answering one question and starts getting a job done, step by step, checking its work along the way. The model stops being a one-shot answer machine and becomes a coworker that checks its own work. That loop of reason, act, and observe is Failure Recovery (in agents).",
+  "explainer": {
+    "lead": "Failure recovery is what lets an AI agent notice that something went wrong and try a different approach. It matters because real tasks involve broken tool calls, missing information, and plans that do not survive contact with reality.",
+    "tiers": {
+      "eli5": "Imagine trying to open a door by pulling, only to find it will not move. Instead of pulling forever or walking away, you check the sign and push instead; failure recovery is an agent doing that same kind of noticing and changing its plan.",
+      "practitioner": "Engineers implement failure recovery by inspecting tool errors and action outcomes, preserving useful state, and feeding that evidence back into replanning or an alternative action. Useful safeguards include bounded retries, distinct fallback strategies, and stopping conditions when recovery is impossible. Common pitfalls are retrying an identical call indefinitely, treating every failure as transient, and overlooking failures that produce plausible but incomplete results.",
+      "paperLevel": "Let a_t be an action, o_t its observed outcome, and g the goal. Failure recovery detects that o_t indicates failure or insufficient progress toward g, then updates the agent's state or plan so that a subsequent action addresses the cause rather than blindly repeating a_t or terminating. Its effectiveness is limited by the observability of failures, the accuracy of diagnosis, and the availability of viable alternative actions."
+    },
+    "example": "An agent calls a tool to retrieve a record, but the call fails because a required field is missing. It detects the error, checks the available information, finds that the field is still unknown, and revises its plan to ask the user for it instead of repeating the same call.",
+    "usedIn": [
+      {
+        "name": "Tool-using agents",
+        "detail": "Respond to failed tool calls by revising parameters, choosing another approach, or stopping with an explanation.",
+        "url": ""
+      },
+      {
+        "name": "Real-world task automation",
+        "detail": "Adapt when environments are imperfect and actions do not produce the expected result.",
+        "url": ""
+      },
+      {
+        "name": "Multi-step planning systems",
+        "detail": "Revise an initial plan when new information shows that a step cannot succeed.",
+        "url": ""
+      }
+    ],
+    "intuition": "A failed action is feedback, not necessarily the end of the task. A recovering agent uses that feedback to understand what changed or went wrong, then adjusts its next move.",
+    "howItWorks": [
+      "Attempt an action or execute part of a plan.",
+      "Observe tool errors, returned results, and progress toward the goal.",
+      "Detect failure and identify what information it provides.",
+      "Revise the plan or choose a different action.",
+      "Retry within sensible limits, or stop if no viable path remains."
+    ],
+    "whyItMatters": "Without recovery, ordinary tool failures and incomplete information can turn into repeated mistakes or abandoned tasks. Recovery makes agents more useful in real environments, where initial plans often need revision.",
+    "misconceptions": [
+      "Retrying is not always recovery: repeating an unchanged action can simply repeat the failure.",
+      "Recovery does not mean never giving up: stopping is appropriate when no viable alternative exists.",
+      "A successful-looking response is not proof that the underlying action succeeded."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "plan",
+          "label": "Current plan",
+          "note": "The intended route to the goal"
+        },
+        {
+          "id": "act",
+          "label": "Attempt action",
+          "note": "Execute a step or tool call"
+        },
+        {
+          "id": "observe",
+          "label": "Observe outcome",
+          "note": "Collect errors, results, and progress"
+        },
+        {
+          "id": "detect",
+          "label": "Detect failure",
+          "note": "Decide whether the attempt worked"
+        },
+        {
+          "id": "revise",
+          "label": "Revise approach",
+          "note": "Use failure evidence to change the plan"
+        },
+        {
+          "id": "finish",
+          "label": "Continue or finish",
+          "note": "Proceed after success"
+        }
+      ],
+      "edges": [
+        {
+          "from": "plan",
+          "to": "act",
+          "label": "next step"
+        },
+        {
+          "from": "act",
+          "to": "observe",
+          "label": "outcome"
+        },
+        {
+          "from": "observe",
+          "to": "detect",
+          "label": "evidence"
+        },
+        {
+          "from": "detect",
+          "to": "revise",
+          "label": "failed"
+        },
+        {
+          "from": "revise",
+          "to": "plan",
+          "label": "updated plan"
+        },
+        {
+          "from": "detect",
+          "to": "finish",
+          "label": "succeeded"
+        }
+      ],
+      "caption": "Failure recovery closes the loop between an unsuccessful outcome and a revised approach."
+    }
+  },
   "related": [
     "memory-in-ai-agents",
     "planning-in-ai-agents",

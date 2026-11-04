@@ -5,7 +5,97 @@
   "type": "concept",
   "definition": "The Hamilton-Jacobi-Bellman (HJB) equation is a nonlinear partial differential equation that provides necessary and sufficient conditions for optimality of a control with respect to a loss function.",
   "details": "Its solution is the value function of the optimal control problem which, once known, can be used to obtain the optimal control by taking the maximizer (or minimizer) of the Hamiltonian involved in the HJB equation. The equation is a result of the theory of dynamic programming which was pioneered in the 1950s by Richard Bellman and coworkers. The connection to the Hamilton–Jacobi equation from classical physics was first drawn by Rudolf Kálmán. In discrete-time problems, the analogous difference equation is usually referred to as the Bellman equation. While classical variational problems, such as the brachistochrone problem, can be solved using the Hamilton–Jacobi–Bellman equation, the method can be applied to a broader spectrum of problems. Further it can be generalized to stochastic systems, in which case the HJB equation is a second-order elliptic partial differential equation. A major drawback, however, is that the HJB equation admits classical solutions only for a sufficiently smooth value function, which is not guaranteed in most situations. Instead, the notion of a viscosity solution is required, in which conventional derivatives are replaced by (set-valued) subderivatives.",
-  "story": "Imagine teaching a friend to shoot a basketball. They miss, and you walk them backwards through the shot — elbow, wrist, release — to find what needs fixing. It is the same loop you use to learn anything: try, miss, correct, try again. Underneath all the magic is a patient process of small improvements. It is learning from every miss instead of repeating the same mistake. And that is Hamilton–Jacobi–Bellman equation — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "The Hamilton–Jacobi–Bellman equation turns an optimal-control problem into an equation for the best achievable value from each state. Solving it gives both a value function and a way to choose the optimal control, although smooth solutions are often unavailable.",
+    "tiers": {
+      "eli5": "Imagine planning a journey where every choice affects the rest of the trip. Instead of checking every possible route, you work out the best remaining result from each place you could reach. That tells you which move to make next, and the Hamilton–Jacobi–Bellman equation is a mathematical way of doing this for continuously changing problems.",
+      "practitioner": "Apply it by solving a nonlinear partial differential equation for the value function, then obtain the control by minimizing or maximizing the Hamiltonian. The discrete-time counterpart is the Bellman equation, while stochastic systems lead to a second-order elliptic partial differential equation. Do not assume a classical solution exists: when the value function is insufficiently smooth, use viscosity solutions with set-valued subderivatives.",
+      "paperLevel": "The HJB equation is a nonlinear partial differential equation giving necessary and sufficient optimality conditions for a control with respect to a loss function. Its solution is the value function V, and the optimal control is obtained as u* = arg min H (or arg max H) for the Hamiltonian H. It follows from dynamic programming, pioneered by Richard Bellman and coworkers in the 1950s; Rudolf Kálmán first drew the connection to the Hamilton–Jacobi equation. Classical solutions require a sufficiently smooth value function, so viscosity solutions are generally needed."
+    },
+    "example": "For the brachistochrone problem, the goal is to find the curve giving the fastest descent. Formulate the choice of path as an optimal-control problem, solve the HJB equation for its value function, and then extremize the Hamiltonian to obtain the optimal control and hence the optimal path.",
+    "usedIn": [
+      {
+        "name": "Optimal control",
+        "detail": "Computes the value function and derives an optimal control by extremizing the Hamiltonian.",
+        "url": ""
+      },
+      {
+        "name": "Classical variational problems",
+        "detail": "Can solve problems such as the brachistochrone, while also extending beyond this classical setting.",
+        "url": ""
+      },
+      {
+        "name": "Stochastic systems",
+        "detail": "Generalizes to stochastic control, where the HJB equation becomes a second-order elliptic partial differential equation.",
+        "url": ""
+      }
+    ],
+    "intuition": "The value at a state is the best outcome achievable from that state onward. The HJB equation connects that value to the immediate loss and the choice of control, so the best control is the one that optimizes the Hamiltonian.",
+    "howItWorks": [
+      "Describe the control problem and its loss function.",
+      "Write the nonlinear HJB partial differential equation for the value function.",
+      "Solve for the value function, using a viscosity solution when a classical smooth solution is unavailable.",
+      "Recover the optimal control by minimizing or maximizing the Hamiltonian."
+    ],
+    "whyItMatters": "It provides necessary and sufficient conditions for optimality and converts knowledge of the value function into an optimal control. It also unifies dynamic programming with the Hamilton–Jacobi equation and extends from classical variational problems to stochastic systems.",
+    "misconceptions": [
+      "The HJB equation and the Bellman equation are not identical: the Bellman equation is the usual discrete-time analogue.",
+      "A smooth classical solution is not guaranteed; many problems require viscosity solutions.",
+      "It is not limited to classical physics or variational problems, but applies to a broader range of control problems."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "problem",
+          "label": "Control problem",
+          "note": "States, controls, and loss"
+        },
+        {
+          "id": "hjb",
+          "label": "HJB equation",
+          "note": "Nonlinear optimality equation"
+        },
+        {
+          "id": "value",
+          "label": "Value function",
+          "note": "Best achievable value"
+        },
+        {
+          "id": "hamiltonian",
+          "label": "Hamiltonian",
+          "note": "Optimized over controls"
+        },
+        {
+          "id": "control",
+          "label": "Optimal control",
+          "note": "Minimizer or maximizer"
+        }
+      ],
+      "edges": [
+        {
+          "from": "problem",
+          "to": "hjb",
+          "label": "formulates"
+        },
+        {
+          "from": "hjb",
+          "to": "value",
+          "label": "solves for"
+        },
+        {
+          "from": "value",
+          "to": "hamiltonian",
+          "label": "enters"
+        },
+        {
+          "from": "hamiltonian",
+          "to": "control",
+          "label": "extremize"
+        }
+      ],
+      "caption": "The HJB solution supplies the value function, and extremizing the Hamiltonian recovers the optimal control."
+    }
+  },
   "related": [
     "bellman-equation",
     "bellman-ford-algorithm",

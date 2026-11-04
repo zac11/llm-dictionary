@@ -5,7 +5,122 @@
   "type": "concept",
   "definition": "Cross-validation, sometimes called rotation estimation or out-of-sample testing, is any of various similar model validation techniques for assessing how the results of a statistical analysis will generalize to an independent data set.",
   "details": "Cross-validation includes resampling and sample splitting methods that use different portions of the data to test and train a model on different iterations. It is often used in settings where the goal is prediction, and one wants to estimate how accurately a predictive model will perform in practice. It can also be used to assess the quality of a fitted model and the stability of its parameters. In a prediction problem, a model is usually given a dataset of known data on which training is run (training dataset), and a dataset of unknown data (or first seen data) against which the model is tested (called the validation dataset or testing set). The goal of cross-validation is to test the model's ability to predict new data that was not used in estimating it, in order to flag problems like overfitting or selection bias and to give an insight on how the model will generalize to an independent dataset (i.e., an unknown dataset, for instance from a real problem). One round of cross-validation involves partitioning a sample of data into complementary subsets, performing the analysis on one subset (called the training set), and validating the analysis on the other subset (called the validation set or testing set). To reduce variability, in most methods multiple rounds of cross-validation are performed using different partitions, and the validation results are combined (e.g. averaged) over the rounds to give an estimate of the model's predictive performance. In summary, cross-validation combines (averages) measures of fitness in prediction to derive a more accurate estimate of model prediction performance.",
-  "story": "Picture a librarian organizing a million slips of paper so that any one of them can be found in a heartbeat. The examples a machine reads become the world it believes in. Better ingredients make a better meal, and the same is true here. Garbage in, garbage out — and the reverse: clean, representative data makes the model quietly brilliant. And that is Cross-validation (statistics) — the unglamorous work everything else stands on.",
+  "explainer": {
+    "lead": "Cross-validation estimates how well a model will handle data it has not seen before. It repeatedly trains on one portion of a dataset and checks performance on another, giving a more useful picture than judging the model only on the examples it learned from.",
+    "tiers": {
+      "eli5": "Imagine studying for a quiz using practice questions. To see whether you really understand the subject, you could learn from some questions and then try different questions you did not study. Cross-validation does this several times with different groups of questions and averages the results.",
+      "practitioner": "In prediction work, partition the available data, fit the model on the training portion, and evaluate it on the held-out portion. Repeat with different partitions and average the validation scores to reduce variability, watching for overfitting and selection bias. A strong score on training data alone is not evidence of good performance on new data.",
+      "paperLevel": "For round r, partition the sample into complementary training and validation sets D_train^(r) and D_valid^(r), fit model M_r on D_train^(r), and obtain a prediction-loss or fitness score s_r on D_valid^(r). Over R rounds, combine the scores, commonly as s_hat = (1/R) sum_(r=1)^R s_r, to estimate predictive performance. The procedure probes generalization, overfitting, and selection bias, but it remains an estimate based on the available sample rather than a guarantee for every independent dataset."
+    },
+    "example": "Suppose you have 100 records and divide them into five groups of 20. Train on four groups and validate on the remaining group, then repeat until each group has served as the validation set once; averaging the five validation scores gives the cross-validation estimate of predictive performance.",
+    "usedIn": [
+      {
+        "name": "Predictive modeling",
+        "detail": "Estimating how accurately a fitted model may predict previously unseen data.",
+        "url": ""
+      },
+      {
+        "name": "Model assessment",
+        "detail": "Evaluating the quality of a fitted model and the stability of its parameters.",
+        "url": ""
+      },
+      {
+        "name": "Generalization checks",
+        "detail": "Helping flag overfitting and selection bias before relying on a model's predictions.",
+        "url": ""
+      }
+    ],
+    "intuition": "A model can look good simply because it has learned the examples in front of it. Cross-validation tests it on portions held back from training, then repeats the exchange so the estimate does not rest on just one division of the data.",
+    "howItWorks": [
+      "Start with a sample of known data.",
+      "Split it into complementary training and validation subsets.",
+      "Fit the model using only the training subset.",
+      "Measure its predictions on the validation subset.",
+      "Repeat with different partitions and combine the validation results, usually by averaging."
+    ],
+    "whyItMatters": "It provides a way to estimate performance on independent data using the sample already available. Repeated partitions also reduce the variability of relying on a single train–validation split.",
+    "misconceptions": [
+      "Evaluating a model on the data used to train it is not cross-validation; validation uses a subset held out from that round's fitting.",
+      "Cross-validation produces an estimate of predictive performance, not a guarantee about every future dataset."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data",
+          "label": "Known data",
+          "note": "The available sample"
+        },
+        {
+          "id": "split",
+          "label": "Partition sample",
+          "note": "Create complementary subsets"
+        },
+        {
+          "id": "train",
+          "label": "Training subset",
+          "note": "Data used for fitting"
+        },
+        {
+          "id": "valid",
+          "label": "Validation subset",
+          "note": "Data held out from fitting"
+        },
+        {
+          "id": "model",
+          "label": "Fitted model",
+          "note": "Analysis learned from training data"
+        },
+        {
+          "id": "score",
+          "label": "Validation score",
+          "note": "Prediction performance for one round"
+        },
+        {
+          "id": "average",
+          "label": "Combined estimate",
+          "note": "Results averaged over rounds"
+        }
+      ],
+      "edges": [
+        {
+          "from": "data",
+          "to": "split",
+          "label": ""
+        },
+        {
+          "from": "split",
+          "to": "train",
+          "label": "one subset"
+        },
+        {
+          "from": "split",
+          "to": "valid",
+          "label": "other subset"
+        },
+        {
+          "from": "train",
+          "to": "model",
+          "label": "fit"
+        },
+        {
+          "from": "model",
+          "to": "score",
+          "label": "predict"
+        },
+        {
+          "from": "valid",
+          "to": "score",
+          "label": "evaluate"
+        },
+        {
+          "from": "score",
+          "to": "average",
+          "label": "repeat rounds"
+        }
+      ],
+      "caption": "Each round trains on one subset, validates on the other, and contributes a score to the combined estimate."
+    }
+  },
   "related": [
     "cross-validation",
     "criss-cross-algorithm",

@@ -5,6 +5,93 @@
   "type": "concept",
   "definition": "Inferring emotional state from signals such as face, voice, text, or physiology.",
   "details": "Inferring emotional state from signals such as face, voice, text, or physiology. Applications range from affective computing to monitoring, with ongoing debate over reliability and consent.",
+  "explainer": {
+    "lead": "Emotion recognition estimates how someone may be feeling from signals such as facial expression, voice, text, or physiological measurements. It can help interactive systems respond to apparent frustration or distress, but an estimate is not a direct reading of a person’s inner state. Its reliability and the consent of people being monitored remain important concerns.",
+    "tiers": {
+      "eli5": "It is like guessing that a friend is upset because they frown, speak quietly, and write, “I’m fed up.” A computer can use clues like these to make its own guess, using a camera, microphone, text, or body measurements. But the guess can be wrong, and people should know when they are being monitored.",
+      "practitioner": "A typical pipeline processes one or more modalities, extracts relevant features, and maps them to emotion labels or scores with a trained model. Deployment requires testing in the actual setting rather than treating a confident output as ground truth, especially when decisions affect people. Monitoring applications also need clear consent practices and limits on how the estimates are used.",
+      "paperLevel": "Given observations x = (x_face, x_voice, x_text, x_physiology), the task is to learn or apply a mapping f(x) -> y, where y is an inferred emotional state represented by a label or scores. The mapping infers emotion from observable signals rather than measuring an inner state directly. Known concerns include reliability across real settings and consent when the technology is used for monitoring."
+    },
+    "example": "A system analyzes a short recorded conversation in which a person frowns, speaks sharply, and says, “This still isn’t working.” It returns scores of 0.70 for frustration, 0.20 for neutral, and 0.10 for other states; an application might offer help, but the scores do not prove that the person is frustrated.",
+    "usedIn": [
+      {
+        "name": "Affective computing",
+        "detail": "Interactive systems use emotional estimates to inform how they respond to users.",
+        "url": ""
+      },
+      {
+        "name": "Monitoring",
+        "detail": "Signals from face, voice, text, or physiology can be analyzed to flag apparent emotional states, raising questions about reliability and consent.",
+        "url": ""
+      }
+    ],
+    "intuition": "People combine clues such as expressions, tone of voice, and word choice when guessing how someone feels. Emotion recognition gives a computer a similar set of clues, but its output remains an inference that can be mistaken.",
+    "howItWorks": [
+      "Collect one or more signals, such as a face image, speech recording, text, or physiological measurement.",
+      "Process the signals and extract features relevant to expression, voice, language, or bodily response.",
+      "Use a model to map those features to possible emotional states and their scores.",
+      "Return the estimated state, optionally combining evidence from several signals.",
+      "Interpret the result cautiously, accounting for the setting, reliability, and consent."
+    ],
+    "whyItMatters": "Emotional estimates could make interactive systems more responsive and support monitoring applications. Mistakes can also lead to inappropriate responses or unfair judgments, while monitoring without meaningful consent can intrude on people’s lives.",
+    "misconceptions": [
+      "A facial expression, voice pattern, or physiological response is not a guaranteed readout of someone’s actual emotion.",
+      "Combining several signals does not automatically make an estimate reliable.",
+      "A technically accurate estimate does not by itself resolve whether monitoring is consensual or appropriate."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "signals",
+          "label": "Input signals",
+          "note": "Face, voice, text, or physiology"
+        },
+        {
+          "id": "features",
+          "label": "Signal processing",
+          "note": "Extract usable features"
+        },
+        {
+          "id": "model",
+          "label": "Recognition model",
+          "note": "Map features to states"
+        },
+        {
+          "id": "estimate",
+          "label": "Emotion estimate",
+          "note": "Output labels or scores"
+        },
+        {
+          "id": "application",
+          "label": "Application response",
+          "note": "Use estimate cautiously"
+        }
+      ],
+      "edges": [
+        {
+          "from": "signals",
+          "to": "features",
+          "label": "observations"
+        },
+        {
+          "from": "features",
+          "to": "model",
+          "label": "features"
+        },
+        {
+          "from": "model",
+          "to": "estimate",
+          "label": "inference"
+        },
+        {
+          "from": "estimate",
+          "to": "application",
+          "label": "scores"
+        }
+      ],
+      "caption": "Observable signals pass through processing and inference to produce an emotional estimate, not a direct measurement of feelings."
+    }
+  },
   "related": [
     "emotional-ai"
   ],

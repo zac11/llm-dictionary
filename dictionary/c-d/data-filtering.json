@@ -5,6 +5,108 @@
   "type": "concept",
   "definition": "Pipelines that score and filter raw data: heuristics (length, symbol ratios), model-based quality classifiers, toxicity filters, and language identification.",
   "details": "Pipelines that score and filter raw data: heuristics (length, symbol ratios), model-based quality classifiers, toxicity filters, and language identification. Modern practice increasingly uses LLM-graded quality signals; data curation now rivals architecture as a competitive differentiator.",
+  "explainer": {
+    "lead": "Data filtering is the process of deciding which raw examples deserve a place in a dataset. It matters because careful data curation can be as important to a competitive AI system as the model architecture itself.",
+    "tiers": {
+      "eli5": "Imagine sorting a huge basket of fruit before making lunch: you remove pieces that are spoiled, too tiny, or not the kind you wanted. Data filtering does something similar with text, keeping useful material and setting aside writing that is too short, strange-looking, low-quality, unwanted in language, or toxic.",
+      "practitioner": "Apply filtering as a staged pipeline: cheap length and symbol-ratio heuristics first, then language identification, model-based quality scoring, and toxicity screening. Tune thresholds for the dataset being built and inspect rejected examples, since each rule changes the final data mix; LLM-graded quality can add another signal but does not remove the need to choose cutoff criteria.",
+      "paperLevel": "For a raw dataset D, a filtered dataset can be written as D_f = {x in D : h(x) passes, lang(x) is accepted, q(x) >= tau_q, and t(x) passes}, where h represents heuristics, q is a human-, model-, or LLM-based quality score, and t is toxicity screening. The resulting data depends on the chosen rules, classifiers, and thresholds, so filtering is a curation decision rather than a neutral property of the raw data."
+    },
+    "example": "Suppose a pipeline starts with 1,000 web snippets: 100 fail length or symbol-ratio checks, 80 are in unwanted languages, 70 fall below the quality cutoff, and 20 fail toxicity screening. The curated output contains 730 snippets, with each rejection tied to a specific filter.",
+    "usedIn": [
+      {
+        "name": "Large language model data curation",
+        "detail": "Raw training material is scored and filtered for quality before being used to build a dataset.",
+        "url": ""
+      },
+      {
+        "name": "Multilingual corpus construction",
+        "detail": "Language identification keeps desired languages and separates material that does not belong.",
+        "url": ""
+      },
+      {
+        "name": "Safety-oriented dataset preparation",
+        "detail": "Toxicity filters screen out flagged content alongside other quality checks.",
+        "url": ""
+      }
+    ],
+    "intuition": "Not every available example is worth keeping. A filtering pipeline turns a large, uneven raw collection into a smaller dataset that matches chosen standards for form, language, quality, and toxicity.",
+    "howItWorks": [
+      "Start with raw, unfiltered data.",
+      "Apply simple heuristics, such as minimum length or acceptable symbol ratios.",
+      "Use language identification to keep or separate the desired languages.",
+      "Score remaining examples with a quality classifier, optionally including an LLM-graded signal.",
+      "Apply toxicity filtering and assemble the examples that pass the pipeline."
+    ],
+    "whyItMatters": "Filtering shapes the material an AI system learns from, rather than merely cleaning up its storage. As data curation becomes a competitive differentiator, the choice of quality signals and filters can matter alongside architectural choices.",
+    "misconceptions": [
+      "Filtering is not tokenization: it selects examples, while tokenization splits retained text into tokens.",
+      "It is not only toxicity removal; structural heuristics, language identification, and quality scoring also select data.",
+      "An LLM quality grade is still a filtering signal, not a guarantee that an example is correct or useful."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "raw",
+          "label": "Raw data",
+          "note": "Unfiltered examples enter the pipeline."
+        },
+        {
+          "id": "heuristics",
+          "label": "Heuristic checks",
+          "note": "Length and symbol ratios screen examples."
+        },
+        {
+          "id": "language",
+          "label": "Language identification",
+          "note": "Desired languages are selected."
+        },
+        {
+          "id": "quality",
+          "label": "Quality scoring",
+          "note": "A classifier or LLM supplies a quality signal."
+        },
+        {
+          "id": "toxicity",
+          "label": "Toxicity filter",
+          "note": "Flagged content is screened out."
+        },
+        {
+          "id": "curated",
+          "label": "Curated dataset",
+          "note": "Passing examples are retained."
+        }
+      ],
+      "edges": [
+        {
+          "from": "raw",
+          "to": "heuristics",
+          "label": ""
+        },
+        {
+          "from": "heuristics",
+          "to": "language",
+          "label": "passing data"
+        },
+        {
+          "from": "language",
+          "to": "quality",
+          "label": "selected languages"
+        },
+        {
+          "from": "quality",
+          "to": "toxicity",
+          "label": "quality passes"
+        },
+        {
+          "from": "toxicity",
+          "to": "curated",
+          "label": "retained data"
+        }
+      ],
+      "caption": "A typical filtering pipeline progressively removes examples that fail structural, language, quality, or toxicity checks."
+    }
+  },
   "related": [
     "data-curation",
     "language-identification",

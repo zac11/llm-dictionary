@@ -5,6 +5,97 @@
   "type": "concept",
   "definition": "The forward pass in a neural network refers to the process of computing the output of the network for a given input by passing it through each layer in turn.",
   "details": "The forward pass in a neural network refers to the process of computing the output of the network for a given input by passing it through each layer in turn.",
+  "explainer": {
+    "lead": "A forward pass is the trip an input takes through a neural network to produce an output. It is the basic calculation behind every prediction, whether the network is run once or trained repeatedly.",
+    "tiers": {
+      "eli5": "Imagine a row of people solving parts of a puzzle, with each person passing their answer to the next. A forward pass is like starting with one clue and passing it down the row until the last person gives an answer. Nothing is being corrected during that trip; the group is simply producing its answer.",
+      "practitioner": "During inference, a forward pass turns an input batch into the network's outputs. During training, those outputs can then be compared with targets, but the forward pass itself does not update parameters. Keep input shapes and layer order consistent so each layer receives the representation it expects.",
+      "paperLevel": "For layers f_1 through f_L, set h_0 = x and compute h_l = f_l(h_(l-1)) for l = 1 through L. The forward pass returns y_hat = h_L, the network's output for input x. It evaluates this composition of functions rather than changing the network's parameters."
+    },
+    "example": "Suppose a one-layer network receives x = 2 and computes y = 3x + 1. Its forward pass calculates 3 × 2 + 1 and returns 7.",
+    "usedIn": [
+      {
+        "name": "Image classification",
+        "detail": "Turns an input image into the network's class outputs.",
+        "url": ""
+      },
+      {
+        "name": "Speech recognition",
+        "detail": "Processes an audio representation to produce the network's output.",
+        "url": ""
+      },
+      {
+        "name": "Language processing",
+        "detail": "Passes text representations through successive layers to obtain predictions.",
+        "url": ""
+      }
+    ],
+    "intuition": "Each layer transforms the result handed to it, like stations on an assembly line. The forward pass follows that chain from the original input to the final output.",
+    "howItWorks": [
+      "Provide an input to the network.",
+      "Let the first layer compute its output.",
+      "Pass that output through each remaining layer in order.",
+      "Return the final layer's output."
+    ],
+    "whyItMatters": "It is how a neural network produces predictions from its current parameters. Training also depends on this output before any learning or parameter update can take place.",
+    "misconceptions": [
+      "A forward pass does not itself train the network or change its parameters.",
+      "It is not limited to the first layer; it continues through every layer to the output.",
+      "The final output need not be correct simply because the forward pass completed."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input",
+          "note": "The value given to the network"
+        },
+        {
+          "id": "layer-1",
+          "label": "First layer",
+          "note": "Transforms the input"
+        },
+        {
+          "id": "layer-2",
+          "label": "Middle layers",
+          "note": "Transform results in turn"
+        },
+        {
+          "id": "output-layer",
+          "label": "Final layer",
+          "note": "Computes the last result"
+        },
+        {
+          "id": "output",
+          "label": "Network output",
+          "note": "The result of the forward pass"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "layer-1",
+          "label": "input"
+        },
+        {
+          "from": "layer-1",
+          "to": "layer-2",
+          "label": "activations"
+        },
+        {
+          "from": "layer-2",
+          "to": "output-layer",
+          "label": "activations"
+        },
+        {
+          "from": "output-layer",
+          "to": "output",
+          "label": "result"
+        }
+      ],
+      "caption": "A forward pass moves data through each layer in order, ending with the network's output."
+    }
+  },
   "related": [
     "neural-network"
   ],

@@ -5,6 +5,87 @@
   "type": "concept",
   "definition": "Classifying the action occurring in a video clip — running, opening, waving — using spatiotemporal models such as 3D CNNs and video transformers.",
   "details": "Classifying the action occurring in a video clip — running, opening, waving — using spatiotemporal models such as 3D CNNs and video transformers.",
+  "explainer": {
+    "lead": "Action recognition gives a video clip an action label, such as running, opening, or waving. It matters because understanding movement over time lets computer vision systems interpret what is happening, not just which objects are visible.",
+    "tiers": {
+      "eli5": "It is like watching a short cartoon and saying, “That person is waving!” A computer looks at how the pictures change over time, then chooses the action that best describes the clip.",
+      "practitioner": "Apply a spatiotemporal model, such as a 3D CNN or video transformer, to labeled video clips. The model must preserve temporal information so it can learn motion as well as appearance. Watch for clips with insufficient temporal context, since similar-looking frames can belong to different actions.",
+      "paperLevel": "Given a clip X = {x_1, ..., x_T}, learn a classifier f(X; θ) -> y, where y is an action label. Models such as 3D CNNs and video transformers combine spatial and temporal evidence; recognition is difficult when the available frames do not distinguish one action from another."
+    },
+    "example": "A clip shows a person raising one hand and moving it from side to side. After analyzing the sequence, the model assigns the label “waving” rather than “running” or “opening.”",
+    "usedIn": [
+      {
+        "name": "Sports video analysis",
+        "detail": "Label clips by actions such as running.",
+        "url": ""
+      },
+      {
+        "name": "Human-computer interaction",
+        "detail": "Interpret visible gestures such as waving.",
+        "url": ""
+      },
+      {
+        "name": "Video organization",
+        "detail": "Tag clips according to the actions they contain.",
+        "url": ""
+      }
+    ],
+    "intuition": "A single image can show a person, but the action often becomes clear only by watching how that person moves across several frames. Action recognition combines these spatial and temporal clues to classify the whole clip.",
+    "howItWorks": [
+      "Take a video clip containing a sequence of frames.",
+      "Use a spatiotemporal model to examine objects, people, and their changes over time.",
+      "A 3D CNN processes spatial and temporal features, while a video transformer models relationships across the clip.",
+      "Predict the action label that best describes the clip."
+    ],
+    "whyItMatters": "It turns raw video into a concise description of activity, enabling systems to work with events and movements rather than isolated visual appearances.",
+    "misconceptions": [
+      "It is not object detection: the target is an action, not merely the people or objects in the frames.",
+      "It is not single-image classification: temporal changes are central to recognizing the action.",
+      "It assigns an action label to a clip rather than explaining everything happening in the video."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "clip",
+          "label": "Video clip",
+          "note": "A sequence of frames"
+        },
+        {
+          "id": "features",
+          "label": "Spatiotemporal features",
+          "note": "Appearance and change over time"
+        },
+        {
+          "id": "model",
+          "label": "Recognition model",
+          "note": "3D CNN or video transformer"
+        },
+        {
+          "id": "label",
+          "label": "Action label",
+          "note": "For example, waving"
+        }
+      ],
+      "edges": [
+        {
+          "from": "clip",
+          "to": "features",
+          "label": "frames"
+        },
+        {
+          "from": "features",
+          "to": "model",
+          "label": "features"
+        },
+        {
+          "from": "model",
+          "to": "label",
+          "label": "classifies"
+        }
+      ],
+      "caption": "A video clip is analyzed across space and time to produce one action label."
+    }
+  },
   "citation": {
     "title": "Action Recognition",
     "authors": [],

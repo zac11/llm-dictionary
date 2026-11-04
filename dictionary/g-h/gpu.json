@@ -5,7 +5,87 @@
   "type": "concept",
   "definition": "Graphics Processing Unit, specialized hardware originally designed for rendering graphics that is highly effective at the parallel matrix computations required for training and running neural networks.",
   "details": "GPUs (and related accelerators like TPUs) are the primary hardware used to train and serve modern deep learning models, since their architecture is well suited to the massively parallel linear algebra operations at the heart of neural network computation.",
-  "story": "Imagine teaching a friend to shoot a basketball. They miss, and you walk them backwards through the shot — elbow, wrist, release — to find what needs fixing. It is the same loop you use to learn anything: try, miss, correct, try again. Underneath all the magic is a patient process of small improvements. It is learning from every miss instead of repeating the same mistake. And that is GPU — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "A GPU is a chip built to handle many calculations at once, originally to render graphics. That same parallelism makes it central to modern AI, where training and running neural networks depends heavily on matrix calculations.",
+    "tiers": {
+      "eli5": "A GPU is like a huge team solving many small maths problems at the same time instead of one person working through them one by one. It was first made to draw pictures and games, but neural networks also need lots of similar calculations. That makes GPUs very useful for teaching and running AI models.",
+      "practitioner": "Use GPUs or related accelerators such as TPUs to train and serve deep learning models whose work is dominated by matrix operations. Expressing computation as large, parallel linear-algebra workloads lets the hardware run many operations concurrently. Workloads with little parallel work cannot exploit this strength as effectively.",
+      "paperLevel": "A Graphics Processing Unit is specialized parallel hardware, originally designed for graphics rendering, that accelerates the matrix computations used by neural networks. A typical operation is Y = XW, where X contains inputs, W contains learned parameters, and the many products and sums forming Y can be evaluated concurrently. Its advantage is greatest for massively parallel linear algebra rather than computation with little parallelism."
+    },
+    "example": "Multiplying two 1,000-by-1,000 matrices requires roughly one billion multiplication operations. A GPU can perform many of those operations in parallel, making it well suited to the repeated matrix multiplications involved in training a neural network.",
+    "usedIn": [
+      {
+        "name": "Neural-network training",
+        "detail": "Runs the parallel matrix calculations needed to fit deep learning models.",
+        "url": ""
+      },
+      {
+        "name": "Deep-learning inference",
+        "detail": "Serves trained models by evaluating their neural-network computations.",
+        "url": ""
+      },
+      {
+        "name": "Graphics rendering",
+        "detail": "The original application for which GPUs were designed.",
+        "url": ""
+      }
+    ],
+    "intuition": "Neural networks repeat enormous numbers of similar multiplications and additions. A GPU tackles many of these operations simultaneously, matching the structure of the computation instead of handling everything as one long sequence.",
+    "howItWorks": [
+      "A neural-network calculation is expressed as operations on matrices.",
+      "Those operations contain many multiplications and additions that can be performed independently.",
+      "The GPU distributes the parallel work across its hardware.",
+      "The resulting matrices are combined to produce the model's outputs or updates during training."
+    ],
+    "whyItMatters": "GPUs and related accelerators such as TPUs are the primary hardware for training and serving modern deep learning models. Their fit with massively parallel linear algebra makes large-scale neural-network computation practical.",
+    "misconceptions": [
+      "GPUs are not used only for graphics; their parallel architecture also suits neural-network computation.",
+      "A GPU does not make every kind of computation faster; its main advantage comes from work that can run in parallel.",
+      "A GPU and a TPU are not the same device, though both are accelerators used for deep learning."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "inputs",
+          "label": "Input matrices",
+          "note": "Data and model parameters enter the calculation."
+        },
+        {
+          "id": "operations",
+          "label": "Matrix operations",
+          "note": "The work becomes many multiplications and additions."
+        },
+        {
+          "id": "gpu",
+          "label": "Parallel GPU",
+          "note": "Many operations are executed at the same time."
+        },
+        {
+          "id": "outputs",
+          "label": "Output matrices",
+          "note": "Results feed model outputs or training updates."
+        }
+      ],
+      "edges": [
+        {
+          "from": "inputs",
+          "to": "operations",
+          "label": "linear algebra"
+        },
+        {
+          "from": "operations",
+          "to": "gpu",
+          "label": "parallel work"
+        },
+        {
+          "from": "gpu",
+          "to": "outputs",
+          "label": "results"
+        }
+      ],
+      "caption": "A GPU accelerates neural networks by executing the independent parts of matrix calculations in parallel."
+    }
+  },
   "related": [
     "api-key",
     "approximate-nearest-neighbor-search",

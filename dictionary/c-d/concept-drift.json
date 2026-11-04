@@ -5,7 +5,102 @@
   "type": "concept",
   "definition": "A specific type of model drift where the statistical relationship between input features and target outputs changes over time.",
   "details": "Concept drift differs from simple data drift (a change in input distribution alone) because the underlying task itself effectively changes, requiring the model's learned mapping to be updated to remain accurate.",
-  "story": "Picture an engineer at a cluttered workbench, turning a clever idea over in their hands until it finally clicks. At its heart it is a simple notion, once you strip away the fancy name. A small key that opens a much bigger door. It is one of those ideas that feels obvious only after someone shows it to you. That is Concept Drift — a small key that opens a big door.",
+  "explainer": {
+    "lead": "A model can become less accurate even when new inputs look familiar, because those inputs no longer imply the same answers. Concept drift is this change in the underlying task, and it means the model's learned mapping needs updating.",
+    "tiers": {
+      "eli5": "Imagine a message filter learns that a certain word usually means a message is junk. Later, people start using that word in ordinary friendly messages, so the old clue no longer works. The filter has concept drift and must learn the new connection between words and junk.",
+      "practitioner": "Engineers address concept drift by comparing recent labeled outcomes with the relationship learned during training, then updating or retraining the model when that relationship has changed. Monitoring input distributions alone can miss it, and a performance drop by itself does not establish that concept drift rather than another problem is responsible.",
+      "paperLevel": "Concept drift occurs when P_t(y | x), the conditional distribution of target y given features x, changes between times s and t: P_s(y | x) ≠ P_t(y | x) for some x and y. This differs from a change in P(x) alone. The definition identifies the change but does not specify a detection method; finite samples and missing target labels can make it difficult to distinguish a real change from noise."
+    },
+    "example": "Suppose a fraud model learns that late-night purchases from an unfamiliar device are fraudulent 80% of the time. After legitimate customers widely adopt new devices and shop late at night, the same pattern is fraudulent only 20% of the time. The inputs can remain in the same ranges, but P(fraud | inputs) has changed, so the model's mapping must be updated.",
+    "usedIn": [
+      {
+        "name": "Fraud detection",
+        "detail": "The same transaction features can become associated with a different likelihood of fraud.",
+        "url": ""
+      },
+      {
+        "name": "Spam filtering",
+        "detail": "Words or patterns that once indicated spam can later appear often in legitimate messages.",
+        "url": ""
+      },
+      {
+        "name": "Streaming model monitoring",
+        "detail": "Teams check whether the input-to-target relationship has changed, not just whether inputs look different.",
+        "url": ""
+      }
+    ],
+    "intuition": "The rules connecting clues to answers have changed. A model trained on the old rules can therefore make systematic mistakes even when it receives familiar-looking inputs.",
+    "howItWorks": [
+      "Train a model to map input features x to target outputs y using data from an earlier period.",
+      "Apply that mapping to newer data and collect target outcomes where they are available.",
+      "Check whether the relationship between x and y differs from the relationship learned earlier.",
+      "Distinguish this change from data drift, where only the input distribution changes.",
+      "Update or retrain the model so its mapping reflects the newer relationship."
+    ],
+    "whyItMatters": "Concept drift makes a previously accurate model unreliable because its learned rules no longer describe the task. Recognizing it directs maintenance toward updating the input-to-output mapping rather than treating changed inputs as the whole problem.",
+    "misconceptions": [
+      "Concept drift is not the same as data drift: data drift can involve only P(x), while concept drift involves P(y | x).",
+      "A fall in accuracy does not by itself prove concept drift; the underlying relationship must be examined."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "earlier-data",
+          "label": "Earlier data",
+          "note": "Inputs and targets establish the original relationship."
+        },
+        {
+          "id": "model",
+          "label": "Learned mapping",
+          "note": "The model maps features to predicted targets."
+        },
+        {
+          "id": "new-data",
+          "label": "Newer data",
+          "note": "Later inputs and outcomes provide evidence of change."
+        },
+        {
+          "id": "check",
+          "label": "Relationship check",
+          "note": "Compare the old and new input-to-target relationships."
+        },
+        {
+          "id": "update",
+          "label": "Model update",
+          "note": "Revise the mapping when concept drift is found."
+        }
+      ],
+      "edges": [
+        {
+          "from": "earlier-data",
+          "to": "model",
+          "label": "trains"
+        },
+        {
+          "from": "model",
+          "to": "check",
+          "label": "old mapping"
+        },
+        {
+          "from": "new-data",
+          "to": "check",
+          "label": "new evidence"
+        },
+        {
+          "from": "check",
+          "to": "update",
+          "label": "changed"
+        },
+        {
+          "from": "update",
+          "to": "model",
+          "label": "refreshes"
+        }
+      ],
+      "caption": "Concept drift is handled by comparing the learned relationship with newer evidence and updating the model when that relationship changes."
+    }
+  },
   "related": [
     "model-drift",
     "api-key",

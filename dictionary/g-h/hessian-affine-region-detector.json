@@ -5,7 +5,82 @@
   "type": "concept",
   "definition": "The Hessian affine region detector is a feature detector used in the fields of computer vision and image analysis.",
   "details": "Like other feature detectors, the Hessian affine detector is typically used as a preprocessing step to algorithms that rely on identifiable, characteristic interest points. The Hessian affine detector is part of the subclass of feature detectors known as affine-invariant detectors: Harris affine region detector, Hessian affine regions, maximally stable extremal regions, Kadir–Brady saliency detector, edge-based regions (EBR) and intensity-extrema-based (IBR) regions.",
-  "story": "Picture walking through a crowd and instantly picking out a familiar face without reading a single name tag. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. It turns a picture into an understanding: this is a cat, that is a stop sign. Sight, for a machine, is a long climb from raw light to a name. That pixel-to-meaning climb is Hessian affine region detector.",
+  "explainer": {
+    "lead": "The Hessian affine region detector finds distinctive image regions that can still be identified after affine changes, such as viewing a surface from a different angle. It prepares these interest regions for computer-vision algorithms that need dependable landmarks.",
+    "tiers": {
+      "eli5": "Imagine putting a sticker on a piece of rubber and then stretching or tilting the rubber. This detector tries to find the same useful picture region even when its shape changes that way. The region can then help another program recognize important points in the picture.",
+      "practitioner": "Use it as a preprocessing stage when a downstream algorithm relies on identifiable, characteristic interest points and affine invariance is required. It belongs to the same detector family as Harris affine regions, MSER, EBR and IBR, so it should be distinguished from those alternatives rather than treated as a name for the whole family.",
+      "paperLevel": "The Hessian affine region detector is an affine-invariant feature detector for computer vision and image analysis. Given an image, it supplies characteristic interest regions for downstream processing, with the regions intended to remain identifiable under affine transformations."
+    },
+    "example": "Consider a rectangular poster photographed straight on and then from an oblique angle, so its printed pattern appears skewed. The detector is used to find characteristic regions in the poster that can serve as interest points for a later image-analysis algorithm.",
+    "usedIn": [
+      {
+        "name": "Computer vision",
+        "detail": "Provides interest regions for algorithms that depend on characteristic image points.",
+        "url": ""
+      },
+      {
+        "name": "Image analysis",
+        "detail": "Serves as a preprocessing step for identifying useful image landmarks.",
+        "url": ""
+      }
+    ],
+    "intuition": "A useful image landmark should remain findable when the surface carrying it is stretched, slanted or viewed obliquely. The detector aims to extract characteristic regions with that kind of affine invariance.",
+    "howItWorks": [
+      "Take an image as input.",
+      "Detect characteristic interest regions.",
+      "Favor regions identifiable under affine changes.",
+      "Pass the detected regions to downstream algorithms."
+    ],
+    "whyItMatters": "Many vision algorithms need reliable interest points before they can do their main work. Affine-invariant detection helps supply regions that remain useful when image shapes undergo affine changes.",
+    "misconceptions": [
+      "It is not simply another name for the Harris affine region detector; they are related but distinct detectors.",
+      "It detects interest regions, not semantic objects or their meanings.",
+      "It is a preprocessing detector, not a complete vision application."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "image",
+          "label": "Input image",
+          "note": "The picture to be analyzed."
+        },
+        {
+          "id": "detector",
+          "label": "Hessian affine detector",
+          "note": "Finds characteristic interest regions."
+        },
+        {
+          "id": "regions",
+          "label": "Affine-invariant regions",
+          "note": "Regions intended to survive affine changes."
+        },
+        {
+          "id": "downstream",
+          "label": "Downstream algorithm",
+          "note": "Uses the detected interest points."
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "detector",
+          "label": "pixels"
+        },
+        {
+          "from": "detector",
+          "to": "regions",
+          "label": "detects"
+        },
+        {
+          "from": "regions",
+          "to": "downstream",
+          "label": "features"
+        }
+      ],
+      "caption": "The detector turns an input image into affine-invariant interest regions for later processing."
+    }
+  },
   "related": [
     "harris-affine-region-detector",
     "principal-curvature-based-region-detector",

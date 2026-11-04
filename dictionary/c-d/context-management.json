@@ -8,6 +8,114 @@
   ],
   "definition": "Actively curating an agent's context across a long task: summarizing completed steps, dropping stale tool outputs, keeping goals and constraints pinned.",
   "details": "Actively curating an agent's context across a long task: summarizing completed steps, dropping stale tool outputs, keeping goals and constraints pinned. Long-horizon agents fail without it, because context windows fill with low-value history and quality degrades.",
+  "explainer": {
+    "lead": "Context management is the housekeeping that keeps a long-running AI agent focused on useful information. It matters because an agent’s limited context can fill with old history, leaving less room for the goal, constraints, and details needed to do good work.",
+    "tiers": {
+      "eli5": "Imagine doing a big school project on a small desk. You keep the instructions where you can see them, make short notes about work you have finished, and throw away scraps you no longer need. Context management is that same kind of tidying for an AI agent, so old clutter does not get in the way of the next step.",
+      "practitioner": "Apply compaction throughout a long task: summarize completed steps, drop stale tool outputs, and keep goals and constraints pinned alongside information needed for current work. Without this loop, low-value history accumulates until the context window fills and agent quality degrades.",
+      "paperLevel": "At step t, a curated context can be written as C_t = P ∪ S_t ∪ R_t, where P contains pinned goals and constraints, S_t summarizes completed steps, and R_t retains currently useful history and tool outputs. Stale outputs are removed rather than carried forward indefinitely. The central limitation addressed here is the finite context window: filling it with low-value history degrades long-horizon performance."
+    },
+    "example": "During a long research task, an agent finishes checking several sources and replaces the completed work with brief notes. It removes raw tool outputs that are no longer needed, while keeping the original research question and output requirements pinned. The next step therefore receives the compact notes, current task, and constraints rather than the entire accumulated transcript.",
+    "usedIn": [
+      {
+        "name": "Long-horizon agents",
+        "detail": "Keeps extended tasks coherent by retaining goals and constraints while compressing finished work.",
+        "url": ""
+      },
+      {
+        "name": "Tool-using agents",
+        "detail": "Removes tool outputs that have become stale instead of letting them accumulate in the context.",
+        "url": ""
+      },
+      {
+        "name": "Multi-step agent workflows",
+        "detail": "Carries compact summaries of completed steps into later stages of a task.",
+        "url": ""
+      }
+    ],
+    "intuition": "An agent’s context is like a small working desk, not an unlimited archive. Good context management keeps the instructions and useful notes within reach while clearing away material that no longer helps.",
+    "howItWorks": [
+      "Pin the task goals and constraints.",
+      "Summarize steps that have been completed.",
+      "Identify tool outputs that are now stale.",
+      "Drop those outputs and other low-value history.",
+      "Give the curated context to the agent for its next step."
+    ],
+    "whyItMatters": "Long tasks produce more history than an agent can usefully carry forward. Curating that history prevents low-value material from crowding the context and helps maintain quality as the task continues.",
+    "misconceptions": [
+      "It is not simply making the context window larger; it is deciding what deserves to remain inside it.",
+      "It does not mean deleting all history: completed steps are summarized, and goals and constraints stay pinned.",
+      "In healthcare software, context management can instead mean selecting a subject such as a patient once and having other applications follow that selection."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "history",
+          "label": "Task history",
+          "note": "Completed steps and accumulated tool outputs."
+        },
+        {
+          "id": "summaries",
+          "label": "Step summaries",
+          "note": "Compact records of finished work."
+        },
+        {
+          "id": "stale",
+          "label": "Stale outputs",
+          "note": "Low-value material removed from context."
+        },
+        {
+          "id": "pinned",
+          "label": "Pinned requirements",
+          "note": "Goals and constraints kept available."
+        },
+        {
+          "id": "context",
+          "label": "Curated context",
+          "note": "Useful information assembled for the next step."
+        },
+        {
+          "id": "agent",
+          "label": "Next agent step",
+          "note": "Continues the task without the discarded clutter."
+        }
+      ],
+      "edges": [
+        {
+          "from": "history",
+          "to": "summaries",
+          "label": "summarize"
+        },
+        {
+          "from": "history",
+          "to": "stale",
+          "label": "drop"
+        },
+        {
+          "from": "summaries",
+          "to": "context",
+          "label": "retain"
+        },
+        {
+          "from": "pinned",
+          "to": "context",
+          "label": "keep pinned"
+        },
+        {
+          "from": "context",
+          "to": "agent",
+          "label": "guides"
+        }
+      ],
+      "caption": "Compaction turns accumulated history into summaries, removes stale outputs, and combines what remains with pinned goals and constraints."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Context management",
+        "url": "https://en.wikipedia.org/wiki/Context_management"
+      }
+    ]
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

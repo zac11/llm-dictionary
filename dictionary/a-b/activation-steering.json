@@ -8,6 +8,98 @@
   ],
   "definition": "Directly adding or ablating concept vectors in a model's activations at inference to shift behavior (more honest, less sycophantic, refuse less) without retraining.",
   "details": "Directly adding or ablating concept vectors in a model's activations at inference to shift behavior (more honest, less sycophantic, refuse less) without retraining. Interpretability crossing from observation into control.",
+  "explainer": {
+    "lead": "Activation steering nudges a language model’s internal activations while it generates an answer, aiming to shift behavior without changing the model’s weights. It matters because interpretability can move beyond watching what a model does to directly influencing qualities such as honesty, sycophancy, or refusal behavior.",
+    "tiers": {
+      "eli5": "Imagine a model’s thoughts as a mixing board, with sliders moving as it writes. Activation steering gently pushes one of those sliders toward an idea like honesty, so the answer may change without rebuilding or reteaching the whole model.",
+      "practitioner": "Engineers apply it in code that can read and modify activations during inference, selecting a concept vector and the activations to intervene on. Adding or ablating the vector can target honesty, sycophancy, or refusals while leaving weights unchanged; a pitfall is treating this temporary intervention as retraining or as a guarantee of the desired output.",
+      "paperLevel": "For an activation a and concept vector v_c, steering can be written as a' = a + alpha v_c for addition or a' = a - alpha v_c for ablation, with alpha controlling intervention strength. The modified activation a' is used during inference, with no retraining or weight update, making the method an intervention for behavioral control rather than observation alone."
+    },
+    "example": "When asked a question it is uncertain about, a model might otherwise give an overconfident answer. Adding an honesty concept vector to its activations during inference could shift it toward acknowledging that uncertainty, while the underlying weights remain unchanged.",
+    "usedIn": [
+      {
+        "name": "Model honesty research",
+        "detail": "Steering activations toward a concept vector to encourage more honest responses.",
+        "url": ""
+      },
+      {
+        "name": "Sycophancy reduction",
+        "detail": "Intervening at inference to make model behavior less sycophantic without retraining.",
+        "url": ""
+      },
+      {
+        "name": "Refusal-behavior research",
+        "detail": "Ablating or adding concept vectors to shift how often a model refuses.",
+        "url": ""
+      }
+    ],
+    "intuition": "A concept vector acts like a directional nudge inside the model: add it to encourage the associated behavior, or ablate it to reduce that influence. The intervention changes activations for the current inference rather than permanently editing the model.",
+    "howItWorks": [
+      "Choose a concept vector for the behavior to influence.",
+      "Run the model and access its internal activations.",
+      "Add or ablate the vector in those activations.",
+      "Continue inference with the modified activations.",
+      "Compare the resulting behavior with the unsteered response."
+    ],
+    "whyItMatters": "It connects interpretability with control: internal representations become handles for changing behavior, not just signals to inspect. It also offers a way to pursue behavioral changes at inference without a retraining run.",
+    "misconceptions": [
+      "It is not retraining: the model’s weights are left unchanged.",
+      "It is an intervention, not merely observing or visualizing activations.",
+      "A steered response is not necessarily a permanent change to later model runs."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input prompt",
+          "note": "The request entering the model"
+        },
+        {
+          "id": "activations",
+          "label": "Model activations",
+          "note": "Internal states produced during inference"
+        },
+        {
+          "id": "vector",
+          "label": "Concept vector",
+          "note": "Represents the behavior to influence"
+        },
+        {
+          "id": "steered",
+          "label": "Steered activations",
+          "note": "Activations after addition or ablation"
+        },
+        {
+          "id": "output",
+          "label": "Shifted response",
+          "note": "Output generated without retraining"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "activations",
+          "label": "inference"
+        },
+        {
+          "from": "vector",
+          "to": "steered",
+          "label": "add or ablate"
+        },
+        {
+          "from": "activations",
+          "to": "steered",
+          "label": "modify"
+        },
+        {
+          "from": "steered",
+          "to": "output",
+          "label": "generate"
+        }
+      ],
+      "caption": "A concept vector modifies activations during inference, steering the response while the model weights stay fixed."
+    }
+  },
   "related": [
     "inference",
     "interpretability"

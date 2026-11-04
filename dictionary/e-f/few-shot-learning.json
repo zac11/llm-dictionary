@@ -9,7 +9,97 @@
   ],
   "definition": "Using a handful of examples inside the prompt to teach a model a task, without updating its weights.",
   "details": "GPT-3 showed that scaling alone lets a language model learn a new task from just a few demonstrations supplied as input. Few-shot examples condition the model to the desired format and behavior and remain a workhorse technique for steering models cheaply before resorting to fine-tuning.",
-  "story": "Imagine a sketch artist who starts with static and, stroke by stroke, sharpens it into a face. The result feels creative because it is memory, reshuffled at speed. Given a starting line, the machine imagines what comes next — a word, a note, a patch of a picture. The model dreams a little, then cleans up the dream. And that is Few-Shot Learning — making something new out of everything it has ever seen.",
+  "explainer": {
+    "lead": "Few-shot learning lets a language model pick up a task from a handful of demonstrations written into its prompt. It is a quick, inexpensive way to steer a model toward the desired answers without training a new version of it.",
+    "tiers": {
+      "eli5": "Imagine showing someone two examples of sorting cards into happy and sad piles, then asking them to sort one more card. They can follow the pattern without practicing for weeks. Few-shot learning works similarly: a model sees a few examples in its instructions and uses them to answer a new question.",
+      "practitioner": "Place k input-output demonstrations and the new input in the same prompt, keeping the examples representative of the format and behavior you want. This is useful for cheap task steering before resorting to fine-tuning, but it does not produce a durable task-specific model, so the demonstrations must accompany the request.",
+      "paperLevel": "Given demonstrations D = {(x_i, y_i)} for i = 1..k and a query x, a model with fixed parameters theta predicts y using p(y | D, x; theta); no gradient update is performed. GPT-3 showed that scaling alone can enable a language model to learn a new task from a few input demonstrations. The value of k is small but not fixed to a particular number."
+    },
+    "example": "To classify sentiment, prompt the model with: \"I loved this film -> Positive\" and \"The battery died in an hour -> Negative.\" Then add \"The plot was dull ->\" and let it complete the pattern with \"Negative.\" The two demonstrations teach the requested classification and answer format without any training update.",
+    "usedIn": [
+      {
+        "name": "GPT-3",
+        "detail": "Demonstrated that a sufficiently scaled language model can perform a new task from a few examples supplied as input.",
+        "url": ""
+      },
+      {
+        "name": "Language-model application development",
+        "detail": "Used to establish a task's desired answer format and behavior before considering fine-tuning.",
+        "url": ""
+      },
+      {
+        "name": "Prompt-based task steering",
+        "detail": "Used to condition general language models for specific tasks without changing their weights.",
+        "url": ""
+      }
+    ],
+    "intuition": "A few good demonstrations act like a miniature lesson inside the request. The model recognizes the pattern they establish and continues it for the new input, while its underlying weights stay unchanged.",
+    "howItWorks": [
+      "Choose a small number of examples that show the task's inputs and desired outputs.",
+      "Arrange those demonstrations in the prompt so their pattern is clear.",
+      "Add the new input after the examples.",
+      "Let the unchanged model generate a response conditioned on the demonstrations and the new input."
+    ],
+    "whyItMatters": "It makes general language models adaptable to new tasks using only a prompt, avoiding the cost and effort of updating weights. It also provides a practical first approach before deciding whether fine-tuning is necessary.",
+    "misconceptions": [
+      "Few-shot learning is not fine-tuning: the model's weights are not updated.",
+      "The examples guide the model for the current request rather than permanently teaching it the task.",
+      "K-shot does not mean a fixed number of examples; k is simply the small number supplied."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "examples",
+          "label": "K demonstrations",
+          "note": "Example inputs paired with desired outputs"
+        },
+        {
+          "id": "query",
+          "label": "New input",
+          "note": "The task instance to answer"
+        },
+        {
+          "id": "prompt",
+          "label": "Combined prompt",
+          "note": "Demonstrations and query supplied as input"
+        },
+        {
+          "id": "model",
+          "label": "Frozen model",
+          "note": "Weights remain unchanged"
+        },
+        {
+          "id": "output",
+          "label": "Task output",
+          "note": "Response follows the demonstrated pattern"
+        }
+      ],
+      "edges": [
+        {
+          "from": "examples",
+          "to": "prompt",
+          "label": "conditioning"
+        },
+        {
+          "from": "query",
+          "to": "prompt",
+          "label": ""
+        },
+        {
+          "from": "prompt",
+          "to": "model",
+          "label": "input"
+        },
+        {
+          "from": "model",
+          "to": "output",
+          "label": "generation"
+        }
+      ],
+      "caption": "A few demonstrations and a new input condition an unchanged language model to produce the desired output."
+    }
+  },
   "related": [
     "zero-shot-learning",
     "in-context-learning",

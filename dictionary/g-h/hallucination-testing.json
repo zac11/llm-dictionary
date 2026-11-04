@@ -5,7 +5,108 @@
   "type": "concept",
   "definition": "Evaluating whether an AI system's outputs are factual, faithful to sources, and free of fabricated details.",
   "details": "Hallucination testing checks that answers stay grounded, cite the right sources, and don't invent numbers, names or citations. It is an emerging quality-engineering practice for RAG pipelines, copilots and any system whose wrong-but-confident answer is costly.",
-  "story": "Imagine a driving test that every new model has to pass before it is allowed on the road. It is the exam that separates “it sounds good” from “it actually is good”. A fair scoreboard keeps everyone honest. It is the exam that keeps everyone honest. And that, done honestly, is Hallucination Testing.",
+  "explainer": {
+    "lead": "Hallucination testing checks whether an AI system sticks to the facts and the sources it was given, instead of confidently making things up. It matters most when an invented number, name, or citation could mislead someone or cause real harm.",
+    "tiers": {
+      "eli5": "Imagine answering a question using a textbook, then having a friend check that every fact really appears there. Hallucination testing does that for AI: it looks for made-up answers and checks whether the sources actually support them. A smooth, confident answer still fails if the facts are wrong.",
+      "practitioner": "Engineers build test cases with prompts, expected answers where available, and the source material that should support each response. They run these against RAG pipelines or copilots, check factual claims and citations with automated or human review, and investigate failures such as unsupported details or incorrect source attribution. A fixed passing suite is useful for regression testing, but it cannot prove that future responses will be grounded.",
+      "paperLevel": "Given input x, output y, and designated evidence E, hallucination testing evaluates whether factual claims in y are supported by E or another reference, and whether cited sources support the claims attached to them. Failures include fabricated details, unsupported claims, and incorrect attribution. The result depends on the coverage of the test set and the completeness of E; support judgments can be ambiguous, and passing a finite suite does not establish hallucination-free behavior."
+    },
+    "example": "A policy assistant is asked how long customers have to request a refund, and the supplied policy says 14 days. If it answers “30 days” and cites that policy, the test flags the invented number and the misleading citation, even though the answer is clear and confident.",
+    "usedIn": [
+      {
+        "name": "RAG pipelines",
+        "detail": "Checking that generated answers are supported by retrieved material and cite the right sources.",
+        "url": ""
+      },
+      {
+        "name": "Copilots",
+        "detail": "Testing responses for invented facts, names, numbers, or citations before release and after changes.",
+        "url": ""
+      },
+      {
+        "name": "High-cost AI applications",
+        "detail": "Evaluating systems where a wrong but confident answer carries significant consequences.",
+        "url": ""
+      }
+    ],
+    "intuition": "Treat an AI answer like a claim that must show its receipts. The test asks not only whether the answer sounds right, but whether its details and citations are actually supported.",
+    "howItWorks": [
+      "Create test prompts with reference answers or source passages where available.",
+      "Run the AI system and record its answers and citations.",
+      "Check names, numbers, claims, and citations against the designated evidence.",
+      "Flag unsupported or contradictory details and review the failures.",
+      "Repeat the suite after system changes to catch regressions."
+    ],
+    "whyItMatters": "Fabricated details can be difficult to spot because they often arrive in fluent, authoritative language. Systematic testing makes grounding failures visible so teams can address them before users rely on the answers.",
+    "misconceptions": [
+      "A confident or well-written answer is not necessarily grounded.",
+      "A citation alone is not enough; the cited source must support the claim.",
+      "Passing a test suite does not guarantee that the system will never hallucinate."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "cases",
+          "label": "Test prompts",
+          "note": "Questions designed to expose unsupported answers"
+        },
+        {
+          "id": "system",
+          "label": "AI system",
+          "note": "The RAG pipeline or copilot under test"
+        },
+        {
+          "id": "answers",
+          "label": "Answers and citations",
+          "note": "Generated claims and their source references"
+        },
+        {
+          "id": "evidence",
+          "label": "Reference evidence",
+          "note": "Source passages or expected answers"
+        },
+        {
+          "id": "checks",
+          "label": "Grounding checks",
+          "note": "Compare claims and citations with the evidence"
+        },
+        {
+          "id": "report",
+          "label": "Failure report",
+          "note": "Fabrications, contradictions, and bad attributions"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cases",
+          "to": "system",
+          "label": "prompts"
+        },
+        {
+          "from": "system",
+          "to": "answers",
+          "label": "generates"
+        },
+        {
+          "from": "answers",
+          "to": "checks",
+          "label": "claims"
+        },
+        {
+          "from": "evidence",
+          "to": "checks",
+          "label": "support"
+        },
+        {
+          "from": "checks",
+          "to": "report",
+          "label": "failures"
+        }
+      ],
+      "caption": "Hallucination testing compares generated answers and citations with designated evidence, then records unsupported or contradictory details."
+    }
+  },
   "related": [
     "hallucination",
     "a-b-testing",

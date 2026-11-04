@@ -5,7 +5,89 @@
   "type": "algorithm",
   "definition": "Graduated optimization is a global optimization technique that attempts to solve a difficult optimization problem by initially solving a greatly simplified problem, and progressively transforming that problem (while optimizing) until it is equivalent to the difficult optimization problem..",
   "details": "Graduated optimization is a global optimization technique that attempts to solve a difficult optimization problem by initially solving a greatly simplified problem, and progressively transforming that problem (while optimizing) until it is equivalent to the difficult optimization problem.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. That steady, miss-by-miss improvement is Graduated optimization.",
+  "explainer": {
+    "lead": "Graduated optimization tackles a hard optimization problem by starting with a much easier version and gradually turning it into the original problem. At each stage, the current solution guides the next round of optimization, offering a way to search globally rather than attacking the hardest version immediately.",
+    "tiers": {
+      "eli5": "Imagine trying to find the lowest point in a bumpy landscape. You first smooth out most of the bumps so the best direction is easier to see, then put the bumps back little by little while continuing to search. The answer from each easier landscape helps you search the next one.",
+      "practitioner": "Implement it as a sequence of increasingly difficult objective functions, carrying the current solution forward as the starting point for the next stage. The main design choices are the initial simplification and the schedule for restoring the original problem; a poor sequence can still lead the search toward an unsuitable solution.",
+      "paperLevel": "Given a difficult objective f(x), construct a greatly simplified objective and a progression of intermediate objectives ending at f(x). Optimize the simplified problem, then repeatedly transform the objective and continue optimizing from the current x until the final objective is reached. It is intended as a global optimization technique, but the definition provides no guarantee that the resulting solution is globally optimal."
+    },
+    "example": "Suppose the target is a bumpy objective f(x) with several local dips, while a simplified objective f0(x) has one broad dip. Minimize f0(x), then optimize a progression such as (1-t)f0(x) + t f(x) as t increases from 0 to 1, starting each stage with the previous stage's x; at t=1, the objective is exactly f(x).",
+    "goal": "Find a solution to a difficult global optimization problem by solving a controlled sequence of easier problems.",
+    "inputs": [
+      "The difficult objective function to optimize",
+      "A greatly simplified starting objective",
+      "A progression that transforms the simplified objective into the original"
+    ],
+    "outputs": [
+      "A candidate solution for the original objective",
+      "The sequence of intermediate solutions, if retained"
+    ],
+    "steps": [
+      "Construct a greatly simplified version of the difficult problem.",
+      "Optimize the simplified problem to obtain an initial solution.",
+      "Transform the problem partway toward the original objective.",
+      "Continue optimizing from the current solution.",
+      "Repeat until the problem is equivalent to the original difficult problem."
+    ],
+    "tradeoffs": [
+      "The early simplified stages can make the search easier than directly optimizing the original objective.",
+      "Extra intermediate optimizations add work compared with a single direct attempt.",
+      "The outcome depends on the simplification and progression, and global optimality is not guaranteed."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "hard",
+          "label": "Difficult objective",
+          "note": "The problem ultimately to be solved"
+        },
+        {
+          "id": "simple",
+          "label": "Simplified objective",
+          "note": "A greatly easier starting problem"
+        },
+        {
+          "id": "solve",
+          "label": "Initial optimization",
+          "note": "Produces the first candidate solution"
+        },
+        {
+          "id": "transform",
+          "label": "Transform and optimize",
+          "note": "Moves toward the target using the current solution"
+        },
+        {
+          "id": "answer",
+          "label": "Candidate solution",
+          "note": "Result after reaching the original objective"
+        }
+      ],
+      "edges": [
+        {
+          "from": "hard",
+          "to": "simple",
+          "label": "simplify"
+        },
+        {
+          "from": "simple",
+          "to": "solve",
+          "label": ""
+        },
+        {
+          "from": "solve",
+          "to": "transform",
+          "label": "current solution"
+        },
+        {
+          "from": "transform",
+          "to": "answer",
+          "label": "final stage"
+        }
+      ],
+      "caption": "The solution is carried through progressively harder objectives until the original problem is reached."
+    }
+  },
   "related": [
     "ant-colony-optimization-algorithms",
     "bacterial-colony-optimization",

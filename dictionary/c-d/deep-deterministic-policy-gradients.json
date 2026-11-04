@@ -2,12 +2,118 @@
   "term": "Deep Deterministic Policy Gradients",
   "letter": "D",
   "category": "Reinforcement Learning Algorithms",
-  "type": "concept",
+  "type": "algorithm",
   "aka": [
     "DDPG"
   ],
   "definition": "An actor-critic algorithm extending DQN to continuous action spaces — learning a deterministic policy for tasks like robotic control.",
   "details": "An actor-critic algorithm extending DQN to continuous action spaces — learning a deterministic policy for tasks like robotic control.",
+  "explainer": {
+    "lead": "DDPG is a reinforcement-learning algorithm for problems where an action is a continuous value, such as how much force to apply to a robot joint. It pairs a deterministic decision-maker with a critic that evaluates its choices, extending ideas from DQN beyond fixed sets of actions.",
+    "tiers": {
+      "eli5": "Imagine learning to move a robot arm by turning a dial, where you can choose any setting rather than just low, medium, or high. One learner picks a dial setting, and a coach scores how well it worked. Over time, the learner improves its choices; for the same situation, it always picks the same setting.",
+      "practitioner": "Use DDPG for continuous-action control by maintaining an actor that outputs an action and a critic that evaluates state-action pairs. Its DQN lineage makes it relevant when adapting value-based reinforcement learning to real-valued controls. Do not treat it as a discrete-action method or confuse its deterministic policy with a deterministic environment.",
+      "paperLevel": "DDPG is an actor-critic extension of DQN to continuous action spaces. The actor represents a deterministic policy pi_theta: S -> A, so a = pi_theta(s), while the critic estimates an action value Q(s, a) and supplies feedback for improving the actor. Its defining scope is deterministic policies for continuous control; the supplied description does not establish performance guarantees."
+    },
+    "example": "For a robot joint, the state might describe its current position. The actor outputs a particular motor-force value, the joint moves, and the critic evaluates that state-action choice so later force selections can improve.",
+    "usedIn": [
+      {
+        "name": "Robotic control",
+        "detail": "Learning continuous control signals for tasks involving robots.",
+        "url": ""
+      },
+      {
+        "name": "Continuous-action control",
+        "detail": "Choosing real-valued actions rather than selecting from a fixed action list.",
+        "url": ""
+      }
+    ],
+    "goal": "Learn a deterministic policy that maps each observed state directly to a continuous action.",
+    "inputs": [
+      "The current environment state",
+      "Continuous actions chosen by the actor",
+      "Feedback used by the critic to evaluate actions"
+    ],
+    "outputs": [
+      "A deterministic actor policy",
+      "A critic's action-value estimates",
+      "A continuous action for each state"
+    ],
+    "steps": [
+      "Observe the current state.",
+      "Let the actor choose one continuous action.",
+      "Apply that action in the environment.",
+      "Have the critic evaluate the state-action pair.",
+      "Use the critic's feedback to improve the actor."
+    ],
+    "tradeoffs": [
+      "Continuous actions avoid a fixed menu of choices.",
+      "The policy gives one action per state rather than an action distribution.",
+      "Its actor and critic must be learned together."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "state",
+          "label": "Current state",
+          "note": "Observation supplied to both learners"
+        },
+        {
+          "id": "actor",
+          "label": "Deterministic actor",
+          "note": "Maps the state to one action"
+        },
+        {
+          "id": "environment",
+          "label": "Environment",
+          "note": "Receives the continuous action"
+        },
+        {
+          "id": "critic",
+          "label": "Action-value critic",
+          "note": "Evaluates the state-action pair"
+        },
+        {
+          "id": "update",
+          "label": "Actor improvement",
+          "note": "Uses the critic's feedback"
+        }
+      ],
+      "edges": [
+        {
+          "from": "state",
+          "to": "actor",
+          "label": "observation"
+        },
+        {
+          "from": "actor",
+          "to": "environment",
+          "label": "action"
+        },
+        {
+          "from": "state",
+          "to": "critic",
+          "label": "state"
+        },
+        {
+          "from": "actor",
+          "to": "critic",
+          "label": "action"
+        },
+        {
+          "from": "critic",
+          "to": "update",
+          "label": "evaluation"
+        },
+        {
+          "from": "update",
+          "to": "actor",
+          "label": "improves"
+        }
+      ],
+      "caption": "The actor selects a continuous action, while the critic evaluates state-action choices and feeds learning signals back to the actor."
+    }
+  },
   "related": [
     "actor-critic-algorithm"
   ],

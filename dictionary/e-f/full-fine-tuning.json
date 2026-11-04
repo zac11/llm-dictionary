@@ -5,6 +5,113 @@
   "type": "concept",
   "definition": "Updating all model weights on the target data.",
   "details": "Updating all model weights on the target data. Highest ceiling and highest cost (memory for optimizer states, risk of forgetting); typically reserved for serious domain shifts, continued pretraining, or when PEFT plateaus.",
+  "explainer": {
+    "lead": "Full fine-tuning adapts a pretrained model by changing every one of its weights using target data. It offers the greatest room for adaptation, but demands substantial memory and compute and can make the model forget earlier capabilities.",
+    "tiers": {
+      "eli5": "Imagine revising every page of a huge instruction book instead of adding a few sticky notes. Full fine-tuning lets the model change everything it knows to fit new examples. That can produce a very good fit, but it takes a lot of work and may erase some useful old lessons.",
+      "practitioner": "Start from pretrained weights and train on the target dataset with all parameters unfrozen. Budget for the memory needed by optimizer states, and evaluate for forgetting as well as target performance. This approach is typically reserved for serious domain shifts, continued pretraining, or cases where parameter-efficient fine-tuning has plateaued.",
+      "paperLevel": "Given pretrained parameters theta_0 and target data D = {(x_i, y_i)}, optimize theta by minimizing sum_i L(f_theta(x_i), y_i), with every parameter trainable. Full fine-tuning has the highest adaptation ceiling among the approaches described here, but incurs optimizer-state memory costs and risks catastrophic forgetting."
+    },
+    "example": "A team adapting a general language model to a substantially different specialized domain first finds that parameter-efficient fine-tuning has plateaued. It then trains on the domain's target data with every weight unfrozen, accepting higher optimizer-memory requirements and testing older capabilities for signs of forgetting.",
+    "usedIn": [
+      {
+        "name": "Domain adaptation",
+        "detail": "Used when the target domain differs enough from the original training distribution to justify updating the entire model.",
+        "url": ""
+      },
+      {
+        "name": "Continued pretraining",
+        "detail": "Further trains all model weights on target data rather than adapting only a small set of parameters.",
+        "url": ""
+      },
+      {
+        "name": "PEFT plateau cases",
+        "detail": "Considered when parameter-efficient fine-tuning stops providing enough improvement for the target task.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of attaching a small adjustable component to a pretrained model, full fine-tuning lets the whole model change. This gives it maximum flexibility to absorb a new domain, at the price of maximum training cost and greater risk of overwriting prior knowledge.",
+    "howItWorks": [
+      "Start with a pretrained model and a target dataset.",
+      "Run target examples through the model and measure the training loss.",
+      "Backpropagate the loss and make every weight trainable.",
+      "Use the optimizer to update all weights over successive training steps.",
+      "Monitor resource use and check whether earlier capabilities are being forgotten."
+    ],
+    "whyItMatters": "Full fine-tuning sets the high-flexibility, high-cost end of model adaptation. Knowing when to use it helps teams reserve its expense and forgetting risk for cases where lighter adaptation is insufficient.",
+    "misconceptions": [
+      "It is not parameter-efficient fine-tuning: full fine-tuning updates every weight.",
+      "The highest adaptation ceiling does not make it the default choice for every task.",
+      "Better target performance can coincide with forgetting capabilities learned earlier."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "pretrained",
+          "label": "Pretrained model",
+          "note": "All weights begin trainable."
+        },
+        {
+          "id": "target",
+          "label": "Target data",
+          "note": "Examples for the desired domain."
+        },
+        {
+          "id": "forward",
+          "label": "Forward pass",
+          "note": "The model processes target examples."
+        },
+        {
+          "id": "loss",
+          "label": "Training loss",
+          "note": "Errors guide adaptation."
+        },
+        {
+          "id": "gradients",
+          "label": "Gradients",
+          "note": "Signals are computed throughout the model."
+        },
+        {
+          "id": "updated",
+          "label": "Updated model",
+          "note": "The optimizer changes all weights."
+        }
+      ],
+      "edges": [
+        {
+          "from": "pretrained",
+          "to": "forward",
+          "label": "model"
+        },
+        {
+          "from": "target",
+          "to": "forward",
+          "label": "examples"
+        },
+        {
+          "from": "forward",
+          "to": "loss",
+          "label": "predictions"
+        },
+        {
+          "from": "loss",
+          "to": "gradients",
+          "label": "backpropagate"
+        },
+        {
+          "from": "gradients",
+          "to": "updated",
+          "label": "all weights"
+        },
+        {
+          "from": "updated",
+          "to": "forward",
+          "label": "next batch"
+        }
+      ],
+      "caption": "Target-data gradients update the entire pretrained model, and training repeats with the updated weights."
+    }
+  },
   "related": [
     "model-weights",
     "pretraining",

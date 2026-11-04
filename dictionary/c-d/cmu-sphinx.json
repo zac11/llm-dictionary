@@ -2,10 +2,121 @@
   "term": "CMU Sphinx",
   "letter": "C",
   "category": "Speech recognition",
-  "type": "concept",
+  "type": "tool",
   "definition": "CMU Sphinx, also called Sphinx for short, is the general term to describe a group of speech recognition systems developed at Carnegie Mellon University.",
   "details": "These include a series of speech recognizers (Sphinx 2 - 4) and an acoustic model trainer (SphinxTrain). In 2000, the Sphinx group at Carnegie Mellon committed to open source several speech recognizer components, including Sphinx 2 and later Sphinx 3 (in 2001). The speech decoders come with acoustic models and sample applications. The available resources include in addition software for acoustic model training, language model compilation and a public domain pronunciation dictionary, cmudict. Sphinx encompasses a number of software systems, described below.",
-  "story": "Think of a grammar teacher who never memorized a rule but can still tell you when a sentence sounds wrong. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It figures out meaning by noticing which words like to travel together. The machine learns to read between the lines by reading an impossible number of lines. And that is CMU Sphinx — teaching a machine to read between the lines.",
+  "explainer": {
+    "lead": "CMU Sphinx is a family of open-source speech recognition software developed at Carnegie Mellon University. It gives developers recognizers, acoustic-model training software, and supporting language resources for turning recorded speech into text.",
+    "tiers": {
+      "eli5": "CMU Sphinx is like a toolkit for teaching a computer to hear words and write them down. Different parts listen for speech sounds, check how words are pronounced, and help choose the most likely sentence. It is not just one program, but a collection of tools that work together.",
+      "practitioner": "Use a Sphinx decoder with an acoustic model and the supplied language and pronunciation resources to build speech-to-text applications. SphinxTrain handles acoustic-model training, while other software supports language-model compilation; sample applications provide starting points. Keep the roles separate when integrating components: a decoder, a trainer, a compiled language model, and cmudict serve different purposes.",
+      "paperLevel": "CMU Sphinx can be represented as S = {Sphinx 2, Sphinx 3, Sphinx 4, SphinxTrain, supporting resources}, a family of recognition and training systems rather than one algorithm. A decoder maps speech input to a text hypothesis using an acoustic model and language resources. Its components are distributed with acoustic models and sample applications, but the family does not imply a single shared architecture or training objective."
+    },
+    "example": "A developer supplies a recording of a spoken command to a Sphinx decoder. The decoder uses its acoustic model, cmudict pronunciations, and a compiled language model to choose the command's word sequence and output it as text.",
+    "usedIn": [
+      {
+        "name": "Speech recognition applications",
+        "detail": "Sphinx decoders convert speech into text using acoustic models and language resources.",
+        "url": ""
+      },
+      {
+        "name": "Acoustic model development",
+        "detail": "SphinxTrain provides software for training the acoustic models used by recognizers.",
+        "url": ""
+      },
+      {
+        "name": "Recognition resource preparation",
+        "detail": "The toolkit includes language-model compilation software and the public-domain cmudict pronunciation dictionary.",
+        "url": ""
+      }
+    ],
+    "intuition": "Recognizing speech requires matching sounds to possible words and then choosing a plausible word sequence. Sphinx separates these jobs into reusable decoders, models, dictionaries, and training tools.",
+    "howItWorks": [
+      "Provide speech audio to one of the Sphinx recognizers.",
+      "Use an acoustic model to relate the audio to speech sounds.",
+      "Use cmudict to connect pronunciations with written words.",
+      "Use a compiled language model to help choose among possible word sequences.",
+      "Produce recognized text; when needed, train acoustic models separately with SphinxTrain."
+    ],
+    "whyItMatters": "Sphinx packages recognition, model training, and supporting resources in one open-source family, making the main pieces of a speech recognition system available together. Carnegie Mellon's Sphinx group committed to open-sourcing components in 2000, including Sphinx 2, with Sphinx 3 following in 2001.",
+    "misconceptions": [
+      "Sphinx is not one recognizer: the name covers Sphinx 2–4, SphinxTrain, and related resources.",
+      "SphinxTrain trains acoustic models; it is not itself a speech decoder.",
+      "cmudict is a pronunciation dictionary, not an acoustic or language model."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "audio",
+          "label": "Speech audio",
+          "note": "Input to the recognizer"
+        },
+        {
+          "id": "trainer",
+          "label": "SphinxTrain",
+          "note": "Trains acoustic models"
+        },
+        {
+          "id": "acoustic",
+          "label": "Acoustic model",
+          "note": "Relates audio to speech sounds"
+        },
+        {
+          "id": "dictionary",
+          "label": "cmudict",
+          "note": "Supplies word pronunciations"
+        },
+        {
+          "id": "language",
+          "label": "Language model",
+          "note": "Compiled word-sequence resource"
+        },
+        {
+          "id": "decoder",
+          "label": "Sphinx decoder",
+          "note": "Combines models to recognize speech"
+        },
+        {
+          "id": "text",
+          "label": "Recognized text",
+          "note": "The decoder's output"
+        }
+      ],
+      "edges": [
+        {
+          "from": "audio",
+          "to": "decoder",
+          "label": ""
+        },
+        {
+          "from": "trainer",
+          "to": "acoustic",
+          "label": "trains"
+        },
+        {
+          "from": "acoustic",
+          "to": "decoder",
+          "label": ""
+        },
+        {
+          "from": "dictionary",
+          "to": "decoder",
+          "label": ""
+        },
+        {
+          "from": "language",
+          "to": "decoder",
+          "label": ""
+        },
+        {
+          "from": "decoder",
+          "to": "text",
+          "label": "outputs"
+        }
+      ],
+      "caption": "A Sphinx decoder combines speech audio with acoustic, pronunciation, and language resources to produce text; SphinxTrain supports acoustic-model training."
+    }
+  },
   "related": [
     "apptek",
     "callminer",

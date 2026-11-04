@@ -5,7 +5,102 @@
   "type": "concept",
   "definition": "Corner detection is an approach used within computer vision systems to extract certain kinds of features and infer the contents of an image.",
   "details": "Corner detection is frequently used in motion detection, image registration, video tracking, image mosaicing, panorama stitching, 3D reconstruction and object recognition. Corner detection overlaps with the topic of interest point detection.",
-  "story": "Imagine an art restorer who can spot a single cracked tile in a vast mosaic. What your eyes do without thinking, the machine does one careful layer at a time. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. The model looks the way you look at a crowd and finds the one face you know. That pixel-to-meaning climb is Corner detection.",
+  "explainer": {
+    "lead": "Corner detection finds distinctive points in an image, such as the meeting of two edges, that can help a computer compare different views. These points provide useful landmarks for tasks including tracking movement, aligning photographs and reconstructing scenes.",
+    "tiers": {
+      "eli5": "Imagine trying to match two puzzle pictures using only long, straight lines: many places would look alike. Corners are more like crossroads on a map, giving you clearer spots to recognize. A computer can use those spots to line up photos or follow something as it moves.",
+      "practitioner": "Use corner detection to obtain localized image features before matching views, estimating motion or registering images. Check whether the detected points remain useful under the viewpoint, scale, blur and lighting changes expected in the application. Detection alone does not establish which corners in different images correspond, so downstream processing must handle matching and incorrect correspondences.",
+      "paperLevel": "In plain-text terms, corner detection maps an image I to a set of image locations p_i whose local appearance provides a well-localized junction rather than only an extended edge. The resulting points serve as features for geometric and recognition tasks. The formulation does not itself provide semantic labels or solve correspondence between images."
+    },
+    "example": "To stitch two overlapping photographs of a building, detect corners around features such as window frames in both images. The downstream stitching process can use corresponding corner locations as landmarks to align the photographs into a panorama.",
+    "usedIn": [
+      {
+        "name": "Video tracking and motion detection",
+        "detail": "Detected corners provide localized image features that can help follow changes across frames.",
+        "url": ""
+      },
+      {
+        "name": "Panorama stitching",
+        "detail": "Corners support image registration and mosaicing when overlapping photographs must be aligned.",
+        "url": ""
+      },
+      {
+        "name": "3D reconstruction",
+        "detail": "Corner features can provide image landmarks used while inferring scene structure.",
+        "url": ""
+      },
+      {
+        "name": "Object recognition",
+        "detail": "Detected corners contribute local features that can help infer image contents.",
+        "url": ""
+      }
+    ],
+    "intuition": "A long edge can look similar at many positions along its length, but a corner identifies a particular spot. That makes corners useful as compact visual landmarks when images need to be compared or combined.",
+    "howItWorks": [
+      "Take an image as input and examine its local image structure.",
+      "Find localized junctions whose appearance distinguishes them from surrounding edge or flat regions.",
+      "Record the selected locations as corner features.",
+      "Pass those features to a task such as tracking, registration, reconstruction or recognition."
+    ],
+    "whyItMatters": "Corner detection turns a large image into a smaller set of useful feature locations. Those locations support several core computer-vision tasks without requiring the entire image to be treated as one undifferentiated pattern.",
+    "misconceptions": [
+      "A corner is not just any point on an edge; it marks a localized junction.",
+      "Corner detection and interest point detection overlap, but they are not identical topics.",
+      "Finding corners does not by itself recognize an object or match points between images."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "image",
+          "label": "Input image",
+          "note": "Pixels from one view"
+        },
+        {
+          "id": "structure",
+          "label": "Local structure",
+          "note": "Examine nearby image appearance"
+        },
+        {
+          "id": "corners",
+          "label": "Corner locations",
+          "note": "Select localized junctions"
+        },
+        {
+          "id": "features",
+          "label": "Image features",
+          "note": "Compact landmarks for later processing"
+        },
+        {
+          "id": "tasks",
+          "label": "Vision tasks",
+          "note": "Tracking, alignment, reconstruction or recognition"
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "structure",
+          "label": "local evidence"
+        },
+        {
+          "from": "structure",
+          "to": "corners",
+          "label": "detection"
+        },
+        {
+          "from": "corners",
+          "to": "features",
+          "label": "locations"
+        },
+        {
+          "from": "features",
+          "to": "tasks",
+          "label": "landmarks"
+        }
+      ],
+      "caption": "Corner detection converts local image structure into feature locations used by downstream computer-vision tasks."
+    }
+  },
   "related": [
     "blob-detection",
     "chessboard-detection",

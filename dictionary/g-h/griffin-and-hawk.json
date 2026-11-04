@@ -2,12 +2,121 @@
   "term": "Griffin and Hawk",
   "letter": "G",
   "category": "Alternative and Emerging Architectures",
-  "type": "concept",
+  "type": "architecture",
   "aka": [
     "Gated Linear Recurrences"
   ],
   "definition": "Models built on real-gated linear recurrent units (RG-LRU), pure in Hawk, interleaved with local attention in Griffin, matching transformer quality with far better long-sequence inference.",
   "details": "Models built on real-gated linear recurrent units (RG-LRU), pure in Hawk, interleaved with local attention in Griffin, matching transformer quality with far better long-sequence inference. The design basis of production recurrent models like RecurrentGemma.",
+  "explainer": {
+    "lead": "Griffin and Hawk are recurrent neural network designs built around real-gated linear recurrent units, or RG-LRUs. Hawk uses recurrence alone, while Griffin mixes recurrence with local attention, aiming to match transformer quality while making inference on long sequences much more efficient.",
+    "tiers": {
+      "eli5": "Imagine reading a very long story while keeping a running summary instead of rereading every earlier page for each new word. Hawk works entirely from that running summary; Griffin also lets the reader peek at nearby words when that helps. This can make long stories much cheaper to continue reading.",
+      "practitioner": "Use Hawk when you want a purely recurrent RG-LRU stack, or Griffin when you want RG-LRU layers interleaved with local attention. The practical appeal is long-sequence inference: recurrent state carries information forward, and Griffin’s attention remains local rather than attending over the whole prefix. RecurrentGemma is a production model family based on this design.",
+      "paperLevel": "The shared primitive is the real-gated linear recurrent unit (RG-LRU): a linear recurrence whose state update is controlled by real-valued gates. Hawk is a pure RG-LRU architecture, whereas Griffin interleaves RG-LRU layers with local-attention layers. The reported design goal is transformer-matching quality with substantially better long-sequence inference efficiency, and the architecture underlies RecurrentGemma."
+    },
+    "example": "When generating the next sentence of a very long document, Hawk updates its recurrent state as it processes the text instead of attending to the entire prefix at every step. Griffin does the same but periodically uses local attention over nearby context, adding focused attention without full-sequence attention at each step.",
+    "usedIn": [
+      {
+        "name": "Hawk",
+        "detail": "A purely recurrent model built entirely from RG-LRUs.",
+        "url": ""
+      },
+      {
+        "name": "Griffin",
+        "detail": "A hybrid model that interleaves RG-LRU layers with local attention.",
+        "url": ""
+      },
+      {
+        "name": "RecurrentGemma",
+        "detail": "A production recurrent model family based on this design.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "RG-LRU: a real-gated linear recurrent unit that carries state through the sequence.",
+        "detail": ""
+      },
+      {
+        "name": "Hawk stack: a purely recurrent arrangement of RG-LRUs.",
+        "detail": ""
+      },
+      {
+        "name": "Local attention: attention over a limited nearby context in Griffin.",
+        "detail": ""
+      },
+      {
+        "name": "Griffin stack: RG-LRU layers interleaved with local-attention layers.",
+        "detail": ""
+      }
+    ],
+    "flow": [
+      "Read the next token in the input sequence.",
+      "Update the recurrent state through an RG-LRU.",
+      "In Hawk, continue with further recurrent layers.",
+      "In Griffin, also apply local attention at the interleaved attention layers.",
+      "Use the resulting representation to produce the next output."
+    ],
+    "whyItMatters": "These architectures offer an alternative to relying entirely on transformer attention. Their combination of linear recurrence and, in Griffin, local attention is designed to preserve transformer-level quality while improving inference efficiency on long sequences.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "tokens",
+          "label": "Input tokens",
+          "note": "The sequence arrives token by token."
+        },
+        {
+          "id": "rglru",
+          "label": "RG-LRU layers",
+          "note": "Real gates control linear recurrent state updates."
+        },
+        {
+          "id": "state",
+          "label": "Recurrent state",
+          "note": "Information is carried forward through the sequence."
+        },
+        {
+          "id": "local-attention",
+          "label": "Local attention",
+          "note": "Griffin adds attention over nearby context."
+        },
+        {
+          "id": "output",
+          "label": "Next output",
+          "note": "The processed representation produces the model output."
+        }
+      ],
+      "edges": [
+        {
+          "from": "tokens",
+          "to": "rglru",
+          "label": ""
+        },
+        {
+          "from": "rglru",
+          "to": "state",
+          "label": "updates"
+        },
+        {
+          "from": "state",
+          "to": "local-attention",
+          "label": "Griffin only"
+        },
+        {
+          "from": "state",
+          "to": "output",
+          "label": "Hawk"
+        },
+        {
+          "from": "local-attention",
+          "to": "output",
+          "label": "Griffin"
+        }
+      ],
+      "caption": "Both designs use RG-LRU recurrence; Griffin additionally interleaves local attention, while Hawk remains purely recurrent."
+    }
+  },
   "related": [
     "attention",
     "inference",

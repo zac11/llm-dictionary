@@ -9,7 +9,107 @@
   ],
   "definition": "Comparing looped (recursive) transformer designs against unlooped baselines under the same compute budget — rather than the same parameter count — so any gain is credited to depth reuse and not to extra FLOPs.",
   "details": "Looping a shared block increases effective depth without adding parameters, but the extra passes also add per-token work, so a naive comparison at fixed model size conflates architectural benefit with simply spending more compute. A compute-matched protocol therefore fixes per-token FLOPs, total non-embedding parameters and KV-cache budget across variants. Under that accounting, looping the middle half of a mixture-of-experts transformer's layers twice has been shown to lower loss faster with compute and to save roughly 7–18% of training FLOPs on the compute-optimal frontier. The idea generalizes the equal-FLOPs discipline used to re-evaluate ensemble, tool-use and self-consistency methods, where reported gains can otherwise come from a larger hidden budget.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. That steady, miss-by-miss improvement is Compute-Matched Looping.",
+  "explainer": {
+    "lead": "Compute-matched looping is a fair-testing rule for transformers that reuse the same layers several times. It gives looped and ordinary models the same compute budget, so better results can be attributed to reusing depth rather than simply doing more work.",
+    "tiers": {
+      "eli5": "Imagine two students taking the same quiz, but one gets extra time to check every answer twice. To compare them fairly, you would give both the same total time, not just the same pencil and paper. Compute-matched looping does this for AI models: repeated use of a layer is allowed, but both models get the same amount of calculation.",
+      "practitioner": "When evaluating a looped transformer, match per-token FLOPs, total non-embedding parameters and KV-cache budget against the unlooped baseline. Compare loss as training compute grows rather than relying on a fixed-parameter comparison. A common pitfall is counting the shared block's parameters once while overlooking the compute added by each extra pass.",
+      "paperLevel": "Compare a looped variant L with baseline B subject to FLOPs_per_token(L) = FLOPs_per_token(B), with total non-embedding parameters and KV-cache budget also fixed. For a mixture-of-experts transformer, looping the middle half of the layers twice lowered loss faster with compute and saved roughly 7–18% of training FLOPs on the compute-optimal frontier. That result is specific to the reported setting, not a general guarantee for every looped architecture."
+    },
+    "example": "Compare an unlooped mixture-of-experts transformer with a variant that loops the middle half of its layers twice, while fixing per-token FLOPs, non-embedding parameters and KV-cache budget. The looped variant lowered loss faster with compute and required roughly 7–18% fewer training FLOPs on the compute-optimal frontier.",
+    "usedIn": [
+      {
+        "name": "Looped transformer evaluation",
+        "detail": "Separates the benefit of effective depth reuse from the additional FLOPs spent on repeated passes.",
+        "url": ""
+      },
+      {
+        "name": "Mixture-of-experts training",
+        "detail": "Used to compare an unlooped model with one whose middle half of layers is looped twice.",
+        "url": ""
+      },
+      {
+        "name": "Inference-method evaluation",
+        "detail": "The same equal-FLOPs discipline applies when reassessing ensembles, tool use and self-consistency.",
+        "url": ""
+      }
+    ],
+    "intuition": "Looping a shared block adds effective depth without new parameters, but every extra pass still costs computation. Matching compute makes the comparison about the architecture, not about one model receiving a larger hidden budget.",
+    "howItWorks": [
+      "Choose an unlooped baseline and a looped variant that reuses a shared block.",
+      "Fix per-token FLOPs so the extra passes do not give the looped model more computation.",
+      "Also hold total non-embedding parameters and KV-cache budget constant.",
+      "Compare loss against training compute and attribute any improvement to depth reuse."
+    ],
+    "whyItMatters": "It prevents extra computation from being mistaken for an architectural improvement. It also makes reported training savings meaningful by placing looped and unlooped designs on the same budget.",
+    "misconceptions": [
+      "Equal parameter counts do not imply equal compute: repeated passes add per-token work.",
+      "Looping does not add depth for free; it trades extra computation for parameter reuse.",
+      "The reported 7–18% saving is a result for one mixture-of-experts setting, not a universal property of looping."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "baseline",
+          "label": "Unlooped baseline",
+          "note": "Uses each layer once."
+        },
+        {
+          "id": "looped",
+          "label": "Looped variant",
+          "note": "Reuses a shared block for extra effective depth."
+        },
+        {
+          "id": "budgets",
+          "label": "Matched budgets",
+          "note": "Fix per-token FLOPs, non-embedding parameters and KV cache."
+        },
+        {
+          "id": "training",
+          "label": "Training runs",
+          "note": "Train both variants under the matched accounting."
+        },
+        {
+          "id": "curve",
+          "label": "Loss versus compute",
+          "note": "Compare performance across the compute frontier."
+        },
+        {
+          "id": "saving",
+          "label": "Training savings",
+          "note": "Measure FLOPs saved without crediting a hidden budget."
+        }
+      ],
+      "edges": [
+        {
+          "from": "baseline",
+          "to": "budgets",
+          "label": ""
+        },
+        {
+          "from": "looped",
+          "to": "budgets",
+          "label": ""
+        },
+        {
+          "from": "budgets",
+          "to": "training",
+          "label": "same constraints"
+        },
+        {
+          "from": "training",
+          "to": "curve",
+          "label": ""
+        },
+        {
+          "from": "curve",
+          "to": "saving",
+          "label": ""
+        }
+      ],
+      "caption": "Both designs enter the same budget constraints before their loss-versus-compute results are compared."
+    }
+  },
   "related": [
     "model-distillation",
     "model-merging",

@@ -5,7 +5,91 @@
   "type": "concept",
   "definition": "The greedy triangulation is a method to compute a polygon triangulation or a point set triangulation using a greedy algorithm, which adds edges one by one to the solution in strict increasing order by length, with the condition that an edge cannot cut a previously inserted edge..",
   "details": "The greedy triangulation is a method to compute a polygon triangulation or a point set triangulation using a greedy algorithm, which adds edges one by one to the solution in strict increasing order by length, with the condition that an edge cannot cut a previously inserted edge.",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. That is Greedy triangulation — a small key that opens a big door.",
+  "explainer": {
+    "lead": "Greedy triangulation builds a triangle-filled polygon or point set by repeatedly trying the shortest remaining edge. An edge is kept only if it does not cut an edge already chosen, giving a simple construction rule based on length and crossings.",
+    "tiers": {
+      "eli5": "Imagine connecting dots with sticks, always trying the shortest unused stick first. You can add it unless it would cross a stick already on the table. Keep going until no more sticks fit, and the spaces between the dots become triangles.",
+      "practitioner": "Implement it by generating candidate edges, sorting them by length, and testing each candidate against every previously accepted edge before inserting it. Handle the crossing test consistently, and do not assume that choosing locally shortest edges guarantees a triangulation with minimum total edge length.",
+      "paperLevel": "Let E be the candidate edges ordered by increasing length. Initialize T = ∅; for each e in E, set T ← T ∪ {e} exactly when e does not cut any edge already in T, then return the resulting triangulation. The insertion rule is local and, by itself, supplies no global minimum-length guarantee."
+    },
+    "example": "For points A(0,0), B(1,0), C(1,1), and D(0,1), insert the four unit-length sides of the square. The diagonals AC and BD both have length √2; insert whichever is considered first, then skip the other because it cuts that diagonal, leaving two triangles.",
+    "intuition": "Short connections are preferred, but each accepted connection restricts what can be added later because edges may not cross one another.",
+    "howItWorks": [
+      "List the candidate edges for the polygon or point set.",
+      "Consider them in increasing order of length.",
+      "Compare the next edge with every edge already inserted.",
+      "Insert it if it cuts none of them; otherwise skip it.",
+      "Continue through the candidates to obtain the triangulation."
+    ],
+    "whyItMatters": "It gives a direct way to construct a triangulation using only edge lengths and intersection checks. Its simplicity also makes the consequences of greedy edge selection easy to inspect.",
+    "misconceptions": [
+      "The shortest remaining edge is not always inserted: a crossing with an accepted edge disqualifies it.",
+      "Greedy edge selection does not by itself guarantee minimum total triangulation length.",
+      "Skipping an edge does not remove earlier edges; accepted edges remain in the solution."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "candidates",
+          "label": "Candidate edges",
+          "note": "All edges available for consideration"
+        },
+        {
+          "id": "sort",
+          "label": "Sort by length",
+          "note": "Shortest edges are considered first"
+        },
+        {
+          "id": "next",
+          "label": "Next shortest edge",
+          "note": "One candidate is tested at a time"
+        },
+        {
+          "id": "crossing",
+          "label": "Crossing check",
+          "note": "Compare against accepted edges"
+        },
+        {
+          "id": "accept",
+          "label": "Insert edge",
+          "note": "Keep an edge that cuts none"
+        },
+        {
+          "id": "skip",
+          "label": "Skip edge",
+          "note": "Reject a candidate that cuts another"
+        }
+      ],
+      "edges": [
+        {
+          "from": "candidates",
+          "to": "sort",
+          "label": "edge list"
+        },
+        {
+          "from": "sort",
+          "to": "next",
+          "label": "in order"
+        },
+        {
+          "from": "next",
+          "to": "crossing",
+          "label": "candidate"
+        },
+        {
+          "from": "crossing",
+          "to": "accept",
+          "label": "no cut"
+        },
+        {
+          "from": "crossing",
+          "to": "skip",
+          "label": "cuts edge"
+        }
+      ],
+      "caption": "Candidates are processed from shortest to longest, with crossing checks deciding whether each is inserted or skipped."
+    }
+  },
   "related": [
     "greedy-algorithm",
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",

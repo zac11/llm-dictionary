@@ -5,7 +5,103 @@
   "type": "concept",
   "definition": "Count sketch is a type of dimensionality reduction that is particularly efficient in statistics, machine learning and algorithms.",
   "details": "It was invented by Moses Charikar, Kevin Chen and Martin Farach-Colton in an effort to speed up the AMS Sketch by Alon, Matias and Szegedy for approximating the frequency moments of streams (these calculations require counting of the number of occurrences for the distinct elements of the stream). The sketch is nearly identical to the Feature hashing algorithm by John Moody, but differs in its use of hash functions with low dependence, which makes it more practical. In order to still have a high probability of success, the median trick is used to aggregate multiple count sketches, rather than the mean. These properties allow use for explicit kernel methods, bilinear pooling in neural networks and is a cornerstone in many numerical linear algebra algorithms.",
-  "story": "Picture an engineer at a cluttered workbench, turning a clever idea over in their hands until it finally clicks. At its heart it is a simple notion, once you strip away the fancy name. A small key that opens a much bigger door. It is one of those ideas that feels obvious only after someone shows it to you. That is Count sketch — a small key that opens a big door.",
+  "explainer": {
+    "lead": "Count sketch compresses a large stream or high-dimensional representation into a small collection of counters while still supporting useful frequency estimates. It matters when exact counting or full-size features would be too expensive, such as in stream processing, kernel methods, neural networks and numerical linear algebra.",
+    "tiers": {
+      "eli5": "Imagine counting every colour in a huge parade using a notebook with only a few lines. Different colours may share a line, so you use plus and minus marks to reduce mix-ups and repeat the count in several notebooks. Taking the middle answer from the notebooks gives a better estimate than simply averaging them.",
+      "practitioner": "Apply Count sketch when frequency counts or feature vectors must be compressed into a fixed-size sketch. Use multiple sketches and aggregate estimates with the median rather than the mean; collisions in any single sketch can distort individual estimates. Its low-dependence hash functions make it practical for explicit kernel methods, bilinear pooling and numerical linear algebra.",
+      "paperLevel": "For each repetition r, hash an item x to a bucket h_r(x), apply a sign s_r(x), and update C_r[h_r(x)] += s_r(x); estimate its frequency as s_r(x) C_r[h_r(x)], then take the median across repetitions. Moses Charikar, Kevin Chen and Martin Farach-Colton introduced it to accelerate the AMS Sketch of Alon, Matias and Szegedy for approximating frequency moments. Hash collisions can corrupt a single estimate, so multiple sketches and median aggregation are used for a high probability of success."
+    },
+    "example": "For the stream red, blue, red, green, red, suppose one sketch puts red and green in the same bucket, with signs +1 for red and -1 for green. That bucket ends at 3 - 1 = 2, so it estimates red as 2. If two other sketches place red alone and both estimate 3, the estimates are 2, 3 and 3, whose median correctly gives 3.",
+    "usedIn": [
+      {
+        "name": "Data-stream frequency estimation",
+        "detail": "Approximates occurrence counts needed for frequency-moment calculations.",
+        "url": ""
+      },
+      {
+        "name": "Explicit kernel methods",
+        "detail": "Provides compact feature representations instead of full-dimensional ones.",
+        "url": ""
+      },
+      {
+        "name": "Bilinear pooling in neural networks",
+        "detail": "Compresses interactions between features.",
+        "url": ""
+      },
+      {
+        "name": "Numerical linear algebra",
+        "detail": "Serves as a building block in many algorithms.",
+        "url": ""
+      }
+    ],
+    "intuition": "A small table cannot keep every stream item separate, so Count sketch lets items collide but uses signed updates to limit collision damage. Repeating the process with different hash functions and taking the median makes a reliable estimate much more likely.",
+    "howItWorks": [
+      "Choose several hash functions with low dependence.",
+      "For each stream item, hash it to a bucket and add a signed contribution to that bucket.",
+      "Repeat the signed counting process to produce multiple sketches.",
+      "Recover one frequency estimate per sketch by reading the item's bucket and undoing its sign.",
+      "Return the median of those estimates."
+    ],
+    "whyItMatters": "It reduces memory and computation while retaining probabilistically reliable frequency estimates. The same efficiency makes it useful beyond streams, including feature compression and numerical algorithms.",
+    "misconceptions": [
+      "It is not identical to feature hashing: its use of low-dependence hash functions is a key practical difference.",
+      "Estimates from multiple sketches are combined with the median, not the mean.",
+      "One sketch need not give an exact count because hash collisions can distort it."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "stream",
+          "label": "Stream items",
+          "note": "Elements whose frequencies are needed"
+        },
+        {
+          "id": "hashes",
+          "label": "Hash functions",
+          "note": "Assign buckets and signs"
+        },
+        {
+          "id": "sketches",
+          "label": "Count sketches",
+          "note": "Several compact counter arrays"
+        },
+        {
+          "id": "estimates",
+          "label": "Frequency estimates",
+          "note": "One estimate from each sketch"
+        },
+        {
+          "id": "median",
+          "label": "Median result",
+          "note": "Robust aggregate of the estimates"
+        }
+      ],
+      "edges": [
+        {
+          "from": "stream",
+          "to": "hashes",
+          "label": "items"
+        },
+        {
+          "from": "hashes",
+          "to": "sketches",
+          "label": "signed updates"
+        },
+        {
+          "from": "sketches",
+          "to": "estimates",
+          "label": "queries"
+        },
+        {
+          "from": "estimates",
+          "to": "median",
+          "label": "aggregate"
+        }
+      ],
+      "caption": "Count sketch repeats signed hashing and combines the resulting frequency estimates with a median."
+    }
+  },
   "related": [
     "tensor-sketch",
     "a-r-d-prasad",

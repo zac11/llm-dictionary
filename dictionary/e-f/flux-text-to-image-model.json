@@ -5,7 +5,115 @@
   "type": "model",
   "definition": "Flux is a family of text-to-image and image-to-image models developed by Black Forest Labs (BFL), based in Freiburg im Breisgau, Germany.",
   "details": "Black Forest Labs was founded by former employees of Stability AI. As with other text-to-image models, Flux generates images from natural language descriptions, called prompts. In addition, some Flux models support editing images.",
-  "story": "Picture walking through a crowd and instantly picking out a familiar face without reading a single name tag. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. It turns a picture into an understanding: this is a cat, that is a stop sign. Sight, for a machine, is a long climb from raw light to a name. That pixel-to-meaning climb is Flux (text-to-image model).",
+  "explainer": {
+    "lead": "Flux is Black Forest Labs' family of models for turning written descriptions into images, with some models also able to edit existing pictures. It brings image creation and, where supported, instruction-based editing into one model family.",
+    "tiers": {
+      "eli5": "Flux is like an artist who can draw a picture from a sentence you write. Some versions can also act like a photo editor: you give them a picture and explain what you want changed.",
+      "practitioner": "An engineer supplies a natural-language prompt for image generation or, with a supported model, an existing image plus an editing instruction. Model capabilities vary across the family, so editing support should be confirmed before integrating a particular variant.",
+      "paperLevel": "Formally, a Flux text-to-image model implements f(p) -> I, where p is a natural-language prompt and I is a generated image. Some models additionally implement g(p, I0) -> I' for prompt-guided editing of an input image I0."
+    },
+    "example": "A user enters the prompt \"a red bicycle beside a lake at sunrise,\" and a Flux text-to-image model generates an image of that scene. With an editing-capable model, the user could instead provide an existing picture and an instruction describing the change they want.",
+    "usedIn": [
+      {
+        "name": "Text-to-image generation",
+        "detail": "Creates images from natural-language descriptions called prompts.",
+        "url": ""
+      },
+      {
+        "name": "Image editing",
+        "detail": "Some Flux models modify an existing image according to a user's instructions.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Natural-language prompt",
+        "detail": "Describes the image to generate or the change to make."
+      },
+      {
+        "name": "Text-to-image Flux model",
+        "detail": "Generates an image from the prompt."
+      },
+      {
+        "name": "Existing image",
+        "detail": "Provides the starting picture for models that support editing."
+      },
+      {
+        "name": "Editing-capable Flux model",
+        "detail": "Uses the prompt and existing image to produce an edited result."
+      }
+    ],
+    "flow": [
+      "For generation, the user supplies a natural-language prompt.",
+      "The text-to-image model produces an image from that description.",
+      "For editing, the user supplies an existing image and a prompt describing the desired change.",
+      "An editing-capable model returns the modified image."
+    ],
+    "origin": "Flux was developed by Black Forest Labs (BFL), based in Freiburg im Breisgau, Germany. BFL was founded by former employees of Stability AI.",
+    "whyItMatters": "Flux supports the practical task of creating images from written descriptions, while some variants extend that workflow to editing existing images.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "prompt",
+          "label": "Written prompt",
+          "note": "Describes a scene or requested edit."
+        },
+        {
+          "id": "generator",
+          "label": "Text-to-image model",
+          "note": "Creates an image from text."
+        },
+        {
+          "id": "generated",
+          "label": "Generated image",
+          "note": "The text-to-image output."
+        },
+        {
+          "id": "input-image",
+          "label": "Existing image",
+          "note": "The starting point for editing."
+        },
+        {
+          "id": "editor",
+          "label": "Editing-capable model",
+          "note": "Applies the requested change."
+        },
+        {
+          "id": "edited",
+          "label": "Edited image",
+          "note": "The modified output."
+        }
+      ],
+      "edges": [
+        {
+          "from": "prompt",
+          "to": "generator",
+          "label": "describes"
+        },
+        {
+          "from": "generator",
+          "to": "generated",
+          "label": "creates"
+        },
+        {
+          "from": "prompt",
+          "to": "editor",
+          "label": "instructs"
+        },
+        {
+          "from": "input-image",
+          "to": "editor",
+          "label": "input"
+        },
+        {
+          "from": "editor",
+          "to": "edited",
+          "label": "modifies"
+        }
+      ],
+      "caption": "Flux supports generation from a prompt and, in some models, editing from a prompt plus an existing image."
+    }
+  },
   "related": [
     "text-to-image-model",
     "ideogram-text-to-image-model",

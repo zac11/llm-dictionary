@@ -5,7 +5,123 @@
   "type": "algorithm",
   "definition": "The generalized Hebbian algorithm, also known in the literature as Sanger's rule, is a linear feedforward neural network for unsupervised learning with applications primarily in principal components analysis.",
   "details": "First defined in 1989, it is similar to Oja's rule in its formulation and stability, except it can be applied to networks with multiple outputs. The name originates because of the similarity between the algorithm and a hypothesis made by Donald Hebb about the way in which synaptic strengths in the brain are modified in response to experience, i.e., that changes are proportional to the correlation between the firing of pre- and post-synaptic neurons.",
-  "story": "Think of an orchestra warming up: no single instrument carries the piece, but together they make the sound. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. The layout decides what the machine can even attempt, before it learns a single thing. The shape of the machine is half the idea. And that shape of the machine — Generalized Hebbian algorithm — is what makes everything else possible.",
+  "explainer": {
+    "lead": "The generalized Hebbian algorithm learns useful directions in data without needing labels. It is especially useful for principal components analysis because, unlike Oja's rule, it can train a linear network with several outputs.",
+    "tiers": {
+      "eli5": "Imagine a sloping sprinkle of dots on paper and trying to find the main directions in which they spread out. This rule adjusts several detectors as it sees more dots, with each later detector accounting for what the earlier ones already found. It is a little like Hebb's idea that connections change according to how strongly two neurons fire together.",
+      "practitioner": "Apply it iteratively to input vectors with a chosen number of linear outputs, initial weights, and learning rate. Each output uses a Hebbian-style correction after subtracting the reconstruction contributed by outputs up to and including itself. It suits linear, unsupervised principal-component extraction; the learning rate must be chosen, and the later outputs are not learned independently.",
+      "paperLevel": "Introduced in 1989 and also called Sanger's rule, it uses y_i = w_i · x and the update delta_w_i = eta * y_i * (x - sum_{k=1}^{i} y_k w_k). The subtraction generalizes Oja's rule to multiple outputs, with later weight vectors corrected using earlier ones. It is a linear feedforward method, primarily used for principal components analysis rather than nonlinear representation learning."
+    },
+    "example": "Take x = (1, 2), w_1 = (1, 0), w_2 = (0, 1), and eta = 0.1. Then y_1 = 1 and y_2 = 2. For the first output, the residual is (1, 2) - 1 * (1, 0) = (0, 2), so delta_w_1 = 0.1 * 1 * (0, 2) = (0, 0.2) and w_1 becomes (1, 0.2). For the second output, (1, 2) - 1 * (1, 0) - 2 * (0, 1) = (0, 0), so w_2 is unchanged in this step.",
+    "usedIn": [
+      {
+        "name": "Principal components analysis",
+        "detail": "Its primary application: learning multiple principal directions from unlabeled input vectors.",
+        "url": ""
+      },
+      {
+        "name": "Unsupervised neural learning",
+        "detail": "Training linear feedforward networks with multiple outputs without labeled targets.",
+        "url": ""
+      }
+    ],
+    "goal": "Adjust the weights of a multi-output linear feedforward network from unlabeled examples so that they capture principal components of the input data.",
+    "inputs": [
+      "Unlabeled input vectors x",
+      "A chosen number of outputs",
+      "Initial weight vectors",
+      "A learning rate eta"
+    ],
+    "outputs": [
+      "Linear output values y_i = w_i · x",
+      "Updated weight vectors representing learned principal directions"
+    ],
+    "steps": [
+      "Present an input vector x to the network.",
+      "Compute each linear output y_i = w_i · x.",
+      "For output i, subtract sum_{k=1}^{i} y_k w_k from x to form a residual.",
+      "Update that weight vector with delta_w_i = eta * y_i * residual.",
+      "Repeat for further outputs and input examples."
+    ],
+    "tradeoffs": [
+      "It supports multiple outputs, whereas Oja's rule is formulated for one.",
+      "Its linear feedforward form limits it to linear structure.",
+      "Each output's update depends on outputs up to and including itself.",
+      "Learning requires repeated updates and a chosen learning rate."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input vector x",
+          "note": "One unlabeled data example"
+        },
+        {
+          "id": "weights",
+          "label": "Current weights",
+          "note": "One weight vector per output"
+        },
+        {
+          "id": "outputs",
+          "label": "Linear outputs y",
+          "note": "Each output is w_i dot x"
+        },
+        {
+          "id": "residual",
+          "label": "Residual input",
+          "note": "Subtract reconstructions through output i"
+        },
+        {
+          "id": "update",
+          "label": "Sanger update",
+          "note": "Scale y_i times residual by eta"
+        },
+        {
+          "id": "components",
+          "label": "Principal directions",
+          "note": "The learned multi-output weights"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "outputs",
+          "label": "projection"
+        },
+        {
+          "from": "weights",
+          "to": "outputs",
+          "label": ""
+        },
+        {
+          "from": "input",
+          "to": "residual",
+          "label": ""
+        },
+        {
+          "from": "outputs",
+          "to": "residual",
+          "label": "reconstruction"
+        },
+        {
+          "from": "residual",
+          "to": "update",
+          "label": ""
+        },
+        {
+          "from": "update",
+          "to": "weights",
+          "label": "adjusts"
+        },
+        {
+          "from": "weights",
+          "to": "components",
+          "label": "learns"
+        }
+      ],
+      "caption": "Each output drives a weight correction based on the part of the input not accounted for by reconstructions through that output."
+    }
+  },
   "related": [
     "contrastive-hebbian-learning",
     "hebbia",

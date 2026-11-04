@@ -5,7 +5,97 @@
   "type": "concept",
   "definition": "Contextual image classification, a topic of pattern recognition in computer vision, is an approach of classification based on contextual information in images.",
   "details": "\"Contextual\" means this approach is focusing on the relationship of the nearby pixels, which is also called neighbourhood. The goal of this approach is to classify the images by using the contextual information.",
-  "story": "Picture a child pointing at pictures in a book — cat, car, cloud — learning to see by seeing a thousand examples. It turns a picture into an understanding: this is a cat, that is a stop sign. What your eyes do without thinking, the machine does one careful layer at a time. It is eyes made of arithmetic — pixels become edges, edges become shapes, shapes become meaning. And that is Contextual image classification — giving a machine the gift of sight.",
+  "explainer": {
+    "lead": "Contextual image classification uses the pixels around a point to help interpret an image, rather than judging each pixel in isolation. This neighbourhood information can make a classification more meaningful when a single pixel or small patch is ambiguous.",
+    "tiers": {
+      "eli5": "Imagine finding one green puzzle piece: it could belong to a tree, a field, or a toy. Looking at the pieces around it gives you clues, and contextual image classification uses the same idea with nearby pixels in a picture.",
+      "practitioner": "Use this approach when individual pixel values do not provide enough evidence for a useful label. Define a neighbourhood around the area being classified and include its information in the decision; the neighbourhood needs to capture relevant surroundings without mixing in unrelated content.",
+      "paperLevel": "For a location p with neighbourhood N(p), contextual classification uses information from N(p) to assign a label, instead of relying only on the value at p. The approach does not specify a particular classifier, neighbourhood shape, or neighbourhood size. Its usefulness therefore depends on whether the selected neighbourhood supplies relevant context."
+    },
+    "example": "A small green patch is difficult to label by colour alone. If its neighbouring pixels form leafy shapes and connect to a brown trunk-like region, that context supports classifying the patch as part of a tree.",
+    "usedIn": [
+      {
+        "name": "Computer vision",
+        "detail": "Provides a way to classify image content using relationships between nearby pixels.",
+        "url": ""
+      },
+      {
+        "name": "Pattern recognition",
+        "detail": "Treats local pixel neighbourhoods as contextual evidence for classification.",
+        "url": ""
+      }
+    ],
+    "intuition": "A pixel or small patch can be hard to interpret on its own, while its surroundings often provide useful clues. Contextual image classification makes those nearby relationships part of the decision.",
+    "howItWorks": [
+      "Start with the image to be classified.",
+      "Identify the pixel or area whose label is needed.",
+      "Examine its nearby pixels, called its neighbourhood.",
+      "Use that contextual information to choose the image or area label."
+    ],
+    "whyItMatters": "Using local context can resolve ambiguity that remains when pixels are considered independently. It links classification to the spatial structure already present in an image.",
+    "misconceptions": [
+      "It does not classify every pixel using colour alone.",
+      "It is an approach, not one fixed classifier or neighbourhood size.",
+      "Nearby pixels provide context, but they do not guarantee a correct label."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "image",
+          "label": "Input image",
+          "note": "The image containing pixels to classify."
+        },
+        {
+          "id": "target",
+          "label": "Target area",
+          "note": "The pixel or patch needing a label."
+        },
+        {
+          "id": "neighbourhood",
+          "label": "Nearby pixels",
+          "note": "The surrounding pixels that supply context."
+        },
+        {
+          "id": "classify",
+          "label": "Contextual classification",
+          "note": "The target and its neighbourhood inform the decision."
+        },
+        {
+          "id": "label",
+          "label": "Assigned label",
+          "note": "The resulting classification."
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "target",
+          "label": ""
+        },
+        {
+          "from": "image",
+          "to": "neighbourhood",
+          "label": ""
+        },
+        {
+          "from": "target",
+          "to": "classify",
+          "label": ""
+        },
+        {
+          "from": "neighbourhood",
+          "to": "classify",
+          "label": "context"
+        },
+        {
+          "from": "classify",
+          "to": "label",
+          "label": ""
+        }
+      ],
+      "caption": "Contextual classification combines a target area with information from its neighbouring pixels."
+    }
+  },
   "related": [
     "evolutionary-image-processing",
     "human-image-synthesis",

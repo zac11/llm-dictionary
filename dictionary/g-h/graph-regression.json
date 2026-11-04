@@ -5,6 +5,113 @@
   "type": "concept",
   "definition": "Predicting a continuous property of an entire graph — e.g.",
   "details": "Predicting a continuous property of an entire graph — e.g. molecular solubility — with GNNs that regress from pooled graph representations.",
+  "explainer": {
+    "lead": "Graph regression turns an entire network of connected items into one continuous prediction. It is useful when the property belongs to the whole structure, such as a molecule’s solubility, rather than to any single node or edge.",
+    "tiers": {
+      "eli5": "Imagine a molecule as a set of dots joined by sticks. Instead of describing each dot separately, the model looks at the whole arrangement and predicts one number, such as how soluble the molecule is. It is like judging a whole team’s performance rather than scoring every player.",
+      "practitioner": "Represent each input as a graph, use a GNN to build node representations, pool them into a graph-level vector, and feed that vector to a regression head trained on continuous graph labels. The main design choices are the GNN, pooling operation, and target scaling; pooling can also discard structural detail needed for accurate predictions.",
+      "paperLevel": "Graph regression learns a function f: G -> R, where G is a graph and the output is a continuous graph-level property. A typical GNN computes node representations, applies a pooling operation to obtain h_G, and predicts y_hat = r(h_G) with a regressor r. Performance depends on whether the learned and pooled representation preserves the structure relevant to the target."
+    },
+    "example": "Represent a molecule as a graph whose nodes are atoms and whose edges are bonds. After GNN processing and pooling, the regression head produces a single number estimating that molecule’s solubility.",
+    "usedIn": [
+      {
+        "name": "Molecular chemistry",
+        "detail": "Estimating continuous properties of whole molecules, including solubility.",
+        "url": ""
+      },
+      {
+        "name": "Molecular machine learning",
+        "detail": "Learning graph-level numerical targets from atom-and-bond representations.",
+        "url": ""
+      }
+    ],
+    "intuition": "A graph’s overall behavior can depend on its complete pattern of connections, not just its individual parts. Graph regression compresses that pattern into a representation from which a single numerical value can be predicted.",
+    "howItWorks": [
+      "Encode the object of interest as nodes and edges.",
+      "Apply a GNN to compute representations from the graph structure.",
+      "Pool the node representations into one graph-level representation.",
+      "Pass that representation through a regression head.",
+      "Output one continuous value for the entire graph."
+    ],
+    "whyItMatters": "It lets models predict whole-structure quantities directly from relational data. This avoids reducing a graph to isolated node or edge predictions when the target describes the graph as a whole.",
+    "misconceptions": [
+      "It is not node regression: the label and output belong to the entire graph.",
+      "Pooling does not merely average the final answer; it creates the graph representation used by the regressor.",
+      "The output is continuous, so graph regression is distinct from graph classification."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "graph",
+          "label": "Input graph",
+          "note": "Nodes and edges describe one object."
+        },
+        {
+          "id": "gnn",
+          "label": "GNN layers",
+          "note": "Learn structure-aware node representations."
+        },
+        {
+          "id": "nodes",
+          "label": "Node representations",
+          "note": "One learned vector per node."
+        },
+        {
+          "id": "pool",
+          "label": "Graph pooling",
+          "note": "Combine node vectors into one."
+        },
+        {
+          "id": "vector",
+          "label": "Graph vector",
+          "note": "A whole-graph representation."
+        },
+        {
+          "id": "regressor",
+          "label": "Regression head",
+          "note": "Map the graph vector to a number."
+        },
+        {
+          "id": "output",
+          "label": "Continuous value",
+          "note": "The predicted graph-level property."
+        }
+      ],
+      "edges": [
+        {
+          "from": "graph",
+          "to": "gnn",
+          "label": ""
+        },
+        {
+          "from": "gnn",
+          "to": "nodes",
+          "label": ""
+        },
+        {
+          "from": "nodes",
+          "to": "pool",
+          "label": ""
+        },
+        {
+          "from": "pool",
+          "to": "vector",
+          "label": ""
+        },
+        {
+          "from": "vector",
+          "to": "regressor",
+          "label": ""
+        },
+        {
+          "from": "regressor",
+          "to": "output",
+          "label": ""
+        }
+      ],
+      "caption": "A GNN and pooling step summarize the whole graph, and a regression head predicts its continuous property."
+    }
+  },
   "citation": {
     "title": "Graph Regression",
     "authors": [],

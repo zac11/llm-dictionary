@@ -6,20 +6,128 @@
   "definition": "The MNIST database (Modified National Institute of Standards and Technology database) is a large database of handwritten digits that is commonly used for training various image processing systems.",
   "details": "The database is also widely used for training and testing in the field of machine learning. It was created by \"re-mixing\" the samples from NIST's original datasets. The creators felt that since NIST's training dataset was taken from American Census Bureau employees, while the testing dataset was taken from American high school students, it was not well-suited for machine learning experiments. Furthermore, the black and white images from NIST were normalized to fit into a 28x28 pixel bounding box and anti-aliased, which introduced grayscale levels. The MNIST database contains 60,000 training images and 10,000 testing images. Half of the training set and half of the test set were taken from NIST's training dataset, while the other half of the training set and the other half of the test set were taken from NIST's testing dataset. The original creators of the database keep a list of some of the methods tested on it. In their original paper, they use a support-vector machine to get an error rate of 0.8%. The original MNIST dataset contains at least 4 wrong labels.",
   "explainer": {
-    "lead": "MNIST is a collection of 70,000 small images of handwritten digits. For decades it was the first test every new image model had to pass — the “hello world” of machine learning.",
-    "measures": "Whether a model can recognise which digit, 0–9, is written in a 28 × 28-pixel grayscale image.",
+    "lead": "MNIST is a standard collection of 70,000 small grayscale images of handwritten digits, split into training and test sets. It gives researchers and learners a common task for building image classifiers and comparing how often they misread digits.",
+    "tiers": {
+      "eli5": "MNIST is like a big stack of flashcards, each showing a handwritten number from 0 to 9. A computer practices on 60,000 cards, then takes a quiz on 10,000 different cards to see how many it gets wrong. Because everyone can use the same cards, it is easier to compare different ways of teaching computers to read digits.",
+      "practitioner": "Use the 60,000-image training set to fit a classifier and the 10,000-image test set to report digit-classification error; each input is a 28×28 grayscale image. MNIST is convenient for testing image-classification pipelines, neural networks, preprocessing, and data augmentation, but very low error rates leave little room to distinguish strong methods. Compare results carefully because augmentation, ensembles, and other training choices differ across reported systems, and the original data contains at least four incorrect labels.",
+      "paperLevel": "The task is supervised 10-class digit classification on 28×28 grayscale images, with 60,000 training examples and 10,000 test examples; test error is E = (1/N) Σ 1[ŷ_i ≠ y_i]. MNIST was constructed before summer 1994 by mixing images from NIST SD-3 and SD-7, normalizing their size and position, and anti-aliasing them to grayscale. Its known limits include at least four wrong labels, a digit-only scope, and extremely low reported error rates, including 0.21% with DropConnect-based regularization."
+    },
+    "example": "If a classifier makes 25 mistakes on the 10,000-image test set, its error rate is 100 × 25 / 10,000 = 0.25%, so its accuracy is 99.75%.",
+    "usedIn": [
+      {
+        "name": "Machine-learning education",
+        "detail": "A compact task for learning to train and evaluate image classifiers.",
+        "url": ""
+      },
+      {
+        "name": "Neural-network research",
+        "detail": "A shared testbed for methods including convolutional networks, regularization, and data augmentation.",
+        "url": ""
+      },
+      {
+        "name": "Image-processing systems",
+        "detail": "Training data for recognizing handwritten digits in small grayscale images.",
+        "url": ""
+      },
+      {
+        "name": "Classifier comparison",
+        "detail": "Methods such as support-vector machines and linear classifiers can be compared using test error.",
+        "url": ""
+      }
+    ],
+    "measures": "MNIST measures how well a trained classifier assigns the correct digit from 0 through 9 to previously unseen handwritten-digit images. Performance is normally reported as the percentage of test images classified incorrectly.",
     "howScored": [
-      "Train on the 60,000 training images.",
-      "Predict the digit for each of the 10,000 test images.",
-      "Report the error rate: the share of test images labelled wrongly."
+      "Train the classifier on the 60,000 labeled training images.",
+      "Predict a digit for each of the 10,000 test images.",
+      "Compare every prediction with the image's label.",
+      "Divide the number of wrong predictions by 10,000 and multiply by 100 to obtain the error percentage."
     ],
-    "example": "A model that misreads 80 of the 10,000 test digits has a 0.8% error rate.",
-    "typicalResults": "Simple linear classifiers make errors in the high single digits of percent; modern convolutional networks get well under 1%.",
+    "formula": "Error rate (%) = 100 × (number of incorrect test predictions / number of test images). Accuracy (%) = 100 − error rate (%).",
+    "typicalResults": "The original paper reported a 0.8% error rate with a support-vector machine, while a simple linear classifier without preprocessing reached 12%. Later results include 0.42% with LIRA in 2004, 0.39% with a neural system using data augmentation, and a claimed 0.21% with DropConnect in 2013.",
     "caveats": [
-      "Nearly solved, so it no longer separates strong models.",
-      "Clean, centred digits are far easier than real-world images.",
-      "Harder drop-ins such as Fashion-MNIST exist for that reason."
+      "The original dataset contains at least four wrong labels.",
+      "It contains handwritten digits only, not letters or general document text.",
+      "Very low error rates make further improvements difficult to distinguish.",
+      "Results using data augmentation or ensembles are not directly comparable with single models trained without augmentation.",
+      "Its predecessor SD-3 was much cleaner than SD-7, showing how writer populations and data construction can affect difficulty."
     ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "sd3",
+          "label": "NIST SD-3",
+          "note": "Digits written by census field workers"
+        },
+        {
+          "id": "sd7",
+          "label": "NIST SD-7",
+          "note": "Digits written by high school students"
+        },
+        {
+          "id": "processing",
+          "label": "Image normalization",
+          "note": "Size, centering, and grayscale conversion"
+        },
+        {
+          "id": "train",
+          "label": "Training images",
+          "note": "60,000 labeled 28×28 images"
+        },
+        {
+          "id": "test",
+          "label": "Test images",
+          "note": "10,000 labeled 28×28 images"
+        },
+        {
+          "id": "classifier",
+          "label": "Digit classifier",
+          "note": "Learns and predicts digits 0–9"
+        },
+        {
+          "id": "error",
+          "label": "Test error",
+          "note": "Percentage of incorrect predictions"
+        }
+      ],
+      "edges": [
+        {
+          "from": "sd3",
+          "to": "processing",
+          "label": "mixed samples"
+        },
+        {
+          "from": "sd7",
+          "to": "processing",
+          "label": "mixed samples"
+        },
+        {
+          "from": "processing",
+          "to": "train",
+          "label": ""
+        },
+        {
+          "from": "processing",
+          "to": "test",
+          "label": ""
+        },
+        {
+          "from": "train",
+          "to": "classifier",
+          "label": "training"
+        },
+        {
+          "from": "test",
+          "to": "classifier",
+          "label": "evaluation"
+        },
+        {
+          "from": "classifier",
+          "to": "error",
+          "label": ""
+        }
+      ],
+      "caption": "MNIST combines and normalizes samples from two NIST datasets, then provides fixed training and test sets for digit-classification evaluation."
+    },
     "image": {
       "src": "https://upload.wikimedia.org/wikipedia/commons/b/b1/MNIST_dataset_example.png",
       "alt": "MNIST database — Database of handwritten digits",

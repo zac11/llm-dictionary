@@ -5,6 +5,103 @@
   "type": "concept",
   "definition": "Voice systems that listen while speaking, handling overlaps, backchannels (\"mm-hmm\"), and interruptions like humans do, instead of rigid walkie-talkie turn taking.",
   "details": "Voice systems that listen while speaking, handling overlaps, backchannels (\"mm-hmm\"), and interruptions like humans do, instead of rigid walkie-talkie turn taking. The frontier of natural voice UX.",
+  "explainer": {
+    "lead": "Full-duplex interaction lets a voice system keep listening while it talks, so a conversation does not have to alternate between strict speaking and listening turns. It matters because people naturally interrupt, overlap, and say brief acknowledgements such as \"mm-hmm\" without waiting for permission to speak.",
+    "tiers": {
+      "eli5": "It is like talking with a friend who can hear you even while they are answering. You can say \"wait\" to stop them or \"mm-hmm\" to show you are listening, instead of taking turns like people using walkie-talkies.",
+      "practitioner": "A full-duplex voice system keeps its input path active during speech output and decides whether incoming audio is an interruption, an acknowledgement, or overlapping speech. The main design challenges are separating the user's voice from the system's own output and avoiding false interruptions or responses to backchannels. Interaction timing and turn-taking behavior need testing with genuine overlaps, not only clean, sequential utterances.",
+      "paperLevel": "Let L(t) and S(t) indicate whether the system is listening and speaking at time t; full duplex permits L(t) = 1 while S(t) = 1, rather than enforcing mutually exclusive turns. The interaction policy must classify concurrent user speech as behavior such as interruption, backchanneling, or overlap and update its response accordingly. Key limits include confusing the system's output with user input, mishandling brief acknowledgements, and either ignoring real interruptions or stopping for irrelevant sounds."
+    },
+    "example": "A voice assistant says, \"Your train leaves at 6:40 from platform twelve,\" and the user cuts in with, \"Wait, which platform?\" Because it is still listening, the assistant stops and answers, \"Platform twelve\"; if the user had only said \"mm-hmm,\" it would have continued.",
+    "usedIn": [
+      {
+        "name": "Conversational voice assistants",
+        "detail": "Users can stop or redirect an answer while it is still being spoken.",
+        "url": ""
+      },
+      {
+        "name": "Customer service voice systems",
+        "detail": "Callers can correct details or interrupt without waiting through a complete scripted response.",
+        "url": ""
+      },
+      {
+        "name": "Hands-free voice interfaces",
+        "detail": "People can give timely corrections while continuing another activity.",
+        "url": ""
+      }
+    ],
+    "intuition": "A natural conversation has two open channels at once: each person can speak and listen simultaneously. Full-duplex interaction gives a voice system that same ability and adds rules for responding sensibly when both sides make sound together.",
+    "howItWorks": [
+      "Keep listening to the user while the system is speaking.",
+      "Detect user speech that overlaps the system's output.",
+      "Distinguish an interruption from a brief backchannel such as \"mm-hmm.\"",
+      "Respond appropriately: stop or change course for an interruption, but usually continue after an acknowledgement.",
+      "Resume or revise the system's speech based on the updated conversation."
+    ],
+    "whyItMatters": "It removes the pauses and rigid turn-taking that can make voice systems feel mechanical. Interruptions and acknowledgements can be handled when they occur, making corrections faster and conversations more natural.",
+    "misconceptions": [
+      "Full duplex does not mean that two people must talk continuously; it means listening remains available during system speech.",
+      "Detecting an interruption is not enough: the system also has to decide whether to stop, continue, or change its answer.",
+      "A quick response alone is not full duplex if the system cannot hear the user while speaking."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "user",
+          "label": "User speech",
+          "note": "Interruptions, overlap, or backchannels arrive at any time."
+        },
+        {
+          "id": "listener",
+          "label": "Continuous listener",
+          "note": "Input stays active while system audio is playing."
+        },
+        {
+          "id": "classifier",
+          "label": "Speech classifier",
+          "note": "Distinguishes interruptions from acknowledgements."
+        },
+        {
+          "id": "policy",
+          "label": "Interaction policy",
+          "note": "Chooses whether to stop, continue, or revise."
+        },
+        {
+          "id": "speaker",
+          "label": "System speech",
+          "note": "Produces the current or updated spoken response."
+        }
+      ],
+      "edges": [
+        {
+          "from": "user",
+          "to": "listener",
+          "label": "audio"
+        },
+        {
+          "from": "listener",
+          "to": "classifier",
+          "label": "overlap"
+        },
+        {
+          "from": "classifier",
+          "to": "policy",
+          "label": "speech type"
+        },
+        {
+          "from": "policy",
+          "to": "speaker",
+          "label": "control"
+        },
+        {
+          "from": "speaker",
+          "to": "user",
+          "label": "response"
+        }
+      ],
+      "caption": "The listening path remains open during system speech, allowing overlapping user audio to change the response."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

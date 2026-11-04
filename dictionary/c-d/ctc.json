@@ -5,6 +5,108 @@
   "type": "concept",
   "definition": "The alignment-free training objective that lets an encoder output per-frame token probabilities (with a blank symbol) without knowing which frame maps to which character.",
   "details": "The alignment-free training objective that lets an encoder output per-frame token probabilities (with a blank symbol) without knowing which frame maps to which character. Enables fast, simple, non-autoregressive ASR; weaker at modeling output dependencies, so often combined with attention or rescoring.",
+  "explainer": {
+    "lead": "Connectionist Temporal Classification, or CTC, trains a speech recognizer without requiring a transcript that labels every audio frame. It makes relatively simple, fast speech recognition possible by considering the many frame-by-frame paths that could produce the same text.",
+    "tiers": {
+      "eli5": "Imagine stretching the word \"cat\" across a row of boxes, with some boxes repeating a letter and others left empty. Many different rows can still be cleaned up to spell \"cat\". CTC teaches a speech system using all those possible rows, so nobody has to mark the exact box where each letter begins.",
+      "practitioner": "Train an encoder to emit token and blank probabilities for every frame, then optimize the transcript probability marginalized over CTC-valid alignments. It suits simple, non-autoregressive ASR, but its weak modeling of dependencies between output tokens can hurt accuracy; attention-based training or decoding and external rescoring are common remedies.",
+      "paperLevel": "Given encoder outputs p_t(a_t|x), CTC defines P(y|x) as the sum over all frame-level paths pi that collapse to transcript y: P(y|x) = sum_{pi in B^-1(y)} product_t p_t(pi_t|x). The collapse operator B removes repeated labels and then blanks, allowing training without frame-to-character alignment. The factorized path probability does not directly model output-token dependencies, motivating attention hybrids or rescoring."
+    },
+    "example": "For five frames, one path might be \"a, a, blank, t, blank\". Collapsing the repeated \"a\" and removing blanks gives \"at\"; other frame-level paths that also collapse to \"at\" contribute to that transcript's training score.",
+    "usedIn": [
+      {
+        "name": "Automatic speech recognition",
+        "detail": "Trains encoders to convert speech frames into text without manually aligned transcripts.",
+        "url": ""
+      },
+      {
+        "name": "Non-autoregressive ASR",
+        "detail": "Supports simple, fast decoding rather than generating each token conditioned on earlier tokens.",
+        "url": ""
+      },
+      {
+        "name": "Hybrid and rescored recognizers",
+        "detail": "Combines CTC with attention or rescoring to compensate for weak output-dependency modeling.",
+        "url": ""
+      }
+    ],
+    "intuition": "Speech stretches sounds across uneven numbers of frames, and CTC treats the many possible frame-level spellings of a transcript as different routes to the same answer. Repeats and blanks let those routes vary without requiring the correct character boundaries in advance.",
+    "howItWorks": [
+      "An encoder produces a probability distribution over tokens and a blank symbol for each frame.",
+      "A frame-level path is formed by choosing one token or blank at every step.",
+      "Repeated consecutive tokens are collapsed, and blanks are removed, to obtain the path's text.",
+      "Training scores the target transcript through all paths that collapse to it.",
+      "The resulting model can recognize speech without an explicit frame-to-character alignment."
+    ],
+    "whyItMatters": "CTC removes the costly requirement for precisely aligned speech and text while enabling a straightforward, fast, non-autoregressive recognizer. Its simplicity comes with weaker modeling of relationships between output tokens, which is why it is often paired with attention or rescoring.",
+    "misconceptions": [
+      "Blank is not an output character: it helps construct alignments and is removed during collapsing.",
+      "CTC does not require knowing which audio frame produced each character.",
+      "Fast decoding does not eliminate its weakness in modeling dependencies between output tokens."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "audio",
+          "label": "Speech frames",
+          "note": "Unaligned acoustic input"
+        },
+        {
+          "id": "encoder",
+          "label": "Encoder",
+          "note": "Processes the frame sequence"
+        },
+        {
+          "id": "probabilities",
+          "label": "Frame probabilities",
+          "note": "Token and blank scores per frame"
+        },
+        {
+          "id": "paths",
+          "label": "Valid paths",
+          "note": "Frame sequences collapsing to the target"
+        },
+        {
+          "id": "target",
+          "label": "Target transcript",
+          "note": "Text without frame alignment"
+        },
+        {
+          "id": "loss",
+          "label": "CTC objective",
+          "note": "Scores the target across valid paths"
+        }
+      ],
+      "edges": [
+        {
+          "from": "audio",
+          "to": "encoder",
+          "label": ""
+        },
+        {
+          "from": "encoder",
+          "to": "probabilities",
+          "label": ""
+        },
+        {
+          "from": "probabilities",
+          "to": "paths",
+          "label": ""
+        },
+        {
+          "from": "target",
+          "to": "paths",
+          "label": "defines target"
+        },
+        {
+          "from": "paths",
+          "to": "loss",
+          "label": "summed score"
+        }
+      ],
+      "caption": "CTC training connects frame-level predictions to an unaligned transcript through all valid collapsing paths."
+    }
+  },
   "related": [
     "alignment",
     "attention",

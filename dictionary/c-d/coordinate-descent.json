@@ -5,7 +5,107 @@
   "type": "algorithm",
   "definition": "Coordinate descent is an optimization algorithm that successively minimizes along coordinate directions to find the minimum of a function.",
   "details": "At each iteration, the algorithm determines a coordinate or coordinate block via a coordinate selection rule, then exactly or inexactly minimizes over the corresponding coordinate hyperplane while fixing all other coordinates or coordinate blocks. A line search along the coordinate direction can be performed at the current iterate to determine the appropriate step size. Coordinate descent is applicable in both differentiable and derivative-free contexts.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. That steady, miss-by-miss improvement is Coordinate descent.",
+  "explainer": {
+    "lead": "Coordinate descent finds a function’s minimum by improving one coordinate, or one block of coordinates, at a time while keeping the rest fixed. This breaks a larger optimization problem into a sequence of smaller ones, with or without derivatives.",
+    "tiers": {
+      "eli5": "Imagine standing on a hilly floor and trying to reach its lowest point while only walking north–south or east–west. You choose one direction, move to the best spot along it, then choose another direction and repeat. Coordinate descent uses this one-direction-at-a-time idea to improve a set of numbers.",
+      "practitioner": "Apply it by choosing a coordinate or block, minimizing with all other variables fixed, and repeating under a coordinate selection rule. Each subproblem can be solved exactly or inexactly, and a line search can set the step size; the method also works when derivatives are unavailable.",
+      "paperLevel": "For f(x) with x = (x_1, ..., x_n), an iteration selects coordinate i or a coordinate block and updates it by exactly or approximately minimizing f over that coordinate hyperplane, leaving all other coordinates fixed. A line search along the selected direction may determine the step size. The procedure applies to both differentiable and derivative-free problems."
+    },
+    "example": "Minimize f(x, y) = (x - 2)^2 + (y + 1)^2 starting at (0, 0). Fixing y = 0 and minimizing over x gives x = 2; then fixing x = 2 and minimizing over y gives y = -1, producing the minimum point (2, -1).",
+    "usedIn": [
+      {
+        "name": "Differentiable optimization",
+        "detail": "Coordinates are updated one at a time or in blocks while optimizing a differentiable function.",
+        "url": ""
+      },
+      {
+        "name": "Derivative-free optimization",
+        "detail": "The same coordinate-wise procedure can be used without relying on derivatives.",
+        "url": ""
+      }
+    ],
+    "goal": "Find the minimum of a function through successive minimization along coordinate directions.",
+    "inputs": [
+      "A function to minimize",
+      "A current set of coordinate values",
+      "A coordinate or block selection rule"
+    ],
+    "outputs": [
+      "An updated set of coordinate values",
+      "A point found by successive coordinate minimization"
+    ],
+    "steps": [
+      "Start at the current point.",
+      "Select a coordinate or coordinate block using the selection rule.",
+      "Fix every other coordinate or block.",
+      "Minimize exactly or inexactly over the selected coordinate hyperplane, optionally using a line search for the step size.",
+      "Repeat with another selection until the procedure stops."
+    ],
+    "tradeoffs": [
+      "Each update reduces the problem to one coordinate or block, but a selection rule is needed.",
+      "Exact minimization can be replaced by an inexact update when appropriate.",
+      "A line search can determine the step size along a coordinate direction.",
+      "Derivatives are not required, although the method can also use differentiable problems."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "point",
+          "label": "Current point",
+          "note": "The present coordinate values."
+        },
+        {
+          "id": "select",
+          "label": "Select coordinates",
+          "note": "Choose a coordinate or block."
+        },
+        {
+          "id": "fix",
+          "label": "Fix remaining coordinates",
+          "note": "Hold all other values constant."
+        },
+        {
+          "id": "minimize",
+          "label": "Minimize selection",
+          "note": "Solve exactly or inexactly, optionally with line search."
+        },
+        {
+          "id": "update",
+          "label": "Update point",
+          "note": "Use the improved values for the next iteration."
+        }
+      ],
+      "edges": [
+        {
+          "from": "point",
+          "to": "select",
+          "label": ""
+        },
+        {
+          "from": "select",
+          "to": "fix",
+          "label": ""
+        },
+        {
+          "from": "fix",
+          "to": "minimize",
+          "label": ""
+        },
+        {
+          "from": "minimize",
+          "to": "update",
+          "label": ""
+        },
+        {
+          "from": "update",
+          "to": "select",
+          "label": "repeat"
+        }
+      ],
+      "caption": "Each iteration selects and improves one coordinate or block, then repeats from the updated point."
+    }
+  },
   "related": [
     "random-coordinate-descent",
     "adaptive-coordinate-descent",

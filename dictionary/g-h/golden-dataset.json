@@ -5,6 +5,97 @@
   "type": "concept",
   "definition": "A small, meticulously verified set of input-output pairs representing the product's ground truth, used for regression testing and judge calibration.",
   "details": "A small, meticulously verified set of input-output pairs representing the product's ground truth, used for regression testing and judge calibration. Every serious LLM product ends up building one.",
+  "explainer": {
+    "lead": "A golden dataset is a trusted answer key for an LLM product: a small collection of carefully checked examples of what should go in and what should come out. It gives teams a stable way to catch regressions and check whether automated judges agree with the product’s ground truth.",
+    "tiers": {
+      "eli5": "Imagine a teacher keeping a small answer key with questions and answers that have been checked very carefully. After changing how a chatbot works, the team can ask it those same questions and compare its answers with the key. They can also use the key to check whether an automatic grader is marking answers sensibly.",
+      "practitioner": "Use golden examples as fixed cases in pre-release or regression evaluations whenever prompts, models, or other product behavior change. Keep the expected outputs meticulously verified, and include cases with known judgments when calibrating an LLM-based judge. A small set can miss important behaviors, and expected answers can become stale when product requirements change.",
+      "paperLevel": "A golden dataset can be written as D = {(x_i, y_i)}, i = 1...n, where n is small and each input-output pair is meticulously verified to represent the product’s ground truth. It supports regression evaluation by comparing behavior before and after a change, and judge calibration by comparing automated judgments with the verified references. Its limited size restricts coverage, and its references are valid only for the product behavior they were verified to represent."
+    },
+    "example": "For a support assistant, one pair might use the input “Can I get a refund 10 days after purchase under your 30-day policy?” with the verified output “Yes, you are eligible; here are the refund steps.” After a prompt change, the team reruns this case to ensure eligibility and instructions remain correct, then checks whether its automated judge rates a compliant response as correct.",
+    "usedIn": [
+      {
+        "name": "LLM product development",
+        "detail": "Provides trusted cases for checking changes to product behavior.",
+        "url": ""
+      },
+      {
+        "name": "Regression testing",
+        "detail": "Repeats verified input-output checks after model or prompt changes.",
+        "url": ""
+      },
+      {
+        "name": "LLM-as-a-judge evaluation",
+        "detail": "Supplies reference judgments for calibrating automated evaluators.",
+        "url": ""
+      }
+    ],
+    "intuition": "Automated scores are hard to trust without a fixed point of reference. A golden dataset supplies that reference through a small set of examples whose expected outputs have been checked with exceptional care.",
+    "howItWorks": [
+      "Select representative inputs for the product behavior that must remain correct.",
+      "Verify the expected output for every input so the pairs represent product ground truth.",
+      "Run the inputs again after product changes and compare the new behavior with the verified references.",
+      "Use the trusted examples to check and calibrate automated judges against known answers."
+    ],
+    "whyItMatters": "It creates a dependable baseline for detecting unwanted changes when an LLM product evolves. The same trusted examples also make it possible to test whether an automated judge is aligned with verified product expectations.",
+    "misconceptions": [
+      "It is not valuable because it is large; its defining strengths are careful verification and trust.",
+      "Its outputs represent a product’s ground truth, not necessarily universal truth.",
+      "It does not replace broader evaluation because a small set cannot cover every behavior."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "cases",
+          "label": "Representative inputs",
+          "note": "Product cases selected for checking"
+        },
+        {
+          "id": "verify",
+          "label": "Careful verification",
+          "note": "Expected outputs are meticulously checked"
+        },
+        {
+          "id": "golden",
+          "label": "Golden dataset",
+          "note": "Trusted input-output pairs"
+        },
+        {
+          "id": "regression",
+          "label": "Regression testing",
+          "note": "Checks behavior after product changes"
+        },
+        {
+          "id": "judge",
+          "label": "Judge calibration",
+          "note": "Checks automated judgments against references"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cases",
+          "to": "verify",
+          "label": "inputs"
+        },
+        {
+          "from": "verify",
+          "to": "golden",
+          "label": "verified pairs"
+        },
+        {
+          "from": "golden",
+          "to": "regression",
+          "label": "test cases"
+        },
+        {
+          "from": "golden",
+          "to": "judge",
+          "label": "references"
+        }
+      ],
+      "caption": "Verified product examples provide a shared reference for regression tests and automated-judge calibration."
+    }
+  },
   "related": [
     "calibration",
     "ground-truth"

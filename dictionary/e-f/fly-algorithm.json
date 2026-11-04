@@ -5,7 +5,104 @@
   "type": "algorithm",
   "definition": "The Fly Algorithm is an approach in 3D reconstruction that utilizes clusters of points (\"flies\") corresponding to different nearby objects via genetic algorithms and stereovision principles.",
   "details": "The resulting reconstruction is partial, but can be used to recognize obstacles in robot navigation and other applications. This technique has a high computational load due to numerous inputs and parameters, making performance optimization difficult.",
-  "story": "Imagine an art restorer who can spot a single cracked tile in a vast mosaic. What your eyes do without thinking, the machine does one careful layer at a time. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. The model looks the way you look at a crowd and finds the one face you know. That pixel-to-meaning climb is Fly algorithm.",
+  "explainer": {
+    "lead": "The Fly Algorithm builds a partial 3D picture from stereoscopic views by evolving clusters of points called flies. Its reconstructions can reveal nearby objects and obstacles, which is useful for tasks such as robot navigation, but the computation and parameter tuning can be demanding.",
+    "tiers": {
+      "eli5": "Imagine lots of tiny floating dots trying to find the surfaces of things seen by two cameras. Dots that fit the two pictures well are kept and used to make better dots, while poor ones disappear. The result is not a complete model, but it can show a robot where nearby obstacles are.",
+      "practitioner": "Apply it to stereoscopic input by evolving 3D point clusters and retaining flies that fit the scene, then use the resulting partial reconstruction for obstacle recognition. Expect significant tuning because the algorithm has many inputs and parameters, and profile the evolutionary and stereo-processing work before targeting real-time navigation.",
+      "paperLevel": "Let F be a population of 3D points, with subsets forming clusters associated with nearby objects. Genetic-algorithm search optimizes the population using stereovision information, producing a partial reconstruction R rather than a complete scene model. Its main stated limitations are high computational load and difficult performance optimization caused by numerous inputs and parameters."
+    },
+    "example": "A robot views a box and a chair through a stereo camera. The algorithm evolves flies into two useful clusters, one near the box and one near the chair, while discarding poorly fitting points. Although the furniture is not reconstructed completely, the clusters provide obstacle locations the robot can avoid.",
+    "usedIn": [
+      {
+        "name": "Robot navigation",
+        "detail": "Partial reconstructions can be used to recognize obstacles around a robot.",
+        "url": ""
+      },
+      {
+        "name": "3D reconstruction",
+        "detail": "Stereovision and evolved point clusters produce partial models of nearby objects.",
+        "url": ""
+      }
+    ],
+    "goal": "Reconstruct enough 3D structure from stereoscopic views to identify nearby objects and obstacles without requiring a complete scene model.",
+    "inputs": [
+      "Stereoscopic views of a scene",
+      "A population of 3D points called flies",
+      "Genetic-algorithm settings and other input parameters"
+    ],
+    "outputs": [
+      "A partial 3D reconstruction",
+      "Point clusters corresponding to nearby objects",
+      "Obstacle information for applications such as robot navigation"
+    ],
+    "steps": [
+      "Capture stereoscopic views of the scene.",
+      "Create an initial population of 3D points, or flies.",
+      "Evaluate the flies using stereovision information.",
+      "Use genetic-algorithm operations to improve the population and group points into clusters.",
+      "Keep the resulting clusters as a partial reconstruction of nearby objects.",
+      "Use the reconstruction to recognize obstacles or support another application."
+    ],
+    "tradeoffs": [
+      "Partial reconstruction can be sufficient for obstacle recognition.",
+      "Numerous inputs and parameters make tuning difficult.",
+      "The computational load is high.",
+      "Performance optimization is challenging."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "stereo",
+          "label": "Stereoscopic views",
+          "note": "Two-view information about the scene"
+        },
+        {
+          "id": "flies",
+          "label": "Fly population",
+          "note": "Candidate 3D points"
+        },
+        {
+          "id": "genetic",
+          "label": "Genetic search",
+          "note": "Improves points using stereovision"
+        },
+        {
+          "id": "clusters",
+          "label": "Object clusters",
+          "note": "Groups associated with nearby objects"
+        },
+        {
+          "id": "obstacles",
+          "label": "Obstacle recognition",
+          "note": "Uses the partial reconstruction"
+        }
+      ],
+      "edges": [
+        {
+          "from": "stereo",
+          "to": "genetic",
+          "label": "stereo evidence"
+        },
+        {
+          "from": "flies",
+          "to": "genetic",
+          "label": "candidate points"
+        },
+        {
+          "from": "genetic",
+          "to": "clusters",
+          "label": "evolved flies"
+        },
+        {
+          "from": "clusters",
+          "to": "obstacles",
+          "label": "partial 3D"
+        }
+      ],
+      "caption": "Genetic search evolves 3D flies using stereoscopic evidence, yielding object clusters that support obstacle recognition."
+    }
+  },
   "related": [
     "actor-critic-algorithm",
     "algorithm-imed",

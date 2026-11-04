@@ -5,7 +5,97 @@
   "type": "concept",
   "definition": "Illustrative input-output pairs included in a prompt to demonstrate the desired task and format to a language model.",
   "details": "Well-chosen few-shot examples can substantially improve output quality and consistency by clarifying ambiguous instructions through demonstration rather than description alone.",
-  "story": "Picture a novelist who has read so much that, given a first line, they cannot help but write the next one. It makes new things by recombining everything it has ever seen. The result feels creative because it is memory, reshuffled at speed. It is prediction pushed forward — each next word, or pixel, guessed from everything that came before it. That next-word, next-stroke magic is Few-Shot Examples.",
+  "explainer": {
+    "lead": "Few-shot examples are small demonstrations placed inside a language model's prompt. They show the model what a good answer should look like, which can make its responses more accurate and consistent.",
+    "tiers": {
+      "eli5": "It is like showing a friend two solved puzzles before asking them to solve a new one. The examples make the rules much clearer than a long explanation. A language model can use them in the same way to copy the task and answer style.",
+      "practitioner": "Add a small set of representative input-output pairs between the instruction and the new input. Keep the labels, formatting, and task boundaries consistent, and choose examples that resolve likely ambiguities. Poor or inconsistent demonstrations can steer the model toward the wrong output.",
+      "paperLevel": "Given demonstrations D = {(x_1, y_1), ..., (x_k, y_k)}, construct a prompt containing the task instruction, D, and a new input x; the language model then generates an output y for x. The demonstrations clarify the intended input-output mapping without changing the model itself. Output quality depends on how well the chosen examples represent the desired task and format."
+    },
+    "example": "For sentiment classification, prompt: \"Review: I loved it -> Positive. Review: It broke after one day -> Negative. Review: The battery lasts all day ->\" The intended output is \"Positive\".",
+    "usedIn": [
+      {
+        "name": "Language-model assistants",
+        "detail": "Demonstrations clarify the requested task and response style within a prompt.",
+        "url": ""
+      },
+      {
+        "name": "Structured text generation",
+        "detail": "Input-output pairs show the exact format the model should reproduce.",
+        "url": ""
+      },
+      {
+        "name": "Text classification",
+        "detail": "Labelled examples demonstrate how new text should be categorized.",
+        "url": ""
+      }
+    ],
+    "intuition": "Showing is often clearer than telling: a few worked examples can reveal what an instruction means and what its answers should look like.",
+    "howItWorks": [
+      "Write the task instruction.",
+      "Add several representative input-output pairs.",
+      "Place the new input after the demonstrations.",
+      "Let the language model produce an output that follows the demonstrated task and format."
+    ],
+    "whyItMatters": "Well-chosen demonstrations can improve output quality and consistency by resolving ambiguities that a written instruction alone may leave open.",
+    "misconceptions": [
+      "Few-shot examples are included in the prompt; they do not change the model itself.",
+      "Examples complement a clear instruction rather than making the instruction unnecessary.",
+      "More examples are not a substitute for well-chosen, consistent examples."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "instruction",
+          "label": "Task instruction",
+          "note": "Describes the requested task"
+        },
+        {
+          "id": "examples",
+          "label": "Few-shot examples",
+          "note": "Demonstrate inputs and outputs"
+        },
+        {
+          "id": "input",
+          "label": "New input",
+          "note": "The case to answer"
+        },
+        {
+          "id": "model",
+          "label": "Language model",
+          "note": "Uses the complete prompt"
+        },
+        {
+          "id": "output",
+          "label": "Model output",
+          "note": "Follows the demonstrated pattern"
+        }
+      ],
+      "edges": [
+        {
+          "from": "instruction",
+          "to": "model",
+          "label": "prompt"
+        },
+        {
+          "from": "examples",
+          "to": "model",
+          "label": "prompt"
+        },
+        {
+          "from": "input",
+          "to": "model",
+          "label": "prompt"
+        },
+        {
+          "from": "model",
+          "to": "output",
+          "label": "generates"
+        }
+      ],
+      "caption": "The instruction, demonstrations, and new input form the prompt that guides the model's output."
+    }
+  },
   "related": [
     "chain-of-thought",
     "few-shot-learning",

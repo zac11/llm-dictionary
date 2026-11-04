@@ -5,6 +5,46 @@
   "type": "concept",
   "definition": "The bias-variance dilemma is the conflict in trying to simultaneously minimize these two sources of error that prevent supervised learning algorithms from generalizing beyond their training set.",
   "details": "The bias-variance dilemma is the conflict in trying to simultaneously minimize these two sources of error that prevent supervised learning algorithms from generalizing beyond their training set.",
+  "explainer": {
+    "lead": "The bias-variance dilemma is the challenge of making a supervised learning model fit its training data well without becoming too tied to that particular data. It matters because a model that is either too simple or too sensitive can perform poorly on new examples.",
+    "tiers": {
+      "eli5": "Imagine practicing throws at a target. If all your throws land left of it, you have a consistent aiming mistake; if they scatter everywhere, your throws change too much each time. A good learner avoids both problems so it can hit a new target, not just repeat what happened during practice.",
+      "practitioner": "Use training and validation performance to look for underfitting and overfitting, then adjust model flexibility, regularization, or training data accordingly. High error on both can indicate excessive bias, while a large gap favoring training performance can indicate excessive variance. Do not tune on the test set, and do not assume every increase in complexity must worsen validation performance.",
+      "paperLevel": "For squared-error regression at a fixed input x, with y = f(x) + noise, the expected error decomposes as E[(y - f_hat(x))^2] = Bias[f_hat(x)]^2 + Var[f_hat(x)] + Var(noise), where Bias[f_hat(x)] = E[f_hat(x)] - f(x). Bias and variance are expectations over training samples, and the noise term cannot be removed by fitting the training set better. The decomposition does not guarantee that every modeling change must trade one learnable term against the other."
+    },
+    "example": "Suppose three classifiers are evaluated on the same task. A very simple rule makes 180 errors on 1,000 training examples and 200 on 1,000 validation examples, suggesting high bias; a memorizing model makes 0 training errors but 220 validation errors, suggesting high variance; an intermediate model makes 70 training errors and 80 validation errors, giving the best validation result of the three.",
+    "usedIn": [
+      {
+        "name": "Regression",
+        "detail": "Helps guide choices between highly restricted predictors and more flexible ones when estimating numeric outcomes.",
+        "url": ""
+      },
+      {
+        "name": "Classification",
+        "detail": "Provides a framework for understanding poor generalization in models trained to assign labels.",
+        "url": ""
+      },
+      {
+        "name": "Supervised model selection",
+        "detail": "Informs comparisons of candidate models using performance beyond the training set.",
+        "url": ""
+      }
+    ],
+    "intuition": "A model with high bias misses important patterns because its assumptions are too restrictive, while a model with high variance changes substantially with the particular training sample. Good generalization requires controlling both rather than minimizing either in isolation.",
+    "howItWorks": [
+      "Train a supervised learning algorithm on a finite set of labeled examples.",
+      "Measure how its restrictive assumptions contribute systematic error: this is the bias component.",
+      "Measure how sensitive its predictions are to changes in the training sample: this is the variance component.",
+      "Compare candidates using data not used for fitting, looking for strong performance on new examples.",
+      "Choose a model or training procedure that controls total generalization error rather than training error alone."
+    ],
+    "whyItMatters": "The dilemma explains why a near-perfect training score does not by itself show that a model will work well on unseen data. It gives practitioners a way to reason about generalization when selecting and tuning supervised models.",
+    "misconceptions": [
+      "Low training error does not necessarily mean low bias and variance on new data.",
+      "Bias here is a statistical property of a learning algorithm, not social unfairness.",
+      "A more complex model is not always better, and increased complexity does not guarantee a simple one-for-one tradeoff in every setting."
+    ]
+  },
   "related": [
     "supervised-learning"
   ],

@@ -9,7 +9,98 @@
   ],
   "definition": "A generative model trained to reverse a process that gradually adds noise to data, thereby learning to create new data from noise.",
   "details": "Training adds Gaussian noise over many steps until an image becomes pure noise, and the network learns to predict and remove the noise at each step. Sampling then starts from random noise and denoises it step by step. Diffusion models power modern text-to-image systems such as DALL·E, Stable Diffusion and Midjourney.",
-  "story": "Imagine a sketch artist who starts with static and, stroke by stroke, sharpens it into a face. The result feels creative because it is memory, reshuffled at speed. Given a starting line, the machine imagines what comes next — a word, a note, a patch of a picture. The model dreams a little, then cleans up the dream. That next-word, next-stroke magic is Diffusion Model.",
+  "explainer": {
+    "lead": "A diffusion model learns to make data by reversing gradual corruption: first it studies how clean examples turn into noise, then it runs that process backwards. This step-by-step approach is a foundation of modern image generators, including DALL·E, Stable Diffusion and Midjourney.",
+    "tiers": {
+      "eli5": "Imagine slowly adding static to a photograph until the picture has completely disappeared. A diffusion model practises undoing that static, a little at a time, until it can begin with pure static and reveal a brand-new picture. It is like learning to clean a very messy page through many small corrections rather than one big fix.",
+      "practitioner": "During training, images are corrupted with Gaussian noise across many steps, and a network learns to predict the noise at each noise level. Generation starts with random noise and repeatedly applies the learned denoiser, as in systems such as Stable Diffusion; a practical cost is that sampling requires a sequence of denoising steps rather than a single forward pass.",
+      "paperLevel": "Let x0 be clean data and let a forward process add Gaussian noise until xT is approximately standard normal noise. A network epsilon_theta(xt, t) is trained to predict the noise present at step t, and sampling starts from xT ~ N(0, I) and iteratively estimates the reverse transitions toward x0. Sampling is inherently sequential across the chosen denoising steps."
+    },
+    "example": "To train on a clean photograph, the process produces progressively noisier versions and teaches the network what noise to remove at every stage. Later, the sampler begins with unrelated random noise and repeatedly denoises it, gradually forming a new image.",
+    "usedIn": [
+      {
+        "name": "DALL·E",
+        "detail": "A modern text-to-image system powered by diffusion models.",
+        "url": ""
+      },
+      {
+        "name": "Stable Diffusion",
+        "detail": "A text-to-image system that generates images through iterative denoising.",
+        "url": ""
+      },
+      {
+        "name": "Midjourney",
+        "detail": "A text-to-image system powered by diffusion models.",
+        "url": ""
+      }
+    ],
+    "intuition": "Destroying structure is easy, but learning each small stage of that destruction teaches a model how to rebuild structure. Generation reverses the lesson, turning random noise into increasingly coherent data.",
+    "howItWorks": [
+      "Begin training with a clean data example, such as an image.",
+      "Add Gaussian noise over many steps until the example becomes pure noise.",
+      "Train a network to predict and remove the noise at each step.",
+      "To generate something new, begin with random noise.",
+      "Apply the learned denoising process step by step to produce a sample."
+    ],
+    "whyItMatters": "It turns generation into a series of learnable denoising problems, allowing a model to create new data starting only from noise. This approach underlies widely used modern text-to-image systems.",
+    "misconceptions": [
+      "Generation does not begin with a finished image; it begins with random noise.",
+      "Training learns from the forward noising process, while sampling reverses that process.",
+      "Denoising happens over many steps, not in a single cleanup operation."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "clean",
+          "label": "Clean data",
+          "note": "An original training example"
+        },
+        {
+          "id": "noisy",
+          "label": "Noisy data",
+          "note": "Intermediate Gaussian-noise steps"
+        },
+        {
+          "id": "noise",
+          "label": "Pure noise",
+          "note": "The endpoint of noising and start of sampling"
+        },
+        {
+          "id": "denoise",
+          "label": "Learned denoising",
+          "note": "The network predicts and removes noise step by step"
+        },
+        {
+          "id": "sample",
+          "label": "New data",
+          "note": "A newly generated sample"
+        }
+      ],
+      "edges": [
+        {
+          "from": "clean",
+          "to": "noisy",
+          "label": "add noise"
+        },
+        {
+          "from": "noisy",
+          "to": "noise",
+          "label": "more noise"
+        },
+        {
+          "from": "noise",
+          "to": "denoise",
+          "label": "sample"
+        },
+        {
+          "from": "denoise",
+          "to": "sample",
+          "label": "reverse steps"
+        }
+      ],
+      "caption": "Training follows noising from clean data to pure noise; generation uses the learned denoiser in the opposite direction."
+    }
+  },
   "related": [
     "latent-diffusion-model",
     "generative-adversarial-network",

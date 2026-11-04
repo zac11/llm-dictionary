@@ -2,10 +2,129 @@
   "term": "GPT-1",
   "letter": "G",
   "category": "Large language models",
-  "type": "concept",
+  "type": "model",
   "definition": "Generative Pre-trained Transformer 1 (GPT-1) is OpenAI's first large language model (LLM) in its GPT series of models, developed following Google's invention of the transformer architecture in 2017.",
   "details": "In June 2018, OpenAI released a paper titled \"Improving Language Understanding by Generative Pre-Training\", in which they introduced that initial model along with the term generative pre-trained transformer (GPT). Up to that point, the best-performing neural NLP models primarily employed supervised learning from large amounts of manually labeled data. This reliance on supervised learning limited their use of datasets that were not well-annotated, in addition to making it prohibitively expensive and time-consuming to train extremely large models; many languages (such as Swahili or Haitian Creole) are difficult to translate and interpret using such models due to a lack of available text for corpus-building. In contrast, a GPT's \"semi-supervised\" approach involved two stages: an unsupervised generative \"pre-training\" stage in which a language modeling objective was used to set initial parameters, and a supervised discriminative \"fine-tuning\" stage in which these parameters were adapted to a target task. The use of a transformer architecture, as opposed to previous techniques involving attention-augmented RNNs, provided GPT models with a more structured memory than could be achieved th",
-  "story": "Imagine learning a language by reading every book in the library and noticing, over time, which words travel together. It does not memorize a rulebook; it absorbs a library. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It is fluency built from pattern, not from memorized rules. That pattern-earned fluency is GPT-1.",
+  "explainer": {
+    "lead": "GPT-1 was OpenAI's first Generative Pre-trained Transformer and the starting point of its GPT series. Its importance lies in a two-stage recipe: learn language patterns from unlabeled text first, then adapt the resulting model to a specific task with supervised examples.",
+    "tiers": {
+      "eli5": "Imagine learning a language by reading lots of writing before practicing a particular school exercise. GPT-1 worked similarly: it first learned from text without people labeling every answer, then practiced a chosen task using labeled examples. This made it possible to use text collections that had not been carefully annotated.",
+      "practitioner": "The practical recipe is unsupervised language-model pre-training followed by supervised, discriminative fine-tuning for the target task. Pre-training supplies the initial parameters, while fine-tuning adapts them using labeled task data. Do not treat pre-training as eliminating supervision altogether, and do not assume the approach automatically resolves the corpus shortages affecting languages such as Swahili or Haitian Creole.",
+      "paperLevel": "GPT-1 uses a transformer architecture and a semi-supervised two-stage objective: maximize a language-modeling objective on unlabeled text to initialize parameters theta, then optimize a supervised discriminative objective to adapt theta to a target task. OpenAI introduced the model and the term generative pre-trained transformer in the June 2018 paper \"Improving Language Understanding by Generative Pre-Training\". Fine-tuning still requires supervision for the target task."
+    },
+    "example": "To prepare GPT-1 for a chosen language-understanding task, first train it on unlabeled text so that language modeling sets its initial parameters. Then use labeled examples from that task for supervised fine-tuning, producing parameters adapted to the task rather than training the entire model only from its labeled dataset.",
+    "usedIn": [
+      {
+        "name": "OpenAI GPT series",
+        "detail": "GPT-1 was the first model in the series and introduced the GPT name.",
+        "url": ""
+      },
+      {
+        "name": "Neural NLP",
+        "detail": "It demonstrated a two-stage alternative to relying primarily on supervised learning from manually labeled data.",
+        "url": ""
+      },
+      {
+        "name": "Language understanding research",
+        "detail": "Its originating paper presented generative pre-training as a way to improve language understanding.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Transformer architecture",
+        "detail": ""
+      },
+      {
+        "name": "Unsupervised generative pre-training",
+        "detail": ""
+      },
+      {
+        "name": "Language-modeling objective",
+        "detail": ""
+      },
+      {
+        "name": "Supervised discriminative fine-tuning",
+        "detail": ""
+      },
+      {
+        "name": "Task-adapted parameters",
+        "detail": ""
+      }
+    ],
+    "flow": [
+      "Begin with text that does not require manual task labels.",
+      "Pre-train with a language-modeling objective to set initial parameters.",
+      "Supply supervised examples for the chosen target task.",
+      "Fine-tune the parameters with a discriminative objective.",
+      "Use the adapted model for that target task."
+    ],
+    "origin": "OpenAI introduced GPT-1 in June 2018 in the paper \"Improving Language Understanding by Generative Pre-Training\". The paper also introduced the term generative pre-trained transformer.",
+    "lineage": "GPT-1 was the first model in OpenAI's GPT series and followed Google's invention of the transformer architecture in 2017. Its transformer-based approach contrasted with earlier techniques using attention-augmented RNNs.",
+    "whyItMatters": "GPT-1 established a way to make broad use of unlabeled text before adapting a model to supervised tasks. This addressed the expense, time, and dataset restrictions created when neural NLP systems depended primarily on large amounts of manually labeled data.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "text",
+          "label": "Unlabeled text",
+          "note": "Provides text without manual task annotations."
+        },
+        {
+          "id": "pretrain",
+          "label": "Generative pre-training",
+          "note": "Applies the unsupervised language-modeling objective."
+        },
+        {
+          "id": "parameters",
+          "label": "Initial parameters",
+          "note": "Stores the pre-trained starting point."
+        },
+        {
+          "id": "labels",
+          "label": "Target-task examples",
+          "note": "Provides supervision for the chosen task."
+        },
+        {
+          "id": "finetune",
+          "label": "Discriminative fine-tuning",
+          "note": "Adapts the parameters with supervised learning."
+        },
+        {
+          "id": "model",
+          "label": "Task-adapted model",
+          "note": "Contains parameters specialized for the target task."
+        }
+      ],
+      "edges": [
+        {
+          "from": "text",
+          "to": "pretrain",
+          "label": "training text"
+        },
+        {
+          "from": "pretrain",
+          "to": "parameters",
+          "label": "initializes"
+        },
+        {
+          "from": "parameters",
+          "to": "finetune",
+          "label": "starting point"
+        },
+        {
+          "from": "labels",
+          "to": "finetune",
+          "label": "supervision"
+        },
+        {
+          "from": "finetune",
+          "to": "model",
+          "label": "adapts"
+        }
+      ],
+      "caption": "GPT-1's semi-supervised recipe: unsupervised pre-training supplies initial parameters, and supervised fine-tuning adapts them to a target task."
+    }
+  },
   "related": [
     "gpt",
     "gpt-2",

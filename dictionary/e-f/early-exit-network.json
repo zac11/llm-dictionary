@@ -5,7 +5,129 @@
   "type": "architecture",
   "definition": "Early-exit networks are a class of dynamic neural networks designed for efficient inference by allowing models to make confident predictions at intermediate layers, rather than processing the full network.",
   "details": "Early-exit mechanisms are methods for deep neural networks that add intermediate classifiers, allowing inference to stop at earlier layers for inputs assessed as low uncertainty. Decisions to exit are typically based on confidence measures such as softmax-derived scores, classification margins, or entropy-based criteria, with the goal of reducing computational cost. These approaches are commonly paired with specialized training procedures and system-level optimizations to improve efficiency while preserving accuracy. The main idea behind the technology is to stop excessive calculations when a good answer can already be given with a high degree of probability, which can save both computation and time. Early-exit networks have also been extended with expert-based exit criteria, where intermediate classifiers are treated as multiple “experts” whose predictions and confidence scores can be aggregated to decide whether to stop computation early. Hardware implementations are also being developed.",
-  "story": "Picture an architect laying out a building where every room has to know which other rooms matter to it. The layout decides what the machine can even attempt, before it learns a single thing. It is the blueprint that makes everything else possible. It is the difference between a row of isolated cubicles and one big room where everyone can hear each other. That blueprint is Early-exit network.",
+  "explainer": {
+    "lead": "An early-exit network is a neural network with decision points partway through, so it can classify an input without always running every layer. Inputs that already produce a confident answer finish sooner, while the rest continue deeper, reducing computation and time.",
+    "tiers": {
+      "eli5": "Imagine taking a quiz where you can stop after each section if you are already sure of your final answer. An early-exit network works similarly: it checks its answer at several points and stops early when one seems reliable. If not, it keeps thinking by using more layers.",
+      "practitioner": "Add intermediate classifiers and choose exit rules using signals such as softmax scores, classification margins, or entropy. Set the criteria to balance computation saved against accuracy preserved, and pair inference with specialized training and system-level optimizations. A poorly chosen confidence rule can accept uncertain predictions too early or send too many inputs through the full network, weakening either accuracy or efficiency.",
+      "paperLevel": "For input x, let h_l = f_l(x) be the representation at layer l and p_l = g_l(h_l) the intermediate classifier's prediction. The network exits at the first l whose confidence criterion C(p_l) passes threshold tau_l, otherwise it continues to the full network. Accuracy and efficiency depend on the exit criteria, thresholds, training procedure, and system implementation; expert-based variants aggregate several intermediate classifiers' predictions and confidence scores."
+    },
+    "usedIn": [
+      {
+        "name": "Efficient neural network inference",
+        "detail": "Low-uncertainty inputs can stop at intermediate layers instead of always paying the full network's computational cost.",
+        "url": ""
+      },
+      {
+        "name": "Early-exit hardware",
+        "detail": "Hardware implementations are being developed to support this style of computation.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Network layers",
+        "detail": "Successive stages process the input, with deeper stages available when an early answer is insufficient."
+      },
+      {
+        "name": "Intermediate classifiers",
+        "detail": "Classifiers attached inside the network produce predictions before the final layer."
+      },
+      {
+        "name": "Confidence measure",
+        "detail": "Softmax-derived scores, classification margins, or entropy-based criteria estimate whether a prediction is reliable enough."
+      },
+      {
+        "name": "Exit rule",
+        "detail": "The decision logic either returns an intermediate prediction or sends the input onward for more computation."
+      },
+      {
+        "name": "Expert aggregation",
+        "detail": "In extended designs, predictions and confidence scores from multiple intermediate classifiers are combined to decide whether to stop."
+      }
+    ],
+    "flow": [
+      "The input passes through an initial portion of the network.",
+      "An intermediate classifier produces a prediction and a confidence signal.",
+      "The exit rule returns that prediction if its criterion is satisfied.",
+      "Otherwise, processing continues through deeper layers and later exit points.",
+      "Inputs that never exit early are processed by the full network."
+    ],
+    "lineage": "Early-exit networks belong to the broader class of dynamic neural networks for efficient inference. Extensions include expert-based exit criteria, specialized training and system optimizations, and developing hardware implementations.",
+    "whyItMatters": "Many inputs do not need the same amount of processing to obtain a confident prediction. Letting those inputs stop early can save computation and time while aiming to preserve accuracy.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input",
+          "note": "Data enters the network."
+        },
+        {
+          "id": "layers",
+          "label": "Initial layers",
+          "note": "Compute an intermediate representation."
+        },
+        {
+          "id": "classifier",
+          "label": "Intermediate classifier",
+          "note": "Produces an early prediction."
+        },
+        {
+          "id": "confidence",
+          "label": "Confidence check",
+          "note": "Applies the exit criterion."
+        },
+        {
+          "id": "early-output",
+          "label": "Early prediction",
+          "note": "Returned when confidence passes."
+        },
+        {
+          "id": "deeper",
+          "label": "Deeper layers",
+          "note": "Handle inputs needing more computation."
+        },
+        {
+          "id": "final-output",
+          "label": "Final prediction",
+          "note": "Produced after full processing."
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "layers",
+          "label": ""
+        },
+        {
+          "from": "layers",
+          "to": "classifier",
+          "label": ""
+        },
+        {
+          "from": "classifier",
+          "to": "confidence",
+          "label": "prediction"
+        },
+        {
+          "from": "confidence",
+          "to": "early-output",
+          "label": "exit"
+        },
+        {
+          "from": "confidence",
+          "to": "deeper",
+          "label": "continue"
+        },
+        {
+          "from": "deeper",
+          "to": "final-output",
+          "label": ""
+        }
+      ],
+      "caption": "At each exit point, a confident prediction is returned; otherwise, the input continues through more of the network."
+    }
+  },
   "related": [
     "circuit-neural-network",
     "co-occurrence-network",

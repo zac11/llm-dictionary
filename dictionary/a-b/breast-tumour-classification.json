@@ -5,6 +5,113 @@
   "type": "concept",
   "definition": "Classifying breast tumors as benign or malignant from mammograms or histopathology — a canonical medical imaging application.",
   "details": "Classifying breast tumors as benign or malignant from mammograms or histopathology — a canonical medical imaging application.",
+  "explainer": {
+    "lead": "Breast tumour classification uses an image to estimate whether a tumour is benign or malignant. It can help organise and prioritise cases for expert review, but a model's output is evidence to interpret, not a diagnosis by itself.",
+    "tiers": {
+      "eli5": "It is like teaching a sorting game to put pictures into two boxes: one for tumours that are not cancerous and one for tumours that are. The computer learns from pictures whose boxes are already known, then makes its best guess about a new picture. A doctor still needs to check that guess carefully.",
+      "practitioner": "Train a binary image classifier separately for mammograms or histopathology images using labelled cases, then evaluate it on patients not represented in training. Track both missed malignant cases and false alarms, since their clinical costs differ. Watch for changes in scanners, image preparation and patient populations that can make performance on new data worse than validation results suggest.",
+      "paperLevel": "Given an image x from mammography or histopathology, learn f(x) in {benign, malignant}, often by estimating p(malignant | x) and applying a decision threshold. Evaluation must account for asymmetric errors: a malignant tumour labelled benign and a benign tumour labelled malignant have different consequences. Results may not transfer across imaging modalities, acquisition settings or populations, and image-based classification does not by itself establish a clinical diagnosis."
+    },
+    "example": "A trained model receives a labelled mammogram and outputs 0.85 for malignant and 0.15 for benign. With a decision threshold of 0.5, it flags the tumour as likely malignant for further clinical assessment; the score alone does not confirm cancer.",
+    "usedIn": [
+      {
+        "name": "Mammography analysis",
+        "detail": "Estimates whether a tumour visible in a breast X-ray is benign or malignant.",
+        "url": ""
+      },
+      {
+        "name": "Histopathology analysis",
+        "detail": "Classifies tumours using images of tissue examined under a microscope.",
+        "url": ""
+      },
+      {
+        "name": "Medical-imaging research",
+        "detail": "Provides a standard binary-classification setting for developing and comparing image models.",
+        "url": ""
+      },
+      {
+        "name": "Clinical decision support",
+        "detail": "Can prioritise or flag cases for specialist assessment rather than replace that assessment.",
+        "url": ""
+      }
+    ],
+    "intuition": "The task is supervised pattern recognition: examples with known tumour labels teach a model which visual patterns tend to accompany each class. For a new image, the model produces a class prediction or a score that can be thresholded.",
+    "howItWorks": [
+      "Collect mammograms or histopathology images with trusted benign or malignant labels.",
+      "Prepare the images consistently and separate patients between training and test data.",
+      "Train a model to associate image patterns with the two tumour classes.",
+      "For a new image, estimate p(malignant | x) and apply a chosen threshold.",
+      "Evaluate errors and send uncertain or high-risk outputs for appropriate clinical review."
+    ],
+    "whyItMatters": "Consistent classification can help surface suspicious cases and organise review of large image collections. Careful evaluation matters because missing a malignant tumour and falsely alarming someone with a benign tumour cause different harms.",
+    "misconceptions": [
+      "A high malignant score is not a stand-alone cancer diagnosis.",
+      "Mammograms and histopathology images are different inputs, not interchangeable views.",
+      "High overall accuracy can still hide too many missed malignant cases."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "image",
+          "label": "Tumour image",
+          "note": "A mammogram or histopathology image"
+        },
+        {
+          "id": "prepare",
+          "label": "Image preparation",
+          "note": "Put inputs into a consistent form"
+        },
+        {
+          "id": "model",
+          "label": "Trained classifier",
+          "note": "Learns patterns from labelled examples"
+        },
+        {
+          "id": "score",
+          "label": "Malignancy score",
+          "note": "Estimates p(malignant | image)"
+        },
+        {
+          "id": "decision",
+          "label": "Class decision",
+          "note": "Applies a threshold to select a class"
+        },
+        {
+          "id": "review",
+          "label": "Clinical review",
+          "note": "Interprets the output with other evidence"
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "prepare",
+          "label": "pixels"
+        },
+        {
+          "from": "prepare",
+          "to": "model",
+          "label": "input"
+        },
+        {
+          "from": "model",
+          "to": "score",
+          "label": "probability"
+        },
+        {
+          "from": "score",
+          "to": "decision",
+          "label": "threshold"
+        },
+        {
+          "from": "decision",
+          "to": "review",
+          "label": "flag"
+        }
+      ],
+      "caption": "A tumour image becomes a probability and then a classification, with clinical review providing the wider diagnostic context."
+    }
+  },
   "related": [
     "imaging"
   ],

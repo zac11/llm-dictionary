@@ -5,6 +5,113 @@
   "type": "concept",
   "definition": "State persisting beyond the current context window: short-term working notes, long-term stores of facts and preferences (often files or vector stores), and episodic records of past interactions, with explicit read/write policies.",
   "details": "State persisting beyond the current context window: short-term working notes, long-term stores of facts and preferences (often files or vector stores), and episodic records of past interactions, with explicit read/write policies. Memory design determines whether an agent improves with use or repeats itself.",
+  "explainer": {
+    "lead": "Agent memory lets an AI agent carry useful information from one step or session into another, instead of starting blank each time. Its design matters because remembered facts and experiences can help an agent improve with use, while poor memory can leave it repeating questions and mistakes.",
+    "tiers": {
+      "eli5": "Agent memory is like a notebook for an AI helper. It can jot down what it is doing now, save things you like, and remember what happened last time, so tomorrow it does not have to ask you everything again.",
+      "practitioner": "Implementations commonly separate working notes from long-term facts and preferences, with files or vector stores used for durable storage and episodic records used for past interactions. Explicit read/write policies decide what enters memory and what is retrieved into a later context; the main pitfalls are uncontrolled writes, stale or irrelevant recalls, and assuming that storage alone will improve behavior.",
+      "paperLevel": "Let M_t denote memory outside the current context window; a transition can be written M_{t+1} = W(M_t, o_t, a_t), where o_t and a_t are observations and actions, and retrieval supplies R(M_t, q_t) to a later decision. Memory may contain working state, durable facts or preferences, and episodic interaction records. Its usefulness depends on the read/write policy: persistence alone does not ensure improvement, and inappropriate retained or retrieved state can make later behavior repetitive or poorly grounded."
+    },
+    "example": "A user tells an assistant, \"Prefer concise answers and use Python.\" The assistant writes that preference to its long-term store; weeks later, in a new session, its read policy retrieves the note, so it gives a short Python example without asking again.",
+    "usedIn": [
+      {
+        "name": "Personal assistants",
+        "detail": "Retain user preferences and facts across separate conversations.",
+        "url": ""
+      },
+      {
+        "name": "Coding agents",
+        "detail": "Keep working notes and records of earlier attempts while handling extended tasks.",
+        "url": ""
+      },
+      {
+        "name": "Customer-support agents",
+        "detail": "Use records of past interactions to avoid restarting an unresolved request.",
+        "url": ""
+      }
+    ],
+    "intuition": "A context window is what the agent can see right now; memory is the notebook it can consult and update beyond that view. Separating immediate notes, durable knowledge, and past episodes lets each kind of information be handled differently.",
+    "howItWorks": [
+      "Keep short-term working notes for the current task.",
+      "Write selected facts, preferences, or completed episodes to durable storage.",
+      "Apply explicit policies to decide what may be written, retained, or read.",
+      "Retrieve relevant memories when a later task needs them.",
+      "Place the retrieved information into the agent's current context."
+    ],
+    "whyItMatters": "Memory gives an agent continuity across steps and sessions, allowing later behavior to reflect earlier information. Thoughtful read/write policies help it build on experience rather than repeatedly rediscovering the same facts.",
+    "misconceptions": [
+      "A larger context window is not the same as persistent memory; its contents do not automatically survive beyond the current context.",
+      "Adding a vector store does not by itself make an agent learn or improve.",
+      "Remembering everything is not necessarily better; what gets written and retrieved shapes later behavior."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "interaction",
+          "label": "Current interaction",
+          "note": "Observations and actions"
+        },
+        {
+          "id": "working",
+          "label": "Working notes",
+          "note": "Short-term task state"
+        },
+        {
+          "id": "policy",
+          "label": "Read-write policy",
+          "note": "Controls memory operations"
+        },
+        {
+          "id": "longterm",
+          "label": "Long-term store",
+          "note": "Facts and preferences"
+        },
+        {
+          "id": "episodic",
+          "label": "Episodic records",
+          "note": "Past interactions"
+        },
+        {
+          "id": "future",
+          "label": "Future context",
+          "note": "Retrieved memory informs action"
+        }
+      ],
+      "edges": [
+        {
+          "from": "interaction",
+          "to": "working",
+          "label": "updates"
+        },
+        {
+          "from": "working",
+          "to": "policy",
+          "label": "write request"
+        },
+        {
+          "from": "policy",
+          "to": "longterm",
+          "label": "selected facts"
+        },
+        {
+          "from": "policy",
+          "to": "episodic",
+          "label": "episodes"
+        },
+        {
+          "from": "longterm",
+          "to": "future",
+          "label": "retrieval"
+        },
+        {
+          "from": "episodic",
+          "to": "future",
+          "label": "retrieval"
+        }
+      ],
+      "caption": "Explicit policies govern what leaves working memory and what durable stores return to a later context."
+    }
+  },
   "related": [
     "context-window"
   ],

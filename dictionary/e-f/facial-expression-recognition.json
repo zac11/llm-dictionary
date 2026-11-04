@@ -5,6 +5,93 @@
   "type": "concept",
   "definition": "Classifying the emotional expression on a face — happiness, anger, surprise — from images.",
   "details": "Classifying the emotional expression on a face — happiness, anger, surprise — from images. It is applied in affective computing while raising validity and privacy debates.",
+  "explainer": {
+    "lead": "Facial expression recognition turns a face in an image into a label such as happiness, anger, or surprise. It can help computers respond to people’s expressions, but an expression is not always reliable evidence of someone’s inner feelings, and analyzing faces raises privacy concerns.",
+    "tiers": {
+      "eli5": "It is like teaching a computer to play a guessing game: does this face look happy, angry, or surprised? The computer studies a picture and picks the label that best matches patterns it learned. But people can smile without feeling happy, so the computer’s guess is not a window into their mind.",
+      "practitioner": "A typical pipeline locates and crops the face, feeds image features to a classifier, and returns an emotion label or scores for several labels. It is used in affective-computing applications, where predictions may guide an interface’s response. Evaluate performance beyond a single curated dataset, and treat expression ambiguity, validity, consent, and privacy as system-level concerns.",
+      "paperLevel": "The task can be written as learning f: x -> y, where x is an image containing a face and y is a category such as happiness, anger, or surprise. Systems commonly infer facial features from pixels and map them to one of these categories. A central limit is construct validity: the observed expression need not identify the person’s actual emotional state, while facial analysis also creates privacy risks."
+    },
+    "example": "A camera image shows a person smiling. The system finds the face, analyzes its visible features, and assigns the highest score to happiness; that prediction describes the visible expression, not proof that the person feels happy.",
+    "usedIn": [
+      {
+        "name": "Affective computing",
+        "detail": "Expression labels can provide an emotional signal for systems designed to recognize or respond to affect.",
+        "url": ""
+      },
+      {
+        "name": "Emotion-aware interfaces",
+        "detail": "An application can use a predicted expression as one input when choosing how to respond to a user.",
+        "url": ""
+      }
+    ],
+    "intuition": "Different expressions tend to produce different visible patterns, such as a raised mouth in a smile. Recognition systems learn associations between those patterns and emotion labels, then apply them to new face images.",
+    "howItWorks": [
+      "Find the face within the input image.",
+      "Isolate or align it so the classifier receives a consistent face region.",
+      "Extract visual features describing the face and its expression.",
+      "Compare those features with patterns learned from labeled training examples.",
+      "Return an expression category, or scores across categories such as happiness, anger, and surprise."
+    ],
+    "whyItMatters": "It gives affective-computing systems a way to use facial expressions as input. Its value depends on interpreting predictions cautiously and addressing whether they are valid and whether people’s facial data is handled with appropriate privacy safeguards.",
+    "misconceptions": [
+      "A predicted expression label does not necessarily reveal a person’s true feelings.",
+      "Recognizing a smile is not the same as understanding its cause or social context.",
+      "A confident-looking category output does not settle concerns about accuracy, validity, or consent."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "image",
+          "label": "Input image",
+          "note": "An image containing a face."
+        },
+        {
+          "id": "detect",
+          "label": "Face detection",
+          "note": "Locate and isolate the face."
+        },
+        {
+          "id": "features",
+          "label": "Visual features",
+          "note": "Represent expression-related patterns."
+        },
+        {
+          "id": "classifier",
+          "label": "Expression classifier",
+          "note": "Map features to learned categories."
+        },
+        {
+          "id": "label",
+          "label": "Expression output",
+          "note": "A label or category scores."
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "detect",
+          "label": "pixels"
+        },
+        {
+          "from": "detect",
+          "to": "features",
+          "label": "face region"
+        },
+        {
+          "from": "features",
+          "to": "classifier",
+          "label": "features"
+        },
+        {
+          "from": "classifier",
+          "to": "label",
+          "label": "prediction"
+        }
+      ],
+      "caption": "A facial image passes through face localization, feature extraction, and classification to produce an expression prediction."
+    }
+  },
   "related": [
     "emotional-ai"
   ],

@@ -5,6 +5,93 @@
   "type": "concept",
   "definition": "Estimating 3D body poses for multiple people simultaneously in a scene, handling occlusion and person association.",
   "details": "Estimating 3D body poses for multiple people simultaneously in a scene, handling occlusion and person association.",
+  "explainer": {
+    "lead": "3D multi-person pose estimation reconstructs where each person’s body joints are in three-dimensional space when several people appear in the same scene. The challenge is not only estimating each body, but keeping poses attached to the right people when bodies overlap or become hidden.",
+    "tiers": {
+      "eli5": "Imagine several puppets tangled together in a shadow play, and you must draw a separate skeleton for each one. You also have to work out how far forward or backward every joint is, not just where it appears on the flat picture. When one puppet hides another, you must avoid mixing up their arms and legs.",
+      "practitioner": "A system must produce a separate 3D body pose for every person while maintaining the association between people and their joints. Occlusion is a central failure case: overlapping bodies can hide evidence or cause joints to be assigned to the wrong person. Evaluation should therefore consider both joint-position accuracy and person association.",
+      "paperLevel": "Given observations of a scene containing multiple people, estimate {(i, P_i)}, where i identifies a person and P_i = (X_i1, ..., X_iK), with X_ik in R^3 denoting the 3D position of body joint k. The task jointly requires 3D pose estimation and association of joints and poses to the correct individuals. Occlusion is a key limitation because observations may be incomplete or ambiguous."
+    },
+    "example": "In a scene with two people standing face to face, one person’s arm partly hides the other’s torso. The desired output contains two distinct 3D skeletons, with the visible arm assigned to the first person and the second person’s estimated torso joints kept in the second skeleton.",
+    "usedIn": [
+      {
+        "name": "Multi-person motion analysis",
+        "detail": "Reconstructing several people’s 3D body poses within one shared scene.",
+        "url": ""
+      },
+      {
+        "name": "3D scene understanding",
+        "detail": "Representing the positions and body configurations of multiple people, including partly occluded individuals.",
+        "url": ""
+      }
+    ],
+    "intuition": "Think of assembling several 3D skeletons from one crowded scene. You must infer depth, complete partially hidden bodies, and ensure that every joint belongs to the correct skeleton.",
+    "howItWorks": [
+      "Observe a scene that may contain several people.",
+      "Estimate body-joint locations in three dimensions.",
+      "Group joints into separate person poses rather than mixing them together.",
+      "Handle occluded or overlapping body parts using the remaining scene evidence.",
+      "Output one 3D pose associated with each person."
+    ],
+    "whyItMatters": "A collection of accurate-looking joints is not enough if they are combined into the wrong people. Solving both 3D estimation and person association produces a usable representation of each individual in crowded or overlapping scenes.",
+    "misconceptions": [
+      "It is not simply 2D multi-person pose estimation: every estimated joint also has a depth coordinate.",
+      "Estimating each person independently does not solve the whole task when occlusion makes ownership of joints ambiguous.",
+      "Multiple output poses do not guarantee correct person association; joints can still be swapped between people."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "scene",
+          "label": "Multi-person scene",
+          "note": "Several people may overlap or occlude one another."
+        },
+        {
+          "id": "joints",
+          "label": "3D joint estimates",
+          "note": "Body-joint positions are estimated in three dimensions."
+        },
+        {
+          "id": "association",
+          "label": "Person association",
+          "note": "Joints are grouped with the correct individuals."
+        },
+        {
+          "id": "occlusion",
+          "label": "Occlusion handling",
+          "note": "Incomplete observations are resolved where possible."
+        },
+        {
+          "id": "poses",
+          "label": "Per-person poses",
+          "note": "The output is a separate 3D pose for each person."
+        }
+      ],
+      "edges": [
+        {
+          "from": "scene",
+          "to": "joints",
+          "label": "observations"
+        },
+        {
+          "from": "joints",
+          "to": "association",
+          "label": "3D joints"
+        },
+        {
+          "from": "occlusion",
+          "to": "association",
+          "label": "ambiguity"
+        },
+        {
+          "from": "association",
+          "to": "poses",
+          "label": "grouped joints"
+        }
+      ],
+      "caption": "The task combines 3D joint estimation with association into separate person poses under occlusion."
+    }
+  },
   "citation": {
     "title": "3D Multi-Person Pose Estimation",
     "authors": [],

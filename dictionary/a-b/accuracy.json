@@ -5,6 +5,97 @@
   "type": "concept",
   "definition": "The fraction of predictions that are correct — the most intuitive metric but misleading on imbalanced classes.",
   "details": "The fraction of predictions that are correct — the most intuitive metric but misleading on imbalanced classes.",
+  "explainer": {
+    "lead": "Accuracy tells you how often a model’s predictions match the correct answers. It is easy to understand, but a high score can hide poor performance on a rare class.",
+    "tiers": {
+      "eli5": "Imagine taking a 10-question quiz: if you get 7 answers right, your accuracy is 7 out of 10. But suppose 9 questions are about dogs and only 1 is about a cat. Answering “dog” every time would still give you 9 out of 10, even though you completely failed on cats.",
+      "practitioner": "Use accuracy as a quick summary for classification predictions by dividing the number of correct predictions by the total number evaluated. On imbalanced classes, inspect performance for each class as well; predicting the majority class every time can produce deceptively high accuracy.",
+      "paperLevel": "For n evaluated examples, Accuracy = (1/n) * sum from i=1 to n of I(y_hat_i = y_i), where I is 1 when the predicted and true labels match and 0 otherwise. Equivalently, it is correct predictions divided by total predictions. Its principal limitation here is that class imbalance can allow strong overall accuracy despite systematically failing a minority class."
+    },
+    "example": "A model evaluates 100 emails: 90 are not spam and 10 are spam. If it labels every email “not spam,” it gets 90 correct, so its accuracy is 90/100 = 90%, yet it detects none of the spam.",
+    "usedIn": [
+      {
+        "name": "Email spam filtering",
+        "detail": "Measures how often predicted spam and non-spam labels are correct.",
+        "url": ""
+      },
+      {
+        "name": "Image classification",
+        "detail": "Reports the share of images assigned their correct labels.",
+        "url": ""
+      },
+      {
+        "name": "Medical screening",
+        "detail": "Summarizes correct classifications, but can be misleading when positive cases are rare.",
+        "url": ""
+      }
+    ],
+    "intuition": "Accuracy is a scoreboard: count every correct prediction, then see what fraction of all predictions that represents. It treats every example equally, regardless of which class it belongs to.",
+    "howItWorks": [
+      "Collect the model’s predictions and the true labels for the same examples.",
+      "Compare each prediction with its true label.",
+      "Count the predictions that match.",
+      "Divide that count by the total number of examples."
+    ],
+    "whyItMatters": "Accuracy provides a simple way to summarize and compare prediction performance. Knowing its weakness with imbalanced classes helps prevent a reassuring overall score from concealing failures that matter.",
+    "misconceptions": [
+      "High accuracy does not necessarily mean good performance on every class.",
+      "Accuracy alone cannot reveal which kinds of mistakes a model makes.",
+      "A model that always predicts the majority class can still score highly."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "examples",
+          "label": "Evaluation examples",
+          "note": "Inputs awaiting assessment"
+        },
+        {
+          "id": "model",
+          "label": "Trained model",
+          "note": "Produces predicted labels"
+        },
+        {
+          "id": "labels",
+          "label": "True labels",
+          "note": "Correct answers for comparison"
+        },
+        {
+          "id": "compare",
+          "label": "Compare predictions",
+          "note": "Count matching labels"
+        },
+        {
+          "id": "accuracy",
+          "label": "Accuracy score",
+          "note": "Correct count divided by total"
+        }
+      ],
+      "edges": [
+        {
+          "from": "examples",
+          "to": "model",
+          "label": ""
+        },
+        {
+          "from": "model",
+          "to": "compare",
+          "label": "predictions"
+        },
+        {
+          "from": "labels",
+          "to": "compare",
+          "label": "answers"
+        },
+        {
+          "from": "compare",
+          "to": "accuracy",
+          "label": ""
+        }
+      ],
+      "caption": "Accuracy compares predictions with true labels and reports the fraction that match."
+    }
+  },
   "citation": {
     "title": "AI Starter Guide",
     "authors": [],

@@ -5,7 +5,114 @@
   "type": "architecture",
   "definition": "Compositional pattern-producing networks (CPPNs) are a variation of artificial neural networks (ANNs) that have an architecture whose evolution is guided by genetic algorithms.",
   "details": "While ANNs often contain only sigmoid functions and sometimes Gaussian functions, CPPNs can include both types of functions and many others. The choice of functions for the canonical set can be biased toward specific types of patterns and regularities. For example, periodic functions such as sine produce segmented patterns with repetitions, while symmetric functions such as Gaussian produce symmetric patterns. Linear functions can be employed to produce linear or fractal-like patterns. Thus, the architect of a CPPN-based genetic art system can bias the types of patterns it generates by deciding the set of canonical functions to include. Furthermore, unlike typical ANNs, CPPNs are applied across the entire space of possible inputs so that they can represent a complete image. Since they are compositions of functions, CPPNs in effect encode images at infinite resolution and can be sampled for a particular display at whatever resolution is optimal. CPPNs can be evolved through neuroevolution techniques such as neuroevolution of augmenting topologies (called CPPN-NEAT). CPPNs have been shown to be a very powerful encoding when evolving the following: Neural networks, via the HyperNEAT a",
-  "story": "Think of an orchestra warming up: no single instrument carries the piece, but together they make the sound. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. The layout decides what the machine can even attempt, before it learns a single thing. The shape of the machine is half the idea. That blueprint is Compositional pattern-producing network.",
+  "explainer": {
+    "lead": "A compositional pattern-producing network, or CPPN, builds patterns by combining mathematical functions rather than relying only on the usual neural-network functions. Its structure can be evolved with genetic algorithms, making it useful for generating images and other patterns with repetition, symmetry, or linear structure.",
+    "tiers": {
+      "eli5": "Imagine a drawing machine made from small building blocks: one block repeats shapes, another makes mirror images, and another makes straight lines. A CPPN connects blocks like these to decide what appears at every position in a picture. Because the picture is described by rules instead of a fixed grid of dots, you can ask the machine to draw it small or very large.",
+      "practitioner": "A CPPN is evaluated over the input coordinates needed for an image, so the same evolved network can be sampled at different output resolutions. CPPN-NEAT evolves its architecture, while HyperNEAT uses CPPNs as an encoding when evolving neural networks. The canonical function set is an important design choice: sine favors periodic repetition, Gaussian functions favor symmetry, and linear functions favor linear or fractal-like patterns.",
+      "paperLevel": "A CPPN is a composition f(x) of canonical functions, potentially including sigmoid, Gaussian, sine, and linear functions, whose architecture is evolved by a genetic algorithm. For image generation, f is evaluated across the coordinate space, giving a function-based image representation that can be sampled at arbitrary resolution rather than storing pixels at one fixed resolution. Its inductive bias depends on the chosen function set, and its architecture can be evolved through CPPN-NEAT."
+    },
+    "example": "To generate an image, include sine functions to encourage repeated segments and Gaussian functions to encourage symmetry, then evolve the network’s connections and composition. Evaluate the resulting CPPN at every coordinate required by the display; sampling more coordinates produces a higher-resolution rendering of the same underlying pattern.",
+    "usedIn": [
+      {
+        "name": "Genetic art",
+        "detail": "Artists can bias the patterns an evolved system produces by choosing its canonical functions.",
+        "url": ""
+      },
+      {
+        "name": "Resolution-independent image generation",
+        "detail": "A CPPN represents a complete image as a function that can be sampled at the desired display resolution.",
+        "url": ""
+      },
+      {
+        "name": "Neural-network evolution",
+        "detail": "HyperNEAT uses CPPNs as an encoding when evolving neural networks.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Input coordinates",
+        "detail": "Positions across the possible input space are supplied to the network to construct a complete image."
+      },
+      {
+        "name": "Canonical functions",
+        "detail": "Functions such as sigmoid, Gaussian, sine, and linear functions provide different pattern-building behaviors."
+      },
+      {
+        "name": "Function composition",
+        "detail": "The evolved network combines these functions into a single mapping that produces the pattern."
+      },
+      {
+        "name": "Genetic algorithm",
+        "detail": "Evolution guides the network architecture; CPPN-NEAT is one neuroevolution technique for this purpose."
+      },
+      {
+        "name": "Sampler",
+        "detail": "Evaluating the composed function at selected coordinates renders the pattern at the required resolution."
+      }
+    ],
+    "flow": [
+      "Choose canonical functions whose biases suit the desired patterns.",
+      "Evolve the CPPN architecture using a genetic algorithm or CPPN-NEAT.",
+      "Feed coordinates from across the input space through the composed functions.",
+      "Sample enough coordinates to render the encoded image at the desired resolution."
+    ],
+    "lineage": "CPPNs are a variation of artificial neural networks with a broader set of possible functions and genetically evolved architectures. CPPN-NEAT applies neuroevolution of augmenting topologies to them, and HyperNEAT uses CPPNs as an encoding for evolving neural networks.",
+    "whyItMatters": "CPPNs make pattern regularities part of the representation itself, allowing function choice to steer evolved output toward repetition, symmetry, or linear structure. Their coordinate-based encoding also avoids tying an image to one fixed resolution.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "functions",
+          "label": "Canonical functions",
+          "note": "Sine, Gaussian, linear, and other functions supply pattern biases."
+        },
+        {
+          "id": "evolution",
+          "label": "Genetic evolution",
+          "note": "Guides the CPPN architecture, including through CPPN-NEAT."
+        },
+        {
+          "id": "cppn",
+          "label": "Composed CPPN",
+          "note": "Combines functions into an evolved coordinate-to-pattern mapping."
+        },
+        {
+          "id": "coordinates",
+          "label": "Input coordinates",
+          "note": "Positions sampled across the possible input space."
+        },
+        {
+          "id": "image",
+          "label": "Complete image",
+          "note": "The encoded pattern can be rendered at the chosen resolution."
+        }
+      ],
+      "edges": [
+        {
+          "from": "functions",
+          "to": "cppn",
+          "label": "building blocks"
+        },
+        {
+          "from": "evolution",
+          "to": "cppn",
+          "label": "shapes architecture"
+        },
+        {
+          "from": "coordinates",
+          "to": "cppn",
+          "label": "sampled positions"
+        },
+        {
+          "from": "cppn",
+          "to": "image",
+          "label": "pattern values"
+        }
+      ],
+      "caption": "Evolution composes canonical functions into a CPPN, which maps sampled coordinates to an image at any chosen resolution."
+    }
+  },
   "related": [
     "capsule-neural-network",
     "cellular-neural-network",

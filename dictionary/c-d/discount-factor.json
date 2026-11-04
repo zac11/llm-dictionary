@@ -8,6 +8,45 @@
   ],
   "definition": "How much future rewards are worth relative to immediate ones (0 to 1).",
   "details": "How much future rewards are worth relative to immediate ones (0 to 1). Low gamma makes agents myopic; high gamma makes credit assignment harder.",
+  "explainer": {
+    "lead": "The discount factor controls how much an agent cares about rewards that arrive later instead of right away. It shapes behavior: a low value encourages short-sighted choices, while a high value makes distant consequences matter but can make it harder to tell which actions caused them.",
+    "tiers": {
+      "eli5": "Imagine choosing between one cookie now and two cookies tomorrow. The discount factor is like a dial for how much tomorrow's cookies matter to you today: turn it down and you focus on now, turn it up and you plan further ahead.",
+      "practitioner": "Gamma is applied when computing returns and training reinforcement-learning agents, including value-based and policy-based methods. Lower values emphasize immediate feedback; higher values support longer-horizon behavior but can make credit assignment harder. Tune it to match how far into the future the task's consequences genuinely extend.",
+      "paperLevel": "The discounted return is G_t = sum from k = 0 to infinity of gamma^k R_(t+k+1), where gamma is between 0 and 1. Each additional step into the future multiplies a reward's weight by gamma. Low gamma produces myopic behavior, while high gamma lengthens the effective credit-assignment horizon; at gamma = 1, there is no discounting."
+    },
+    "example": "With gamma = 0.5, an immediate reward of 10 contributes 10, while a reward of 10 one step later contributes 5. Two steps later, another reward of 10 contributes 2.5, so the three rewards total 17.5.",
+    "usedIn": [
+      {
+        "name": "Game-playing agents",
+        "detail": "Balances immediate points against actions whose payoff appears later.",
+        "url": ""
+      },
+      {
+        "name": "Robotics",
+        "detail": "Controls how strongly current decisions account for delayed task outcomes.",
+        "url": ""
+      },
+      {
+        "name": "Reinforcement-learning research",
+        "detail": "Defines discounted returns used to evaluate and train sequential decision-making agents.",
+        "url": ""
+      }
+    ],
+    "intuition": "A reward far in the future usually counts less than the same reward now. Gamma sets how quickly that value fades with each step of delay.",
+    "howItWorks": [
+      "Start with the immediate reward at full weight.",
+      "Multiply the next step's reward by gamma.",
+      "Multiply each later reward by gamma once per additional step.",
+      "Add the weighted rewards to form the return used for learning."
+    ],
+    "whyItMatters": "It lets one parameter express how long-term an agent's objectives are. Choosing it poorly can produce short-sighted behavior or make learning which earlier actions deserve credit more difficult.",
+    "misconceptions": [
+      "A higher gamma is not always better.",
+      "Gamma changes the weight of delayed rewards, not the rewards themselves.",
+      "Gamma = 0 considers only immediate rewards; gamma = 1 applies no discounting."
+    ]
+  },
   "related": [
     "credit-assignment"
   ],

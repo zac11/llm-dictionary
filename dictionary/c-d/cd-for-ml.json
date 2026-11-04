@@ -8,6 +8,97 @@
   ],
   "definition": "Extending software CI/CD with data and model gates: every change to prompts, models, or retrieval triggers the eval suite, and regressions block deployment.",
   "details": "Extending software CI/CD with data and model gates: every change to prompts, models, or retrieval triggers the eval suite, and regressions block deployment. For LLM products, the eval-in-CI loop replaces the unit-test safety net that nondeterministic outputs break.",
+  "explainer": {
+    "lead": "CD for ML adds data and model checks to continuous delivery. Every change to a prompt, model, or retrieval setup must pass an evaluation suite before release, so a regression stops deployment instead of reaching users.",
+    "tiers": {
+      "eli5": "Imagine checking a robot's answers every time you change its instructions, brain, or way of finding information. If its answers get worse, it is not allowed to start work. This is like a final school test that must be passed before each new version can be used.",
+      "practitioner": "Run the evaluation suite in CI whenever prompts, models, or retrieval configuration change, and gate deployment on regression checks. Treat evaluations as the release safety net for LLM products: nondeterministic outputs mean conventional unit tests alone cannot provide the same protection.",
+      "paperLevel": "Let c be a change to prompts, model, or retrieval, and let E(c) be the evaluation-suite results: deployment proceeds only when the configured gates detect no regression. This extends CI/CD with data and model gates, replacing the unit-test-only safety net that nondeterministic LLM outputs undermine."
+    },
+    "example": "A team edits a customer-support assistant's prompt and updates its retrieval setup. The change triggers the evaluation suite, which finds a regression, so the deployment gate blocks the release rather than shipping the worse assistant.",
+    "usedIn": [
+      {
+        "name": "LLM product deployment",
+        "detail": "Prompt and model updates must pass evaluations before release.",
+        "url": ""
+      },
+      {
+        "name": "Retrieval-based AI systems",
+        "detail": "Retrieval changes trigger the evaluation suite so regressions can block deployment.",
+        "url": ""
+      },
+      {
+        "name": "MLOps delivery pipelines",
+        "detail": "Data and model gates extend conventional software CI/CD.",
+        "url": ""
+      }
+    ],
+    "intuition": "Software delivery already checks that changes do not break the system; CD for ML applies the same release discipline to model behavior. The evaluation suite becomes the gate between an LLM change and its users.",
+    "howItWorks": [
+      "A prompt, model, or retrieval setup changes.",
+      "The change automatically triggers the evaluation suite.",
+      "Deployment gates check the results for regressions.",
+      "A passing change proceeds; a regression blocks deployment."
+    ],
+    "whyItMatters": "It prevents prompt, model, and retrieval regressions from automatically reaching production. For LLM products, it supplies a release safety net where nondeterministic outputs weaken the protection offered by unit tests.",
+    "misconceptions": [
+      "It is not ordinary CI/CD with no extra gates: data and model evaluations are part of delivery.",
+      "It is not a claim that LLM outputs are deterministic unit tests.",
+      "A triggered evaluation does not guarantee deployment; regressions block it."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "change",
+          "label": "System change",
+          "note": "Prompt, model, or retrieval update"
+        },
+        {
+          "id": "eval",
+          "label": "Evaluation suite",
+          "note": "Automatically runs on every change"
+        },
+        {
+          "id": "gate",
+          "label": "Deployment gate",
+          "note": "Checks results for regressions"
+        },
+        {
+          "id": "deploy",
+          "label": "Deployment",
+          "note": "Proceeds when gates pass"
+        },
+        {
+          "id": "block",
+          "label": "Release blocked",
+          "note": "Stops a detected regression"
+        }
+      ],
+      "edges": [
+        {
+          "from": "change",
+          "to": "eval",
+          "label": "triggers"
+        },
+        {
+          "from": "eval",
+          "to": "gate",
+          "label": "results"
+        },
+        {
+          "from": "gate",
+          "to": "deploy",
+          "label": "passes"
+        },
+        {
+          "from": "gate",
+          "to": "block",
+          "label": "regression"
+        }
+      ],
+      "caption": "Every relevant change flows through evaluation and a regression gate before deployment."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

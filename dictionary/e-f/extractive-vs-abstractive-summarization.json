@@ -5,6 +5,113 @@
   "type": "concept",
   "definition": "Selecting source sentences verbatim versus generating new condensed phrasing.",
   "details": "Selecting source sentences verbatim versus generating new condensed phrasing. Abstractive is what LLMs do natively and reads far better, at a structural risk of unsupported claims, which is why faithfulness evaluation (often NLI-based) shadows every abstractive system.",
+  "explainer": {
+    "lead": "Extractive and abstractive summarization are two ways to shorten a text: one lifts sentences directly from it, while the other writes a fresh, condensed version. The choice affects not just readability, but also how easily a summary can introduce claims that the original text never supported.",
+    "tiers": {
+      "eli5": "Imagine shortening a story for a friend. You could repeat a few of its sentences exactly, or retell the main points in your own words. The second way often sounds smoother, but you must be careful not to add something that was not in the story.",
+      "practitioner": "Extractive systems typically score or rank source sentences and select them under a length limit; abstractive systems generate new text, which LLMs do natively. Abstractive output often reads better, but needs faithfulness checks because fluent prose can contain unsupported claims. NLI-based evaluation is often used alongside these systems.",
+      "paperLevel": "Given a source document x, extractive summarization selects a subset S of its sentences, usually subject to a length constraint, and preserves their wording. Abstractive summarization generates a new sequence y conditioned on x, allowing condensed phrasing not present verbatim in the source. Its central limitation is the structural risk of unsupported content, motivating faithfulness evaluation, often using NLI-based methods."
+    },
+    "example": "For the source “Rain flooded roads on Monday. The city closed two schools. Crews reopened the roads Tuesday,” an extractive summary could be “Rain flooded roads on Monday. The city closed two schools.” An abstractive summary could be “Monday’s flooding closed two schools, and the roads reopened Tuesday,” which compresses the events into a new sentence.",
+    "usedIn": [
+      {
+        "name": "News digests",
+        "detail": "Key sentences can be selected verbatim, or events can be rewritten as a shorter narrative.",
+        "url": ""
+      },
+      {
+        "name": "LLM assistants",
+        "detail": "Summaries are generated in fresh wording, making faithfulness checks important.",
+        "url": ""
+      },
+      {
+        "name": "Document review",
+        "detail": "Long texts can be reduced either to selected source passages or to newly written overviews.",
+        "url": ""
+      }
+    ],
+    "intuition": "Extractive summarization is highlighting and copying the most useful sentences; abstractive summarization is rewriting the same material more compactly. Copying preserves source wording, while rewriting permits smoother compression but creates opportunities for unsupported claims.",
+    "howItWorks": [
+      "Read the source and identify the information the summary should retain.",
+      "For extraction, rank or otherwise choose source sentences within the desired length.",
+      "Return those sentences verbatim as the extractive summary.",
+      "For abstraction, generate a shorter passage that condenses the source in new wording.",
+      ""
+    ],
+    "whyItMatters": "The two approaches trade verbatim grounding against flexible, readable compression. That trade-off makes faithfulness evaluation a recurring companion to abstractive summarization rather than an optional polish.",
+    "misconceptions": [
+      "Abstractive does not mean inaccurate; it means newly worded, though unsupported claims remain a structural risk.",
+      "Extractive summaries preserve sentence wording, but selecting sentences can still omit useful context.",
+      "Fluency alone does not establish that a summary is faithful."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "source",
+          "label": "Source document",
+          "note": "The original sentences and facts."
+        },
+        {
+          "id": "select",
+          "label": "Sentence selection",
+          "note": "Choose useful source sentences."
+        },
+        {
+          "id": "extractive",
+          "label": "Extractive summary",
+          "note": "Selected wording stays verbatim."
+        },
+        {
+          "id": "generate",
+          "label": "Text generation",
+          "note": "Write new condensed phrasing."
+        },
+        {
+          "id": "abstractive",
+          "label": "Abstractive summary",
+          "note": "A freshly worded compressed version."
+        },
+        {
+          "id": "faithfulness",
+          "label": "Faithfulness check",
+          "note": "Look for unsupported claims, often with NLI-based evaluation."
+        }
+      ],
+      "edges": [
+        {
+          "from": "source",
+          "to": "select",
+          "label": "sentences"
+        },
+        {
+          "from": "select",
+          "to": "extractive",
+          "label": "verbatim"
+        },
+        {
+          "from": "source",
+          "to": "generate",
+          "label": "context"
+        },
+        {
+          "from": "generate",
+          "to": "abstractive",
+          "label": "new wording"
+        },
+        {
+          "from": "abstractive",
+          "to": "faithfulness",
+          "label": "evaluate"
+        },
+        {
+          "from": "source",
+          "to": "faithfulness",
+          "label": "evidence"
+        }
+      ],
+      "caption": "Both paths condense the same source, but only the abstractive path generates new wording and therefore requires particular attention to faithfulness."
+    }
+  },
   "related": [
     "faithfulness"
   ],

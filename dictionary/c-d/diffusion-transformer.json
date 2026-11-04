@@ -2,12 +2,134 @@
   "term": "Diffusion Transformer",
   "letter": "D",
   "category": "Multimodal and Generative Media",
-  "type": "concept",
+  "type": "architecture",
   "aka": [
     "DiT"
   ],
   "definition": "Replacing the U-Net denoiser with a transformer, letting diffusion inherit transformer scaling laws.",
   "details": "Replacing the U-Net denoiser with a transformer, letting diffusion inherit transformer scaling laws. The backbone of modern video generation (Sora-class systems).",
+  "explainer": {
+    "lead": "A Diffusion Transformer (DiT) is a diffusion model whose denoising backbone is a transformer instead of a U-Net. It keeps diffusion’s gradual noising and denoising process while allowing the model to benefit from transformer scaling laws. This design is a backbone of modern Sora-class video generation systems.",
+    "tiers": {
+      "eli5": "Imagine covering a picture with static, then asking a computer to clean it up one small step at a time. DiT gives the computer a different kind of helper for that cleaning job, called a transformer. Starting with pure static, it can repeatedly clean the result until an image or video appears.",
+      "practitioner": "Treat DiT as a backbone change rather than a different diffusion process: retain Gaussian forward noising and iterative reverse sampling, but train a transformer as the denoiser. Text-conditioned systems can still combine diffusion with text encoders and cross-attention. A common pitfall is expecting a single network pass to produce the output; generation still starts with random noise and denoises it iteratively.",
+      "paperLevel": "Let x_t = sqrt(alpha_bar_t) x_0 + sqrt(1-alpha_bar_t) epsilon, with epsilon ~ N(0, I). DiT replaces the U-Net denoising backbone with a transformer while learning to reverse this process; generation begins from Gaussian noise and applies the network iteratively. The surrounding diffusion formulation can use Markov chains, denoising diffusion probabilistic models, score networks, or stochastic differential equations."
+    },
+    "example": "To generate a video, training clips are first corrupted step by step with Gaussian noise so the transformer can learn to reverse that corruption. At generation time, the system starts with random noise and repeatedly applies the transformer denoiser until a video emerges.",
+    "usedIn": [
+      {
+        "name": "Sora-class video generation",
+        "detail": "DiT is described as the backbone of this class of modern video generators.",
+        "url": ""
+      },
+      {
+        "name": "Image generation",
+        "detail": "Diffusion models can use transformer denoising backbones and iteratively turn random noise into images.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Forward diffusion: gradually adds Gaussian noise to training data.",
+        "detail": ""
+      },
+      {
+        "name": "Reverse sampling: iteratively removes noise to create a new sample.",
+        "detail": ""
+      },
+      {
+        "name": "Transformer backbone: performs denoising in place of a U-Net.",
+        "detail": ""
+      },
+      {
+        "name": "Optional conditioning: text encoders and cross-attention can guide generation.",
+        "detail": ""
+      }
+    ],
+    "flow": [
+      "Add Gaussian noise to clean training data through the forward diffusion process.",
+      "Give a noisy sample to the transformer denoising backbone.",
+      "Train the transformer to help reverse the noising process.",
+      "At generation time, begin with random noise and apply the network repeatedly.",
+      "Continue denoising until the final image or video is produced."
+    ],
+    "origin": "Diffusion models were introduced in 2015, and the Denoising Diffusion Probabilistic Model followed in 2020. DiT builds on this framework by selecting a transformer as the denoising backbone.",
+    "lineage": "DiT retains diffusion training and sampling while replacing the commonly used U-Net backbone with a transformer. The change connects diffusion models with transformer scaling laws and underpins Sora-class video generation.",
+    "whyItMatters": "The transformer backbone lets diffusion models inherit transformer scaling laws without abandoning the diffusion process. This makes the design important for modern video generation as well as applicable to image generation.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "clean-data",
+          "label": "Clean training data",
+          "note": "Images or videos from the dataset"
+        },
+        {
+          "id": "forward-noising",
+          "label": "Forward noising",
+          "note": "Gaussian noise is added gradually"
+        },
+        {
+          "id": "noisy-sample",
+          "label": "Noisy sample",
+          "note": "Input for learning to denoise"
+        },
+        {
+          "id": "transformer",
+          "label": "Transformer denoiser",
+          "note": "Backbone replacing the U-Net"
+        },
+        {
+          "id": "cleaner-sample",
+          "label": "Cleaner sample",
+          "note": "Output after a denoising step"
+        },
+        {
+          "id": "generated-media",
+          "label": "Generated media",
+          "note": "Result after repeated denoising"
+        }
+      ],
+      "edges": [
+        {
+          "from": "clean-data",
+          "to": "forward-noising",
+          "label": "add noise"
+        },
+        {
+          "from": "forward-noising",
+          "to": "noisy-sample",
+          "label": ""
+        },
+        {
+          "from": "noisy-sample",
+          "to": "transformer",
+          "label": "denoise"
+        },
+        {
+          "from": "transformer",
+          "to": "cleaner-sample",
+          "label": ""
+        },
+        {
+          "from": "cleaner-sample",
+          "to": "transformer",
+          "label": "repeat"
+        },
+        {
+          "from": "cleaner-sample",
+          "to": "generated-media",
+          "label": "finish"
+        }
+      ],
+      "caption": "Training teaches the transformer to reverse Gaussian noising; generation repeats denoising until a new sample emerges."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Diffusion model",
+        "url": "https://en.wikipedia.org/wiki/Diffusion_model"
+      }
+    ]
+  },
   "related": [
     "scaling-laws",
     "transformer",

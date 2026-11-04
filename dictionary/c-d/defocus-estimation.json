@@ -5,6 +5,108 @@
   "type": "concept",
   "definition": "Estimating the amount of defocus blur per pixel or region, useful for depth cues, autofocus, and deblurring.",
   "details": "Estimating the amount of defocus blur per pixel or region, useful for depth cues, autofocus, and deblurring.",
+  "explainer": {
+    "lead": "Defocus estimation turns a blurry photograph into a map showing how much out-of-focus blur affects each pixel or region. That map can help a camera judge focus, guide deblurring, or provide clues about which parts of a scene are nearer or farther away.",
+    "tiers": {
+      "eli5": "Imagine looking through a window with some clear patches and some foggy patches. Defocus estimation is like colouring each patch to show how foggy it is. A computer can then use that colour map to help sharpen the picture or learn about the scene.",
+      "practitioner": "The output is typically a per-pixel or per-region blur map rather than one score for the whole image. It can feed autofocus, depth-cue estimation, or spatially varying deblurring. A key pitfall is treating defocus as the only cause of blur, or interpreting its magnitude directly as metric depth.",
+      "paperLevel": "Given an observed image I, the task can be written as estimating b(x), the amount of defocus blur at pixel or region x, producing a spatial blur map. The estimate may support depth cues, autofocus, and deblurring. Blur magnitude alone does not uniquely specify scene depth, and defocus must be distinguished from other sources of image blur."
+    },
+    "example": "In a portrait with sharp eyes and a strongly blurred background, the estimator assigns low blur values around the eyes and high values across the background. A deblurring process can then treat those regions differently instead of applying one correction everywhere.",
+    "usedIn": [
+      {
+        "name": "Camera autofocus",
+        "detail": "Uses blur estimates as evidence about focus across the image.",
+        "url": ""
+      },
+      {
+        "name": "Computational photography",
+        "detail": "Guides deblurring with different blur amounts in different regions.",
+        "url": ""
+      },
+      {
+        "name": "Depth estimation",
+        "detail": "Uses spatial changes in defocus as one cue to scene depth.",
+        "url": ""
+      }
+    ],
+    "intuition": "A sharply focused edge looks crisp, while defocus spreads its appearance over a wider area. Comparing this effect across the image gives a spatial picture of where blur is weak or strong.",
+    "howItWorks": [
+      "Take an image that may contain varying amounts of defocus.",
+      "Examine individual pixels or local regions for evidence of blur.",
+      "Assign each location an estimated defocus amount.",
+      "Combine the estimates into a blur map.",
+      "Pass the map to a depth, autofocus, or deblurring process."
+    ],
+    "whyItMatters": "Defocus often varies across a single image, so a local estimate is more useful than one global blur score. It supplies information that several imaging tasks can reuse.",
+    "misconceptions": [
+      "Defocus blur is not the same as motion blur.",
+      "A larger defocus estimate does not by itself give an exact distance.",
+      "The result describes blur at locations, not merely whether the whole image is blurry."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "image",
+          "label": "Defocused image",
+          "note": "Blur varies across the scene."
+        },
+        {
+          "id": "analysis",
+          "label": "Local blur analysis",
+          "note": "Examines pixels or regions."
+        },
+        {
+          "id": "map",
+          "label": "Defocus blur map",
+          "note": "Stores an estimate per location."
+        },
+        {
+          "id": "depth",
+          "label": "Depth cues",
+          "note": "Uses blur as depth evidence."
+        },
+        {
+          "id": "focus",
+          "label": "Autofocus",
+          "note": "Uses blur to assess focus."
+        },
+        {
+          "id": "deblur",
+          "label": "Deblurring",
+          "note": "Adapts correction by location."
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "analysis",
+          "label": "regions"
+        },
+        {
+          "from": "analysis",
+          "to": "map",
+          "label": "estimates"
+        },
+        {
+          "from": "map",
+          "to": "depth",
+          "label": ""
+        },
+        {
+          "from": "map",
+          "to": "focus",
+          "label": ""
+        },
+        {
+          "from": "map",
+          "to": "deblur",
+          "label": ""
+        }
+      ],
+      "caption": "Local blur estimates form a map that can support several imaging tasks."
+    }
+  },
   "citation": {
     "title": "Defocus Estimation",
     "authors": [],

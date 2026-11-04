@@ -5,7 +5,100 @@
   "type": "algorithm",
   "definition": "The Frank–Wolfe algorithm is an iterative first-order optimization algorithm for constrained convex optimization.",
   "details": "Also known as the conditional gradient method, reduced gradient algorithm and the convex combination algorithm, the method was originally proposed by Marguerite Frank and Philip Wolfe in 1956. In each iteration, the Frank–Wolfe algorithm considers a linear approximation of the objective function, and moves towards a minimizer of this linear function (taken over the same domain).",
-  "story": "Think of a hiker descending a foggy hill in the dark, taking small steps and feeling for the steepest way down. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. It is the same loop you use to learn anything: try, miss, correct, try again. Skill, for a model, is just error pushed down until it is small enough to ignore. And that is Frank–Wolfe algorithm — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "The Frank–Wolfe algorithm minimizes a convex objective while keeping every candidate solution inside a constrained domain. It replaces the original problem at each iteration with a simpler linear one, then moves toward that problem’s minimizer.",
+    "tiers": {
+      "eli5": "Imagine trying to find the lowest point in a fenced park without ever leaving the fence. At each stop, you pretend the ground is a flat slope, walk toward the lowest allowed point on that slope, and repeat until you are close enough.",
+      "practitioner": "Implement it with an objective, its gradient, and a routine that minimizes a linear function over the feasible domain. Each iteration computes s_k = argmin_{s in D} grad f(x_k)^T s and updates x_{k+1} = (1 - gamma_k)x_k + gamma_k s_k; the step size and stopping rule still need to be chosen.",
+      "paperLevel": "For min_{x in D} f(x), with convex f and constrained convex domain D, set s_k = argmin_{s in D} grad f(x_k)^T s and x_{k+1} = (1 - gamma_k)x_k + gamma_k s_k for gamma_k in [0,1]. Marguerite Frank and Philip Wolfe proposed the method in 1956; it is also called the conditional gradient method, reduced gradient algorithm, and convex combination algorithm."
+    },
+    "example": "Minimize f(x) = x^2 on D = [0,1], starting at x_0 = 1. The gradient is 2, so minimize 2s over [0,1] to get s_0 = 0; taking gamma_0 = 1 gives x_1 = 0, which is the exact minimizer.",
+    "goal": "Find a minimizer of a convex objective function without leaving its constrained domain.",
+    "inputs": [
+      "A convex objective function and its gradient",
+      "A constrained convex feasible domain",
+      "An initial feasible point and a step-size rule"
+    ],
+    "outputs": [
+      "A sequence of feasible candidate solutions",
+      "A final candidate intended to approximate the constrained minimizer"
+    ],
+    "steps": [
+      "Start at a point inside the feasible domain.",
+      "Evaluate the objective’s gradient at the current point.",
+      "Minimize the resulting linear function over the same domain.",
+      "Move to a convex combination of the current point and that minimizer.",
+      "Repeat from the new point until the chosen stopping condition is met."
+    ],
+    "tradeoffs": [
+      "The difficult constrained problem is reduced to repeated linear minimizations.",
+      "Every update is a convex combination of feasible points, so iterates remain feasible.",
+      "It requires a way to minimize a linear function over the domain at every iteration.",
+      "As an iterative first-order method, it generally needs a step-size choice and a stopping rule."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "current",
+          "label": "Current point",
+          "note": "A feasible candidate x_k"
+        },
+        {
+          "id": "gradient",
+          "label": "Compute gradient",
+          "note": "Build the linear approximation"
+        },
+        {
+          "id": "linear",
+          "label": "Linear minimization",
+          "note": "Find s_k over the same domain"
+        },
+        {
+          "id": "combine",
+          "label": "Convex combination",
+          "note": "Blend x_k and s_k using gamma_k"
+        },
+        {
+          "id": "next",
+          "label": "Next point",
+          "note": "Feasible iterate x_{k+1}"
+        }
+      ],
+      "edges": [
+        {
+          "from": "current",
+          "to": "gradient",
+          "label": "x_k"
+        },
+        {
+          "from": "gradient",
+          "to": "linear",
+          "label": "linear model"
+        },
+        {
+          "from": "linear",
+          "to": "combine",
+          "label": "s_k"
+        },
+        {
+          "from": "current",
+          "to": "combine",
+          "label": "x_k"
+        },
+        {
+          "from": "combine",
+          "to": "next",
+          "label": "update"
+        },
+        {
+          "from": "next",
+          "to": "current",
+          "label": "repeat"
+        }
+      ],
+      "caption": "Each Frank–Wolfe iteration solves a linear problem over the feasible domain and moves toward its minimizer."
+    }
+  },
   "related": [
     "actor-critic-algorithm",
     "algorithm-imed",

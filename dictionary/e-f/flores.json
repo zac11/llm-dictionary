@@ -5,6 +5,89 @@
   "type": "dataset",
   "definition": "Facebook Low Res Machine Translation Benchmark is a low-resource MT dataset.",
   "details": "Facebook Low Res Machine Translation Benchmark is a low-resource MT dataset.",
+  "explainer": {
+    "lead": "FLoRes is a test collection for machine translation in settings where training data is scarce. It gives researchers a shared dataset for checking how well translation systems handle low-resource languages.",
+    "tiers": {
+      "eli5": "FLoRes is like a translation quiz for computers, focusing on languages with less material to learn from. A computer translates the quiz sentences, and its answers can be compared with correct translations. This helps people see where translation systems still struggle.",
+      "practitioner": "Use FLoRes to evaluate machine translation systems in low-resource settings. Generate translations for its source sentences, then compare the outputs with the references using a clearly specified MT metric and preprocessing procedure. Report the exact evaluation setup so results are not mistaken for scores produced under different settings.",
+      "paperLevel": "FLoRes, the Facebook Low Res Machine Translation Benchmark, is a dataset for evaluating machine translation in low-resource settings. Given source sentences, system hypotheses, and reference translations, an evaluation computes scores under a selected MT metric; the dataset name itself does not specify a single scoring formula."
+    },
+    "example": "Suppose a system translates one FLoRes source sentence and produces a hypothesis. That hypothesis is compared with the sentence's reference translation, and the chosen MT metric assigns a score reflecting their measured agreement.",
+    "usedIn": [
+      {
+        "name": "Low-resource machine translation research",
+        "detail": "Provides test material for studying translation when language resources are limited.",
+        "url": ""
+      },
+      {
+        "name": "Translation system evaluation",
+        "detail": "Supports comparison of system outputs with reference translations under a chosen evaluation procedure.",
+        "url": ""
+      }
+    ],
+    "measures": "FLoRes supports measurement of machine translation quality in low-resource language settings. The measured quantity depends on the translation metric applied to system outputs and reference translations.",
+    "howScored": [
+      "Run the translation system on the dataset's source sentences.",
+      "Compare the resulting translations with the corresponding references.",
+      "Apply a separately specified machine translation metric and report its evaluation settings."
+    ],
+    "caveats": [
+      "Low-resource results should be interpreted in the context of the specific languages and evaluation setup used.",
+      "Scores are not directly comparable when different metrics, preprocessing, or test settings are used."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "source",
+          "label": "FLoRes source text",
+          "note": "Sentences supplied to the translation system."
+        },
+        {
+          "id": "model",
+          "label": "Translation system",
+          "note": "Produces translations from the source text."
+        },
+        {
+          "id": "hypothesis",
+          "label": "System translations",
+          "note": "Outputs evaluated by the chosen metric."
+        },
+        {
+          "id": "reference",
+          "label": "Reference translations",
+          "note": "Comparison translations from the dataset."
+        },
+        {
+          "id": "score",
+          "label": "MT evaluation",
+          "note": "Compares system outputs with references."
+        }
+      ],
+      "edges": [
+        {
+          "from": "source",
+          "to": "model",
+          "label": ""
+        },
+        {
+          "from": "model",
+          "to": "hypothesis",
+          "label": ""
+        },
+        {
+          "from": "hypothesis",
+          "to": "score",
+          "label": ""
+        },
+        {
+          "from": "reference",
+          "to": "score",
+          "label": ""
+        }
+      ],
+      "caption": "A generic evaluation flow for using FLoRes to test a machine translation system."
+    }
+  },
   "related": [
     "benchmark",
     "machine-translation"

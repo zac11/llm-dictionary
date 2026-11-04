@@ -5,7 +5,81 @@
   "type": "concept",
   "definition": "The generalized additive model for location, scale and shape (GAMLSS) is a distributional regression model in which a parametric statistical distribution is assumed for the response (target) variable but the parameters of this distribution can vary according to explanatory variables.",
   "details": "Therefore the shape of this distribution for the target variable can change with explanatory variables. GAMLSS is an input output model, i.e. X → Y {\\displaystyle X\\rightarrow Y} but differs from the classical model in that the input X affects the distribution of the target variable as a whole not just the mean, i.e. X → D ( Y | X ) {\\displaystyle X\\rightarrow D(Y|X)} . GAMLSS allows flexible regression by using smoothing or machine learning techniques to model the parameters of the target variable (response). GAMLSS assumes the response variable could follows any theoretical parametric distribution, which might be heavy or light-tailed, and positively or negatively skewed. In addition, all the parameters of the distribution which often are location (e.g., mean), scale (e.g., variance) and shape (skewness and kurtosis) – can be modelled as linear, nonlinear or using algorithm modelling functions of the explanatory variables. The distributional assumption for the target variables can be checked through diagnostic plots like Q–Q plot or worm plot. GAMLSS is a supervised machine learning model since the target value (the output) is always present.",
-  "story": "Imagine a driving test that every new model has to pass before it is allowed on the road. It is the exam that separates “it sounds good” from “it actually is good”. A fair scoreboard keeps everyone honest. It is the exam that keeps everyone honest. And that, done honestly, is Generalized additive model for location, scale and shape.",
+  "explainer": {
+    "lead": "A generalized additive model for location, scale and shape, or GAMLSS, predicts how an entire outcome distribution changes with explanatory variables, rather than predicting only an average. This matters when variability, skewness or tail behaviour is just as important as the central estimate.",
+    "tiers": {
+      "eli5": "Imagine predicting how long a bus journey will take. Rain might not only make the usual journey longer; it could also make journey times more spread out and create a few especially long delays. GAMLSS learns how all those features of the possible outcomes change with the information you provide.",
+      "practitioner": "Use GAMLSS for supervised regression when the response's variance, skewness or kurtosis may depend on the predictors. Each distribution parameter can be modelled with linear, nonlinear, smoothing or machine-learning functions, but the chosen parametric distribution should be checked with diagnostics such as Q–Q plots or worm plots.",
+      "paperLevel": "GAMLSS is distributional regression: given a parametric response distribution D, it learns X → D(Y|X), with distribution parameters such as location, scale and shape expressed as functions of X. Those functions may be linear, nonlinear, smooth or algorithmic, and D may be heavy- or light-tailed and positively or negatively skewed. Its assumptions are supervised training targets and a suitable parametric response distribution, whose adequacy requires diagnostic checking."
+    },
+    "example": "For delivery-time prediction, distance and weather could feed separate models for the distribution's mean, variance and skewness. On clear days the model might predict a narrow distribution around 30 minutes, while storms could shift the mean to 45 minutes, widen the spread and increase the chance of unusually long deliveries.",
+    "intuition": "A conventional regression often asks how the average response changes with X; GAMLSS asks how the whole conditional response distribution changes. Predictors can therefore alter the centre, spread and asymmetry of possible outcomes at the same time.",
+    "howItWorks": [
+      "Choose a parametric distribution for the response Y, allowing for features such as heavy tails or skewness.",
+      "Link its location, scale and shape parameters to explanatory variables X.",
+      "Fit those parameter functions using linear, nonlinear, smoothing or machine-learning models.",
+      "At prediction time, use X to produce a full conditional distribution D(Y|X), not just a mean.",
+      "Check the distributional fit with diagnostics such as Q–Q plots or worm plots."
+    ],
+    "whyItMatters": "It represents changes in risk and uncertainty that a mean-only model can miss. It also provides one flexible framework for responses with different tails, skewness and parameter-specific predictor effects.",
+    "misconceptions": [
+      "It is not limited to modelling the mean: scale and shape parameters can vary too.",
+      "It does not avoid choosing a response distribution; that parametric assumption still needs checking.",
+      "It is supervised learning because training requires observed target values."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "x",
+          "label": "Explanatory variables",
+          "note": "Observed inputs X"
+        },
+        {
+          "id": "functions",
+          "label": "Parameter models",
+          "note": "Linear, smooth or algorithmic functions"
+        },
+        {
+          "id": "parameters",
+          "label": "Distribution parameters",
+          "note": "Location, scale and shape"
+        },
+        {
+          "id": "distribution",
+          "label": "Conditional distribution",
+          "note": "Full predicted D(Y|X)"
+        },
+        {
+          "id": "diagnostics",
+          "label": "Fit diagnostics",
+          "note": "Q–Q or worm plots"
+        }
+      ],
+      "edges": [
+        {
+          "from": "x",
+          "to": "functions",
+          "label": "inputs"
+        },
+        {
+          "from": "functions",
+          "to": "parameters",
+          "label": "predicts"
+        },
+        {
+          "from": "parameters",
+          "to": "distribution",
+          "label": "defines"
+        },
+        {
+          "from": "distribution",
+          "to": "diagnostics",
+          "label": "checked by"
+        }
+      ],
+      "caption": "GAMLSS maps explanatory variables through parameter models to a complete response distribution."
+    }
+  },
   "related": [
     "acoustic-model",
     "action-model-learning",

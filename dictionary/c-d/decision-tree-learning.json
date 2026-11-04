@@ -5,7 +5,103 @@
   "type": "concept",
   "definition": "Decision tree learning is a supervised learning approach used in statistics, data mining and machine learning.",
   "details": "In this formalism, a classification or regression decision tree is used as a predictive model to draw conclusions about a set of observations. Tree models where the target variable can take a discrete set of values are called classification trees; in these tree structures, leaves represent class labels and branches represent conjunctions of features that lead to those class labels. Decision trees where the target variable can take continuous values (typically real numbers) are called regression trees. More generally, the concept of regression tree can be extended to any kind of object equipped with pairwise dissimilarities such as categorical sequences. Decision trees are among the most popular machine learning algorithms given their intelligibility and simplicity because they produce algorithms that are easy to interpret and visualize, even for users without a statistical background. In decision analysis, a decision tree can be used to visually and explicitly represent decisions and decision making. In data mining, a decision tree describes data (but the resulting classification tree can be an input for decision making).",
-  "story": "Imagine a chef tasting every ingredient before it goes into the pot, deciding what belongs and what would ruin the broth. Better ingredients make a better meal, and the same is true here. Every machine is shaped by what it was shown, so someone has to choose that material with care. It is the raw material; the model is only ever as good as what it was fed. And that is Decision tree learning — the unglamorous work everything else stands on.",
+  "explainer": {
+    "lead": "Decision tree learning turns observations into a tree-shaped predictive model. Its branches show which features lead to a prediction, making the result relatively easy to inspect, explain, and visualize.",
+    "tiers": {
+      "eli5": "Imagine playing a guessing game where each answer to a question sends you down a different path until you reach a final answer. A decision tree learns those paths from examples: it can sort things into groups or predict a number. People like it because you can follow the path and see how the answer was reached.",
+      "practitioner": "Use a classification tree for a discrete target and a regression tree for a continuous target. Fit the tree to observations, then follow its feature-based branches to a class label or numeric prediction. Its interpretability helps with inspection and communication, but a data-mining tree should not be confused with a decision-analysis diagram of decisions.",
+      "paperLevel": "Given observations with features and a target y, decision tree learning produces a predictive tree T. For discrete y, leaves represent class labels and branches represent conjunctions of features leading to those labels; for continuous y, typically real-valued, the model is a regression tree. Regression trees can also be extended to objects equipped with pairwise dissimilarities, such as categorical sequences."
+    },
+    "example": "Suppose past observations record whether it rained, whether it was windy, and whether someone walked outside. A learned classification tree might send rainy observations to a leaf labelled 'stayed inside', while non-rainy observations are split again on wind; a non-rainy, non-windy path ends at 'walked outside'. The full prediction can be read by following that conjunction of features.",
+    "usedIn": [
+      {
+        "name": "Statistics",
+        "detail": "Used as a supervised approach for building predictive models from observations.",
+        "url": ""
+      },
+      {
+        "name": "Data mining",
+        "detail": "Used to describe data and produce classification trees that can inform decision making.",
+        "url": ""
+      },
+      {
+        "name": "Machine learning",
+        "detail": "Used for classification and regression where an intelligible, visual model is valuable.",
+        "url": ""
+      },
+      {
+        "name": "Decision analysis",
+        "detail": "Decision trees visually and explicitly represent decisions and decision making.",
+        "url": ""
+      }
+    ],
+    "intuition": "A decision tree is like a sequence of feature-based questions that narrows down a prediction. Learning the tree means deriving that structure from observations rather than writing every question by hand.",
+    "howItWorks": [
+      "Start with observations containing features and a target variable.",
+      "Determine whether the target is discrete or continuous.",
+      "Learn a tree whose branches encode feature-based paths.",
+      "For classification, end at leaves containing class labels.",
+      "For regression, use the tree to predict continuous values."
+    ],
+    "whyItMatters": "Decision trees combine prediction with a structure that non-specialists can interpret and visualize. This simplicity helps explain their popularity in machine learning and lets data-mining results feed into later decision making.",
+    "misconceptions": [
+      "Decision trees are not only for classification; regression trees handle continuous targets.",
+      "A data-mining decision tree describes data, whereas a decision-analysis tree represents decisions and decision making.",
+      "Branches are not isolated rules: in classification trees, they represent conjunctions of features leading to class labels."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "observations",
+          "label": "Observed examples",
+          "note": "Features paired with a target variable."
+        },
+        {
+          "id": "learning",
+          "label": "Tree learning",
+          "note": "Builds a predictive tree from the observations."
+        },
+        {
+          "id": "branches",
+          "label": "Feature branches",
+          "note": "Paths encode feature conditions."
+        },
+        {
+          "id": "class-leaf",
+          "label": "Class leaves",
+          "note": "Discrete targets end in class labels."
+        },
+        {
+          "id": "regression-leaf",
+          "label": "Regression predictions",
+          "note": "Continuous targets produce numeric values."
+        }
+      ],
+      "edges": [
+        {
+          "from": "observations",
+          "to": "learning",
+          "label": ""
+        },
+        {
+          "from": "learning",
+          "to": "branches",
+          "label": ""
+        },
+        {
+          "from": "branches",
+          "to": "class-leaf",
+          "label": "discrete target"
+        },
+        {
+          "from": "branches",
+          "to": "regression-leaf",
+          "label": "continuous target"
+        }
+      ],
+      "caption": "Learning turns observations into feature-based branches that lead to classification or regression predictions."
+    }
+  },
   "related": [
     "decision-tree",
     "alternating-decision-tree",

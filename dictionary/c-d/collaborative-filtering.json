@@ -5,7 +5,134 @@
   "type": "concept",
   "definition": "Collaborative filtering (CF) is, besides content-based filtering, one of two major techniques used by recommender systems.",
   "details": "Collaborative filtering has two senses, a narrow one and a more general one. In the newer, narrower sense, collaborative filtering is a method of making automatic predictions (filtering) about a user's interests by utilizing preferences or taste information collected from many users (collaborating). This approach assumes that if persons A and B share similar opinions on one issue, they are more likely to agree on other issues compared to a random pairing of A with another person. For instance, a collaborative filtering system for television programming could predict which shows a user might enjoy based on a limited list of the user's tastes (likes or dislikes). These predictions are specific to the user, but use information gleaned from many users. This differs from the simpler approach of giving an average (non-specific) score for each item of interest, for example based on its number of votes. In the more general sense, collaborative filtering is the process of filtering information or patterns using techniques involving collaboration among multiple agents, viewpoints, data sources, etc. Applications of collaborative filtering typically involve very large data sets. Collaborative",
-  "story": "Think of a referee whose job is to be completely honest about who touched the ball last. Before trusting a machine, someone has to measure how good it really is — fairly and honestly. It is the exam that separates “it sounds good” from “it actually is good”. What gets measured is what actually gets better. And that, done honestly, is Collaborative filtering.",
+  "explainer": {
+    "lead": "Collaborative filtering recommends items by learning from the preferences of many users rather than relying only on an item's average score. It matters because people with similar tastes can help predict what each other will enjoy, producing recommendations tailored to the individual.",
+    "tiers": {
+      "eli5": "Imagine you and a friend love the same three films. If your friend loves a fourth film you have not seen, that is a clue you might enjoy it too. Collaborative filtering does this with lots of people, finding similar tastes and using them to make personal suggestions.",
+      "practitioner": "User-based systems find users with similar rating patterns and aggregate their ratings; item-based systems build an item–item relationship matrix and use the current user's history to make predictions. Ratings may be explicit, such as likes and dislikes, or implicit observations such as purchases and listening behavior. Practical design must address how neighbor preferences are weighted and filter predictions through business logic, such as avoiding an offer for an album the user already owns.",
+      "paperLevel": "In user-based memory-based CF, let U be the top N users most similar to user u who rated item i. One prediction is r_{u,i} = k sum_{u' in U} sim(u,u') r_{u',i}, where k = 1 / sum_{u' in U} |sim(u,u')|. Common systems find like-minded users and calculate a prediction from their ratings, while item-based CF instead models relationships between pairs of items. Central difficulties include combining and weighting neighbor preferences and obtaining useful preference information through user participation or observed behavior."
+    },
+    "example": "Suppose Ana and Ben give the same high ratings to three television dramas, while Ben also rates a fourth drama highly and Ana has not seen it. A user-based system can treat Ben as a similar-taste neighbor and predict that Ana may enjoy the fourth drama, rather than recommending it merely because it has a high average vote count.",
+    "usedIn": [
+      {
+        "name": "Television programming",
+        "detail": "A system can predict shows a user may enjoy from a limited list of that user's likes and dislikes plus preferences from other viewers.",
+        "url": ""
+      },
+      {
+        "name": "Electronic commerce",
+        "detail": "Purchase histories and other user data can support item recommendations, including item-based patterns such as users who bought x also bought y.",
+        "url": ""
+      },
+      {
+        "name": "Music recommendation",
+        "detail": "Listening behavior across users can help predict future preferences where tastes vary too much for an average score to be useful.",
+        "url": ""
+      },
+      {
+        "name": "Environmental sensing",
+        "detail": "In the broader sense of collaborative filtering, information from multiple sensors can be combined to filter patterns in monitoring data.",
+        "url": ""
+      }
+    ],
+    "intuition": "People often get useful recommendations from others whose tastes resemble their own. Collaborative filtering turns that idea into a calculation: agreement on known items provides evidence that two users may also agree on unfamiliar ones.",
+    "howItWorks": [
+      "Collect a user's preferences through ratings or observed behavior such as purchases and listening.",
+      "Find other users with similar rating patterns, or build relationships between items.",
+      "Combine the preferences of similar users, or use the item relationships, to predict the active user's interest.",
+      "Recommend highly rated items the user has not yet rated, applying business rules where needed.",
+      "Use any new ratings to improve the representation of the user's preferences over time."
+    ],
+    "whyItMatters": "It provides a way to filter overwhelming amounts of online information into predictions specific to each user. Unlike an average item score, it can reflect differences in taste, which is especially valuable in domains such as music where interests vary widely.",
+    "misconceptions": [
+      "It is not just showing the items with the highest average ratings; its predictions depend on the individual user and other users' preferences.",
+      "It does not always require explicit ratings, because some systems use implicit observations such as purchases or listening history.",
+      "It is not limited to user-to-user similarity; item-based collaborative filtering instead uses relationships between items."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "preferences",
+          "label": "User preferences",
+          "note": "Ratings or observed behavior from many users"
+        },
+        {
+          "id": "match",
+          "label": "Find similar users",
+          "note": "Compare the active user's patterns with others"
+        },
+        {
+          "id": "ratings",
+          "label": "Neighbor ratings",
+          "note": "Ratings from similar users for unfamiliar items"
+        },
+        {
+          "id": "prediction",
+          "label": "Predict interest",
+          "note": "Combine and weight the selected preferences"
+        },
+        {
+          "id": "recommendation",
+          "label": "Recommend items",
+          "note": "Offer promising items not yet rated by the user"
+        },
+        {
+          "id": "feedback",
+          "label": "New ratings",
+          "note": "Fresh feedback refines the user's preference profile"
+        }
+      ],
+      "edges": [
+        {
+          "from": "preferences",
+          "to": "match",
+          "label": "rating patterns"
+        },
+        {
+          "from": "match",
+          "to": "ratings",
+          "label": "similar tastes"
+        },
+        {
+          "from": "ratings",
+          "to": "prediction",
+          "label": "weighted ratings"
+        },
+        {
+          "from": "prediction",
+          "to": "recommendation",
+          "label": "personal scores"
+        },
+        {
+          "from": "recommendation",
+          "to": "feedback",
+          "label": "user response"
+        },
+        {
+          "from": "feedback",
+          "to": "preferences",
+          "label": "updated profile"
+        }
+      ],
+      "caption": "A user-based collaborative filtering loop: preferences reveal similar users, their ratings drive predictions, and new feedback updates the system."
+    },
+    "image": {
+      "src": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Collaborative_filtering_network.gif",
+      "alt": "Collaborative filtering — Algorithm used by recommender systems",
+      "width": 640,
+      "height": 617,
+      "credit": "Moshanin",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Collaborative_filtering_network.gif"
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Collaborative filtering",
+        "url": "https://en.wikipedia.org/wiki/Collaborative_filtering"
+      }
+    ]
+  },
   "related": [
     "collaborative-search-engine",
     "adversarial-information-retrieval",

@@ -5,7 +5,98 @@
   "type": "concept",
   "definition": "The task of analyzing the grammatical structure of a sentence to establish relationships between 'head' words and words that modify them.",
   "details": "Dependency parsing produces a tree structure representing syntactic relationships within a sentence, historically used as a component in various downstream NLP tasks requiring structural understanding of grammar.",
-  "story": "Imagine learning a language by reading every book in the library and noticing, over time, which words travel together. It does not memorize a rulebook; it absorbs a library. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It is fluency built from pattern, not from memorized rules. And that is Dependency Parsing — teaching a machine to read between the lines.",
+  "explainer": {
+    "lead": "Dependency parsing maps how words in a sentence depend on one another, linking each modifying word to the word it describes or completes. The result is a tree that makes grammatical relationships explicit for other language-processing tasks.",
+    "tiers": {
+      "eli5": "Think of a sentence as a small team, with one main word and other words connected to the words they help explain. Dependency parsing draws those connections, showing which word tells us who acted, what was affected, or which thing is being described.",
+      "practitioner": "A parser takes a sentence and returns a dependency tree, which downstream components can consume instead of working only from a word sequence. Check that the predicted heads and relationship labels match the representation expected by the rest of the pipeline.",
+      "paperLevel": "For tokens w1, ..., wn, dependency parsing predicts directed arcs h -> d, where h is the head and d is its modifier, together forming a tree over the sentence. Arcs may carry grammatical relation labels; the task captures dependency structure rather than a flat sequence of word categories."
+    },
+    "example": "In \"The cat chased the mouse,\" \"chased\" is the root. \"cat\" depends on \"chased\" as its subject, \"mouse\" depends on \"chased\" as its object, and each \"the\" depends on its following noun.",
+    "usedIn": [
+      {
+        "name": "Information extraction",
+        "detail": "Dependency links can expose grammatical connections between words for downstream processing.",
+        "url": ""
+      },
+      {
+        "name": "Question answering",
+        "detail": "Sentence structure can help downstream components interpret how parts of a question or sentence relate.",
+        "url": ""
+      },
+      {
+        "name": "Grammar-aware NLP pipelines",
+        "detail": "Dependency trees provide structural input to tasks that need more than an unordered or linear view of words.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of treating a sentence as just words in order, dependency parsing asks which word each other word hangs on. Those head-to-modifier links form a tree rooted in the sentence's central word.",
+    "howItWorks": [
+      "Read the sentence as a sequence of words.",
+      "Choose a head word for each modifying word.",
+      "Connect every head to its modifier with a directed link.",
+      "Label links with grammatical relationships when required.",
+      "Return the connected dependency tree."
+    ],
+    "whyItMatters": "The tree makes grammatical relationships directly available to downstream NLP components. It has historically served as a structural building block for tasks that need to understand how a sentence fits together.",
+    "misconceptions": [
+      "It does more than label each word with a part of speech: it links words to their heads.",
+      "A dependency tree represents grammatical relationships, not the sentence's meaning as a whole.",
+      "The links are not simply connections between neighboring words."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "chased",
+          "label": "chased",
+          "note": "Root and central predicate"
+        },
+        {
+          "id": "cat",
+          "label": "cat",
+          "note": "Subject of chased"
+        },
+        {
+          "id": "the-cat",
+          "label": "The",
+          "note": "Modifier of cat"
+        },
+        {
+          "id": "mouse",
+          "label": "mouse",
+          "note": "Object of chased"
+        },
+        {
+          "id": "the-mouse",
+          "label": "the",
+          "note": "Modifier of mouse"
+        }
+      ],
+      "edges": [
+        {
+          "from": "chased",
+          "to": "cat",
+          "label": "subject"
+        },
+        {
+          "from": "cat",
+          "to": "the-cat",
+          "label": "modifier"
+        },
+        {
+          "from": "chased",
+          "to": "mouse",
+          "label": "object"
+        },
+        {
+          "from": "mouse",
+          "to": "the-mouse",
+          "label": "modifier"
+        }
+      ],
+      "caption": "The dependency tree for \"The cat chased the mouse,\" with arrows pointing from heads to modifiers."
+    }
+  },
   "related": [
     "coreference-resolution",
     "dialogue-state-tracking",

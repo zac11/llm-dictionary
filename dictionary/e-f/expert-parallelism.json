@@ -5,6 +5,111 @@
   "type": "concept",
   "definition": "Distributing MoE experts across devices, with tokens routed over the network to their assigned experts.",
   "details": "Distributing MoE experts across devices, with tokens routed over the network to their assigned experts. Adds all-to-all communication as a first-class cost in MoE training and serving.",
+  "explainer": {
+    "lead": "Expert parallelism spreads the specialist parts of a mixture-of-experts model across multiple devices. This lets a model use more experts than one device can hold, but every token may need a network trip to reach its assigned expert.",
+    "tiers": {
+      "eli5": "Imagine a classroom where each helper is good at a different kind of question, and the helpers sit in different rooms. A messenger takes each question to the right helper and brings the answer back. This gives you more helpers, but all that running between rooms takes time.",
+      "practitioner": "In distributed MoE training or serving, place subsets of experts on different devices and route token representations to those devices for expert computation. Results must then be returned and combined, so all-to-all communication, network capacity, and uneven token-to-expert routing can affect throughput alongside computation.",
+      "paperLevel": "Given E experts partitioned across D devices, a router assigns each token representation x to one or more experts; tokens whose experts are remote are exchanged between devices, processed, and returned for combination. Expert parallelism increases available expert capacity but makes all-to-all communication an explicit cost, with efficiency depending on computation, communication, and routing balance."
+    },
+    "example": "Suppose eight experts are split across four devices, with two experts per device. A token on device 1 is assigned to an expert on device 3, so its representation is sent there, processed, and sent back to be combined with the rest of the model's computation.",
+    "usedIn": [
+      {
+        "name": "Distributed MoE training",
+        "detail": "Spreads expert parameters across devices while tokens are routed over the network during training.",
+        "url": ""
+      },
+      {
+        "name": "Distributed MoE serving",
+        "detail": "Runs experts on multiple devices and exchanges token data to produce responses.",
+        "url": ""
+      }
+    ],
+    "intuition": "It is like dividing a team of specialists among several offices instead of trying to fit everyone into one room. You gain space for more specialists, but coordinating their work now requires sending messages between offices.",
+    "howItWorks": [
+      "Partition the MoE experts across the available devices.",
+      "Route each token to the device holding its assigned expert.",
+      "Compute the expert outputs on those devices.",
+      "Return and combine the outputs through all-to-all communication."
+    ],
+    "whyItMatters": "Expert parallelism makes larger MoE expert pools possible across multiple devices. Its tradeoff is that network communication becomes a central part of both training and serving performance, rather than a minor implementation detail.",
+    "misconceptions": [
+      "It does not mean every token uses every expert; tokens are routed to their assigned experts.",
+      "It is not free extra capacity: moving tokens and results adds all-to-all communication."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "tokens",
+          "label": "Input tokens",
+          "note": "Token representations arrive on devices."
+        },
+        {
+          "id": "router",
+          "label": "Expert router",
+          "note": "Assigns tokens to experts."
+        },
+        {
+          "id": "network",
+          "label": "All-to-all network",
+          "note": "Carries tokens between devices."
+        },
+        {
+          "id": "experts-a",
+          "label": "Local experts",
+          "note": "Process tokens assigned locally."
+        },
+        {
+          "id": "experts-b",
+          "label": "Remote experts",
+          "note": "Process tokens on other devices."
+        },
+        {
+          "id": "combine",
+          "label": "Combined outputs",
+          "note": "Returned expert results are merged."
+        }
+      ],
+      "edges": [
+        {
+          "from": "tokens",
+          "to": "router",
+          "label": "representations"
+        },
+        {
+          "from": "router",
+          "to": "experts-a",
+          "label": "local tokens"
+        },
+        {
+          "from": "router",
+          "to": "network",
+          "label": "remote tokens"
+        },
+        {
+          "from": "network",
+          "to": "experts-b",
+          "label": "dispatch"
+        },
+        {
+          "from": "experts-a",
+          "to": "combine",
+          "label": "outputs"
+        },
+        {
+          "from": "experts-b",
+          "to": "network",
+          "label": "return"
+        },
+        {
+          "from": "network",
+          "to": "combine",
+          "label": "results"
+        }
+      ],
+      "caption": "Tokens are routed locally or across the network, then expert outputs are returned and combined."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

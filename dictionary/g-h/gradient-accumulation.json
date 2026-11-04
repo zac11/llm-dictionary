@@ -5,7 +5,93 @@
   "type": "concept",
   "definition": "A technique that simulates a larger effective batch size by accumulating gradients across multiple smaller forward/backward passes before performing a single weight update.",
   "details": "Gradient accumulation allows training with an effectively larger batch size than would otherwise fit in available memory, by splitting a large batch into smaller micro-batches processed sequentially before updating weights.",
-  "story": "Think of a hiker descending a foggy hill in the dark, taking small steps and feeling for the steepest way down. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. It is the same loop you use to learn anything: try, miss, correct, try again. Skill, for a model, is just error pushed down until it is small enough to ignore. And that is Gradient Accumulation — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "Gradient accumulation lets a model train with a large effective batch without loading that entire batch into memory at once. It does this by collecting gradients from several smaller batches, then updating the weights once.",
+    "tiers": {
+      "eli5": "Imagine you need to carry 32 books but can only hold 8 at a time. You make four trips and finish the job, rather than trying to carry all 32 together. Similarly, the model processes small groups of examples, saves what it learns from each group, and adjusts itself after all the groups are done.",
+      "practitioner": "Split the configured batch into sequential micro-batches and perform the optimizer step only after the chosen number of accumulation steps. Set the effective batch size to micro-batch size times the number of steps, and scale each micro-batch's contribution so their gradients combine correctly. Memory use stays near that of one micro-batch, but weight updates occur less frequently.",
+      "paperLevel": "For micro-batch size b and m accumulation steps, the effective batch size is B_eff = m * b. For equally sized micro-batches, the update uses g = (1/m) * sum_i g_i, where g_i is the gradient computed for micro-batch i, before applying a single weight update. This reduces the memory required for a batch but delays optimization until all m forward/backward passes have finished."
+    },
+    "example": "To use an effective batch of 32 examples when only 8 fit in memory, process four micro-batches of 8. After each backward pass, retain and accumulate the gradients; after the fourth pass, perform one weight update for all 32 examples.",
+    "usedIn": [
+      {
+        "name": "Large neural-network training",
+        "detail": "Used to reach a larger effective batch size when the full batch would exceed available memory.",
+        "url": ""
+      },
+      {
+        "name": "Memory-constrained fine-tuning",
+        "detail": "Used to process small micro-batches sequentially while preserving a larger batch for each weight update.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of choosing between a small batch that fits in memory and a large batch that does not, process the large batch in pieces. Combine the gradient information from those pieces before changing the model.",
+    "howItWorks": [
+      "Split a large batch into smaller micro-batches.",
+      "Run a forward and backward pass on one micro-batch.",
+      "Add its gradients to the stored gradients.",
+      "Repeat for the remaining micro-batches.",
+      "Apply one weight update using the accumulated gradients."
+    ],
+    "whyItMatters": "It makes larger effective batch sizes possible on memory-limited hardware. The trade-off is that several forward/backward passes are completed before the model takes its next optimization step.",
+    "misconceptions": [
+      "It does not update the weights after every micro-batch; gradients are accumulated first.",
+      "It increases the effective batch size, not the number of examples held in memory at once.",
+      "It saves batch memory but does not remove the extra sequential computation."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "batch",
+          "label": "Large batch",
+          "note": "More examples than fit in memory"
+        },
+        {
+          "id": "micro",
+          "label": "Micro-batches",
+          "note": "Smaller sequential groups"
+        },
+        {
+          "id": "pass",
+          "label": "Forward/backward pass",
+          "note": "Computes each group's gradients"
+        },
+        {
+          "id": "accum",
+          "label": "Accumulated gradients",
+          "note": "Combines gradients across groups"
+        },
+        {
+          "id": "update",
+          "label": "Weight update",
+          "note": "Applied once per large batch"
+        }
+      ],
+      "edges": [
+        {
+          "from": "batch",
+          "to": "micro",
+          "label": "split"
+        },
+        {
+          "from": "micro",
+          "to": "pass",
+          "label": "process"
+        },
+        {
+          "from": "pass",
+          "to": "accum",
+          "label": "add gradients"
+        },
+        {
+          "from": "accum",
+          "to": "update",
+          "label": "after all groups"
+        }
+      ],
+      "caption": "Several micro-batches contribute gradients before a single weight update."
+    }
+  },
   "related": [
     "gradient-clipping",
     "active-learning",

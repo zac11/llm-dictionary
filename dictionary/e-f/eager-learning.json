@@ -5,7 +5,92 @@
   "type": "concept",
   "definition": "In artificial intelligence, eager learning is a learning method in which the system tries to construct a general, input-independent target function during training of the system, as opposed to lazy learning, where generalization beyond the training data is delayed until a query is made to the system.",
   "details": "The main advantage gained in employing an eager learning method, such as an artificial neural network, is that the target function will be approximated globally during training, thus requiring much less space than using a lazy learning system. Eager learning systems also deal much better with noise in the training data. Eager learning is an example of offline learning, in which post-training queries to the system have no effect on the system itself, and thus the same query to the system will always produce the same result. The main disadvantage with eager learning is that it is generally unable to provide good local approximations in the target function.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. That steady, miss-by-miss improvement is Eager learning.",
+  "explainer": {
+    "lead": "Eager learning does its generalizing during training, building one function that can answer later queries without returning to the training process. This can save storage, tolerate noisy training data better than lazy learning, and give consistent answers, though the global approximation may miss local detail.",
+    "tiers": {
+      "eli5": "It is like studying a whole subject before an exam and then answering questions from what you have learned, rather than looking through your notes for every new question. A computer using eager learning builds its general answer-giving rules first. After that, asking it questions does not change those rules, so the same question gets the same answer.",
+      "practitioner": "An artificial neural network is an eager learner: training produces a global approximation that is then used for queries without further updates. The resulting system generally needs much less space than a lazy system and handles noisy training data better, while repeated post-training queries leave it unchanged. The trade-off is that a global fit may not approximate the target function well in local regions.",
+      "paperLevel": "Given training data D, eager learning constructs an input-independent approximation f_hat during training, before any query x arrives; a later prediction is f_hat(x), and post-training queries do not modify f_hat. This contrasts with lazy learning, which delays generalization beyond D until a query is made. Its principal limitation is generally poor local approximation of the target function."
+    },
+    "example": "Suppose an artificial neural network is trained on labelled examples to estimate whether an input belongs to class A or class B. Training produces one general decision function; when a new input arrives, the network applies that function and returns a class estimate. Repeating the same input gives the same result, and neither query changes the network.",
+    "usedIn": [
+      {
+        "name": "Artificial neural networks",
+        "detail": "Training approximates the target function globally before the network receives queries.",
+        "url": ""
+      },
+      {
+        "name": "Offline prediction systems",
+        "detail": "Queries are answered by the trained system without changing it, so identical queries produce identical results.",
+        "url": ""
+      }
+    ],
+    "intuition": "Do the generalization once, up front, rather than waiting until each question arrives. The trained system then acts like a fixed answer-giving function.",
+    "howItWorks": [
+      "Provide the system with training data.",
+      "During training, approximate the target function globally rather than only around future queries.",
+      "Finish training with a general function that does not depend on any particular later input.",
+      "Answer each new query using that trained function, without updating the system."
+    ],
+    "whyItMatters": "Eager learning separates the expensive generalization stage from later querying, reduces storage requirements relative to lazy systems, and gives stable post-training behavior. Its global approach also explains its main weakness: local features of the target function can be approximated poorly.",
+    "misconceptions": [
+      "Eager does not mean learning without training data; the global function is still constructed during training.",
+      "Offline learning does not mean the system cannot answer new queries; it means those queries do not change the system.",
+      "A good global approximation does not guarantee a good approximation in every local region."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "training-data",
+          "label": "Training data",
+          "note": "Examples used before queries arrive."
+        },
+        {
+          "id": "training",
+          "label": "Eager training",
+          "note": "Generalizes globally during training."
+        },
+        {
+          "id": "target-function",
+          "label": "Approximated function",
+          "note": "A fixed input-independent target approximation."
+        },
+        {
+          "id": "query",
+          "label": "New query",
+          "note": "An input presented after training."
+        },
+        {
+          "id": "result",
+          "label": "Prediction",
+          "note": "The query does not update the function."
+        }
+      ],
+      "edges": [
+        {
+          "from": "training-data",
+          "to": "training",
+          "label": "trains"
+        },
+        {
+          "from": "training",
+          "to": "target-function",
+          "label": "builds"
+        },
+        {
+          "from": "query",
+          "to": "target-function",
+          "label": "input"
+        },
+        {
+          "from": "target-function",
+          "to": "result",
+          "label": "returns"
+        }
+      ],
+      "caption": "Eager learning builds its global approximation before queries arrive, then answers without changing itself."
+    }
+  },
   "related": [
     "action-model-learning",
     "active-learning-machine-learning",

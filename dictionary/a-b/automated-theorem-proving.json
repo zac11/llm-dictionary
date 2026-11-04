@@ -5,6 +5,92 @@
   "type": "concept",
   "definition": "Automatically proving mathematical theorems with formal logic systems — from classical provers like Lean/Coq automation to LLM-guided proof search.",
   "details": "Automatically proving mathematical theorems with formal logic systems — from classical provers like Lean/Coq automation to LLM-guided proof search.",
+  "explainer": {
+    "lead": "Automated theorem proving asks a computer to find a mathematical proof, rather than merely check one written by a person. The search happens inside a formal logic system, so the target and allowable reasoning steps are precise.",
+    "tiers": {
+      "eli5": "Imagine solving a maze where the entrance is what you already know and the exit is the statement you want to prove. Each move must follow strict rules, and the computer tries different routes until it reaches the exit. Some tools follow fixed search methods, while others use suggestions from a language model to choose promising moves.",
+      "practitioner": "Encode the claim and its assumptions in a formal system, then use Lean or Coq automation to search for a proof; an LLM can also propose or prioritize proof steps. If the search fails or times out, that run has simply found no proof—it does not show that the claim is false.",
+      "paperLevel": "Given a formal theory T and a target formula φ, automated theorem proving seeks a finite derivation Δ that proves φ from T using the theory's inference rules. Classical provers search the space of derivations, while LLM-guided approaches use a language model to direct that search. An unsuccessful search alone does not establish that φ is false or unprovable."
+    },
+    "example": "To prove P → P, first assume P and call that assumption h. The goal is now P, and h already provides exactly that conclusion, so automation can close the goal by using h.",
+    "usedIn": [
+      {
+        "name": "Lean",
+        "detail": "Automation can search for proof steps in formally stated Lean theorems.",
+        "url": ""
+      },
+      {
+        "name": "Coq",
+        "detail": "Automation can construct proofs from goals and assumptions expressed in Coq.",
+        "url": ""
+      },
+      {
+        "name": "Formal mathematics",
+        "detail": "Mathematical claims can be stated in formal logic and proved through automated search.",
+        "url": ""
+      },
+      {
+        "name": "LLM-guided proof search",
+        "detail": "Language models can guide the choice of steps while a formal system supplies the logical setting.",
+        "url": ""
+      }
+    ],
+    "intuition": "A proof is a path from accepted assumptions and rules to a desired conclusion. Automated theorem proving delegates the search for that path to a computer.",
+    "howItWorks": [
+      "State the theorem and assumptions formally.",
+      "Fix the axioms and inference rules that proofs may use.",
+      "Search for a sequence of steps leading to the theorem, with classical automation or LLM guidance.",
+      "Return the resulting formal proof when the search succeeds."
+    ],
+    "whyItMatters": "It can take over the tedious work of exploring possible proofs while keeping every step within a precise logical framework. The same basic search setting accommodates both established prover automation and newer LLM-guided methods.",
+    "misconceptions": [
+      "An LLM suggesting a convincing argument is not the same as finding a formal proof.",
+      "A failed search does not prove that a theorem is false.",
+      "Automated theorem proving is about finding proofs, not merely checking them."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "theorem",
+          "label": "Formal theorem",
+          "note": "The target statement and assumptions"
+        },
+        {
+          "id": "logic",
+          "label": "Logic system",
+          "note": "The permitted axioms and inference rules"
+        },
+        {
+          "id": "search",
+          "label": "Proof search",
+          "note": "Classical automation or LLM guidance explores steps"
+        },
+        {
+          "id": "proof",
+          "label": "Formal proof",
+          "note": "A derivation ending at the theorem"
+        }
+      ],
+      "edges": [
+        {
+          "from": "theorem",
+          "to": "search",
+          "label": "sets goal"
+        },
+        {
+          "from": "logic",
+          "to": "search",
+          "label": "limits steps"
+        },
+        {
+          "from": "search",
+          "to": "proof",
+          "label": "finds"
+        }
+      ],
+      "caption": "Proof search combines a formal goal with fixed logical rules and returns a derivation when it finds one."
+    }
+  },
   "citation": {
     "title": "Automated Theorem Proving",
     "authors": [],

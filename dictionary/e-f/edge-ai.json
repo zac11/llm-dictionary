@@ -8,7 +8,87 @@
   ],
   "definition": "Running AI models directly on devices such as phones, cameras and sensors instead of sending data to the cloud.",
   "details": "Edge inference cuts latency and keeps data local, which helps privacy and offline use, but it must fit within tight power, memory and compute budgets. Techniques like quantization and small-model design make this possible.",
-  "story": "Think of a historian sorting through boxes of letters, building a picture of an era one sentence at a time. Every machine is shaped by what it was shown, so someone has to choose that material with care. The examples a machine reads become the world it believes in. The words a model reads become the world it believes in. And that is Edge AI — the unglamorous work everything else stands on.",
+  "explainer": {
+    "lead": "Edge AI puts the AI model on the device that collects the data, such as a phone, camera, or sensor. That can make responses faster, keep working without an internet connection, and reduce how much raw data leaves the device.",
+    "tiers": {
+      "eli5": "It is like answering a question at your own desk instead of mailing it to someone far away and waiting for a reply. A phone or camera uses a small AI model right where it is, so it can respond quickly and keep more of your information with you.",
+      "practitioner": "Deploy a compact model on the phone, camera, or sensor and run inference where the data is captured. Quantization and small-model design help fit tight memory, compute, and power budgets; test latency and resource use on the target device rather than assuming cloud-model performance will carry over.",
+      "paperLevel": "For input x captured by a device, edge AI computes y = f_theta(x) locally instead of sending x to a cloud server for inference. The deployment is constrained by device power, memory, and compute, with quantization and small-model design used to meet those limits. Local inference reduces communication latency and supports offline use, but the available model size and computation are restricted."
+    },
+    "example": "A security camera runs a small model on the camera itself to check whether a person is in its view. When it detects one, it can raise an alert immediately, even if the internet connection is down, rather than sending every frame to a cloud server first.",
+    "usedIn": [
+      {
+        "name": "Smartphones",
+        "detail": "Run AI features locally for quick responses and continued operation without a connection.",
+        "url": ""
+      },
+      {
+        "name": "Cameras",
+        "detail": "Process captured images on the camera instead of sending all raw data to the cloud.",
+        "url": ""
+      },
+      {
+        "name": "Sensors",
+        "detail": "Analyze readings near their source within limited power, memory, and compute budgets.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of shipping every question to a distant cloud computer, bring a suitably small model to the place where the data appears. The trade-off is straightforward: less waiting and data movement, but far fewer computing resources to work with.",
+    "howItWorks": [
+      "A phone, camera, or sensor captures input data.",
+      "A compact AI model stored on the device processes that input directly.",
+      "Quantization or small-model design keeps inference within the device's resource limits.",
+      "The device produces a result locally, without requiring a round trip to the cloud."
+    ],
+    "whyItMatters": "Local inference cuts the delay of contacting a remote server, enables offline operation, and helps privacy by keeping data on the device. It also makes model efficiency important because phones, cameras, and sensors have limited power, memory, and compute.",
+    "misconceptions": [
+      "Edge AI is about running inference on devices, not necessarily training the model there.",
+      "It does not require a device to be disconnected forever; it simply removes the need to send every inference request to the cloud.",
+      "Keeping data local helps privacy, but it does not by itself guarantee that an entire product is private."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Device input",
+          "note": "A phone, camera, or sensor captures data."
+        },
+        {
+          "id": "model",
+          "label": "On-device model",
+          "note": "A compact model runs within local resource limits."
+        },
+        {
+          "id": "result",
+          "label": "Local result",
+          "note": "Inference finishes without a cloud round trip."
+        },
+        {
+          "id": "action",
+          "label": "Response or action",
+          "note": "The device uses the result immediately, including offline."
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "model",
+          "label": "local data"
+        },
+        {
+          "from": "model",
+          "to": "result",
+          "label": "inference"
+        },
+        {
+          "from": "result",
+          "to": "action",
+          "label": "output"
+        }
+      ],
+      "caption": "Data moves from capture to inference to action on the device, rather than travelling to the cloud for processing."
+    }
+  },
   "related": [
     "beam-search",
     "best-of-n-sampling",

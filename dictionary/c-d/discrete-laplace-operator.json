@@ -5,7 +5,112 @@
   "type": "concept",
   "definition": "In mathematics, the discrete Laplace operator is an analog of the continuous Laplace operator, defined so that it has meaning on a graph or a discrete grid.",
   "details": "For the case of a finite-dimensional graph (having a finite number of edges and vertices), the discrete Laplace operator is more commonly called the Laplacian matrix. The discrete Laplace operator occurs in physics problems such as the Ising model and loop quantum gravity, as well as in the study of discrete dynamical systems. It is also used in numerical analysis as a stand-in for the continuous Laplace operator. Common applications include image processing, where it is known as the Laplace filter, and in machine learning for clustering and semi-supervised learning on neighborhood graphs.",
-  "story": "Picture a child pointing at pictures in a book — cat, car, cloud — learning to see by seeing a thousand examples. It turns a picture into an understanding: this is a cat, that is a stop sign. What your eyes do without thinking, the machine does one careful layer at a time. It is eyes made of arithmetic — pixels become edges, edges become shapes, shapes become meaning. That pixel-to-meaning climb is Discrete Laplace operator.",
+  "explainer": {
+    "lead": "The discrete Laplace operator measures how a value at one point differs from the values around it on a grid or graph. It turns the continuous idea of local curvature into a calculation on discrete data, making it useful for images, numerical problems, and learning from neighborhood graphs.",
+    "tiers": {
+      "eli5": "Imagine each square on a grid has a number, like the heights of tiles on a floor. The discrete Laplace operator compares the middle tile with its neighbors to see whether it sticks out or fits in. On a network, it does the same comparison between connected points.",
+      "practitioner": "In image processing, it appears as the Laplace filter, combining a pixel with neighboring pixels to highlight local variation. In machine learning, the graph form is the Laplacian matrix and supports clustering and semi-supervised learning on neighborhood graphs. Check the grid spacing, graph construction, and sign or scaling convention when comparing implementations.",
+      "paperLevel": "For a graph with degree matrix D and adjacency matrix A, a common form is the Laplacian matrix L = D - A, so (Lf)(i) = sum_j A_ij (f(i) - f(j)). On a regular two-dimensional grid, a standard form is (Delta f)(x,y) = f(x+1,y) + f(x-1,y) + f(x,y+1) + f(x,y-1) - 4f(x,y). It approximates the continuous Laplace operator for numerical work, with the result depending on the chosen discretization or graph."
+    },
+    "example": "On a grid, let the center value be 10 and its up, down, left, and right neighbors be 8, 6, 12, and 4. Using the four-neighbor form gives 8 + 6 + 12 + 4 - 4 x 10 = -10, so the center is higher than this neighbor-based comparison.",
+    "usedIn": [
+      {
+        "name": "Image processing",
+        "detail": "Applied as the Laplace filter to measure local changes across pixel neighborhoods.",
+        "url": ""
+      },
+      {
+        "name": "Machine learning",
+        "detail": "Used for clustering and semi-supervised learning on neighborhood graphs.",
+        "url": ""
+      },
+      {
+        "name": "Numerical analysis",
+        "detail": "Serves as a discrete stand-in for the continuous Laplace operator.",
+        "url": ""
+      },
+      {
+        "name": "Physics",
+        "detail": "Appears in problems including the Ising model and loop quantum gravity.",
+        "url": ""
+      }
+    ],
+    "intuition": "It asks whether a point's value is typical of its immediate neighborhood or stands out from it. Neighbor values are combined and compared with the center value, producing a discrete measure of local variation.",
+    "howItWorks": [
+      "Choose a discrete domain, such as a regular grid or a graph of vertices and edges.",
+      "For each point, identify its neighbors: adjacent grid cells or connected graph vertices.",
+      "Combine the neighbor values and subtract the center value with the appropriate weighting.",
+      "Repeat at every point to produce a grid of values or, for a finite graph, apply the Laplacian matrix."
+    ],
+    "whyItMatters": "It makes Laplace-style calculations possible on data that is naturally discrete rather than continuous. The same basic neighborhood comparison connects image filters, numerical approximations, and graph-based learning.",
+    "misconceptions": [
+      "It is not identical to the continuous Laplace operator; it is a discrete analog defined on a grid or graph.",
+      "On a finite graph, it is generally represented by the Laplacian matrix rather than by pixel-filter terminology.",
+      "Different conventions can change signs or scaling, so formulas should be checked before comparing results."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "center",
+          "label": "Center value",
+          "note": "The grid cell or graph vertex being evaluated."
+        },
+        {
+          "id": "north",
+          "label": "North neighbor",
+          "note": "One adjacent value in the neighborhood."
+        },
+        {
+          "id": "south",
+          "label": "South neighbor",
+          "note": "One adjacent value in the neighborhood."
+        },
+        {
+          "id": "west",
+          "label": "West neighbor",
+          "note": "One adjacent value in the neighborhood."
+        },
+        {
+          "id": "east",
+          "label": "East neighbor",
+          "note": "One adjacent value in the neighborhood."
+        },
+        {
+          "id": "output",
+          "label": "Local difference",
+          "note": "Neighbor sum minus four times the center value."
+        }
+      ],
+      "edges": [
+        {
+          "from": "center",
+          "to": "output",
+          "label": "weighted subtraction"
+        },
+        {
+          "from": "north",
+          "to": "output",
+          "label": "add"
+        },
+        {
+          "from": "south",
+          "to": "output",
+          "label": "add"
+        },
+        {
+          "from": "west",
+          "to": "output",
+          "label": "add"
+        },
+        {
+          "from": "east",
+          "to": "output",
+          "label": "add"
+        }
+      ],
+      "caption": "The four-neighbor grid form combines adjacent values with the center value to produce one local measurement."
+    }
+  },
   "related": [
     "sobel-operator",
     "accord-net",

@@ -5,7 +5,101 @@
   "type": "concept",
   "definition": "One complete pass through the entire training dataset.",
   "details": "During training, models typically see the full dataset multiple times (multiple epochs) so weights can be updated repeatedly via gradient descent. Too few epochs can underfit; too many can overfit without regularization.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. That steady, miss-by-miss improvement is Epoch.",
+  "explainer": {
+    "lead": "An epoch is one complete pass through a training dataset. Models usually train for many epochs, giving them repeated opportunities to adjust their weights, but more passes are not always better.",
+    "tiers": {
+      "eli5": "Learning from a training set is like studying a stack of flashcards. Going through the whole stack once is one epoch, and studying it again is another epoch. A few rounds may not be enough to learn, while endlessly repeating them can make you memorize the cards instead of learning the general lesson.",
+      "practitioner": "The epoch count controls how many times the training loop traverses the dataset, while batch size determines how many gradient updates occur within each epoch. Engineers usually choose when to stop by watching validation performance rather than assuming a fixed epoch count. Too few epochs can underfit, and prolonged training can overfit unless regularization or another form of control is used.",
+      "paperLevel": "For a dataset of N examples divided into batches of size b, one epoch performs ceil(N/b) batch updates; training for E epochs therefore performs E complete traversals. Parameters are updated repeatedly through gradient descent, commonly once per batch. There is no universally optimal E: insufficient training can underfit, while excessive training can overfit without regularization."
+    },
+    "example": "With 10,000 training examples and a batch size of 100, one epoch contains 100 batch updates. Training for 30 epochs means each example is seen 30 times, for 3,000 batch updates in total.",
+    "usedIn": [
+      {
+        "name": "Image classification",
+        "detail": "The model makes repeated passes over labeled images while updating its weights.",
+        "url": ""
+      },
+      {
+        "name": "Language modeling",
+        "detail": "Training progresses through multiple passes when the full training dataset is revisited.",
+        "url": ""
+      },
+      {
+        "name": "Recommendation systems",
+        "detail": "Models can be trained over recorded user interactions for multiple epochs.",
+        "url": ""
+      }
+    ],
+    "intuition": "An epoch is one full study session over every training example. Repeating that session lets gradient descent keep improving the weights, until additional repetition stops helping or begins encouraging memorization.",
+    "howItWorks": [
+      "Start with the full training dataset and initial model weights.",
+      "Divide the data into batches and process every batch once.",
+      "Update the weights through gradient descent as batches are processed.",
+      "Finish the epoch after all examples have been seen, then begin another if training continues."
+    ],
+    "whyItMatters": "Epochs provide a simple way to measure and control exposure to the training data. Choosing too few can leave the model underfitted, while choosing too many can lead to overfitting without regularization.",
+    "misconceptions": [
+      "An epoch is not a single gradient update; one epoch usually contains many batch updates.",
+      "More epochs do not guarantee a better model, because validation performance can worsen as overfitting develops."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "dataset",
+          "label": "Training dataset",
+          "note": "All examples used for training."
+        },
+        {
+          "id": "batches",
+          "label": "Data batches",
+          "note": "The dataset is divided into smaller groups."
+        },
+        {
+          "id": "model",
+          "label": "Model and loss",
+          "note": "Each batch produces predictions and a training loss."
+        },
+        {
+          "id": "update",
+          "label": "Gradient update",
+          "note": "The loss guides changes to the weights."
+        },
+        {
+          "id": "epoch",
+          "label": "Epoch complete",
+          "note": "Every example has been processed once."
+        }
+      ],
+      "edges": [
+        {
+          "from": "dataset",
+          "to": "batches",
+          "label": "split"
+        },
+        {
+          "from": "batches",
+          "to": "model",
+          "label": "examples"
+        },
+        {
+          "from": "model",
+          "to": "update",
+          "label": "loss"
+        },
+        {
+          "from": "update",
+          "to": "epoch",
+          "label": "all batches"
+        },
+        {
+          "from": "epoch",
+          "to": "batches",
+          "label": "next epoch"
+        }
+      ],
+      "caption": "One epoch ends after every training batch has contributed to weight updates; another epoch repeats the pass."
+    }
+  },
   "related": [
     "active-learning",
     "backpropagation",

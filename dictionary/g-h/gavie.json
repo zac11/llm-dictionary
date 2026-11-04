@@ -5,6 +5,91 @@
   "type": "concept",
   "definition": "GPT4-Assisted Visual Instruction Evaluation, an approach to evaluate visual instruction tuning without the need for human-annotated groundtruth answers and can adapt to diverse instruction formats.",
   "details": "GPT4-Assisted Visual Instruction Evaluation, an approach to evaluate visual instruction tuning without the need for human-annotated groundtruth answers and can adapt to diverse instruction formats.",
+  "explainer": {
+    "lead": "GAVIE is a way to judge how well models follow visual instructions, using GPT-4 to assist with evaluation. It matters because it removes the need to write a human-approved answer for every test and can handle varied instruction formats.",
+    "tiers": {
+      "eli5": "Imagine asking a computer different kinds of questions about a picture, with each question worded differently. GAVIE uses GPT-4 as a helper to check the computer's answers, so a person does not have to write a perfect answer for every question first. This makes it easier to see how well the computer follows directions involving pictures.",
+      "practitioner": "Apply GAVIE when evaluating responses from visually instruction-tuned models, especially when test instructions use varied formats. GPT-4 assists the evaluation, avoiding the need to prepare human-annotated ground-truth answers for every case. Treat the results as GPT-4-assisted judgments rather than human-written reference answers.",
+      "paperLevel": "Let M be a visually instruction-tuned model and x an instruction in one of several formats; GAVIE evaluates M(x) with GPT-4 assistance, without requiring a human-annotated ground-truth answer y*. It therefore replaces reference-based evaluation with model-assisted judgment. Its judgments remain dependent on GPT-4 as the evaluator."
+    },
+    "example": "A model receives an image and the instruction, \"Describe the main object, then answer the question in one sentence.\" Its response is evaluated with GPT-4's assistance, without a human-written ideal answer, and the same approach can accommodate differently worded instructions.",
+    "usedIn": [
+      {
+        "name": "Visual instruction tuning",
+        "detail": "Evaluating how well tuned models respond to instructions involving visual input.",
+        "url": ""
+      },
+      {
+        "name": "Multimodal model evaluation",
+        "detail": "Assessing responses across diverse instruction formats without human-annotated ground-truth answers.",
+        "url": ""
+      }
+    ],
+    "intuition": "Writing an ideal answer for every visual instruction is expensive, and rigid answer matching does not suit varied instruction formats. GAVIE instead uses GPT-4 to help judge model responses without those human-annotated references.",
+    "howItWorks": [
+      "Give a visually instruction-tuned model instructions in the formats being tested.",
+      "Collect the model's responses to those visual instructions.",
+      "Use GPT-4 to assist in evaluating the responses without human-annotated ground-truth answers.",
+      "Apply the same evaluation approach across diverse instruction formats."
+    ],
+    "whyItMatters": "GAVIE reduces dependence on costly human answer annotation while making visual instruction evaluation adaptable to different prompt formats. This makes it easier to assess instruction-tuned models when a single fixed answer key would be impractical.",
+    "misconceptions": [
+      "GAVIE is an evaluation approach, not a new vision-language model.",
+      "GPT-4 assists with judging responses; it is not the model being trained through visual instruction tuning."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "instructions",
+          "label": "Visual instructions",
+          "note": "Instructions in diverse formats"
+        },
+        {
+          "id": "model",
+          "label": "Instruction-tuned model",
+          "note": "Produces responses to evaluate"
+        },
+        {
+          "id": "responses",
+          "label": "Model responses",
+          "note": "No human answer key required"
+        },
+        {
+          "id": "gpt4",
+          "label": "GPT-4 evaluation",
+          "note": "Assists with judging responses"
+        },
+        {
+          "id": "result",
+          "label": "Evaluation result",
+          "note": "Assessment of instruction following"
+        }
+      ],
+      "edges": [
+        {
+          "from": "instructions",
+          "to": "model",
+          "label": "prompts"
+        },
+        {
+          "from": "model",
+          "to": "responses",
+          "label": "generates"
+        },
+        {
+          "from": "responses",
+          "to": "gpt4",
+          "label": "judges"
+        },
+        {
+          "from": "gpt4",
+          "to": "result",
+          "label": "produces"
+        }
+      ],
+      "caption": "GAVIE evaluates model responses with GPT-4 assistance, without requiring human-annotated ground-truth answers."
+    }
+  },
   "related": [
     "instruction-tuning"
   ],

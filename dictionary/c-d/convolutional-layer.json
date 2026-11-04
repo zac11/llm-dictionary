@@ -5,7 +5,98 @@
   "type": "concept",
   "definition": "In artificial neural networks, a convolutional layer is a type of network layer that applies a convolution operation to the input.",
   "details": "Convolutional layers are some of the primary building blocks of convolutional neural networks (CNNs), a class of neural network most commonly applied to images, video, audio, and other data that have the property of uniform translational symmetry. The convolution operation in a convolutional layer involves sliding a small window (called a kernel or filter) across the input data and computing the dot product between the values in the kernel and the input at each position. This process creates a feature map that represents detected features in the input.",
-  "story": "Picture a child pointing at pictures in a book — cat, car, cloud — learning to see by seeing a thousand examples. It turns a picture into an understanding: this is a cat, that is a stop sign. What your eyes do without thinking, the machine does one careful layer at a time. It is eyes made of arithmetic — pixels become edges, edges become shapes, shapes become meaning. That pixel-to-meaning climb is Convolutional layer.",
+  "explainer": {
+    "lead": "A convolutional layer scans its input with a small filter and turns the results into a map of detected features. It is a core building block of convolutional neural networks, which are widely used for images, video, and audio.",
+    "tiers": {
+      "eli5": "Imagine sliding a small stencil across a picture to look for the same kind of clue everywhere. At each stop, you combine the stencil with the part underneath and write down a score. All those scores form a new map showing where the clues appear.",
+      "practitioner": "Use convolutional layers as CNN building blocks for image, video, audio, or other inputs with uniform translational symmetry. Set up a kernel, slide it across the input, and compute a dot product at every position to produce a feature map. Keep the distinction between the kernel, the layer, and the resulting feature map clear when configuring or debugging a network.",
+      "paperLevel": "At one window position, the output is y = sum_i(k_i * x_i), where k_i are kernel values and x_i are the corresponding input values. Evaluating this dot product as the kernel slides across the input produces a feature map representing detected features. Convolutional layers are most commonly applied to data with uniform translational symmetry, including images, video, and audio."
+    },
+    "example": "For an input window [[1, 2], [3, 4]] and kernel [[1, 0], [0, -1]], the dot product is 1*1 + 2*0 + 3*0 + 4*(-1) = -3. The value -3 becomes one entry in the feature map; sliding the kernel and repeating fills in the other entries.",
+    "usedIn": [
+      {
+        "name": "Image processing",
+        "detail": "Convolutional layers build feature maps that represent features detected across an image.",
+        "url": ""
+      },
+      {
+        "name": "Video analysis",
+        "detail": "CNNs use convolutional layers to apply the same filtering operation across video input.",
+        "url": ""
+      },
+      {
+        "name": "Audio processing",
+        "detail": "Convolutional layers scan audio input with kernels and produce maps of detected features.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of treating every position differently, a convolutional layer moves the same small filter across the input. Each position receives a score based on how the kernel combines with the values underneath it, and together those scores describe detected features.",
+    "howItWorks": [
+      "Start with the input data and a small window of values called a kernel or filter.",
+      "Place the kernel over one position of the input.",
+      "Compute the dot product of the kernel values and the input values in that window.",
+      "Slide the kernel to the next position and repeat the calculation.",
+      "Collect the results into a feature map representing detected features."
+    ],
+    "whyItMatters": "Convolutional layers are primary building blocks of CNNs. Their sliding-filter operation provides a direct way to detect features across data with uniform translational symmetry, including images, video, and audio.",
+    "misconceptions": [
+      "The kernel is not the whole layer; it is the small filter that the layer slides across the input.",
+      "The output is not just one number for the whole input; the position-by-position results form a feature map.",
+      "A convolutional layer is a network component, not an entire convolutional neural network."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input data",
+          "note": "Image, video, audio, or similar input."
+        },
+        {
+          "id": "kernel",
+          "label": "Kernel values",
+          "note": "A small filter applied at each position."
+        },
+        {
+          "id": "window",
+          "label": "Sliding window",
+          "note": "Selects input values beneath the kernel."
+        },
+        {
+          "id": "dot-product",
+          "label": "Dot product",
+          "note": "Combines kernel and selected input values."
+        },
+        {
+          "id": "feature-map",
+          "label": "Feature map",
+          "note": "Collects results from all window positions."
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "window",
+          "label": "positions"
+        },
+        {
+          "from": "kernel",
+          "to": "dot-product",
+          "label": "filter values"
+        },
+        {
+          "from": "window",
+          "to": "dot-product",
+          "label": "input values"
+        },
+        {
+          "from": "dot-product",
+          "to": "feature-map",
+          "label": "one result"
+        }
+      ],
+      "caption": "A kernel slides across the input; each dot product contributes a value to the feature map."
+    }
+  },
   "related": [
     "hidden-layer",
     "region-based-convolutional-neural-networks",

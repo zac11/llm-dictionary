@@ -8,7 +8,46 @@
   ],
   "definition": "Capabilities that are not present in smaller models but appear suddenly once a model passes a scale threshold.",
   "details": "Certain abilities — such as multi-step arithmetic, following instructions in a new format, or code generation — seem nearly absent at small scale and then jump sharply at larger scale. This phenomenon matters for scaling laws and for deciding what a model can be expected to do, though some apparent “emergence” is partly a measurement artifact tied to metric choice.",
-  "story": "Imagine a factory floor where each workstation can glance at every other workstation before doing its part. It is the blueprint that makes everything else possible. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. Structure decides what the model can even express — the blueprint before the bricks. And that shape of the machine — Emergent Abilities — is what makes everything else possible.",
+  "explainer": {
+    "lead": "Emergent abilities are skills that appear only after a language model reaches a certain size, rather than improving smoothly from the start. They matter because a small model’s failure may not reliably predict what a much larger model can do.",
+    "tiers": {
+      "eli5": "Imagine practising with heavier and heavier weights: at first, you still cannot lift a big box, then one day you suddenly can. Some language-model skills seem to work like that, appearing only when the model gets big enough. But sometimes the test scores make the change look more sudden than it really is.",
+      "practitioner": "When comparing checkpoints across model scales, test capabilities such as multi-step arithmetic, unfamiliar instruction formats, and code generation rather than assuming small-model results extrapolate smoothly. A sharp jump can guide expectations about larger models, but it should not be treated as a guaranteed capability threshold. Check whether the scoring rule, especially a strict all-or-nothing metric, is creating the apparent jump.",
+      "paperLevel": "Let P(s) denote measured performance at model scale s; emergence describes performance near baseline for s below an apparent threshold s*, followed by a sharp increase above s*. There is no universal threshold or formula for this pattern. A key limitation is that discontinuous or strict metrics can make gradual underlying improvement appear sudden."
+    },
+    "example": "A set of increasingly large models is asked to solve multi-step arithmetic problems. Smaller models almost never produce a fully correct answer, while a larger model suddenly solves many of them; strict exact-answer scoring could contribute to how abrupt that transition appears.",
+    "usedIn": [
+      {
+        "name": "Scaling-law research",
+        "detail": "Used when studying how model capabilities change with scale.",
+        "url": ""
+      },
+      {
+        "name": "LLM capability evaluation",
+        "detail": "Used to compare skills across smaller and larger model checkpoints.",
+        "url": ""
+      },
+      {
+        "name": "Model deployment planning",
+        "detail": "Used as a caution that small-model failures may not bound larger-model behavior.",
+        "url": ""
+      }
+    ],
+    "intuition": "A capability can look absent across several smaller models and then appear abruptly at a larger scale. The surprising part is the sharp jump, not simply that bigger models perform better.",
+    "howItWorks": [
+      "Evaluate a chosen skill across models of increasing scale.",
+      "Observe near-absent performance at smaller scales.",
+      "Find a sharp performance gain beyond an apparent scale threshold.",
+      "Treat the resulting skill as apparently emergent.",
+      "Check whether the metric makes gradual improvement look discontinuous."
+    ],
+    "whyItMatters": "Emergence complicates predictions about what scaled-up models will be able to do. It also cautions teams not to interpret a small model’s failure as proof that every larger model will fail.",
+    "misconceptions": [
+      "Emergence does not mean every capability appears suddenly.",
+      "An abrupt score jump does not prove an equally abrupt internal change.",
+      "There is no single scale threshold shared by all abilities."
+    ]
+  },
   "related": [
     "context-window",
     "foundation-model",

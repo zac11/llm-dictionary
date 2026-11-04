@@ -5,6 +5,102 @@
   "type": "concept",
   "definition": "Identifying a person from their face by matching embeddings against a gallery — the 1:N counterpart of face verification.",
   "details": "Identifying a person from their face by matching embeddings against a gallery — the 1:N counterpart of face verification. Margin-based losses such as ArcFace define the field, which remains ethically contested.",
+  "explainer": {
+    "lead": "Face recognition answers “Who is this?” by comparing a face with a collection of known faces. It can search many identities at once, but a close match is not proof of identity, and its use raises ethical concerns.",
+    "tiers": {
+      "eli5": "Imagine finding someone by looking through a school photo album instead of checking just one photo. A computer turns the new face into a pattern of numbers and looks for the most similar pattern in its album. If nothing is similar enough, it should say it does not know the person.",
+      "practitioner": "A typical pipeline encodes a detected face into an embedding, searches enrolled gallery embeddings by similarity, and applies a threshold before returning an identity. ArcFace-style margin-based training is a central approach; in deployment, test identification errors and unknown-person rejection using image quality and gallery conditions that resemble production. Returning the nearest gallery entry without a threshold will incorrectly assign an identity to every probe.",
+      "paperLevel": "Given an encoder f, a probe face x, and gallery pairs (g_i, y_i), compute s_i = sim(f(x), f(g_i)); closed-set identification returns the identity with the highest score, while open-set identification returns unknown when max_i s_i < tau. ArcFace represents the margin-based losses associated with the field. Performance depends on the similarity threshold and operating setting, and the technology remains ethically contested."
+    },
+    "example": "A gallery contains embeddings for 500 enrolled people. A new face is encoded and compared with all 500; the highest-scoring identity is returned if its similarity exceeds the deployment threshold, while a probe from an unenrolled visitor should produce “unknown.”",
+    "usedIn": [
+      {
+        "name": "Biometric identification",
+        "detail": "Searches an enrolled gallery to associate a probe face with an identity.",
+        "url": ""
+      },
+      {
+        "name": "Face-image indexing",
+        "detail": "Uses face embeddings to find likely matches for a face across a collection.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of comparing raw pixels, face recognition places faces in an embedding space where similarity can be measured. Identification searches the whole gallery, whereas verification asks only whether two faces belong to the same claimed identity.",
+    "howItWorks": [
+      "Encode the probe face as an embedding.",
+      "Compare that embedding with the enrolled gallery embeddings.",
+      "Rank gallery identities by similarity.",
+      "Return the best identity only if its score passes the chosen threshold; otherwise report unknown."
+    ],
+    "whyItMatters": "It makes one-to-many identity search possible, but errors and unknown faces must be handled explicitly. Its consequences also make governance and ethical scrutiny important.",
+    "misconceptions": [
+      "Face recognition is not the same as one-to-one face verification.",
+      "The nearest gallery match is not automatically a correct or known identity.",
+      "A similarity score is not proof of a person’s identity."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "probe",
+          "label": "Probe face",
+          "note": "The face whose identity is requested."
+        },
+        {
+          "id": "encoder",
+          "label": "Face encoder",
+          "note": "Maps a face to an embedding."
+        },
+        {
+          "id": "embedding",
+          "label": "Probe embedding",
+          "note": "A numerical representation for comparison."
+        },
+        {
+          "id": "gallery",
+          "label": "Enrolled gallery",
+          "note": "Embeddings linked to known identities."
+        },
+        {
+          "id": "search",
+          "label": "Similarity search",
+          "note": "Ranks gallery entries by similarity."
+        },
+        {
+          "id": "decision",
+          "label": "Identity decision",
+          "note": "Returns an identity or unknown using a threshold."
+        }
+      ],
+      "edges": [
+        {
+          "from": "probe",
+          "to": "encoder",
+          "label": "face"
+        },
+        {
+          "from": "encoder",
+          "to": "embedding",
+          "label": "embedding"
+        },
+        {
+          "from": "embedding",
+          "to": "search",
+          "label": "query"
+        },
+        {
+          "from": "gallery",
+          "to": "search",
+          "label": "candidates"
+        },
+        {
+          "from": "search",
+          "to": "decision",
+          "label": "scores"
+        }
+      ],
+      "caption": "A probe embedding searches the enrolled gallery, and a threshold controls whether the best match is accepted."
+    }
+  },
   "related": [
     "face-verification"
   ],
