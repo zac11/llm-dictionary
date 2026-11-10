@@ -8,9 +8,9 @@
   "explainer": {
     "lead": "Cost-sensitive machine learning treats different prediction mistakes as having different consequences. Instead of chasing the fewest errors overall, it aims for the decisions with the lowest total cost, which matters when one kind of mistake is far more serious than another.",
     "tiers": {
-      "eli5": "Imagine a smoke alarm: a false alarm is annoying, but missing a real fire can be dangerous. Cost-sensitive machine learning teaches a computer that these mistakes are not equally bad. It uses a table of penalties so the computer can choose predictions that cause the least trouble overall.",
-      "practitioner": "Define a cost matrix for the relevant prediction outcomes, then use it when training or selecting a classifier and when evaluating results. Compare candidate models by expected or observed total cost on validation data rather than error rate alone. The main pitfalls are choosing unrealistic costs and treating a multi-objective trade-off as though a single accuracy figure captured it.",
-      "paperLevel": "For classes y and predictions y', a cost matrix C specifies C[y, y'] as the penalty or benefit of that outcome. A natural objective is to minimize expected cost R(h) = sum over x, y of P(x, y) C[y, h(x)], rather than simply minimizing the number of misclassifications. Reducing different kinds of classification error can conflict, making the underlying problem multi-objective and dependent on how the costs are specified."
+      "eli5": "It is like a smoke alarm: a missed fire costs far more than a false alarm, so you tune the alarm to err on the cautious side.",
+      "practitioner": "Engineers introduce a cost matrix specifying penalties or benefits for each error type and optimize against it. A pitfall is that mis-specified costs silently bias the model toward the wrong errors.",
+      "paperLevel": "An approach within machine learning that considers varying costs associated with different types of errors, explicitly specifying penalties or benefits for each type of prediction error via a cost matrix. Minimizing different kinds of classification errors is a multi-objective optimization problem."
     },
     "example": "Suppose a screening classifier misses a disease in 2 cases, with each miss assigned a cost of 100, while another classifier misses only 1 case but produces 10 false alarms costing 5 each. Their costs are 200 and 150 respectively, so the second classifier is preferred under this matrix even though it makes more errors overall.",
     "intuition": "Not every wrong answer causes the same harm. Cost-sensitive learning puts those differences directly into the learning problem, so a model can accept more cheap mistakes to avoid expensive ones.",
@@ -82,7 +82,19 @@
         }
       ],
       "caption": "A cost matrix connects possible prediction outcomes to both model learning and cost-based evaluation."
-    }
+    },
+    "usedIn": [
+      {
+        "name": "Medical diagnosis",
+        "detail": "asymmetric error costs",
+        "url": ""
+      },
+      {
+        "name": "Fraud detection",
+        "detail": "penalizing missed fraud",
+        "url": ""
+      }
+    ]
   },
   "related": [
     "machine-learning",

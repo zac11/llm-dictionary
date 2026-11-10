@@ -29,3 +29,17 @@ test('compact reply maps items to entries and flags incomplete ones', () => {
   assert.equal(out.get('b').explainer, null);
   assert.deepEqual(out.get('c').issues, ['missing from reply']);
 });
+
+test('compact reply rejects missing Used in and sentences about the sources', () => {
+  const batch = [{ entry: entry('a'), wiki: null }, { entry: entry('b'), wiki: null }];
+  const item = { lead: 'Lead.', eli5: 'E.', practitioner: 'P.', example: 'Ex.' };
+  const reply = JSON.stringify({
+    items: [
+      { ...item, slug: 'a', paperLevel: 'L.', usedIn: [] },
+      { ...item, slug: 'b', paperLevel: 'Architectural details are not specified here.', usedIn: [{ name: 'X', detail: 'y' }] },
+    ],
+  });
+  const out = parseCompactReply(reply, batch);
+  assert.deepEqual(out.get('a').issues, ['missing Used in']);
+  assert.deepEqual(out.get('b').issues, ['talks about the sources']);
+});

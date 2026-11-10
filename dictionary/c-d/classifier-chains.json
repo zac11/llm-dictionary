@@ -8,9 +8,9 @@
   "explainer": {
     "lead": "Classifier chains handle cases where one item can receive several labels at once. They predict the labels in sequence, letting each prediction inform the next while keeping the efficiency of training a separate binary classifier for each label.",
     "tiers": {
-      "eli5": "Imagine deciding which stickers belong on a photo, one sticker at a time. After choosing the first sticker, you use that decision to help choose the next one, instead of treating every sticker as a separate question. This can capture connections between labels without making every decision completely independent.",
-      "practitioner": "Choose a label order and train one binary classifier per label, appending the true earlier labels to each classifier's inputs. At prediction time, feed in the labels predicted earlier in the chain. Label order matters, and an early mistake can affect later predictions.",
-      "paperLevel": "For a label ordering pi, classifier chains represent p(y | x) as the product over k of p(y_pi(k) | x, y_pi(1), ..., y_pi(k-1)). Each factor is learned by a binary classifier, using earlier true labels during training and earlier predicted labels during inference. The method retains binary relevance's computational efficiency while modeling label dependencies, but its predictions depend on the ordering and can propagate earlier errors."
+      "eli5": "You ask a series of yes/no questions in a fixed order, and each answer can use the answers already given.",
+      "practitioner": "Engineers order the labels into a chain of binary classifiers, each taking earlier predictions as extra inputs. A known pitfall is that chain order changes results, since dependence flows in one direction.",
+      "paperLevel": "A multi-label transformation combining the computational efficiency of binary relevance with modelling of label dependencies. Limit: performance is sensitive to the chosen label ordering."
     },
     "example": "Suppose a photo can receive the labels beach, ocean, and sunset. The chain first predicts beach = yes from the photo, then predicts ocean using both the photo and that beach decision, and finally predicts sunset using the photo and both earlier decisions; if the last two predictions are yes and no, the output is {beach, ocean}.",
     "intuition": "Labels can offer clues about one another, so predicting them together can be more useful than answering each label question in isolation. Classifier chains pass earlier label decisions along a sequence, adding dependency information without abandoning simple binary classifiers.",
@@ -103,7 +103,19 @@
         }
       ],
       "caption": "Each classifier receives the input features, and later classifiers also receive labels predicted earlier in the chain."
-    }
+    },
+    "usedIn": [
+      {
+        "name": "Multi-label classification",
+        "detail": "tagging with dependent labels",
+        "url": ""
+      },
+      {
+        "name": "Text categorisation",
+        "detail": "assigning several labels per document",
+        "url": ""
+      }
+    ]
   },
   "related": [
     "associative-classifier",

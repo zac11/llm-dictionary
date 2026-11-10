@@ -8,9 +8,9 @@
   "explainer": {
     "lead": "Guided local search helps an ordinary local search algorithm stop circling around answers that are good nearby but not good enough overall. It adds penalties as the search proceeds, changing the objective so the algorithm can escape local minima and plateaus.",
     "tiers": {
-      "eli5": "Imagine trying to find the lowest point in a hilly park while only looking at the ground beside you. You might get stuck in a small dip, so guided local search marks reasons to leave that dip and encourages you to explore elsewhere. Those marks build up as you keep searching.",
-      "practitioner": "Use GLS as a layer around an existing local search procedure: run it until it settles, modify the objective with accumulated penalties, and continue searching. The implementation therefore needs both the original objective and a penalty-modification scheme. A key pitfall is treating movement on the augmented objective as sufficient without considering the original problem objective.",
-      "paperLevel": "Schematically, f_aug(x) = f(x) + P(x), where P(x) represents penalties accumulated during the search; the precise objective-modification scheme is central to GLS. Local search optimizes f_aug after becoming trapped, rather than continuing with f alone. The method in its current form was developed by Christos Voudouris and detailed in his PhD thesis, and it extended GENET, developed by Chang Wang, Edward Tsang and Andrew Davenport. GLS remains dependent on an underlying local search algorithm, and its escaping mechanism resembles reinforcement learning, as does GENET's."
+      "eli5": "When your search keeps getting stuck in the same spot, this method adds small penalties to well-worn choices so you are nudged to try somewhere else.",
+      "practitioner": "Engineers wrap it around a local search, building penalties during the run that modify the objective; a pitfall is poor tuning of the penalty scheme, which can distort the search away from good solutions.",
+      "paperLevel": "A metaheuristic that accumulates penalties during search; when the local search settles at a local optimum, GLS modifies the objective function by a specific scheme, and the local search then operates on the augmented objective function designed to bring improvement. Known limits: the given facts do not state convergence guarantees or optimality bounds."
     },
     "example": "Suppose a route-search procedure minimizes travel cost and stops at route A with cost 10 because every neighboring route looks worse. GLS adds penalties to the objective, making the augmented cost of staying around A less attractive, so local search moves to a neighboring route B. Continuing from B, it reaches route C with an original cost of 8, an improvement that was inaccessible while the search remained trapped at A.",
     "goal": "To help a local search algorithm escape local minima and plateaus by accumulating penalties and searching with an augmented objective function.",
@@ -92,7 +92,19 @@
         }
       ],
       "caption": "GLS wraps local search in a loop that adds penalties whenever the search becomes trapped."
-    }
+    },
+    "usedIn": [
+      {
+        "name": "Combinatorial optimization",
+        "detail": "escaping local optima",
+        "url": ""
+      },
+      {
+        "name": "Metaheuristic search",
+        "detail": "penalty-augmented objectives",
+        "url": ""
+      }
+    ]
   },
   "related": [
     "iterated-local-search",

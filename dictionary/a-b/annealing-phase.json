@@ -8,9 +8,9 @@
   "explainer": {
     "lead": "Annealing is the finishing stage of pretraining: the model sees a higher share of carefully selected text, math, and code while its learning rate gradually falls. This final stretch can have an outsized effect on benchmark results.",
     "tiers": {
-      "eli5": "Imagine studying for a big test. Near the end, you stop skimming everything and spend more time on your clearest notes and hardest practice problems while making smaller changes to what you already know. Annealing is that final, focused study period for an AI model.",
-      "practitioner": "Apply annealing late in pretraining by shifting the data mixture toward curated text, math, and code as the learning-rate schedule decays. Track final benchmark performance, and treat the data change and learning-rate decay as parts of the phase rather than tuning the learning rate alone.",
-      "paperLevel": "Let eta_t be the learning rate and w_t(d) the sampling weight of data source d: during late pretraining, eta_t decays while w_t increases for high-quality curated text, math, and code. The definition gives no fixed cutoff, decay schedule, or mixture proportions, and its main empirical claim is that this phase disproportionately shapes final benchmark performance."
+      "eli5": "Near the end of studying, the model switches to the best-quality books and slows down, and that last stretch has an outsized effect on its final grades.",
+      "practitioner": "Engineers use the learning-rate decay to shift the data mix toward curated text, math, and code; a pitfall is that choices in this phase can move benchmark results more than earlier training does.",
+      "paperLevel": "Defined as the late-pretraining phase combining learning-rate decay with a data mixture weighted toward high-quality sources such as curated text, math, and code; its effect on benchmarks is disproportionate relative to its short duration."
     },
     "example": "In the final segment of a pretraining run, a team reduces the share of general web text, gives curated explanations, mathematics, and code a larger share of each batch, and continues decaying the learning rate until training ends.",
     "intuition": "The last part of training is a chance to refine what the model has learned using its best material, with smaller updates as training settles.",
@@ -81,7 +81,19 @@
         }
       ],
       "caption": "During annealing, a higher-quality data mixture and a decaying learning rate jointly shape the final model."
-    }
+    },
+    "usedIn": [
+      {
+        "name": "LLM pretraining",
+        "detail": "late-stage data mixing",
+        "url": ""
+      },
+      {
+        "name": "Foundation model pipelines",
+        "detail": "learning-rate decay schedule",
+        "url": ""
+      }
+    ]
   },
   "related": [
     "benchmark",

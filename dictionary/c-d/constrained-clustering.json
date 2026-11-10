@@ -8,9 +8,9 @@
   "explainer": {
     "lead": "Constrained clustering groups data while following extra instructions about which items must stay together and which must stay apart. It is useful when ordinary similarity measures are not enough to capture what a good grouping should look like.",
     "tiers": {
-      "eli5": "Imagine sorting a box of toys into piles, but some toys are tied together and must go in the same pile, while two other toys are not allowed to share a pile. Constrained clustering does this with data: it makes groups while obeying those special instructions.",
-      "practitioner": "Apply it by adding must-link and cannot-link pairs to a clustering algorithm, then checking both cluster quality and constraint violations. Constraint handling matters because violating a required pair is different from merely producing an imperfect similarity-based grouping; contradictory constraints can also leave no valid clustering.",
-      "paperLevel": "Given data X, must-link pairs M, and cannot-link pairs C, constrained clustering seeks a partition in which every (x, y) in M has cluster(x) = cluster(y) and every (x, y) in C has cluster(x) != cluster(y). It is a class of semi-supervised learning algorithms, and a chunklet is a cluster whose members conform to all must-link and cannot-link constraints."
+      "eli5": "You sort items into groups while obeying rules like 'these two belong together' and 'those two must stay apart'.",
+      "practitioner": "Engineers supply must-link and/or cannot-link constraints alongside an existing clustering algorithm. The pitfall is that conflicting constraints can leave no valid grouping.",
+      "paperLevel": "Semi-supervised clustering incorporating must-link constraints, cannot-link constraints, or both; a cluster whose members conform to all such constraints is called a chunklet. Limit: validity depends on constraints being mutually satisfiable."
     },
     "example": "For six records A through F, require A and B to be together and C and D to be apart. One valid result is {A, B, E}, {C, F}, and {D}: A remains with B, C is separated from D, and each resulting cluster is a chunklet.",
     "goal": "Produce clusters that group similar data while satisfying specified must-link and cannot-link constraints.",
@@ -85,7 +85,19 @@
         }
       ],
       "caption": "Data and pairwise constraints flow into the clustering procedure, which returns constraint-satisfying clusters."
-    }
+    },
+    "usedIn": [
+      {
+        "name": "Semi-supervised learning",
+        "detail": "constraint-guided clustering",
+        "url": ""
+      },
+      {
+        "name": "Record linkage",
+        "detail": "grouping known duplicates",
+        "url": ""
+      }
+    ]
   },
   "related": [
     "clustering",

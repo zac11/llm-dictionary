@@ -8,9 +8,9 @@
   "explainer": {
     "lead": "Graduated optimization tackles a hard optimization problem by starting with a much easier version and gradually turning it into the original problem. At each stage, the current solution guides the next round of optimization, offering a way to search globally rather than attacking the hardest version immediately.",
     "tiers": {
-      "eli5": "Imagine trying to find the lowest point in a bumpy landscape. You first smooth out most of the bumps so the best direction is easier to see, then put the bumps back little by little while continuing to search. The answer from each easier landscape helps you search the next one.",
-      "practitioner": "Implement it as a sequence of increasingly difficult objective functions, carrying the current solution forward as the starting point for the next stage. The main design choices are the initial simplification and the schedule for restoring the original problem; a poor sequence can still lead the search toward an unsuitable solution.",
-      "paperLevel": "Given a difficult objective f(x), construct a greatly simplified objective and a progression of intermediate objectives ending at f(x). Optimize the simplified problem, then repeatedly transform the objective and continue optimizing from the current x until the final objective is reached. It is intended as a global optimization technique, but the definition provides no guarantee that the resulting solution is globally optimal."
+      "eli5": "Instead of climbing a jagged mountain straight away, you first walk up a smooth hill, then slowly reshape the hill into the mountain while you keep climbing.",
+      "practitioner": "Engineers use it by scheduling a sequence of relaxed objectives that gradually approach the true one, carrying the current solution forward at each stage. A common pitfall is designing the transformation schedule poorly, so the problem changes too fast and the optimizer loses its good starting point.",
+      "paperLevel": "Graduated optimization is a global optimization technique that attempts to solve a difficult optimization problem by initially solving a greatly simplified problem, and progressively transforming that problem (while optimizing) until it is equivalent to the difficult optimization problem. Its known limits follow from the global optimization setting: no guarantee of finding the global optimum on the final hard problem."
     },
     "example": "Suppose the target is a bumpy objective f(x) with several local dips, while a simplified objective f0(x) has one broad dip. Minimize f0(x), then optimize a progression such as (1-t)f0(x) + t f(x) as t increases from 0 to 1, starting each stage with the previous stage's x; at t=1, the objective is exactly f(x).",
     "goal": "Find a solution to a difficult global optimization problem by solving a controlled sequence of easier problems.",
@@ -86,7 +86,24 @@
         }
       ],
       "caption": "The solution is carried through progressively harder objectives until the original problem is reached."
-    }
+    },
+    "usedIn": [
+      {
+        "name": "Image registration",
+        "detail": "coarse-to-fine alignment",
+        "url": ""
+      },
+      {
+        "name": "Bundle adjustment",
+        "detail": "progressive reconstruction",
+        "url": ""
+      },
+      {
+        "name": "Energy minimization",
+        "detail": "graduated non-convexity",
+        "url": ""
+      }
+    ]
   },
   "related": [
     "ant-colony-optimization-algorithms",

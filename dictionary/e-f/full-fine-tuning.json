@@ -8,9 +8,9 @@
   "explainer": {
     "lead": "Full fine-tuning adapts a pretrained model by changing every one of its weights using target data. It offers the greatest room for adaptation, but demands substantial memory and compute and can make the model forget earlier capabilities.",
     "tiers": {
-      "eli5": "Imagine revising every page of a huge instruction book instead of adding a few sticky notes. Full fine-tuning lets the model change everything it knows to fit new examples. That can produce a very good fit, but it takes a lot of work and may erase some useful old lessons.",
-      "practitioner": "Start from pretrained weights and train on the target dataset with all parameters unfrozen. Budget for the memory needed by optimizer states, and evaluate for forgetting as well as target performance. This approach is typically reserved for serious domain shifts, continued pretraining, or cases where parameter-efficient fine-tuning has plateaued.",
-      "paperLevel": "Given pretrained parameters theta_0 and target data D = {(x_i, y_i)}, optimize theta by minimizing sum_i L(f_theta(x_i), y_i), with every parameter trainable. Full fine-tuning has the highest adaptation ceiling among the approaches described here, but incurs optimizer-state memory costs and risks catastrophic forgetting."
+      "eli5": "Instead of adjusting a few knobs, you retrain every part of the model on your own data — maximum control, maximum effort.",
+      "practitioner": "Engineers update every weight, which demands memory for optimizer states and can degrade prior abilities; the common pitfall is forgetting, so it is used only when lighter methods plateau or the domain shift is severe.",
+      "paperLevel": "All parameters are optimised on the target data, maximising capacity to adapt but carrying the full memory cost of gradients and optimizer states plus the risk of catastrophic forgetting; by contrast, parameter-efficient methods update only a subset."
     },
     "example": "A team adapting a general language model to a substantially different specialized domain first finds that parameter-efficient fine-tuning has plateaued. It then trains on the domain's target data with every weight unfrozen, accepting higher optimizer-memory requirements and testing older capabilities for signs of forgetting.",
     "usedIn": [

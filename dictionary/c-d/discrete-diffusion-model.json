@@ -8,9 +8,9 @@
   "explainer": {
     "lead": "A discrete diffusion model learns to generate new data by reversing a process that gradually scrambles data through jumps between separate states. It matters because ordinary continuous diffusion uses Gaussian noise, which does not directly apply when data lives in a discrete set.",
     "tiers": {
-      "eli5": "Imagine making patterns with colored beads, where each bead can only be one of a few colors. You keep changing beads until the original patterns look scrambled, then teach a computer how to undo those changes. Once it learns, it can start with a scrambled pattern and make new patterns that resemble your collection.",
-      "practitioner": "The setup has a forward jump process over a discrete state space S and a learned reverse jump process for generation. Continuous Gaussian-noise machinery cannot simply be reused, and sampling offers a trade-off: higher-quality results generally require more computation.",
-      "paperLevel": "A discrete diffusion model is a latent variable generative model defined by forward and reverse jump diffusion processes on a discrete set S, rather than the continuous state space R^n used in standard diffusion modeling. Given a dataset and the forward process, training learns a reverse process whose generated elements approximate the dataset's distribution. Discrete states have no infinitesimally close points, so an analogous theory is needed instead of the standard continuous framework."
+      "eli5": "You gradually add random noise to something until it is unrecognisable, learn how to undo that, then run the undo process from pure noise to make something new.",
+      "practitioner": "Practitioners learn the reverse process from data and then sample from it using methods that trade computational efficiency against sample quality. The pitfall is that the sampling choice directly affects both cost and output quality.",
+      "paperLevel": "A class of latent variable generative models with a forward jump diffusion process and a reverse jump diffusion process; given a dataset and forward process, the goal is to learn the reverse process so samples are distributed similarly to the data. Multiple sampling methods trade off computational efficiency and sample quality."
     },
     "example": "Suppose a dataset contains two-bead sequences, mostly red-blue and blue-red, with each bead restricted to red, blue, or green. The forward process repeatedly changes beads until the sequences are scrambled; the learned reverse process then makes jumps back toward likely sequences. If it has learned the dataset distribution, its new outputs should mostly be red-blue and blue-red rather than arbitrary color pairs.",
     "intuition": "First let data hop gradually between separate possible states until its original structure is lost. Then learn the reverse hops so that, starting from scrambled data, the model can produce new examples resembling the originals.",
@@ -78,7 +78,19 @@
         }
       ],
       "caption": "The forward process scrambles discrete data; the learned reverse process generates new dataset-like samples."
-    }
+    },
+    "usedIn": [
+      {
+        "name": "Generative modeling",
+        "detail": "sampling data-like elements",
+        "url": ""
+      },
+      {
+        "name": "Latent variable models",
+        "detail": "diffusion-based generation",
+        "url": ""
+      }
+    ]
   },
   "related": [
     "diffusion-model",

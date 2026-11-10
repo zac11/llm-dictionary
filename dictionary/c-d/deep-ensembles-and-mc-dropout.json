@@ -8,9 +8,9 @@
   "explainer": {
     "lead": "Deep ensembles and MC dropout are two practical ways to estimate how uncertain a model's prediction is. Deep ensembles average independently trained models, while MC dropout repeatedly runs one model with dropout switched on during inference.",
     "tiers": {
-      "eli5": "Imagine asking several students the same question instead of trusting just one. If their answers differ a lot, you know the question is tricky. Deep ensembles ask several separately trained models; MC dropout asks one model several slightly different versions of the question by keeping dropout active.",
-      "practitioner": "For a deep ensemble, train several models independently, collect their predictive probabilities, and average them at inference. For MC dropout, keep dropout enabled and make multiple stochastic passes through one trained network, then average the outputs. Deep ensembles require multiple trained models, while MC dropout is cheaper but reuses the same network rather than creating independent models.",
-      "paperLevel": "For M ensemble members, the averaged prediction is p_bar(y|x) = (1/M) * sum_m p_m(y|x). MC dropout instead uses T stochastic forward passes with different dropout masks: p_bar(y|x) approximately equals (1/T) * sum_t p_t(y|x). Deep ensembles provide a strong simple baseline but require multiple models; MC dropout is a cheaper pseudo-ensemble with less diversity because every pass uses the same network."
+      "eli5": "Instead of asking one expert, you ask several and see how much they disagree; the more they disagree, the less sure you should be.",
+      "practitioner": "Engineers train several models or run many dropout-on inference passes and take the spread of predictions as uncertainty. The pitfall is assuming MC Dropout matches ensemble quality; ensembles remain the strongest simple baseline.",
+      "paperLevel": "Predictive uncertainty is estimated either by averaging outputs of independently trained models or by sampling multiple stochastic forward passes with dropout active; formal calibration guarantees are limited and results depend on ensemble size and dropout rate."
     },
     "example": "For a binary classifier, three ensemble members might output positive-class probabilities of 0.60, 0.80, and 1.00, giving an average of 0.80. With MC dropout, four passes might output 0.55, 0.75, 0.85, and 0.85, giving an average of 0.75; the spread among the outputs shows that the individual predictions vary.",
     "intuition": "A single prediction says what a model prefers, but comparing several predictions also reveals how much they disagree. Independent models provide that comparison directly, while repeated dropout passes create a cheaper collection of related predictions.",
@@ -101,7 +101,24 @@
         }
       ],
       "caption": "Both routes average multiple predictions: independent models in a deep ensemble, or repeated dropout-enabled passes in MC dropout."
-    }
+    },
+    "usedIn": [
+      {
+        "name": "Safety-critical ML",
+        "detail": "flagging low-confidence predictions",
+        "url": ""
+      },
+      {
+        "name": "Active learning",
+        "detail": "selecting uncertain samples to label",
+        "url": ""
+      },
+      {
+        "name": "Deployed uncertainty toolkits",
+        "detail": "ensembles or MC Dropout in production",
+        "url": ""
+      }
+    ]
   },
   "related": [
     "dropout",

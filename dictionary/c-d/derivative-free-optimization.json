@@ -8,9 +8,9 @@
   "explainer": {
     "lead": "Derivative-free optimization searches for a good solution without using derivatives of the objective function. It matters when those derivatives are unavailable, unreliable, or too impractical to obtain—for example because evaluations are noisy or time-consuming.",
     "tiers": {
-      "eli5": "Imagine adjusting the knobs on a mysterious machine to get the highest score, but you cannot see how the machine works. You try a setting, look at the score, and use what you learn to choose the next setting. Derivative-free optimization is this careful process of trying and comparing, without needing a formula that says which way the score will change.",
-      "practitioner": "Use this approach when the objective is non-smooth, noisy, expensive to evaluate, or otherwise unsuitable for derivative-based methods and finite differences. A run proposes candidate inputs, evaluates the objective, and updates the search using the observed values; noise and costly evaluations can make both progress and comparisons difficult. The main constraint is that no derivatives or finite-difference approximations are used.",
-      "paperLevel": "For an optimization problem such as min_x f(x), derivative-free algorithms seek optimal points without using derivatives of f or approximating them through finite differences. The setting includes objectives whose derivative information is unavailable, unreliable, or impractical to obtain, including non-smooth, noisy, and time-consuming evaluations. No general guarantee of finding the true optimum follows from the definition alone, particularly when observations are noisy."
+      "eli5": "When you cannot tell which way is downhill, you still try points and keep the ones that work better.",
+      "practitioner": "Engineers apply these methods when the objective is a black box, such as a slow simulation or a noisy process. The pitfall is that avoiding derivatives usually costs many more function evaluations.",
+      "paperLevel": "Optimization of an objective f without derivatives or finite-difference approximations; the problem is called derivative-free (or blackbox) optimization, and algorithms that use neither are derivative-free algorithms. Such methods are typically sample-hungry."
     },
     "example": "Suppose f(x1, x2) takes an hour to evaluate and returns noisy results, making finite differences impractical. Start by evaluating (2, 5), then try other candidate pairs, compare their observed values, and continue around promising settings while keeping the best result observed.",
     "intuition": "Instead of asking which direction a derivative points in, learn from the objective values at points you actually try. Each evaluation supplies evidence for choosing subsequent candidates.",
@@ -83,7 +83,24 @@
         }
       ],
       "caption": "A derivative-free search loops between proposing points and observing objective values, without computing derivatives or finite differences."
-    }
+    },
+    "usedIn": [
+      {
+        "name": "Blackbox optimization",
+        "detail": "objectives without usable gradients",
+        "url": ""
+      },
+      {
+        "name": "Noisy or non-smooth objectives",
+        "detail": "where finite differences fail",
+        "url": ""
+      },
+      {
+        "name": "Expensive simulations",
+        "detail": "optimizing costly-to-evaluate functions",
+        "url": ""
+      }
+    ]
   },
   "related": [
     "ant-colony-optimization-algorithms",

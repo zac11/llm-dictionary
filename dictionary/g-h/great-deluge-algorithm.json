@@ -8,9 +8,9 @@
   "explainer": {
     "lead": "The Great deluge algorithm is a search method for finding an approximate solution to an optimization problem. It accepts new candidates while their quality stays within a steadily tightening tolerance, like a climber trying to stay above rising floodwater.",
     "tiers": {
-      "eli5": "Imagine climbing a hill while floodwater rises: you can move to any nearby spot that keeps your feet dry. Here, a solution’s “badness” is like how wet your feet would be, and the allowed water level becomes stricter over time. When no nearby move stays within the limit, you stop and keep the best approximate solution you reached.",
-      "practitioner": "Implement it by supplying an initial solution, a badness function, a neighbour generator, an initial tolerance, and a decay function. The tolerance and decay settings control which candidates remain acceptable as the search proceeds. A run ends when every neighbour of the current solution is beyond tolerance, so the result is approximate rather than a guaranteed global optimum.",
-      "paperLevel": "Given a solution S, badness b(S), tolerance T, and neighbour set N(S), generate S' in N(S). If b(S') is better than T, set S := S' and T := decay(T), recursively continuing the search; otherwise, try another neighbour. Terminate with S when all neighbours fail the tolerance test, which does not establish global optimality."
+      "eli5": "Imagine climbing a hill while water rises around you: you step in any direction that keeps your feet dry, hoping to find a way up as the water level rises.",
+      "practitioner": "Start from a poor approximation of the optimum, compute a badness value measuring how undesirable it is, and move in any direction that does not make the feet wet as the level rises. A pitfall is that the water-level schedule must be set so the search neither stalls nor accepts too much.",
+      "paperLevel": "Starts with a poor approximation S of the optimum and computes a numerical badness based on S measuring how undesirable it is; the name comes from the analogy of a climber moving in any direction that does not get the feet wet as the water level rises. It is similar in many ways to hill-climbing and simulated annealing."
     },
     "example": "Suppose lower badness is better, the current solution S has badness 12, and the tolerance is 10. A neighbour with badness 9 is accepted, so S is replaced and decay lowers the tolerance to 7. If its only neighbours then have badness 10 and 11, both fail the test, and the algorithm returns the solution with badness 9.",
     "goal": "Find an approximate optimum by repeatedly testing neighbouring solutions against a tightening tolerance.",
@@ -109,7 +109,19 @@
         }
       ],
       "caption": "The search accepts a neighbour within tolerance, tightens the tolerance, and stops when no neighbour qualifies."
-    }
+    },
+    "usedIn": [
+      {
+        "name": "Combinatorial optimization",
+        "detail": "generic search",
+        "url": ""
+      },
+      {
+        "name": "Scheduling",
+        "detail": "heuristic optimization",
+        "url": ""
+      }
+    ]
   },
   "related": [
     "actor-critic-algorithm",

@@ -8,9 +8,9 @@
   "explainer": {
     "lead": "Explore-then-commit is a simple way to handle a multi-armed bandit: try every option for a fixed period, then stick with the one that looks best. Its appeal is its clarity, but the size of that initial trial period determines how well it balances learning against earning rewards.",
     "tiers": {
-      "eli5": "Imagine three arcade games and a pocketful of tokens. You play each game a few times, pick the one that gave you the best average prize, and spend all your remaining tokens there—but an unlucky trial could make you pick the wrong game.",
-      "practitioner": "Use it as a straightforward bandit baseline: choose the number of exploratory pulls per arm, estimate each arm’s mean reward, and devote the remaining pulls to the empirical winner. The main tuning choice is the exploration length; too little risks committing to a worse arm, while too much spends pulls on arms that already look weak. It is also poorly suited to settings where the best arm can change after commitment.",
-      "paperLevel": "For k arms, horizon T, and m exploratory pulls per arm, ETC forms empirical means μ̂_i during km exploration pulls, selects a* = argmax_i μ̂_i, and pulls a* for the remaining T − km rounds. Its fixed exploration budget creates a direct trade-off: small m gives noisy estimates and possible premature commitment, while large m reduces the pulls available for exploitation."
+      "eli5": "Like sampling each dish at a buffet for a set number of bites, then spending the rest of the meal on your favourite.",
+      "practitioner": "Engineers use it when they need a simple bandit policy with a clear exploration phase: try each arm for a set period, then commit to the best observed. The pitfall is that the exploration length is fixed in advance, so a poor choice of that length costs performance.",
+      "paperLevel": "The algorithm is defined for the multi-armed bandit problem and is described as focused on the exploration-exploitation trade-off; no further formula or bound is specified."
     },
     "example": "Suppose arms A, B, and C are each explored twice, producing average rewards of 0.4, 0.7, and 0.5. ETC selects B and uses every remaining pull on B, without revisiting A or C.",
     "goal": "Balance exploration and exploitation in a multi-armed bandit by learning from an initial trial phase and then repeatedly choosing the empirically best arm.",
@@ -77,7 +77,19 @@
         }
       ],
       "caption": "ETC separates learning and exploitation into two consecutive phases."
-    }
+    },
+    "usedIn": [
+      {
+        "name": "Multi-armed bandits",
+        "detail": "exploration-exploitation policy",
+        "url": ""
+      },
+      {
+        "name": "Online decision making",
+        "detail": "fixed exploration then commitment",
+        "url": ""
+      }
+    ]
   },
   "related": [
     "actor-critic-algorithm",

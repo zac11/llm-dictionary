@@ -8,9 +8,9 @@
   "explainer": {
     "lead": "Greedy triangulation builds a triangle-filled polygon or point set by repeatedly trying the shortest remaining edge. An edge is kept only if it does not cut an edge already chosen, giving a simple construction rule based on length and crossings.",
     "tiers": {
-      "eli5": "Imagine connecting dots with sticks, always trying the shortest unused stick first. You can add it unless it would cross a stick already on the table. Keep going until no more sticks fit, and the spaces between the dots become triangles.",
-      "practitioner": "Implement it by generating candidate edges, sorting them by length, and testing each candidate against every previously accepted edge before inserting it. Handle the crossing test consistently, and do not assume that choosing locally shortest edges guarantees a triangulation with minimum total edge length.",
-      "paperLevel": "Let E be the candidate edges ordered by increasing length. Initialize T = ∅; for each e in E, set T ← T ∪ {e} exactly when e does not cut any edge already in T, then return the resulting triangulation. The insertion rule is local and, by itself, supplies no global minimum-length guarantee."
+      "eli5": "Imagine connecting dots on a page, always drawing the shortest possible line next before any longer one, as long as the new line doesn't cross one you already drew.",
+      "practitioner": "Engineers use it as a fast, easy-to-implement triangulation method and as a comparison baseline; a pitfall is assuming the result is optimal or Delaunay-like, which this greedy rule does not ensure.",
+      "paperLevel": "Sort all candidate edges in strictly increasing length and insert each edge into the solution if it does not cut a previously inserted edge. Known limits: it is a heuristic, so the output quality (e.g. regarding angle or edge optimality) is not guaranteed."
     },
     "example": "For points A(0,0), B(1,0), C(1,1), and D(0,1), insert the four unit-length sides of the square. The diagonals AC and BD both have length √2; insert whichever is considered first, then skip the other because it cuts that diagonal, leaving two triangles.",
     "intuition": "Short connections are preferred, but each accepted connection restricts what can be added later because edges may not cross one another.",
@@ -88,7 +88,19 @@
         }
       ],
       "caption": "Candidates are processed from shortest to longest, with crossing checks deciding whether each is inserted or skipped."
-    }
+    },
+    "usedIn": [
+      {
+        "name": "Computational geometry",
+        "detail": "polygon triangulation",
+        "url": ""
+      },
+      {
+        "name": "Mesh generation",
+        "detail": "simple triangulation baseline",
+        "url": ""
+      }
+    ]
   },
   "related": [
     "greedy-algorithm",

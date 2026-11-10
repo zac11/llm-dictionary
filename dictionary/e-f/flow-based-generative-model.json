@@ -8,9 +8,9 @@
   "explainer": {
     "lead": "A flow-based generative model learns to turn an easy-to-sample distribution into the complicated distribution behind a dataset. Because it represents likelihood directly, it can both create new samples and be trained by minimizing negative log-likelihood.",
     "tiers": {
-      "eli5": "Imagine starting with a simple lump of dough and stretching and squeezing it into a complicated shape. This kind of model learns those changes so it can turn simple random numbers into new examples. The same learned recipe also lets it score how likely an example is.",
-      "practitioner": "Train by directly computing and minimizing negative log-likelihood on observed data. To generate, draw from the initial distribution and apply the learned flow transformation. Unlike the VAE, GAN, and diffusion approaches contrasted here, the likelihood function is explicitly represented.",
-      "paperLevel": "Let z ~ p_Z and x = f(z). The change-of-variables rule gives p_X(x) = p_Z(z) |det J_f(z)|^(-1), where z = f^(-1)(x); training minimizes -log p_X(x) over observed data, while generation applies f to fresh draws of z. This explicit likelihood distinguishes the approach from VAEs, GANs, and diffusion models in the comparison above."
+      "eli5": "It reshapes a simple random blob into a complex one through a chain of reversible steps, so it can both make new samples and say how likely any sample is.",
+      "practitioner": "Engineers stack invertible transformations with tractable Jacobians so sampling runs forward and likelihood runs backward; the main pitfall is that invertibility and cheap Jacobian determinants constrain the architecture.",
+      "paperLevel": "The change-of-variable law maps a simple base density to the data density through an invertible transformation, with the log-likelihood adjusted by the log-determinant of the Jacobian; unlike VAEs, GANs or diffusion models, the likelihood is represented explicitly, at the cost of architectural restrictions."
     },
     "example": "Suppose the simple distribution has density 0.4 at one point and the flow stretches space there by a factor of 2. The transformed density is 0.4 / 2 = 0.2; to generate a sample, draw from the simple distribution and pass it through the same flow.",
     "intuition": "Start with randomness that is easy to describe and sample, then learn a transformation that reshapes it to match complex data. The transformation makes both likelihood evaluation and sample generation possible.",
@@ -83,7 +83,24 @@
         }
       ],
       "caption": "The flow supports both generation and direct likelihood-based training."
-    }
+    },
+    "usedIn": [
+      {
+        "name": "Density estimation",
+        "detail": "explicit likelihood fitting",
+        "url": ""
+      },
+      {
+        "name": "Normalizing flow models",
+        "detail": "invertible generative modelling",
+        "url": ""
+      },
+      {
+        "name": "Anomaly detection",
+        "detail": "likelihood-based scoring",
+        "url": ""
+      }
+    ]
   },
   "related": [
     "generative-model",

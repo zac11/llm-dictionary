@@ -8,9 +8,9 @@
   "explainer": {
     "lead": "FOIL is a machine-learning algorithm that learns if–then rules from examples. Its results can be read as statements about relationships, making it useful when people need to inspect what the learner has found.",
     "tiers": {
-      "eli5": "Imagine learning family rules by looking at a family tree. You might notice that your parent's parent is your grandparent and write that down as a rule. FOIL does something similar: it looks at examples and tries to find rules that explain them.",
-      "practitioner": "FOIL is applied to examples expressed through properties and relationships, with the learned rules providing both predictions and an inspectable explanation. Data must be prepared in a suitable relational form, and the search for rules can become demanding as the number of examples and possible relationships grows.",
-      "paperLevel": "FOIL is a rule-based inductive learner whose hypotheses can be written as first-order clauses, such as grandparent(X,Z) :- parent(X,Y), parent(Y,Z). Learning proceeds from examples toward rules that describe them, with variables standing for entities. The rule search can be expensive, and the result depends on the available examples and relations."
+      "eli5": "It learns by building a set of if-then rules from examples, adding one condition at a time until the rule covers the right cases and few wrong ones.",
+      "practitioner": "Each rule starts from a general clause and is specialised greedily by adding literals that improve coverage of positives without pulling in negatives; the classic pitfall is overfitting from noisy data and the combinatorial cost of searching literal combinations.",
+      "paperLevel": "Rules are learned in first-order logic: each clause is grown by adding literals that maximise a gain measure over covered positive and negative examples, then covered positives are removed and the process repeats; greedy search gives no optimality guarantee and scaling is limited."
     },
     "example": "Given parent(Ann,Bob), parent(Bob,Cid), and other family examples, FOIL could learn grandparent(X,Z) :- parent(X,Y), parent(Y,Z). Because Ann is Bob's parent and Bob is Cid's parent, the rule concludes that Ann is Cid's grandparent.",
     "goal": "Learn readable rules that capture patterns in relational examples and can be applied to new cases.",
@@ -101,7 +101,24 @@
         }
       ],
       "caption": "FOIL uses examples to select rules, then applies those rules to new cases."
-    }
+    },
+    "usedIn": [
+      {
+        "name": "Inductive logic programming",
+        "detail": "learning relational rules",
+        "url": ""
+      },
+      {
+        "name": "Knowledge discovery",
+        "detail": "readable rule extraction",
+        "url": ""
+      },
+      {
+        "name": "Relational data mining",
+        "detail": "structured example learning",
+        "url": ""
+      }
+    ]
   },
   "related": [
     "inductive-logic-programming",

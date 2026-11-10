@@ -8,9 +8,9 @@
   "explainer": {
     "lead": "A generalized additive model for location, scale and shape, or GAMLSS, predicts how an entire outcome distribution changes with explanatory variables, rather than predicting only an average. This matters when variability, skewness or tail behaviour is just as important as the central estimate.",
     "tiers": {
-      "eli5": "Imagine predicting how long a bus journey will take. Rain might not only make the usual journey longer; it could also make journey times more spread out and create a few especially long delays. GAMLSS learns how all those features of the possible outcomes change with the information you provide.",
-      "practitioner": "Use GAMLSS for supervised regression when the response's variance, skewness or kurtosis may depend on the predictors. Each distribution parameter can be modelled with linear, nonlinear, smoothing or machine-learning functions, but the chosen parametric distribution should be checked with diagnostics such as Q–Q plots or worm plots.",
-      "paperLevel": "GAMLSS is distributional regression: given a parametric response distribution D, it learns X → D(Y|X), with distribution parameters such as location, scale and shape expressed as functions of X. Those functions may be linear, nonlinear, smooth or algorithmic, and D may be heavy- or light-tailed and positively or negatively skewed. Its assumptions are supervised training targets and a suitable parametric response distribution, whose adequacy requires diagnostic checking."
+      "eli5": "Instead of predicting just an average, it predicts the whole spread and shape of the outcome, and those can shift as the inputs change.",
+      "practitioner": "Engineers model each distribution parameter as a smooth or machine-learned function of covariates, mapping inputs to a full conditional distribution; the pitfall is that flexibility raises the risk of overfitting and complicates interpretation.",
+      "paperLevel": "An input-output model where X maps to the distribution of Y rather than to its mean, with the distribution's parameters modelled via smoothing or machine learning techniques; interpretation is harder than in mean-only regression."
     },
     "example": "For delivery-time prediction, distance and weather could feed separate models for the distribution's mean, variance and skewness. On clear days the model might predict a narrow distribution around 30 minutes, while storms could shift the mean to 45 minutes, widen the spread and increase the chance of unusually long deliveries.",
     "intuition": "A conventional regression often asks how the average response changes with X; GAMLSS asks how the whole conditional response distribution changes. Predictors can therefore alter the centre, spread and asymmetry of possible outcomes at the same time.",
@@ -78,7 +78,24 @@
         }
       ],
       "caption": "GAMLSS maps explanatory variables through parameter models to a complete response distribution."
-    }
+    },
+    "usedIn": [
+      {
+        "name": "Distributional regression",
+        "detail": "full-distribution modelling",
+        "url": ""
+      },
+      {
+        "name": "Actuarial modelling",
+        "detail": "risk distribution fitting",
+        "url": ""
+      },
+      {
+        "name": "Growth modelling",
+        "detail": "shape-varying responses",
+        "url": ""
+      }
+    ]
   },
   "related": [
     "acoustic-model",

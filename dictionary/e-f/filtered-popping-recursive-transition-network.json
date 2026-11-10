@@ -8,9 +8,9 @@
   "explainer": {
     "lead": "A filtered-popping recursive transition network is a finite-state machine that can jump into subroutines and keep a stack of places to return to. It adds keys to states so that a return is allowed only when the acceptor state and the saved return state have the same key.",
     "tiers": {
-      "eli5": "Imagine reading a choose-your-own-adventure book and leaving bookmarks whenever you jump to another section. Each bookmark and each ending has a color, and you may go back only when the ending and the top bookmark have the same color. The bookmarks keep track of where to continue, while the colors stop you from returning to the wrong place.",
-      "practitioner": "Implement it as an RTN interpreter with a return-state stack and an additional key lookup when popping. Consuming, ε-, and call transitions behave as usual, but an acceptor state can complete a return only when its key matches the key of the state at the top of the stack. A pitfall is checking only that the stack is nonempty, which would reproduce ordinary RTN popping rather than filtered popping.",
-      "paperLevel": "An FPRTN is an RTN extended with a map k: Q → K from states to keys. A call transition pushes its target return state r onto the stack and enters the called state; at an acceptor state a, the machine may pop r and resume there only if the stack is nonempty and k(a) = k(r). The abbreviation FPN is ambiguous because it can also mean fuzzy Petri net."
+      "eli5": "Like a phone call that only connects back if both callers are on the same approved list; otherwise the return doesn't go through.",
+      "practitioner": "Engineers use it in formal-language and parsing work where subroutine returns must respect a key mapping rather than simply popping the stack. The pitfall is that the key condition can block a return the plain stack would have allowed.",
+      "paperLevel": "RTNs are finite-state machines extended with a stack of return states, with consuming, epsilon, and call transitions that push the target state and jump; the FPRTN adds a map of states to keys so returning from a subroutine jump requires acceptor and return states to share the same key. Correct behaviour depends on that key mapping."
     },
     "example": "Suppose a call saves return state r, with key A, and the machine reaches acceptor state a. If a also has key A, the machine pops r and continues from r; if a has key B, that return is not allowed.",
     "components": [
@@ -125,7 +125,19 @@
         }
       ],
       "caption": "Calls save return states on a stack; acceptor states can pop them only after the state-key check succeeds."
-    }
+    },
+    "usedIn": [
+      {
+        "name": "Formal language theory",
+        "detail": "extended recursive transition networks",
+        "url": ""
+      },
+      {
+        "name": "Parsing",
+        "detail": "stack-based subroutine calls",
+        "url": ""
+      }
+    ]
   },
   "related": [
     "recursive-transition-network",

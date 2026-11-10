@@ -8,9 +8,9 @@
   "explainer": {
     "lead": "Dykstra's projection algorithm finds a point shared by several convex sets by repeatedly projecting onto them, with extra correction steps along the way. When many shared points exist, it returns the one closest to the starting point rather than an arbitrary member of the intersection.",
     "tiers": {
-      "eli5": "Imagine several overlapping playgrounds and a rule that you must end up inside all of them. You keep moving to the nearest allowed spot for each playground, while keeping notes that stop those moves from pulling you off course. If there are many valid finishing spots, the method picks the one nearest to where you began.",
-      "practitioner": "Use it as an iterative feasibility routine when you can project onto each convex set individually but want the projection of the initial point onto their intersection. Implement the per-set projections together with the algorithm's intermediate correction steps; plain alternating projections can converge to a different, arbitrary intersection point. A parallel version was developed by Gaffke and Mathar.",
-      "paperLevel": "Given convex sets C1, ..., Cm and an initial point r, Dykstra's algorithm computes P_{C1 ∩ ... ∩ Cm}(r), using alternating projections with intermediate correction steps. Richard L. Dykstra proposed the method in the 1980s; unlike standard alternating projections, it selects a specific intersection point when the intersection contains more than one point. Gaffke and Mathar developed a parallel version."
+      "eli5": "You bounce between two shapes, adjusting each time, until you land on a spot they share.",
+      "practitioner": "Engineers use it with the projections onto convex sets method, iteratively projecting onto each set with intermediate steps. The pitfall is ignoring that the intermediate steps matter once there are more than two sets.",
+      "paperLevel": "Iteratively projects onto each convex set, with intermediate steps, to find a point in their intersection; differs from standard alternating projection when there is more than one set beyond two. A parallel version was developed by Gaffke and Mathar; named after Richard L. Dykstra, who proposed it in the 1980s."
     },
     "example": "Let one set be the horizontal axis and the other be the vertical strip x ≤ 1. Starting from r = (2, 2), their intersection is the part of the horizontal axis with x ≤ 1, and Dykstra's algorithm returns (1, 0), the intersection point closest to r.",
     "goal": "Find a point in the intersection of convex sets. If the intersection contains multiple points, return the projection of the initial point r onto that intersection—the intersection point closest to r.",
@@ -101,7 +101,19 @@
         }
       ],
       "caption": "For two convex sets, projection cycles include intermediate corrections and produce the intersection point nearest to r."
-    }
+    },
+    "usedIn": [
+      {
+        "name": "Convex feasibility",
+        "detail": "point in a set intersection",
+        "url": ""
+      },
+      {
+        "name": "Projections onto convex sets",
+        "detail": "variant of alternating projection",
+        "url": ""
+      }
+    ]
   },
   "related": [
     "actor-critic-algorithm",

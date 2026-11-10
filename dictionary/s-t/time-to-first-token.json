@@ -11,9 +11,9 @@
   "explainer": {
     "lead": "Time to First Token measures how long until output starts, dominated by prefill and queueing, alongside how fast it streams, dominated by decode. These are the two user-facing latency metrics for language models.",
     "tiers": {
-      "eli5": "It's the wait before a chatbot starts typing its answer, and then how quickly the words keep coming once it starts.",
-      "practitioner": "Engineers tune interactive products around TTFT because users feel the initial wait, while batch pipelines care about total throughput; a pitfall is optimising streaming speed when queueing and prefill are the real bottleneck.",
-      "paperLevel": "Formally, it is the pair of user-facing latency metrics: time until the first token is emitted (governed by prefill and queueing) and the rate of subsequent streaming (governed by decode). No further formal guarantees are specified here."
+      "eli5": "It is the wait before a reply starts appearing, separate from how quickly the rest of the reply streams in.",
+      "practitioner": "Engineers tune prefill and queueing to cut the wait and watch decode speed for streaming quality. A common pitfall is optimising total throughput while the first-token wait stays long for users.",
+      "paperLevel": "Formally, it is the elapsed time from request arrival to the first generated token, plus the subsequent rate of token emission. Limits: the two metrics trade off against each other, so a single latency number hides user experience."
     },
     "example": "In a chat interface, a long pause before the first word appears is a high TTFT, even if the rest of the answer then streams quickly.",
     "usedIn": [

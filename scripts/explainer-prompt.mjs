@@ -114,6 +114,8 @@ export function parseExplainerReply(content, entry, wiki) {
 
 const COMPACT_WIKI_CHARS = 1200;
 const COMPACT_DETAIL_CHARS = 500;
+/** Sentences about the sources rather than the term ("… are not specified here"). */
+export const SOURCE_META = /\b(?:(?:is|are) not (?:specified|stated|described)|(?:is|are) not given(?=[.;,]|$)|(?:specified|given|stated|described) here|the sources? (?:gives?|do(?:es)?|provides?|says?) no)\b/i;
 const clip = (value, max) => {
   const s = String(value || '').replace(/\s+/g, ' ').trim();
   return s.length > max ? `${s.slice(0, max)}…` : s;
@@ -178,6 +180,9 @@ export function parseCompactReply(content, batch) {
     else {
       if (!explainer.tiers || Object.keys(explainer.tiers).length < 3) issues.push('missing a reading level');
       if (!explainer.example) issues.push('missing example');
+      if (!(Array.isArray(explainer.usedIn) && explainer.usedIn.length)) issues.push('missing Used in');
+      const prose = [explainer.lead, ...Object.values(explainer.tiers || {}), explainer.example].join(' ');
+      if (SOURCE_META.test(prose)) issues.push('talks about the sources');
       delete explainer.layout;
     }
     out.set(entry.slug, { explainer: issues.length ? null : explainer, issues });

@@ -8,9 +8,9 @@
   "explainer": {
     "lead": "Dropout is a training technique that helps neural networks avoid memorizing their training data too closely. It randomly zeroes some neuron inputs or outputs so neurons become less dependent on one another, then stops doing this when the trained network makes predictions.",
     "tiers": {
-      "eli5": "Imagine a team practicing while random members sit out each round, so nobody learns to rely too much on one teammate. Dropout does something similar inside a neural network by temporarily switching off random signals while it learns. When practice is over and the network is making predictions, everyone is back in the game.",
-      "practitioner": "Apply dropout during training to randomly zero selected neuron inputs or outputs, and make sure it is disabled during inference. It is intended as a regularizer against overfitting and complex co-adaptations on training data. Do not confuse it with dilution, an older related technique that randomly decreases weights toward zero.",
-      "paperLevel": "For an activation vector a, training-time dropout can be written a' = m ⊙ a, where m randomly zeroes selected entries; the same operation may be applied to neuron inputs. Its regularization goal is to reduce overfitting by preventing complex co-adaptations on training data. Dropout is not applied during inference, unlike dilution, it acts on neuron inputs or outputs rather than randomly decreasing weights toward zero."
+      "eli5": "During practice, the network randomly ignores some of its neurons so it cannot rely on any single one too much.",
+      "practitioner": "Engineers randomly set neuron inputs and/or outputs to zero during training only, not during inference. The pitfall is leaving dropout active at inference unless deliberately using it as an uncertainty method.",
+      "paperLevel": "Regularization that randomly sets inputs and/or outputs of neurons to zero during training; a related older technique, dilution, randomly decreases weights towards zero. It is a training-time procedure, not applied during inference."
     },
     "example": "During one training step, suppose four neuron outputs are [0.8, 0.2, 0.5, 0.1]. If dropout randomly selects the second and fourth, the result is [0.8, 0, 0.5, 0]; when the trained network is later used for inference, dropout is not applied.",
     "goal": "Reduce overfitting in an artificial neural network by preventing complex co-adaptations on training data.",
@@ -91,7 +91,19 @@
         }
       ],
       "caption": "Dropout randomly zeroes neuron signals during training, but the trained network performs inference without it."
-    }
+    },
+    "usedIn": [
+      {
+        "name": "Neural network training",
+        "detail": "reducing overfitting",
+        "url": ""
+      },
+      {
+        "name": "Regularization pipelines",
+        "detail": "standard training-time technique",
+        "url": ""
+      }
+    ]
   },
   "related": [
     "dropout",
