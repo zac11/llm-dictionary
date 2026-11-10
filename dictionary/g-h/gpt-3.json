@@ -5,7 +5,111 @@
   "type": "model",
   "definition": "Generative Pre-trained Transformer 3 (GPT-3) is a large language model released by OpenAI in 2020 as part of the company's GPT series of models.",
   "details": "Like its predecessor, GPT-2, it is a decoder-only transformer model of deep neural network, which supersedes recurrence and convolution-based architectures with a technique known as \"attention\". This attention mechanism allows the model to focus selectively on segments of input text it predicts to be most relevant. GPT-3 has 175 billion parameters, each with 16-bit precision, requiring 350GB of storage since each parameter occupies 2 bytes. It has a context window size of 2,048 tokens, and has demonstrated strong \"zero-shot\" and \"few-shot\" learning abilities on many tasks. On September 22, 2020, Microsoft announced that it had licensed GPT-3 exclusively. Others can still receive output from its public API, but only Microsoft has access to the underlying model.",
-  "story": "Think of a grammar teacher who never memorized a rule but can still tell you when a sentence sounds wrong. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It figures out meaning by noticing which words like to travel together. The machine learns to read between the lines by reading an impossible number of lines. That pattern-earned fluency is GPT-3.",
+  "explainer": {
+    "lead": "GPT-3 is a 175-billion-parameter language model released by OpenAI in 2020. It generates text by paying attention to relevant parts of its input, and it can tackle many tasks from instructions alone or from just a few examples.",
+    "tiers": {
+      "eli5": "A very large text predictor trained on so much writing that it can continue a sentence in a convincing way.",
+      "practitioner": "Engineers build on decoder-only transformers with attention and must budget context, since GPT-3's window is 2,048 tokens. A pitfall is underestimating storage: 175 billion parameters at 16-bit precision need 350GB.",
+      "paperLevel": "Formally, GPT-3 is a decoder-only transformer using attention that supersedes recurrence and convolution; it has 175 billion parameters at 16-bit precision, a 2,048-token context window, and requires 350GB of storage. These are its published limits."
+    },
+    "usedIn": [
+      {
+        "name": "OpenAI public API",
+        "detail": "Users can submit text and receive GPT-3 output without access to the underlying model.",
+        "url": ""
+      },
+      {
+        "name": "Microsoft",
+        "detail": "Microsoft announced an exclusive GPT-3 license on September 22, 2020, giving it sole access to the underlying model.",
+        "url": ""
+      },
+      {
+        "name": "Zero-shot and few-shot tasks",
+        "detail": "GPT-3 can perform many tasks from instructions alone or from a small number of examples.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Decoder-only transformer",
+        "detail": "The deep neural network architecture that processes input and generates text."
+      },
+      {
+        "name": "Attention mechanism",
+        "detail": "Selectively focuses on input segments predicted to be most relevant."
+      },
+      {
+        "name": "175 billion parameters",
+        "detail": "Stored at 16-bit precision, they require 350 GB in total."
+      },
+      {
+        "name": "Context window",
+        "detail": "Holds up to 2,048 tokens of input context."
+      }
+    ],
+    "flow": [
+      "Input text is represented as tokens within the 2,048-token context window.",
+      "Attention selects input segments that are most relevant to the prediction.",
+      "The decoder-only transformer uses its 175 billion parameters to generate output.",
+      "Instructions or a few examples in the input guide zero-shot or few-shot task performance."
+    ],
+    "origin": "OpenAI released GPT-3 in 2020 as part of its GPT series. On September 22, 2020, Microsoft announced that it had licensed GPT-3 exclusively, while others could still receive output through the public API.",
+    "lineage": "GPT-3 followed GPT-2 and retained its decoder-only transformer design. Its attention-based architecture superseded recurrence- and convolution-based approaches.",
+    "whyItMatters": "GPT-3 combines very large scale with strong zero-shot and few-shot abilities, allowing one model to handle many tasks from prompts or examples. Its licensing arrangement also separates broad access to generated output from exclusive access to the underlying model.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input text",
+          "note": "Instructions, examples, or a prompt"
+        },
+        {
+          "id": "context",
+          "label": "Context window",
+          "note": "Up to 2,048 tokens"
+        },
+        {
+          "id": "attention",
+          "label": "Attention",
+          "note": "Weights relevant input segments"
+        },
+        {
+          "id": "decoder",
+          "label": "Transformer decoder",
+          "note": "175 billion parameters"
+        },
+        {
+          "id": "output",
+          "label": "Generated text",
+          "note": "Returned through the public API"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "context",
+          "label": "tokens"
+        },
+        {
+          "from": "context",
+          "to": "attention",
+          "label": "input segments"
+        },
+        {
+          "from": "attention",
+          "to": "decoder",
+          "label": "relevance"
+        },
+        {
+          "from": "decoder",
+          "to": "output",
+          "label": "prediction"
+        }
+      ],
+      "caption": "Text enters GPT-3's limited context window, attention identifies relevant segments, and the decoder generates output."
+    },
+    "example": "A prompt of a few hundred tokens is sent to GPT-3, which continues the text within its 2,048-token window."
+  },
   "related": [
     "gpt",
     "gpt-1",

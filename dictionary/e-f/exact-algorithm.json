@@ -5,7 +5,90 @@
   "type": "algorithm",
   "definition": "In computer science and operations research, exact algorithms are algorithms that always solve an optimization problem to optimality.",
   "details": "Unless P = NP, an exact algorithm for an NP-hard optimization problem cannot run in worst-case polynomial time. There has been extensive research on finding exact algorithms whose running time is exponential with a low base.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. That steady, miss-by-miss improvement is Exact algorithm.",
+  "explainer": {
+    "lead": "An exact algorithm is a guaranteed way to find the best possible answer to an optimization problem, not merely a good approximation. That certainty can come at a high computational cost, especially for NP-hard problems.",
+    "tiers": {
+      "eli5": "Imagine trying every allowed way to pack a bag so you can be certain nothing better was missed. An exact algorithm promises to find the very best answer, but for some hard problems that promise can take a very long time to keep.",
+      "practitioner": "Use an exact algorithm when a solution must be certified optimal rather than merely good enough. The main pitfall is running time: unless P = NP, an NP-hard optimization problem has no exact algorithm with worst-case polynomial running time. Practical exact methods therefore focus on keeping the exponential running-time base low.",
+      "paperLevel": "An exact algorithm for an optimization problem always returns a solution attaining the optimal objective value. If the problem is NP-hard, worst-case polynomial time is impossible unless P = NP. A major research direction is designing exact algorithms with exponential running time and a low base."
+    },
+    "example": "Suppose a bag holds at most 4 kg. Item A weighs 4 kg and is worth 6 points; item B weighs 3 kg and is worth 5 points. The feasible choices are empty, A alone, or B alone, so an exact algorithm returns A with value 6 and rules out every better choice.",
+    "usedIn": [
+      {
+        "name": "Operations research",
+        "detail": "Finding provably optimal solutions to optimization problems.",
+        "url": ""
+      },
+      {
+        "name": "Computer science",
+        "detail": "Studying optimal problem solving and the running-time limits of exact methods.",
+        "url": ""
+      }
+    ],
+    "goal": "Find a feasible solution whose objective value is provably the best possible.",
+    "inputs": [
+      "A set of feasible solutions",
+      "An objective to optimize"
+    ],
+    "outputs": [
+      "An optimal solution",
+      "Its optimal objective value"
+    ],
+    "steps": [
+      "Define feasibility and the objective.",
+      "Search without losing any possible optimum.",
+      "Compare candidate objective values.",
+      "Return the best feasible solution."
+    ],
+    "tradeoffs": [
+      "Optimality is guaranteed.",
+      "NP-hard cases can require exponential time.",
+      "Lower exponential bases improve running time.",
+      "Speed depends on worst-case problem difficulty."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "problem",
+          "label": "Optimization problem",
+          "note": "Feasible choices and an objective"
+        },
+        {
+          "id": "search",
+          "label": "Exact search",
+          "note": "Considers candidates without losing optimality"
+        },
+        {
+          "id": "compare",
+          "label": "Compare values",
+          "note": "Identifies the best feasible candidate"
+        },
+        {
+          "id": "optimum",
+          "label": "Optimal answer",
+          "note": "Returns the solution and its objective value"
+        }
+      ],
+      "edges": [
+        {
+          "from": "problem",
+          "to": "search",
+          "label": "candidates"
+        },
+        {
+          "from": "search",
+          "to": "compare",
+          "label": "values"
+        },
+        {
+          "from": "compare",
+          "to": "optimum",
+          "label": "best"
+        }
+      ],
+      "caption": "An exact algorithm searches and compares feasible choices so the returned answer is guaranteed optimal."
+    }
+  },
   "related": [
     "actor-critic-algorithm",
     "algorithm-imed",

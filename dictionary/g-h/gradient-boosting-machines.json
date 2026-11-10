@@ -8,6 +8,119 @@
   ],
   "definition": "Ensemble methods that build trees sequentially, each correcting the errors of the last — XGBoost, LightGBM, and CatBoost dominate tabular ML.",
   "details": "Ensemble methods that build trees sequentially, each correcting the errors of the last — XGBoost, LightGBM, and CatBoost dominate tabular ML.",
+  "explainer": {
+    "lead": "Gradient boosting machines build a strong predictor by adding simple models one at a time, with each new model correcting the mistakes of the ensemble so far. Usually those models are decision trees, and implementations such as XGBoost, LightGBM, and CatBoost are mainstays of tabular machine learning.",
+    "tiers": {
+      "eli5": "Imagine taking a quiz, checking every answer you got wrong, and then doing a small practice exercise aimed at those mistakes. You repeat that process, with each exercise fixing errors left by the earlier ones. Gradient boosting does something similar with many small decision trees, adding their corrections together to make one better predictor.",
+      "practitioner": "For tabular problems, engineers commonly use XGBoost, LightGBM, or CatBoost to train ensembles of simple decision trees. The task's differentiable loss determines the pseudo-residuals, so squared-error regression is only one special case; classification and ranking use the same stagewise idea. Each added tree is a correction to the existing ensemble, not an independent predictor whose vote is simply averaged with the others.",
+      "paperLevel": "Gradient boosting builds an ensemble stagewise as F_{m+1}(x) = F_m(x) + h_m(x), where h_m is a weak learner fitted to pseudo-residuals pointing in the negative gradient direction of a differentiable loss. For mean squared error, these pseudo-residuals reduce to y_i - F_m(x_i); when h_m is a decision tree, the model is called gradient-boosted trees. Jerome H. Friedman developed explicit regression algorithms in 1999 and 2001, while Llew Mason, Jonathan Baxter, Peter Bartlett, and Marcus Frean introduced the more general functional-gradient view; optimizing an arbitrary differentiable loss is central to the formulation."
+    },
+    "example": "Suppose a model must predict a value of 260 and initially predicts 200, leaving a residual of 60. A new tree might learn a correction of +50 for similar examples, raising the ensemble prediction to 250; the next stage then works on the remaining error of 10. With squared-error loss, these residuals are proportional to the negative loss gradient, and later trees continue reducing the errors left by earlier stages.",
+    "usedIn": [
+      {
+        "name": "Tabular machine learning",
+        "detail": "XGBoost, LightGBM, and CatBoost are dominant gradient-boosting tools for tabular data.",
+        "url": ""
+      },
+      {
+        "name": "Regression",
+        "detail": "With squared-error loss, each new learner fits the residuals left by current predictions.",
+        "url": ""
+      },
+      {
+        "name": "Classification and ranking",
+        "detail": "The functional-gradient formulation extends the same stagewise correction process beyond regression.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of asking one model to solve the whole problem, start with a rough prediction and repeatedly add a small correction aimed at what remains wrong. The final prediction is the accumulated result of all those corrections.",
+    "howItWorks": [
+      "Start with an imperfect model, such as one that predicts the mean observed output.",
+      "Measure its errors and compute pseudo-residuals from the negative gradient of the chosen loss.",
+      "Fit a new weak learner, typically a simple decision tree, to those pseudo-residuals.",
+      "Add the learner's correction to the ensemble and repeat for the remaining stages.",
+      "Use the sum of the initial model and all learned corrections as the prediction model."
+    ],
+    "whyItMatters": "Gradient boosting turns many weak, simple models into a strong learner while supporting arbitrary differentiable loss functions. Gradient-boosted trees usually outperform random forest, and the same framework applies to regression, classification, ranking, and other problems.",
+    "misconceptions": [
+      "The trees are not trained independently and then simply averaged; each stage corrects the ensemble built before it.",
+      "Gradient boosting is not limited to squared-error regression; it can optimize other differentiable losses for tasks including classification and ranking.",
+      "Boosting and gradient boosting are not identical formulations: gradient boosting targets pseudo-residuals derived from a loss gradient rather than only ordinary residuals."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "training-data",
+          "label": "Training data",
+          "note": "Observed inputs and target values."
+        },
+        {
+          "id": "current-model",
+          "label": "Current ensemble",
+          "note": "Initially rough, then improved in stages."
+        },
+        {
+          "id": "pseudo-residuals",
+          "label": "Pseudo-residuals",
+          "note": "Negative loss gradients at current predictions."
+        },
+        {
+          "id": "weak-tree",
+          "label": "New weak tree",
+          "note": "Fits the current pseudo-residuals."
+        },
+        {
+          "id": "updated-model",
+          "label": "Updated ensemble",
+          "note": "Adds the tree's correction to the model."
+        },
+        {
+          "id": "prediction",
+          "label": "Final prediction",
+          "note": "Accumulated output after all stages."
+        }
+      ],
+      "edges": [
+        {
+          "from": "training-data",
+          "to": "current-model",
+          "label": "trains"
+        },
+        {
+          "from": "current-model",
+          "to": "pseudo-residuals",
+          "label": "errors"
+        },
+        {
+          "from": "pseudo-residuals",
+          "to": "weak-tree",
+          "label": "fits"
+        },
+        {
+          "from": "weak-tree",
+          "to": "updated-model",
+          "label": "correction"
+        },
+        {
+          "from": "updated-model",
+          "to": "current-model",
+          "label": "next stage"
+        },
+        {
+          "from": "updated-model",
+          "to": "prediction",
+          "label": "after training"
+        }
+      ],
+      "caption": "Each stage converts the current loss gradients into a new weak-tree correction and adds it to the ensemble."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Gradient boosting",
+        "url": "https://en.wikipedia.org/wiki/Gradient_boosting"
+      }
+    ]
+  },
   "related": [
     "catboost",
     "lightgbm",

@@ -2,10 +2,139 @@
   "term": "AlphaZero",
   "letter": "A",
   "category": "Machine learning",
-  "type": "concept",
+  "type": "algorithm",
   "definition": "AlphaZero is a computer program developed by artificial intelligence research company DeepMind to master the games of chess, shogi and go.",
   "details": "This algorithm uses an approach similar to AlphaGo Zero. On December 5, 2017, the DeepMind team released a preprint paper introducing AlphaZero, which would soon play three games by defeating world-champion chess engines Stockfish and Elmo, and the three-day version of AlphaGo Zero. In each case it made use of custom tensor processing units (TPUs) that the Google programs were optimized to use. AlphaZero was trained solely via self-play using 5,000 first-generation TPUs to generate the games and 64 second-generation TPUs to train the neural networks, all in parallel, with no access to opening books or endgame tables. After four hours of training, DeepMind estimated AlphaZero was playing chess at a higher Elo rating than Stockfish 8; after nine hours of training, the algorithm defeated Stockfish 8 in a time-controlled 100-game tournament (28 wins, 0 losses, and 72 draws). The trained algorithm played on a single machine with four TPUs. DeepMind's paper on AlphaZero was published in the journal Science on 7 December 2018. While the actual AlphaZero program has not been released to the public, the algorithm described in the paper has been implemented in publicly available software. In",
-  "story": "Think of a referee whose job is to be completely honest about who touched the ball last. Before trusting a machine, someone has to measure how good it really is — fairly and honestly. It is the exam that separates “it sounds good” from “it actually is good”. What gets measured is what actually gets better. And that, done honestly, is AlphaZero.",
+  "explainer": {
+    "lead": "AlphaZero is DeepMind’s reinforcement-learning algorithm for learning chess, shogi and Go by playing against itself. It showed that one general approach, given the rules but no opening books or endgame tables, could reach play stronger than leading game-specific programs.",
+    "tiers": {
+      "eli5": "Imagine learning a board game by playing against yourself again and again, gradually getting better at spotting promising moves. AlphaZero did that for chess, shogi and Go, starting with the rules rather than human advice. After nine hours of chess practice, it beat Stockfish 8 without losing a game in their 100-game match.",
+      "practitioner": "Apply the published approach by generating self-play games, guiding Monte Carlo tree search with a deep neural network, and continually updating that network; public implementations exist because DeepMind did not release the original program. The reported training setup used 5,000 first-generation TPUs to generate games and 64 second-generation TPUs for training, so exact reproduction is computationally demanding. Evaluate match results carefully: hardware, time controls, opening access and engine settings all drew criticism in the early comparisons.",
+      "paperLevel": "AlphaZero is a generalized variant of AlphaGo Zero: a self-play reinforcement-learning algorithm combining Monte Carlo tree search with a deep neural network, trained for chess, shogi and Go without domain knowledge beyond the rules. It updates the network continually, accounts for draws, does not use symmetries, and has hard-coded rules for setting search hyperparameters. DeepMind introduced it in a preprint on 5 December 2017 and published the final paper in Science on 7 December 2018. Its reported training required thousands of TPUs, and critics questioned early comparison conditions including hardware, fixed move times, hash sizes and the absence of opening databases."
+    },
+    "example": "For chess, AlphaZero trained for nine hours and then played Stockfish 8 with one minute per move. It won 25 games as White and 3 as Black, drew 72 and lost none; during the match it ran on a single machine with four TPUs.",
+    "usedIn": [
+      {
+        "name": "Chess",
+        "detail": "After nine hours of training, AlphaZero defeated Stockfish 8 in a 100-game match with 28 wins, 72 draws and no losses.",
+        "url": ""
+      },
+      {
+        "name": "Shogi",
+        "detail": "After two hours of training, it won 90, lost 8 and drew 2 of 100 games against Elmo.",
+        "url": ""
+      },
+      {
+        "name": "Go",
+        "detail": "After 34 hours of self-learning, AlphaZero won 60 games and lost 40 against AlphaGo Zero.",
+        "url": ""
+      }
+    ],
+    "goal": "Learn strong play in chess, shogi and Go through self-play, using one generalized approach rather than game-specific opening books, endgame tables or handcrafted evaluations.",
+    "inputs": [
+      "The game rules and games generated through self-play. Training proceeded in parallel, without opening books or endgame tables."
+    ],
+    "outputs": [
+      "A trained game-playing system whose deep neural network guides a selective search toward promising variations. It produces play for chess, shogi or Go and can account for drawn games."
+    ],
+    "steps": [
+      "Start with the rules of the selected game.",
+      "Generate games by playing against itself.",
+      "Use a deep neural network to focus Monte Carlo tree search on promising variations.",
+      "Continually update the neural network from self-play training.",
+      "Periodically test progress against Stockfish, Elmo or AlphaGo Zero."
+    ],
+    "tradeoffs": [
+      "Training used 5,000 first-generation TPUs to generate games and 64 second-generation TPUs to train the networks.",
+      "Match play used four TPUs and a 44-core CPU rather than the full training system.",
+      "It searched far fewer positions than Stockfish and Elmo, relying on selective neural-network guidance instead.",
+      "The original program was not publicly released, though the described algorithm has public implementations.",
+      "Early results were disputed over hardware, time controls, hash sizes and opening-database access."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "rules",
+          "label": "Game rules",
+          "note": "The only domain knowledge supplied."
+        },
+        {
+          "id": "search",
+          "label": "Guided tree search",
+          "note": "The neural network focuses search on promising variations."
+        },
+        {
+          "id": "selfplay",
+          "label": "Self-play games",
+          "note": "Games are generated in parallel on 5,000 first-generation TPUs."
+        },
+        {
+          "id": "training",
+          "label": "Network training",
+          "note": "64 second-generation TPUs continually update the neural networks."
+        },
+        {
+          "id": "benchmark",
+          "label": "Progress matches",
+          "note": "Brief games against a benchmark track training progress."
+        },
+        {
+          "id": "player",
+          "label": "Trained player",
+          "note": "Match play used four TPUs and a 44-core CPU."
+        }
+      ],
+      "edges": [
+        {
+          "from": "rules",
+          "to": "selfplay",
+          "label": "defines games"
+        },
+        {
+          "from": "search",
+          "to": "selfplay",
+          "label": "guides play"
+        },
+        {
+          "from": "selfplay",
+          "to": "training",
+          "label": "game data"
+        },
+        {
+          "from": "training",
+          "to": "search",
+          "label": "updated network"
+        },
+        {
+          "from": "selfplay",
+          "to": "benchmark",
+          "label": "progress checks"
+        },
+        {
+          "from": "training",
+          "to": "player",
+          "label": "trained system"
+        }
+      ],
+      "caption": "Self-play supplies training data, while the continually updated neural network guides the search used to generate further play."
+    },
+    "image": {
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/52/Chess_Programming.svg/960px-Chess_Programming.svg.png",
+      "alt": "AlphaZero — Game-playing artificial intelligence",
+      "width": 640,
+      "height": 640,
+      "credit": "David Vignoni",
+      "license": "LGPL",
+      "licenseUrl": "http://www.gnu.org/licenses/lgpl.html",
+      "page": "https://commons.wikimedia.org/wiki/File:Chess_Programming.svg"
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: AlphaZero",
+        "url": "https://en.wikipedia.org/wiki/AlphaZero"
+      }
+    ]
+  },
   "related": [
     "a-r-d-prasad",
     "abeba-birhane",

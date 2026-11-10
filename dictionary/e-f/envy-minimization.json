@@ -5,7 +5,91 @@
   "type": "concept",
   "definition": "In computer science and operations research, the envy minimization problem is the problem of allocating discrete items among agents with different valuations over the items, such that the amount of envy is as small as possible.",
   "details": "Ideally, from a fairness perspective, one would like to find an envy-free item allocation - an allocation in which no agent envies another agent. That is: no agent prefers the bundle allocated to another agent. However, with indivisible items this might be impossible. One approach for coping with this impossibility is to turn the problem to an optimization problem, in which the loss function is a function describing the amount of envy. In general, this optimization problem is NP-hard, since even deciding whether an envy-free allocation exists is equivalent to the partition problem. However, there are optimization algorithms that can yield good results in practice.",
-  "story": "Picture hiring a brilliant new assistant on their first morning — smart, motivated, but with no idea how anything in your office actually works. It plans a little, acts a little, looks at the result, and then decides what to do next. It is the difference between a search engine and a helper who actually finishes the task. The model stops being a one-shot answer machine and becomes a coworker that checks its own work. That loop of reason, act, and observe is Envy minimization.",
+  "explainer": {
+    "lead": "Envy minimization is a way to share items that cannot be divided when people value them differently and a perfectly envy-free split is impossible. Instead of giving up on fairness, it looks for the allocation with the least envy according to a chosen measure.",
+    "tiers": {
+      "eli5": "Imagine sharing toys that cannot be cut into pieces. Sometimes someone will prefer another person's pile no matter how you share, so you try to make everyone as unenvious as possible. This is different from perfect sharing, where nobody envies anyone at all.",
+      "practitioner": "Model each agent's valuation of the possible bundles, then optimize an explicit envy-loss function over assignments of whole items. Expect NP-hard worst cases, although practical optimization algorithms can still produce good results. Choose the loss function carefully, since minimizing envy is not the same as guaranteeing an envy-free allocation.",
+      "paperLevel": "Given indivisible items and agent-specific valuations v_i, select bundles A_i minimizing a loss function based on envy, such as the amount by which v_i(A_j) exceeds v_i(A_i). The general optimization problem is NP-hard because even deciding whether an envy-free allocation exists captures the partition problem. Practical optimization algorithms can nevertheless yield good results."
+    },
+    "example": "Two agents want one indivisible concert ticket: Ana values it at 4 and Bo at 7, so somebody must receive nothing and envy is unavoidable. Giving it to Ana creates envy of 7 for Bo, while giving it to Bo creates envy of 4 for Ana. If the objective is to minimize maximum envy, Bo receives the ticket.",
+    "usedIn": [
+      {
+        "name": "Computer science",
+        "detail": "Studies allocations of indivisible items among agents with different valuations.",
+        "url": ""
+      },
+      {
+        "name": "Operations research",
+        "detail": "Treats the reduction of envy as an optimization problem when envy-free allocations are unavailable.",
+        "url": ""
+      }
+    ],
+    "intuition": "Fairness can still be worth optimizing when perfection is impossible. Envy minimization compares allocations by how much agents prefer other people's bundles and selects one with the smallest measured envy.",
+    "howItWorks": [
+      "List the indivisible items and agents.",
+      "Record each agent's valuations of the items or bundles.",
+      "Measure the envy produced by each candidate allocation.",
+      "Optimize the chosen envy-loss function to select an allocation."
+    ],
+    "whyItMatters": "It provides a practical fairness objective for discrete-item allocation when indivisibility rules out an envy-free solution. It also distinguishes an achievable optimization goal from an impossible guarantee.",
+    "misconceptions": [
+      "Minimizing envy does not necessarily eliminate it.",
+      "NP-hardness does not mean practical optimization algorithms cannot perform well."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "valuations",
+          "label": "Agent valuations",
+          "note": "Values differ across agents."
+        },
+        {
+          "id": "allocations",
+          "label": "Candidate allocations",
+          "note": "Whole items form agent bundles."
+        },
+        {
+          "id": "envy",
+          "label": "Envy calculation",
+          "note": "Compare own and others' bundles."
+        },
+        {
+          "id": "loss",
+          "label": "Envy loss",
+          "note": "Combine envy into an objective."
+        },
+        {
+          "id": "best",
+          "label": "Best allocation",
+          "note": "Select the lowest-loss option found."
+        }
+      ],
+      "edges": [
+        {
+          "from": "valuations",
+          "to": "allocations",
+          "label": "values bundles"
+        },
+        {
+          "from": "allocations",
+          "to": "envy",
+          "label": "compares"
+        },
+        {
+          "from": "envy",
+          "to": "loss",
+          "label": "measures"
+        },
+        {
+          "from": "loss",
+          "to": "best",
+          "label": "optimizes"
+        }
+      ],
+      "caption": "Candidate allocations are scored using agent valuations, then optimized for low envy."
+    }
+  },
   "related": [
     "empirical-risk-minimization",
     "structural-risk-minimization",

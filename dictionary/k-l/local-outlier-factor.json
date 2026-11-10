@@ -5,7 +5,32 @@
   "type": "algorithm",
   "definition": "In anomaly detection, the local outlier factor (LOF) is an algorithm proposed by Markus M.",
   "details": "Breunig, Hans-Peter Kriegel, Raymond T. Ng and Jörg Sander in 2000 for finding anomalous data points by measuring the local deviation of a given data point with respect to its neighbours. LOF shares some concepts with DBSCAN and OPTICS such as the concepts of \"core distance\" and \"reachability distance\", which are used for local density estimation.",
-  "story": "Think of a lightbulb moment: the idea was always there, but someone had to point a finger at it. Behind the jargon is an idea you could explain to a friend over coffee. At its heart it is a simple notion, once you strip away the fancy name. Once you see it, you cannot unsee it. That is Local outlier factor — a small key that opens a big door.",
+  "explainer": {
+    "lead": "LOF is an anomaly detection method that scores a point by how much sparser its neighbourhood is than its neighbours' neighbourhoods. That locality is what lets it flag outliers in data with clusters of differing density, where global thresholds fail.",
+    "tiers": {
+      "eli5": "Imagine judging whether a house is isolated by comparing how far its nearest neighbours are with how far their neighbours are; a house on a lonely hill stands out even in a crowded county.",
+      "practitioner": "Engineers run LOF on numeric features to surface suspicious records for review, commonly with a k-nearest-neighbour parameter to tune. A pitfall is that results depend heavily on that neighbourhood size, and on scaling of features, so mixed densities or badly scaled data give misleading scores.",
+      "paperLevel": "For each point, a reachability distance is derived from the core distance of a neighbour, local density is the inverse average reachability distance to its k neighbours, and LOF is the ratio of neighbours' average local density to the point's own. Scores near 1 indicate typical points; the method assumes a meaningful distance metric."
+    },
+    "example": "A network of sensors reports thousands of readings per minute across a plant; a single sensor drifting steadily shows a local density far below that of surrounding sensors and receives an LOF well above 1, so it is queued for inspection.",
+    "usedIn": [
+      {
+        "name": "Intrusion and fraud screening",
+        "detail": "flagging odd records",
+        "url": ""
+      },
+      {
+        "name": "Sensor and equipment monitoring",
+        "detail": "drift detection",
+        "url": ""
+      },
+      {
+        "name": "Data cleaning pipelines",
+        "detail": "removing outliers",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "guided-local-search",
     "iterated-local-search",

@@ -5,7 +5,119 @@
   "type": "concept",
   "definition": "Agentive logic (also called the logic of action or logic of agency) is the field of philosophical logic and logic in computer science that studies formal representations of agents, their actions, and their abilities.",
   "details": "An agentive logic in the narrower sense is a formal system whose primitive operators express that an agent does something, can do something, or sees to it that something is the case. Agentive logics generalise modal logic by adding modalities indexed to agents and to actions. Typical examples include: STIT logics (from sees to it that) with operators of the form [ i s t i t : φ ] {\\displaystyle [i\\ {\\mathsf {stit}}:\\varphi ]} meaning that agent i {\\displaystyle i} sees to it that φ {\\displaystyle \\varphi } holds; dynamic logics of action with program-like modalities [ α ] φ {\\displaystyle [\\alpha ]\\varphi } and ⟨ α ⟩ φ {\\displaystyle \\langle \\alpha \\rangle \\varphi } meaning, roughly, that after every (respectively, some) execution(s) of action α {\\displaystyle \\alpha } , φ {\\displaystyle \\varphi } holds; logics with explicit agentive operators such as \"can do\", \"brings about\", or \"is able to ensure\". Agentive logics are used in action theory in philosophy, in the semantics of natural language, in the theory of program verification, and in artificial intelligence, where they underpin formalisms for reasoning about actions, planning, and intelligent agents.",
-  "story": "Think of a chess player who never commits to a move blindly — they consider the board, try an action, watch what changes, and only then decide what is next. The machine stops just answering one question and starts getting a job done, step by step, checking its work along the way. It plans a little, acts a little, looks at the result, and then decides what to do next. It is a loop of look, act, and learn — the same way you cook from a recipe you have never tried: add, taste, correct. And that habit of checking, acting, then checking again is Agentive logic.",
+  "explainer": {
+    "lead": "Agentive logic is a family of formal systems for reasoning about who does what, and what they can make happen. It matters because any autonomous system—from a robot to a trading algorithm—needs precise ways to describe actions, abilities, and responsibility.",
+    "tiers": {
+      "eli5": "Imagine you're playing a board game and want to say 'I can force a win' or 'if I move my knight, the queen will be safe.' Agentive logic gives mathematicians and computer scientists a way to write those claims so a machine can check if they're true. It's like having grammar rules, but for talking about choices and consequences.",
+      "practitioner": "Agentive logic shows up when you need to verify that a multi-agent system satisfies safety or liveness properties. STIT logics are used in formal verification of autonomous systems; dynamic logics underpin program verification tools like KeY and TLA+. In planning, agentive operators help specify preconditions and effects in PDDL-like languages. The main pitfall is computational complexity: satisfiability for STIT logics is typically PSPACE-hard or worse, so you often work with restricted fragments or use model checking on finite-state abstractions.",
+      "paperLevel": "An agentive logic extends modal logic by indexing modalities to agents and actions. The STIT operator [i stit: φ] is true at a history-moment pair (m, h) iff φ holds on all histories h' in the same choice cell for agent i at m; the deliberative variant [i dstit: φ] adds the constraint that φ is not historically necessary at m. Dynamic logic adds program modalities [α]φ and ⟨α⟩φ with regular program constructions (sequential composition α;β, nondeterministic choice α∪β, and iteration α*). Originating work: St. Anselm's modal analysis of facere (11th century); modern STIT from Belnap and colleagues; dynamic logic from Pratt (1976) and predecessors in program verification. Known limits: STIT frameworks struggle with truly concurrent action and with representing continuous real-time control; dynamic logic's propositional fragment cannot express unbounded iteration with full first-order effects."
+    },
+    "example": "Consider a simple delivery robot that can move forward (F) or wait (W), and must avoid a collision. Using dynamic logic, we write [F]¬collision to mean 'after every possible execution of move-forward, no collision occurs.' If the robot also has a sensor, we might add an agentive operator: [robot stit: door_open] means the robot's choice guarantees the door is open—perhaps by pressing a button—regardless of what else happens in the environment.",
+    "usedIn": [
+      {
+        "name": "Formal verification of autonomous systems",
+        "detail": "STIT-based frameworks verify that agents can guarantee safety properties despite environmental nondeterminism.",
+        "url": ""
+      },
+      {
+        "name": "Program verification",
+        "detail": "Dynamic logic underpins tools that prove correctness of programs with loops and branching.",
+        "url": ""
+      },
+      {
+        "name": "AI planning",
+        "detail": "Agentive operators specify what actions achieve in formalisms for automated planning.",
+        "url": ""
+      },
+      {
+        "name": "Multi-agent systems",
+        "detail": "Group STIT operators model collective action and distributed responsibility.",
+        "url": ""
+      }
+    ],
+    "intuition": "Ordinary logic talks about what is true. Agentive logic talks about who makes things true, and what they have the power to bring about.",
+    "howItWorks": [
+      "Start with a modal logic framework that can express possibility and necessity across possible worlds or histories.",
+      "Add operators indexed to specific agents, such as [i stit: φ] for 'agent i sees to it that φ' or Ciφ for 'agent i can bring about φ'.",
+      "Represent actions either implicitly as choices between possible futures, or explicitly as program terms with algebraic structure.",
+      "Evaluate formulas in models that include branching time, choice partitions for each agent, or state-transition systems for programs.",
+      "Use the resulting system to prove theorems about what agents can ensure, what they ought to do, or how their actions compose."
+    ],
+    "whyItMatters": "Without precise ways to talk about agency, we cannot formally specify what an autonomous system is responsible for, verify that it avoids harm, or coordinate multiple agents with conflicting goals.",
+    "misconceptions": [
+      "Agentive logic is not about simulating agents—it is about proving properties of their possible actions.",
+      "STIT logics do not require that an agent's action causes an effect in a physical sense; only that the agent's choice guarantees the effect among available futures.",
+      "Dynamic logic's [α]φ does not mean 'after running α once' but rather 'after every terminating execution of α', which matters when α is nondeterministic or may not terminate."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "agent",
+          "label": "Agent",
+          "note": "An entity with choices and abilities"
+        },
+        {
+          "id": "choice",
+          "label": "Choice partition",
+          "note": "Available actions at a moment"
+        },
+        {
+          "id": "history",
+          "label": "History / state",
+          "note": "A possible course of events"
+        },
+        {
+          "id": "operator",
+          "label": "Agentive operator",
+          "note": "[i stit: φ] or [α]φ"
+        },
+        {
+          "id": "model",
+          "label": "Formal model",
+          "note": "Branching time or transition system"
+        },
+        {
+          "id": "theorem",
+          "label": "Theorem / property",
+          "note": "What the agent can ensure"
+        }
+      ],
+      "edges": [
+        {
+          "from": "agent",
+          "to": "choice",
+          "label": "selects from"
+        },
+        {
+          "from": "choice",
+          "to": "history",
+          "label": "determines"
+        },
+        {
+          "from": "history",
+          "to": "model",
+          "label": "belongs to"
+        },
+        {
+          "from": "operator",
+          "to": "model",
+          "label": "evaluated in"
+        },
+        {
+          "from": "model",
+          "to": "theorem",
+          "label": "proves"
+        }
+      ],
+      "caption": "How agentive logic connects an agent's choices to formally provable properties through a structured model."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Agentive logic",
+        "url": "https://en.wikipedia.org/wiki/Agentive_logic"
+      }
+    ]
+  },
   "related": [
     "description-logic",
     "dynamic-epistemic-logic",

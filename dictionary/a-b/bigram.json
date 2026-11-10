@@ -5,7 +5,88 @@
   "type": "concept",
   "definition": "A bigram or digram is a sequence of two adjacent elements from a string of tokens, which are typically letters, syllables, or words.",
   "details": "A bigram is an n-gram for n=2. The frequency distribution of every bigram in a string is commonly used for simple statistical analysis of text in many applications, including in computational linguistics, cryptography, and speech recognition. Gappy bigrams or skipping bigrams are word pairs which allow gaps (perhaps avoiding connecting words, or allowing some simulation of dependencies, as in a dependency grammar).",
-  "story": "Think of a historian sorting through boxes of letters, building a picture of an era one sentence at a time. Every machine is shaped by what it was shown, so someone has to choose that material with care. The examples a machine reads become the world it believes in. The words a model reads become the world it believes in. And that is Bigram — the unglamorous work everything else stands on.",
+  "explainer": {
+    "lead": "A bigram is a pair of neighboring items, such as two letters, syllables, or words. Counting these pairs reveals simple patterns in text and speech, making bigrams useful for basic statistical analysis.",
+    "tiers": {
+      "eli5": "Imagine reading a sentence through a tiny window that shows only two words at a time, then sliding the window forward one word. Each pair you see is a bigram. Collecting the pairs is like noticing which words often appear side by side.",
+      "practitioner": "Tokenize the input, slide a two-token window across it, and count each resulting pair for a simple statistical representation. The tokens may be letters, syllables, or words, so tokenization choices directly affect the counts. Bigrams capture only local adjacency, and infrequent pairs can produce sparse counts; gappy or skipping bigrams can additionally represent word pairs separated by gaps.",
+      "paperLevel": "For tokens x_1, ..., x_T, the bigrams are (x_i, x_(i+1)) for i = 1, ..., T-1; equivalently, a bigram is an n-gram with n = 2. A frequency distribution assigns counts or relative frequencies to these pairs. This representation is limited to local pairs unless gaps are introduced through gappy or skipping bigrams."
+    },
+    "example": "For the word sequence “the cat saw the cat,” the adjacent bigrams are “the cat,” “cat saw,” “saw the,” “the cat.” Their counts are “the cat”: 2, “cat saw”: 1, and “saw the”: 1.",
+    "usedIn": [
+      {
+        "name": "Computational linguistics",
+        "detail": "Bigram frequency distributions support simple statistical analysis of text.",
+        "url": ""
+      },
+      {
+        "name": "Cryptography",
+        "detail": "Frequencies of adjacent elements can be used to analyze patterns in strings.",
+        "url": ""
+      },
+      {
+        "name": "Speech recognition",
+        "detail": "Bigram statistics provide a simple way to describe neighboring-token patterns.",
+        "url": ""
+      }
+    ],
+    "intuition": "Looking at two neighboring elements at a time captures a little more context than looking at each element alone. Repeating this across a string produces a collection of local patterns that can be counted and compared.",
+    "howItWorks": [
+      "Choose the token type: letters, syllables, or words.",
+      "Split the string into that sequence of tokens.",
+      "Take every pair of adjacent tokens, moving forward one token at a time.",
+      "Count each distinct pair to form a bigram frequency distribution.",
+      "Optionally allow gaps between word pairs to create gappy or skipping bigrams."
+    ],
+    "whyItMatters": "Bigrams turn a string into simple local statistics that are easy to count and reuse across applications. They also form the n=2 case of the broader n-gram idea.",
+    "misconceptions": [
+      "A bigram is not necessarily two words; its elements can also be letters or syllables.",
+      "The two elements need not be different, so the same token can appear twice in a bigram.",
+      "Gappy or skipping bigrams allow separated word pairs, unlike ordinary adjacent bigrams."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "text",
+          "label": "Input string",
+          "note": "The cat saw the cat"
+        },
+        {
+          "id": "tokens",
+          "label": "Word tokens",
+          "note": "An ordered sequence of words"
+        },
+        {
+          "id": "pairs",
+          "label": "Adjacent pairs",
+          "note": "A two-token window slides forward"
+        },
+        {
+          "id": "counts",
+          "label": "Bigram counts",
+          "note": "Each distinct pair is tallied"
+        }
+      ],
+      "edges": [
+        {
+          "from": "text",
+          "to": "tokens",
+          "label": "tokenize"
+        },
+        {
+          "from": "tokens",
+          "to": "pairs",
+          "label": "slide window"
+        },
+        {
+          "from": "pairs",
+          "to": "counts",
+          "label": "tally"
+        }
+      ],
+      "caption": "A bigram frequency distribution is built by tokenizing a string, collecting neighboring pairs, and counting them."
+    }
+  },
   "related": [
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",
     "accelerated-linear-algebra",

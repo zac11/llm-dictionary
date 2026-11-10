@@ -5,7 +5,98 @@
   "type": "concept",
   "definition": "Frequent pattern discovery (or FP discovery, FP mining, or Frequent itemset mining) is part of knowledge discovery in databases, Massive Online Analysis, and data mining; it describes the task of finding the most frequent and relevant patterns in large datasets.",
   "details": "The concept was first introduced for mining transaction databases. Frequent patterns are defined as subsets (itemsets, subsequences, or substructures) that appear in a data set with frequency no less than a user-specified or auto-determined threshold.",
-  "story": "Imagine a chef tasting every ingredient before it goes into the pot, deciding what belongs and what would ruin the broth. Better ingredients make a better meal, and the same is true here. Every machine is shaped by what it was shown, so someone has to choose that material with care. It is the raw material; the model is only ever as good as what it was fed. And that is Frequent pattern discovery — the unglamorous work everything else stands on.",
+  "explainer": {
+    "lead": "Frequent pattern discovery looks for combinations or structures that turn up often in a large dataset. It helps turn repeated occurrences into candidate patterns worth examining, using a chosen frequency threshold to separate common patterns from rare ones.",
+    "tiers": {
+      "eli5": "Imagine checking many shopping lists to see which groups of items appear together again and again. You decide how many lists a group must appear on to count as common, then keep only the groups that pass. That is the basic idea of frequent pattern discovery.",
+      "practitioner": "Apply it to transaction data or other large datasets by representing patterns as itemsets, subsequences, or substructures and filtering them by a frequency threshold. The threshold may be user-specified or automatically determined, and its choice directly controls which patterns survive. A frequent result is not automatically a relevant or useful finding.",
+      "paperLevel": "Given a dataset D and minimum frequency threshold t, discover patterns p—itemsets, subsequences, or substructures—such that frequency(p, D) >= t. The task was introduced for mining transaction databases and forms part of knowledge discovery in databases, Massive Online Analysis, and data mining. Results depend on the threshold, and frequency alone does not establish relevance."
+    },
+    "example": "Suppose a transaction database contains 1,000 shopping baskets and the minimum frequency is set at 100 baskets. If the itemset {bread, milk} appears in 140 baskets, it is retained as frequent; if {bread, cheese} appears in 60 baskets, it is discarded.",
+    "usedIn": [
+      {
+        "name": "Transaction databases",
+        "detail": "The setting in which the concept was first introduced, with recurring itemsets or other patterns mined from transactions.",
+        "url": ""
+      },
+      {
+        "name": "Massive Online Analysis",
+        "detail": "Frequent pattern discovery is one task used to find recurring patterns in large-scale data analysis.",
+        "url": ""
+      },
+      {
+        "name": "Knowledge discovery in databases",
+        "detail": "It supplies frequently occurring patterns that can be examined during the broader knowledge-discovery process.",
+        "url": ""
+      }
+    ],
+    "intuition": "If a group of items, a sequence, or a structure appears often enough, it may represent a recurring regularity in the data. A threshold makes “often enough” explicit and filters out patterns below it.",
+    "howItWorks": [
+      "Represent candidate patterns as itemsets, subsequences, or substructures.",
+      "Measure how frequently each candidate occurs in the dataset.",
+      "Set a frequency threshold manually or determine it automatically.",
+      "Keep the candidates whose frequency meets or exceeds that threshold.",
+      "Examine the retained patterns for relevance to the analysis task."
+    ],
+    "whyItMatters": "It provides a systematic way to reduce a large collection of possible patterns to those that recur at a required level. These frequent patterns can then serve as findings or candidates for further knowledge discovery.",
+    "misconceptions": [
+      "Frequent does not automatically mean relevant or useful.",
+      "Patterns are not limited to itemsets; they can also be subsequences or substructures.",
+      "The threshold need not always be chosen by the user; it can also be auto-determined."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data",
+          "label": "Large dataset",
+          "note": "Transactions or other structured records"
+        },
+        {
+          "id": "patterns",
+          "label": "Candidate patterns",
+          "note": "Itemsets, subsequences, or substructures"
+        },
+        {
+          "id": "frequency",
+          "label": "Frequency counts",
+          "note": "How often each pattern appears"
+        },
+        {
+          "id": "threshold",
+          "label": "Minimum threshold",
+          "note": "User-specified or auto-determined"
+        },
+        {
+          "id": "output",
+          "label": "Frequent patterns",
+          "note": "Patterns meeting the required frequency"
+        }
+      ],
+      "edges": [
+        {
+          "from": "data",
+          "to": "patterns",
+          "label": "candidates"
+        },
+        {
+          "from": "patterns",
+          "to": "frequency",
+          "label": "count"
+        },
+        {
+          "from": "frequency",
+          "to": "output",
+          "label": "filter"
+        },
+        {
+          "from": "threshold",
+          "to": "output",
+          "label": "cutoff"
+        }
+      ],
+      "caption": "Candidate patterns are counted and retained when their frequency reaches the chosen threshold."
+    }
+  },
   "related": [
     "k-optimal-pattern-discovery",
     "coupled-pattern-learner",

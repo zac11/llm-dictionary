@@ -5,7 +5,129 @@
   "type": "algorithm",
   "definition": "ALOPEX (an abbreviation of \"algorithms of pattern extraction\") is a correlation based machine learning algorithm first proposed by Tzanakou and Harth in 1974.",
   "details": "ALOPEX (an abbreviation of \"algorithms of pattern extraction\") is a correlation based machine learning algorithm first proposed by Tzanakou and Harth in 1974.",
-  "story": "Picture an architect laying out a building where every room has to know which other rooms matter to it. The layout decides what the machine can even attempt, before it learns a single thing. It is the blueprint that makes everything else possible. It is the difference between a row of isolated cubicles and one big room where everyone can hear each other. That blueprint is ALOPEX.",
+  "explainer": {
+    "lead": "ALOPEX is an iterative optimization algorithm that adjusts system variables using their previous changes, the resulting change in a response function, and random noise. Proposed by Tzanakou and Harth in 1974, it uses this stochastic push to try to escape local minima or maxima that can trap algorithms such as backpropagation.",
+    "tiers": {
+      "eli5": "Instead of always stepping straight downhill, it uses the recent pattern of changes to decide the next move, with some randomness, to avoid getting stuck.",
+      "practitioner": "It updates weights using the cross-correlation of past weight changes and response changes plus a stochastic term; the pitfall it targets is the tendency of methods like backpropagation to get stuck in local minima or maxima.",
+      "paperLevel": "Update rule: ΔW_ij(n) = γ ΔW_ij(n−1) ΔR(n) + r_i(n), where n is the iteration, ΔW is the change in system variable W_ij, ΔR is the change in the response function, and r_i is a stochastic term; it seeks the absolute minimum or maximum of the response function but offers no guarantee."
+    },
+    "example": "For a minimization step, suppose ΔW(n−1) = 0.2, ΔR(n) = 0.5, γ = −0.1, and the sampled noise is 0.003. Then ΔW(n) = −0.1 × 0.2 × 0.5 + 0.003 = −0.007, so W = 1.000 becomes 0.993; the next step evaluates R at this new value and uses the resulting response change.",
+    "goal": "Iteratively adjust system variables to seek the absolute minimum or maximum of a response function while using noise to avoid becoming stuck in local extrema.",
+    "inputs": [
+      "Current variables W_ij and their previous changes",
+      "Current and previous response values",
+      "Learning rate γ",
+      "Random noise r_i(n)"
+    ],
+    "outputs": [
+      "Updated variables for the next iteration",
+      "A response value evaluating each update"
+    ],
+    "steps": [
+      "Evaluate the response function R.",
+      "Compute the response change ΔR(n).",
+      "Multiply the previous variable change by ΔR(n) and γ.",
+      "Add random noise to that product.",
+      "Apply the variable updates and repeat."
+    ],
+    "tradeoffs": [
+      "Noise can help the search escape local extrema.",
+      "Reaching the absolute extremum is an aim, not a guarantee.",
+      "Each update needs previous variable and response changes.",
+      "The sign of γ determines minimization or maximization."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "variables",
+          "label": "System variables",
+          "note": "Current values of W_ij"
+        },
+        {
+          "id": "response",
+          "label": "Evaluate response",
+          "note": "Measure R for the current variables"
+        },
+        {
+          "id": "change",
+          "label": "Response change",
+          "note": "Compute ΔR from successive values"
+        },
+        {
+          "id": "update",
+          "label": "ALOPEX update",
+          "note": "Combine previous change, ΔR, and γ"
+        },
+        {
+          "id": "noise",
+          "label": "Random noise",
+          "note": "Add a stochastic push r_i(n)"
+        },
+        {
+          "id": "new-values",
+          "label": "Updated variables",
+          "note": "Apply ΔW_ij for the next iteration"
+        }
+      ],
+      "edges": [
+        {
+          "from": "variables",
+          "to": "response",
+          "label": ""
+        },
+        {
+          "from": "response",
+          "to": "change",
+          "label": "R values"
+        },
+        {
+          "from": "change",
+          "to": "update",
+          "label": "ΔR"
+        },
+        {
+          "from": "variables",
+          "to": "update",
+          "label": "previous ΔW"
+        },
+        {
+          "from": "noise",
+          "to": "update",
+          "label": "r_i(n)"
+        },
+        {
+          "from": "update",
+          "to": "new-values",
+          "label": "ΔW_ij"
+        },
+        {
+          "from": "new-values",
+          "to": "variables",
+          "label": "next step"
+        }
+      ],
+      "caption": "Each ALOPEX iteration feeds variable and response changes into a stochastic update, then evaluates the resulting variables again."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: ALOPEX",
+        "url": "https://en.wikipedia.org/wiki/ALOPEX"
+      }
+    ],
+    "usedIn": [
+      {
+        "name": "Optimization research",
+        "detail": "escaping local minima",
+        "url": ""
+      },
+      {
+        "name": "Early machine learning",
+        "detail": "correlation-based training",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "ablation-artificial-intelligence",
     "adaline",

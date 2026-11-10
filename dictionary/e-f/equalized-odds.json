@@ -5,7 +5,98 @@
   "type": "concept",
   "definition": "Equalized odds, also referred to as conditional procedure accuracy equality and disparate mistreatment, is a measure of fairness in machine learning.",
   "details": "A classifier satisfies this definition if the subjects in the protected and unprotected groups have equal true positive rate and equal false positive rate, satisfying the formula: P ( R = + | Y = y , A = a ) = P ( R = + | Y = y , A = b ) y ∈ { + , − } ∀ a , b ∈ A {\\displaystyle P(R=+|Y=y,A=a)=P(R=+|Y=y,A=b)\\quad y\\in \\{+,-\\}\\quad \\forall a,b\\in A} For example, A {\\displaystyle A} could be gender, race, or any other characteristics that we want to be free of bias, while Y {\\displaystyle Y} would be whether the person is qualified for the degree, and the output R {\\displaystyle R} would be the school's decision whether to offer the person to study for the degree. In this context, higher university enrollment rates of African Americans compared to whites with similar test scores might be necessary to fulfill the condition of equalized odds, if the \"base rate\" of Y {\\displaystyle Y} differs between the groups. The concept was originally defined for binary-valued Y {\\displaystyle Y} . In 2017, Woodworth et al. generalized the concept further for multiple classes.",
-  "story": "Imagine a new medicine that works brilliantly in the lab but still has to be tested on real people before anyone takes it. Think of it as the quiet rule that a tool should be useful without being dangerous. The idea is simple: before something powerful is let loose, someone checks that it will not do real harm to real people. Rules and red-teaming are the brakes that make the speed trustworthy. That deliberate caution is Equalized odds.",
+  "explainer": {
+    "lead": "Equalized odds is a way to check whether a machine-learning classifier makes the same kinds of mistakes across protected and unprotected groups. It asks both groups to have the same true positive rate and false positive rate, rather than merely receiving positive decisions at the same rate.",
+    "tiers": {
+      "eli5": "Imagine two groups of students being considered by a school. Equalized odds means the school is equally good at accepting qualified students from either group, and equally likely to mistakenly accept unqualified students from either group. It does not require the two groups to have the same overall acceptance rate.",
+      "practitioner": "Apply it by splitting classification results by protected group and true outcome, then comparing true positive and false positive rates across groups. It was originally defined for binary outcomes and generalized to multiple classes by Woodworth et al. in 2017; differing base rates can mean that satisfying it still produces different positive-decision rates.",
+      "paperLevel": "For protected attribute A, true label Y, and classifier output R, equalized odds requires P(R=+|Y=y,A=a)=P(R=+|Y=y,A=b) for y in {+,-} and all a,b in A. Equivalently, true positive and false positive rates must match across protected and unprotected groups. The concept was originally binary-valued and was generalized to multiple classes by Woodworth et al. in 2017; when base rates differ, equal overall selection rates need not follow."
+    },
+    "example": "Suppose a university classifier accepts 80% of qualified applicants and 10% of unqualified applicants in both of two racial groups. Its true positive rate is 0.80 and its false positive rate is 0.10 for each group, so it satisfies equalized odds, even if the groups have different overall enrollment rates because their qualification base rates differ.",
+    "usedIn": [
+      {
+        "name": "University admissions",
+        "detail": "Comparing acceptance errors for qualified and unqualified applicants across groups such as race or gender.",
+        "url": ""
+      },
+      {
+        "name": "Binary classification",
+        "detail": "Auditing a classifier's true positive and false positive rates across protected groups.",
+        "url": ""
+      },
+      {
+        "name": "Multiclass classification",
+        "detail": "Using the generalization introduced by Woodworth et al. in 2017.",
+        "url": ""
+      }
+    ],
+    "intuition": "A fair classifier under this criterion gives each group the same chance of a correct positive decision and the same chance of an incorrect positive decision. The comparison is conditional on the true outcome, not just on group membership.",
+    "howItWorks": [
+      "Identify the protected attribute A, true outcome Y, and classifier decision R.",
+      "Within each group, measure how often truly positive subjects receive R=+.",
+      "Within each group, measure how often truly negative subjects receive R=+.",
+      "Compare both rates across groups; equal true positive and false positive rates satisfy the criterion.",
+      "For multiple classes, use the generalized form introduced by Woodworth et al. in 2017."
+    ],
+    "whyItMatters": "It makes group differences in two important kinds of classification error visible. It also distinguishes error-rate fairness from equal acceptance rates, which can conflict when base rates differ between groups.",
+    "misconceptions": [
+      "It does not require equal positive-decision or enrollment rates across groups.",
+      "Matching only true positive rates is insufficient; false positive rates must also match.",
+      "Equal overall accuracy is not the same condition as equalized odds."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "classifier",
+          "label": "Classifier decisions",
+          "note": "Produces positive or negative outputs R."
+        },
+        {
+          "id": "outcomes",
+          "label": "True outcomes",
+          "note": "Supplies the actual labels Y."
+        },
+        {
+          "id": "groups",
+          "label": "Protected groups",
+          "note": "Splits results using attribute A."
+        },
+        {
+          "id": "rates",
+          "label": "Group error rates",
+          "note": "Calculates true and false positive rates."
+        },
+        {
+          "id": "compare",
+          "label": "Compare groups",
+          "note": "Checks whether both rates are equal."
+        }
+      ],
+      "edges": [
+        {
+          "from": "classifier",
+          "to": "groups",
+          "label": "decisions"
+        },
+        {
+          "from": "outcomes",
+          "to": "groups",
+          "label": "labels"
+        },
+        {
+          "from": "groups",
+          "to": "rates",
+          "label": ""
+        },
+        {
+          "from": "rates",
+          "to": "compare",
+          "label": ""
+        }
+      ],
+      "caption": "Equalized odds compares outcome-conditional classifier rates across protected groups."
+    }
+  },
   "related": [
     "odds-algorithm",
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",

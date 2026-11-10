@@ -9,7 +9,98 @@
   ],
   "definition": "Generated content that is fluent and plausible but factually wrong or unsupported by the source material.",
   "details": "Hallucination arises when a model confidently produces text not grounded in retrieved evidence or its training data. It is one of the most consequential failure modes of LLMs, especially in medicine, law and journalism. A broad survey of the area organizes the causes and effects and surveys detection and mitigation strategies such as retrieval grounding and verification.",
-  "story": "Picture a scoreboard at a science fair: you need a fair, agreed way to tell who actually won. A fair scoreboard keeps everyone honest. Before trusting a machine, someone has to measure how good it really is — fairly and honestly. A good metric is a ruler that does not bend when you lean on it. That shared ruler is Hallucination.",
+  "explainer": {
+    "lead": "Hallucination is when a language model gives a smooth, convincing answer that is wrong or has no support in the material it should be using. It matters because readers can easily mistake fluency for reliability, especially when the answer informs medical, legal, or journalistic work.",
+    "tiers": {
+      "eli5": "Imagine a student who does not know an answer but speaks confidently and makes something up that sounds sensible. A language model can do something similar: its sentences may read well even when the facts are invented. That is why an important answer needs checking against trustworthy evidence.",
+      "practitioner": "Treat hallucination as a grounding and verification problem, not something visible from the answer's tone. Use retrieved evidence to ground generation and verify consequential claims before returning them to users. Fluency and confident wording are unreliable quality signals, and retrieval or verification does not guarantee that every generated claim is supported.",
+      "paperLevel": "Given source material S and generated text G, hallucination occurs when G contains content that is factually incorrect or unsupported by S while remaining fluent and plausible. The failure can concern grounding in retrieved evidence or in the model's training data. Detection and mitigation approaches include retrieval grounding and verification."
+    },
+    "example": "A model is given a short report that says a clinic opened on Monday but does not name its director. When asked who runs it, the model answers, \"The clinic is directed by Dr. Maya Chen.\" The sentence is clear and plausible, but the name is fabricated because no supplied material supports it.",
+    "usedIn": [
+      {
+        "name": "Medicine",
+        "detail": "A consequential setting because unsupported generated claims can mislead readers.",
+        "url": ""
+      },
+      {
+        "name": "Law",
+        "detail": "A setting where plausible but incorrect text creates serious reliability concerns.",
+        "url": ""
+      },
+      {
+        "name": "Journalism",
+        "detail": "A setting where fabricated or unsupported statements undermine factual reporting.",
+        "url": ""
+      }
+    ],
+    "intuition": "A model can be good at producing believable language without every statement being true. Hallucination is the gap between how convincing the text sounds and what the evidence actually supports.",
+    "howItWorks": [
+      "A user asks a question or requests generated content.",
+      "The model produces a fluent answer that may extend beyond its available evidence.",
+      "The answer includes a claim that is factually wrong or unsupported.",
+      "Its plausible wording can conceal the problem from the reader.",
+      "Retrieval grounding and verification can help detect or reduce such failures."
+    ],
+    "whyItMatters": "Hallucination makes generated text difficult to trust without checking, even when it reads naturally. The consequences are especially serious in medicine, law, and journalism, where unsupported claims can affect important decisions or public information.",
+    "misconceptions": [
+      "A confident or well-written answer is not necessarily accurate.",
+      "Hallucination includes unsupported content, not only claims already proven false.",
+      "Grounding and verification are mitigation strategies, not guarantees of correctness."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "request",
+          "label": "User request",
+          "note": "A question or content-generation task."
+        },
+        {
+          "id": "model",
+          "label": "Language model",
+          "note": "Generates fluent text from the request."
+        },
+        {
+          "id": "answer",
+          "label": "Generated answer",
+          "note": "May contain wrong or unsupported claims."
+        },
+        {
+          "id": "evidence",
+          "label": "Source evidence",
+          "note": "Retrieved material used for grounding."
+        },
+        {
+          "id": "check",
+          "label": "Verification check",
+          "note": "Tests whether claims are supported."
+        }
+      ],
+      "edges": [
+        {
+          "from": "request",
+          "to": "model",
+          "label": ""
+        },
+        {
+          "from": "model",
+          "to": "answer",
+          "label": "generates"
+        },
+        {
+          "from": "answer",
+          "to": "check",
+          "label": "claims"
+        },
+        {
+          "from": "evidence",
+          "to": "check",
+          "label": "support"
+        }
+      ],
+      "caption": "Generated claims can be compared with source evidence; fluent output alone does not establish support."
+    }
+  },
   "related": [
     "hallucination-artificial-intelligence",
     "hallucination-testing",

@@ -5,7 +5,107 @@
   "type": "concept",
   "definition": "Concatenative synthesis is a technique for synthesising sounds by concatenating short samples of recorded sound (called units).",
   "details": "The duration of the units is not strictly defined and may vary according to the implementation, roughly in the range of 10 milliseconds up to 1 second. It is used in speech synthesis and music sound synthesis to generate user-specified sequences of sound from a database (often called a corpus) built from recordings of other sequences. In contrast to granular synthesis, concatenative synthesis is driven by an analysis of the source sound, in order to identify the units that best match the specified criterion.",
-  "story": "Picture a translator at the United Nations, listening to one language and whispering the meaning into another in real time. It figures out meaning by noticing which words like to travel together. It does not memorize a rulebook; it absorbs a library. Meaning lives in company — a word is known by the words it keeps. That pattern-earned fluency is Concatenative synthesis.",
+  "explainer": {
+    "lead": "Concatenative synthesis creates new sounds by joining short pieces of existing recordings. It lets a system produce a requested sequence of speech or music by selecting and assembling suitable pieces from a recorded database.",
+    "tiers": {
+      "eli5": "Imagine making a new sentence by cutting words and sounds out of old recordings, then taping the best pieces together. A computer looks through its collection, picks pieces that fit what you asked for, and plays them one after another.",
+      "practitioner": "Build a corpus from recorded sequences, analyse the source sound, and select units that best match the requested sequence. Units can range roughly from 10 milliseconds to 1 second, depending on the implementation. The main design concerns are the unit length, the contents of the corpus, and the criterion used to choose matching units.",
+      "paperLevel": "Concatenative synthesis generates a user-specified sound sequence by concatenating recorded units selected from a corpus. Source-sound analysis guides unit selection against a specified matching criterion, distinguishing the method from granular synthesis. Unit duration is implementation-dependent, typically spanning roughly 10 ms to 1 s."
+    },
+    "example": "To synthesise a requested spoken phrase, the system searches a corpus of recorded speech for short units matching its successive sounds. It then joins those units in order, producing the phrase from recordings rather than creating each sound from nothing.",
+    "usedIn": [
+      {
+        "name": "Speech synthesis",
+        "detail": "Assembles recorded speech units to produce a requested spoken sequence.",
+        "url": ""
+      },
+      {
+        "name": "Music sound synthesis",
+        "detail": "Joins recorded musical units to generate user-specified sequences of sound.",
+        "url": ""
+      }
+    ],
+    "intuition": "Rather than generating every sound from scratch, reuse small recorded fragments as building blocks. The quality of a result depends on finding fragments that fit the requested sequence and joining them in the right order.",
+    "howItWorks": [
+      "Record source sequences and store their sounds in a database, or corpus.",
+      "Divide the available sound into units, which may last roughly 10 milliseconds to 1 second.",
+      "Analyse the source sound and the requested output to identify suitable units.",
+      "Select the units that best match the specified criterion.",
+      "Concatenate the selected units to produce the output sequence."
+    ],
+    "whyItMatters": "It provides a general way to turn recordings into new, user-specified speech or musical sequences. Its analysis-driven selection also separates it from simply cutting audio into arbitrary grains.",
+    "misconceptions": [
+      "Units do not have one fixed duration; their length varies with the implementation.",
+      "Concatenative synthesis is not the same as granular synthesis because it uses source-sound analysis to choose matching units."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "recordings",
+          "label": "Recorded sequences",
+          "note": "Source speech or music"
+        },
+        {
+          "id": "corpus",
+          "label": "Unit corpus",
+          "note": "Database of recorded sound units"
+        },
+        {
+          "id": "analysis",
+          "label": "Source analysis",
+          "note": "Identifies sounds relevant to selection"
+        },
+        {
+          "id": "selection",
+          "label": "Unit selection",
+          "note": "Finds units matching the requested criterion"
+        },
+        {
+          "id": "concatenation",
+          "label": "Concatenation",
+          "note": "Joins selected units in sequence"
+        },
+        {
+          "id": "output",
+          "label": "Synthesised sound",
+          "note": "The user-specified output sequence"
+        }
+      ],
+      "edges": [
+        {
+          "from": "recordings",
+          "to": "corpus",
+          "label": "stored as units"
+        },
+        {
+          "from": "recordings",
+          "to": "analysis",
+          "label": "analysed"
+        },
+        {
+          "from": "corpus",
+          "to": "selection",
+          "label": "candidate units"
+        },
+        {
+          "from": "analysis",
+          "to": "selection",
+          "label": "matching evidence"
+        },
+        {
+          "from": "selection",
+          "to": "concatenation",
+          "label": "chosen units"
+        },
+        {
+          "from": "concatenation",
+          "to": "output",
+          "label": ""
+        }
+      ],
+      "caption": "Recorded sounds supply a corpus, while analysis guides the selection and ordered joining of units."
+    }
+  },
   "related": [
     "speech-synthesis-markup-language",
     "arabic-speech-corpus",

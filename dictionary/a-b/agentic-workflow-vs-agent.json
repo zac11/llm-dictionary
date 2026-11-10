@@ -5,6 +5,113 @@
   "type": "concept",
   "definition": "The design spectrum: workflows are predefined pipelines with LLM steps inside fixed control flow (predictable, debuggable, cheaper); agents let the model choose the path dynamically (flexible, harder to bound).",
   "details": "The design spectrum: workflows are predefined pipelines with LLM steps inside fixed control flow (predictable, debuggable, cheaper); agents let the model choose the path dynamically (flexible, harder to bound). Sound engineering practice: use the least agency the task allows.",
+  "explainer": {
+    "lead": "Agentic workflows and agents are two ways to build LLM-powered systems. Workflows follow a fixed route, while agents let the model decide what to do next; choosing between them means balancing predictability against flexibility.",
+    "tiers": {
+      "eli5": "Imagine following a recipe: you always do the steps in the same order. An agent is more like a cook who checks the kitchen and chooses the next step as things change. The recipe is easier to predict, but the cook can adapt to surprises.",
+      "practitioner": "Use a workflow when the task can be expressed as fixed control flow around LLM calls, and an agent when the model must choose its path dynamically. Start with the least agency the task allows: extra flexibility makes behavior harder to bound, while fixed pipelines are generally easier to debug, more predictable, and cheaper.",
+      "paperLevel": "A workflow has a predefined path through LLM steps, whereas an agent dynamically selects its path, for example a_t = M(context_t), with the chosen action determining subsequent context. The trade-off is fixed, bounded control flow versus flexible model-directed control; agent behavior is harder to bound, so unnecessary agency can reduce predictability and debuggability."
+    },
+    "example": "To prepare a customer reply, a workflow might always summarize the request, draft a response, and then check that draft. An agent would instead decide after each step whether to gather more information, draft the reply, or take another path.",
+    "usedIn": [
+      {
+        "name": "Document processing",
+        "detail": "Fixed pipelines suit repeatable sequences of LLM-based processing steps.",
+        "url": ""
+      },
+      {
+        "name": "Customer support",
+        "detail": "The design choice separates predefined handling procedures from dynamically chosen response paths.",
+        "url": ""
+      },
+      {
+        "name": "Software assistance",
+        "detail": "Tasks can use fixed LLM stages or allow the model to choose actions as the situation develops.",
+        "url": ""
+      }
+    ],
+    "intuition": "The distinction is about who controls the route: the developer or the model. A workflow fixes the route in advance; an agent leaves route selection to the model, gaining flexibility but giving up some predictability.",
+    "howItWorks": [
+      "Identify the steps and decisions the task requires.",
+      "For a workflow, place LLM calls inside predefined control flow.",
+      "For an agent, let the model choose the next path or action from the current situation.",
+      "Compare the flexibility needed with the need for predictable, debuggable, lower-cost behavior.",
+      "Use the least agency that still allows the task to succeed."
+    ],
+    "whyItMatters": "This choice affects how predictable, debuggable, and inexpensive a system is, as well as how well it can adapt. Avoiding unnecessary agency keeps fixed tasks simple without ruling out dynamic control when the task requires it.",
+    "misconceptions": [
+      "An LLM call does not by itself make a system an agent; it can be one step in a fixed workflow.",
+      "More agency is not automatically better; the sound default is the least agency the task allows.",
+      "Workflows and agents are points on a design spectrum, not two unrelated technologies."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "task",
+          "label": "Task",
+          "note": "The work given to the LLM system."
+        },
+        {
+          "id": "workflow",
+          "label": "Fixed workflow",
+          "note": "The developer predefines the route."
+        },
+        {
+          "id": "steps",
+          "label": "Ordered LLM steps",
+          "note": "Calls run inside fixed control flow."
+        },
+        {
+          "id": "agent",
+          "label": "Dynamic agent",
+          "note": "The model chooses what to do next."
+        },
+        {
+          "id": "actions",
+          "label": "Chosen actions",
+          "note": "Each choice can change the later path."
+        },
+        {
+          "id": "result",
+          "label": "Result",
+          "note": "Both designs produce the task output."
+        }
+      ],
+      "edges": [
+        {
+          "from": "task",
+          "to": "workflow",
+          "label": "fixed route"
+        },
+        {
+          "from": "workflow",
+          "to": "steps",
+          "label": ""
+        },
+        {
+          "from": "steps",
+          "to": "result",
+          "label": ""
+        },
+        {
+          "from": "task",
+          "to": "agent",
+          "label": "dynamic route"
+        },
+        {
+          "from": "agent",
+          "to": "actions",
+          "label": ""
+        },
+        {
+          "from": "actions",
+          "to": "result",
+          "label": ""
+        }
+      ],
+      "caption": "A workflow fixes the sequence of LLM steps; an agent lets the model determine the path."
+    }
+  },
   "related": [
     "workflows"
   ],

@@ -5,6 +5,102 @@
   "type": "concept",
   "definition": "Deciding whether two face images belong to the same person — a 1:1 match used in unlock and border-control systems.",
   "details": "Deciding whether two face images belong to the same person — a 1:1 match used in unlock and border-control systems. Learned embeddings with margin losses drive the task.",
+  "explainer": {
+    "lead": "Face verification answers a narrow question: do these two face images show the same person? It supports decisions such as unlocking a device or checking a traveller at border control, where accepting the wrong person or rejecting the right one both matter.",
+    "tiers": {
+      "eli5": "It is like comparing two photos to decide whether they show the same friend, rather than searching a whole crowd for their name. A computer turns each face into a compact numerical description and checks how close the descriptions are. If they are close enough, it accepts the match.",
+      "practitioner": "A typical pipeline maps both faces into a learned embedding space trained with margin losses, computes their similarity or distance, and applies a decision threshold. Tuning that threshold trades false accepts against false rejects, so it should reflect the cost of each error in an unlock or border-control setting.",
+      "paperLevel": "Given face images x1 and x2, an embedding model f produces z1 = f(x1) and z2 = f(z2 is incorrect); more precisely, z2 = f(x2). A verifier accepts the same-person hypothesis when a similarity s(z1, z2) exceeds a threshold tau, or equivalently when a distance d(z1, z2) is below tau. Margin losses shape the embedding space for this comparison, while finite separation between same-person and different-person pairs leaves both false-accept and false-reject errors."
+    },
+    "example": "During a device unlock, the camera image is compared with the enrolled face image. If their embeddings produce a similarity score of 0.86 and the chosen acceptance threshold is 0.80, the system verifies the match; a score of 0.65 would be rejected.",
+    "usedIn": [
+      {
+        "name": "Device unlock",
+        "detail": "Compares the face presented at unlock time with the enrolled face for a 1:1 decision.",
+        "url": ""
+      },
+      {
+        "name": "Border control",
+        "detail": "Checks whether a traveller's face matches the face reference used for verification.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of naming a face, the system compares two faces and asks only whether they match. Learned embeddings place the useful comparison in a numerical space, where the same-person decision depends on how close the two representations are.",
+    "howItWorks": [
+      "Take the two face images involved in the 1:1 check.",
+      "Pass each face through a learned model to obtain an embedding.",
+      "Measure the similarity or distance between the two embeddings.",
+      "Compare that score with a threshold to accept or reject the same-person claim."
+    ],
+    "whyItMatters": "Verification turns a face comparison into a direct access or identity-check decision. Its threshold matters because one setting cannot eliminate both security failures from false accepts and inconvenience from false rejects.",
+    "misconceptions": [
+      "Face verification is not face identification: verification compares one claimed pair, while identification searches among possible identities.",
+      "A match is a threshold-based decision, not proof that two images must show the same person.",
+      "Comparing embeddings is not the same as manually comparing individual facial features."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "image-a",
+          "label": "First face",
+          "note": "One image in the claimed pair"
+        },
+        {
+          "id": "image-b",
+          "label": "Second face",
+          "note": "The other image in the pair"
+        },
+        {
+          "id": "embed-a",
+          "label": "First embedding",
+          "note": "Learned numerical face representation"
+        },
+        {
+          "id": "embed-b",
+          "label": "Second embedding",
+          "note": "Representation in the same space"
+        },
+        {
+          "id": "compare",
+          "label": "Compare scores",
+          "note": "Measure similarity or distance"
+        },
+        {
+          "id": "decision",
+          "label": "Match decision",
+          "note": "Threshold gives accept or reject"
+        }
+      ],
+      "edges": [
+        {
+          "from": "image-a",
+          "to": "embed-a",
+          "label": "encode"
+        },
+        {
+          "from": "image-b",
+          "to": "embed-b",
+          "label": "encode"
+        },
+        {
+          "from": "embed-a",
+          "to": "compare",
+          "label": ""
+        },
+        {
+          "from": "embed-b",
+          "to": "compare",
+          "label": ""
+        },
+        {
+          "from": "compare",
+          "to": "decision",
+          "label": "threshold"
+        }
+      ],
+      "caption": "Two face images become embeddings, which are compared and thresholded to make one 1:1 verification decision."
+    }
+  },
   "citation": {
     "title": "Face Verification",
     "authors": [],

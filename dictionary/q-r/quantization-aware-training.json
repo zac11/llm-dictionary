@@ -8,7 +8,32 @@
   ],
   "definition": "A technique where lower-precision rounding errors are simulated in forward and backward passes during model training to minimize post-quantization accuracy loss.",
   "details": "Unlike post-training quantization (PTQ) which quantizes frozen weights, QAT incorporates low-bit representation errors directly into the training loss function, enabling the network to learn weights inherently robust to reduced precision representations.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. That steady, miss-by-miss improvement is Quantization-Aware Training.",
+  "explainer": {
+    "lead": "QAT simulates low-precision rounding during both forward and backward passes so the trained network is already robust to quantization. It matters because it minimizes the accuracy loss that appears after a model is actually compressed.",
+    "tiers": {
+      "eli5": "Like practicing a race while wearing the heavy shoes you'll actually compete in, so race day feels normal.",
+      "practitioner": "Engineers insert fake-quantization operations in training so the loss accounts for low-bit error. The pitfall is cost: QAT requires full retraining, unlike post-training quantization on frozen weights.",
+      "paperLevel": "Low-bit representation errors are simulated in the forward and backward passes and incorporated into the training loss, producing weights robust to reduced precision; this differs from PTQ, which quantizes frozen weights."
+    },
+    "example": "A network trained with simulated 4-bit rounding during training retains accuracy after conversion to a 4-bit representation, where a post-training approach would degrade.",
+    "usedIn": [
+      {
+        "name": "Low-bit model training",
+        "detail": "simulated rounding in loss",
+        "url": ""
+      },
+      {
+        "name": "Edge deployment",
+        "detail": "accuracy-preserving compression",
+        "url": ""
+      },
+      {
+        "name": "Post-training quantization",
+        "detail": "contrasted alternative",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "quantization",
     "flashattention",

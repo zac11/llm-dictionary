@@ -5,7 +5,103 @@
   "type": "concept",
   "definition": "The correspondence problem, as the basis for calculating optical flow and stereo matching, is a fundamental problem in image processing.",
   "details": "It refers to the problem in computer vision of ascertaining which parts of one image correspond to which parts of another image, where differences are due to movement of the camera, the elapse of time, and/or movement of objects in the photos. It is related to image registration, which is about finding a geometric transformation that aligns corresponding points on top of each other. Correspondence is arguably the key building block in many related applications: optical flow (in which the two images are subsequent in time), dense stereo vision (in which two images are from a stereo camera pair), structure from motion (SfM) and visual SLAM (in which images are from different but partially overlapping views of a scene), and cross-scene correspondence (in which images are from different scenes entirely). A simple method to find correspondences is PatchMatch. Modern correspondence algorithms use neural networks to find correspondences quickly and with high accuracy. The influential computer vision researcher Takeo Kanade famously once said that the three fundamental problems of computer vision are: “Correspondence, correspondence, and correspondence!”. However, the problem is now consid",
-  "story": "Picture walking through a crowd and instantly picking out a familiar face without reading a single name tag. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. It turns a picture into an understanding: this is a cat, that is a stop sign. Sight, for a machine, is a long climb from raw light to a name. And that is Correspondence problem — giving a machine the gift of sight.",
+  "explainer": {
+    "lead": "The correspondence problem is about finding which parts of two images show the same thing, even when the camera, objects, or time have changed the view. Solving it provides a foundation for estimating motion and depth, and for building an understanding of a scene from multiple images.",
+    "tiers": {
+      "eli5": "Imagine taking two photos of your toys, then trying to find the same teddy bear, ball, and block in both pictures. Some toys may have moved, or you may have taken the second photo from another spot. The correspondence problem is the computer’s version of matching those things up.",
+      "practitioner": "Correspondence is used differently depending on the image pair: consecutive frames for optical flow, stereo-camera images for dense stereo, and partially overlapping views for structure from motion or visual SLAM. PatchMatch is a simple approach, while modern methods use neural networks for fast, accurate matching. Do not confuse finding corresponding image parts with image registration, which finds the geometric transformation that aligns them.",
+      "paperLevel": "Given images I1 and I2 whose differences arise from camera motion, elapsed time, and/or object motion, the task is to determine which parts of I1 correspond to which parts of I2. The resulting correspondences support optical flow, dense stereo vision, structure from motion, visual SLAM, and cross-scene correspondence. Image registration is related but distinct: it seeks a geometric transformation that aligns corresponding points."
+    },
+    "example": "A stereo camera pair captures two images of the same chair from slightly different viewpoints. A correspondence method matches parts of the chair in the left image to the parts showing the same chair in the right image, providing the matches needed for dense stereo vision.",
+    "usedIn": [
+      {
+        "name": "Optical flow",
+        "detail": "Matches image content between frames that follow one another in time.",
+        "url": ""
+      },
+      {
+        "name": "Dense stereo vision",
+        "detail": "Finds correspondences between images captured by a stereo camera pair.",
+        "url": ""
+      },
+      {
+        "name": "Structure from motion and visual SLAM",
+        "detail": "Uses matches between different, partially overlapping views of a scene.",
+        "url": ""
+      },
+      {
+        "name": "Cross-scene correspondence",
+        "detail": "Searches for correspondences between images from entirely different scenes.",
+        "url": ""
+      }
+    ],
+    "intuition": "Two images can contain the same scene without looking identical: viewpoints shift, time passes, and objects move. Correspondence means deciding which pixels, patches, or other image parts represent the same thing across those images.",
+    "howItWorks": [
+      "Start with two images that differ because of camera movement, elapsed time, object movement, or a combination of these.",
+      "Compare parts of one image with parts of the other.",
+      "Decide which parts refer to the same scene content and record those matches.",
+      "Use the matches in the appropriate task, such as optical flow, dense stereo, structure from motion, or visual SLAM.",
+      "If alignment is required, image registration can then estimate a geometric transformation that places corresponding points on top of each other."
+    ],
+    "whyItMatters": "Correspondence is a key building block for optical flow and stereo matching, and it also supports structure from motion and visual SLAM. Computer vision researcher Takeo Kanade captured its importance by calling the three fundamental problems of computer vision “Correspondence, correspondence, and correspondence!”",
+    "misconceptions": [
+      "It is not the same as image registration: correspondence finds matching parts, while registration finds a geometric alignment.",
+      "The two images need not be consecutive video frames; they can also come from a stereo pair, overlapping scene views, or different scenes.",
+      "Finding correspondences is not limited to classical patch matching; modern algorithms also use neural networks."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "image-a",
+          "label": "First image",
+          "note": "One view of the scene"
+        },
+        {
+          "id": "image-b",
+          "label": "Second image",
+          "note": "View changed by motion or time"
+        },
+        {
+          "id": "matcher",
+          "label": "Correspondence method",
+          "note": "Compares image parts"
+        },
+        {
+          "id": "matches",
+          "label": "Matched parts",
+          "note": "Image content paired across views"
+        },
+        {
+          "id": "applications",
+          "label": "Vision applications",
+          "note": "Flow, stereo, SfM, or visual SLAM"
+        }
+      ],
+      "edges": [
+        {
+          "from": "image-a",
+          "to": "matcher",
+          "label": ""
+        },
+        {
+          "from": "image-b",
+          "to": "matcher",
+          "label": ""
+        },
+        {
+          "from": "matcher",
+          "to": "matches",
+          "label": "finds"
+        },
+        {
+          "from": "matches",
+          "to": "applications",
+          "label": "supports"
+        }
+      ],
+      "caption": "Correspondence links image parts across two views so that downstream vision tasks can use the matches."
+    }
+  },
   "related": [
     "accord-net",
     "active-appearance-model",

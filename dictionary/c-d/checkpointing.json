@@ -8,6 +8,124 @@
   ],
   "definition": "Regularly saving full training state so multi-week runs on thousands of GPUs survive inevitable hardware failures.",
   "details": "Regularly saving full training state so multi-week runs on thousands of GPUs survive inevitable hardware failures. Checkpoint frequency is a tradeoff between I/O overhead and lost work per failure.",
+  "explainer": {
+    "lead": "Checkpointing saves a snapshot of a running application so it can resume after a failure instead of starting over. For AI training runs lasting weeks across thousands of GPUs, it limits how much work a hardware failure can erase.",
+    "tiers": {
+      "eli5": "Checkpointing is like saving your progress in a long video game. If the computer stops working, you reload your last save rather than beginning the whole game again. Saving too often interrupts play, while saving too rarely means losing more progress.",
+      "practitioner": "In large training runs, periodically write the full training state to reliable storage and restart from the latest checkpoint after a failure. Choose the interval by balancing I/O overhead against the computation lost per failure; distributed jobs also require consistent checkpoints, because fixed timers on individual processes are not enough. Tools described for checkpoint and restart include FTI for scalable application-level protection, DMTCP for transparent distributed checkpointing, and CRIU for user-space checkpointing.",
+      "paperLevel": "A checkpoint C(t) is a snapshot of application state at time t, written to stable storage; after a failure before C(t+1), execution restores C(t) and repeats only subsequent work. Coordinated checkpointing establishes a globally consistent distributed state, whereas uncoordinated checkpointing can trigger cascading rollbacks, including the domino effect back to the initial state. Its costs include substantial I/O and possible parallel-file-system bottlenecks, so checkpoint frequency trades overhead against lost computation."
+    },
+    "example": "A training job saves its full state at step 100,000 and fails at step 104,000. It restarts from step 100,000 and repeats 4,000 steps instead of repeating the entire run.",
+    "usedIn": [
+      {
+        "name": "Large-scale AI training",
+        "detail": "Full training-state snapshots help multi-week runs on thousands of GPUs recover from hardware failures.",
+        "url": ""
+      },
+      {
+        "name": "Distributed and supercomputing applications",
+        "detail": "Checkpoints prevent long-running jobs from restarting from the beginning after failures.",
+        "url": ""
+      },
+      {
+        "name": "Batch transaction processing",
+        "detail": "Checkpoint/restart records application state and the last completed transaction so processing can resume there.",
+        "url": ""
+      },
+      {
+        "name": "DMTCP",
+        "detail": "Transparently checkpoints groups of programs spread across multiple machines without modifying the programs or operating system.",
+        "url": ""
+      }
+    ],
+    "intuition": "Treat progress as a series of saved recovery points: failures still happen, but each one only sends the job back to its most recent save.",
+    "howItWorks": [
+      "Run the application and advance its state.",
+      "Pause or coordinate a consistent snapshot.",
+      "Copy the required state to reliable storage.",
+      "Continue execution, repeating snapshots periodically.",
+      "After a failure, load the latest checkpoint and resume."
+    ],
+    "whyItMatters": "Checkpointing makes long computations practical on failure-prone systems by bounding repeated work. Its frequency is a direct tradeoff between the cost of writing checkpoints and the amount of computation lost when a failure occurs.",
+    "misconceptions": [
+      "More frequent checkpoints are not always better because each checkpoint adds I/O overhead.",
+      "Having every distributed process save independently at fixed intervals does not guarantee global consistency.",
+      "A checkpoint does not prevent failures; it provides a recent state from which to recover."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "job",
+          "label": "Running application",
+          "note": "Advances computation and application state"
+        },
+        {
+          "id": "snapshot",
+          "label": "Checkpoint snapshot",
+          "note": "Captures a consistent recovery point"
+        },
+        {
+          "id": "storage",
+          "label": "Reliable storage",
+          "note": "Retains the latest saved state"
+        },
+        {
+          "id": "failure",
+          "label": "System failure",
+          "note": "Interrupts the running application"
+        },
+        {
+          "id": "restart",
+          "label": "Restart process",
+          "note": "Loads the latest checkpoint"
+        },
+        {
+          "id": "resume",
+          "label": "Resumed execution",
+          "note": "Continues without starting from scratch"
+        }
+      ],
+      "edges": [
+        {
+          "from": "job",
+          "to": "snapshot",
+          "label": "state"
+        },
+        {
+          "from": "snapshot",
+          "to": "storage",
+          "label": "write"
+        },
+        {
+          "from": "job",
+          "to": "failure",
+          "label": "interrupts"
+        },
+        {
+          "from": "failure",
+          "to": "restart",
+          "label": "triggers"
+        },
+        {
+          "from": "storage",
+          "to": "restart",
+          "label": "restore"
+        },
+        {
+          "from": "restart",
+          "to": "resume",
+          "label": "continues"
+        }
+      ],
+      "caption": "The application periodically saves state; after a failure, restart restores that state and resumes from it."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Application checkpointing",
+        "url": "https://en.wikipedia.org/wiki/Application_checkpointing"
+      }
+    ]
+  },
   "related": [
     "checkpoint"
   ],

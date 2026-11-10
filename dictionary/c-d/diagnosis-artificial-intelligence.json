@@ -5,7 +5,110 @@
   "type": "algorithm",
   "definition": "As a subfield in artificial intelligence, diagnosis is concerned with the development of algorithms and techniques that are able to determine whether the behaviour of a system is correct.",
   "details": "If the system is not functioning correctly, the algorithm should be able to determine, as accurately as possible, which part of the system is failing, and which kind of fault it is facing. The computation is based on observations, which provide information on the current behaviour. The expression diagnosis also refers to the answer of the question of whether the system is malfunctioning or not, and to the process of computing the answer. This word comes from the medical context where a diagnosis is the process of identifying a disease by its symptoms.",
-  "story": "Think of a referee whose job is to be completely honest about who touched the ball last. Before trusting a machine, someone has to measure how good it really is — fairly and honestly. It is the exam that separates “it sounds good” from “it actually is good”. What gets measured is what actually gets better. And that, done honestly, is Diagnosis (artificial intelligence).",
+  "explainer": {
+    "lead": "Diagnosis in artificial intelligence checks whether a system is behaving correctly and, when it is not, tries to identify the failing part and the kind of fault. It turns observations of current behaviour into a practical answer about what has gone wrong.",
+    "tiers": {
+      "eli5": "Imagine a toy car that stops working. You watch what each part is doing, decide whether something is wrong, and then try to find the broken part and what happened to it. AI diagnosis does the same kind of detective work for a system, using observations instead of guesswork.",
+      "practitioner": "Supply observations of the system's current behaviour and return a correct-or-malfunctioning verdict; for a malfunction, also estimate the failing component and fault type. Treat fault localisation as an estimate whose accuracy depends on what the observations reveal, and distinguish the diagnostic process from the answer it produces.",
+      "paperLevel": "Given observations O describing current system behaviour, diagnosis computes D(O) = correct when behaviour is correct. Otherwise, it computes D(O) = (malfunctioning, c, f), where c is the estimated failing part and f is the estimated fault kind, with the goal of maximising accuracy. The computation is limited by the information available in O."
+    },
+    "example": "Observations show that component B produces no output while the rest of the system is active. The algorithm reports that the system is malfunctioning, names B as the failing part, and gives 'no output' as the identified fault.",
+    "usedIn": [
+      {
+        "name": "System behaviour checking",
+        "detail": "Uses observations to decide whether a system is functioning correctly.",
+        "url": ""
+      },
+      {
+        "name": "Fault identification",
+        "detail": "Estimates which system part is failing and what kind of fault is present.",
+        "url": ""
+      }
+    ],
+    "goal": "Determine whether observed system behaviour is correct and, if not, identify the failing part and fault kind as accurately as possible.",
+    "inputs": [
+      "Observations of current system behaviour",
+      "The system whose behaviour is being assessed"
+    ],
+    "outputs": [
+      "A correct-or-malfunctioning verdict",
+      "The estimated failing part when malfunctioning",
+      "The estimated kind of fault"
+    ],
+    "steps": [
+      "Collect observations that describe the system's current behaviour.",
+      "Use the observations to determine whether the behaviour is correct.",
+      "If the system is malfunctioning, estimate which part is failing.",
+      "Identify the kind of fault as accurately as possible and return the diagnosis."
+    ],
+    "tradeoffs": [
+      "Fault accuracy depends on how much the observations reveal.",
+      "A malfunction verdict alone does not locate the fault.",
+      "Diagnosis can refer either to the computation or to its answer."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "system",
+          "label": "Observed system",
+          "note": "The behaviour being assessed"
+        },
+        {
+          "id": "observations",
+          "label": "Observations",
+          "note": "Information about current behaviour"
+        },
+        {
+          "id": "check",
+          "label": "Behaviour check",
+          "note": "Determine whether behaviour is correct"
+        },
+        {
+          "id": "verdict",
+          "label": "Correct verdict",
+          "note": "No fault localisation is needed"
+        },
+        {
+          "id": "localise",
+          "label": "Fault localisation",
+          "note": "Estimate the failing part"
+        },
+        {
+          "id": "diagnosis",
+          "label": "Fault diagnosis",
+          "note": "Failing part and fault kind"
+        }
+      ],
+      "edges": [
+        {
+          "from": "system",
+          "to": "observations",
+          "label": "behaviour"
+        },
+        {
+          "from": "observations",
+          "to": "check",
+          "label": "evidence"
+        },
+        {
+          "from": "check",
+          "to": "verdict",
+          "label": "correct"
+        },
+        {
+          "from": "check",
+          "to": "localise",
+          "label": "malfunctioning"
+        },
+        {
+          "from": "localise",
+          "to": "diagnosis",
+          "label": "fault kind"
+        }
+      ],
+      "caption": "Observations drive a behaviour check; a malfunction leads to estimates of the failing part and fault kind."
+    }
+  },
   "related": [
     "artificial-intelligence",
     "aaai-conference-on-artificial-intelligence",

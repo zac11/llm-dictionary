@@ -8,6 +8,32 @@
   ],
   "definition": "The TTS front-end step that expands written forms into speakable words (numbers, dates, currencies, abbreviations), and the ASR post-processing step that converts spoken forms back into written conventions (\"five hundred riyals\" to \"SAR 500\").",
   "details": "The TTS front-end step that expands written forms into speakable words (numbers, dates, currencies, abbreviations), and the ASR post-processing step that converts spoken forms back into written conventions (\"five hundred riyals\" to \"SAR 500\"). Usually hybrid WFST-plus-neural systems; a disproportionate share of production speech bugs lives here, especially across Arabic number and date conventions.",
+  "explainer": {
+    "lead": "These are the two-way bridge between written forms and speakable words in speech systems: normalization expands numbers, dates and symbols for TTS, and inverse normalization turns spoken words back into written conventions for ASR. Failures here cause an outsized share of production speech bugs, especially with Arabic number and date conventions.",
+    "tiers": {
+      "eli5": "Normalization is turning \"$5\" into \"five dollars\" so a voice can say it; inverse normalization is hearing \"five hundred riyals\" and writing \"SAR 500\".",
+      "practitioner": "Engineers typically run hybrid WFST-plus-neural systems, using the rule-based WFST for reliable, predictable cases and a neural model for ambiguity. The common pitfall is edge cases in dates, currencies and abbreviations, where a wrong expansion silently passes through and surfaces as a user-visible error, most acutely across Arabic number and date conventions.",
+      "paperLevel": "Formally, normalization is a mapping from a written token sequence to a spoken-form token sequence, and inverse normalization maps in the reverse direction; hybrid systems combine finite-state transducers with neural models. Both mappings are many-to-many, so no single deterministic procedure resolves all cases, and ambiguity in dates and numbers is a known limit."
+    },
+    "example": "\"five hundred riyals\" is converted to \"SAR 500\" for display, while \"SAR 500\" is expanded back to \"five hundred riyals\" for speech.",
+    "usedIn": [
+      {
+        "name": "Text-to-speech front ends",
+        "detail": "expanding numbers and symbols",
+        "url": ""
+      },
+      {
+        "name": "Automatic speech recognition",
+        "detail": "spoken to written forms",
+        "url": ""
+      },
+      {
+        "name": "Arabic-language speech systems",
+        "detail": "number and date conventions",
+        "url": ""
+      }
+    ]
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

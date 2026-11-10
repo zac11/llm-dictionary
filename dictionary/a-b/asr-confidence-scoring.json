@@ -5,6 +5,118 @@
   "type": "concept",
   "definition": "Estimating per-word or per-utterance reliability of a transcript, used to gate human review, trigger clarification in voice bots, and filter pseudo-labels for semi-supervised training.",
   "details": "Estimating per-word or per-utterance reliability of a transcript, used to gate human review, trigger clarification in voice bots, and filter pseudo-labels for semi-supervised training. Needs explicit calibration: raw model probabilities are poor confidence estimates.",
+  "explainer": {
+    "lead": "ASR confidence scoring estimates how likely each recognized word, or an entire transcript, is to be correct. It helps speech systems decide when to trust a result, ask for clarification, send it to a human reviewer, or exclude it from training data.",
+    "tiers": {
+      "eli5": "Imagine a friend writing down what you say and circling any words they are unsure about. A speech recognizer can do something similar by giving words or whole sentences confidence scores. Those scores help it know when to ask again instead of confidently making a mistake.",
+      "practitioner": "Use word-level scores to locate uncertain transcript spans and utterance-level scores to route whole results to clarification or human review. In semi-supervised training, the same scores can filter pseudo-labels before they are reused. Do not treat raw model probabilities as ready-made confidence scores: explicit calibration is needed.",
+      "paperLevel": "For a recognized token w_i, confidence can be expressed as C(w_i), an estimate of P(w_i is correct | available recognition information); an utterance-level score C(U) estimates reliability for the whole transcript. Decisions apply thresholds to these calibrated scores for review, clarification, or pseudo-label acceptance. Raw model probabilities are poor confidence estimates without explicit calibration, and a confidence value does not itself guarantee correctness."
+    },
+    "example": "A voice bot transcribes “Book a table for two,” but assigns a low confidence score to “two.” Instead of booking immediately, it asks, “Did you say a table for two?”",
+    "usedIn": [
+      {
+        "name": "Transcription review",
+        "detail": "Low-confidence transcripts or words can be routed to human reviewers.",
+        "url": ""
+      },
+      {
+        "name": "Voice bots",
+        "detail": "Uncertain recognition can trigger a clarification question instead of an immediate action.",
+        "url": ""
+      },
+      {
+        "name": "Semi-supervised speech training",
+        "detail": "Confidence thresholds can filter unreliable pseudo-labels before training.",
+        "url": ""
+      }
+    ],
+    "intuition": "A transcript is more useful when the system also indicates which parts should not be trusted automatically. Confidence scoring turns recognition output into a reliability signal that downstream decisions can use.",
+    "howItWorks": [
+      "Produce a transcript with an automatic speech recognition system.",
+      "Estimate reliability for individual words, the full utterance, or both.",
+      "Calibrate the scores rather than using raw model probabilities directly.",
+      "Compare the calibrated scores with thresholds for the intended application.",
+      "Route low-confidence results to review or clarification, or filter them from pseudo-labelled training data."
+    ],
+    "whyItMatters": "Confidence scores let systems handle uncertain speech differently from reliable speech. This supports targeted human review, safer clarification in voice bots, and cleaner pseudo-labels for semi-supervised training.",
+    "misconceptions": [
+      "A high raw model probability is not necessarily a well-calibrated confidence score.",
+      "A high confidence score does not guarantee that the transcript is correct.",
+      "Word-level and utterance-level confidence serve different decisions and are not interchangeable."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "asr",
+          "label": "ASR transcript",
+          "note": "Recognized words or utterance"
+        },
+        {
+          "id": "scores",
+          "label": "Confidence estimates",
+          "note": "Per-word or per-utterance reliability"
+        },
+        {
+          "id": "calibration",
+          "label": "Score calibration",
+          "note": "Corrects raw probability estimates"
+        },
+        {
+          "id": "decision",
+          "label": "Decision thresholds",
+          "note": "Routes results by confidence"
+        },
+        {
+          "id": "review",
+          "label": "Human review",
+          "note": "Checks uncertain transcripts"
+        },
+        {
+          "id": "clarify",
+          "label": "Clarification",
+          "note": "Voice bot asks about uncertainty"
+        },
+        {
+          "id": "filter",
+          "label": "Pseudo-label filter",
+          "note": "Removes unreliable training labels"
+        }
+      ],
+      "edges": [
+        {
+          "from": "asr",
+          "to": "scores",
+          "label": ""
+        },
+        {
+          "from": "scores",
+          "to": "calibration",
+          "label": "raw scores"
+        },
+        {
+          "from": "calibration",
+          "to": "decision",
+          "label": "calibrated"
+        },
+        {
+          "from": "decision",
+          "to": "review",
+          "label": ""
+        },
+        {
+          "from": "decision",
+          "to": "clarify",
+          "label": ""
+        },
+        {
+          "from": "decision",
+          "to": "filter",
+          "label": ""
+        }
+      ],
+      "caption": "Calibrated confidence scores route recognition output toward review, clarification, or pseudo-label filtering."
+    }
+  },
   "related": [
     "calibration"
   ],

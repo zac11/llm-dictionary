@@ -5,6 +5,97 @@
   "type": "concept",
   "definition": "The exact string format that wraps a conversation (system/user/assistant turns, special tokens) before tokenization.",
   "details": "The exact string format that wraps a conversation (system/user/assistant turns, special tokens) before tokenization. Every model family has its own; applying the wrong template is one of the most common causes of degraded fine-tuned or self-hosted model behavior.",
+  "explainer": {
+    "lead": "A chat template turns conversation turns into the exact text a model expects before that text is tokenized. Using the right one matters because even correct messages can produce poor behavior when their roles and special tokens are formatted incorrectly.",
+    "tiers": {
+      "eli5": "Imagine putting each speaker's lines into a script with special labels showing who is talking. A chat template is the rule for making that script, so the model can tell instructions, questions, and answers apart. A different model may need a different script layout.",
+      "practitioner": "Apply the template belonging to the model family when preparing fine-tuning conversations and when serving the resulting model. Check the fully rendered string, including role markers, special tokens, and turn boundaries, before tokenization; a mismatch between training and inference templates can degrade behavior.",
+      "paperLevel": "Let a conversation C consist of ordered turns (r_i, m_i), where r_i is a role such as system, user, or assistant and m_i is its text. A chat template is a deterministic formatting function T(C) = s, followed by tokenization Tokenize(s) = x; T is model-family-specific, and no universal template is implied."
+    },
+    "example": "For the turns system: \"Be brief.\", user: \"Hi\", and assistant: \"Hello!\", an illustrative template might render \"<system>Be brief.</system><user>Hi</user><assistant>Hello!</assistant>\". That exact string, including its markers, is then tokenized; another model family may require different markers or spacing.",
+    "usedIn": [
+      {
+        "name": "Supervised fine-tuning",
+        "detail": "Formats system, user, and assistant turns consistently throughout the training conversations.",
+        "url": ""
+      },
+      {
+        "name": "Self-hosted chat inference",
+        "detail": "Renders incoming messages with the model family's expected roles and special tokens.",
+        "url": ""
+      },
+      {
+        "name": "Conversation dataset preparation",
+        "detail": "Converts structured message records into strings ready for tokenization.",
+        "url": ""
+      }
+    ],
+    "intuition": "A model receives tokens, not a messaging app's neatly separated speech bubbles. The chat template is the convention that encodes those bubbles, their speakers, and their boundaries as one precise string.",
+    "howItWorks": [
+      "Start with ordered system, user, and assistant turns.",
+      "Select the template associated with the target model family.",
+      "Insert role markers, message text, special tokens, and turn boundaries exactly as that template specifies.",
+      "Pass the resulting single string to the tokenizer.",
+      "Use the same formatting convention during fine-tuning and subsequent inference."
+    ],
+    "whyItMatters": "The template preserves the conversation structure the model expects to see. Applying the wrong model family's template is a common cause of degraded behavior in fine-tuned or self-hosted models.",
+    "misconceptions": [
+      "A chat template is not tokenization: it produces the string that tokenization then consumes.",
+      "Templates are not interchangeable across model families, even when they represent the same roles."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "turns",
+          "label": "Conversation turns",
+          "note": "Ordered system, user, and assistant messages"
+        },
+        {
+          "id": "template",
+          "label": "Chat template",
+          "note": "Model-family formatting rules"
+        },
+        {
+          "id": "string",
+          "label": "Formatted string",
+          "note": "Roles, text, and special tokens"
+        },
+        {
+          "id": "tokenizer",
+          "label": "Tokenizer",
+          "note": "Splits the formatted string"
+        },
+        {
+          "id": "tokens",
+          "label": "Token IDs",
+          "note": "Model-ready sequence"
+        }
+      ],
+      "edges": [
+        {
+          "from": "turns",
+          "to": "template",
+          "label": "messages"
+        },
+        {
+          "from": "template",
+          "to": "string",
+          "label": "renders"
+        },
+        {
+          "from": "string",
+          "to": "tokenizer",
+          "label": "text"
+        },
+        {
+          "from": "tokenizer",
+          "to": "tokens",
+          "label": "encodes"
+        }
+      ],
+      "caption": "The chat template formats the conversation before tokenization."
+    }
+  },
   "related": [
     "tokenization",
     "special-tokens"

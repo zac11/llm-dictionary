@@ -5,7 +5,32 @@
   "type": "concept",
   "definition": "A benchmark of hand-written programming problems used to evaluate a language model's ability to generate correct, functional code.",
   "details": "HumanEval measures functional correctness by executing generated code against unit tests, making it a widely used standard for assessing code-generation capability in LLMs.",
-  "story": "Imagine a driving test that every new model has to pass before it is allowed on the road. It is the exam that separates “it sounds good” from “it actually is good”. A fair scoreboard keeps everyone honest. It is the exam that keeps everyone honest. That shared ruler is HumanEval.",
+  "explainer": {
+    "lead": "HumanEval is the reference benchmark for judging whether a language model can write working code, not just plausible-looking code. Its execution-based scoring made functional correctness the standard, not surface similarity to a reference solution.",
+    "tiers": {
+      "eli5": "It is like a programming exam: the model writes a function, and a computer runs hidden tests to see if it actually works.",
+      "practitioner": "Engineers report pass@k on HumanEval to compare code models and to regression-test fine-tunes; the pitfall is that small hand-written problems reward memorization and can overstate performance on real repositories.",
+      "paperLevel": "Each problem gives a prompt with a function signature and docstring; the model completes the body, and pass@k is the probability that at least one of k sampled completions passes all unit tests. The problem set is small and hand-written, so scores saturate and do not reflect multi-file or long-context coding."
+    },
+    "example": "A model is given a function that should return the mean of a list; its completion is run against the problem's unit tests, and it counts as a pass only if every test succeeds.",
+    "usedIn": [
+      {
+        "name": "Code-generation LLM evaluation",
+        "detail": "standard benchmark for pass@k",
+        "url": ""
+      },
+      {
+        "name": "Model release reports",
+        "detail": "headline coding score",
+        "url": ""
+      },
+      {
+        "name": "Fine-tuning regression checks",
+        "detail": "detect code-quality drops",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "a-b-testing",
     "ablation-study",

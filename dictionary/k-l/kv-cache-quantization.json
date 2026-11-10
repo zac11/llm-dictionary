@@ -5,6 +5,27 @@
   "type": "concept",
   "definition": "Storing cached keys/values in 8-bit or 4-bit, multiplying how many concurrent long-context requests fit in memory, usually with negligible quality impact at 8-bit.",
   "details": "Storing cached keys/values in 8-bit or 4-bit, multiplying how many concurrent long-context requests fit in memory, usually with negligible quality impact at 8-bit.",
+  "explainer": {
+    "lead": "KV cache quantization stores attention cache entries at 8-bit or 4-bit precision instead of full precision. This multiplies how many concurrent long-context requests fit in memory.",
+    "tiers": {
+      "eli5": "Instead of keeping every past word in a bulky notebook, you jot them down in shorthand, so many more conversations fit on the same shelf.",
+      "practitioner": "Engineers apply it to cut memory when serving long-context models, and at 8-bit the quality impact is usually negligible. Dropping to 4-bit is a bigger memory win but a riskier trade against output quality.",
+      "paperLevel": "Cached key and value vectors are stored in 8-bit or 4-bit representations rather than their native precision; the reported quality impact is usually negligible at 8-bit. No formal bound is given beyond that."
+    },
+    "example": "Serving long-context requests, moving the KV cache from full precision to 8-bit lets more concurrent requests share the same GPU memory.",
+    "usedIn": [
+      {
+        "name": "LLM serving",
+        "detail": "long-context inference",
+        "url": ""
+      },
+      {
+        "name": "Inference engines",
+        "detail": "memory reduction",
+        "url": ""
+      }
+    ]
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

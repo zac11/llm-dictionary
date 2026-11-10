@@ -5,7 +5,108 @@
   "type": "concept",
   "definition": "In reinforcement learning, error-driven learning is a method for adjusting a model's (intelligent agent's) parameters based on the difference between its output results and the ground truth.",
   "details": "These models stand out as they depend on environmental feedback, rather than explicit labels or categories. They are based on the idea that language acquisition involves the minimization of the prediction error (MPSE). By leveraging these prediction errors, the models consistently refine expectations and decrease computational complexity. Typically, these algorithms are operated by the GeneRec algorithm. Error-driven learning has widespread applications in cognitive sciences and computer vision. These methods have also found successful application in natural language processing (NLP), including areas like part-of-speech tagging, parsing, named entity recognition (NER), machine translation (MT), speech recognition (SR), and dialogue systems.",
-  "story": "Picture training a puppy: no long lectures, just treats for the right move and patience for the wrong one. It learns the way a child learns to walk: wobble, fall, adjust, repeat. Instead of being told the rules, it discovers them by living with the consequences. It is trial and error with a memory: actions that pay off get repeated, actions that hurt get dropped. And that is Error-driven learning — skill forged from consequences.",
+  "explainer": {
+    "lead": "Error-driven learning improves an agent by using the gap between what it predicted and the feedback it received. Each mismatch becomes a signal for adjusting the agent, allowing its expectations to become more accurate over repeated attempts.",
+    "tiers": {
+      "eli5": "Like tuning a radio by ear: you hear how far off the station is and turn the dial to reduce the noise.",
+      "practitioner": "Engineers apply it in reinforcement learning and cognitive modelling, refining expectations from prediction errors, often with the GeneRec algorithm. The pitfall is that feedback can be noisy or delayed, so the correction signal may mislead the update.",
+      "paperLevel": "Parameters are updated in proportion to the difference between output and ground truth, grounded in the idea that learning minimises prediction error (MPSE). The size and reliability of the error signal bound how well the refinement converges."
+    },
+    "example": "Suppose an agent predicts a value of 6 but the resulting ground truth is 10. Its error is 10 - 6 = 4, so its parameters are adjusted to reduce that gap; on a later attempt it predicts 8, leaving a smaller error of 2.",
+    "usedIn": [
+      {
+        "name": "Cognitive science",
+        "detail": "Models learning and language acquisition through the minimization of prediction error.",
+        "url": ""
+      },
+      {
+        "name": "Computer vision",
+        "detail": "Uses discrepancies between outputs and feedback to refine model parameters.",
+        "url": ""
+      },
+      {
+        "name": "Natural language processing",
+        "detail": "Applied to part-of-speech tagging, parsing, named entity recognition, and machine translation.",
+        "url": ""
+      },
+      {
+        "name": "Speech and dialogue systems",
+        "detail": "Supports speech recognition and dialogue systems through iterative error reduction.",
+        "url": ""
+      }
+    ],
+    "intuition": "A prediction is useful not only when it is right, but also when its mismatch with feedback shows what to change. Repeatedly reducing that mismatch lets an agent improve without being given an explicit category for every case.",
+    "howItWorks": [
+      "The agent produces an output or prediction in its environment.",
+      "The environment provides feedback or a ground-truth result.",
+      "The learner measures the difference between the output and that feedback.",
+      "The agent's parameters are adjusted to reduce the prediction error.",
+      "Repeating this cycle refines the agent's expectations."
+    ],
+    "whyItMatters": "It turns ongoing environmental feedback into a learning signal rather than requiring explicit labels or categories. This connects parameter adjustment in intelligent agents with prediction-error accounts of language acquisition and supports applications across cognitive science, vision, language, and speech.",
+    "misconceptions": [
+      "It is not simply learning from a fixed collection of explicit labels; the defining signal is feedback about the agent's predictions.",
+      "A large error is not a failed learning run; it is the discrepancy used to guide the next parameter adjustment.",
+      "One correction does not complete learning; improvement comes from repeatedly reducing prediction errors."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "agent",
+          "label": "Intelligent agent",
+          "note": "Produces an output using its current parameters."
+        },
+        {
+          "id": "environment",
+          "label": "Environment",
+          "note": "Returns feedback or a ground-truth result."
+        },
+        {
+          "id": "comparison",
+          "label": "Compare results",
+          "note": "Measures the difference between output and feedback."
+        },
+        {
+          "id": "error",
+          "label": "Prediction error",
+          "note": "Represents the mismatch that drives learning."
+        },
+        {
+          "id": "update",
+          "label": "Parameter update",
+          "note": "Adjusts the agent to reduce future error."
+        }
+      ],
+      "edges": [
+        {
+          "from": "agent",
+          "to": "environment",
+          "label": "output"
+        },
+        {
+          "from": "environment",
+          "to": "comparison",
+          "label": "feedback"
+        },
+        {
+          "from": "comparison",
+          "to": "error",
+          "label": "difference"
+        },
+        {
+          "from": "error",
+          "to": "update",
+          "label": "learning signal"
+        },
+        {
+          "from": "update",
+          "to": "agent",
+          "label": "refines"
+        }
+      ],
+      "caption": "Feedback is compared with the agent's output, and the resulting prediction error drives the next parameter update."
+    }
+  },
   "related": [
     "algorithmic-learning-theory",
     "australian-institute-for-machine-learning",

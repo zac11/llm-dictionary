@@ -5,6 +5,118 @@
   "type": "concept",
   "definition": "Applying AI to sales workflows — lead scoring, outreach personalization, forecasting, and conversation intelligence.",
   "details": "Applying AI to sales workflows — lead scoring, outreach personalization, forecasting, and conversation intelligence.",
+  "explainer": {
+    "lead": "AI sales means using software to help sellers decide which prospects to contact, what to say, and which deals are likely to close. It can reduce repetitive analysis and make large sales pipelines easier to manage, but its suggestions still depend on the quality of the underlying data.",
+    "tiers": {
+      "eli5": "Imagine a helper who reads through a huge stack of customer notes and points out which people are most likely to buy. It can also suggest a more personal message, estimate future sales, and pick useful moments out of recorded calls. The seller still makes the decisions, just with a better-organized stack of clues.",
+      "practitioner": "Implementations typically connect CRM records, pipeline history, outreach activity, and call transcripts to scoring, forecasting, or language models. Common settings include lead prioritization, drafted personalized emails, pipeline forecasts, and call summaries. Validate forecasting and scoring on later time periods rather than random splits alone, and monitor data quality, calibration, drift, privacy, and inappropriate generated outreach.",
+      "paperLevel": "For lead scoring, let x represent lead attributes and interactions, and estimate p = P(y = 1 | x), where y = 1 denotes a defined conversion event. Forecasting predicts future revenue or closed deals from pipeline history and time-varying context, while conversation intelligence maps audio or transcripts to labels, summaries, or extracted signals. Results depend on target definitions, temporal validation, data quality, calibration, and changes between training and deployment conditions."
+    },
+    "example": "A team scores a new lead at 82 out of 100 because its attributes and activity resemble leads that previously converted. A seller reviews the suggested personalized email before sending it, while the forecasting model separately estimates next quarter’s revenue from the current pipeline. Later, the team checks whether high-scoring leads actually converted and whether the forecast was accurate.",
+    "usedIn": [
+      {
+        "name": "Business-to-business sales",
+        "detail": "Ranks inbound leads and helps sellers tailor follow-up.",
+        "url": ""
+      },
+      {
+        "name": "Revenue operations",
+        "detail": "Uses pipeline and activity data to produce sales forecasts.",
+        "url": ""
+      },
+      {
+        "name": "Inside sales and call centers",
+        "detail": "Analyzes sales conversations to surface topics and objections for review.",
+        "url": ""
+      }
+    ],
+    "intuition": "Sales teams collect more signals than a person can comfortably review, from past purchases to email replies and call transcripts. AI looks for useful patterns in those signals and turns them into scores, drafts, summaries, or forecasts.",
+    "howItWorks": [
+      "Gather relevant CRM records, pipeline history, messages, and call transcripts.",
+      "Define the task, such as predicting conversion, forecasting revenue, or identifying call topics.",
+      "Apply predictive or language models to produce scores, forecasts, summaries, or suggested outreach.",
+      "Present the results in the seller’s workflow for review and action.",
+      "Compare later outcomes with the outputs and use the results to evaluate and update the system."
+    ],
+    "whyItMatters": "It can help sellers spend time on promising opportunities, prepare more relevant conversations, and inspect forecasts more systematically. Its value comes from supporting decisions with evidence, not from treating every generated score or message as correct.",
+    "misconceptions": [
+      "A high lead score is a probability-based ranking signal, not a guarantee of a sale.",
+      "Personalized outreach still needs human review for accuracy, relevance, and appropriateness.",
+      "AI does not automatically repair incomplete, outdated, or biased sales records."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data",
+          "label": "Sales data",
+          "note": "CRM records, pipeline history, messages, and calls"
+        },
+        {
+          "id": "models",
+          "label": "AI models",
+          "note": "Analyze patterns and language"
+        },
+        {
+          "id": "scores",
+          "label": "Scores forecasts",
+          "note": "Lead rankings and revenue estimates"
+        },
+        {
+          "id": "content",
+          "label": "Drafts summaries",
+          "note": "Outreach suggestions and conversation insights"
+        },
+        {
+          "id": "seller",
+          "label": "Seller review",
+          "note": "Check outputs and choose actions"
+        },
+        {
+          "id": "outcomes",
+          "label": "Sales outcomes",
+          "note": "Conversions and actual revenue for evaluation"
+        }
+      ],
+      "edges": [
+        {
+          "from": "data",
+          "to": "models",
+          "label": "signals"
+        },
+        {
+          "from": "models",
+          "to": "scores",
+          "label": ""
+        },
+        {
+          "from": "models",
+          "to": "content",
+          "label": ""
+        },
+        {
+          "from": "scores",
+          "to": "seller",
+          "label": ""
+        },
+        {
+          "from": "content",
+          "to": "seller",
+          "label": ""
+        },
+        {
+          "from": "seller",
+          "to": "outcomes",
+          "label": "actions"
+        },
+        {
+          "from": "outcomes",
+          "to": "data",
+          "label": "feedback"
+        }
+      ],
+      "caption": "AI turns sales activity into decision support, with seller review and later outcomes feeding evaluation."
+    }
+  },
   "related": [
     "personalization",
     "workflows"

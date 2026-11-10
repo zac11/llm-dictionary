@@ -5,6 +5,32 @@
   "type": "concept",
   "definition": "Injecting an external text LM into ASR decoding (shallow fusion adds LM scores during beam search) to improve fluency and rare-word handling, especially valuable for domain terms and low-resource dialects.",
   "details": "Injecting an external text LM into ASR decoding (shallow fusion adds LM scores during beam search) to improve fluency and rare-word handling, especially valuable for domain terms and low-resource dialects.",
+  "explainer": {
+    "lead": "Language model fusion improves speech recognition by adding an external text language model's scores during decoding, which yields more fluent output and better handling of rare words. It matters most where the recognizer alone is weak, such as domain terminology and low-resource dialects.",
+    "tiers": {
+      "eli5": "It's like having a proofreader listen to a transcription and nudge it toward word sequences that actually make sense.",
+      "practitioner": "Engineers add LM scores to beam-search hypotheses, usually with a tunable weight, and tune that weight on held-out data. A common pitfall is over-weighting the LM, which makes the decoder favor fluent phrases the audio does not support.",
+      "paperLevel": "In shallow fusion the decoding score for a hypothesis y given acoustic input x is log P_acoustic(x|y) plus a weight times log P_LM(y); the weight trades acoustic fidelity against LM fluency. It offers no formal guarantee of correctness and depends on a well-matched LM."
+    },
+    "example": "For an ASR system transcribing medical dictation, fusing a clinical text LM makes beam search prefer 'myocardial infarction' over acoustically similar nonsense phrases.",
+    "usedIn": [
+      {
+        "name": "Speech recognition systems",
+        "detail": "shallow fusion in beam search",
+        "url": ""
+      },
+      {
+        "name": "Domain-specific transcription",
+        "detail": "rare term handling",
+        "url": ""
+      },
+      {
+        "name": "Low-resource dialect ASR",
+        "detail": "fluency improvement",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "beam-search",
     "fluency",

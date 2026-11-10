@@ -5,6 +5,98 @@
   "type": "concept",
   "definition": "The batch size beyond which adding data parallelism stops buying training speed, predicted by the gradient noise scale (how noisy gradients are relative to their mean).",
   "details": "The batch size beyond which adding data parallelism stops buying training speed, predicted by the gradient noise scale (how noisy gradients are relative to their mean). The quantitative tool labs use to decide how many GPUs a run can actually use efficiently.",
+  "explainer": {
+    "lead": "Critical batch size estimates when giving a training run more data per step—and therefore more GPUs—stops producing much extra speed. It is guided by the gradient noise scale, which compares random variation in gradients with the strength of their average learning signal.",
+    "tiers": {
+      "eli5": "Imagine asking several friends to guess which way a ball will roll, then averaging their answers. A few friends may give very different answers, but averaging a huge crowd eventually adds little useful information. Training works similarly: after a certain group size, adding more examples and computers gives less and less benefit.",
+      "practitioner": "Estimate the gradient noise scale from training gradients, use it to choose a global batch size, and divide that batch across data-parallel workers. Treat the result as a scaling guide rather than a hard limit, and check actual step time because communication and other system overheads can reduce the benefit of additional GPUs.",
+      "paperLevel": "For per-example gradients with mean g and covariance Sigma, the gradient noise scale can be written as B_noise = tr(Sigma) / ||g||^2. It measures gradient variance relative to the squared magnitude of the mean gradient, and the critical batch size is approximately this scale. Beyond it, larger batches yield diminishing returns in training progress per example; it is an estimate of useful statistical scaling, not a guarantee of wall-clock speedup."
+    },
+    "example": "Suppose gradient measurements suggest a critical batch size of about 8,000 examples. Increasing the global batch from 2,000 to 4,000 may still make larger-scale training worthwhile, while increasing it from 16,000 to 32,000 may add GPUs without a comparable gain in training speed.",
+    "usedIn": [
+      {
+        "name": "Large neural network training",
+        "detail": "Helps decide how large a global batch is useful before adding more examples produces diminishing returns.",
+        "url": ""
+      },
+      {
+        "name": "Multi-GPU cluster planning",
+        "detail": "Guides how many data-parallel GPUs a training run can use efficiently.",
+        "url": ""
+      },
+      {
+        "name": "Data-parallel training runs",
+        "detail": "Connects the choice of per-worker and global batch sizes to expected training throughput.",
+        "url": ""
+      }
+    ],
+    "intuition": "Small batches give noisy but frequent updates, while larger batches average away more gradient noise. Once gradients are accurate enough, further averaging buys little additional learning progress, so extra data-parallel hardware becomes increasingly inefficient.",
+    "howItWorks": [
+      "Estimate the average gradient and the variation of gradients around that average.",
+      "Compare the gradient noise with the average learning signal to obtain the gradient noise scale.",
+      "Use that scale to estimate the critical batch size.",
+      "Below the critical size, increasing the batch can still improve training speed substantially.",
+      "Above it, expect diminishing returns from more examples and additional data-parallel GPUs."
+    ],
+    "whyItMatters": "It turns a vague question—how many GPUs can this run use?—into a measurable training decision. That helps avoid spending extra hardware on batches whose reduced noise no longer produces much faster learning.",
+    "misconceptions": [
+      "The critical batch size is not a hard maximum; larger batches remain possible but offer diminishing returns.",
+      "Gradient noise scale is not simply the batch size or the number of GPUs.",
+      "A useful statistical batch size does not guarantee perfect hardware scaling, since communication overhead also matters."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "gradients",
+          "label": "Training gradients",
+          "note": "Provide the average signal and its variation."
+        },
+        {
+          "id": "estimate",
+          "label": "Signal-noise estimate",
+          "note": "Compare gradient noise with the mean gradient."
+        },
+        {
+          "id": "noise-scale",
+          "label": "Gradient noise scale",
+          "note": "Quantifies how noisy the gradients are."
+        },
+        {
+          "id": "critical-batch",
+          "label": "Critical batch size",
+          "note": "Marks the onset of strongly diminishing returns."
+        },
+        {
+          "id": "parallelism",
+          "label": "GPU allocation",
+          "note": "Sets a practical data-parallel scaling target."
+        }
+      ],
+      "edges": [
+        {
+          "from": "gradients",
+          "to": "estimate",
+          "label": "measure"
+        },
+        {
+          "from": "estimate",
+          "to": "noise-scale",
+          "label": "produces"
+        },
+        {
+          "from": "noise-scale",
+          "to": "critical-batch",
+          "label": "predicts"
+        },
+        {
+          "from": "critical-batch",
+          "to": "parallelism",
+          "label": "guides"
+        }
+      ],
+      "caption": "Gradient measurements lead through the noise scale to a batch-size estimate that guides data-parallel GPU allocation."
+    }
+  },
   "related": [
     "batch-size",
     "data-parallelism"

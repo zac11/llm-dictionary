@@ -5,7 +5,97 @@
   "type": "concept",
   "definition": "In computer science, extended affix grammars (EAGs) are a formal grammar formalism for describing the context free and context sensitive syntax of language, both natural language and programming languages.",
   "details": "EAGs are a member of the family of two-level grammars; more specifically, a restriction of Van Wijngaarden grammars with the specific purpose of making parsing feasible. Like Van Wijngaarden grammars, EAGs have hyperrules that form a context-free grammar except in that their nonterminals may have arguments, known as affixes, the possible values of which are supplied by another context-free grammar, the metarules. EAGs were introduced and studied by D.A. Watt in 1974; recognizers were developed at the University of Nijmegen between 1985 and 1995. The EAG compiler developed there will generate either a recogniser, a transducer, a translator, or a syntax directed editor for a language described in the EAG formalism. The formalism is quite similar to Prolog, to the extent that it borrowed its cut operator. EAGs have been used to write grammars of natural languages such as English, Spanish, and Hungarian. The aim was to verify the grammars by making them parse corpora of text (corpus linguistics); hence, parsing had to be sufficiently practical. However, the parse tree explosion problem that ambiguities in natural language tend to produce in this type of approach is worsened for EAGs be",
-  "story": "Think of a grammar teacher who never memorized a rule but can still tell you when a sentence sounds wrong. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It figures out meaning by noticing which words like to travel together. The machine learns to read between the lines by reading an impossible number of lines. And that is Extended affix grammar — teaching a machine to read between the lines.",
+  "explainer": {
+    "lead": "Extended affix grammars describe both the ordinary phrase structure of a language and context-sensitive details such as values that must agree across a sentence. They use two connected levels of rules, with the added restriction designed to make parsing practical enough for real text and language tools.",
+    "tiers": {
+      "eli5": "Imagine building sentences with blocks, where some blocks carry labels such as “singular” or “plural.” One set of rules says how the blocks fit together, while another says what labels they may carry. Matching labels help the grammar accept “the birds sing” but reject “the birds sings.”",
+      "practitioner": "An engineer writes context-free-like hyperrules whose nonterminals carry affix arguments, then defines the possible affix values with metarules. The University of Nijmegen EAG compiler can turn the description into a recognizer, transducer, translator, or syntax-directed editor. Practical parsing is the goal, but ambiguity in natural-language text can still produce a severe parse-tree explosion.",
+      "paperLevel": "An EAG is a restriction of a Van Wijngaarden grammar: hyperrules form a context-free grammar whose nonterminals may have affix arguments, while a separate context-free grammar of metarules supplies the affix values. This two-level mechanism can express context-free and context-sensitive syntax for natural and programming languages. D. A. Watt introduced and studied EAGs in 1974; natural-language ambiguity remains a significant parsing limitation."
+    },
+    "example": "In a schematic grammar, a rule could require subject(Number) and verb(Number) to share the same affix. Metarules could allow Number to be singular or plural, so the grammar accepts “the bird sings” and “the birds sing” while rejecting “the birds sings.”",
+    "usedIn": [
+      {
+        "name": "Natural-language grammar",
+        "detail": "EAGs have described English, Spanish, and Hungarian, with grammars tested by parsing text corpora.",
+        "url": ""
+      },
+      {
+        "name": "Programming-language syntax",
+        "detail": "The formalism can describe both context-free and context-sensitive aspects of programming languages.",
+        "url": ""
+      },
+      {
+        "name": "Language-tool generation",
+        "detail": "The Nijmegen EAG compiler can generate recognizers, transducers, translators, and syntax-directed editors.",
+        "url": ""
+      }
+    ],
+    "intuition": "Think of an ordinary grammar as rules for fitting sentence pieces together, and affixes as labels carried by those pieces. A second grammar controls the labels, allowing related parts of a construction to share required values without abandoning a context-free-like rule structure.",
+    "howItWorks": [
+      "Write hyperrules that look like context-free production rules, but allow nonterminals to carry arguments called affixes.",
+      "Use metarules, themselves a context-free grammar, to define the possible values of those affixes.",
+      "Combine the two levels into an EAG description that can express context-free structure and context-sensitive constraints.",
+      "Feed the description to an EAG compiler or recognizer to analyze text or generate a language-processing tool."
+    ],
+    "whyItMatters": "EAGs offer a compact way to write grammars that capture more than phrase structure while remaining aimed at feasible parsing. That combination supported corpus-based checking of natural-language grammars and automatic construction of several kinds of language tools.",
+    "misconceptions": [
+      "An EAG is not just an ordinary context-free grammar: its affixes and metarules add a second level that can express context-sensitive syntax.",
+      "Designed for feasible parsing does not mean ambiguity is solved; natural-language parse-tree explosion remains a problem.",
+      "EAG notation is similar to Prolog and borrowed its cut operator, but the formalism is not simply Prolog."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "metarules",
+          "label": "Metarules",
+          "note": "A context-free grammar supplying possible affix values."
+        },
+        {
+          "id": "hyperrules",
+          "label": "Affix hyperrules",
+          "note": "Context-free-like rules whose nonterminals carry arguments."
+        },
+        {
+          "id": "grammar",
+          "label": "EAG description",
+          "note": "The combined two-level description of a language."
+        },
+        {
+          "id": "compiler",
+          "label": "EAG compiler",
+          "note": "Processes the formal language description."
+        },
+        {
+          "id": "tools",
+          "label": "Language tools",
+          "note": "A recognizer, transducer, translator, or syntax-directed editor."
+        }
+      ],
+      "edges": [
+        {
+          "from": "metarules",
+          "to": "hyperrules",
+          "label": "affix values"
+        },
+        {
+          "from": "hyperrules",
+          "to": "grammar",
+          "label": "rules"
+        },
+        {
+          "from": "grammar",
+          "to": "compiler",
+          "label": "input"
+        },
+        {
+          "from": "compiler",
+          "to": "tools",
+          "label": "generates"
+        }
+      ],
+      "caption": "Metarules constrain the affixes used by hyperrules, and the resulting EAG description can be compiled into a language-processing tool."
+    }
+  },
   "related": [
     "affix-grammar-over-a-finite-lattice",
     "amazon-lex",

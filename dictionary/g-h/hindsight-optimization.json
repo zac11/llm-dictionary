@@ -5,7 +5,92 @@
   "type": "concept",
   "definition": "Hindsight optimisation (HOP) is a computer science technique used in artificial intelligence for analysis of actions which have stochastic results.",
   "details": "HOP is used in combination with a deterministic planner. By creating sample results for each of the possible actions from the given state (i.e. determinising the actions), and using the deterministic planner to analyse those sample results, HOP allows an estimate of the actual action.",
-  "story": "Imagine teaching a friend to shoot a basketball. They miss, and you walk them backwards through the shot — elbow, wrist, release — to find what needs fixing. It is the same loop you use to learn anything: try, miss, correct, try again. Underneath all the magic is a patient process of small improvements. It is learning from every miss instead of repeating the same mistake. And that is Hindsight optimization — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "Hindsight optimisation is a way to evaluate actions whose outcomes are uncertain. It turns sampled possibilities into deterministic problems that a planner can solve, giving an estimate to guide the choice of action.",
+    "tiers": {
+      "eli5": "Imagine choosing a move in a game where a dice roll decides what happens next. You can try out several possible dice results, work out what you would do in each one, and use those practice runs to judge the move.",
+      "practitioner": "HOP wraps a deterministic planner: from the current state, it samples and determinises the possible results of each action, then uses the planner to analyse them. The resulting scores are estimates rather than exact evaluations, and their usefulness depends on the sampled results. It is suited to settings where planning is straightforward once stochastic outcomes have been fixed.",
+      "paperLevel": "At state s, HOP considers each available action a, samples its stochastic outcomes, and converts those samples into deterministic planning problems. A deterministic planner evaluates the samples, producing an estimate associated with a. Because the evaluation is sample-based, it is an approximation of behaviour under stochastic outcomes rather than an exact solution."
+    },
+    "example": "A robot at a junction can move left or right, but slippery wheels mean either move may reach one of several positions. HOP samples destinations for each move, gives each fixed destination to a deterministic route planner, and compares the resulting route evaluations to estimate which move is better.",
+    "usedIn": [
+      {
+        "name": "Artificial intelligence",
+        "detail": "Analysing and comparing actions when their results are stochastic.",
+        "url": ""
+      },
+      {
+        "name": "Deterministic planning",
+        "detail": "Using a deterministic planner to evaluate sampled, determinised action outcomes.",
+        "url": ""
+      }
+    ],
+    "intuition": "An uncertain action becomes easier to judge if you fix particular possible outcomes and plan what to do next. Repeating this across samples gives an estimate of the action without requiring one planner to handle every uncertainty directly.",
+    "howItWorks": [
+      "Start from the current state and list the possible actions.",
+      "For each action, sample possible stochastic results.",
+      "Treat each sampled result as fixed, making the action deterministic.",
+      "Run the deterministic planner on those sample results.",
+      "Combine the analyses into an estimate for the action."
+    ],
+    "whyItMatters": "It lets deterministic planning tools contribute to decisions involving random outcomes. This separates sampling the uncertainty from solving each resulting planning problem.",
+    "misconceptions": [
+      "HOP does not make the original action outcomes deterministic; it only determinises sampled results for analysis.",
+      "Its output is an estimate based on samples, not a guaranteed exact evaluation of an action."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "state",
+          "label": "Current state",
+          "note": "The situation being evaluated"
+        },
+        {
+          "id": "actions",
+          "label": "Possible actions",
+          "note": "Each action has stochastic results"
+        },
+        {
+          "id": "samples",
+          "label": "Sampled outcomes",
+          "note": "Possible results are fixed per sample"
+        },
+        {
+          "id": "planner",
+          "label": "Deterministic planner",
+          "note": "Analyses each determinised result"
+        },
+        {
+          "id": "estimate",
+          "label": "Action estimate",
+          "note": "Sample analyses inform the action evaluation"
+        }
+      ],
+      "edges": [
+        {
+          "from": "state",
+          "to": "actions",
+          "label": "offers"
+        },
+        {
+          "from": "actions",
+          "to": "samples",
+          "label": "samples"
+        },
+        {
+          "from": "samples",
+          "to": "planner",
+          "label": "determinises"
+        },
+        {
+          "from": "planner",
+          "to": "estimate",
+          "label": "evaluates"
+        }
+      ],
+      "caption": "HOP samples uncertain action results, solves the resulting deterministic planning problems, and uses them to estimate the action."
+    }
+  },
   "related": [
     "ant-colony-optimization-algorithms",
     "bacterial-colony-optimization",

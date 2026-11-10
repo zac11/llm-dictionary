@@ -5,7 +5,121 @@
   "type": "architecture",
   "definition": "In computer science, a convolutional deep belief network (CDBN) is a type of deep artificial neural network composed of multiple layers of convolutional restricted Boltzmann machines stacked together.",
   "details": "Alternatively, it is a hierarchical generative model for deep learning, which is highly effective in image processing and object recognition, though it has been used in other domains too. The salient features of the model include the fact that it scales well to high-dimensional images and is translation-invariant. CDBNs use the technique of probabilistic max-pooling to reduce the dimensions in higher layers in the network. Training of the network involves a pre-training stage accomplished in a greedy layer-wise manner, similar to other deep belief networks. Depending on whether the network is to be used for discrimination or generative tasks, it is then \"fine tuned\" or trained with either back-propagation or the up–down algorithm (contrastive–divergence), respectively.",
-  "story": "Imagine an art restorer who can spot a single cracked tile in a vast mosaic. What your eyes do without thinking, the machine does one careful layer at a time. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. The model looks the way you look at a crowd and finds the one face you know. That pixel-to-meaning climb is Convolutional deep belief network.",
+  "explainer": {
+    "lead": "A convolutional deep belief network is a layered neural network for learning from images and other structured data. Its design handles large images efficiently and recognizes patterns regardless of where they appear, making it useful for image processing and object recognition.",
+    "tiers": {
+      "eli5": "Imagine looking for a cat in a big photo through several magnifying glasses, each learning to notice more complicated patterns. The network also shrinks the picture as information moves upward, so later layers have less to handle. It can recognize the cat whether it sits on the left or the right.",
+      "practitioner": "Build a CDBN by stacking convolutional restricted Boltzmann machines, with probabilistic max-pooling to reduce higher-layer dimensions. Pretrain greedily one layer at a time, then use back-propagation for a discriminative task or the up-down algorithm with contrastive divergence for a generative task. Its translation invariance and scalability suit high-dimensional images, but training involves both a pretraining stage and a task-dependent second stage.",
+      "paperLevel": "A CDBN is a hierarchical generative model composed of stacked convolutional restricted Boltzmann machines. It uses probabilistic max-pooling for dimensional reduction, greedy layer-wise pretraining, and either back-propagation fine-tuning for discrimination or up-down contrastive-divergence training for generation. Its stated properties are scalability to high-dimensional images and translation invariance."
+    },
+    "example": "For object recognition, a large image passes through the stacked convolutional layers, and probabilistic max-pooling shrinks the higher-layer representations. After layer-wise pretraining, back-propagation fine-tunes the network to assign an object label, with translation invariance helping when the object changes position.",
+    "usedIn": [
+      {
+        "name": "Image processing",
+        "detail": "Processes high-dimensional images while reducing dimensions in higher layers.",
+        "url": ""
+      },
+      {
+        "name": "Object recognition",
+        "detail": "Learns visual patterns with translation-invariant behavior.",
+        "url": ""
+      },
+      {
+        "name": "Generative modeling",
+        "detail": "Can be trained with the up-down algorithm using contrastive divergence.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Convolutional RBM layers",
+        "detail": "Multiple convolutional restricted Boltzmann machines are stacked to form the deep network."
+      },
+      {
+        "name": "Probabilistic max-pooling",
+        "detail": "Reduces the dimensions of representations in higher layers."
+      },
+      {
+        "name": "Greedy layer-wise pretrainer",
+        "detail": "Pretrains the network one layer at a time, as in other deep belief networks."
+      },
+      {
+        "name": "Task-dependent training stage",
+        "detail": "Uses back-propagation for discrimination or the up-down algorithm with contrastive divergence for generation."
+      }
+    ],
+    "flow": [
+      "A high-dimensional image enters the first convolutional restricted Boltzmann machine.",
+      "The learned representation passes upward through the stacked convolutional layers.",
+      "Probabilistic max-pooling reduces the dimensions in higher layers.",
+      "All layers are first pretrained in a greedy layer-wise manner.",
+      "The network is then trained for its task with back-propagation or the up-down algorithm."
+    ],
+    "lineage": "It extends the deep belief network approach by stacking convolutional restricted Boltzmann machines and retains greedy layer-wise pretraining. Its two task-dependent training paths support either discrimination or generation.",
+    "whyItMatters": "The architecture combines deep generative learning with two properties valuable for vision: scalability to large images and translation invariance. Pooling also keeps higher-layer representations smaller.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "image",
+          "label": "Input image",
+          "note": "High-dimensional visual data"
+        },
+        {
+          "id": "crbm1",
+          "label": "Convolutional RBM",
+          "note": "First learned representation"
+        },
+        {
+          "id": "pool",
+          "label": "Max-pooling",
+          "note": "Probabilistic dimension reduction"
+        },
+        {
+          "id": "crbm2",
+          "label": "Higher RBM layers",
+          "note": "Stacked deeper representations"
+        },
+        {
+          "id": "pretrain",
+          "label": "Layer-wise pretraining",
+          "note": "Greedy initialization stage"
+        },
+        {
+          "id": "task",
+          "label": "Task training",
+          "note": "Discriminative or generative path"
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "crbm1",
+          "label": "pixels"
+        },
+        {
+          "from": "crbm1",
+          "to": "pool",
+          "label": "activations"
+        },
+        {
+          "from": "pool",
+          "to": "crbm2",
+          "label": "reduced maps"
+        },
+        {
+          "from": "crbm2",
+          "to": "pretrain",
+          "label": ""
+        },
+        {
+          "from": "pretrain",
+          "to": "task",
+          "label": "fine-tune"
+        }
+      ],
+      "caption": "Image representations move through stacked convolutional RBMs and pooling, followed by layer-wise pretraining and task-specific training."
+    }
+  },
   "related": [
     "deep-belief-network",
     "capsule-neural-network",

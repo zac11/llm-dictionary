@@ -5,6 +5,32 @@
   "type": "concept",
   "definition": "The Straight-Through Estimator is a method for backpropagation through discrete variables.",
   "details": "The Straight-Through Estimator is a method for backpropagation through discrete variables. It is commonly used for training models that include non-differentiable operations, like quantization.",
+  "explainer": {
+    "lead": "The straight-through estimator is a method for backpropagating through discrete variables. It matters because it lets networks with non-differentiable operations, such as quantization, still be trained by gradient descent.",
+    "tiers": {
+      "eli5": "When a step in a process can't be nudged smoothly, pretend it's a straight line so you can still tell which way to adjust things.",
+      "practitioner": "Engineers use it to train models containing non-differentiable operations like quantized weights, passing gradients straight through the discrete step. Pitfall: the gradients are an approximation, so training can be unstable or biased relative to the true objective.",
+      "paperLevel": "Backpropagation is performed through discrete variables by substituting an approximate gradient for the non-differentiable operation. Nothing in the method guarantees the substitute matches the true derivative; it is a heuristic."
+    },
+    "example": "A quantized neural network rounds weights to 8-bit values in the forward pass, then uses the straight-through estimator to pass gradients through the rounding step unchanged during backpropagation.",
+    "usedIn": [
+      {
+        "name": "Quantized neural networks",
+        "detail": "training low-precision weights",
+        "url": ""
+      },
+      {
+        "name": "Binary neural networks",
+        "detail": "gradients through sign()",
+        "url": ""
+      },
+      {
+        "name": "Discrete latent models",
+        "detail": "approximate gradients",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "backpropagation",
     "quantization"

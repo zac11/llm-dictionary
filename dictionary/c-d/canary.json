@@ -5,6 +5,108 @@
   "type": "concept",
   "definition": "Risk-managed rollout patterns: canary sends a small traffic slice to the new version and watches metrics before ramping; shadow runs the new version on real traffic without serving its outputs.",
   "details": "Risk-managed rollout patterns: canary sends a small traffic slice to the new version and watches metrics before ramping; shadow runs the new version on real traffic without serving its outputs. Standard practice for model and prompt upgrades, because offline evals never cover everything.",
+  "explainer": {
+    "lead": "A canary release tests a new model or prompt with a small share of real users before everyone gets it. If its live metrics look healthy, traffic increases gradually; if not, the change can be rolled back with limited exposure.",
+    "tiers": {
+      "eli5": "It is like giving a new soup recipe to a few customers before putting it on the whole menu. If they like it and nothing goes wrong, more people get it. If there is a problem, you can switch back before most customers are affected.",
+      "practitioner": "Route a small percentage of production requests to the new model or prompt while the stable version handles the rest, then compare operational and quality metrics before increasing traffic. Keep a fast rollback path, and make sure requests are routed consistently enough to produce meaningful comparisons. A small canary can miss rare failures, and a shadow run cannot reveal how users respond to outputs they never see.",
+      "paperLevel": "Let v0 be the stable version and v1 the candidate: serve v1 on a small traffic fraction p, observe its metrics, and increase p only if the rollout criteria are met; otherwise restore p = 0. In shadow deployment, v1 also receives real requests but its outputs are not served. Both methods reduce exposure during validation, but neither guarantees coverage of rare conditions or all relevant quality failures."
+    },
+    "example": "A team sends 5% of requests to a new LLM prompt while 95% use the current prompt. Error rate, latency, and response-quality checks look healthy, so the share rises in stages; if quality deteriorates at 5%, traffic returns immediately to the current prompt.",
+    "usedIn": [
+      {
+        "name": "Model upgrades",
+        "detail": "A replacement model receives limited live traffic before wider deployment.",
+        "url": ""
+      },
+      {
+        "name": "Prompt upgrades",
+        "detail": "A revised prompt is tested in production to catch behavior missed by offline evaluation.",
+        "url": ""
+      }
+    ],
+    "intuition": "Live traffic reveals behavior that offline tests can miss, but exposing everyone at once makes a bad release expensive. A canary trades a little deployment complexity for a smaller blast radius and an evidence-based ramp-up.",
+    "howItWorks": [
+      "Keep the stable version serving most production traffic.",
+      "Send a small slice of requests to the candidate version.",
+      "Watch and compare operational and quality metrics.",
+      "Ramp up gradually if the candidate meets the rollout criteria.",
+      "Roll back to the stable version if problems appear."
+    ],
+    "whyItMatters": "Offline evaluations cannot cover every real input and failure mode. Canary and shadow rollouts let teams gather production evidence while limiting the number of users affected by a bad model or prompt change.",
+    "misconceptions": [
+      "A canary serves the candidate's outputs to some users; a shadow deployment does not.",
+      "A small canary reduces risk but does not prove that rare failures are absent.",
+      "A canary complements offline evaluation rather than replacing it."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "traffic",
+          "label": "Live traffic",
+          "note": "Real production requests arrive."
+        },
+        {
+          "id": "router",
+          "label": "Traffic router",
+          "note": "Splits requests between versions."
+        },
+        {
+          "id": "stable",
+          "label": "Stable version",
+          "note": "Serves most requests."
+        },
+        {
+          "id": "canary",
+          "label": "Canary version",
+          "note": "Serves a small traffic slice."
+        },
+        {
+          "id": "metrics",
+          "label": "Live metrics",
+          "note": "Tracks health and quality signals."
+        },
+        {
+          "id": "decision",
+          "label": "Ramp or rollback",
+          "note": "Expands exposure or restores the stable version."
+        }
+      ],
+      "edges": [
+        {
+          "from": "traffic",
+          "to": "router",
+          "label": ""
+        },
+        {
+          "from": "router",
+          "to": "stable",
+          "label": "most requests"
+        },
+        {
+          "from": "router",
+          "to": "canary",
+          "label": "small slice"
+        },
+        {
+          "from": "stable",
+          "to": "metrics",
+          "label": ""
+        },
+        {
+          "from": "canary",
+          "to": "metrics",
+          "label": ""
+        },
+        {
+          "from": "metrics",
+          "to": "decision",
+          "label": ""
+        }
+      ],
+      "caption": "A canary compares limited live exposure with the stable version before deciding whether to expand the rollout."
+    }
+  },
   "related": [
     "evals"
   ],

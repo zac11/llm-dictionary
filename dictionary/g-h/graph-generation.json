@@ -5,6 +5,97 @@
   "type": "concept",
   "definition": "Generating novel graphs — molecules, networks — with generative models that output valid structures for drug discovery and design.",
   "details": "Generating novel graphs — molecules, networks — with generative models that output valid structures for drug discovery and design.",
+  "explainer": {
+    "lead": "Graph generation uses generative models to create new node-and-edge structures, such as molecules or networks. The aim is not just to produce any graph, but one whose structure is valid, making it useful for tasks such as drug discovery and design.",
+    "tiers": {
+      "eli5": "Imagine building with beads and strings, where each bead must connect to the others in a sensible way. A computer learns to suggest new bead-and-string arrangements instead of only copying ones it has seen. For molecules, the beads are atoms and the strings are bonds, so the arrangement must also make chemical sense.",
+      "practitioner": "A practitioner represents each candidate as nodes and edges, generates a new structure, and checks it against the validity rules for the domain. In molecular design, atoms and bonds form the graph, and invalid candidates must be rejected or repaired before further evaluation. Structural validity alone does not establish that a molecule will be an effective drug.",
+      "paperLevel": "A graph is written G = (V, E), with nodes V and edges E. Graph generation learns a generative distribution p_theta(G) and samples novel graphs while requiring domain-specific structural constraints to hold. Producing valid graphs does not by itself guarantee useful downstream properties, such as success in drug discovery."
+    },
+    "example": "For a molecular candidate, the model outputs nodes labelled with atom types and edges representing bonds. A structure whose atoms have impossible connections fails validation, while a valid molecular graph can be passed on for further drug-discovery assessment.",
+    "usedIn": [
+      {
+        "name": "Drug discovery",
+        "detail": "Generating candidate molecular graphs for further evaluation.",
+        "url": ""
+      },
+      {
+        "name": "Molecular design",
+        "detail": "Proposing novel atom-and-bond structures that satisfy chemical validity rules.",
+        "url": ""
+      },
+      {
+        "name": "Network generation",
+        "detail": "Creating new node-and-edge structures rather than only analysing existing networks.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of predicting a label for an existing graph, the model creates the graph itself. Its output must follow the rules of the domain, so a generated molecule needs a chemically valid arrangement of atoms and bonds.",
+    "howItWorks": [
+      "Represent each object as nodes and edges, such as atoms and bonds for a molecule.",
+      "Use a generative model to propose a new graph structure.",
+      "Check the result against the domain's structural validity rules.",
+      "Reject or repair invalid structures and retain valid candidates for further evaluation."
+    ],
+    "whyItMatters": "It lets researchers explore new candidate structures instead of being limited to graphs already collected. Valid molecular graphs can provide starting points for drug discovery and design, although they still require further testing.",
+    "misconceptions": [
+      "It is not the same as drawing a picture of a graph; the output is the node-and-edge structure itself.",
+      "A novel graph is not necessarily a valid one, so explicit structural checks matter.",
+      "A valid generated molecule is not automatically a safe or effective drug."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "representation",
+          "label": "Graph representation",
+          "note": "Nodes and edges describe the object."
+        },
+        {
+          "id": "generator",
+          "label": "Generative model",
+          "note": "Proposes a novel structure."
+        },
+        {
+          "id": "candidate",
+          "label": "Candidate graph",
+          "note": "The newly generated nodes and edges."
+        },
+        {
+          "id": "validation",
+          "label": "Validity checks",
+          "note": "Applies the domain's structural rules."
+        },
+        {
+          "id": "output",
+          "label": "Valid candidates",
+          "note": "Structures retained for further evaluation."
+        }
+      ],
+      "edges": [
+        {
+          "from": "representation",
+          "to": "generator",
+          "label": "encodes"
+        },
+        {
+          "from": "generator",
+          "to": "candidate",
+          "label": "samples"
+        },
+        {
+          "from": "candidate",
+          "to": "validation",
+          "label": "checked"
+        },
+        {
+          "from": "validation",
+          "to": "output",
+          "label": "accepts"
+        }
+      ],
+      "caption": "A generated graph is checked for structural validity before it becomes a candidate for downstream use."
+    }
+  },
   "related": [
     "drug-discovery"
   ],

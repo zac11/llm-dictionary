@@ -5,7 +5,107 @@
   "type": "algorithm",
   "definition": "In applied mathematics, Basin-hopping is a global optimization technique that iterates by performing random perturbation of coordinates, performing local optimization, and accepting or rejecting new coordinates based on a minimized function value.",
   "details": "The algorithm was described in 1997 by David J. Wales and Jonathan Doye. It is a particularly useful algorithm for global optimization in very high-dimensional landscapes, such as finding the minimum energy structure for molecules. The method is inspired from Monte-Carlo Minimization first suggested by Li and Scheraga.",
-  "story": "Think of a hiker descending a foggy hill in the dark, taking small steps and feeling for the steepest way down. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. It is the same loop you use to learn anything: try, miss, correct, try again. Skill, for a model, is just error pushed down until it is small enough to ignore. That steady, miss-by-miss improvement is Basin-hopping.",
+  "explainer": {
+    "lead": "Basin-hopping searches for the best overall coordinates by repeatedly shaking up a candidate solution and improving it with local optimization. This combination helps it explore complicated, high-dimensional landscapes, including the search for minimum-energy molecular structures.",
+    "tiers": {
+      "eli5": "Imagine trying to find the lowest point in a hilly landscape while blindfolded. You take a random jump, walk downhill from wherever you land, and decide whether to keep that new spot. Repeating this lets you explore many valleys instead of staying in the first one you find.",
+      "practitioner": "Apply basin-hopping when local optimization alone may settle in one basin of a high-dimensional objective. Supply coordinates and a minimized function value, then tune the random perturbations and repeatedly run local optimization; each new local minimum is accepted or rejected by comparing function values. The repeated local solves are the main computational cost to watch.",
+      "paperLevel": "Given coordinates x and objective f, basin-hopping forms perturbed coordinates x', applies local optimization to obtain x'' and its minimized value f(x''), then accepts or rejects x'' based on that value before iterating. David J. Wales and Jonathan Doye described the algorithm in 1997, drawing inspiration from Monte-Carlo Minimization proposed by Li and Scheraga. It is intended for global optimization in very high-dimensional landscapes."
+    },
+    "example": "Suppose a molecular candidate has energy 10 after local optimization. Randomly perturb its coordinates and locally optimize again; if the new structure has energy 8, keep it as an improved candidate and continue hopping from there.",
+    "usedIn": [
+      {
+        "name": "Molecular structure optimization",
+        "detail": "Searching for the minimum-energy structure of molecules.",
+        "url": ""
+      },
+      {
+        "name": "High-dimensional global optimization",
+        "detail": "Exploring complicated coordinate landscapes through repeated perturbation and local minimization.",
+        "url": ""
+      }
+    ],
+    "goal": "Find globally favorable coordinates rather than remaining in the basin reached by a single local optimization.",
+    "inputs": [
+      "Starting coordinates",
+      "A function to minimize",
+      "A local optimization procedure",
+      "A way to randomly perturb coordinates"
+    ],
+    "outputs": [
+      "Accepted coordinates",
+      "Their minimized function value"
+    ],
+    "steps": [
+      "Start with a set of coordinates.",
+      "Randomly perturb the coordinates.",
+      "Run local optimization from the perturbed coordinates.",
+      "Compare the resulting minimized function value.",
+      "Accept or reject the new coordinates, then repeat."
+    ],
+    "tradeoffs": [
+      "Random perturbations explore beyond the current basin, but add unpredictability to the search.",
+      "Every hop requires local optimization, so the search involves repeated local solves.",
+      "Acceptance uses minimized function values, allowing candidates to be compared after local optimization."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "coords",
+          "label": "Current coordinates",
+          "note": "The candidate being improved."
+        },
+        {
+          "id": "perturb",
+          "label": "Random perturbation",
+          "note": "Moves to new coordinates."
+        },
+        {
+          "id": "local",
+          "label": "Local optimization",
+          "note": "Minimizes from the perturbed point."
+        },
+        {
+          "id": "value",
+          "label": "Minimized value",
+          "note": "Scores the new local minimum."
+        },
+        {
+          "id": "decision",
+          "label": "Accept or reject",
+          "note": "Chooses whether to keep the coordinates."
+        }
+      ],
+      "edges": [
+        {
+          "from": "coords",
+          "to": "perturb",
+          "label": ""
+        },
+        {
+          "from": "perturb",
+          "to": "local",
+          "label": "new coordinates"
+        },
+        {
+          "from": "local",
+          "to": "value",
+          "label": ""
+        },
+        {
+          "from": "value",
+          "to": "decision",
+          "label": ""
+        },
+        {
+          "from": "decision",
+          "to": "coords",
+          "label": "next iteration"
+        }
+      ],
+      "caption": "Each basin-hopping iteration perturbs coordinates, locally minimizes them, and decides whether to keep the result."
+    }
+  },
   "related": [
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",
     "accelerated-linear-algebra",

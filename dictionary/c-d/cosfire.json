@@ -5,7 +5,93 @@
   "type": "concept",
   "definition": "COSFIRE stands for Combination Of Shifted FIlter REsponses.",
   "details": "COSFIRE is a trainable filter, which can be used for interest point (keypoint) detection and pattern recognition in the field of computer vision.",
-  "story": "Picture walking through a crowd and instantly picking out a familiar face without reading a single name tag. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. It turns a picture into an understanding: this is a cat, that is a stop sign. Sight, for a machine, is a long climb from raw light to a name. That pixel-to-meaning climb is COSFIRE.",
+  "explainer": {
+    "lead": "COSFIRE is a trainable computer-vision filter that combines filter responses taken at shifted positions. It can highlight interest points, also called keypoints, and help recognize visual patterns.",
+    "tiers": {
+      "eli5": "Imagine checking a picture with several small stencils, each placed a little distance from the others. COSFIRE looks at what those stencils find and combines the results to decide whether a particular pattern is present. It can be trained to look for useful points or patterns in pictures.",
+      "practitioner": "Train the filter for the target keypoint or pattern, then evaluate and combine its shifted responses across image locations. The combined output can supply candidate keypoints or evidence for a pattern match. Check the output for unwanted responses to visually similar structures before using it downstream.",
+      "paperLevel": "Let R(x) be a filter response at image location x, let delta_i be configured shifts, and let C be the combination operation. A plain-text abstraction is S(x) = C({R(x - delta_i)}), where S is the COSFIRE response. The filter is trainable and is used for interest-point detection and pattern recognition."
+    },
+    "example": "Suppose a COSFIRE filter has been trained for a particular keypoint. At image location x, it evaluates the filter responses, shifts each one by its configured offset, and combines them; a strong combined response makes x a candidate location for that keypoint.",
+    "usedIn": [
+      {
+        "name": "Interest-point detection",
+        "detail": "Produces candidate image keypoints from combined shifted filter responses.",
+        "url": ""
+      },
+      {
+        "name": "Pattern recognition",
+        "detail": "Uses a trained filter to identify target visual patterns.",
+        "url": ""
+      }
+    ],
+    "intuition": "A single response at one position may not capture the arrangement of a visual pattern. COSFIRE instead gathers responses from shifted relative positions and combines them into one response.",
+    "howItWorks": [
+      "Train the filter for the target keypoint or visual pattern.",
+      "Evaluate filter responses at image locations.",
+      "Apply the configured shifts to those responses.",
+      "Combine the shifted responses into a COSFIRE response.",
+      "Use a strong response as a candidate keypoint or as evidence of the target pattern."
+    ],
+    "whyItMatters": "It provides one trainable filtering idea for two core computer-vision tasks: finding interest points and recognizing patterns. Its defining feature is the explicit combination of shifted responses rather than reliance on one unshifted response.",
+    "misconceptions": [
+      "COSFIRE is a trainable filter, not a complete vision application by itself.",
+      "Its output is a combination of shifted responses, not just one raw filter response.",
+      "It is not limited to keypoint detection; it can also be used for pattern recognition."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "image",
+          "label": "Input image",
+          "note": "Image locations are evaluated."
+        },
+        {
+          "id": "filter",
+          "label": "Filter responses",
+          "note": "Responses are computed for the image."
+        },
+        {
+          "id": "shifts",
+          "label": "Shifted responses",
+          "note": "Configured offsets reposition the responses."
+        },
+        {
+          "id": "combine",
+          "label": "Combine responses",
+          "note": "The shifted responses form one output."
+        },
+        {
+          "id": "output",
+          "label": "Keypoint or pattern",
+          "note": "The output supports either task."
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "filter",
+          "label": ""
+        },
+        {
+          "from": "filter",
+          "to": "shifts",
+          "label": "apply offsets"
+        },
+        {
+          "from": "shifts",
+          "to": "combine",
+          "label": ""
+        },
+        {
+          "from": "combine",
+          "to": "output",
+          "label": ""
+        }
+      ],
+      "caption": "COSFIRE combines shifted filter responses to support keypoint detection or pattern recognition."
+    }
+  },
   "related": [
     "accord-net",
     "active-appearance-model",

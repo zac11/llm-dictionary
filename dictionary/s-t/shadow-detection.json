@@ -5,6 +5,32 @@
   "type": "concept",
   "definition": "Identifying shadowed regions in images, needed for relighting, segmentation robustness, and intrinsic image decomposition.",
   "details": "Identifying shadowed regions in images, needed for relighting, segmentation robustness, and intrinsic image decomposition.",
+  "explainer": {
+    "lead": "Shadow detection finds the shadowed regions in an image, separating them from dark objects and lighting variation. It matters because shadows mislead segmentation, relighting and intrinsic image decomposition.",
+    "tiers": {
+      "eli5": "It's like marking which parts of a photo are dark because something blocked the sun, rather than because they are actually dark things.",
+      "practitioner": "Engineers use it as a preprocessing or auxiliary task so downstream models don't confuse shadows with object boundaries or albedo. A pitfall is that deep shadows and genuinely dark objects look nearly identical, so labels and colour cues are ambiguous.",
+      "paperLevel": "Formally a pixel-wise binary labelling of an image into shadow and non-shadow regions, often combined with physical models where observed intensity is illumination times reflectance. Limits include hard cases with low illumination contrast and dark textured surfaces."
+    },
+    "example": "In an outdoor street scene, the detector flags the pavement under a building's shadow so the segmentation model does not treat it as a separate surface.",
+    "usedIn": [
+      {
+        "name": "Relighting",
+        "detail": "remove shadows before synthesis",
+        "url": ""
+      },
+      {
+        "name": "Segmentation",
+        "detail": "avoid false boundaries",
+        "url": ""
+      },
+      {
+        "name": "Intrinsic image decomposition",
+        "detail": "separate shading from albedo",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "robustness"
   ],

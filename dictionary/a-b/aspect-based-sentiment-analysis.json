@@ -8,6 +8,92 @@
   ],
   "definition": "Extracting sentiment per aspect of a target (battery: positive, screen: negative) rather than one document-level polarity.",
   "details": "Extracting sentiment per aspect of a target (battery: positive, screen: negative) rather than one document-level polarity. The standard formulation for product review mining and voice-of-customer analytics.",
+  "explainer": {
+    "lead": "Aspect-based sentiment analysis separates opinions about different features of the same product or service. It matters because one review can praise the battery while criticizing the screen, and a single overall score would lose that distinction.",
+    "tiers": {
+      "eli5": "Imagine reviewing a phone: you might love its battery but dislike its screen. Instead of calling the whole review simply good or bad, this approach gives each feature its own label. It is like marking every part of a school project separately rather than giving one grade for everything.",
+      "practitioner": "A typical pipeline identifies aspects in a review, pairs each aspect with its relevant text, and predicts sentiment for each pair. Test on reviews with mixed opinions, since collapsing aspect labels into one polarity can hide exactly the information the task is meant to preserve.",
+      "paperLevel": "Given text x and aspects A, predict a sentiment label y_a for each aspect a in A, producing {(a, y_a)} rather than one document-level label y. For example, the same x can yield (battery, positive) and (screen, negative). The formulation does not by itself specify how aspects are identified or how their sentiment is modeled."
+    },
+    "example": "For “The battery lasts all day, but the screen is too dim,” ABSA returns battery: positive and screen: negative, rather than assigning one sentiment to the whole sentence.",
+    "usedIn": [
+      {
+        "name": "Product review mining",
+        "detail": "Separates opinions about individual product features within a review.",
+        "url": ""
+      },
+      {
+        "name": "Voice-of-customer analytics",
+        "detail": "Organizes customer sentiment by the aspect being discussed.",
+        "url": ""
+      }
+    ],
+    "intuition": "People often direct different feelings at different parts of the same target. ABSA keeps those feelings attached to their aspects instead of blending them into one overall polarity.",
+    "howItWorks": [
+      "Read the review text.",
+      "Identify the aspects being discussed.",
+      "Match opinion text to each aspect.",
+      "Assign sentiment to each aspect.",
+      "Return separate aspect–sentiment pairs."
+    ],
+    "whyItMatters": "It preserves mixed opinions at the level where they are expressed. That makes feature-specific praise and criticism visible in product reviews and customer feedback.",
+    "misconceptions": [
+      "It is not just document-level sentiment with more labels; each label belongs to a specific aspect.",
+      "Positive and negative aspect labels do not need to be combined into one overall score."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "review",
+          "label": "Review text",
+          "note": "A review discusses several features."
+        },
+        {
+          "id": "aspects",
+          "label": "Identify aspects",
+          "note": "Find battery and screen."
+        },
+        {
+          "id": "pairs",
+          "label": "Aspect text pairs",
+          "note": "Match opinions to aspects."
+        },
+        {
+          "id": "classify",
+          "label": "Classify sentiment",
+          "note": "Predict sentiment per aspect."
+        },
+        {
+          "id": "output",
+          "label": "Aspect labels",
+          "note": "Battery positive; screen negative."
+        }
+      ],
+      "edges": [
+        {
+          "from": "review",
+          "to": "aspects",
+          "label": ""
+        },
+        {
+          "from": "aspects",
+          "to": "pairs",
+          "label": ""
+        },
+        {
+          "from": "pairs",
+          "to": "classify",
+          "label": ""
+        },
+        {
+          "from": "classify",
+          "to": "output",
+          "label": ""
+        }
+      ],
+      "caption": "ABSA turns one review into separate sentiment predictions for its aspects."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

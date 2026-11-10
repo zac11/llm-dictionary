@@ -5,7 +5,102 @@
   "type": "concept",
   "definition": "Mechanisms, rules, or filters put in place around an AI system to constrain its behavior and prevent harmful, incorrect, or off-policy outputs.",
   "details": "Guardrails can operate at multiple levels, including input filtering, output filtering, and behavioral constraints built into the model itself through training, and are a common component of production LLM applications.",
-  "story": "Picture a parachute packed by a second pair of hands: nobody plans to need it, but everyone is glad it was checked. The idea is simple: before something powerful is let loose, someone checks that it will not do real harm to real people. It is the habit of asking, before every launch, what could go wrong — and then doing something about it. Caution is not the enemy of progress — it is the reason progress gets to keep going. And that is Guardrails — the reason we can move fast without breaking things, or people.",
+  "explainer": {
+    "lead": "Guardrails are the checks and limits placed around an AI system to keep its behavior within intended boundaries. They matter because a capable model can still produce harmful, incorrect, or unwanted responses unless the surrounding system constrains it.",
+    "tiers": {
+      "eli5": "Guardrails are like the rails along a bowling lane: they help keep the ball from going somewhere it should not. An AI might have checks on what people ask it, limits on how it behaves, and checks on its answers before anyone sees them. These checks reduce mistakes and unsafe answers, but they cannot promise that nothing will ever go wrong.",
+      "practitioner": "In production LLM applications, guardrails are typically layered across input filtering, model behavior shaped during training, and output filtering. A request may be rejected or redirected before inference, while a generated response can be checked before delivery. A common pitfall is treating one filter as complete protection rather than testing the full pipeline against failures and bypass attempts.",
+      "paperLevel": "Let x be an input, M the model, and y its candidate output; guardrails are input constraints g_in(x), behavioral constraints on M, and output constraints g_out(y) that block, modify, or redirect behavior outside an allowed policy. They constrain system behavior but do not establish a guarantee that every harmful, incorrect, or off-policy output will be prevented."
+    },
+    "example": "A user asks a customer-support chatbot how to make a weapon. An input guardrail flags the request, so the system returns a refusal instead of processing it normally; if an unsafe response is still generated, an output filter provides another chance to stop it.",
+    "usedIn": [
+      {
+        "name": "Production LLM applications",
+        "detail": "Combine request checks, trained behavioral limits, and response checks before users receive output.",
+        "url": ""
+      },
+      {
+        "name": "Conversational AI systems",
+        "detail": "Use filtering and behavioral constraints to keep assistant responses within intended policies.",
+        "url": ""
+      }
+    ],
+    "intuition": "A model generates responses, while guardrails define and enforce the boundaries around that generation. Placing checks before and after the model, as well as shaping the model itself, provides several opportunities to catch unwanted behavior.",
+    "howItWorks": [
+      "Define which inputs, behaviors, and outputs are unacceptable or off-policy.",
+      "Filter incoming requests before they reach the model.",
+      "Constrain model behavior through training.",
+      "Check generated responses and block, modify, or redirect unsafe ones."
+    ],
+    "whyItMatters": "Guardrails make AI systems safer and more predictable by enforcing boundaries that generation alone may not respect. Their layered design is especially useful in production applications, where unwanted outputs can reach real users.",
+    "misconceptions": [
+      "Guardrails are not just a single filter added after generation.",
+      "They reduce risk but do not guarantee perfect safety or correctness.",
+      "They are not the same as improving the model's underlying knowledge or reasoning."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "request",
+          "label": "User request",
+          "note": "An input enters the AI application."
+        },
+        {
+          "id": "input-filter",
+          "label": "Input guardrail",
+          "note": "Blocks or redirects disallowed requests."
+        },
+        {
+          "id": "training",
+          "label": "Behavior training",
+          "note": "Builds behavioral constraints into the model."
+        },
+        {
+          "id": "model",
+          "label": "AI model",
+          "note": "Generates a candidate response."
+        },
+        {
+          "id": "output-filter",
+          "label": "Output guardrail",
+          "note": "Checks the response against policy."
+        },
+        {
+          "id": "response",
+          "label": "User response",
+          "note": "Allowed output reaches the user."
+        }
+      ],
+      "edges": [
+        {
+          "from": "request",
+          "to": "input-filter",
+          "label": "input"
+        },
+        {
+          "from": "input-filter",
+          "to": "model",
+          "label": "allowed input"
+        },
+        {
+          "from": "training",
+          "to": "model",
+          "label": "constraints"
+        },
+        {
+          "from": "model",
+          "to": "output-filter",
+          "label": "candidate"
+        },
+        {
+          "from": "output-filter",
+          "to": "response",
+          "label": "allowed output"
+        }
+      ],
+      "caption": "Guardrails can check inputs, shape model behavior, and inspect outputs before delivery."
+    }
+  },
   "related": [
     "adversarial-example",
     "ai-safety",

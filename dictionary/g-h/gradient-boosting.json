@@ -5,7 +5,108 @@
   "type": "concept",
   "definition": "An ensemble technique that builds models sequentially, with each new model trained to correct the errors of the combined previous models.",
   "details": "Gradient boosting methods like XGBoost and LightGBM are widely used for structured/tabular data tasks and consistently perform well in machine learning competitions.",
-  "story": "Imagine teaching a friend to shoot a basketball. They miss, and you walk them backwards through the shot — elbow, wrist, release — to find what needs fixing. It is the same loop you use to learn anything: try, miss, correct, try again. Underneath all the magic is a patient process of small improvements. It is learning from every miss instead of repeating the same mistake. And that is Gradient Boosting — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "Gradient boosting builds a strong predictor from a sequence of models, with each new one focusing on what the combined models still get wrong. It matters because implementations such as XGBoost and LightGBM are widely used for structured, tabular data and consistently perform well in machine-learning competitions.",
+    "tiers": {
+      "eli5": "Imagine a team trying to guess the prices of houses. The first person makes a guess, the next person studies where that guess was wrong and suggests a fix, and another person fixes the mistakes that remain. Gradient boosting works like that team, adding corrections until the guesses become more accurate.",
+      "practitioner": "For tabular prediction, gradient boosting trains models sequentially rather than independently, using each stage to reduce the ensemble's remaining errors. XGBoost and LightGBM are common implementations and are established choices for structured-data tasks and competitions. Because later stages depend on earlier ones, the training process cannot simply be treated as a set of independent models.",
+      "paperLevel": "An additive ensemble can be written as F_m(x) = F_{m-1}(x) + eta h_m(x), where h_m is fitted to correct the errors remaining at stage m-1 and eta controls the update size. Repeating this procedure produces the final predictor F_M(x). The sequential dependence between stages is a structural constraint, and its strong tabular-data results do not establish that it is best for every kind of data."
+    },
+    "example": "For house-price prediction, an initial model predicts £200,000 for a home; a second model learns that similar homes were underpriced by £20,000, and a third applies a £5,000 downward correction to the combined prediction. The resulting ensemble predicts £215,000.",
+    "usedIn": [
+      {
+        "name": "Structured-data prediction",
+        "detail": "Used for tasks whose inputs are organized into rows and columns, commonly with XGBoost or LightGBM.",
+        "url": ""
+      },
+      {
+        "name": "Machine-learning competitions",
+        "detail": "Gradient boosting methods consistently perform well on structured and tabular competition tasks.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of expecting one model to solve everything, gradient boosting treats prediction as repeated repair. Each stage studies the ensemble's remaining mistakes and adds a model that helps correct them.",
+    "howItWorks": [
+      "Train an initial model on the data.",
+      "Measure the errors in its predictions.",
+      "Train a new model to correct those errors.",
+      "Add the new model to the existing ensemble and update its predictions.",
+      "Repeat on the remaining errors until training stops."
+    ],
+    "whyItMatters": "Sequential error correction can combine multiple models into a more capable predictor. This makes gradient boosting especially important in practical tabular-data work, where XGBoost and LightGBM are widely used.",
+    "misconceptions": [
+      "It is not a single model; the final predictor is the combination of models built across stages.",
+      "Each new model does not replace the previous ones; it is added to correct their combined errors.",
+      "Strong results on tabular data do not mean gradient boosting is automatically the best choice for every task."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "training-data",
+          "label": "Training data",
+          "note": "Examples and their target values"
+        },
+        {
+          "id": "first-model",
+          "label": "Initial model",
+          "note": "Makes the first predictions"
+        },
+        {
+          "id": "remaining-errors",
+          "label": "Remaining errors",
+          "note": "What the ensemble still gets wrong"
+        },
+        {
+          "id": "next-model",
+          "label": "Correction model",
+          "note": "Learns to reduce those errors"
+        },
+        {
+          "id": "combined-model",
+          "label": "Combined ensemble",
+          "note": "Adds the correction to earlier models"
+        },
+        {
+          "id": "prediction",
+          "label": "Final prediction",
+          "note": "Produced after repeated correction stages"
+        }
+      ],
+      "edges": [
+        {
+          "from": "training-data",
+          "to": "first-model",
+          "label": "train"
+        },
+        {
+          "from": "first-model",
+          "to": "remaining-errors",
+          "label": "evaluate"
+        },
+        {
+          "from": "remaining-errors",
+          "to": "next-model",
+          "label": "fit correction"
+        },
+        {
+          "from": "next-model",
+          "to": "combined-model",
+          "label": "add"
+        },
+        {
+          "from": "combined-model",
+          "to": "remaining-errors",
+          "label": "repeat"
+        },
+        {
+          "from": "combined-model",
+          "to": "prediction",
+          "label": "after training"
+        }
+      ],
+      "caption": "Each stage measures the current ensemble's errors, trains a correction model, and adds it before repeating."
+    }
+  },
   "related": [
     "xgboost",
     "decision-tree",

@@ -2,9 +2,132 @@
   "term": "ALIGN",
   "letter": "A",
   "category": "AI/ML glossary",
-  "type": "concept",
+  "type": "model",
   "definition": "A Large-scale ImaGe and Noisy-Text Embedding, 1.8 Billion Image-Text pairs dataset by Google.",
   "details": "A Large-scale ImaGe and Noisy-Text Embedding, 1.8 Billion Image-Text pairs dataset by Google.",
+  "explainer": {
+    "lead": "ALIGN is a Google image-and-text embedding approach built around 1.8 billion image–text pairs. It places pictures and written descriptions in a shared numerical space, helping computers connect visual content with language at very large scale.",
+    "tiers": {
+      "eli5": "Imagine a huge box of photos, each with a short note that may be messy or imperfect. ALIGN learns a way to give matching photos and notes similar codes, so a computer can connect what it sees with words. Its training collection contains 1.8 billion photo-and-note pairs.",
+      "practitioner": "ALIGN is applied by encoding images and text into a common embedding space for vision–language tasks such as matching and retrieval. Its scale is central to the approach, but the text is noisy, so a close match should not automatically be treated as a clean or factual annotation.",
+      "paperLevel": "Let D = {(I_i, T_i)} for i = 1, …, 1.8B denote the image–text collection. ALIGN learns image and text representations whose outputs can be compared in a shared embedding space. The scale supports broad representation learning, while noisy text introduces imperfect supervision and can limit the reliability of individual pairings."
+    },
+    "example": "Given an image of a dog running on a beach and the noisy caption “dog beach run,” ALIGN represents both in the same space. Their representations can then be compared with those of unrelated image–text pairs.",
+    "usedIn": [
+      {
+        "name": "Image–text retrieval",
+        "detail": "Shared embeddings support finding text related to an image or images related to text.",
+        "url": ""
+      },
+      {
+        "name": "Vision–language research",
+        "detail": "ALIGN provides a large-scale approach to connecting visual and textual representations.",
+        "url": ""
+      },
+      {
+        "name": "Representation learning",
+        "detail": "Its 1.8 billion noisy image–text pairs illustrate learning from web-scale, imperfect supervision.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Image–text pairs: 1.8 billion examples",
+        "detail": ""
+      },
+      {
+        "name": "Noisy text: imperfect language supervision",
+        "detail": ""
+      },
+      {
+        "name": "Image embedding: numerical visual representation",
+        "detail": ""
+      },
+      {
+        "name": "Text embedding: numerical language representation",
+        "detail": ""
+      },
+      {
+        "name": "Shared space: enables comparison",
+        "detail": ""
+      }
+    ],
+    "flow": [
+      "Collect paired images and noisy text.",
+      "Represent each image numerically.",
+      "Represent each text numerically.",
+      "Compare both in a shared space."
+    ],
+    "origin": "ALIGN is by Google, and its name expands to “A Large-scale ImaGe and Noisy-Text Embedding.” Its defining collection contains 1.8 billion image–text pairs.",
+    "whyItMatters": "ALIGN shows how image–text understanding can be learned at enormous scale without requiring every text description to be clean. A shared embedding space gives pictures and language a common basis for comparison.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "pairs",
+          "label": "Image–text pairs",
+          "note": "1.8 billion examples"
+        },
+        {
+          "id": "image",
+          "label": "Image input",
+          "note": "Visual part of a pair"
+        },
+        {
+          "id": "text",
+          "label": "Noisy text",
+          "note": "Imperfect language input"
+        },
+        {
+          "id": "image-emb",
+          "label": "Image embedding",
+          "note": "Numerical visual representation"
+        },
+        {
+          "id": "text-emb",
+          "label": "Text embedding",
+          "note": "Numerical language representation"
+        },
+        {
+          "id": "shared",
+          "label": "Shared space",
+          "note": "Images and text can be compared"
+        }
+      ],
+      "edges": [
+        {
+          "from": "pairs",
+          "to": "image",
+          "label": "images"
+        },
+        {
+          "from": "pairs",
+          "to": "text",
+          "label": "text"
+        },
+        {
+          "from": "image",
+          "to": "image-emb",
+          "label": "encode"
+        },
+        {
+          "from": "text",
+          "to": "text-emb",
+          "label": "encode"
+        },
+        {
+          "from": "image-emb",
+          "to": "shared",
+          "label": "map"
+        },
+        {
+          "from": "text-emb",
+          "to": "shared",
+          "label": "map"
+        }
+      ],
+      "caption": "ALIGN maps images and noisy text into a shared embedding space."
+    }
+  },
   "related": [
     "embedding"
   ],

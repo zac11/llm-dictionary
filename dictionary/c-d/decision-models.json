@@ -8,7 +8,103 @@
   ],
   "definition": "A formal representation of a decision problem - its alternatives, the states or uncertainties involved, and the outcomes or values attached to each combination - that a decision method then operates on.",
   "details": "A decision model is the starting point for a decision method within a formal (axiomatic) system. It states what can be chosen, what is outside the decision-maker's control, and how outcomes are valued, so that a rule can select an alternative. Common forms include decision matrices over states of nature, decision trees that expand choices over time with chance nodes, influence diagrams, and utility or value models that make preferences explicit. Because the model encodes assumptions about likelihoods and preferences, its output is only as trustworthy as those inputs, and sensitivity analysis is routine. In machine learning the same structure appears whenever a model's output drives an action rather than being read by a person: the loss or reward defines what counts as a good outcome, and calibration determines whether the stated confidence can be taken at face value. This is the setting reinforcement learning for calibrated decisions targets, where a typed answer and its probability are consumed directly by software.",
-  "story": "Picture a map drawn before the journey: the roads you may take, the bridges that might be out, and what each destination is worth to you. The map decides nothing - you still have to choose. But without it, every choice is a guess, and every regret is a surprise. Drawing it honestly, with all its uncertainties marked, is most of the work. And that is Decision models.",
+  "explainer": {
+    "lead": "A decision model turns a choice into a structured problem: what you can do, what might happen, and how good each result would be. It gives a decision rule something explicit to work on, making the assumptions behind a recommendation visible and testable.",
+    "tiers": {
+      "eli5": "Imagine choosing whether to take an umbrella. You list your choices, think about whether it might rain, and decide how annoying each outcome would be, such as getting wet or carrying an umbrella on a sunny day. A decision model puts all of that in one place so a clear rule can help you choose.",
+      "practitioner": "Practitioners represent choices and uncertainty with decision matrices, decision trees, influence diagrams, or explicit utility and value models. They then apply a selection rule and use sensitivity analysis to see whether uncertain probabilities or preference assumptions change the answer. In ML-driven automation, loss or reward supplies the values, while calibration matters when software acts on a predicted probability rather than merely showing it to a person.",
+      "paperLevel": "A basic single-stage model can be written as D = (A, S, p, u), with alternatives a in A, states s in S, probabilities p(s), and values u(a,s); an expected-utility rule selects a* = argmax_a sum_s p(s)u(a,s). Decision trees extend this structure across sequential choices and chance nodes, while influence diagrams and utility models make relationships and preferences explicit. Results depend on the encoded probabilities and values, so misspecification, poor calibration, and sensitivity to inputs remain central limits."
+    },
+    "example": "Suppose rain has probability 0.4 and dry weather 0.6. Carrying an umbrella has value 8 if it rains and 7 if dry, giving 0.4×8 + 0.6×7 = 7.4; leaving it has value 0 if it rains and 10 if dry, giving 6, so an expected-value rule chooses to carry it.",
+    "usedIn": [
+      {
+        "name": "Formal decision analysis",
+        "detail": "Uses matrices, trees, influence diagrams, and value models to compare alternatives under uncertainty.",
+        "url": ""
+      },
+      {
+        "name": "Sequential planning",
+        "detail": "Uses decision trees to represent choices and chance events unfolding over time.",
+        "url": ""
+      },
+      {
+        "name": "Machine-learning automation",
+        "detail": "Uses losses, rewards, and calibrated probabilities when model outputs directly trigger actions.",
+        "url": ""
+      },
+      {
+        "name": "Reinforcement learning",
+        "detail": "Consumes typed answers and their probabilities when learning or making calibrated decisions.",
+        "url": ""
+      }
+    ],
+    "intuition": "A decision model is a map of a choice rather than the rule that makes it. It separates what you control from what you do not, then attaches values to the possible results.",
+    "howItWorks": [
+      "List the available alternatives.",
+      "Identify uncertain states or events outside the decision-maker's control.",
+      "Specify the outcome and value of each alternative-state combination.",
+      "Apply a decision rule to select an alternative.",
+      "Test whether changes in probabilities or values change that selection."
+    ],
+    "whyItMatters": "It makes a recommendation inspectable by exposing the alternatives, uncertainties, and preferences behind it. Sensitivity analysis can then reveal whether the choice is robust or depends on a fragile assumption.",
+    "misconceptions": [
+      "The model is not the decision method; the method operates on the model.",
+      "A precise-looking result does not make uncertain probabilities or subjective values correct.",
+      "A confident ML prediction is not automatically a calibrated probability suitable for automated action."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "alternatives",
+          "label": "Alternatives",
+          "note": "Choices under the decision-maker's control"
+        },
+        {
+          "id": "uncertainties",
+          "label": "States and chances",
+          "note": "Events outside the decision-maker's control"
+        },
+        {
+          "id": "values",
+          "label": "Outcomes and values",
+          "note": "Results and preferences for each combination"
+        },
+        {
+          "id": "rule",
+          "label": "Decision rule",
+          "note": "Combines the model's inputs to compare choices"
+        },
+        {
+          "id": "action",
+          "label": "Selected alternative",
+          "note": "The choice produced by the rule"
+        }
+      ],
+      "edges": [
+        {
+          "from": "alternatives",
+          "to": "rule",
+          "label": "choices"
+        },
+        {
+          "from": "uncertainties",
+          "to": "rule",
+          "label": "likelihoods"
+        },
+        {
+          "from": "values",
+          "to": "rule",
+          "label": "preferences"
+        },
+        {
+          "from": "rule",
+          "to": "action",
+          "label": "selects"
+        }
+      ],
+      "caption": "A decision model supplies choices, uncertainties, and values to a rule that selects an alternative."
+    }
+  },
   "related": [
     "decision-tree",
     "decision-list",

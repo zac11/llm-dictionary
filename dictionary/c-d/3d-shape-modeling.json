@@ -5,6 +5,93 @@
   "type": "concept",
   "definition": "Learning representations that generate or analyze 3D shapes — voxels, meshes, SDFs, point clouds — for graphics and robotics.",
   "details": "Learning representations that generate or analyze 3D shapes — voxels, meshes, SDFs, point clouds — for graphics and robotics.",
+  "explainer": {
+    "lead": "3D shape modeling teaches computers to represent, create, or understand objects in three dimensions. It gives graphics and robotics systems a way to work with shape rather than just flat images.",
+    "tiers": {
+      "eli5": "Think of describing a toy so a computer can build it or recognize it. The description could be a stack of tiny blocks, a collection of dots, or a skin made of small connected pieces. Different descriptions are useful for different jobs, such as making a new toy shape or helping a robot understand one.",
+      "practitioner": "Choose a representation—voxels, meshes, signed distance functions (SDFs), or point clouds—based on whether the task generates shapes or analyzes them. Keep the representation consistent with the downstream graphics or robotics operation, and inspect converted outputs rather than assuming different formats preserve the same information.",
+      "paperLevel": "A model learns parameters theta that map task inputs x either to a 3D representation y or to an analysis result a: y = f_theta(x) for generation and a = g_theta(x) for analysis. The representation may be a voxel grid, mesh, SDF, or point cloud. These representations encode geometry differently, so their suitability depends on the required operation and output."
+    },
+    "example": "A robot receives a point cloud of a cup. A shape-analysis model learns geometric features from those points and produces information about the cup's 3D form, giving the robot a shape-based description to use in its task.",
+    "usedIn": [
+      {
+        "name": "3D graphics",
+        "detail": "Generating or processing object shapes for visual content.",
+        "url": ""
+      },
+      {
+        "name": "Robotics",
+        "detail": "Representing and analyzing object geometry for robot tasks.",
+        "url": ""
+      }
+    ],
+    "intuition": "A computer needs an internal description of an object's geometry before it can create or reason about that object. Voxels, meshes, SDFs, and point clouds are different ways to provide that description.",
+    "howItWorks": [
+      "Provide shape data or another task input to a learning model.",
+      "Learn features that describe three-dimensional geometry.",
+      "Encode the geometry as voxels, a mesh, an SDF, or a point cloud.",
+      "Decode that representation into a new shape, or use it to produce an analysis result.",
+      "Pass the shape or result to a graphics or robotics task."
+    ],
+    "whyItMatters": "It connects learned models to explicit 3D geometry, supporting both shape creation and shape understanding. The choice of representation lets a system match its output to the needs of graphics or robotics.",
+    "misconceptions": [
+      "It is not a single file format; it includes several learned 3D representations.",
+      "A realistic 2D picture of an object is not by itself a 3D shape model.",
+      "Shape generation and shape analysis are different tasks, though they can share representations."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Task input",
+          "note": "Shape data or another generation input"
+        },
+        {
+          "id": "model",
+          "label": "Learning model",
+          "note": "Learns three-dimensional geometric features"
+        },
+        {
+          "id": "representation",
+          "label": "Shape representation",
+          "note": "Voxels, mesh, SDF, or point cloud"
+        },
+        {
+          "id": "generation",
+          "label": "Generated shape",
+          "note": "A 3D output for graphics or robotics"
+        },
+        {
+          "id": "analysis",
+          "label": "Analysis result",
+          "note": "Information derived from object geometry"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "model",
+          "label": ""
+        },
+        {
+          "from": "model",
+          "to": "representation",
+          "label": "encodes"
+        },
+        {
+          "from": "representation",
+          "to": "generation",
+          "label": "decodes"
+        },
+        {
+          "from": "representation",
+          "to": "analysis",
+          "label": "supports"
+        }
+      ],
+      "caption": "A learned shape representation can support either 3D generation or geometric analysis."
+    }
+  },
   "related": [
     "robotics"
   ],

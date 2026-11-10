@@ -5,6 +5,97 @@
   "type": "concept",
   "definition": "Reconstructing signals from far fewer samples than Nyquist requires by exploiting sparsity.",
   "details": "Reconstructing signals from far fewer samples than Nyquist requires by exploiting sparsity. It underlies single-pixel cameras, fast MRI, and learned measurement models.",
+  "explainer": {
+    "lead": "Compressive sensing is a way to recover a signal without recording every sample that conventional sampling rules would require. It works when the signal has a simple, sparse structure, making applications such as faster MRI scans and single-pixel cameras possible.",
+    "tiers": {
+      "eli5": "Imagine finishing a connect-the-dots picture after drawing only some of the dots, because you know the picture contains just a few simple lines. Compressive sensing does something similar with signals: it takes a small set of measurements and uses the fact that most of the signal's ingredients are absent to fill in the rest. This can save time and reduce the amount of data that must be collected.",
+      "practitioner": "An engineer designs measurements of the form y = Phi x, then reconstructs x by searching for a solution that matches y while being sparse in a chosen basis. This is applied to settings such as MRI acquisition and single-pixel imaging, often through an optimization-based reconstruction or a learned measurement model. Reconstruction can degrade when the signal is not sufficiently sparse, the measurements do not capture its structure well, or noise is ignored.",
+      "paperLevel": "Let x be a signal with a sparse representation s, where x = Psi s and most entries of s are zero. Compressive sensing recovers x from m measurements y = Phi x + e, with m smaller than the signal length, commonly by minimizing ||s||_1 subject to a constraint that Phi Psi s agrees with y up to the noise level. Recovery depends on sparsity and suitable measurement structure; it is not guaranteed for arbitrary signals or arbitrary undersampling."
+    },
+    "example": "In MRI, a scanner can collect fewer measurements than a fully sampled scan would use. Reconstruction then looks for an image that matches those measurements while having a sparse representation, allowing an image to be recovered from the reduced acquisition.",
+    "usedIn": [
+      {
+        "name": "Single-pixel cameras",
+        "detail": "Use a small set of measurements and signal sparsity to reconstruct an image with one detector.",
+        "url": ""
+      },
+      {
+        "name": "Fast MRI",
+        "detail": "Reduce the measurements collected during a scan, then reconstruct the image using its sparse structure.",
+        "url": ""
+      },
+      {
+        "name": "Learned measurement models",
+        "detail": "Use learned models within the broader approach of acquiring limited measurements and reconstructing structured signals.",
+        "url": ""
+      }
+    ],
+    "intuition": "A sparse signal has only a few important components, even if its full sample representation is large. Carefully chosen measurements can therefore contain enough clues to identify those components without sampling the signal at the full Nyquist rate.",
+    "howItWorks": [
+      "Identify a basis or representation in which the signal has only a few significant components.",
+      "Collect a reduced set of measurements rather than all conventionally required samples.",
+      "Search for a sparse signal that agrees with those measurements.",
+      "Convert the recovered sparse representation back into the signal or image."
+    ],
+    "whyItMatters": "It can reduce acquisition time and the amount of measured data while still producing a useful reconstruction. That trade-off is especially valuable when measurements are slow or costly to obtain, as in MRI.",
+    "misconceptions": [
+      "It does not make the Nyquist limit irrelevant for every signal; the reconstruction relies on structure such as sparsity.",
+      "Taking arbitrary missing samples is not enough; the measurements and reconstruction method must suit the signal.",
+      "A sparse-looking result is not necessarily correct, especially when measurements are noisy or the sparsity assumption is weak."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "signal",
+          "label": "Sparse signal",
+          "note": "Only a few components matter."
+        },
+        {
+          "id": "measure",
+          "label": "Measurement system",
+          "note": "Collects a reduced set of observations."
+        },
+        {
+          "id": "samples",
+          "label": "Few measurements",
+          "note": "Less data than conventional sampling."
+        },
+        {
+          "id": "recover",
+          "label": "Sparse reconstruction",
+          "note": "Finds a sparse match to the observations."
+        },
+        {
+          "id": "output",
+          "label": "Recovered signal",
+          "note": "The reconstructed signal or image."
+        }
+      ],
+      "edges": [
+        {
+          "from": "signal",
+          "to": "measure",
+          "label": "measured"
+        },
+        {
+          "from": "measure",
+          "to": "samples",
+          "label": "produces"
+        },
+        {
+          "from": "samples",
+          "to": "recover",
+          "label": "constrains"
+        },
+        {
+          "from": "recover",
+          "to": "output",
+          "label": "reconstructs"
+        }
+      ],
+      "caption": "Compressive sensing replaces dense sampling with limited measurements followed by sparsity-guided reconstruction."
+    }
+  },
   "citation": {
     "title": "Compressive Sensing",
     "authors": [],

@@ -5,6 +5,107 @@
   "type": "concept",
   "definition": "Treating network weights as distributions rather than point estimates, so predictions come with principled uncertainty.",
   "details": "Treating network weights as distributions rather than point estimates, so predictions come with principled uncertainty. Exact posteriors are intractable at scale, so the practice lives in approximations: variational methods, SWAG, Laplace, and the pragmatic stand-ins below.",
+  "explainer": {
+    "lead": "Bayesian deep learning treats a neural network’s weights as a range of plausible values rather than one fixed answer. This lets predictions reflect uncertainty, which is useful when knowing how sure a model is matters as much as the prediction itself.",
+    "tiers": {
+      "eli5": "Instead of settling on one value for each setting inside a model, it keeps a range of plausible values. That way the model can say how sure it is, not just give an answer.",
+      "practitioner": "Exact posteriors are intractable at scale, so engineers work through approximations such as variational methods, SWAG and Laplace, plus pragmatic stand-ins. The pitfall is forgetting that the uncertainty you get is only as good as the approximation behind it.",
+      "paperLevel": "Weights are treated as distributions rather than point estimates, yielding predictions with principled uncertainty; exact posteriors are intractable at scale, so practice relies on approximations including variational methods, SWAG and Laplace. The stated limit is tractability, not the approximation methods' accuracy."
+    },
+    "example": "For a blurry animal photo, a Bayesian image classifier combines predictions from many plausible weight settings. If those settings mostly favour cat but some favour dog, the output might be 70% cat and 30% dog, exposing uncertainty that a single confident cat prediction would hide.",
+    "intuition": "Many different weight settings may explain the training data reasonably well. Keeping that range of possibilities, instead of selecting only one setting, allows their disagreement to appear as uncertainty in predictions.",
+    "howItWorks": [
+      "Represent network weights with probability distributions rather than single point estimates.",
+      "Use the observed data to update beliefs about which weight values are plausible, forming a posterior distribution.",
+      "Approximate this posterior with methods such as variational inference, SWAG, or Laplace when exact computation is intractable.",
+      "Combine predictions across plausible weights to obtain a predictive distribution rather than only a single output."
+    ],
+    "whyItMatters": "It gives neural networks a principled way to express uncertainty alongside predictions. That can make ambiguous or unfamiliar inputs visible instead of hiding them behind one point estimate.",
+    "misconceptions": [
+      "It does not make exact Bayesian inference practical for large networks; scalable implementations rely on approximations.",
+      "A predictive distribution is not automatically accurate or well calibrated just because it was produced by a Bayesian method.",
+      "SWAG and Laplace approximations are practical ways to approximate weight uncertainty, not exact posterior computations."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data",
+          "label": "Observed data",
+          "note": "Training examples inform plausible weights."
+        },
+        {
+          "id": "weights",
+          "label": "Weight distributions",
+          "note": "Weights represent ranges of plausible values."
+        },
+        {
+          "id": "posterior",
+          "label": "Weight posterior",
+          "note": "Exact posterior computation is intractable at scale."
+        },
+        {
+          "id": "approximation",
+          "label": "Posterior approximation",
+          "note": "Variational methods, SWAG, or Laplace approximate the posterior."
+        },
+        {
+          "id": "predictions",
+          "label": "Combined predictions",
+          "note": "Predictions are combined across plausible weights."
+        },
+        {
+          "id": "uncertainty",
+          "label": "Predictive uncertainty",
+          "note": "The output includes a predictive distribution."
+        }
+      ],
+      "edges": [
+        {
+          "from": "data",
+          "to": "weights",
+          "label": "updates"
+        },
+        {
+          "from": "weights",
+          "to": "posterior",
+          "label": "defines"
+        },
+        {
+          "from": "posterior",
+          "to": "approximation",
+          "label": "approximated by"
+        },
+        {
+          "from": "approximation",
+          "to": "predictions",
+          "label": "samples weights"
+        },
+        {
+          "from": "predictions",
+          "to": "uncertainty",
+          "label": "produces"
+        }
+      ],
+      "caption": "Bayesian deep learning approximates a distribution over weights and combines their predictions to express uncertainty."
+    },
+    "usedIn": [
+      {
+        "name": "Uncertainty estimation",
+        "detail": "distributional weights",
+        "url": ""
+      },
+      {
+        "name": "Variational methods",
+        "detail": "posterior approximation",
+        "url": ""
+      },
+      {
+        "name": "Laplace approximation",
+        "detail": "practical stand-in",
+        "url": ""
+      }
+    ]
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

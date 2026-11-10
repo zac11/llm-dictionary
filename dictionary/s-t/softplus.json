@@ -5,7 +5,32 @@
   "type": "concept",
   "definition": "In mathematics and machine learning, the softplus function is f ( x ) = ln ⁡ ( 1 + e x ) .",
   "details": "{\\displaystyle f(x)=\\ln(1+e^{x}).} It is a smooth approximation (in fact, an analytic function) to the ramp function, which is known as the rectifier or ReLU (rectified linear unit) in machine learning. For large negative x {\\displaystyle x} it is ln ⁡ ( 1 + e x ) = ln ⁡ ( 1 + ϵ ) ⪆ ln ⁡ 1 = 0 {\\displaystyle \\ln(1+e^{x})=\\ln(1+\\epsilon )\\gtrapprox \\ln 1=0} , so just above 0, while for large positive x {\\displaystyle x} it is ln ⁡ ( 1 + e x ) ⪆ ln ⁡ ( e x ) = x {\\displaystyle \\ln(1+e^{x})\\gtrapprox \\ln(e^{x})=x} , so just above x {\\displaystyle x} . The names softplus and SmoothReLU are used in machine learning. The name \"softplus\" (2000), by analogy with the earlier softmax (1989) is presumably because it is a smooth (soft) approximation of the positive part of x, which is sometimes denoted with a superscript plus, x + := max ( 0 , x ) {\\displaystyle x^{+}:=\\max(0,x)} .",
-  "story": "Imagine a factory floor where each workstation can glance at every other workstation before doing its part. It is the blueprint that makes everything else possible. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. Structure decides what the model can even express — the blueprint before the bricks. And that shape of the machine — Softplus — is what makes everything else possible.",
+  "explainer": {
+    "lead": "Softplus is a smooth, analytic activation function, f(x) = ln(1 + e^x), that approximates the ReLU ramp. Its smoothness matters where a differentiable, non-zero-gradient alternative to ReLU is wanted.",
+    "tiers": {
+      "eli5": "It behaves like a flat line below zero and a straight rising line above it, but bends smoothly instead of having a sharp corner.",
+      "practitioner": "Engineers use softplus as a smooth stand-in for ReLU when a differentiable activation is needed. A pitfall: computing e^x directly can overflow for large positive x, so implementations use a numerically stable form.",
+      "paperLevel": "Formally, f(x) = ln(1 + e^x). It is a smooth (analytic) approximation to the rectifier or ReLU: for large negative x it is just above 0, and for large positive x it approaches x."
+    },
+    "example": "For x = 0, softplus gives ln(1 + e^0) = ln 2, roughly 0.693; for large positive x the output approaches x itself, and for large negative x it approaches 0.",
+    "usedIn": [
+      {
+        "name": "Neural network activations",
+        "detail": "smooth ReLU substitute",
+        "url": ""
+      },
+      {
+        "name": "Probability modelling",
+        "detail": "positive outputs",
+        "url": ""
+      },
+      {
+        "name": "Deep learning libraries",
+        "detail": "standard activation function",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "ablation-artificial-intelligence",
     "adaline",

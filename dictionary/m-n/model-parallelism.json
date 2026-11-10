@@ -5,7 +5,32 @@
   "type": "concept",
   "definition": "A distributed training approach that splits a single model's layers or parameters across multiple devices, since the model is too large to fit on one device.",
   "details": "Model parallelism is essential for training today's largest LLMs, whose parameter counts far exceed the memory capacity of any single GPU.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. And that is Model Parallelism — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "Model parallelism splits a single model's layers or parameters across multiple devices because the model does not fit on one. It is what makes training today's largest LLMs possible, since their parameter counts exceed any single GPU's memory.",
+    "tiers": {
+      "eli5": "It is like assembling a huge puzzle by having each friend hold a different section of it, since the whole thing will not fit on one table.",
+      "practitioner": "Engineers shard layers across devices so oversized models can be trained at all. A pitfall is communication overhead between devices, which can leave hardware underused if the split creates too much cross-device traffic.",
+      "paperLevel": "Model parallelism partitions a model's layers or parameters across devices; its efficiency is bounded by inter-device communication cost relative to computation. Known limits: it addresses memory capacity, not necessarily throughput, and communication becomes the bottleneck at large split counts."
+    },
+    "example": "A model too large for one GPU is split so each device holds a subset of layers, and activations pass between devices during the forward and backward passes.",
+    "usedIn": [
+      {
+        "name": "Large LLM training",
+        "detail": "memory-capacity scaling",
+        "url": ""
+      },
+      {
+        "name": "Layer sharding",
+        "detail": "cross-device partitioning",
+        "url": ""
+      },
+      {
+        "name": "Multi-GPU clusters",
+        "detail": "distributed training",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "cascade-model-cascade",
     "data-parallelism",

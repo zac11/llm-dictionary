@@ -5,7 +5,97 @@
   "type": "concept",
   "definition": "Chinese speech synthesis is the application of speech synthesis to the Chinese language (usually Standard Chinese).",
   "details": "It poses additional difficulties due to Chinese characters frequently having different pronunciations in different contexts and the complex prosody, which is essential to convey the meaning of words, and sometimes the difficulty in obtaining agreement among native speakers concerning what the correct pronunciation is of certain phonemes.",
-  "story": "Imagine learning a language by reading every book in the library and noticing, over time, which words travel together. It does not memorize a rulebook; it absorbs a library. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It is fluency built from pattern, not from memorized rules. That pattern-earned fluency is Chinese speech synthesis.",
+  "explainer": {
+    "lead": "Chinese speech synthesis turns written Chinese, usually Standard Chinese, into spoken audio. It must choose the right pronunciation for each context and produce suitable prosody, because both can affect what listeners understand.",
+    "tiers": {
+      "eli5": "It is like teaching a computer to read Chinese aloud. Some written characters can be said in more than one way, so the computer has to look at the surrounding words, just as you would. It also needs the right rise and fall in speech, or the result can sound wrong or change the meaning.",
+      "practitioner": "A typical pipeline analyzes the surrounding text before selecting pronunciations, then models prosody and generates audio. Context-dependent character pronunciations and prosody require particular attention, and evaluation can be complicated when native speakers disagree about the correct pronunciation of a phoneme.",
+      "paperLevel": "Chinese speech synthesis can be described as learning or specifying a mapping f(text, context) -> speech waveform for Chinese, usually Standard Chinese. Its language-specific difficulties include context-dependent character pronunciations, complex meaning-bearing prosody, and occasional disagreement among native speakers about phoneme pronunciation."
+    },
+    "example": "The character 行 is pronounced háng in 银行 (“bank”) but xíng in 行走 (“walk”). A synthesizer uses the surrounding characters to select the appropriate reading before generating the speech with suitable prosody.",
+    "usedIn": [
+      {
+        "name": "Screen readers",
+        "detail": "Read Chinese digital text aloud, requiring context-sensitive pronunciation.",
+        "url": ""
+      },
+      {
+        "name": "Voice assistants",
+        "detail": "Produce spoken Chinese responses with intelligible pronunciation and prosody.",
+        "url": ""
+      },
+      {
+        "name": "Navigation systems",
+        "detail": "Speak Chinese directions and place names as audio.",
+        "url": ""
+      }
+    ],
+    "intuition": "Reading Chinese aloud is not simply assigning one fixed sound to every character. A synthesizer must interpret the context and shape the speech so that pronunciation and prosody communicate the intended words.",
+    "howItWorks": [
+      "Take written Chinese text as input.",
+      "Use surrounding context to choose pronunciations for characters.",
+      "Determine the prosody needed for the utterance.",
+      "Generate spoken audio from those linguistic choices."
+    ],
+    "whyItMatters": "These choices determine whether synthesized Chinese is understandable and conveys the intended meaning. They make Chinese synthesis more demanding than mechanically attaching a single stored pronunciation to each character.",
+    "misconceptions": [
+      "Each Chinese character does not always have just one pronunciation.",
+      "Choosing individual sounds correctly is not enough; prosody also matters.",
+      "Native speakers do not always agree on the correct pronunciation of certain phonemes."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "text",
+          "label": "Chinese text",
+          "note": "Written input, usually Standard Chinese."
+        },
+        {
+          "id": "context",
+          "label": "Context analysis",
+          "note": "Examines surrounding text."
+        },
+        {
+          "id": "pronunciation",
+          "label": "Pronunciation choices",
+          "note": "Selects context-appropriate readings."
+        },
+        {
+          "id": "prosody",
+          "label": "Prosody modeling",
+          "note": "Shapes meaning-bearing speech patterns."
+        },
+        {
+          "id": "audio",
+          "label": "Spoken audio",
+          "note": "The synthesized utterance."
+        }
+      ],
+      "edges": [
+        {
+          "from": "text",
+          "to": "context",
+          "label": "input"
+        },
+        {
+          "from": "context",
+          "to": "pronunciation",
+          "label": "readings"
+        },
+        {
+          "from": "pronunciation",
+          "to": "prosody",
+          "label": "sounds"
+        },
+        {
+          "from": "prosody",
+          "to": "audio",
+          "label": "synthesis"
+        }
+      ],
+      "caption": "Written Chinese passes through contextual pronunciation and prosody decisions before becoming speech."
+    }
+  },
   "related": [
     "speech-synthesis",
     "deep-learning-speech-synthesis",

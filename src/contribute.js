@@ -183,7 +183,7 @@ export function buildIssueBody(terms) {
     '',
     '- [ ] `npm run graph:check` passes (slugs, letter folders, related targets)',
     '- [ ] Type, category and citation look right',
-    '- [ ] Optionally generate a story (`npm run stories`)',
+    '- [ ] Generate its explainer (`node scripts/generate-explainers.mjs --only <slug>`)',
   ].join('\n');
 }
 
@@ -219,7 +219,7 @@ const FIELDS = [
     label: 'Type (what kind of thing it is)',
     select: true,
     options: TYPE_OPTIONS,
-    help: 'People get a profile spread, events get coverage, everything else keeps its story.',
+    help: 'People get a profile spread, events get coverage, everything else gets a layered explainer.',
   },
   { name: 'aka', label: 'Also known as (comma-separated)', placeholder: 'MoE' },
   { name: 'definition', label: 'Definition (one sentence)', required: true, textarea: true, rows: 2 },

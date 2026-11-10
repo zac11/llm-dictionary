@@ -5,7 +5,98 @@
   "type": "concept",
   "definition": "A prompt formulated around explicit guiding principles used to instruct a model (or an evaluator model) on how to critique or judge outputs according to those principles.",
   "details": "Constitutional prompts operationalize written principles (as in Constitutional AI) into concrete instructions a model can use for self-critique or evaluation, forming a building block of principle-based training pipelines.",
-  "story": "Picture a parachute packed by a second pair of hands: nobody plans to need it, but everyone is glad it was checked. The idea is simple: before something powerful is let loose, someone checks that it will not do real harm to real people. It is the habit of asking, before every launch, what could go wrong — and then doing something about it. Caution is not the enemy of progress — it is the reason progress gets to keep going. That deliberate caution is Constitutional Prompt.",
+  "explainer": {
+    "lead": "A constitutional prompt turns written principles into concrete instructions for critiquing or judging an AI output. It gives a model an explicit standard to apply, making principle-based self-critique and evaluation more consistent.",
+    "tiers": {
+      "eli5": "Imagine giving someone a checklist of classroom rules before asking them to review a friend's work. A constitutional prompt is like that checklist: it tells an AI which rules to use when checking an answer. The AI can then point out problems, suggest a better answer, or give a judgment based on those rules.",
+      "practitioner": "Write a prompt that combines the relevant principles with a clear request to critique or judge, then supply the candidate output and its context. The same model can use it for self-critique and revision, or a separate evaluator model can use it for scoring or comparison. Vague or conflicting principles can produce inconsistent reviews, and following the prompt does not guarantee that the resulting judgment is correct.",
+      "paperLevel": "Let C be a set of written principles and P(C) a prompt that operationalizes them. Given input x and candidate output y, a model or evaluator computes M(P(C), x, y), producing a critique or judgment and, in a self-critique pipeline, optionally a revised output y'. This is a building block of Constitutional AI-style principle-based training; its judgments remain dependent on the principles, their interpretation, and the model's capabilities, so principle adherence and factual correctness are not guaranteed."
+    },
+    "example": "Suppose the principle is “Do not reveal private personal information,” and a draft answer to a request for a neighbor's phone number provides that number. A constitutional prompt asks the model to critique the draft under this principle; the critique flags the privacy violation, and the revised answer declines to share the number and suggests asking the neighbor to make contact directly.",
+    "usedIn": [
+      {
+        "name": "Constitutional AI",
+        "detail": "Written principles are converted into instructions that support principle-based model self-critique.",
+        "url": ""
+      },
+      {
+        "name": "Model self-critique",
+        "detail": "A model reviews its own draft against explicit principles and uses the critique to revise it.",
+        "url": ""
+      },
+      {
+        "name": "LLM-based evaluation",
+        "detail": "An evaluator model judges candidate outputs according to principles stated in the prompt.",
+        "url": ""
+      }
+    ],
+    "intuition": "A broad value such as “respect privacy” becomes useful for review when it is turned into an explicit instruction the model can apply. The constitutional prompt supplies that instruction, so the model does not have to infer the intended standard from scratch.",
+    "howItWorks": [
+      "Start with written principles describing how outputs should be judged.",
+      "Formulate a prompt that tells the model to apply those principles to a candidate output.",
+      "Provide the output, usually together with the request or context that produced it.",
+      "Have the model produce a principle-based critique or evaluation.",
+      "In a self-critique pipeline, use the critique to revise the output or support further training."
+    ],
+    "whyItMatters": "Constitutional prompts connect abstract principles to concrete model behavior. They provide a reusable mechanism for self-critique and evaluation within principle-based training pipelines.",
+    "misconceptions": [
+      "It is not the set of principles itself; it is the prompt that instructs a model to apply them.",
+      "It does not guarantee a safe, fair, or factually correct output.",
+      "It can guide an evaluator model as well as a model reviewing its own work."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "principles",
+          "label": "Written principles",
+          "note": "The standards an output should satisfy"
+        },
+        {
+          "id": "prompt",
+          "label": "Constitutional prompt",
+          "note": "Instructions for applying the principles"
+        },
+        {
+          "id": "draft",
+          "label": "Candidate output",
+          "note": "The draft or response being reviewed"
+        },
+        {
+          "id": "review",
+          "label": "Critique or judgment",
+          "note": "A model's principle-based assessment"
+        },
+        {
+          "id": "revision",
+          "label": "Revised output",
+          "note": "An optional response informed by the critique"
+        }
+      ],
+      "edges": [
+        {
+          "from": "principles",
+          "to": "prompt",
+          "label": "operationalized as"
+        },
+        {
+          "from": "prompt",
+          "to": "review",
+          "label": "guides"
+        },
+        {
+          "from": "draft",
+          "to": "review",
+          "label": "reviewed"
+        },
+        {
+          "from": "review",
+          "to": "revision",
+          "label": "informs"
+        }
+      ],
+      "caption": "Written principles become review instructions, which a model applies to a candidate output before judging or revising it."
+    }
+  },
   "related": [
     "constitutional-classifier",
     "constitutional-reward-model",

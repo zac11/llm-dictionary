@@ -5,7 +5,113 @@
   "type": "concept",
   "definition": "A numerical value computed in an attention mechanism that represents how much focus one token should place on another when constructing its representation.",
   "details": "Attention scores are computed from the dot product of query and key vectors (typically scaled and passed through a softmax), and determine the weighted combination of value vectors used to update each token's representation.",
-  "story": "Imagine a driving test that every new model has to pass before it is allowed on the road. It is the exam that separates “it sounds good” from “it actually is good”. A fair scoreboard keeps everyone honest. It is the exam that keeps everyone honest. That shared ruler is Attention Score.",
+  "explainer": {
+    "lead": "An attention score helps a model decide which other tokens matter when it builds a token's representation. Higher scores give more weight to those tokens' value vectors, so the representation can draw on the most relevant parts of the sequence.",
+    "tiers": {
+      "eli5": "Imagine answering a question by looking at several clues and deciding which clue deserves the most attention. An attention score is like giving each clue a number for how useful it is. The model then mixes the clues together, using more of the clues with higher numbers.",
+      "practitioner": "Attention scores are computed from query-key dot products, normally scaled and normalized with softmax. The resulting weights are applied to the value vectors to produce each token's updated representation. Watch the scaling and normalization: without them, the weighted combination no longer follows the intended computation.",
+      "paperLevel": "For query q and keys k_i, the unnormalized score is e_i = q · k_i. After scaling and softmax, a_i = exp(e_i) / sum_j exp(e_j), and the updated representation is sum_i a_i v_i, where v_i are the value vectors. The scores are relative weights within this operation, not standalone measures of importance outside it."
+    },
+    "example": "Suppose the token \"it\" attends to \"cat\" and \"mat\", and scaling plus softmax produces scores of 0.8 and 0.2. Its update is 0.8 times the value vector for \"cat\" plus 0.2 times the value vector for \"mat\", so \"cat\" contributes four times as much.",
+    "usedIn": [
+      {
+        "name": "Language models",
+        "detail": "Scores weight other tokens when constructing each token's representation.",
+        "url": ""
+      },
+      {
+        "name": "Attention mechanisms",
+        "detail": "They provide the normalized weights used to combine value vectors.",
+        "url": ""
+      }
+    ],
+    "intuition": "A token forms its new representation by asking which tokens it should draw from. Attention scores turn those comparisons into weights, giving relevant tokens a larger share of the final mixture.",
+    "howItWorks": [
+      "Form a query vector for the token being updated and key vectors for the tokens it can attend to.",
+      "Take the dot product of the query with each key.",
+      "Scale the resulting values and apply softmax to obtain normalized attention scores.",
+      "Multiply each value vector by its attention score.",
+      "Add the weighted value vectors to form the token's updated representation."
+    ],
+    "whyItMatters": "Attention scores make token updates selective rather than treating every available token equally. They directly control how information from value vectors is mixed into each representation.",
+    "misconceptions": [
+      "An attention score is not the updated representation; it is a weight used to compute that representation.",
+      "A softmax-normalized score is not a guarantee that the attended token is important for the model's final output.",
+      "Scores are not fixed token properties; they depend on the current query and key vectors."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "vectors",
+          "label": "Query and keys",
+          "note": "Vectors for the token and its candidates"
+        },
+        {
+          "id": "dot",
+          "label": "Dot products",
+          "note": "Compare the query with each key"
+        },
+        {
+          "id": "scale",
+          "label": "Scale",
+          "note": "Adjust the computed values"
+        },
+        {
+          "id": "softmax",
+          "label": "Softmax",
+          "note": "Normalize values into attention scores"
+        },
+        {
+          "id": "values",
+          "label": "Value vectors",
+          "note": "Information available from each token"
+        },
+        {
+          "id": "mix",
+          "label": "Weighted sum",
+          "note": "Combine values using the scores"
+        },
+        {
+          "id": "output",
+          "label": "Updated representation",
+          "note": "The token's attention-based result"
+        }
+      ],
+      "edges": [
+        {
+          "from": "vectors",
+          "to": "dot",
+          "label": ""
+        },
+        {
+          "from": "dot",
+          "to": "scale",
+          "label": ""
+        },
+        {
+          "from": "scale",
+          "to": "softmax",
+          "label": ""
+        },
+        {
+          "from": "softmax",
+          "to": "mix",
+          "label": "scores"
+        },
+        {
+          "from": "values",
+          "to": "mix",
+          "label": "values"
+        },
+        {
+          "from": "mix",
+          "to": "output",
+          "label": ""
+        }
+      ],
+      "caption": "Query-key comparisons become attention scores, which weight value vectors in the token's updated representation."
+    }
+  },
   "related": [
     "attention",
     "sliding-window-attention",

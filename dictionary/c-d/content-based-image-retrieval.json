@@ -5,7 +5,123 @@
   "type": "concept",
   "definition": "Content-based image retrieval, also known as query by image content (QBIC) and content-based visual information retrieval (CBVIR), is the application of computer vision techniques to the image retrieval problem, that is, the problem of searching for digital images in large databases (see this survey for a scientific overview of the CBIR field).",
   "details": "Content-based image retrieval is opposed to traditional concept-based approaches (see Concept-based image indexing). \"Content-based\" means that the search analyzes the contents of the image rather than the metadata such as keywords, tags, or descriptions associated with the image. The term \"content\" in this context might refer to colors, shapes, textures, or any other information that can be derived from the image itself. CBIR is desirable because searches that rely purely on metadata are dependent on annotation quality and completeness.",
-  "story": "Picture walking through a crowd and instantly picking out a familiar face without reading a single name tag. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. It turns a picture into an understanding: this is a cat, that is a stop sign. Sight, for a machine, is a long climb from raw light to a name. And that is Content-based image retrieval — giving a machine the gift of sight.",
+  "explainer": {
+    "lead": "Content-based image retrieval (CBIR) finds images by examining what is in the pictures themselves, such as their colors, shapes, or textures. It lets people search large image collections without depending on accurate or complete keywords and descriptions.",
+    "tiers": {
+      "eli5": "Imagine finding every photo with a red ball by looking at the photos, instead of reading labels attached to them. CBIR works similarly: a computer examines the pictures and looks for ones with similar visual content. This can help even when nobody has written descriptions for the images.",
+      "practitioner": "A retrieval pipeline derives visual representations such as color, shape, or texture information from database images, then derives comparable information from a query image. It compares those representations to return matching images, avoiding reliance on manual annotation. The choice of represented content matters: a system focused on color, for example, need not capture similarities based on shape or texture.",
+      "paperLevel": "Given an image database D and a query image q, CBIR derives content-based representations from the images and retrieves members of D whose visual content matches q. The representations may describe colors, shapes, textures, or other information derived from the image itself, in contrast to concept-based retrieval over metadata. Metadata-only retrieval is limited by annotation quality and completeness."
+    },
+    "example": "A user supplies a photo dominated by blue and containing a round shape. The system derives color and shape information, compares it with database images, and returns visually similar images even if those images have no written captions.",
+    "usedIn": [
+      {
+        "name": "Digital image databases",
+        "detail": "Searching large collections for images that visually match a query image.",
+        "url": ""
+      },
+      {
+        "name": "Computer vision",
+        "detail": "Applying visual analysis techniques to the image retrieval problem.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of asking what words someone attached to an image, ask what the image itself looks like. CBIR turns visible properties into searchable information and uses them to find similar images.",
+    "howItWorks": [
+      "Analyze database images to derive visual information such as colors, shapes, or textures.",
+      "Store those content-based representations so the images can be searched.",
+      "Analyze a query image in the same way.",
+      "Compare the query representation with the database representations.",
+      "Return images whose visual content matches the query."
+    ],
+    "whyItMatters": "CBIR makes large image collections searchable through their visual content rather than only through human-written metadata. It therefore avoids making retrieval entirely dependent on annotation quality and completeness.",
+    "misconceptions": [
+      "CBIR is not keyword search: it analyzes image content rather than associated metadata.",
+      "QBIC and CBVIR are not separate approaches here; both are alternative names for content-based image retrieval.",
+      "Content-based search does not require every image to have a complete written description."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "database",
+          "label": "Image database",
+          "note": "The collection of digital images."
+        },
+        {
+          "id": "db-analysis",
+          "label": "Database image analysis",
+          "note": "Derives visual content from stored images."
+        },
+        {
+          "id": "db-features",
+          "label": "Stored visual features",
+          "note": "Searchable color, shape, or texture information."
+        },
+        {
+          "id": "query",
+          "label": "Query image",
+          "note": "The image supplied as the search."
+        },
+        {
+          "id": "query-analysis",
+          "label": "Query image analysis",
+          "note": "Derives comparable visual content from the query."
+        },
+        {
+          "id": "query-features",
+          "label": "Query visual features",
+          "note": "The query's content-based representation."
+        },
+        {
+          "id": "compare",
+          "label": "Visual comparison",
+          "note": "Compares query and database representations."
+        },
+        {
+          "id": "results",
+          "label": "Retrieved images",
+          "note": "Images returned as visual matches."
+        }
+      ],
+      "edges": [
+        {
+          "from": "database",
+          "to": "db-analysis",
+          "label": ""
+        },
+        {
+          "from": "db-analysis",
+          "to": "db-features",
+          "label": ""
+        },
+        {
+          "from": "query",
+          "to": "query-analysis",
+          "label": ""
+        },
+        {
+          "from": "query-analysis",
+          "to": "query-features",
+          "label": ""
+        },
+        {
+          "from": "db-features",
+          "to": "compare",
+          "label": ""
+        },
+        {
+          "from": "query-features",
+          "to": "compare",
+          "label": ""
+        },
+        {
+          "from": "compare",
+          "to": "results",
+          "label": "matches"
+        }
+      ],
+      "caption": "CBIR represents both stored images and a query image by their visual content, then compares those representations to retrieve matches."
+    }
+  },
   "related": [
     "ai-generated-content-in-american-politics",
     "ai-generated-violent-extremist-content",

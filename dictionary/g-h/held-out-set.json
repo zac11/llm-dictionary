@@ -5,7 +5,123 @@
   "type": "concept",
   "definition": "A portion of data deliberately excluded from training and used exclusively for evaluating a model's generalization performance.",
   "details": "Held-out sets (a broader term encompassing validation and test sets) are fundamental to honest machine learning evaluation, providing a check against a model simply memorizing its training data.",
-  "story": "Think of a referee whose job is to be completely honest about who touched the ball last. Before trusting a machine, someone has to measure how good it really is — fairly and honestly. It is the exam that separates “it sounds good” from “it actually is good”. What gets measured is what actually gets better. That shared ruler is Held-Out Set.",
+  "explainer": {
+    "lead": "A held-out set is data kept aside while a model learns, so it can later be tested on examples it has not trained on. This makes its evaluation a more honest check of whether it can handle new data rather than merely remember old examples.",
+    "tiers": {
+      "eli5": "Imagine practising for a quiz with one stack of questions and saving another stack for a practice test. If you do well only on the first stack, you may have memorized the answers instead of learning the subject. Held-out data is that saved stack of questions.",
+      "practitioner": "Split the available data before fitting, keeping validation data for choices such as hyperparameters and early stopping, and test data for the final evaluation. Once model choices have been guided by the test set, it is no longer a clean final check; leakage or non-representative splits can also make results misleading.",
+      "paperLevel": "Given a dataset D, construct disjoint subsets D_train and D_heldout, fit the model using D_train, and estimate generalization with R_heldout = (1/n) sum_(x,y in D_heldout) L(f(x), y). Validation and test sets are both held-out sets, but validation estimates used for model selection can become optimistically biased through repeated adaptive use. A finite held-out estimate also depends on how well its examples represent the data on which generalization is being assessed."
+    },
+    "example": "For 10,000 labelled emails, use 8,000 for training, 1,000 for choosing model settings, and keep 1,000 as a final test set. If the chosen filter is correct on 920 of those test emails, its held-out accuracy is 92%.",
+    "usedIn": [
+      {
+        "name": "Image classification",
+        "detail": "Unseen images provide a check that a classifier recognizes new examples rather than memorizing its training pictures.",
+        "url": ""
+      },
+      {
+        "name": "Spam filtering",
+        "detail": "Held-out emails help estimate how a filter will perform on messages it did not learn from.",
+        "url": ""
+      },
+      {
+        "name": "Speech recognition",
+        "detail": "Reserved recordings are used to evaluate recognition beyond the training audio.",
+        "url": ""
+      },
+      {
+        "name": "Medical prediction",
+        "detail": "Held-out cases provide a separate evaluation of predictions made from patient data.",
+        "url": ""
+      }
+    ],
+    "intuition": "A model can look impressive by memorizing answers to examples it has already seen. Keeping some examples out of training creates a fairer rehearsal for encountering new data.",
+    "howItWorks": [
+      "Separate part of the dataset before training.",
+      "Train the model only on the remaining data.",
+      "Use validation data to compare settings and select a model.",
+      "Evaluate the selected model on untouched test data.",
+      "Report its held-out performance as a generalization check."
+    ],
+    "whyItMatters": "Held-out evaluation exposes the gap between memorizing training examples and performing well on unseen ones. Without it, reported performance can give an unjustifiably rosy picture of a model.",
+    "misconceptions": [
+      "Held-out data is not extra training data to save for later.",
+      "A validation set guides choices; a test set gives the final evaluation.",
+      "Repeatedly tuning against the test set gradually makes it part of model selection."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "dataset",
+          "label": "Labelled dataset",
+          "note": "All available examples before the split."
+        },
+        {
+          "id": "train",
+          "label": "Training set",
+          "note": "Examples used to fit the model."
+        },
+        {
+          "id": "validation",
+          "label": "Validation set",
+          "note": "Held-out examples used for model selection."
+        },
+        {
+          "id": "test",
+          "label": "Test set",
+          "note": "Held-out examples reserved for final evaluation."
+        },
+        {
+          "id": "model",
+          "label": "Trained model",
+          "note": "The fitted model and its selected settings."
+        },
+        {
+          "id": "score",
+          "label": "Generalization estimate",
+          "note": "Performance measured on unseen test examples."
+        }
+      ],
+      "edges": [
+        {
+          "from": "dataset",
+          "to": "train",
+          "label": "fit"
+        },
+        {
+          "from": "dataset",
+          "to": "validation",
+          "label": "select"
+        },
+        {
+          "from": "dataset",
+          "to": "test",
+          "label": "reserve"
+        },
+        {
+          "from": "train",
+          "to": "model",
+          "label": ""
+        },
+        {
+          "from": "validation",
+          "to": "model",
+          "label": "settings"
+        },
+        {
+          "from": "model",
+          "to": "score",
+          "label": "predict"
+        },
+        {
+          "from": "test",
+          "to": "score",
+          "label": "evaluate"
+        }
+      ],
+      "caption": "Training fits the model, validation guides its selection, and the untouched test set supports the final generalization estimate."
+    }
+  },
   "related": [
     "a-b-testing",
     "ablation-study",

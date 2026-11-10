@@ -10,7 +10,32 @@
   ],
   "definition": "A positional encoding method that encodes relative position information by multiplying query and key representations by a rotation matrix.",
   "details": "RoPE combines the benefits of absolute positional encodings and relative positional encodings by implementing position information directly via complex rotation, showing decay across token distance and supporting dynamic context length scaling.",
-  "story": "Think of an orchestra warming up: no single instrument carries the piece, but together they make the sound. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. The layout decides what the machine can even attempt, before it learns a single thing. The shape of the machine is half the idea. That blueprint is Rotary Position Embedding.",
+  "explainer": {
+    "lead": "RoPE gives transformers position awareness by rotating query and key vectors by an angle tied to token position, so attention scores encode relative distance. It matters because it supports context-length scaling without retraining.",
+    "tiers": {
+      "eli5": "Imagine each word is a clock hand: later words get turned a bit more than earlier ones. The angle between two hands tells you how far apart the words are, no matter where you start counting.",
+      "practitioner": "Engineers apply a per-position rotation to queries and keys inside attention, leaving values untouched, and tune rotation frequencies to extend context. A common pitfall is mismatching the rotation base with the context length the model was trained on, which degrades long-range attention.",
+      "paperLevel": "For position m and dimension pair i, the query/key is multiplied by a 2D rotation matrix with angle m times theta_i, where theta_i is a fixed frequency; the resulting dot product depends only on the offset between positions and decays with token distance."
+    },
+    "example": "In a model with head dimension 64, a token at position 10 has its two-dimensional sub-vectors rotated by 10 times each dimension's base frequency before the attention dot product.",
+    "usedIn": [
+      {
+        "name": "LLaMA-family models",
+        "detail": "long-context LLMs",
+        "url": ""
+      },
+      {
+        "name": "Long-context scaling",
+        "detail": "frequency adjustment for extension",
+        "url": ""
+      },
+      {
+        "name": "Open-source transformer stacks",
+        "detail": "default positional scheme",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "embedding",
     "embedding-model",

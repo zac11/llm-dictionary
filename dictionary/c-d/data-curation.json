@@ -5,7 +5,102 @@
   "type": "concept",
   "definition": "The process of selecting, filtering, cleaning, and organizing data to improve its quality and suitability for training or evaluation.",
   "details": "Data curation has become increasingly recognized as a critical lever for model quality, sometimes rivaling model architecture and scale in its impact on final performance.",
-  "story": "Think of a historian sorting through boxes of letters, building a picture of an era one sentence at a time. Every machine is shaped by what it was shown, so someone has to choose that material with care. The examples a machine reads become the world it believes in. The words a model reads become the world it believes in. And that is Data Curation — the unglamorous work everything else stands on.",
+  "explainer": {
+    "lead": "Data curation is the work of turning raw data into a collection that is fit for training or evaluating a model. It matters because better-selected and better-organized data can improve model quality, sometimes as much as changes to architecture or scale.",
+    "tiers": {
+      "eli5": "Imagine preparing a box of cards for a quiz: you remove repeats, fix mistakes, and sort the cards into useful groups. Data curation does something similar for the examples a computer learns from. A tidy, suitable set helps the computer learn and be tested more fairly.",
+      "practitioner": "In training or evaluation pipelines, practitioners select relevant records, filter unwanted ones, clean errors, and organize the remainder for its intended use. The key check is whether the curated dataset actually improves quality and suitability, not merely whether it is smaller or tidier.",
+      "paperLevel": "For raw dataset D, curation can be written as C(D) = organize(clean(filter(select(D)))), producing data intended for training or evaluation. Its objective is improved data quality and task suitability; model performance can depend strongly on these choices, not only on architecture and scale."
+    },
+    "example": "For a set of question-answer pairs used in evaluation, a curator might keep pairs relevant to the task, remove duplicates, correct malformed entries, and organize the remainder into a consistent evaluation set.",
+    "usedIn": [
+      {
+        "name": "Model training",
+        "detail": "Curating examples so the training data is higher quality and better suited to the learning task.",
+        "url": ""
+      },
+      {
+        "name": "Model evaluation",
+        "detail": "Selecting, cleaning, and organizing evaluation data so it is suitable for assessing a model.",
+        "url": ""
+      }
+    ],
+    "intuition": "A model can only benefit from data that is useful and reliable enough for its purpose. Curation improves the ingredient set before training or evaluation, rather than changing the model itself.",
+    "howItWorks": [
+      "Select data relevant to the intended training or evaluation task.",
+      "Filter out material that should not be included.",
+      "Clean problems in the remaining records.",
+      "Organize the data into a usable, curated collection."
+    ],
+    "whyItMatters": "Data curation is a direct lever on model quality and can rival architecture and scale in its effect on final performance. It also makes data more suitable for meaningful evaluation.",
+    "misconceptions": [
+      "Curation is more than cleaning: it also includes selection, filtering, and organization.",
+      "Collecting more raw data is not the same as improving the data’s quality or suitability.",
+      "Curation is not a model architecture change; it improves the data supplied to the model."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "raw",
+          "label": "Raw data",
+          "note": "The starting collection"
+        },
+        {
+          "id": "select",
+          "label": "Select",
+          "note": "Keep relevant material"
+        },
+        {
+          "id": "filter",
+          "label": "Filter",
+          "note": "Remove unwanted material"
+        },
+        {
+          "id": "clean",
+          "label": "Clean",
+          "note": "Address data problems"
+        },
+        {
+          "id": "organize",
+          "label": "Organize",
+          "note": "Structure the collection"
+        },
+        {
+          "id": "curated",
+          "label": "Curated data",
+          "note": "Ready for training or evaluation"
+        }
+      ],
+      "edges": [
+        {
+          "from": "raw",
+          "to": "select",
+          "label": ""
+        },
+        {
+          "from": "select",
+          "to": "filter",
+          "label": ""
+        },
+        {
+          "from": "filter",
+          "to": "clean",
+          "label": ""
+        },
+        {
+          "from": "clean",
+          "to": "organize",
+          "label": ""
+        },
+        {
+          "from": "organize",
+          "to": "curated",
+          "label": ""
+        }
+      ],
+      "caption": "Data curation transforms a raw collection into data suited to training or evaluation."
+    }
+  },
   "related": [
     "data-labeling",
     "data-leakage",

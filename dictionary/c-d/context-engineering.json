@@ -5,7 +5,123 @@
   "type": "concept",
   "definition": "The practice of deliberately designing what information (context, memory, tool outputs, instructions) is provided to a language model at each step of a task to maximize performance.",
   "details": "As agentic and RAG-based systems have matured, practitioners increasingly emphasize context engineering — curating, compressing, and structuring the model's context window — as being as important as prompt wording alone, especially for long-running or multi-step tasks.",
-  "story": "Imagine handing a to-do list to a very clever intern who refuses to guess: before each step, they look around, check the result, and adjust. It is the difference between a search engine and a helper who actually finishes the task. The machine stops just answering one question and starts getting a job done, step by step, checking its work along the way. The model stops being a one-shot answer machine and becomes a coworker that checks its own work. That loop of reason, act, and observe is Context Engineering.",
+  "explainer": {
+    "lead": "Context engineering is the careful selection and organization of the information a language model sees while working on a task. It matters because the right instructions, memories, retrieved material, and tool results can help the model perform better, especially when a task spans many steps.",
+    "tiers": {
+      "eli5": "Imagine helping a friend finish a big school project by handing them a small folder of notes. If the folder contains the right instructions, useful reminders, and latest results, they can do a better job than if it is stuffed with everything. Context engineering means choosing and tidying that folder at every step.",
+      "practitioner": "In agentic and retrieval-augmented systems, engineers curate and structure instructions, memory, retrieved context, and tool outputs before each model call. For long-running tasks, they compress earlier material so the context window remains useful. Common pitfalls include treating retrieval as sufficient without curation, letting stale or irrelevant outputs accumulate, and focusing only on prompt wording.",
+      "paperLevel": "At task step t, context engineering constructs C_t = f(instructions, memory, retrieved context, tool outputs, task state), and the language model conditions its next output on C_t. The objective is to choose and structure C_t to maximize task performance under the context-window constraint. Its effectiveness depends on selection, compression, and organization, with particular challenges in long-running or multi-step tasks."
+    },
+    "example": "A coding agent working on a bug receives the repair instructions, the relevant function, and the latest failing-test output, while earlier logs are compressed into a short summary. After the next tool run, its result replaces outdated material so the model sees the current task state rather than an ever-growing transcript.",
+    "usedIn": [
+      {
+        "name": "Agentic systems",
+        "detail": "Select instructions, memory, and tool results for each step of a task.",
+        "url": ""
+      },
+      {
+        "name": "Retrieval-augmented generation",
+        "detail": "Curate and structure retrieved material before placing it in the model's context.",
+        "url": ""
+      },
+      {
+        "name": "Long-running language-model tasks",
+        "detail": "Compress earlier information so multi-step work remains coherent within the context window.",
+        "url": ""
+      }
+    ],
+    "intuition": "A language model can only use the information put before it, so performance depends on more than clever wording. Context engineering treats the whole context window as a workspace to be curated, compressed, and organized.",
+    "howItWorks": [
+      "Identify the instructions and current task state.",
+      "Gather relevant memory, retrieved context, and tool outputs.",
+      "Remove irrelevant material and compress earlier information.",
+      "Structure the selected information in the context window.",
+      "Repeat the curation as the task produces new information."
+    ],
+    "whyItMatters": "Good context can make relevant information easier for the model to use and keep long tasks manageable within a limited window. As agentic and retrieval-based systems grow more complex, this curation can be as important as the prompt wording itself.",
+    "misconceptions": [
+      "It is not simply writing a longer or more elaborate prompt.",
+      "Adding more retrieved text does not guarantee better performance.",
+      "Compression should preserve useful task information, not merely shorten the transcript."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "task",
+          "label": "Task state",
+          "note": "Current instructions and progress"
+        },
+        {
+          "id": "memory",
+          "label": "Memory",
+          "note": "Relevant earlier information"
+        },
+        {
+          "id": "retrieval",
+          "label": "Retrieved context",
+          "note": "Material selected for the task"
+        },
+        {
+          "id": "tools",
+          "label": "Tool outputs",
+          "note": "Results from the latest actions"
+        },
+        {
+          "id": "builder",
+          "label": "Context builder",
+          "note": "Curates, compresses, and structures"
+        },
+        {
+          "id": "model",
+          "label": "Language model",
+          "note": "Produces the next step"
+        },
+        {
+          "id": "next",
+          "label": "Updated task",
+          "note": "New state for another cycle"
+        }
+      ],
+      "edges": [
+        {
+          "from": "task",
+          "to": "builder",
+          "label": ""
+        },
+        {
+          "from": "memory",
+          "to": "builder",
+          "label": ""
+        },
+        {
+          "from": "retrieval",
+          "to": "builder",
+          "label": ""
+        },
+        {
+          "from": "tools",
+          "to": "builder",
+          "label": ""
+        },
+        {
+          "from": "builder",
+          "to": "model",
+          "label": "context window"
+        },
+        {
+          "from": "model",
+          "to": "next",
+          "label": "next step"
+        },
+        {
+          "from": "next",
+          "to": "task",
+          "label": "repeat"
+        }
+      ],
+      "caption": "At each step, task information is curated into a context window, and the model's output updates the task for the next cycle."
+    }
+  },
   "related": [
     "model-context-protocol",
     "agent-registry",

@@ -2,9 +2,122 @@
   "term": "A100",
   "letter": "A",
   "category": "AI/ML glossary",
-  "type": "concept",
+  "type": "tool",
   "definition": "Ampere 100, A GPU variant named after French mathematician and physicist André-Marie Ampère",
   "details": "Ampere 100, A GPU variant named after French mathematician and physicist André-Marie Ampère",
+  "explainer": {
+    "lead": "The Nvidia A100 is a data-center GPU accelerator built on the Ampere architecture and released on May 14, 2020. It combines general-purpose computing cores, specialized Tensor Cores, and high-bandwidth memory, with features that let one physical GPU be divided among multiple jobs.",
+    "tiers": {
+      "eli5": "The A100 is a powerful computer chip made by Nvidia for doing many calculations at once. Think of it as a huge workshop with thousands of workers and a special team for AI calculations; it can also be divided into as many as seven smaller workshops so different jobs can share it.",
+      "practitioner": "Treat the A100 as the GA100-based Ampere accelerator with CUDA Compute Capability 8.0, not as equivalent to the GA10x-based GeForce 30 series. Its Tensor Cores support FP16, bfloat16, TF32, and FP64 with sparsity acceleration, while MIG can partition a GPU into up to seven instances. Check memory requirements against the 40 GB and 80 GB variants, and remember that SR-IOV support is specific to the A100.",
+      "paperLevel": "The A100 is a GA100 Ampere GPU fabricated on TSMC's 7 nm FinFET process, with CUDA Compute Capability 8.0, 6912 FP32/INT32 CUDA cores, 3456 FP64 CUDA cores, and 19.5 teraflops of FP32 performance. The original configuration provides 40 GB of HBM2 memory at 1.6 TB/s, and an 80 GB version was also released. Its third-generation Tensor Cores support FP16, BF16, TF32, and FP64 with sparsity acceleration, and MIG supports spatial partitioning into no more than seven instances."
+    },
+    "example": "A DGX A100 server combines eight A100 accelerators with two 64-core AMD Rome 7742 CPUs and 1 TB of RAM. On a single A100, MIG can instead create up to seven GPU instances, allowing the accelerator's resources to be spatially partitioned.",
+    "usedIn": [
+      {
+        "name": "Nvidia DGX A100",
+        "detail": "The third-generation DGX server initially included eight A100 accelerators, two 64-core AMD Rome 7742 CPUs, 1 TB of RAM, and 15 TB of PCIe Gen 4 NVMe storage.",
+        "url": ""
+      },
+      {
+        "name": "Nvidia A100 80 GB",
+        "detail": "An 80 GB GA100-based version announced at SC20 on November 16, 2020, extending the original 40 GB accelerator line.",
+        "url": ""
+      }
+    ],
+    "intuition": "The A100 packs several kinds of parallel computation into one accelerator: CUDA cores handle general calculations, Tensor Cores accelerate supported matrix formats, and HBM2 supplies data at high bandwidth. MIG adds a different kind of flexibility by dividing the physical GPU into separate instances.",
+    "howItWorks": [
+      "The GA100 chip is manufactured using TSMC's 7 nm FinFET process and implements CUDA Compute Capability 8.0.",
+      "Its 6912 FP32/INT32 and 3456 FP64 CUDA cores perform general parallel computation, reaching 19.5 teraflops of FP32 performance.",
+      "Third-generation Tensor Cores accelerate FP16, bfloat16, TF32, and FP64 operations, including sparsity acceleration.",
+      "HBM2 memory supplies the original 40 GB model with 1.6 TB/s of memory bandwidth, while NVLink 3.0 and PCI Express 4.0 provide connectivity.",
+      "Multi-instance GPU partitioning can divide an A100 into as many as seven instances."
+    ],
+    "whyItMatters": "The A100 brings high FP32 and FP64 compute capacity, multiple Tensor Core precisions, and fast HBM2 memory together in one data-center accelerator. Its support for MIG and SR-IOV also makes sharing and virtualization part of the hardware design rather than treating the GPU only as one indivisible device.",
+    "misconceptions": [
+      "The A100 is one Ampere-based data-center accelerator, not a name for the entire Ampere family, which also includes GeForce and workstation GPUs.",
+      "The original A100 has 40 GB of memory; the A100 80 GB is a separate variant announced on November 16, 2020.",
+      "Ampere is the microarchitecture name, while André-Marie Ampère is the French mathematician and physicist after whom it is named."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "ga100",
+          "label": "GA100 GPU",
+          "note": "Ampere chip built with TSMC 7 nm FinFET"
+        },
+        {
+          "id": "cuda",
+          "label": "CUDA cores",
+          "note": "FP32, INT32, and FP64 parallel computation"
+        },
+        {
+          "id": "tensor",
+          "label": "Tensor Cores",
+          "note": "Third-generation cores with sparsity acceleration"
+        },
+        {
+          "id": "hbm2",
+          "label": "HBM2 memory",
+          "note": "40 GB at 1.6 TB/s in the original A100"
+        },
+        {
+          "id": "mig",
+          "label": "MIG partitioning",
+          "note": "Up to seven spatial GPU instances"
+        },
+        {
+          "id": "pcie",
+          "label": "PCI Express 4.0",
+          "note": "Host connectivity with A100 SR-IOV support"
+        },
+        {
+          "id": "nvlink",
+          "label": "NVLink 3.0",
+          "note": "50 Gbit/s throughput per pair"
+        }
+      ],
+      "edges": [
+        {
+          "from": "ga100",
+          "to": "cuda",
+          "label": "general compute"
+        },
+        {
+          "from": "ga100",
+          "to": "tensor",
+          "label": "tensor compute"
+        },
+        {
+          "from": "hbm2",
+          "to": "ga100",
+          "label": "memory data"
+        },
+        {
+          "from": "ga100",
+          "to": "mig",
+          "label": "partitions"
+        },
+        {
+          "from": "pcie",
+          "to": "ga100",
+          "label": "host link"
+        },
+        {
+          "from": "ga100",
+          "to": "nvlink",
+          "label": "GPU link"
+        }
+      ],
+      "caption": "The A100's GA100 chip combines compute engines, high-bandwidth memory, connectivity, and hardware partitioning."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Ampere (microarchitecture)",
+        "url": "https://en.wikipedia.org/wiki/Ampere_(microarchitecture)"
+      }
+    ]
+  },
   "citation": {
     "title": "A100",
     "authors": [],

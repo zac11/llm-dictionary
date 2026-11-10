@@ -2,14 +2,108 @@
   "term": "FlashAttention",
   "letter": "F",
   "category": "Optimization",
-  "type": "concept",
+  "type": "algorithm",
   "aka": [
     "IO-Aware Attention",
     "Tiled Attention"
   ],
   "definition": "An exact, memory-efficient self-attention algorithm designed to minimize high-bandwidth memory (HBM) reads and writes using tiling and kernel fusion.",
   "details": "FlashAttention avoids materializing the quadratic $N \\times N$ intermediate attention matrix in GPU global memory by computing softmax incrementally across SRAM tiles, yielding substantial speedups for long-context inference and training.",
-  "story": "Imagine teaching a friend to shoot a basketball. They miss, and you walk them backwards through the shot — elbow, wrist, release — to find what needs fixing. It is the same loop you use to learn anything: try, miss, correct, try again. Underneath all the magic is a patient process of small improvements. It is learning from every miss instead of repeating the same mistake. And that is FlashAttention — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "Attention usually builds a huge table comparing every token with every other token, which can mean repeatedly moving that table through GPU memory. FlashAttention gets the same answer in small fused chunks, cutting memory traffic and bringing substantial speedups to long-context training and inference.",
+    "tiers": {
+      "eli5": "Imagine checking a huge stack of quiz answers without spreading every page across the floor. You bring a few pages to your desk, update a running total, and then fetch the next few until you have the final answer. FlashAttention works similarly: it handles small pieces at a time instead of making one enormous table, so the computer spends less time moving information around.",
+      "practitioner": "Use it as a GPU attention implementation for long-context training or inference when the quadratic intermediate attention matrix creates heavy memory traffic. Its gains come from SRAM tiling, incremental softmax, and kernel fusion, not from changing the attention result. Evaluate the implementation in terms of HBM reads and writes as well as computation.",
+      "paperLevel": "Given Q, K, and V with N token rows, attention computes softmax(QK^T)V. FlashAttention tiles the computation in SRAM and updates softmax incrementally, avoiding materialization of the N x N intermediate attention matrix in HBM while preserving the exact output. Its objective is to minimize HBM reads and writes, with substantial speedups reported for long-context inference and training."
+    },
+    "example": "For 4,096 tokens, conventional attention materializes a 4,096 by 4,096 intermediate matrix. FlashAttention instead processes small query, key, and value tiles in SRAM, updates the softmax and output as it goes, and avoids storing that full matrix in GPU global memory.",
+    "usedIn": [
+      {
+        "name": "Long-context inference",
+        "detail": "Reduces attention-related memory traffic and speeds up processing of long token sequences.",
+        "url": ""
+      },
+      {
+        "name": "Transformer training",
+        "detail": "Computes exact self-attention without storing the full quadratic intermediate matrix in GPU global memory.",
+        "url": ""
+      }
+    ],
+    "goal": "Compute exact self-attention while minimizing high-bandwidth memory reads and writes, especially for long sequences.",
+    "inputs": [
+      "Query, key, and value tensors",
+      "GPU SRAM tiles",
+      "Incremental softmax state"
+    ],
+    "outputs": [
+      "Exact self-attention output",
+      "No full N x N attention matrix in HBM"
+    ],
+    "steps": [
+      "Divide the query, key, and value tensors into tiles that fit in SRAM.",
+      "Load tiles and compute their local attention scores without writing a full N x N matrix to HBM.",
+      "Update the softmax incrementally as further tiles are processed.",
+      "Fuse the tiled operations into kernels to reduce transfers between SRAM and HBM.",
+      "Accumulate and write the exact attention output."
+    ],
+    "tradeoffs": [
+      "Speed comes from reducing memory traffic, not approximating attention.",
+      "Requires tiled execution and kernel fusion rather than full-matrix materialization.",
+      "The main stated payoff is for long-context training and inference."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "qkv",
+          "label": "Q K V tiles",
+          "note": "Attention inputs divided into small tiles"
+        },
+        {
+          "id": "sram",
+          "label": "SRAM tiles",
+          "note": "Tiles loaded for local computation"
+        },
+        {
+          "id": "scores",
+          "label": "Local scores",
+          "note": "Partial attention scores computed per tile"
+        },
+        {
+          "id": "softmax",
+          "label": "Incremental softmax",
+          "note": "Softmax state updated across tiles"
+        },
+        {
+          "id": "output",
+          "label": "Attention output",
+          "note": "Exact result accumulated without a full matrix in HBM"
+        }
+      ],
+      "edges": [
+        {
+          "from": "qkv",
+          "to": "sram",
+          "label": "load tiles"
+        },
+        {
+          "from": "sram",
+          "to": "scores",
+          "label": "compute"
+        },
+        {
+          "from": "scores",
+          "to": "softmax",
+          "label": "update"
+        },
+        {
+          "from": "softmax",
+          "to": "output",
+          "label": "accumulate"
+        }
+      ],
+      "caption": "FlashAttention processes attention in SRAM tiles and incrementally accumulates the exact output, avoiding a full N x N intermediate matrix in HBM."
+    }
+  },
   "related": [
     "attention",
     "quantization-aware-training",

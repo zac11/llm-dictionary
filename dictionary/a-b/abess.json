@@ -5,7 +5,129 @@
   "type": "concept",
   "definition": "abess (Adaptive Best Subset Selection, also ABESS) is a machine learning method designed to address the problem of best subset selection.",
   "details": "It aims to determine which features or variables are crucial for optimal model performance when provided with a dataset and a prediction task. abess was introduced by Zhu in 2020 and it dynamically selects the appropriate model size adaptively, eliminating the need for selecting regularization parameters. abess is applicable in various statistical and machine learning tasks, including linear regression, the Single-index model, and other common predictive models. abess can also be applied in biostatistics.",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. That is Abess — a small key that opens a big door.",
+  "explainer": {
+    "lead": "abess is a method for picking exactly the right number of features for a predictive model, without forcing you to guess tuning parameters in advance. It solves a notoriously hard combinatorial problem—trying every possible subset of variables—by finding a shortcut that runs in polynomial time.",
+    "tiers": {
+      "eli5": "Imagine you're packing for a trip and your suitcase only fits 10 items. Instead of trying every possible combination of clothes, abess quickly swaps items in and out, measuring which ones hurt most to leave behind. It keeps doing this until it finds the best 10-item set, and it even figures out that 10 for you automatically.",
+      "practitioner": "abess is used when you need sparse, interpretable models and want to avoid the bias introduced by L1 regularization. It fits into standard regression and classification pipelines, with implementations available in Python and R. The main pitfall is computational cost on very high-dimensional data—while polynomial, the method still scales with model size—and the need to specify a maximum support size s in some variants.",
+      "paperLevel": "abess solves the L0-constrained optimization problem min_{β: ||β||_0 ≤ s} L_n(β; X, y) via iterative exchange between active and inactive sets, using a 'sacrifice' criterion ξ_j to rank variables. Introduced by Zhu in 2020, it achieves polynomial-time complexity while providing unbiased and consistent estimates, distinguishing it from convex relaxation approaches like LASSO."
+    },
+    "example": "A hospital wants to predict diabetes risk from 50 blood measurements but needs a model using at most 5 tests for cost reasons. abess starts with 5 random measurements, then repeatedly asks: 'Which test in my current panel hurts least to drop?' and 'Which excluded test helps most to add?' After several swaps, it settles on glucose, HbA1c, BMI, age, and blood pressure as the optimal 5-test panel, having also verified that 5 tests beats 4 or 6 by a clear margin.",
+    "usedIn": [
+      {
+        "name": "Biostatistics",
+        "detail": "Identifying genetic markers or clinical variables most predictive of disease outcomes",
+        "url": ""
+      },
+      {
+        "name": "Linear regression",
+        "detail": "Sparse coefficient estimation when true model sparsity is expected",
+        "url": ""
+      },
+      {
+        "name": "Single-index models",
+        "detail": "Dimension reduction with simultaneous variable selection",
+        "url": ""
+      }
+    ],
+    "intuition": "Rather than shrinking coefficients toward zero gradually (like LASSO), abess directly searches for the best subset of features of each possible size, then automatically picks the best size by comparing how much each variable contributes to reducing loss.",
+    "howItWorks": [
+      "Start with an initial guess of which features matter (the active set) and which don't (the inactive set).",
+      "For each feature currently in the model, compute its 'sacrifice'—how much worse the fit becomes if you remove it.",
+      "For each feature outside the model, compute its potential gain—how much better the fit becomes if you add it.",
+      "Swap the worst feature in the active set with the best feature in the inactive set if the exchange improves the overall loss.",
+      "Repeat until no improving swap exists, while adaptively searching across different model sizes to avoid tuning s."
+    ],
+    "whyItMatters": "Best subset selection gives exactly sparse models with unbiased coefficient estimates, but brute-force search is exponential. abess makes this tractable while removing the need to manually tune regularization strength, bridging the gap between statistical ideal and computational reality.",
+    "misconceptions": [
+      "abess is the same as LASSO or elastic net—it uses L0 regularization, not L1, so it does not shrink coefficients continuously.",
+      "abess always finds the globally optimal subset—it provides strong theoretical guarantees but operates via greedy exchange heuristics.",
+      "abess requires no hyperparameters at all—the adaptive size selection removes regularization tuning, but some formulations still need a maximum support size s."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data",
+          "label": "Input data",
+          "note": "n samples, p features, target y"
+        },
+        {
+          "id": "init",
+          "label": "Initialize sets",
+          "note": "Split features into active A and inactive sets"
+        },
+        {
+          "id": "sacrifice",
+          "label": "Compute sacrifices",
+          "note": "Measure loss change for removing each active feature"
+        },
+        {
+          "id": "gain",
+          "label": "Compute gains",
+          "note": "Measure loss change for adding each inactive feature"
+        },
+        {
+          "id": "swap",
+          "label": "Exchange step",
+          "note": "Swap worst active with best inactive if loss improves"
+        },
+        {
+          "id": "adapt",
+          "label": "Adaptive sizing",
+          "note": "Compare across different support sizes s automatically"
+        },
+        {
+          "id": "output",
+          "label": "Sparse model",
+          "note": "Final selected features and unbiased coefficients"
+        }
+      ],
+      "edges": [
+        {
+          "from": "data",
+          "to": "init",
+          "label": "feeds into"
+        },
+        {
+          "from": "init",
+          "to": "sacrifice",
+          "label": "active set"
+        },
+        {
+          "from": "init",
+          "to": "gain",
+          "label": "inactive set"
+        },
+        {
+          "from": "sacrifice",
+          "to": "swap",
+          "label": "ranked by loss"
+        },
+        {
+          "from": "gain",
+          "to": "swap",
+          "label": "ranked by loss"
+        },
+        {
+          "from": "swap",
+          "to": "adapt",
+          "label": "iterates to"
+        },
+        {
+          "from": "adapt",
+          "to": "output",
+          "label": "selects best s"
+        }
+      ],
+      "caption": "The abess workflow: features are partitioned, their contributions are scored via sacrifice, and iterative exchanges search for the optimal sparse model while adaptive sizing avoids manual tuning."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Abess",
+        "url": "https://en.wikipedia.org/wiki/Abess"
+      }
+    ]
+  },
   "related": [
     "a-r-d-prasad",
     "abeba-birhane",

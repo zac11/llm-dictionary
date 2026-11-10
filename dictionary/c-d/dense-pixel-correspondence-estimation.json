@@ -5,6 +5,97 @@
   "type": "concept",
   "definition": "Finding dense correspondences between pixels of two images of the same scene — optical flow’s generalization used in matching and 3D tasks.",
   "details": "Finding dense correspondences between pixels of two images of the same scene — optical flow’s generalization used in matching and 3D tasks.",
+  "explainer": {
+    "lead": "Dense pixel correspondence estimation finds where each pixel in one image belongs in another image of the same scene. This per-pixel linking lets software compare viewpoints, follow motion, and connect visual information for 3D tasks.",
+    "tiers": {
+      "eli5": "Imagine taking two photos of the same toy from slightly different places. For every dot in the first photo, the computer tries to find the matching dot in the second, like completing a giant connect-the-dots puzzle. Those matches can help it understand movement and the toy's shape.",
+      "practitioner": "It is applied when a per-pixel mapping is needed between two views of a scene, including matching and 3D pipelines. The main pitfalls are occlusions and pixels without a visible counterpart, so an estimate for every pixel does not guarantee that every estimate is valid.",
+      "paperLevel": "Given images I1 and I2 with pixel domains Ω1 and Ω2, dense correspondence estimation seeks C: Ω1 → Ω2 such that C(p) identifies the pixel in I2 corresponding to p in I1. Optical flow is a special case; the more general problem also covers matching between views. The mapping can be ill-defined where scene content is occluded or not visible in both images."
+    },
+    "example": "In two views of a mug, a pixel on the tip of its handle in the first image is matched to the handle-tip pixel in the second. Repeating this for pixels across the mug and background produces a dense map between the views.",
+    "usedIn": [
+      {
+        "name": "Optical flow",
+        "detail": "Estimates dense correspondences associated with motion between images.",
+        "url": ""
+      },
+      {
+        "name": "Image matching",
+        "detail": "Links pixels across two views of the same scene.",
+        "url": ""
+      },
+      {
+        "name": "3D computer vision",
+        "detail": "Provides pixel-level matches that can support three-dimensional tasks.",
+        "url": ""
+      }
+    ],
+    "intuition": "A pixel is a small observation of a scene point; if that point appears in both images, its two appearances can be paired. Doing this densely produces a pixel-by-pixel map rather than a handful of matched landmarks.",
+    "howItWorks": [
+      "Take two images showing the same scene.",
+      "For a pixel in the first image, consider possible matching locations in the second.",
+      "Choose a corresponding location and record it as that pixel's match.",
+      "Repeat across the image to obtain a dense correspondence map."
+    ],
+    "whyItMatters": "Dense matches preserve detailed spatial relationships that sparse feature matches do not provide. They form a common link between optical flow, image matching, and 3D vision.",
+    "misconceptions": [
+      "It is not limited to optical flow: optical flow is a special case of the broader correspondence problem.",
+      "Dense does not mean every pixel has a true visible match; occlusion can make some correspondences impossible.",
+      "It produces pixel-to-pixel links, not a 3D reconstruction by itself."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "image-1",
+          "label": "First image",
+          "note": "Source pixels of the scene"
+        },
+        {
+          "id": "image-2",
+          "label": "Second image",
+          "note": "Candidate matching locations"
+        },
+        {
+          "id": "matching",
+          "label": "Pixel matching",
+          "note": "Find a counterpart for each pixel"
+        },
+        {
+          "id": "correspondence",
+          "label": "Dense map",
+          "note": "Per-pixel links between the images"
+        },
+        {
+          "id": "tasks",
+          "label": "Vision tasks",
+          "note": "Matching and 3D applications"
+        }
+      ],
+      "edges": [
+        {
+          "from": "image-1",
+          "to": "matching",
+          "label": "pixels"
+        },
+        {
+          "from": "image-2",
+          "to": "matching",
+          "label": "candidates"
+        },
+        {
+          "from": "matching",
+          "to": "correspondence",
+          "label": "matches"
+        },
+        {
+          "from": "correspondence",
+          "to": "tasks",
+          "label": "supports"
+        }
+      ],
+      "caption": "Two views are compared pixel by pixel to produce a dense correspondence map for downstream vision tasks."
+    }
+  },
   "citation": {
     "title": "Dense Pixel Correspondence Estimation",
     "authors": [],

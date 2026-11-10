@@ -5,7 +5,102 @@
   "type": "concept",
   "definition": "A specific, identifiable subnetwork of neurons and connections within a model hypothesized to implement a particular, interpretable computational function.",
   "details": "The concept of circuits is central to mechanistic interpretability research, which aims to identify and understand these functional subnetworks much as one might analyze a circuit diagram in traditional engineering.",
-  "story": "Picture an architect laying out a building where every room has to know which other rooms matter to it. The layout decides what the machine can even attempt, before it learns a single thing. It is the blueprint that makes everything else possible. It is the difference between a row of isolated cubicles and one big room where everyone can hear each other. That blueprint is Circuit (in interpretability).",
+  "explainer": {
+    "lead": "A circuit is a proposed small team of neurons and connections inside a model that performs one understandable job. Finding such teams could turn an opaque model into something researchers can explain and test piece by piece.",
+    "tiers": {
+      "eli5": "Imagine a huge machine with thousands of tiny parts, but only a few parts work together to ring a bell. A circuit is like that little group: researchers think it has one job inside the much bigger machine. They test the idea by watching the group and changing what it does.",
+      "practitioner": "Researchers start with a specific model behavior, trace candidate neurons and connections, and use interventions on those candidates to test whether they support the proposed function. The main pitfall is treating activation or correlation as proof: a circuit remains a hypothesis until the evidence supports its claimed role.",
+      "paperLevel": "Given a model M, a circuit C = (V_C, E_C) is an identifiable subnetwork of neurons V_C and connections E_C hypothesized to implement an interpretable function f. Circuit analysis relates this subnetwork to a specified model behavior, but identifying relevant components does not by itself establish a complete explanation."
+    },
+    "example": "Suppose a small language model often predicts \")\" after seeing \"(\". Researchers find neurons that respond to \"(\" and connections that later strengthen the prediction of \")\"; testing whether changing this subnetwork changes that prediction evaluates the hypothesis of a parenthesis-closing circuit.",
+    "usedIn": [
+      {
+        "name": "Mechanistic interpretability",
+        "detail": "Researchers use circuits to break model behavior into functional subnetworks that can be examined individually.",
+        "url": ""
+      },
+      {
+        "name": "Neural network analysis",
+        "detail": "The circuit viewpoint connects particular neurons and connections with an interpretable computational role.",
+        "url": ""
+      }
+    ],
+    "intuition": "A large neural network may contain smaller, recognizable mechanisms, much as a complicated device contains circuits with distinct purposes. A circuit names one proposed mechanism rather than treating the whole model as a single unexplained unit.",
+    "howItWorks": [
+      "Choose a specific model behavior to explain.",
+      "Identify candidate neurons involved in that behavior.",
+      "Trace connections that could combine their activity into a function.",
+      "Test the proposed circuit and refine the hypothesis."
+    ],
+    "whyItMatters": "Circuits give mechanistic interpretability a concrete unit of analysis, allowing broad model behavior to be studied as testable claims about smaller components. This is analogous to understanding a device by examining its circuit diagram instead of only observing its inputs and outputs.",
+    "misconceptions": [
+      "A circuit is a model subnetwork, not physical wiring.",
+      "A proposed circuit is a hypothesis, not automatically a proven explanation.",
+      "Neurons active during a behavior are not necessarily all part of its circuit."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "behavior",
+          "label": "Model behavior",
+          "note": "A specific output pattern to explain"
+        },
+        {
+          "id": "neurons",
+          "label": "Candidate neurons",
+          "note": "Components linked to the behavior"
+        },
+        {
+          "id": "connections",
+          "label": "Candidate connections",
+          "note": "Paths combining component activity"
+        },
+        {
+          "id": "circuit",
+          "label": "Circuit hypothesis",
+          "note": "A subnetwork with a proposed function"
+        },
+        {
+          "id": "test",
+          "label": "Subnetwork test",
+          "note": "Checks whether the hypothesis holds"
+        },
+        {
+          "id": "function",
+          "label": "Interpretable function",
+          "note": "The computational role being evaluated"
+        }
+      ],
+      "edges": [
+        {
+          "from": "behavior",
+          "to": "neurons",
+          "label": "guides search"
+        },
+        {
+          "from": "neurons",
+          "to": "connections",
+          "label": "linked by"
+        },
+        {
+          "from": "connections",
+          "to": "circuit",
+          "label": "forms"
+        },
+        {
+          "from": "circuit",
+          "to": "test",
+          "label": "evaluated by"
+        },
+        {
+          "from": "circuit",
+          "to": "function",
+          "label": "hypothesized as"
+        }
+      ],
+      "caption": "Circuit analysis moves from an observed behavior to a candidate subnetwork, then tests its proposed function."
+    }
+  },
   "related": [
     "interpretability",
     "attention-visualization",

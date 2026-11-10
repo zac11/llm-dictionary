@@ -5,7 +5,97 @@
   "type": "concept",
   "definition": "The task of automatically producing source code, typically from a natural language description, partial code, or specification.",
   "details": "Code generation is one of the most impactful practical applications of large language models, powering tools like AI coding assistants that suggest, complete, or write entire functions and programs.",
-  "story": "Imagine a sketch artist who starts with static and, stroke by stroke, sharpens it into a face. The result feels creative because it is memory, reshuffled at speed. Given a starting line, the machine imagines what comes next — a word, a note, a patch of a picture. The model dreams a little, then cleans up the dream. And that is Code Generation — making something new out of everything it has ever seen.",
+  "explainer": {
+    "lead": "Code generation turns a description, specification, or incomplete program into source code. It is a major practical use of large language models, helping people complete functions and draft programs with less manual typing.",
+    "tiers": {
+      "eli5": "Imagine telling a helper, “Make a program that adds these numbers,” and the helper writes the instructions for the computer. Code generation works like that, using your words or unfinished code to produce more code. You still need to check its work, just as you would check a helper’s homework.",
+      "practitioner": "Engineers use code generation through AI coding assistants to suggest completions, finish partial code, or draft functions and programs from prompts. Useful requests provide a clear specification and surrounding code, while review and tests remain important because plausible-looking output can be wrong. Under-specified behavior is a common pitfall.",
+      "paperLevel": "Code generation can be written as learning a mapping f: x -> y, where x is a natural-language description, partial code, or specification and y is source code intended to satisfy x. Large language models are a prominent approach. Generating syntactically plausible code does not establish semantic correctness, and informal descriptions may leave required behavior unspecified."
+    },
+    "example": "Given “Write a Python function that returns the average of a non-empty list,” a generator might produce `def average(numbers): return sum(numbers) / len(numbers)`. For `[2, 4, 6]`, this returns `4`; the non-empty condition matters because an empty list would cause division by zero.",
+    "usedIn": [
+      {
+        "name": "AI coding assistants",
+        "detail": "Suggest code, complete fragments, or write functions and programs.",
+        "url": ""
+      },
+      {
+        "name": "Code completion",
+        "detail": "Continues partial source code within a programming task.",
+        "url": ""
+      },
+      {
+        "name": "Natural-language program drafting",
+        "detail": "Turns a written description or specification into an initial implementation.",
+        "url": ""
+      }
+    ],
+    "intuition": "The system treats programming as translating intent into code: you supply what you want or what you have written so far, and it predicts source code that fits. This can speed up drafting, but the result still needs checking against the intended behavior.",
+    "howItWorks": [
+      "Provide a description, specification, or partial code.",
+      "The model interprets the requested task and available context.",
+      "It generates source code as its output.",
+      "Review and test the code, then revise the request or implementation as needed."
+    ],
+    "whyItMatters": "Code generation brings large language models into everyday software work by reducing the effort needed to complete or draft code. Its practical value comes from pairing faster production of source code with human review and behavioral checks.",
+    "misconceptions": [
+      "Generated code is not automatically correct just because it looks plausible.",
+      "Code generation includes completing partial code, not only writing whole programs.",
+      "A short description may omit behavior that an implementation must handle."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Request or code",
+          "note": "Description, specification, or partial source"
+        },
+        {
+          "id": "model",
+          "label": "Language model",
+          "note": "Predicts source code from the input"
+        },
+        {
+          "id": "output",
+          "label": "Generated code",
+          "note": "A completion, function, or program"
+        },
+        {
+          "id": "checks",
+          "label": "Review and tests",
+          "note": "Checks behavior against the request"
+        },
+        {
+          "id": "revision",
+          "label": "Revised code",
+          "note": "Corrected implementation for the task"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "model",
+          "label": "context"
+        },
+        {
+          "from": "model",
+          "to": "output",
+          "label": "generates"
+        },
+        {
+          "from": "output",
+          "to": "checks",
+          "label": "candidate"
+        },
+        {
+          "from": "checks",
+          "to": "revision",
+          "label": "feedback"
+        }
+      ],
+      "caption": "Code generation produces a candidate implementation, which is then checked and revised."
+    }
+  },
   "related": [
     "no-code-ai-platform",
     "prompt-to-code",

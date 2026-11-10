@@ -5,6 +5,33 @@
   "type": "concept",
   "definition": "A cheaper LayerNorm variant that normalizes by the root mean square without centering the mean.",
   "details": "A cheaper LayerNorm variant that normalizes by the root mean square without centering the mean. Used by Llama-family and most modern LLMs for a small speed and stability win.",
+  "explainer": {
+    "lead": "RMSNorm is a cheaper LayerNorm variant that normalizes by the root mean square without centering the mean. It is used by the Llama family and most modern LLMs for a small speed and stability win.",
+    "tiers": {
+      "eli5": "Like resizing a photo by its overall brightness without first shifting the colors — you get most of the benefit with less work.",
+      "practitioner": "Engineers swap it in for LayerNorm in transformer blocks to save compute and stabilize training. A pitfall is assuming it behaves identically to LayerNorm, since it skips mean centering.",
+      "paperLevel": "Normalization by the root mean square, without subtracting the mean. Known trade-off: it is a cheaper approximation to LayerNorm rather than an equivalent."
+    },
+    "example": "A Llama-style transformer block applies RMSNorm before attention, dividing activations by their root mean square without centering.",
+    "usedIn": [
+      {
+        "name": "Llama-family models",
+        "detail": "normalization layer",
+        "url": ""
+      },
+      {
+        "name": "Modern LLMs",
+        "detail": "speed and stability",
+        "url": ""
+      }
+    ],
+    "sources": [
+      {
+        "title": "Wikipedia: Normalization (machine learning)",
+        "url": "https://en.wikipedia.org/wiki/Normalization_(machine_learning)"
+      }
+    ]
+  },
   "related": [
     "layer-normalization"
   ],

@@ -5,6 +5,92 @@
   "type": "concept",
   "definition": "Convolutional layers are the building blocks of convolutional neural networks (CNNs).",
   "details": "Convolutional layers are the building blocks of convolutional neural networks (CNNs). These layers apply a convolution operation to the input, passing the result to the next layer.",
+  "explainer": {
+    "lead": "A convolution layer applies the same convolution operation across an input and sends the resulting values to the next layer. It matters because these layers are the basic building blocks of convolutional neural networks (CNNs).",
+    "tiers": {
+      "eli5": "Imagine sliding a small transparent window over a grid of numbers. At each stop, you combine the numbers under the window using a fixed rule and write down the result. A convolution layer repeats this across the input, then hands the new grid of results to the next layer in a CNN.",
+      "practitioner": "In a CNN, a convolution layer transforms its input with a convolution operation and passes the output onward. When integrating one, check the input and output shapes and make boundary handling explicit, since those details affect what the next layer receives.",
+      "paperLevel": "In one dimension, a discrete convolution can be written O[i] = sum_k K[k] I[i-k], where I is the input, K is the kernel, and O is the output over valid indices. The layer applies this operation and forwards O to the next layer; dimensions, stride, padding, and boundary rules must be specified separately."
+    },
+    "example": "Using the common CNN sliding-sum convention, take input [1, 2, 3, 4] and kernel [1, 0, -1]. The first valid position gives 1×1 + 2×0 + 3×(-1) = -2, and the second gives 2×1 + 3×0 + 4×(-1) = -2, so the output is [-2, -2], which is passed to the next layer.",
+    "usedIn": [
+      {
+        "name": "Convolutional neural networks",
+        "detail": "Convolution layers serve as the network's basic building blocks.",
+        "url": ""
+      },
+      {
+        "name": "Multi-layer CNN processing",
+        "detail": "Each layer's convolution result is passed to a subsequent layer.",
+        "url": ""
+      }
+    ],
+    "intuition": "Reuse one convolution operation across the input rather than treating every input position as a separate problem. This produces a new representation that can be processed by the next CNN layer.",
+    "howItWorks": [
+      "Receive the layer's input.",
+      "Apply a convolution operation with a kernel.",
+      "Repeat the operation across the input positions.",
+      "Collect the resulting values as the layer output.",
+      "Pass that output to the next layer."
+    ],
+    "whyItMatters": "It supplies the convolution operation from which CNNs are built. Chaining these layers lets a network pass transformed representations through its architecture.",
+    "misconceptions": [
+      "A convolution layer is not an entire CNN; it is one building block within the network.",
+      "Its output is not necessarily the network's final answer; it is passed to the next layer."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input values",
+          "note": "Data received by the layer"
+        },
+        {
+          "id": "kernel",
+          "label": "Convolution kernel",
+          "note": "Defines the operation"
+        },
+        {
+          "id": "convolution",
+          "label": "Convolution operation",
+          "note": "Applied across the input"
+        },
+        {
+          "id": "output",
+          "label": "Layer output",
+          "note": "Resulting values"
+        },
+        {
+          "id": "next",
+          "label": "Next layer",
+          "note": "Receives the result"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "convolution",
+          "label": "input"
+        },
+        {
+          "from": "kernel",
+          "to": "convolution",
+          "label": "kernel"
+        },
+        {
+          "from": "convolution",
+          "to": "output",
+          "label": "result"
+        },
+        {
+          "from": "output",
+          "to": "next",
+          "label": "passed on"
+        }
+      ],
+      "caption": "A convolution layer combines its input with a kernel and forwards the convolution result."
+    }
+  },
   "related": [
     "convolution"
   ],

@@ -8,7 +8,103 @@
   ],
   "definition": "A subword tokenization method that iteratively merges the most frequent pair of symbols into a single token.",
   "details": "BPE starts with individual characters and repeatedly merges the most common adjacent pair, building a fixed-size vocabulary of character fragments. This lets a model handle rare and out-of-vocabulary words as sequences of known subwords, which is far more robust than whole-word vocabularies for morphologically rich languages.",
-  "story": "Imagine learning a language by reading every book in the library and noticing, over time, which words travel together. It does not memorize a rulebook; it absorbs a library. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It is fluency built from pattern, not from memorized rules. That pattern-earned fluency is Byte-Pair Encoding.",
+  "explainer": {
+    "lead": "Byte-Pair Encoding, or BPE, breaks text into reusable pieces that sit between single characters and whole words. This gives a model a manageable vocabulary while still letting it read unfamiliar words instead of failing on them.",
+    "tiers": {
+      "eli5": "Imagine building words from small snap-together blocks instead of needing a special block for every possible word. BPE learns which neighboring letters appear together most often and joins them into bigger blocks. A strange new word can then be built from familiar smaller pieces.",
+      "practitioner": "Train the merge rules on text, choose a target vocabulary size, and apply the learned rules consistently when tokenizing new input. The main trade-off is sequence length versus vocabulary coverage: rare words remain representable, but they may split into several tokens. Treat the resulting fragments as statistical units, not necessarily meaningful parts of words.",
+      "paperLevel": "Given an initial character vocabulary V_0, repeatedly select (a,b) = arg max count(a,b) over adjacent symbol pairs, replace occurrences of that pair with ab, and set V_(t+1) = V_t union {ab}. Stop when the fixed target vocabulary size is reached. This handles rare and out-of-vocabulary words through known subwords, but merges reflect frequency rather than linguistic meaning and rare words can require longer token sequences."
+    },
+    "example": "Suppose 'low' is common and 'l o' is the most frequent pair: 'l o w' becomes 'lo w'. If 'lo w' later becomes the most frequent pair, it becomes the single token 'low'. The unfamiliar word 'below' can still be encoded as 'b e low' rather than requiring its own whole-word token.",
+    "usedIn": [
+      {
+        "name": "Language-model tokenization",
+        "detail": "Converts text into a fixed vocabulary of characters and character fragments.",
+        "url": ""
+      },
+      {
+        "name": "Rare-word processing",
+        "detail": "Represents unfamiliar words as sequences of known subwords.",
+        "url": ""
+      },
+      {
+        "name": "Morphologically rich-language NLP",
+        "detail": "Avoids relying on a whole-word entry for every word form.",
+        "url": ""
+      }
+    ],
+    "intuition": "Common character combinations deserve their own tokens, while uncommon words can still be assembled from smaller pieces. BPE discovers those combinations directly from how often neighboring symbols occur together.",
+    "howItWorks": [
+      "Start with individual characters as the initial symbols.",
+      "Count every adjacent pair of symbols in the text.",
+      "Merge the most frequent pair into one new token.",
+      "Repeat the counting and merging until the vocabulary reaches its fixed size.",
+      "Encode later text using the learned characters and subword tokens."
+    ],
+    "whyItMatters": "BPE keeps the vocabulary bounded without making unseen words unreadable. It is especially useful when language produces many rare or varied word forms that a whole-word vocabulary would miss.",
+    "misconceptions": [
+      "BPE tokens are not guaranteed to match meaningful prefixes, roots, or suffixes.",
+      "BPE does not use an unlimited vocabulary; merging stops at a chosen fixed size.",
+      "An unfamiliar word is not necessarily one token; it may be split into several known pieces."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "chars",
+          "label": "Character sequence",
+          "note": "Text starts as individual characters."
+        },
+        {
+          "id": "count",
+          "label": "Count adjacent pairs",
+          "note": "Measure each neighboring pair's frequency."
+        },
+        {
+          "id": "merge",
+          "label": "Merge top pair",
+          "note": "Replace the most frequent pair with one token."
+        },
+        {
+          "id": "vocab",
+          "label": "Fixed vocabulary",
+          "note": "Repeat until the target size is reached."
+        },
+        {
+          "id": "encode",
+          "label": "Subword tokens",
+          "note": "Represent common and unfamiliar text with known pieces."
+        }
+      ],
+      "edges": [
+        {
+          "from": "chars",
+          "to": "count",
+          "label": ""
+        },
+        {
+          "from": "count",
+          "to": "merge",
+          "label": "most frequent"
+        },
+        {
+          "from": "merge",
+          "to": "count",
+          "label": "repeat"
+        },
+        {
+          "from": "merge",
+          "to": "vocab",
+          "label": "new token"
+        },
+        {
+          "from": "vocab",
+          "to": "encode",
+          "label": ""
+        }
+      ],
+      "caption": "BPE repeatedly counts and merges adjacent pairs, then uses the resulting fixed vocabulary to encode text."
+    }
+  },
   "related": [
     "tokenization",
     "ai-pair-programming",

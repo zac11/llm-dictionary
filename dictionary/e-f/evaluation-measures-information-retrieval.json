@@ -5,7 +5,128 @@
   "type": "concept",
   "definition": "Evaluation measures for an information retrieval (IR) system assess how well an index, search engine, or database returns results from a collection of resources that satisfy a user's query.",
   "details": "They are therefore fundamental to the success of information systems and digital platforms. The most important factor in determining a system's effectiveness for users is the overall relevance of results retrieved in response to a query. The success of an IR system may be judged by a range of criteria including relevance, speed, user satisfaction, usability, efficiency and reliability. Evaluation measures may be categorised in various ways including offline or online, user-based or system-based and include methods such as observed user behaviour, test collections, precision and recall, and scores from prepared benchmark test sets. Evaluation for an information retrieval system should also include a validation of the measures used, i.e. an assessment of how well they measure what they are intended to measure and how well the system fits its intended use case. Measures are generally used in two settings: online experimentation, which assesses users' interactions with the search system, and offline evaluation, which measures the effectiveness of an information retrieval system on a static offline collection.",
-  "story": "Picture a scoreboard at a science fair: you need a fair, agreed way to tell who actually won. A fair scoreboard keeps everyone honest. Before trusting a machine, someone has to measure how good it really is — fairly and honestly. A good metric is a ruler that does not bend when you lean on it. And that, done honestly, is Evaluation measures (information retrieval).",
+  "explainer": {
+    "lead": "A search system can look impressive and still bury the useful answers. Evaluation measures turn that problem into evidence by checking relevance alongside speed, user satisfaction, usability, efficiency and reliability, either through real user interactions or tests on a fixed collection.",
+    "tiers": {
+      "eli5": "Imagine asking a friend to find your favourite books in a big library. You could check how many of the books they bring back are the right ones, how many right books they missed, and whether you found what you needed quickly. Search systems are tested in a similar way, using scores and observations of what people do.",
+      "practitioner": "Online evaluation uses search logs and A/B tests to calculate measures such as session abandonment, click-through rate, session success and zero-result rate. Offline evaluation runs queries against a static collection, with judges assigning binary or multi-level relevance scores before metrics such as precision, recall, fall-out and Precision@k are calculated. Do not rely on recall alone, since returning every document gives 100% recall, and handle ambiguous queries carefully during judging. Validate that the chosen measures reflect the intended goal and use case.",
+      "paperLevel": "For retrieved set R, relevant set A and non-relevant set N: precision = |A ∩ R| / |R|, recall = |A ∩ R| / |A|, and fall-out = |N ∩ R| / |N|. Cyril Cleverdon's Cranfield tests established the combination of a test collection, queries and predetermined relevant items used to determine precision and recall, and this approach became a blueprint for the Text Retrieval Conference series begun in 1992. Recall alone is uninformative because returning all documents maximises it, while ill-posed queries and differing shades of relevance complicate judgment; the measures themselves therefore require validation."
+    },
+    "example": "Suppose a test collection contains 10 relevant documents for a query, and a system retrieves 20 documents of which 8 are relevant. Precision is 8/20 = 0.40 and recall is 8/10 = 0.80: the system finds 80% of the relevant material, but only 40% of what it returns is relevant.",
+    "usedIn": [
+      {
+        "name": "Internet and website search",
+        "detail": "Search engines use offline relevance tests and online interaction measures to assess result quality.",
+        "url": ""
+      },
+      {
+        "name": "Databases and library catalogues",
+        "detail": "Evaluation checks whether queries return resources that satisfy users' information needs.",
+        "url": ""
+      },
+      {
+        "name": "Usability and information-behaviour studies",
+        "detail": "Measures support studies of user behaviour, usability, business costs and efficiency.",
+        "url": ""
+      }
+    ],
+    "intuition": "Good retrieval means bringing back useful material without making the user sift through too much irrelevant material. Evaluation captures that balance numerically and checks whether the system works for people in practice.",
+    "howItWorks": [
+      "Choose queries and define what counts as success or relevance.",
+      "Gather evidence from live user sessions or a static test collection.",
+      "Calculate online interaction rates or offline relevance metrics.",
+      "Compare systems or variants, then validate the measures against the intended use."
+    ],
+    "whyItMatters": "These measures make competing retrieval methods comparable and reveal weaknesses such as missed relevant documents or sessions with no useful interaction. They underpin search-engine improvement and help ensure that evaluation reflects real effectiveness rather than a convenient but misleading score.",
+    "misconceptions": [
+      "Perfect recall means a good system: returning every document achieves it.",
+      "A zero-result page always signals a retrieval fault: the information may simply be absent from the index.",
+      "A metric needs no checking: evaluation should validate that it measures its intended target."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "queries",
+          "label": "Queries",
+          "note": "User needs or prepared test queries."
+        },
+        {
+          "id": "collection",
+          "label": "Static collection",
+          "note": "Documents used for offline testing."
+        },
+        {
+          "id": "system",
+          "label": "Retrieval system",
+          "note": "Index, search engine or database."
+        },
+        {
+          "id": "results",
+          "label": "Search results",
+          "note": "Documents returned for each query."
+        },
+        {
+          "id": "logs",
+          "label": "Search logs",
+          "note": "Clicks, dwell time and session outcomes."
+        },
+        {
+          "id": "judgments",
+          "label": "Relevance judgments",
+          "note": "Binary or multi-level document scores."
+        },
+        {
+          "id": "metrics",
+          "label": "Evaluation scores",
+          "note": "Online rates and offline relevance metrics."
+        }
+      ],
+      "edges": [
+        {
+          "from": "queries",
+          "to": "system",
+          "label": ""
+        },
+        {
+          "from": "collection",
+          "to": "system",
+          "label": "offline input"
+        },
+        {
+          "from": "system",
+          "to": "results",
+          "label": ""
+        },
+        {
+          "from": "results",
+          "to": "logs",
+          "label": "online use"
+        },
+        {
+          "from": "results",
+          "to": "judgments",
+          "label": "offline review"
+        },
+        {
+          "from": "logs",
+          "to": "metrics",
+          "label": ""
+        },
+        {
+          "from": "judgments",
+          "to": "metrics",
+          "label": ""
+        }
+      ],
+      "caption": "The same retrieval results can be evaluated online through user interactions or offline through relevance judgments."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Evaluation measures (information retrieval)",
+        "url": "https://en.wikipedia.org/wiki/Evaluation_measures_(information_retrieval)"
+      }
+    ]
+  },
   "related": [
     "information-retrieval",
     "adversarial-information-retrieval",

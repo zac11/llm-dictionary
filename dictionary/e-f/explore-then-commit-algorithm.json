@@ -5,7 +5,92 @@
   "type": "algorithm",
   "definition": "Explore Then Commit (ETC) is an algorithm for the multi-armed bandit problem focused on finding the best trade-off between exploration and exploitation..",
   "details": "Explore Then Commit (ETC) is an algorithm for the multi-armed bandit problem focused on finding the best trade-off between exploration and exploitation.",
-  "story": "Picture a gambler who slowly learns which slot machines pay out, not by reading a manual but by pulling the lever. The machine is not handed the answers — it tries things, earns a reward or a miss, and slowly figures out what works. It learns the way a child learns to walk: wobble, fall, adjust, repeat. The learner writes its own textbook from consequences. That learn-by-reward loop is Explore-then-commit algorithm.",
+  "explainer": {
+    "lead": "Explore-then-commit is a simple way to handle a multi-armed bandit: try every option for a fixed period, then stick with the one that looks best. Its appeal is its clarity, but the size of that initial trial period determines how well it balances learning against earning rewards.",
+    "tiers": {
+      "eli5": "Like sampling each dish at a buffet for a set number of bites, then spending the rest of the meal on your favourite.",
+      "practitioner": "Engineers use it when they need a simple bandit policy with a clear exploration phase: try each arm for a set period, then commit to the best observed. The pitfall is that the exploration length is fixed in advance, so a poor choice of that length costs performance.",
+      "paperLevel": "The algorithm is defined for the multi-armed bandit problem and is described as focused on the exploration-exploitation trade-off; no further formula or bound is specified."
+    },
+    "example": "Suppose arms A, B, and C are each explored twice, producing average rewards of 0.4, 0.7, and 0.5. ETC selects B and uses every remaining pull on B, without revisiting A or C.",
+    "goal": "Balance exploration and exploitation in a multi-armed bandit by learning from an initial trial phase and then repeatedly choosing the empirically best arm.",
+    "inputs": [
+      "A set of candidate arms",
+      "A total number of pulls",
+      "An exploration allowance for each arm",
+      "Rewards observed from each pull"
+    ],
+    "outputs": [
+      "An estimated mean reward for each arm",
+      "One selected arm for all remaining pulls"
+    ],
+    "steps": [
+      "Pull every arm during the fixed exploration phase.",
+      "Calculate each arm’s average observed reward.",
+      "Select the arm with the highest average.",
+      "Pull only that arm until the pull budget is exhausted."
+    ],
+    "tradeoffs": [
+      "The procedure is simple to describe and implement.",
+      "Short exploration can lock in the wrong arm.",
+      "Long exploration wastes pulls on inferior arms.",
+      "Commitment prevents later adaptation."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "explore",
+          "label": "Explore all arms",
+          "note": "Spend a fixed number of pulls on each arm."
+        },
+        {
+          "id": "estimate",
+          "label": "Estimate rewards",
+          "note": "Average the observed rewards for each arm."
+        },
+        {
+          "id": "select",
+          "label": "Select best arm",
+          "note": "Choose the arm with the highest estimated mean."
+        },
+        {
+          "id": "commit",
+          "label": "Commit remaining pulls",
+          "note": "Exploit only the selected arm until the horizon ends."
+        }
+      ],
+      "edges": [
+        {
+          "from": "explore",
+          "to": "estimate",
+          "label": "observed rewards"
+        },
+        {
+          "from": "estimate",
+          "to": "select",
+          "label": "mean estimates"
+        },
+        {
+          "from": "select",
+          "to": "commit",
+          "label": "chosen arm"
+        }
+      ],
+      "caption": "ETC separates learning and exploitation into two consecutive phases."
+    },
+    "usedIn": [
+      {
+        "name": "Multi-armed bandits",
+        "detail": "exploration-exploitation policy",
+        "url": ""
+      },
+      {
+        "name": "Online decision making",
+        "detail": "fixed exploration then commitment",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "actor-critic-algorithm",
     "algorithm-imed",

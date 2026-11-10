@@ -5,6 +5,112 @@
   "type": "concept",
   "definition": "A generative framework that learns a direct continuous transport from noise to data, simplifying diffusion training and enabling high quality in very few sampling steps.",
   "details": "A generative framework that learns a direct continuous transport from noise to data, simplifying diffusion training and enabling high quality in very few sampling steps. Rapidly adopted in image (SD3, Flux) and speech synthesis.",
+  "explainer": {
+    "lead": "Flow matching is a way to train generative systems to turn random noise into images, speech, or other data by learning a continuous path between them. Its simpler training approach and ability to produce high-quality results in few sampling steps have made it useful in systems such as SD3 and Flux.",
+    "tiers": {
+      "eli5": "Imagine slowly reshaping a cloud of random scribbles until it becomes a picture. Flow matching teaches a computer which way to push the scribbles at every moment, rather than making it guess the finished picture all at once. Following those pushes can create a good result with only a few moves.",
+      "practitioner": "Train a model to predict the time-dependent velocity along continuous paths from noise to data, then generate by integrating that learned field from a noise sample. It is applied in image generation systems including SD3 and Flux, as well as speech synthesis. Few-step sampling still depends on accurate integration; flow matching does not automatically make generation one-step.",
+      "paperLevel": "Flow matching learns a vector field v_theta(t,x) such that dx/dt = v_theta(t,x), with x(0) sampled from noise and x(1) intended to follow the data distribution. Training fits this field along continuous noise-to-data paths, simplifying diffusion-style training; sampling still requires numerical integration, even when only a few steps are used."
+    },
+    "example": "To generate an image, the system starts with random noise at time 0. Its learned field indicates how to update the noisy state at successive times, and a numerical solver follows those updates until time 1, producing the final image in only a few steps.",
+    "usedIn": [
+      {
+        "name": "SD3",
+        "detail": "An image-generation system that adopted flow matching.",
+        "url": ""
+      },
+      {
+        "name": "Flux",
+        "detail": "An image-generation system using the framework.",
+        "url": ""
+      },
+      {
+        "name": "Speech synthesis",
+        "detail": "A field where flow matching has seen rapid adoption.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of treating generation as a long sequence of separate corrections, flow matching learns the direction and speed needed to move smoothly from noise toward realistic data. A new sample is made by starting with noise and following that learned motion through time.",
+    "howItWorks": [
+      "Pair noise with training data along continuous paths.",
+      "Learn the velocity that moves samples along those paths.",
+      "At generation time, begin with a fresh noise sample.",
+      "Integrate the learned velocity field to reach a data sample.",
+      "Use few integration steps when high-quality fast sampling is needed."
+    ],
+    "whyItMatters": "Flow matching simplifies diffusion training while supporting high-quality generation with very few sampling steps. That combination helps explain its rapid adoption in image and speech generation.",
+    "misconceptions": [
+      "Flow matching is a training and generation framework, not a specific image model.",
+      "Few-step sampling does not necessarily mean one-step sampling or eliminate numerical integration."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "noise",
+          "label": "Noise sample",
+          "note": "Starting point at time 0"
+        },
+        {
+          "id": "data",
+          "label": "Training data",
+          "note": "Target examples at time 1"
+        },
+        {
+          "id": "path",
+          "label": "Continuous path",
+          "note": "Connects noise and data"
+        },
+        {
+          "id": "field",
+          "label": "Learned velocity field",
+          "note": "Predicts motion at each time"
+        },
+        {
+          "id": "solver",
+          "label": "Numerical solver",
+          "note": "Integrates the field in a few steps"
+        },
+        {
+          "id": "sample",
+          "label": "Generated sample",
+          "note": "Resulting image or speech"
+        }
+      ],
+      "edges": [
+        {
+          "from": "noise",
+          "to": "path",
+          "label": "training pair"
+        },
+        {
+          "from": "data",
+          "to": "path",
+          "label": "training pair"
+        },
+        {
+          "from": "path",
+          "to": "field",
+          "label": "supervises"
+        },
+        {
+          "from": "noise",
+          "to": "solver",
+          "label": "initial state"
+        },
+        {
+          "from": "field",
+          "to": "solver",
+          "label": "updates"
+        },
+        {
+          "from": "solver",
+          "to": "sample",
+          "label": "generates"
+        }
+      ],
+      "caption": "Training learns a velocity field from continuous noise-to-data paths; generation integrates that field starting from fresh noise."
+    }
+  },
   "related": [
     "speech-synthesis"
   ],

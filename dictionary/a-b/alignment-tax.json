@@ -5,6 +5,113 @@
   "type": "concept",
   "definition": "Capability lost as a side effect of safety and alignment training (over-refusal, hedging, reduced creativity).",
   "details": "Capability lost as a side effect of safety and alignment training (over-refusal, hedging, reduced creativity). Modern post-training aims to minimize it; measuring it requires capability benchmarks alongside safety benchmarks.",
+  "explainer": {
+    "lead": "Alignment tax is the usefulness a model loses while being trained to behave more safely, such as refusing harmless requests, hedging excessively, or becoming less creative. It matters because a better safety score can hide a model that has become noticeably less capable.",
+    "tiers": {
+      "eli5": "Imagine teaching a helpful robot to be careful, but it becomes so cautious that it refuses to help build a paper airplane. The lost helpfulness is the alignment tax. The goal is to keep the robot safe without making it needlessly less useful.",
+      "practitioner": "Compare capability benchmarks before and after alignment post-training, and read the results alongside safety benchmarks. Watch for over-refusal, excessive hedging, and reduced creativity when assessing the trade-off. A common pitfall is treating improved safety scores alone as evidence of a better model.",
+      "paperLevel": "For a capability benchmark B, a simple comparison is tax(B) = S_base(B) - S_aligned(B), where a positive value indicates capability lost after alignment training. This quantity is benchmark-dependent and does not by itself capture every form of over-refusal, hedging, or creativity loss. It should therefore be interpreted alongside changes in safety-benchmark results."
+    },
+    "example": "A starting model solves 80 of 100 coding tasks, but its aligned version solves 72 and refuses more harmless requests. The 8-task drop on that benchmark is an alignment tax; separate safety results show what the trade-off gained.",
+    "usedIn": [
+      {
+        "name": "LLM post-training",
+        "detail": "Compare models before and after alignment training to identify capability lost while improving safety.",
+        "url": ""
+      },
+      {
+        "name": "Safety evaluation",
+        "detail": "Interpret safety-benchmark results together with capability results so improvements do not conceal regressions.",
+        "url": ""
+      },
+      {
+        "name": "Model development",
+        "detail": "Use the trade-off to guide post-training that limits over-refusal, hedging, and reduced creativity.",
+        "url": ""
+      }
+    ],
+    "intuition": "Safety training can push a model away from unwanted behavior, but the same pressure can also suppress useful behavior. Alignment tax names that collateral loss rather than the safety benefit itself.",
+    "howItWorks": [
+      "Measure the starting model's capabilities.",
+      "Apply safety and alignment post-training.",
+      "Measure the aligned model on the same capability benchmarks.",
+      "Run safety benchmarks alongside them.",
+      "Treat capability losses as the tax and weigh them against safety gains."
+    ],
+    "whyItMatters": "It makes hidden costs of alignment visible and gives post-training a concrete target: retain capability while improving safety. Measuring both sides prevents safety gains from being mistaken for overall improvement.",
+    "misconceptions": [
+      "It is not a financial charge or a deliberate performance limit.",
+      "Not every behavior changed by safety training counts as lost capability.",
+      "A better safety score alone does not show whether the tax is small or large."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "base",
+          "label": "Starting model",
+          "note": "Capabilities before post-training"
+        },
+        {
+          "id": "training",
+          "label": "Alignment training",
+          "note": "Safety-focused post-training"
+        },
+        {
+          "id": "aligned",
+          "label": "Aligned model",
+          "note": "Model after behavior changes"
+        },
+        {
+          "id": "capability",
+          "label": "Capability benchmarks",
+          "note": "Compare before-and-after scores"
+        },
+        {
+          "id": "safety",
+          "label": "Safety benchmarks",
+          "note": "Measure safety changes separately"
+        },
+        {
+          "id": "tax",
+          "label": "Alignment tax",
+          "note": "Capability lost after training"
+        }
+      ],
+      "edges": [
+        {
+          "from": "base",
+          "to": "training",
+          "label": ""
+        },
+        {
+          "from": "training",
+          "to": "aligned",
+          "label": ""
+        },
+        {
+          "from": "base",
+          "to": "capability",
+          "label": "baseline"
+        },
+        {
+          "from": "aligned",
+          "to": "capability",
+          "label": "new scores"
+        },
+        {
+          "from": "aligned",
+          "to": "safety",
+          "label": ""
+        },
+        {
+          "from": "capability",
+          "to": "tax",
+          "label": "score gap"
+        }
+      ],
+      "caption": "Alignment tax is estimated from capability changes, while safety benchmarks show the other side of the trade-off."
+    }
+  },
   "related": [
     "alignment",
     "refusal"

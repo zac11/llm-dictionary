@@ -5,7 +5,27 @@
   "type": "concept",
   "definition": "Mehrotra's predictor–corrector method in optimization is a specific interior point method for linear programming.",
   "details": "It was proposed in 1989 by Sanjay Mehrotra. The method is based on the fact that at each iteration of an interior point algorithm it is necessary to compute the Cholesky decomposition (factorization) of a large matrix to find the search direction. The factorization step is the most computationally expensive step in the algorithm. Therefore, it makes sense to use the same decomposition more than once before recomputing it. At each iteration of the algorithm, Mehrotra's predictor–corrector method uses the same Cholesky decomposition to find two different directions: a predictor and a corrector. The idea is to first compute an optimizing search direction based on a first order term (predictor). The step size that can be taken in this direction is used to evaluate how much centrality correction is needed. Then, a corrector term is computed: this contains both a centrality term and a second order term. The complete search direction is the sum of the predictor direction and the corrector direction. Although there is no theoretical complexity bound on it yet, Mehrotra's predictor–corrector method is widely used in practice. Its corrector step uses the same Cholesky decomposition found during the predictor step in an effective way, and thus it is only marginally more expensive than a standard interior point algorithm. However, the additional overhead per iteration is usually paid off by a reduction in the number of iterations needed to reach an optimal solution. It also appears to converge very fast when close to the optimum.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. That steady, miss-by-miss improvement is Mehrotra predictor–corrector method.",
+  "explainer": {
+    "lead": "An interior point method for linear programming proposed by Sanjay Mehrotra in 1989. Its efficiency comes from reusing expensive matrix work, making it a practical workhorse for large linear programs.",
+    "tiers": {
+      "eli5": "Instead of redoing a costly calculation from scratch at every step, you do it once and use it twice before paying for it again — like baking a big batch of dough and making two rounds of bread from it.",
+      "practitioner": "Engineers implement it by computing the Cholesky factorization of a large matrix once per iteration, then using that same decomposition to compute both a predictor direction and a corrector direction. The main pitfall is recomputing the factorization too often, which dominates runtime.",
+      "paperLevel": "At each iteration an interior point algorithm must factorize a large matrix to find the search direction; since factorization is the most expensive step, the method uses the same decomposition more than once before recomputing it, computing a predictor direction and a corrector direction in that interval."
+    },
+    "example": "In a solver run, the Cholesky decomposition is formed at the start of an iteration, a predictor step and a corrector step are both derived from it, and only then is the matrix refactorized for the next iteration.",
+    "usedIn": [
+      {
+        "name": "Linear programming solvers",
+        "detail": "interior point engines",
+        "url": ""
+      },
+      {
+        "name": "Optimization software",
+        "detail": "large-scale LP",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "active-set-method",
     "augmented-lagrangian-method",

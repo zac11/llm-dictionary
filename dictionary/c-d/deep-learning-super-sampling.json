@@ -5,7 +5,103 @@
   "type": "concept",
   "definition": "Deep Learning Super Sampling (DLSS) is a suite of real-time deep learning image enhancement and upscaling technologies developed by Nvidia that are available in a number of video games.",
   "details": "The goal of these technologies is to allow the majority of the graphics pipeline to run at a lower resolution for increased performance, and then infer a higher resolution image from this that approximates the same level of detail as if the image had been rendered at this higher resolution. This allows for higher graphical settings or frame rates for a given output resolution, depending on user preference. All generations of DLSS are available on all RTX-branded cards from Nvidia in supported titles. However, the Frame Generation feature is only supported on RTX 40 series GPUs or newer and Multi Frame Generation is only available on 50 series GPUs.",
-  "story": "Picture a novelist who has read so much that, given a first line, they cannot help but write the next one. It makes new things by recombining everything it has ever seen. The result feels creative because it is memory, reshuffled at speed. It is prediction pushed forward — each next word, or pixel, guessed from everything that came before it. That next-word, next-stroke magic is Deep Learning Super Sampling.",
+  "explainer": {
+    "lead": "DLSS lets a game do most of its rendering at a lower resolution, then uses deep learning to construct an image that looks close to one rendered at the higher output resolution. The saved rendering work can be spent on smoother frame rates or richer graphics settings.",
+    "tiers": {
+      "eli5": "Imagine quickly sketching a small picture, then having a clever art helper fill in the detail to make a larger version. DLSS does something similar for games: the computer draws less, and the helper builds a sharper-looking big picture. This can make the game run more smoothly or look better.",
+      "practitioner": "Enable DLSS in a supported game's graphics settings, then use the performance headroom for either a higher frame rate or higher graphical settings at the chosen output resolution. Check both title and hardware support: DLSS requires an RTX-branded Nvidia GPU, Frame Generation requires RTX 40 series or newer, and Multi Frame Generation requires RTX 50 series.",
+      "paperLevel": "Let L be an image produced with most of the graphics pipeline running below the target output resolution, and let H be the corresponding higher-resolution rendered image. DLSS applies real-time deep-learning inference to produce f(L), an approximation of H with similar detail, while reducing rendering work. Availability is limited to supported titles and Nvidia RTX hardware, with additional generation-specific GPU restrictions for frame-generation features."
+    },
+    "example": "A player wants a 4K image but rendering the whole game at 4K is too demanding. With DLSS, most of the pipeline renders below 4K, DLSS infers a 4K output image, and the player can use the savings for a higher frame rate or more demanding graphics settings.",
+    "usedIn": [
+      {
+        "name": "Supported video games",
+        "detail": "DLSS provides real-time image enhancement and upscaling in a number of games.",
+        "url": ""
+      },
+      {
+        "name": "Nvidia RTX-branded GPUs",
+        "detail": "All generations of DLSS are available on these cards in supported titles.",
+        "url": ""
+      },
+      {
+        "name": "Nvidia RTX 40 series and newer",
+        "detail": "These GPUs support the Frame Generation feature.",
+        "url": ""
+      },
+      {
+        "name": "Nvidia RTX 50 series",
+        "detail": "These GPUs support Multi Frame Generation.",
+        "url": ""
+      }
+    ],
+    "intuition": "Rendering every pixel at a high resolution is expensive, so DLSS renders less and infers the missing detail. It trades exact native-resolution rendering for an approximation that can cost much less to produce.",
+    "howItWorks": [
+      "The player chooses an output resolution and favors frame rate or graphical settings.",
+      "Most of the graphics pipeline renders below that output resolution.",
+      "DLSS uses real-time deep-learning inference to construct a higher-resolution image.",
+      "The result approximates the detail of native higher-resolution rendering.",
+      "The saved rendering capacity supports higher frame rates or settings."
+    ],
+    "whyItMatters": "DLSS makes higher output resolutions and visual settings practical without requiring every frame to be fully rendered at that resolution. It gives players a direct choice between smoother motion and richer graphics.",
+    "misconceptions": [
+      "DLSS does not produce exactly the same image as native higher-resolution rendering; it produces an approximation.",
+      "It is not available in every game, only in supported titles.",
+      "RTX support does not unlock every feature: Frame Generation and Multi Frame Generation have newer GPU requirements."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "settings",
+          "label": "Output settings",
+          "note": "Target resolution and performance preference"
+        },
+        {
+          "id": "lowres",
+          "label": "Lower-resolution rendering",
+          "note": "Most of the graphics pipeline runs here"
+        },
+        {
+          "id": "dlss",
+          "label": "DLSS inference",
+          "note": "Deep learning infers missing detail"
+        },
+        {
+          "id": "output",
+          "label": "Higher-resolution image",
+          "note": "Approximates native-resolution detail"
+        },
+        {
+          "id": "benefit",
+          "label": "Performance headroom",
+          "note": "Used for frame rate or graphics settings"
+        }
+      ],
+      "edges": [
+        {
+          "from": "settings",
+          "to": "lowres",
+          "label": "configures"
+        },
+        {
+          "from": "lowres",
+          "to": "dlss",
+          "label": "rendered image"
+        },
+        {
+          "from": "dlss",
+          "to": "output",
+          "label": "upscales"
+        },
+        {
+          "from": "dlss",
+          "to": "benefit",
+          "label": "saves work"
+        }
+      ],
+      "caption": "DLSS renders below the target resolution, infers a higher-resolution image, and leaves rendering capacity for better performance or settings."
+    }
+  },
   "related": [
     "deep-learning",
     "deep-learning-anti-aliasing",

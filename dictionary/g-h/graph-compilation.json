@@ -5,6 +5,107 @@
   "type": "concept",
   "definition": "Tracing a model into an optimized computation graph so the compiler can fuse kernels, plan memory, and specialize code paths, recovering large speedups over eager execution.",
   "details": "Tracing a model into an optimized computation graph so the compiler can fuse kernels, plan memory, and specialize code paths, recovering large speedups over eager execution. The reason \"just add torch.compile\" became a standard first optimization step.",
+  "explainer": {
+    "lead": "Graph compilation turns a model’s operations into a form a compiler can improve before running them. This can cut the overhead of executing operations one at a time and make compilation a practical early optimization step.",
+    "tiers": {
+      "eli5": "Imagine following a recipe by checking the instructions again before every tiny action. Graph compilation reads the recipe first, combines steps that belong together, and plans where to put the ingredients, so the cooking can go faster.",
+      "practitioner": "In PyTorch, torch.compile is a common first attempt to move beyond eager execution by tracing a model and compiling its graph. Compare compiled and eager runs on the real workload, since the benefit depends on how much overhead fusion, memory planning, and specialized code can remove. Models that cannot be captured cleanly as a graph may not receive the same benefit.",
+      "paperLevel": "Tracing maps an eager model to a computation graph G = (V, E), where vertices represent operations and edges represent values passed between them. Compilation transforms G through kernel fusion, memory planning, and code-path specialization, then emits an optimized executable. The achievable speedup is workload-dependent, and tracing-based capture is a constraint on the models and execution patterns that can be optimized."
+    },
+    "example": "Suppose a model multiplies an input by a weight matrix, adds a bias, and applies ReLU. Eager execution runs these as separate steps, while graph compilation can trace the whole sequence, fuse suitable bias-and-ReLU work, plan the temporary values, and run the resulting specialized path with less per-operation overhead.",
+    "usedIn": [
+      {
+        "name": "PyTorch",
+        "detail": "torch.compile applies compilation as a standard early optimization over eager model execution.",
+        "url": ""
+      },
+      {
+        "name": "Model training",
+        "detail": "Compiled graphs can reduce execution overhead through fused kernels and planned memory use.",
+        "url": ""
+      },
+      {
+        "name": "Model inference",
+        "detail": "Specialized compiled code paths can execute a model’s operations more efficiently than eager dispatch.",
+        "url": ""
+      }
+    ],
+    "intuition": "Eager execution handles each operation as it arrives, while graph compilation first sees how the operations fit together. That wider view lets the compiler remove avoidable work between operations rather than optimizing each one in isolation.",
+    "howItWorks": [
+      "Trace the model to capture its operations and data dependencies as a computation graph.",
+      "Analyze the graph to find operations that can be fused into fewer kernels.",
+      "Plan memory for intermediate values instead of managing every temporary independently.",
+      "Specialize code paths for the captured computation and generate an optimized executable."
+    ],
+    "whyItMatters": "It can recover substantial speedups without requiring the model’s mathematical computation to be rewritten by hand. Making this available through a simple entry point such as torch.compile turns graph optimization into an accessible first performance step.",
+    "misconceptions": [
+      "It optimizes how a model runs; it does not redesign the model’s architecture.",
+      "Compilation does not guarantee the same speedup for every model or workload.",
+      "Tracing is not just running eager operations in the same order with a new wrapper."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "model",
+          "label": "Eager model",
+          "note": "Operations written for step-by-step execution"
+        },
+        {
+          "id": "trace",
+          "label": "Tracing",
+          "note": "Captures operations and their dependencies"
+        },
+        {
+          "id": "graph",
+          "label": "Computation graph",
+          "note": "Operations connected by intermediate values"
+        },
+        {
+          "id": "fusion",
+          "label": "Kernel fusion",
+          "note": "Combines suitable operations into fewer kernels"
+        },
+        {
+          "id": "planning",
+          "label": "Memory planning",
+          "note": "Organizes storage for intermediate values"
+        },
+        {
+          "id": "executable",
+          "label": "Specialized executable",
+          "note": "Runs optimized code paths instead of eager dispatch"
+        }
+      ],
+      "edges": [
+        {
+          "from": "model",
+          "to": "trace",
+          "label": "operations"
+        },
+        {
+          "from": "trace",
+          "to": "graph",
+          "label": "captures"
+        },
+        {
+          "from": "graph",
+          "to": "fusion",
+          "label": "optimizes"
+        },
+        {
+          "from": "fusion",
+          "to": "planning",
+          "label": "fused graph"
+        },
+        {
+          "from": "planning",
+          "to": "executable",
+          "label": "generates"
+        }
+      ],
+      "caption": "Graph compilation captures an eager model, optimizes its graph and memory use, and emits specialized executable code."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

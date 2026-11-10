@@ -5,7 +5,97 @@
   "type": "concept",
   "definition": "In neural networks, the gating mechanism is an architectural motif for controlling the flow of activation and gradient signals.",
   "details": "They are most prominently used in recurrent neural networks (RNNs), but have also found applications in other architectures.",
-  "story": "Imagine teaching a friend to shoot a basketball. They miss, and you walk them backwards through the shot — elbow, wrist, release — to find what needs fixing. It is the same loop you use to learn anything: try, miss, correct, try again. Underneath all the magic is a patient process of small improvements. It is learning from every miss instead of repeating the same mistake. And that is Gating mechanism — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "A gating mechanism is a neural-network design pattern that regulates how much activation or gradient information passes through a connection. It matters because a network can learn to control information flow instead of passing every signal through unchanged.",
+    "tiers": {
+      "eli5": "Think of a gate like a volume knob for messages inside a neural network. It can let a message through fully, quiet it down, or block it, and the same idea can control the signals used during learning.",
+      "practitioner": "Gating is most prominent in recurrent neural networks, where it controls activation and gradient flow, but it can also appear in other architectures. A simple implementation multiplies an activation by a learned gate value; when debugging, inspect both activations and gradients rather than assuming a gate guarantees healthy training.",
+      "paperLevel": "In a basic multiplicative form, y = g * x, where x is an activation and g controls how much passes through. For this path, the input gradient includes the factor g: dL/dx = g * dL/dy. Gating is an architectural motif, not a single fixed formula, so its exact computation and behavior depend on the architecture."
+    },
+    "example": "If an activation is 8 and a simple multiplicative gate has value 0.25, the gated output is 8 * 0.25 = 2. On the backward pass through this simple path, the incoming gradient is likewise multiplied by 0.25.",
+    "usedIn": [
+      {
+        "name": "Recurrent neural networks",
+        "detail": "The most prominent setting for controlling activation and gradient signals.",
+        "url": ""
+      },
+      {
+        "name": "Other neural-network architectures",
+        "detail": "The same architectural motif can regulate information flow beyond recurrent models.",
+        "url": ""
+      }
+    ],
+    "intuition": "A gate acts like an adjustable valve: it determines how much of a signal should continue through the network. Applying this control to both activations and gradients helps regulate forward computation and learning signals.",
+    "howItWorks": [
+      "An activation signal reaches a gated path.",
+      "A gate determines how much of that signal should pass.",
+      "The activation is scaled by the gate to produce the output.",
+      "During backpropagation, the gate also affects the gradient passing through that path."
+    ],
+    "whyItMatters": "Gating gives a network a direct way to regulate information flow rather than treating every signal equally. Its influence on gradients makes it especially relevant to how recurrent networks learn.",
+    "misconceptions": [
+      "Gating is not exclusive to recurrent neural networks, although that is where it is most prominent.",
+      "It is not one specific neural-network design; it is an architectural motif with different implementations.",
+      "Adding a gate does not by itself guarantee that a network will pass useful information or train well."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "activation",
+          "label": "Input activation",
+          "note": "The signal entering the gated path."
+        },
+        {
+          "id": "gate",
+          "label": "Gate value",
+          "note": "Controls how much signal can pass."
+        },
+        {
+          "id": "scale",
+          "label": "Scale signal",
+          "note": "Combines the activation with the gate."
+        },
+        {
+          "id": "output",
+          "label": "Gated output",
+          "note": "The activation passed onward."
+        },
+        {
+          "id": "gradient",
+          "label": "Gated gradient",
+          "note": "The learning signal flowing backward."
+        }
+      ],
+      "edges": [
+        {
+          "from": "activation",
+          "to": "scale",
+          "label": "activation"
+        },
+        {
+          "from": "gate",
+          "to": "scale",
+          "label": "controls"
+        },
+        {
+          "from": "scale",
+          "to": "output",
+          "label": "forward"
+        },
+        {
+          "from": "output",
+          "to": "gradient",
+          "label": "backward"
+        },
+        {
+          "from": "gate",
+          "to": "gradient",
+          "label": "scales"
+        }
+      ],
+      "caption": "A gate scales the forward activation and also affects the gradient passing backward through the path."
+    }
+  },
   "related": [
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",
     "accelerated-linear-algebra",

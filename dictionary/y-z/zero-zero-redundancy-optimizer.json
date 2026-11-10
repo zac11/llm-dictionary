@@ -5,7 +5,27 @@
   "type": "concept",
   "definition": "A set of memory optimization techniques for distributed training that eliminates redundant storage of optimizer states, gradients, and parameters across data-parallel workers.",
   "details": "ZeRO enables training much larger models than would otherwise fit in available GPU memory by partitioning (rather than replicating) optimizer state, gradients, and parameters across the devices participating in data-parallel training.",
-  "story": "Imagine teaching a friend to shoot a basketball. They miss, and you walk them backwards through the shot — elbow, wrist, release — to find what needs fixing. It is the same loop you use to learn anything: try, miss, correct, try again. Underneath all the magic is a patient process of small improvements. It is learning from every miss instead of repeating the same mistake. That steady, miss-by-miss improvement is ZeRO (Zero Redundancy Optimizer).",
+  "explainer": {
+    "lead": "ZeRO cuts the memory each data-parallel worker must hold by partitioning optimizer states, gradients, and parameters instead of replicating them. That lets teams train models far larger than any single GPU's memory would allow.",
+    "tiers": {
+      "eli5": "Like splitting a huge shared textbook across classmates so each person carries only a few chapters instead of a full copy, then swapping pages when needed.",
+      "practitioner": "Engineers apply ZeRO stages to shrink per-GPU memory during large-scale data-parallel training. A pitfall is the added communication from gathering partitioned pieces, which can slow training if not tuned.",
+      "paperLevel": "Instead of replicating optimizer states, gradients, and parameters on every data-parallel device, these tensors are partitioned across devices; partitioning rather than replicating is what removes redundancy."
+    },
+    "example": "A model whose full optimizer state, gradients, and parameters would not fit in one GPU's memory is trained by splitting those tensors across the data-parallel workers.",
+    "usedIn": [
+      {
+        "name": "Distributed training",
+        "detail": "large-model data parallelism",
+        "url": ""
+      },
+      {
+        "name": "Memory optimization",
+        "detail": "partitioning optimizer state",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "api-key",
     "approximate-nearest-neighbor-search",

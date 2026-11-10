@@ -5,7 +5,97 @@
   "type": "concept",
   "definition": "A refinement of scaling laws showing that many large language models had been undertrained relative to their size, and that model size and training tokens should scale roughly equally.",
   "details": "The Chinchilla paper argued that, for a fixed compute budget, better performance is achieved by training a smaller model on more data than by training a larger model on less data, reshaping how subsequent LLMs were trained.",
-  "story": "Imagine a factory floor where each workstation can glance at every other workstation before doing its part. It is the blueprint that makes everything else possible. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. Structure decides what the model can even express — the blueprint before the bricks. That blueprint is Chinchilla Scaling.",
+  "explainer": {
+    "lead": "Chinchilla scaling is a guideline for spending a fixed training budget on the right balance of model size and training data. It matters because a smaller model trained on more tokens can outperform a larger model trained on fewer tokens.",
+    "tiers": {
+      "eli5": "Imagine trying to become better at puzzles with a limited amount of practice time. Building a giant puzzle-solving team is not helpful if nobody gets enough practice; a smaller team with more practice can do better. Chinchilla scaling says AI models need a similar balance between size and practice.",
+      "practitioner": "When planning LLM training under a fixed compute budget, treat parameter count and training-token count as joint choices rather than maximizing parameters first. As the budget grows, increase both roughly equally, and do not compare models by parameter count alone. A common pitfall is training an oversized model on too little data.",
+      "paperLevel": "For fixed training compute C, Chinchilla scaling chooses model size N and training-token count D jointly, with N and D scaling roughly equally as C increases. The Chinchilla paper argued that this compute-optimal balance favors smaller models trained on more data over larger, undertrained models. It is a fixed-compute training guideline, not a guarantee that either parameter count or token count alone determines performance."
+    },
+    "example": "Suppose a team can either build a larger model or train a smaller one on more tokens with the same compute. Chinchilla scaling favors the smaller, more thoroughly trained model, and as later budgets grow it increases model size and token count roughly together.",
+    "usedIn": [
+      {
+        "name": "Large language model development",
+        "detail": "Guides the balance between model size and the number of training tokens.",
+        "url": ""
+      },
+      {
+        "name": "Training compute planning",
+        "detail": "Helps allocate a fixed compute budget without leaving an oversized model undertrained.",
+        "url": ""
+      }
+    ],
+    "intuition": "Parameters provide capacity, but training tokens provide the experience needed to use that capacity. Spending too much of a fixed budget on size leaves too little for training.",
+    "howItWorks": [
+      "Start with a fixed compute budget.",
+      "Consider model size and training tokens together.",
+      "Avoid enlarging the model while cutting its training data.",
+      "Scale model size and token count roughly equally."
+    ],
+    "whyItMatters": "It showed that many large language models had been undertrained relative to their size. This shifted training toward a more balanced use of parameters and data for better performance at fixed compute.",
+    "misconceptions": [
+      "Bigger models are not automatically better.",
+      "More data does not make model size irrelevant.",
+      "It does not prescribe tokens alone; both sides scale together."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "budget",
+          "label": "Fixed compute",
+          "note": "The available training budget."
+        },
+        {
+          "id": "balance",
+          "label": "Balanced allocation",
+          "note": "Choose size and tokens jointly."
+        },
+        {
+          "id": "model",
+          "label": "Smaller model",
+          "note": "Use less compute for parameters."
+        },
+        {
+          "id": "tokens",
+          "label": "More tokens",
+          "note": "Spend the savings on training data."
+        },
+        {
+          "id": "performance",
+          "label": "Better performance",
+          "note": "Avoid an oversized, undertrained model."
+        }
+      ],
+      "edges": [
+        {
+          "from": "budget",
+          "to": "balance",
+          "label": "allocated by"
+        },
+        {
+          "from": "balance",
+          "to": "model",
+          "label": ""
+        },
+        {
+          "from": "balance",
+          "to": "tokens",
+          "label": ""
+        },
+        {
+          "from": "model",
+          "to": "performance",
+          "label": ""
+        },
+        {
+          "from": "tokens",
+          "to": "performance",
+          "label": ""
+        }
+      ],
+      "caption": "A fixed compute budget is divided between a smaller model and more training tokens."
+    }
+  },
   "related": [
     "scaling-laws",
     "autoregressive-model",

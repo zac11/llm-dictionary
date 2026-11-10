@@ -5,7 +5,118 @@
   "type": "concept",
   "definition": "A curated collection of examples used specifically to measure a model's performance, kept separate from training data to ensure an unbiased assessment.",
   "details": "The design and composition of evaluation datasets significantly shapes what capabilities get measured (and therefore optimized for), making careful evaluation dataset construction an important methodological consideration in ML research.",
-  "story": "Imagine a driving test that every new model has to pass before it is allowed on the road. It is the exam that separates “it sounds good” from “it actually is good”. A fair scoreboard keeps everyone honest. It is the exam that keeps everyone honest. That shared ruler is Evaluation Dataset.",
+  "explainer": {
+    "lead": "An evaluation dataset is a set of examples held back to test how well a trained model performs. Keeping it separate from training helps reveal whether the model has learned something useful rather than simply memorized its practice material.",
+    "tiers": {
+      "eli5": "It is like saving some quiz questions for the final test instead of letting a student practice every question beforehand. You check the student's answers against questions they have not studied. If the student does well, that is better evidence that they understood the subject.",
+      "practitioner": "Engineers use held-out evaluation splits when training and comparing classifiers, regressors, and other machine-learning systems. They compute task-appropriate metrics on these examples, while checking for train–test leakage, labeling problems, and a mismatch between evaluation and deployment data. A separate validation set is commonly used for tuning so that final test results do not become overly optimistic.",
+      "paperLevel": "Formally, an evaluation set can be written D_eval = {(x_i, y_i)} for i = 1..n, with D_eval disjoint from D_train. For a model f and loss L, a typical score is M = (1/n) sum_i L(f(x_i), y_i), though the metric depends on the task. A finite evaluation set estimates only the behavior represented by its sampling and labels; its composition determines which capabilities are measured and can consequently shape optimization priorities."
+    },
+    "example": "To evaluate a spam filter, reserve 1,000 labeled emails that were not used in training. If the trained filter correctly labels 920 of them, its accuracy on this evaluation dataset is 92%; examining the remaining 80 errors gives a more detailed picture of its weaknesses.",
+    "usedIn": [
+      {
+        "name": "Machine-learning research",
+        "detail": "Held-out examples support controlled comparisons between models and training methods.",
+        "url": ""
+      },
+      {
+        "name": "Model development",
+        "detail": "Teams use evaluation results to diagnose errors and decide whether a model is ready for further testing or deployment.",
+        "url": ""
+      },
+      {
+        "name": "Benchmark comparisons",
+        "detail": "Shared evaluation examples let different systems be scored under the same task setup.",
+        "url": ""
+      }
+    ],
+    "intuition": "Practice questions help a model learn; fresh questions help judge what it learned. The separation is what makes the resulting score a more credible test of generalization.",
+    "howItWorks": [
+      "Curate examples and reference answers that represent the task to be measured.",
+      "Keep these examples separate from the data used to fit the model.",
+      "Run the trained model on the evaluation inputs and collect its predictions.",
+      "Compare the predictions with the reference answers using suitable metrics.",
+      "Inspect both the overall scores and the kinds of examples where errors occur."
+    ],
+    "whyItMatters": "Evaluation results influence which models are selected and which capabilities receive further optimization. Careful construction therefore matters: a narrow or unrepresentative dataset can produce precise-looking scores while missing important behavior.",
+    "misconceptions": [
+      "A high evaluation score does not guarantee equally strong performance on every real-world input.",
+      "A larger evaluation dataset is not automatically better if its examples or labels are unrepresentative.",
+      "Repeatedly tuning a model against the same evaluation set can weaken its value as an independent final test."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "examples",
+          "label": "Labeled examples",
+          "note": "Curated inputs and reference answers"
+        },
+        {
+          "id": "training",
+          "label": "Training data",
+          "note": "Examples used to fit the model"
+        },
+        {
+          "id": "evaluation",
+          "label": "Evaluation data",
+          "note": "Separate examples reserved for measurement"
+        },
+        {
+          "id": "model",
+          "label": "Trained model",
+          "note": "Produces predictions for evaluation inputs"
+        },
+        {
+          "id": "scoring",
+          "label": "Prediction scoring",
+          "note": "Compares predictions with reference answers"
+        },
+        {
+          "id": "results",
+          "label": "Performance results",
+          "note": "Metrics and observed error patterns"
+        }
+      ],
+      "edges": [
+        {
+          "from": "examples",
+          "to": "training",
+          "label": "fit split"
+        },
+        {
+          "from": "examples",
+          "to": "evaluation",
+          "label": "held-out split"
+        },
+        {
+          "from": "training",
+          "to": "model",
+          "label": "trains"
+        },
+        {
+          "from": "evaluation",
+          "to": "model",
+          "label": "inputs"
+        },
+        {
+          "from": "model",
+          "to": "scoring",
+          "label": "predictions"
+        },
+        {
+          "from": "evaluation",
+          "to": "scoring",
+          "label": "answers"
+        },
+        {
+          "from": "scoring",
+          "to": "results",
+          "label": "summarizes"
+        }
+      ],
+      "caption": "The model learns from training data, while separate evaluation data supplies fresh inputs and reference answers for scoring."
+    }
+  },
   "related": [
     "capability-evaluation",
     "human-evaluation",

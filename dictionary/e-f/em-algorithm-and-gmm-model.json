@@ -5,7 +5,114 @@
   "type": "algorithm",
   "definition": "In statistics, EM (expectation maximization) algorithm handles latent variables, while GMM is the Gaussian mixture model..",
   "details": "In statistics, EM (expectation maximization) algorithm handles latent variables, while GMM is the Gaussian mixture model.",
-  "story": "Think of a lightbulb moment: the idea was always there, but someone had to point a finger at it. Behind the jargon is an idea you could explain to a friend over coffee. At its heart it is a simple notion, once you strip away the fancy name. Once you see it, you cannot unsee it. That is EM algorithm and GMM model — a small key that opens a big door.",
+  "explainer": {
+    "lead": "The expectation–maximization (EM) algorithm estimates a statistical model when some variables are hidden. A common use is fitting a Gaussian mixture model (GMM), which represents data as a blend of several Gaussian distributions and gives each point soft membership in each component.",
+    "tiers": {
+      "eli5": "Imagine sorting mixed piles of differently sized pebbles without being told which pile each pebble came from. EM repeatedly makes its best guess about each pebble’s pile, then uses those guesses to improve its description of every pile. With a Gaussian mixture model, each pile is described by a typical center and spread.",
+      "practitioner": "Use EM to fit a GMM by choosing the number of components, initializing their weights, means and covariances, then alternating responsibility calculations with parameter updates. Monitor the observed-data log-likelihood and try multiple initializations because convergence can be to a local optimum. Watch for components collapsing onto very few points, which can produce degenerate covariance estimates.",
+      "paperLevel": "A GMM has density p(x) = sum_{k=1}^K pi_k N(x | mu_k, Sigma_k), with nonnegative weights pi_k summing to 1. EM maximizes the observed-data likelihood by alternating an E-step, computing posterior component responsibilities from the current parameters, with an M-step, updating pi_k, mu_k and Sigma_k using those responsibilities. The likelihood is generally nondecreasing across iterations, but convergence may be to a local maximum and Gaussian-component likelihoods can become unbounded in degenerate cases."
+    },
+    "example": "Suppose the one-dimensional observations 100, 101, 102, 149, 150 and 151 are modeled by two Gaussian components. Starting from rough centers, EM assigns the first three points high responsibility for one component and the last three high responsibility for the other, then updates their means to 101 and 150. Repeating the responsibility and parameter updates yields a two-component description of the data.",
+    "usedIn": [
+      {
+        "name": "Statistics",
+        "detail": "Estimating models whose observed data depend on latent variables.",
+        "url": ""
+      },
+      {
+        "name": "Mixture modelling",
+        "detail": "Fitting the component weights, means and covariances of a Gaussian mixture model.",
+        "url": ""
+      },
+      {
+        "name": "Unsupervised learning",
+        "detail": "Representing groups in data with soft rather than forced component assignments.",
+        "url": ""
+      }
+    ],
+    "goal": "Estimate the parameters of a model with latent variables, such as a GMM, by improving the observed-data likelihood through repeated expectation and maximization steps.",
+    "inputs": [
+      "Observed data points",
+      "A model with latent variables",
+      "Initial parameter estimates",
+      "For a GMM, the chosen number of components"
+    ],
+    "outputs": [
+      "Estimated model parameters",
+      "Latent-variable probabilities or responsibilities",
+      "For a GMM, component weights, means and covariances"
+    ],
+    "steps": [
+      "Choose initial values for the model parameters.",
+      "E-step: use the current parameters to calculate probabilities for the latent variables; in a GMM, these are component responsibilities for each point.",
+      "M-step: update the parameters to maximize the expected complete-data likelihood using those probabilities.",
+      "Repeat the E-step and M-step until the likelihood or parameters change very little.",
+      "Return the fitted parameters and the final latent-variable probabilities."
+    ],
+    "tradeoffs": [
+      "The result can depend on initialization.",
+      "EM may converge to a local rather than global optimum.",
+      "The number of GMM components must be chosen.",
+      "Degenerate components and covariance estimates can cause numerical problems."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data",
+          "label": "Observed data",
+          "note": "Points whose component labels are hidden."
+        },
+        {
+          "id": "init",
+          "label": "Initial parameters",
+          "note": "Starting weights, means and covariances."
+        },
+        {
+          "id": "estep",
+          "label": "E-step responsibilities",
+          "note": "Probabilities assigning each point to components."
+        },
+        {
+          "id": "mstep",
+          "label": "M-step updates",
+          "note": "Parameters re-estimated from responsibilities."
+        },
+        {
+          "id": "fit",
+          "label": "Fitted mixture",
+          "note": "Final GMM parameters and soft memberships."
+        }
+      ],
+      "edges": [
+        {
+          "from": "data",
+          "to": "estep",
+          "label": "observations"
+        },
+        {
+          "from": "init",
+          "to": "estep",
+          "label": "parameters"
+        },
+        {
+          "from": "estep",
+          "to": "mstep",
+          "label": "probabilities"
+        },
+        {
+          "from": "mstep",
+          "to": "estep",
+          "label": "repeat"
+        },
+        {
+          "from": "mstep",
+          "to": "fit",
+          "label": "converged"
+        }
+      ],
+      "caption": "EM alternates soft latent-variable estimates with parameter updates until the Gaussian mixture fit stabilizes."
+    }
+  },
   "related": [
     "acoustic-model",
     "action-model-learning",

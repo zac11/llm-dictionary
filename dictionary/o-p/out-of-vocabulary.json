@@ -8,6 +8,32 @@
   ],
   "definition": "Input the tokenizer cannot represent as known units.",
   "details": "Input the tokenizer cannot represent as known units. Byte-level fallback has largely eliminated hard OOV failures, but rare strings still fragment into many tokens, degrading modeling quality.",
+  "explainer": {
+    "lead": "Out-of-vocabulary describes input the tokenizer cannot represent as known units. Rare strings now usually fragment into many tokens rather than failing outright, which still hurts modeling quality.",
+    "tiers": {
+      "eli5": "It's like a dictionary that has no entry for a new slang word, so it spells it out letter by letter.",
+      "practitioner": "Byte-level fallback means unknown words rarely crash tokenization, but they splinter into many tokens and inflate sequence length and cost. Watch for rare names, codes, and non-Latin scripts degrading quality.",
+      "paperLevel": "A token is OOV when it is absent from the tokenizer vocabulary. Byte-level fallback largely eliminates hard OOV failures, but rare strings still fragment into many tokens, degrading modeling quality."
+    },
+    "example": "A username like 'xq7_zz9' not in the vocabulary is split into several subword or byte tokens, consuming more context than a common word would.",
+    "usedIn": [
+      {
+        "name": "Subword tokenizers",
+        "detail": "handling rare strings",
+        "url": ""
+      },
+      {
+        "name": "Machine translation",
+        "detail": "rare names and terms",
+        "url": ""
+      },
+      {
+        "name": "Search systems",
+        "detail": "query tokenization",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "tokenizer"
   ],

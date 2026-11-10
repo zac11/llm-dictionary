@@ -5,7 +5,81 @@
   "type": "concept",
   "definition": "A unique identifier used to authenticate requests to an API, associating usage with a particular account or application.",
   "details": "API keys are the standard mechanism for authenticating and tracking usage of AI model APIs, and are typically kept secret to prevent unauthorized use billed to another party's account.",
-  "story": "Think of a lightbulb moment: the idea was always there, but someone had to point a finger at it. Behind the jargon is an idea you could explain to a friend over coffee. At its heart it is a simple notion, once you strip away the fancy name. Once you see it, you cannot unsee it. That is API Key — a small key that opens a big door.",
+  "explainer": {
+    "lead": "An API key lets an API recognize which account or application is making a request. Keeping it secret matters because someone else could use it and leave you with the bill.",
+    "tiers": {
+      "eli5": "An API key is like a secret membership card for a computer program. The program shows the card when it asks an AI service to do something, so the service knows whose account to record. If another person gets the card, they might use it without permission.",
+      "practitioner": "Include the key with requests to the API and treat it as a secret credential tied to an account or application. A leaked key can let another party make unauthorized requests that are billed to its owner.",
+      "paperLevel": "An API key is a unique identifier k that authenticates a request r and associates r with an account or application a. In AI model APIs, k also supports usage tracking; exposing k can permit unauthorized use charged to the associated account."
+    },
+    "example": "A chat application sends an AI model request with its secret API key. The provider links the request to the application's account and tracks its usage; if the key leaks, someone else could make requests billed to that account.",
+    "usedIn": [
+      {
+        "name": "AI model APIs",
+        "detail": "Authenticate requests and track usage for a particular account or application.",
+        "url": ""
+      },
+      {
+        "name": "API-based applications",
+        "detail": "Identify the application making requests so its usage can be associated with the right account.",
+        "url": ""
+      }
+    ],
+    "intuition": "It is a secret account label attached to an API request, allowing the service to recognize who is asking and record the usage.",
+    "howItWorks": [
+      "An account or application has a unique API key.",
+      "The application includes the key when sending a request to the API.",
+      "The API uses the key to authenticate the request.",
+      "The service associates the request and its usage with that account or application."
+    ],
+    "whyItMatters": "API keys let AI providers control access and connect usage to the correct account. Secrecy is essential because the key can authorize spending on that account.",
+    "misconceptions": [
+      "An API key does not necessarily identify an individual person; it identifies an account or application.",
+      "An API key is not normally safe to share publicly, because others may use it at the owner's expense."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "app",
+          "label": "Client application",
+          "note": "Holds the secret key."
+        },
+        {
+          "id": "request",
+          "label": "API request",
+          "note": "Carries the request and key."
+        },
+        {
+          "id": "api",
+          "label": "API service",
+          "note": "Authenticates the key."
+        },
+        {
+          "id": "account",
+          "label": "Account usage",
+          "note": "Records use for billing and tracking."
+        }
+      ],
+      "edges": [
+        {
+          "from": "app",
+          "to": "request",
+          "label": "sends with key"
+        },
+        {
+          "from": "request",
+          "to": "api",
+          "label": "authenticates"
+        },
+        {
+          "from": "api",
+          "to": "account",
+          "label": "associates usage"
+        }
+      ],
+      "caption": "The API key connects an incoming request to the account or application responsible for its usage."
+    }
+  },
   "related": [
     "approximate-nearest-neighbor-search",
     "cascade-model-cascade",

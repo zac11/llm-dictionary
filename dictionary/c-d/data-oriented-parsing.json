@@ -5,7 +5,93 @@
   "type": "concept",
   "definition": "Data-oriented parsing (DOP, also data-oriented processing) is a probabilistic model in computational linguistics.",
   "details": "DOP was conceived by Remko Scha in 1990 with the aim of developing a performance-oriented grammar framework. Unlike other probabilistic models, DOP takes into account all subtrees contained in a treebank rather than being restricted to, for example, 2-level subtrees (like PCFGs), thus allowing for more context-sensitive information. Several variants of DOP have been developed. The initial version developed by Rens Bod in 1992 was based on tree-substitution grammar, while more recently, DOP has been combined with lexical-functional grammar (LFG). The resulting DOP-LFG finds an application in machine translation. Other work on learning and parameter estimation for DOP has also found its way into machine translation.",
-  "story": "Think of a grammar teacher who never memorized a rule but can still tell you when a sentence sounds wrong. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It figures out meaning by noticing which words like to travel together. The machine learns to read between the lines by reading an impossible number of lines. And that is Data-oriented parsing — teaching a machine to read between the lines.",
+  "explainer": {
+    "lead": "Data-oriented parsing is a way to build a probabilistic grammar directly from a collection of parsed sentences. It can reuse tree fragments of many sizes, allowing larger patterns and more contextual information to influence an analysis than in a conventional PCFG.",
+    "tiers": {
+      "eli5": "Imagine learning language from a box of sentence diagrams. Instead of keeping only tiny pieces, you keep pieces of every size, from small phrases to much larger patterns. Data-oriented parsing uses those pieces to judge which new sentence diagrams are most likely.",
+      "practitioner": "DOP starts with a treebank and considers all subtrees it contains, rather than only the two-level subtrees used by PCFGs. Implementations vary: Rens Bod's initial 1992 version used tree-substitution grammar, while DOP-LFG and related learning and parameter-estimation work have been applied to machine translation.",
+      "paperLevel": "DOP is a probabilistic grammar model whose fragment set comprises all subtrees contained in a treebank, rather than being restricted to local PCFG-style productions. Remko Scha conceived DOP in 1990 as a performance-oriented grammar framework; Rens Bod's initial 1992 version was based on tree-substitution grammar. Later variants include DOP-LFG, which combines DOP with lexical-functional grammar."
+    },
+    "example": "Suppose a treebank contains parse trees for \"the cat sleeps\" and \"the dog sleeps.\" When analyzing \"the cat sleeps,\" DOP can draw on small pieces such as the noun-phrase structure as well as larger subtrees spanning more of the sentence, with the probabilistic model taking those available fragments into account.",
+    "usedIn": [
+      {
+        "name": "Machine translation",
+        "detail": "DOP-LFG and other work on DOP learning and parameter estimation have found applications in translation.",
+        "url": ""
+      },
+      {
+        "name": "Performance-oriented grammar modeling",
+        "detail": "DOP uses analyses collected in a treebank as the basis for a probabilistic grammar framework.",
+        "url": ""
+      }
+    ],
+    "intuition": "A treebank contains reusable grammatical patterns at many scales. DOP keeps that range of patterns available, so a parse can reflect both small local structures and larger, more context-sensitive ones.",
+    "howItWorks": [
+      "Begin with a treebank of parsed sentences.",
+      "Consider all subtrees contained in its parse trees.",
+      "Use these fragments in a probabilistic grammar model.",
+      "Let larger fragments contribute context that local PCFG rules cannot capture.",
+      "Choose a variant such as tree-substitution DOP or DOP-LFG for the target setting."
+    ],
+    "whyItMatters": "DOP shows how a grammar can retain rich structural evidence from example analyses instead of reducing every tree to small local rules. Its variants also connect this idea to machine translation and lexical-functional grammar.",
+    "misconceptions": [
+      "DOP is not limited to the two-level subtrees associated with PCFGs.",
+      "DOP is not one fixed implementation; several variants have been developed.",
+      "Data-oriented parsing and data-oriented processing refer to the same approach here."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "treebank",
+          "label": "Parsed treebank",
+          "note": "Example sentences with parse trees"
+        },
+        {
+          "id": "subtrees",
+          "label": "All subtrees",
+          "note": "Fragments of many sizes"
+        },
+        {
+          "id": "model",
+          "label": "Probabilistic DOP",
+          "note": "Uses the retained tree fragments"
+        },
+        {
+          "id": "analysis",
+          "label": "Parse analysis",
+          "note": "Can reflect broader context"
+        },
+        {
+          "id": "variants",
+          "label": "DOP variants",
+          "note": "Includes tree-substitution DOP and DOP-LFG"
+        }
+      ],
+      "edges": [
+        {
+          "from": "treebank",
+          "to": "subtrees",
+          "label": "provides"
+        },
+        {
+          "from": "subtrees",
+          "to": "model",
+          "label": "defines fragments"
+        },
+        {
+          "from": "model",
+          "to": "analysis",
+          "label": ""
+        },
+        {
+          "from": "model",
+          "to": "variants",
+          "label": "developed as"
+        }
+      ],
+      "caption": "DOP turns the full range of subtrees in a treebank into the basis of a probabilistic grammar, with several variant frameworks."
+    }
+  },
   "related": [
     "data",
     "linguistic-linked-open-data",

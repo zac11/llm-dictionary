@@ -5,7 +5,108 @@
   "type": "concept",
   "definition": "The cross-entropy (CE) method is a Monte Carlo method for importance sampling and optimization.",
   "details": "It is applicable to both combinatorial and continuous problems, with either a static or noisy objective. The method approximates the optimal importance sampling estimator by repeating two phases: Draw a sample from a probability distribution. Minimize the cross-entropy between this distribution and a target distribution to produce a better sample in the next iteration. Reuven Rubinstein developed the method in the context of rare-event simulation, where tiny probabilities must be estimated, for example in network reliability analysis, queueing models, or performance analysis of telecommunication systems. The method has also been applied to the traveling salesman, quadratic assignment, DNA sequence alignment, max-cut and buffer allocation problems.",
-  "story": "Imagine a sketch artist who starts with static and, stroke by stroke, sharpens it into a face. The result feels creative because it is memory, reshuffled at speed. Given a starting line, the machine imagines what comes next — a word, a note, a patch of a picture. The model dreams a little, then cleans up the dream. And that is Cross-entropy method — making something new out of everything it has ever seen.",
+  "explainer": {
+    "lead": "The cross-entropy method learns where to sample by repeatedly drawing candidates, evaluating them, and adjusting a probability distribution toward better outcomes. It is useful both for optimization and for estimating extremely small probabilities, such as rare failures in networks.",
+    "tiers": {
+      "eli5": "Imagine guessing the shortest route through a city by trying lots of random routes. After each round, you change your guessing rules so they produce routes more like the best ones you found. Repeating this helps you search promising places instead of guessing blindly.",
+      "practitioner": "Use it as an iterative sampling loop: generate candidates from the current distribution, evaluate the objective or rare-event outcome, then update the distribution by minimizing cross-entropy with the target distribution. It handles combinatorial and continuous problems, including static or noisy objectives, but each iteration requires enough sampling and evaluation to support a useful update.",
+      "paperLevel": "The CE method approximates an optimal importance-sampling estimator using a family of sampling distributions q_theta. At each iteration, samples from q_theta inform a target distribution, and theta is updated by minimizing cross-entropy, equivalently minimizing D_KL(target || q_theta). Reuven Rubinstein developed the method for rare-event simulation; it also applies to combinatorial and continuous optimization with static or noisy objectives."
+    },
+    "example": "For the traveling salesman problem, sample many routes and measure their lengths. Update the route-sampling distribution toward the target represented by shorter routes, then sample again; successive iterations concentrate the search on increasingly promising routes.",
+    "usedIn": [
+      {
+        "name": "Network reliability analysis",
+        "detail": "Estimates tiny probabilities of rare network events.",
+        "url": ""
+      },
+      {
+        "name": "Telecommunication performance analysis",
+        "detail": "Supports simulation of rare outcomes that affect system performance.",
+        "url": ""
+      },
+      {
+        "name": "Queueing models",
+        "detail": "Applies importance sampling to rare-event probability estimation.",
+        "url": ""
+      },
+      {
+        "name": "Combinatorial optimization",
+        "detail": "Has been applied to traveling salesman, quadratic assignment, max-cut, DNA sequence alignment, and buffer allocation problems.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of treating every candidate as equally worth sampling, use previous results to make promising candidates more likely. The same idea can focus simulation on rare events that ordinary random sampling would almost never produce.",
+    "howItWorks": [
+      "Start with a probability distribution over possible samples.",
+      "Draw a sample from that distribution.",
+      "Evaluate the sample to identify the target outcomes of interest.",
+      "Minimize the cross-entropy between the current and target distributions to update the sampling distribution.",
+      "Repeat so later samples come from the improved distribution."
+    ],
+    "whyItMatters": "It turns sampling results into a better sampling distribution, combining random exploration with focused search. This is especially valuable when good solutions are hard to find or important events have extremely small probabilities.",
+    "misconceptions": [
+      "It is not only an optimization technique; importance sampling and rare-event simulation are central uses.",
+      "It does not require a continuous problem or a noise-free objective.",
+      "Minimizing cross-entropy updates the sampling distribution; it does not directly evaluate the objective."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "distribution",
+          "label": "Sampling distribution",
+          "note": "Current probabilities over candidates"
+        },
+        {
+          "id": "sample",
+          "label": "Draw sample",
+          "note": "Generate candidates by Monte Carlo sampling"
+        },
+        {
+          "id": "evaluate",
+          "label": "Evaluate outcomes",
+          "note": "Measure objective values or rare events"
+        },
+        {
+          "id": "target",
+          "label": "Form target",
+          "note": "Represent the outcomes to emphasize"
+        },
+        {
+          "id": "update",
+          "label": "Minimize cross-entropy",
+          "note": "Fit a better sampling distribution"
+        }
+      ],
+      "edges": [
+        {
+          "from": "distribution",
+          "to": "sample",
+          "label": ""
+        },
+        {
+          "from": "sample",
+          "to": "evaluate",
+          "label": ""
+        },
+        {
+          "from": "evaluate",
+          "to": "target",
+          "label": ""
+        },
+        {
+          "from": "target",
+          "to": "update",
+          "label": ""
+        },
+        {
+          "from": "update",
+          "to": "distribution",
+          "label": "next iteration"
+        }
+      ],
+      "caption": "Each iteration uses sampled outcomes to update the distribution that generates the next sample."
+    }
+  },
   "related": [
     "active-set-method",
     "augmented-lagrangian-method",

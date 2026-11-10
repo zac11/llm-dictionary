@@ -5,7 +5,103 @@
   "type": "concept",
   "definition": "Automatic label placement, sometimes called text placement or name placement, comprises the computer methods of placing labels automatically on a map or chart.",
   "details": "This is related to the typographic design of such labels. The typical features depicted on a geographic map are line features (e.g. roads), area features (countries, parcels, forests, lakes, etc.), and point features (villages, cities, etc.). In addition to depicting the map's features in a geographically accurate manner, it is of critical importance to place the names that identify these features, in a way that the reader knows instantly which name describes which feature. Automatic text placement is one of the most difficult, complex, and time-consuming problems in mapmaking and GIS (Geographic Information System). Other kinds of computer-generated graphics – like charts, graphs etc. – require good placement of labels as well, not to mention engineering drawings, and professional programs which produce these drawings and charts, like spreadsheets (e.g. Microsoft Excel) or computational software programs (e.g. Mathematica). Naively placed labels overlap excessively, resulting in a map that is difficult or even impossible to read. Therefore, a GIS must allow a few possible placements of each label, and often also an option of resizing, rotating, or even removing (suppressing) the label. Then, it selects a set of placements that results in the least overlap, and has other desirable properties. For all but the most trivial setups, the problem is NP-hard.",
-  "story": "Picture a librarian organizing a million slips of paper so that any one of them can be found in a heartbeat. The examples a machine reads become the world it believes in. Better ingredients make a better meal, and the same is true here. Garbage in, garbage out — and the reverse: clean, representative data makes the model quietly brilliant. And that is Automatic label placement — the unglamorous work everything else stands on.",
+  "explainer": {
+    "lead": "Automatic label placement is the task of making software decide where names should go on maps, charts, and engineering drawings. Good placement keeps labels readable and makes it immediately clear which feature each name describes.",
+    "tiers": {
+      "eli5": "Imagine putting name stickers on a picture without covering anything important or letting the stickers overlap. A computer tries several spots for each sticker, then picks the arrangement that is easiest to read. Sometimes it may turn, shrink, or leave out a sticker to make room.",
+      "practitioner": "In GIS and charting software, each label is given several candidate positions, with options such as resizing, rotation, or suppression. The system then selects a combination with little overlap and other readable placements; naïve placement can make a map difficult or impossible to read. Tools and settings include GIS mapmaking, charts in Microsoft Excel, graphics in Mathematica, and engineering-drawing programs.",
+      "paperLevel": "Given point, line, and area features, choose one placement for each identifying label from its candidate positions, optionally allowing resizing, rotation, or suppression. The selection should minimize label overlap while satisfying other desirable placement properties. For all but the most trivial setups, automatic text placement is NP-hard."
+    },
+    "example": "On a map with two nearby villages and a road, one village name might fit above its point while the other fits below its point, avoiding both each other and the road name. If every candidate still causes excessive overlap, the GIS may rotate, resize, or suppress one label.",
+    "usedIn": [
+      {
+        "name": "Geographic Information Systems",
+        "detail": "Place the names of roads, countries, lakes, villages, and other mapped features.",
+        "url": ""
+      },
+      {
+        "name": "Microsoft Excel",
+        "detail": "Charts and other computer-generated graphics require readable label placement.",
+        "url": ""
+      },
+      {
+        "name": "Mathematica",
+        "detail": "Computational graphics need labels positioned so they do not overlap excessively.",
+        "url": ""
+      },
+      {
+        "name": "Engineering drawings",
+        "detail": "Professional drawing programs must place identifying text clearly among depicted features.",
+        "url": ""
+      }
+    ],
+    "intuition": "A label is useful only when readers can see it and instantly connect it to the right feature. The computer therefore searches for a jointly readable arrangement rather than placing every label independently.",
+    "howItWorks": [
+      "Identify the point, line, and area features that need names.",
+      "Generate several possible placements for each label.",
+      "Allow resizing, rotation, or suppression where needed.",
+      "Compare combinations for overlap and other desirable properties.",
+      "Select the placement set that produces the most readable result."
+    ],
+    "whyItMatters": "Names are essential to interpreting a map or chart, but excessive overlap can make the graphic difficult or impossible to read. Automating placement addresses one of the most difficult, complex, and time-consuming problems in mapmaking and GIS.",
+    "misconceptions": [
+      "It is not just drawing text at each feature's coordinates.",
+      "The best arrangement may require rotating, resizing, or omitting labels.",
+      "It also applies to charts, graphs, and engineering drawings, not only geographic maps."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "features",
+          "label": "Map features",
+          "note": "Points, lines, and areas needing names."
+        },
+        {
+          "id": "candidates",
+          "label": "Candidate positions",
+          "note": "Several possible placements per label."
+        },
+        {
+          "id": "adjustments",
+          "label": "Label adjustments",
+          "note": "Resize, rotate, or suppress when allowed."
+        },
+        {
+          "id": "selection",
+          "label": "Placement selection",
+          "note": "Compare combinations for overlap and readability."
+        },
+        {
+          "id": "output",
+          "label": "Labeled graphic",
+          "note": "Names clearly identify their features."
+        }
+      ],
+      "edges": [
+        {
+          "from": "features",
+          "to": "candidates",
+          "label": ""
+        },
+        {
+          "from": "candidates",
+          "to": "adjustments",
+          "label": ""
+        },
+        {
+          "from": "adjustments",
+          "to": "selection",
+          "label": ""
+        },
+        {
+          "from": "selection",
+          "to": "output",
+          "label": ""
+        }
+      ],
+      "caption": "The system generates possible label arrangements, then selects a readable set for the finished graphic."
+    }
+  },
   "related": [
     "automatic-acquisition-of-lexicon",
     "automatic-acquisition-of-sense-tagged-corpora",

@@ -5,6 +5,27 @@
   "type": "concept",
   "definition": "Reading intermediate layer activations through the output head to watch a prediction form layer by layer, revealing where in depth a model \"decides.\"",
   "details": "Reading intermediate layer activations through the output head to watch a prediction form layer by layer, revealing where in depth a model \"decides.\"",
+  "explainer": {
+    "lead": "The logit lens is a diagnostic that reads intermediate layer activations through the model's output head to watch a prediction form layer by layer. It reveals at which depth in the network a model effectively commits to an answer.",
+    "tiers": {
+      "eli5": "Imagine listening to a jury deliberate round by round; the logit lens lets you peek at each stage to see when the verdict first takes shape.",
+      "practitioner": "Researchers project hidden states from each layer onto the vocabulary to see how the top prediction evolves with depth, which helps locate where knowledge is stored. A pitfall is over-reading early layers, whose projections can be misleading because those representations were not trained to be decoded that way.",
+      "paperLevel": "For each layer, the layer's hidden state is multiplied by the output unembedding and passed through softmax to yield a token distribution; the technique exposes where predictions become stable, but interpretation of intermediate layers is approximate rather than guaranteed."
+    },
+    "example": "Feeding a prompt through a model and decoding the layer-10, layer-20 and final-layer hidden states shows the correct answer first appearing at layer 20 and strengthening thereafter.",
+    "usedIn": [
+      {
+        "name": "Mechanistic interpretability",
+        "detail": "tracing where predictions form",
+        "url": ""
+      },
+      {
+        "name": "Model debugging",
+        "detail": "locating layered knowledge",
+        "url": ""
+      }
+    ]
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

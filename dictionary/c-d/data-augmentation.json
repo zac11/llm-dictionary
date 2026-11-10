@@ -5,7 +5,97 @@
   "type": "concept",
   "definition": "Techniques for artificially expanding a training dataset by creating modified versions of existing data, such as rotations of images or paraphrases of text.",
   "details": "Data augmentation helps models generalize better by exposing them to greater variability during training without requiring additional labeled data collection.",
-  "story": "Think of a hiker descending a foggy hill in the dark, taking small steps and feeling for the steepest way down. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. It is the same loop you use to learn anything: try, miss, correct, try again. Skill, for a model, is just error pushed down until it is small enough to ignore. That steady, miss-by-miss improvement is Data Augmentation.",
+  "explainer": {
+    "lead": "Data augmentation gives a model more varied practice by modifying the training examples it already has. It can improve generalization without collecting and labeling additional data.",
+    "tiers": {
+      "eli5": "It is like helping a child recognize a dog in photos taken from different angles, rather than only in one perfect picture. You make altered copies of your practice examples, such as turning an image or rewording a sentence. The extra variety helps the learner handle new examples.",
+      "practitioner": "Apply label-preserving transformations to training examples, either when preparing the dataset or as batches are loaded, while leaving validation and test data unchanged. Choose transformations that reflect variation the model should handle, such as image rotations or text paraphrases. Changes that alter the meaning or label can teach the model incorrect patterns, and augmented copies do not replace genuinely new data.",
+      "paperLevel": "Given a labeled dataset D = {(x, y)}, augmentation constructs additional examples (T(x), y), where T is a transformation assumed to preserve the label. The model is trained on the original examples, their augmented versions, or both, exposing it to greater input variability. Its effectiveness depends on that label-preservation assumption, and transformed copies provide less diversity than independently collected examples."
+    },
+    "example": "A cat image labeled “cat” is rotated slightly and added to training with the same label. The model now practices recognizing the cat in both orientations without anyone collecting and labeling a second photograph.",
+    "usedIn": [
+      {
+        "name": "Computer vision",
+        "detail": "Rotated versions of existing images provide additional training variation.",
+        "url": ""
+      },
+      {
+        "name": "Natural language processing",
+        "detail": "Paraphrased text creates alternative wordings of labeled training examples.",
+        "url": ""
+      }
+    ],
+    "intuition": "A model should learn the pattern behind an example, not depend on one exact orientation or wording. Controlled variations encourage it to treat those superficial changes as irrelevant.",
+    "howItWorks": [
+      "Start with existing labeled training examples.",
+      "Choose a modification that preserves each example's label.",
+      "Create modified copies, such as rotated images or paraphrased text.",
+      "Train with the added variation so the model sees more than one version of an example."
+    ],
+    "whyItMatters": "It increases variability during training without requiring additional labeled data collection. This can help models generalize better to new examples.",
+    "misconceptions": [
+      "Augmentation is not the same as collecting new, independent data.",
+      "Not every modification is safe: a change that alters the meaning can invalidate the label.",
+      "Augmenting test data is not the same as augmenting training data."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data",
+          "label": "Labeled example",
+          "note": "An image or text with its label"
+        },
+        {
+          "id": "transform",
+          "label": "Apply transformation",
+          "note": "Rotate an image or paraphrase text"
+        },
+        {
+          "id": "copy",
+          "label": "Modified copy",
+          "note": "A varied version with the same label"
+        },
+        {
+          "id": "training",
+          "label": "Model training",
+          "note": "Original and modified examples provide practice"
+        },
+        {
+          "id": "generalization",
+          "label": "Better generalization",
+          "note": "Improved handling of new variation"
+        }
+      ],
+      "edges": [
+        {
+          "from": "data",
+          "to": "transform",
+          "label": "input"
+        },
+        {
+          "from": "transform",
+          "to": "copy",
+          "label": "creates"
+        },
+        {
+          "from": "data",
+          "to": "training",
+          "label": "original"
+        },
+        {
+          "from": "copy",
+          "to": "training",
+          "label": "augmented"
+        },
+        {
+          "from": "training",
+          "to": "generalization",
+          "label": "aim"
+        }
+      ],
+      "caption": "Label-preserving modifications add variety to the examples used during training."
+    }
+  },
   "related": [
     "data-mixture",
     "active-learning",

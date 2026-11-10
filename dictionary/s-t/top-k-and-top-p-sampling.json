@@ -5,6 +5,27 @@
   "type": "concept",
   "definition": "Techniques to constrain token selection during generation.",
   "details": "Techniques to constrain token selection during generation.",
+  "explainer": {
+    "lead": "Top-k and top-p sampling constrain which tokens a model may pick during generation. They matter because they are the main knobs for trading off randomness against coherence in output.",
+    "tiers": {
+      "eli5": "Instead of letting the model pick any next word, you give it a shortlist and let it choose from that. Top-k fixes the list size; top-p fixes how much probability the list must cover.",
+      "practitioner": "Engineers tune these per task, tighter for factual answers and looser for creative writing. A pitfall is settings too loose, which lets unlikely tokens through and derails the text.",
+      "paperLevel": "Both restrict the sampling distribution at each step. Top-k keeps the k most probable tokens; top-p keeps the smallest set whose cumulative probability exceeds p."
+    },
+    "example": "With top-k set to 50, the model samples only among its 50 most likely next tokens at each step.",
+    "usedIn": [
+      {
+        "name": "Text generation APIs",
+        "detail": "decoding controls",
+        "url": ""
+      },
+      {
+        "name": "Chatbots",
+        "detail": "creativity tuning",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "token"
   ],

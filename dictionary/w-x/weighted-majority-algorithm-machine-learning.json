@@ -5,7 +5,32 @@
   "type": "concept",
   "definition": "In machine learning, weighted majority algorithm (WMA) is a meta learning algorithm used to construct a compound algorithm from a pool of prediction algorithms, which could be any type of learning algorithms, classifiers, or even real human experts.",
   "details": "The algorithm assumes that we have no prior knowledge about the accuracy of the algorithms in the pool, but there are sufficient reasons to believe that one or more will perform well. Assume that the problem is a binary decision problem. To construct the compound algorithm, a positive weight is given to each of the algorithms in the pool. The compound algorithm then collects weighted votes from all the algorithms in the pool, and gives the prediction that has a higher vote. If the compound algorithm makes a mistake, the algorithms in the pool that contributed to the wrong predicting will be discounted by a certain ratio β where 0<β<1. It can be shown that the upper bounds on the number of mistakes made in a given sequence of predictions from a pool of algorithms A {\\displaystyle \\mathbf {A} } is O ( l o g | A | + m ) {\\displaystyle \\mathbf {O(log|A|+m)} } if one algorithm in x i {\\displaystyle \\mathbf {x} _{i}} makes at most m {\\displaystyle \\mathbf {m} } mistakes. There are many variations of the weighted majority algorithm to handle different situations, like shifting targets, infinite pools, or randomized predictions. The core mechanism remains similar, with the final performanc",
-  "story": "Think of a lightbulb moment: the idea was always there, but someone had to point a finger at it. Behind the jargon is an idea you could explain to a friend over coffee. At its heart it is a simple notion, once you strip away the fancy name. Once you see it, you cannot unsee it. That is Weighted majority algorithm (machine learning) — a small key that opens a big door.",
+  "explainer": {
+    "lead": "The weighted majority algorithm is a meta learning algorithm that builds a compound predictor from a pool of prediction algorithms, classifiers or human experts. It matters because it aggregates weak or varied predictors without prior knowledge of their accuracy.",
+    "tiers": {
+      "eli5": "It is like asking a panel of friends for a vote, giving more say to friends who have been right more often, even though you didn't know at the start who was reliable.",
+      "practitioner": "Engineers start with positive weights on each pool member and combine their weighted votes to predict binary outcomes. The pitfall is that weights adapt only after outcomes are known, so early predictions are poorly calibrated and depend on pool diversity.",
+      "paperLevel": "Formally, for a binary decision problem each pool algorithm receives a positive weight with no prior knowledge of its accuracy; the compound algorithm takes weighted votes and outputs the higher-vote prediction, and weights are adjusted after outcomes. The documented assumption is that one or more pool algorithms will perform well."
+    },
+    "example": "Three classifiers each vote on a binary label; the initial equal weights produce a majority decision, and afterwards the weight of any classifier that erred is reduced for future rounds.",
+    "usedIn": [
+      {
+        "name": "Ensemble learning",
+        "detail": "combining classifiers",
+        "url": ""
+      },
+      {
+        "name": "Online learning",
+        "detail": "adaptive weights",
+        "url": ""
+      },
+      {
+        "name": "Expert aggregation",
+        "detail": "weighted voting",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "machine-learning",
     "randomized-weighted-majority-algorithm",

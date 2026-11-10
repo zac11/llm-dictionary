@@ -5,7 +5,119 @@
   "type": "concept",
   "definition": "Agent Communication Language (ACL) consists of computer communication protocols that are intended for AI agents to communicate with each other.",
   "details": "In 2007, protocols of this nature were proposed which include: FIPA-ACL (by the Foundation for Intelligent Physical Agents, a standardization consortium) KQML (Knowledge Query and Manipulation Language) After the surge in generative AI with the use of Transformers and Large language models, the definition of agent has shifted away from physical agents to signify software systems built using the principles of Agentic AI. A new protocol to emerge in this area is Natural Language Interaction Protocol (NLIP). NLIP is an application-level communication protocol defined between AI Agents or between a human and an AI agent. Ecma International; a standards body which develops and publishes international standards for the information and communication industry; published on 10 December 2025 five new standards and one technical report defining the Natural Language Interaction Protocol (NLIP). As a result, we can define agent communication protocols into two categories: ontology based agent communication protocols and generative AI based agent communication protocols. Ontology based agent communication protocols use a common ontology to be used between agents. An ontology is a part of the age",
-  "story": "Imagine handing a to-do list to a very clever intern who refuses to guess: before each step, they look around, check the result, and adjust. It is the difference between a search engine and a helper who actually finishes the task. The machine stops just answering one question and starts getting a job done, step by step, checking its work along the way. It is a loop of look, act, and learn — the same way you cook from a recipe you have never tried: add, taste, correct. And that habit of checking, acting, then checking again is Agent Communications Language.",
+  "explainer": {
+    "lead": "Agent Communications Language is the shared grammar that lets software agents talk to each other — from robots negotiating warehouse tasks to AI assistants coordinating a trip across different services. Without it, every agent would need custom wiring to understand every other agent.",
+    "tiers": {
+      "eli5": "Imagine you and your friends all speak different made-up languages, but you need to plan a surprise party together. An Agent Communications Language is like a simple rulebook everyone agrees to use: \"when you say 'ASK,' you really mean you're requesting something,\" and \"when you say 'TELL,' you're sharing information.\" It doesn't matter what language you normally speak — the rulebook keeps everyone on the same page.",
+      "practitioner": "In practice, ACL implementations like FIPA-ACL and KQML provide performatives (ASK, TELL, REQUEST) that agents use to exchange goals and knowledge. You'll encounter them in multi-agent systems built with JADE or FIPA-OS, typically in domains like supply-chain automation or distributed robotics. Pitfalls include the \"content problem\": while the performative is standardized, the actual payload format varies per system, requiring custom ontologies. Newer generative-AI protocols like NLIP sidestep this by using LLMs to translate natural language into local representations, though this introduces latency and nondeterminism.",
+      "paperLevel": "An ACL is formally a set of communicative acts grounded in speech act theory (Searle, 1960s; Winograd and Flores, 1970s). A message is typically structured as (performative :sender S :receiver R :content C :ontology O), where the performative drawn from a finite set (e.g., ask-one, tell, achieve) determines the illocutionary force. FIPA-ACL specifies 22 such performatives with formal semantics based on BDI (belief-desire-intention) logic. KQML similarly layers on top of a transport protocol. The NLIP protocol (Ecma TC56, 2025) departs from this by replacing shared ontologies with generative-model-mediated translation, sacrificing semantic guarantees for extensibility."
+    },
+    "example": "A travel-planning ecosystem: Agent A (your calendar app) sends a REQUEST to Agent B (a flight search service): `(REQUEST :sender calendar@example.com :receiver flights@example.com :content \"find flights NYC-CDG June 12\" :ontology travel-v2.3)`. Agent B replies with a TELL containing options. Agent A then ASKs Agent C (a hotel service) about availability near the chosen airport, using the same performative grammar but hotel-specific content. In an NLIP-based version, Agent A might simply send natural language: \"I need a flight to Paris June 12 and a nearby hotel,\" and each agent's LLM translates this into its local representation.",
+    "usedIn": [
+      {
+        "name": "JADE",
+        "detail": "Java-based multi-agent framework with built-in FIPA-ACL support for distributed agent negotiation",
+        "url": ""
+      },
+      {
+        "name": "FIPA-OS",
+        "detail": "An early open-source implementation of FIPA-ACL for embedded agent systems",
+        "url": ""
+      },
+      {
+        "name": "NLIP-compliant systems",
+        "detail": "Emerging generative-AI agents using Ecma-standardized natural language protocols for human-agent and agent-agent interaction",
+        "url": ""
+      }
+    ],
+    "intuition": "Think of ACL as the difference between two people arguing in a shared courtroom procedure versus shouting past each other in different languages. The content may still be disputed, but at least everyone knows when someone is asking a question, making a promise, or issuing a command.",
+    "howItWorks": [
+      "An agent formulates an intention (e.g., 'I need the weather in Tokyo') and wraps it in a performative like ASK or REQUEST.",
+      "The message is serialized with sender, receiver, content, and ontology identifiers, then transmitted over a transport layer.",
+      "The receiving agent parses the performative to understand the illocutionary force — is this a query, an assertion, or a command?",
+      "The receiver interprets the content against its local ontology or, in generative-AI protocols, uses an LLM to translate the natural language payload.",
+      "The receiver responds with an appropriate performative (e.g., TELL with the answer, or REFUSE if unable), completing the speech act exchange."
+    ],
+    "whyItMatters": "Multi-agent systems scale poorly without standardized interaction semantics. ACLs let heterogeneous systems — built by different teams, at different times, for different purposes — coordinate without pairwise integration. The shift from ontology-based to generative-AI-based protocols reflects a tradeoff: the former offers verifiable guarantees but requires upfront agreement, while the latter enables rapid interoperability at the cost of probabilistic interpretation.",
+    "misconceptions": [
+      "ACL standardizes the content of messages — it does not; only the performatives and envelope are standardized, while content varies by ontology.",
+      "NLIP replaces the need for any structure — it replaces shared ontologies but still defines an application-level protocol with security considerations and Ecma standards.",
+      "FIPA-ACL and KQML are obsolete — they remain in use in industrial multi-agent systems, though generative-AI domains increasingly adopt NLIP-style approaches."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "sender",
+          "label": "Sender agent",
+          "note": "Forms intention and selects performative"
+        },
+        {
+          "id": "performative",
+          "label": "ACL message",
+          "note": "Wrapped with sender, receiver, content, ontology"
+        },
+        {
+          "id": "transport",
+          "label": "Transport layer",
+          "note": "Transmits serialized message"
+        },
+        {
+          "id": "receiver",
+          "label": "Receiver agent",
+          "note": "Parses performative and interprets content"
+        },
+        {
+          "id": "ontology",
+          "label": "Shared or local ontology",
+          "note": "Maps content to agent's knowledge base (or LLM translation for NLIP)"
+        },
+        {
+          "id": "response",
+          "label": "Response message",
+          "note": "Appropriate performative sent back"
+        }
+      ],
+      "edges": [
+        {
+          "from": "sender",
+          "to": "performative",
+          "label": "encodes"
+        },
+        {
+          "from": "performative",
+          "to": "transport",
+          "label": "serializes"
+        },
+        {
+          "from": "transport",
+          "to": "receiver",
+          "label": "delivers"
+        },
+        {
+          "from": "receiver",
+          "to": "ontology",
+          "label": "interprets via"
+        },
+        {
+          "from": "ontology",
+          "to": "receiver",
+          "label": "yields meaning"
+        },
+        {
+          "from": "receiver",
+          "to": "response",
+          "label": "generates"
+        }
+      ],
+      "caption": "The flow of an ACL exchange: intention becomes performative, travels across transport, and is interpreted against an ontology or generative model before response."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Agent Communications Language",
+        "url": "https://en.wikipedia.org/wiki/Agent_Communications_Language"
+      }
+    ]
+  },
   "related": [
     "darpa-agent-markup-language",
     "multimedia-web-ontology-language",

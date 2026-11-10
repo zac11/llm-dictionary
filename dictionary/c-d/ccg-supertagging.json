@@ -5,6 +5,92 @@
   "type": "concept",
   "definition": "Assigning Combinatory Categorial Grammar categories to words, the first step of CCG parsing.",
   "details": "Assigning Combinatory Categorial Grammar categories to words, the first step of CCG parsing. Supertags encode rich syntactic behavior, so accurate tagging largely determines parse quality.",
+  "explainer": {
+    "lead": "CCG supertagging gives each word a detailed grammatical label before a CCG parser tries to build a sentence analysis. These labels describe how words combine, so a good tagger gives the parser useful choices while mistakes can block the correct parse.",
+    "tiers": {
+      "eli5": "Imagine every word comes with an instruction card showing how it can connect to other words. Supertagging is choosing an instruction card for each word before assembling the sentence. If the cards are wrong, the pieces may no longer fit together.",
+      "practitioner": "Use supertagging as the sequence-labeling front end of a CCG parser: predict a category for every input token, then pass those categories to parsing. The main pitfall is error propagation—a wrong or missing category can prevent the parser from constructing the correct analysis, so tagging accuracy directly affects parse quality.",
+      "paperLevel": "For an input word sequence w1, ..., wn, CCG supertagging produces a category sequence c1, ..., cn, where each ci is a Combinatory Categorial Grammar category. The resulting categories constrain the first stage of CCG parsing; because they encode rich syntactic behavior, tagging errors can make the desired parse unavailable or degrade its quality."
+    },
+    "example": "For “The cat sat,” assign “The” the category NP/N, “cat” the category N, and “sat” the category S\\NP. The first two combine as NP/N + N to form NP; S\\NP then combines with that NP to form S, a complete sentence.",
+    "usedIn": [
+      {
+        "name": "CCG parsing",
+        "detail": "Supplies the word categories used as the starting point for constructing a parse.",
+        "url": ""
+      },
+      {
+        "name": "Syntactic analysis",
+        "detail": "Represents each word's grammatical behavior through a rich CCG category.",
+        "url": ""
+      }
+    ],
+    "intuition": "A supertag is more than a simple word label: it is a compact description of how that word can combine grammatically with its neighbors. Choosing these descriptions first narrows the parser's job to combining the selected categories.",
+    "howItWorks": [
+      "Start with a sentence split into words or tokens.",
+      "Assign one CCG category, called a supertag, to each token.",
+      "Use categories that describe what each word needs and what it produces when combined.",
+      "Pass the tagged sequence to a CCG parser, which combines the categories into a sentence analysis."
+    ],
+    "whyItMatters": "Supertagging largely determines what the CCG parser can build. Accurate categories support high-quality parses, while even a small tagging error can remove a combination needed for the correct analysis.",
+    "misconceptions": [
+      "It is not the complete parsing process; it only assigns the categories that parsing starts with.",
+      "A supertag is richer than an ordinary word-class label because it encodes syntactic combining behavior.",
+      "Good tagging does not by itself produce a parse—the parser must still combine the categories."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "words",
+          "label": "Input words",
+          "note": "A tokenized sentence"
+        },
+        {
+          "id": "tagger",
+          "label": "CCG supertagger",
+          "note": "Chooses a category per word"
+        },
+        {
+          "id": "categories",
+          "label": "Supertag sequence",
+          "note": "Categories encoding word behavior"
+        },
+        {
+          "id": "parser",
+          "label": "CCG parser",
+          "note": "Combines the assigned categories"
+        },
+        {
+          "id": "parse",
+          "label": "Sentence parse",
+          "note": "The resulting grammatical analysis"
+        }
+      ],
+      "edges": [
+        {
+          "from": "words",
+          "to": "tagger",
+          "label": "tokens"
+        },
+        {
+          "from": "tagger",
+          "to": "categories",
+          "label": "assigns"
+        },
+        {
+          "from": "categories",
+          "to": "parser",
+          "label": "constraints"
+        },
+        {
+          "from": "parser",
+          "to": "parse",
+          "label": "builds"
+        }
+      ],
+      "caption": "Supertagging supplies the word categories that a CCG parser combines into a parse."
+    }
+  },
   "related": [
     "categorial-grammar"
   ],

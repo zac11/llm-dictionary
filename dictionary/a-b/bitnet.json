@@ -2,12 +2,68 @@
   "term": "BitNet",
   "letter": "B",
   "category": "Alternative and Emerging Architectures",
-  "type": "concept",
+  "type": "architecture",
   "aka": [
     "1-bit LLMs"
   ],
   "definition": "Training models from scratch with ternary weights in {-1, 0, 1} (about 1.58 bits), replacing multiplications with additions and slashing memory and energy.",
   "details": "Training models from scratch with ternary weights in {-1, 0, 1} (about 1.58 bits), replacing multiplications with additions and slashing memory and energy. The extreme end of efficient inference, aimed at edge and CPU deployment.",
+  "explainer": {
+    "lead": "BitNet is a transformer design whose weights take only the values −1, 0, or +1, storing about 1.58 bits per weight. By training this way from the start and replacing multiplication-heavy layers with addition-based ones, it aims to run capable language models with much less memory and energy.",
+    "tiers": {
+      "eli5": "Imagine every adjustable part inside a language model is a switch with just three settings: backward, off, or forward. BitNet trains the model with those simple switches from the beginning, so it needs less storage and can do its sums with easier arithmetic. The goal is to make a capable chatbot-like model practical on smaller, less power-hungry computers.",
+      "practitioner": "BitNet is trained natively at 1.58 bits rather than created by simply quantizing a finished full-precision model; its BitLinear transform replaces the transformer's usual nn.Linear layer. The main deployment targets are memory-, energy-, CPU-, and edge-constrained settings, with HuggingFace also reporting gradual 1.58-bit quantization during fine-tuning in 2024. A key caveat is that low-bit advantages may weaken as training-token counts grow, according to scaling-law critiques.",
+      "paperLevel": "Each weight w is restricted to {−1, 0, +1}; because three states carry log2(3) ≈ 1.58 bits, this is called 1.58-bit quantization, and weight multiplication can be reduced to sign selection, zeroing, and addition. BitNet b1.58 was introduced by Ma et al. at Microsoft in 2024 using BitLinear in place of nn.Linear, and was reported comparable to 16-bit Llama 2. Reported task performance is comparable to full precision for models up to several billion parameters, but some researchers argue that low-bit deficiencies emerge as models receive more training tokens."
+    },
+    "example": "For an activation of 7, three ternary weights produce −7, 0, and +7: the hardware can negate, discard, or pass the value and accumulate results with additions instead of calculating three full-precision products.",
+    "usedIn": [
+      {
+        "name": "BitNet b1.58",
+        "detail": "Microsoft researchers' 2024 native 1.58-bit model, reported as comparable in performance to 16-bit Llama 2.",
+        "url": ""
+      },
+      {
+        "name": "BitNet b1.58 2B4T",
+        "detail": "A 2025 open-weights model with open inference code, trained at 2 billion parameters on 4 trillion tokens.",
+        "url": ""
+      },
+      {
+        "name": "Edge and CPU deployment",
+        "detail": "The architecture targets lower-power, less specialized hardware by reducing weight storage and multiplication.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Ternary weights: each weight is −1, 0, or +1.",
+        "detail": ""
+      },
+      {
+        "name": "BitLinear: replaces the conventional nn.Linear transformer layer.",
+        "detail": ""
+      },
+      {
+        "name": "Addition-based computation: avoids costly weight multiplications.",
+        "detail": ""
+      },
+      {
+        "name": "Native low-bit training: the model learns in 1.58-bit form from scratch.",
+        "detail": ""
+      }
+    ],
+    "flow": [
+      "Activations pass through BitLinear layers whose ternary weights select negation, zero, or unchanged values, allowing additions to replace conventional multiplications. These layers sit within the transformer design and preserve a path to language-model outputs while reducing weight memory and computation."
+    ],
+    "origin": "In 2024, Ma et al. at Microsoft introduced BitNet b1.58 and reported performance comparable to 16-bit Llama 2. Unlike post-training quantization, it used native low-bit training and the new BitLinear transform.",
+    "lineage": "In 2025, Microsoft researchers released BitNet b1.58 2B4T with open weights and inference code, reporting competitiveness with full-precision models at 2 billion parameters and 4 trillion training tokens. Separately, HuggingFace reported in 2024 a fine-tuning method that gradually ramps an existing model toward 1.58-bit quantization.",
+    "whyItMatters": "BitNet pushes efficient inference toward an extreme, cutting weight storage and replacing expensive arithmetic while retaining reported competitive performance. That could make powerful language models usable on CPUs, edge devices, and other lower-power hardware, although its behavior under increasingly large training budgets remains contested.",
+    "sources": [
+      {
+        "title": "Wikipedia: 1.58-bit large language model",
+        "url": "https://en.wikipedia.org/wiki/1.58-bit_large_language_model"
+      }
+    ]
+  },
   "related": [
     "inference"
   ],

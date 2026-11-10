@@ -5,7 +5,113 @@
   "type": "concept",
   "definition": "An and–or tree is a graphical representation of the reduction of problems (or goals) to conjunctions and disjunctions of subproblems (or subgoals)..",
   "details": "An and–or tree is a graphical representation of the reduction of problems (or goals) to conjunctions and disjunctions of subproblems (or subgoals).",
-  "story": "Think of a lightbulb moment: the idea was always there, but someone had to point a finger at it. Behind the jargon is an idea you could explain to a friend over coffee. At its heart it is a simple notion, once you strip away the fancy name. Once you see it, you cannot unsee it. That is And–or tree — a small key that opens a big door.",
+  "explainer": {
+    "lead": "An and–or tree maps out how a problem can be broken into smaller problems. Some groups of subproblems must all be solved, while alternative groups offer different ways forward, making the tree a useful picture of a search space.",
+    "tiers": {
+      "eli5": "Imagine planning a picnic: you could have it in the park, but only if you pack food and check the weather, or you could have it indoors instead. An and–or tree draws choices like these, showing which things are alternatives and which must happen together. You keep following the smaller tasks until you find a complete plan that works.",
+      "practitioner": "Use an and–or tree to represent goal reduction, then traverse it depth-first, breadth-first, or best-first, either sequentially or in parallel. In logic programming with variables, check that solutions to conjoint subproblems are compatible; in two-player game search with a binary winning goal, MAX nodes become OR nodes and MIN nodes become AND nodes. A common pitfall is treating an AND group like an OR choice: every child in that group must succeed.",
+      "paperLevel": "Given an initial problem P0 and rules of the form P if P1 and ... and Pn, the root is labelled P0, and each rule generates a set of children N1, ..., Nn conjoined by an arc; alternative rules generate separate child sets. A node succeeds if P is a fact or if all children in one conjoined set succeed, and fails when no method solves P. The tree specifies only the search space, not its traversal strategy, and variables introduce the additional requirement that conjoint subproblem solutions be compatible."
+    },
+    "example": "To solve P, the available rules are P if Q and R, P if S, Q if T, and Q if U. Suppose T and R are facts, while S has no solving method: Q succeeds through T, so P succeeds through the AND group Q and R even though the alternative through S fails.",
+    "usedIn": [
+      {
+        "name": "Problem-solving search",
+        "detail": "Represents alternative ways to reduce a goal into subgoals before choosing a search strategy.",
+        "url": ""
+      },
+      {
+        "name": "Logic programming",
+        "detail": "Sequential and parallel tree search provide a computational model for executing logic programs.",
+        "url": ""
+      },
+      {
+        "name": "Two-player game search",
+        "detail": "Represents a player's alternatives and an opponent's required responses, including mappings used by proof-number search.",
+        "url": ""
+      }
+    ],
+    "intuition": "AND means a plan needs every part of one group to work; OR means you can choose among different plans. The tree records both kinds of structure as a problem is repeatedly reduced.",
+    "howItWorks": [
+      "Label the root with the initial problem P0.",
+      "For each rule P if P1 and ... and Pn, add children labelled P1 through Pn and join that group with an arc.",
+      "Treat separate rules for solving P as alternative reductions of the same node.",
+      "Mark facts as successes and problems with no solving method as failures, then propagate success upward when every child in one AND group succeeds."
+    ],
+    "whyItMatters": "It separates the structure of possible problem reductions from the strategy used to explore them. That makes the same representation suitable for different search orders and for sequential or parallel search.",
+    "misconceptions": [
+      "An and–or tree is not itself a search algorithm; depth-first, breadth-first, and best-first are possible strategies for exploring it.",
+      "An AND node's children are not independent alternatives: all children conjoined by the same arc must succeed.",
+      "For logic programs with variables, solving each conjoint subproblem separately is not enough unless their solutions are compatible."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "p",
+          "label": "Problem P",
+          "note": "Choose the Q-and-R method or the S method."
+        },
+        {
+          "id": "q",
+          "label": "Subproblem Q",
+          "note": "Required with R in the first method."
+        },
+        {
+          "id": "r",
+          "label": "Subproblem R",
+          "note": "Required with Q in the first method."
+        },
+        {
+          "id": "s",
+          "label": "Alternative S",
+          "note": "A separate way to solve P."
+        },
+        {
+          "id": "t",
+          "label": "Subproblem T",
+          "note": "One way to solve Q."
+        },
+        {
+          "id": "u",
+          "label": "Subproblem U",
+          "note": "An alternative way to solve Q."
+        }
+      ],
+      "edges": [
+        {
+          "from": "p",
+          "to": "q",
+          "label": "AND"
+        },
+        {
+          "from": "p",
+          "to": "r",
+          "label": "AND"
+        },
+        {
+          "from": "p",
+          "to": "s",
+          "label": "OR"
+        },
+        {
+          "from": "q",
+          "to": "t",
+          "label": "OR"
+        },
+        {
+          "from": "q",
+          "to": "u",
+          "label": "OR"
+        }
+      ],
+      "caption": "P can be solved by Q and R together, or by S; Q can be solved by T or U. The Q–R pair belongs to one conjoined AND group."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: And–or tree",
+        "url": "https://en.wikipedia.org/wiki/And%E2%80%93or_tree"
+      }
+    ]
+  },
   "related": [
     "ball-tree",
     "decision-tree-pruning",

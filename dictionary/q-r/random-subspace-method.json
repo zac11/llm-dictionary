@@ -5,7 +5,32 @@
   "type": "concept",
   "definition": "In machine learning the random subspace method, also called attribute bagging or feature bagging, is an ensemble learning method that attempts to reduce the correlation between estimators in an ensemble by training them on random samples of features instead of the entire feature set.",
   "details": "In machine learning the random subspace method, also called attribute bagging or feature bagging, is an ensemble learning method that attempts to reduce the correlation between estimators in an ensemble by training them on random samples of features instead of the entire feature set.",
-  "story": "Imagine teaching a friend to shoot a basketball. They miss, and you walk them backwards through the shot — elbow, wrist, release — to find what needs fixing. It is the same loop you use to learn anything: try, miss, correct, try again. Underneath all the magic is a patient process of small improvements. It is learning from every miss instead of repeating the same mistake. And that is Random subspace method — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "An ensemble technique that trains each estimator on a random subset of features rather than the full feature set, which lowers correlation between estimators and often improves combined accuracy. It matters because decorrelating members is what makes an ensemble worth averaging.",
+    "tiers": {
+      "eli5": "Instead of having every committee member read the whole report, give each one a random handful of pages and let them vote; their mistakes differ, so the vote is more reliable.",
+      "practitioner": "Engineers wrap it around a base learner (often decision trees) and tune the number of features per subset; a common pitfall is dropping the feature count too low, so every estimator sees too little signal and each one underfits.",
+      "paperLevel": "Each of k estimators is fit on the full set of samples but a random subset of d features drawn from the total D, and predictions are aggregated by voting or averaging; the approach targets estimator correlation, and performance depends on the subset size d, which must be chosen empirically."
+    },
+    "example": "With 100 features, train 50 trees, each on a random 10 features; average their outputs.",
+    "usedIn": [
+      {
+        "name": "Random forest",
+        "detail": "feature subsampling at splits",
+        "url": ""
+      },
+      {
+        "name": "Classifier ensembles",
+        "detail": "decorrelating weak learners",
+        "url": ""
+      },
+      {
+        "name": "High-dimensional data mining",
+        "detail": "many-feature datasets",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "kernel-method",
     "random-indexing",

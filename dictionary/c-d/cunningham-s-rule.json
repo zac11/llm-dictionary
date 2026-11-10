@@ -5,7 +5,103 @@
   "type": "concept",
   "definition": "In mathematical optimization, Cunningham's rule (also known as least recently considered rule or round-robin rule) is an algorithmic refinement of the simplex method for linear optimization.",
   "details": "The rule was proposed 1979 by W. H. Cunningham to defeat the deformed hypercube constructions by Klee and Minty et al. (see, e.g. Klee–Minty cube). Cunningham's rule assigns a cyclic order to the variables and remembers the last variable to enter the basis. The next entering variable is chosen to be the first allowable candidate starting from the last chosen variable and following the given circular order. History-based rules defeat the deformed hypercube constructions because they tend to average out how many times a variable pivots. It has recently been shown by David Avis and Oliver Friedmann that there is a family of linear programs on which the simplex algorithm equipped with Cunningham's rule requires exponential time.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. That steady, miss-by-miss improvement is Cunningham's rule.",
+  "explainer": {
+    "lead": "Cunningham's rule is a way for the simplex method to choose which variable enters the basis next, giving variables turns in a fixed circular order. This memory of earlier choices defeats the deformed hypercube constructions associated with Klee and Minty, although it does not guarantee fast performance on every linear program.",
+    "tiers": {
+      "eli5": "Imagine choosing players by going around a circle, starting just after the person chosen last time. Cunningham's rule does something similar with the variables in an optimization problem, skipping any that cannot be chosen. Taking turns this way stops the method from favoring the same variables again and again, but some problems can still make it take an extremely long time.",
+      "practitioner": "In a simplex implementation, use the rule at the entering-variable selection step: maintain a cyclic variable order and remember the last variable that entered. Scan forward from that variable, wrapping around as needed, and select the first allowable candidate. The main pitfall is treating its resistance to Klee–Minty-style constructions as a polynomial-time guarantee; David Avis and Oliver Friedmann exhibited linear programs where it requires exponential time.",
+      "paperLevel": "Fix a cyclic order on the variables and let b be the variable that most recently entered the basis. Cunningham's rule selects as the next entering variable the first allowable candidate encountered after b in that circular order. Proposed by W. H. Cunningham in 1979, this history-based rule defeats the deformed hypercube constructions of Klee and Minty et al., but David Avis and Oliver Friedmann showed a family of linear programs on which the resulting simplex algorithm requires exponential time."
+    },
+    "example": "Suppose the cyclic order is x1, x2, x3 and x2 entered most recently. If both x3 and x1 are allowable entering candidates, inspect x3 first and choose it; x1 would be considered only after wrapping around if x3 were not allowable.",
+    "usedIn": [
+      {
+        "name": "Linear optimization",
+        "detail": "It refines entering-variable selection when the simplex method solves linear programs.",
+        "url": ""
+      },
+      {
+        "name": "Simplex pivoting research",
+        "detail": "It is a history-based alternative for studying how pivot choices affect simplex behavior.",
+        "url": ""
+      },
+      {
+        "name": "Worst-case complexity analysis",
+        "detail": "It provides a case where resistance to Klee–Minty constructions coexists with an exponential-time family.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of repeatedly judging every variable from the same starting point, remember where the last choice occurred and continue around a circle. This tends to average out how often variables pivot, which undermines constructions that exploit a fixed, history-free selection pattern.",
+    "howItWorks": [
+      "Assign all variables a fixed cyclic order.",
+      "Remember which variable most recently entered the basis.",
+      "Starting immediately after that variable, inspect candidates in the circular order.",
+      "Skip candidates that are not allowable and choose the first allowable one.",
+      "Perform the simplex pivot and update the remembered entering variable."
+    ],
+    "whyItMatters": "The rule shows how a small amount of history can change simplex behavior and defeat the deformed hypercube constructions it was designed to address. Its exponential-time counterexample also shows why defeating one troublesome construction is not the same as guaranteeing efficient optimization.",
+    "misconceptions": [
+      "It is not a replacement for the simplex method; it only chooses the next entering variable.",
+      "It does not guarantee polynomial time, because a known family of linear programs makes it require exponential time.",
+      "Its circular order is fixed, while the search for candidates resumes from the most recently chosen variable."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "order",
+          "label": "Cyclic variable order",
+          "note": "Fix the order in which variables are inspected."
+        },
+        {
+          "id": "last",
+          "label": "Last entering variable",
+          "note": "Remember where the previous choice occurred."
+        },
+        {
+          "id": "scan",
+          "label": "Scan candidates",
+          "note": "Move forward and wrap around the circle."
+        },
+        {
+          "id": "select",
+          "label": "Select first allowable",
+          "note": "Skip candidates that cannot enter."
+        },
+        {
+          "id": "pivot",
+          "label": "Pivot and remember",
+          "note": "Enter the variable and update the history."
+        }
+      ],
+      "edges": [
+        {
+          "from": "order",
+          "to": "scan",
+          "label": "orders"
+        },
+        {
+          "from": "last",
+          "to": "scan",
+          "label": "starts after"
+        },
+        {
+          "from": "scan",
+          "to": "select",
+          "label": ""
+        },
+        {
+          "from": "select",
+          "to": "pivot",
+          "label": ""
+        },
+        {
+          "from": "pivot",
+          "to": "last",
+          "label": "updates"
+        }
+      ],
+      "caption": "Cunningham's rule combines a fixed circular order with memory of the last entering variable."
+    }
+  },
   "related": [
     "association-rule-learning",
     "bland-s-rule",

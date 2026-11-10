@@ -2,10 +2,115 @@
   "term": "Noisy channel model",
   "letter": "N",
   "category": "Artificial Intelligence",
-  "type": "tool",
+  "type": "concept",
   "definition": "The noisy channel model is a framework used in spell checkers, question answering, speech recognition, and machine translation.",
   "details": "In this model, the goal is to find the intended word given a word where the letters have been scrambled in some manner.",
-  "story": "Imagine learning a language by reading every book in the library and noticing, over time, which words travel together. It does not memorize a rulebook; it absorbs a library. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It is fluency built from pattern, not from memorized rules. And that is Noisy channel model — teaching a machine to read between the lines.",
+  "explainer": {
+    "lead": "The noisy channel model treats a mistaken word or other distorted output as a damaged version of what someone originally meant. It helps systems work backwards from that damage, which is useful in spell checking, speech recognition, question answering, and machine translation.",
+    "tiers": {
+      "eli5": "Imagine hearing a friend through a crackly phone and trying to guess what they really said. The noisy channel model does something similar with scrambled words: it considers likely original words and picks the one that best explains what came through.",
+      "practitioner": "Generate candidate intended words for an observation, then score each candidate using how likely the word is and how likely the channel is to turn it into the observed form. In spelling correction, useful settings include handling transpositions and other letter changes, while common pitfalls are missing the right candidate or relying too heavily on either the word score or the channel score.",
+      "paperLevel": "For observation c, select an intended word w using w* = argmax_w P(w | c), with P(w | c) proportional to P(w) P(c | w). Here P(w) represents the intended word's prior probability and P(c | w) the channel probability; results depend on how well those probabilities and the candidate set capture the actual errors."
+    },
+    "example": "Suppose someone types \"form\" but meant \"from\". A corrector can consider both words, note that transposing the last two letters of \"from\" produces \"form\", and select \"from\" when its word and channel scores give it the strongest combined score.",
+    "usedIn": [
+      {
+        "name": "Spell checkers",
+        "detail": "Recover an intended word from one with scrambled or otherwise mistaken letters.",
+        "url": ""
+      },
+      {
+        "name": "Question answering",
+        "detail": "Apply the framework when interpreting a question as a noisy version of an intended input.",
+        "url": ""
+      },
+      {
+        "name": "Speech recognition",
+        "detail": "Use the framework to recover intended words from a noisy observed form.",
+        "url": ""
+      },
+      {
+        "name": "Machine translation",
+        "detail": "Model the observed text as having passed through a noisy channel from the intended output.",
+        "url": ""
+      }
+    ],
+    "intuition": "The output you see is not necessarily what was meant: a noisy channel may have altered it on the way. The best correction is an intended word that is both plausible itself and likely to produce the observed mistake.",
+    "howItWorks": [
+      "Take the scrambled or otherwise noisy word as the observation.",
+      "Generate possible intended words that could explain it.",
+      "Estimate each candidate's word probability and channel probability.",
+      "Choose the candidate with the strongest combined score."
+    ],
+    "whyItMatters": "It turns correction into a principled comparison of possible original messages rather than a guess based only on the visible mistake. The same framework supports several language tasks where observations can be distorted.",
+    "misconceptions": [
+      "It does not simply unscramble letters by a fixed rule; it compares possible intended words.",
+      "The most common word is not automatically the best correction; the chance of the observed error also matters.",
+      "It is not limited to spelling, although scrambled words make the idea easy to see."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "intended",
+          "label": "Intended word",
+          "note": "The original word w"
+        },
+        {
+          "id": "channel",
+          "label": "Noisy channel",
+          "note": "Letters become scrambled"
+        },
+        {
+          "id": "observed",
+          "label": "Observed word",
+          "note": "The visible form c"
+        },
+        {
+          "id": "candidates",
+          "label": "Candidate words",
+          "note": "Possible original words"
+        },
+        {
+          "id": "scores",
+          "label": "Combined scores",
+          "note": "Word and channel probabilities"
+        },
+        {
+          "id": "correction",
+          "label": "Best correction",
+          "note": "The highest-scoring candidate"
+        }
+      ],
+      "edges": [
+        {
+          "from": "intended",
+          "to": "channel",
+          "label": "enters"
+        },
+        {
+          "from": "channel",
+          "to": "observed",
+          "label": "distorts"
+        },
+        {
+          "from": "observed",
+          "to": "candidates",
+          "label": "suggests"
+        },
+        {
+          "from": "candidates",
+          "to": "scores",
+          "label": "scored"
+        },
+        {
+          "from": "scores",
+          "to": "correction",
+          "label": "selects"
+        }
+      ],
+      "caption": "The intended word passes through a noisy channel; correction reverses the process by generating and scoring candidates."
+    }
+  },
   "related": [
     "acoustic-model",
     "action-model-learning",

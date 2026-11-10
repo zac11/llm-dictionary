@@ -5,7 +5,108 @@
   "type": "concept",
   "definition": "Discounted cumulative gain (DCG) is a measure of ranking quality in information retrieval.",
   "details": "It is often normalized so that it is comparable across queries, giving Normalized DCG (nDCG or NDCG). NDCG is often used to measure effectiveness of search engine algorithms and related applications. Using a graded relevance scale of documents in a search-engine result set, DCG sums the usefulness, or gain, of the results discounted by their position in the result list. NDCG is DCG normalized by the maximum possible DCG of the result set when ranked from highest to lowest gain, thus adjusting for the different numbers of relevant results for different queries.",
-  "story": "Picture a scoreboard at a science fair: you need a fair, agreed way to tell who actually won. A fair scoreboard keeps everyone honest. Before trusting a machine, someone has to measure how good it really is — fairly and honestly. A good metric is a ruler that does not bend when you lean on it. And that, done honestly, is Discounted cumulative gain.",
+  "explainer": {
+    "lead": "Discounted cumulative gain scores a ranked list by rewarding useful results and penalizing them when they appear too far down. Its normalized form, nDCG, makes ranking quality easier to compare across searches with different numbers of relevant results.",
+    "tiers": {
+      "eli5": "Imagine searching for pictures of cats and getting a list where some pictures are very useful, some are a little useful, and some are useless. A good search list puts the most useful pictures near the top, because people usually look there first. DCG gives such a list a better score, while nDCG compares that score with the best score the list could possibly have.",
+      "practitioner": "Assign graded relevance values to the documents returned for a query, then compute DCG so that gain contributes less as result position increases. For comparison across queries, divide by the ideal DCG obtained by sorting the same results from highest to lowest gain. Watch for raw DCG comparisons across queries, since differing numbers of relevant results can make them misleading.",
+      "paperLevel": "For a ranking of length p, DCG_p = sum_{i=1..p} D(i) * G(i), where G(i) is the graded gain at rank i and D(i) decreases with position. Define IDCG_p as DCG_p for the same result set ordered from highest to lowest gain; then nDCG_p = DCG_p / IDCG_p. Raw DCG depends on the available relevant results, whereas normalization adjusts for that variation between queries."
+    },
+    "example": "Suppose the first three results have gains 3, 2, and 0. DCG adds the full contribution of 3, a position-discounted contribution of 2, and a further discounted contribution of 0; moving 3 to third place would lower the score. The ideal ordering is 3, 2, 0, and nDCG is the original DCG divided by that ideal DCG.",
+    "usedIn": [
+      {
+        "name": "Search engine evaluation",
+        "detail": "nDCG measures how effectively a search algorithm orders documents with graded relevance.",
+        "url": ""
+      },
+      {
+        "name": "Information retrieval research",
+        "detail": "DCG and nDCG compare ranked result lists, including rankings produced for different queries.",
+        "url": ""
+      }
+    ],
+    "intuition": "A highly relevant result is most valuable near the top of a ranking. DCG captures both how useful each result is and how much its value is reduced by appearing later.",
+    "howItWorks": [
+      "Assign each document a graded relevance value, representing its gain.",
+      "Read the results in their ranked order.",
+      "Discount each result's gain according to its position, so later results contribute less.",
+      "Sum the discounted gains to obtain DCG.",
+      "For nDCG, divide by the DCG of the ideal ordering, from highest to lowest gain."
+    ],
+    "whyItMatters": "It distinguishes rankings that contain the same relevant documents but place them in different orders. Normalization also lets search evaluations account for queries having different numbers of relevant results.",
+    "misconceptions": [
+      "DCG does not treat every position equally: later results are discounted.",
+      "Raw DCG is not directly comparable across every query; nDCG addresses differences in the available relevant results.",
+      "nDCG is not a separate relevance scale; it is DCG divided by the ideal DCG for the same result set."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "labels",
+          "label": "Graded relevance",
+          "note": "Each document receives a gain value."
+        },
+        {
+          "id": "ranking",
+          "label": "Ranked results",
+          "note": "Documents appear in algorithmic order."
+        },
+        {
+          "id": "discount",
+          "label": "Position discount",
+          "note": "Later positions reduce each gain's contribution."
+        },
+        {
+          "id": "dcg",
+          "label": "DCG score",
+          "note": "Discounted gains are summed."
+        },
+        {
+          "id": "ideal",
+          "label": "Ideal ranking",
+          "note": "Sorting by gain produces ideal DCG."
+        },
+        {
+          "id": "ndcg",
+          "label": "Normalized DCG",
+          "note": "DCG is divided by ideal DCG."
+        }
+      ],
+      "edges": [
+        {
+          "from": "labels",
+          "to": "ranking",
+          "label": "gain values"
+        },
+        {
+          "from": "ranking",
+          "to": "discount",
+          "label": ""
+        },
+        {
+          "from": "discount",
+          "to": "dcg",
+          "label": "sum"
+        },
+        {
+          "from": "labels",
+          "to": "ideal",
+          "label": "sort by gain"
+        },
+        {
+          "from": "dcg",
+          "to": "ndcg",
+          "label": ""
+        },
+        {
+          "from": "ideal",
+          "to": "ndcg",
+          "label": "normalizer"
+        }
+      ],
+      "caption": "DCG scores the observed ranking, while nDCG compares it with the best ordering of the same results."
+    }
+  },
   "related": [
     "adversarial-information-retrieval",
     "ansi-834-enrollment-implementation-format",

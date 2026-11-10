@@ -5,7 +5,133 @@
   "type": "concept",
   "definition": "AI-driven design automation is the use of artificial intelligence (AI) to automate and improve different parts of the electronic design automation (EDA) process.",
   "details": "It is particularly important in the design of integrated circuits (chips) and complex electronic systems, where it can potentially increase productivity, decrease costs, and speed up design cycles. AI Driven Design Automation uses several methods, including machine learning, expert systems, and reinforcement learning. These are used for many tasks, from planning a chip's architecture and logic synthesis to its physical design and final verification.",
-  "story": "Think of a lightbulb moment: the idea was always there, but someone had to point a finger at it. Behind the jargon is an idea you could explain to a friend over coffee. At its heart it is a simple notion, once you strip away the fancy name. Once you see it, you cannot unsee it. That is AI-driven design automation — a small key that opens a big door.",
+  "explainer": {
+    "lead": "AI-driven design automation uses machine learning, expert systems, and reinforcement learning to help electronic design tools plan, build, and check chips. It matters because chip design involves enormous numbers of choices, and useful predictions or automated search can shorten design cycles, reduce costs, and increase productivity.",
+    "tiers": {
+      "eli5": "Designing a chip is like arranging a huge city, where every building and road has to fit and work together. AI can learn from earlier designs, suggest good arrangements, and try many options much faster than a person checking each one. The result still has to be judged by how well the chip actually works.",
+      "practitioner": "Teams use learned models to estimate area, performance, or power during architectural exploration and high-level synthesis, and use reinforcement learning or Bayesian optimization to search design settings. Synopsys DSO.ai targets power, performance, and area, while OpenROAD incorporates machine learning into an open-source toolchain. A major pitfall is judging a method without reproducible comparisons against non-AI tools; proprietary data and mixed reproductions left the advantage of Google's floorplanning method unclear.",
+      "paperLevel": "One common formulation is f(x) -> y, where x encodes a design or its settings and y is a metric such as power, performance, or area; reinforcement learning instead learns a policy pi(a_t | s_t) over design actions. Early named systems include ULYSSES at Carnegie Mellon University and ADAM at the University of Southern California, while later work includes Google's graph-convolutional, deep-reinforcement-learning floorplanner. Known limits include dependence on design data, difficulty establishing fair baselines, and inconclusive evidence of an AI advantage in that floorplanning demonstration."
+    },
+    "example": "Given several high-level synthesis settings and candidate cache sizes, a team can train a supervised substitute model on previous design evaluations to predict area, performance, and power. Reinforcement learning or Bayesian optimization then uses those estimates to choose promising settings for fuller evaluation, rather than treating every candidate equally.",
+    "usedIn": [
+      {
+        "name": "Synopsys DSO.ai",
+        "detail": "Launched in early 2020, it uses reinforcement learning to optimize power, performance, and area and had contributed to over 100 commercial chips by 2023.",
+        "url": ""
+      },
+      {
+        "name": "OpenROAD",
+        "detail": "This UC San Diego-led project under DARPA's IDEA program combines machine learning, parallelization, and divide-and-conquer methods in an open-source toolchain.",
+        "url": ""
+      },
+      {
+        "name": "Google Tensor Processing Units",
+        "detail": "Google's deep-reinforcement-learning floorplanning technology was later used to design TPU accelerators.",
+        "url": ""
+      },
+      {
+        "name": "Ithemal",
+        "detail": "It uses deep neural networks to estimate how quickly basic code blocks will run, supporting processor architecture decisions.",
+        "url": ""
+      }
+    ],
+    "intuition": "Chip design is a chain of prediction and search problems with too many possibilities to examine exhaustively. AI can quickly estimate the consequences of a choice or learn which sequence of design actions is worth trying next.",
+    "howItWorks": [
+      "Start with architectural options, RTL descriptions, or high-level synthesis settings.",
+      "Use learned models to estimate outcomes such as area, performance, and power.",
+      "Search candidate choices with reinforcement learning, Bayesian optimization, or rule-based reasoning.",
+      "Apply the selected choices through synthesis and physical design, then verify and test the result."
+    ],
+    "whyItMatters": "Growing chip complexity and large volumes of design and manufacturing data make manual exploration increasingly difficult. AI can support prediction and optimization in areas that were previously hard to automate, with commercial systems such as DSO.ai demonstrating adoption beyond research experiments.",
+    "misconceptions": [
+      "AI always beats conventional EDA tools: Google's floorplanning work lacked a conclusive non-AI comparison, and reproduction efforts produced mixed results.",
+      "Every use is fully autonomous: many applications address individual prediction or optimization tasks rather than the entire design process.",
+      "It always means neural networks: expert systems and rule-based reasoning were central to early design automation."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "inputs",
+          "label": "Design inputs",
+          "note": "Architecture, RTL, and synthesis settings"
+        },
+        {
+          "id": "predictors",
+          "label": "Learned predictors",
+          "note": "Estimate power, performance, and area"
+        },
+        {
+          "id": "search",
+          "label": "AI-guided search",
+          "note": "Select promising design choices"
+        },
+        {
+          "id": "implementation",
+          "label": "Synthesis and layout",
+          "note": "Produce gate-level and physical designs"
+        },
+        {
+          "id": "verification",
+          "label": "Verification and testing",
+          "note": "Check the resulting design"
+        },
+        {
+          "id": "data",
+          "label": "Design data",
+          "note": "Collected results support further learning"
+        }
+      ],
+      "edges": [
+        {
+          "from": "inputs",
+          "to": "predictors",
+          "label": "candidates"
+        },
+        {
+          "from": "predictors",
+          "to": "search",
+          "label": "estimates"
+        },
+        {
+          "from": "search",
+          "to": "implementation",
+          "label": "choices"
+        },
+        {
+          "from": "implementation",
+          "to": "verification",
+          "label": "design"
+        },
+        {
+          "from": "verification",
+          "to": "data",
+          "label": "results"
+        },
+        {
+          "from": "data",
+          "to": "predictors",
+          "label": "training"
+        }
+      ],
+      "caption": "AI models predict outcomes and guide search across the electronic design workflow, with design results feeding back as data."
+    },
+    "image": {
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/38/EDA_Large_Circuit_Models.png/960px-EDA_Large_Circuit_Models.png",
+      "alt": "AI-driven design automation — Use of artificial intelligence in the automation of electronic design",
+      "width": 640,
+      "height": 380,
+      "credit": "Copparihollmann",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:EDA_Large_Circuit_Models.png"
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: AI-driven design automation",
+        "url": "https://en.wikipedia.org/wiki/AI-driven_design_automation"
+      }
+    ]
+  },
   "related": [
     "aaai-acm-conference-on-ai-ethics-and-society",
     "ai-50",

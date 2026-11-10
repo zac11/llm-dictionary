@@ -5,6 +5,119 @@
   "type": "concept",
   "definition": "FP32 refers to a 32-bit floating-point data type used in computing.",
   "details": "FP32 refers to a 32-bit floating-point data type used in computing. It is a standard format for representing and manipulating real numbers in digital computers, particularly in graphics processing and deep learning applications.",
+  "explainer": {
+    "lead": "FP32 is a 32-bit format for storing real numbers with a movable binary point. It trades exact precision for a very wide numeric range, making it a standard choice in graphics processing and deep learning.",
+    "tiers": {
+      "eli5": "Imagine writing a number with three controls: whether it is positive or negative, how large or small it should be, and the digits inside it. FP32 packs those controls into 32 tiny on-off switches, so it can handle both tiny and enormous numbers. The catch is that it cannot write every number exactly.",
+      "practitioner": "FP32 is commonly exposed as float in IEEE 754-supporting C, C++, C#, and Java, and as Single in MATLAB; it is widely used in graphics and deep learning. Do not assume every language's float means 32 bits: Python, Ruby, PHP, and OCaml use that name for double precision. Its normal values have 24 bits of significand precision, and the reserved exponent patterns for subnormals, zeros, infinities, and NaNs need attention in numerical code.",
+      "paperLevel": "IEEE 754 calls FP32 binary32: a 1-bit sign, an 8-bit biased exponent E, and 23 stored fraction bits, with an implicit leading 1 for normal values. For normal numbers, value = (-1)^sign * 2^(E - 127) * (1 + sum(i=1..23, b_(23-i) * 2^(-i))), where E ranges from 1 to 254. Exponent fields 0 and 255 are reserved for special values, including subnormals, signed zeros, infinities, and NaNs. It provides roughly 6 to 9 significant decimal digits and a maximum finite value of approximately 3.4028235 * 10^38."
+    },
+    "example": "With sign bit 0, biased exponent E = 124, and all fraction bits 0, the value is (+1) * 2^(124 - 127) * 1 = 2^(-3) = 0.125.",
+    "usedIn": [
+      {
+        "name": "Graphics processing",
+        "detail": "A standard format for representing real numbers in graphics applications.",
+        "url": ""
+      },
+      {
+        "name": "Deep learning",
+        "detail": "Used to represent and manipulate numeric values in deep learning applications.",
+        "url": ""
+      },
+      {
+        "name": "C, C++, C#, and Java",
+        "detail": "With IEEE 754 support, their float type denotes single precision.",
+        "url": ""
+      },
+      {
+        "name": "MATLAB",
+        "detail": "The Single type denotes single-precision values.",
+        "url": ""
+      }
+    ],
+    "intuition": "FP32 scales a fixed number of significant binary digits up or down using an exponent, much like scientific notation. That scaling covers a much wider range than a fixed-point number of the same width, but leaves limited precision.",
+    "howItWorks": [
+      "Use one sign bit to choose positive or negative.",
+      "Store an 8-bit exponent biased by 127.",
+      "Store 23 fraction bits; normal values also have an implicit leading 1.",
+      "Combine sign, exponent, and significand to reconstruct the value.",
+      "Reserve special exponent patterns for subnormals, zeros, infinities, and NaNs."
+    ],
+    "whyItMatters": "FP32 gives software a compact, standardized way to represent values from very small magnitudes up to about 3.4 * 10^38. Its shared IEEE 754 layout also replaced formats whose behavior previously depended on manufacturers, computer models, and language designers.",
+    "misconceptions": [
+      "FP32 is not a 32-bit integer: it uses an exponent and significand to represent real numbers.",
+      "The name float does not always mean FP32; in Python, Ruby, PHP, and OCaml it means double precision.",
+      "FP32 is not exact for every value: it offers about 6 to 9 significant decimal digits."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "bits",
+          "label": "32-bit value",
+          "note": "One IEEE 754 binary32 number"
+        },
+        {
+          "id": "sign",
+          "label": "Sign bit",
+          "note": "One bit selects positive or negative"
+        },
+        {
+          "id": "exponent",
+          "label": "Biased exponent",
+          "note": "Eight bits set the scale"
+        },
+        {
+          "id": "fraction",
+          "label": "Fraction bits",
+          "note": "Twenty-three stored bits refine the significand"
+        },
+        {
+          "id": "value",
+          "label": "Real value",
+          "note": "Sign, scale, and significand are combined"
+        }
+      ],
+      "edges": [
+        {
+          "from": "bits",
+          "to": "sign",
+          "label": "1 bit"
+        },
+        {
+          "from": "bits",
+          "to": "exponent",
+          "label": "8 bits"
+        },
+        {
+          "from": "bits",
+          "to": "fraction",
+          "label": "23 bits"
+        },
+        {
+          "from": "sign",
+          "to": "value",
+          "label": ""
+        },
+        {
+          "from": "exponent",
+          "to": "value",
+          "label": ""
+        },
+        {
+          "from": "fraction",
+          "to": "value",
+          "label": ""
+        }
+      ],
+      "caption": "FP32 splits 32 bits into sign, exponent, and fraction fields, then combines them to reconstruct a real value."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Single-precision floating-point format",
+        "url": "https://en.wikipedia.org/wiki/Single-precision_floating-point_format"
+      }
+    ]
+  },
   "related": [
     "deep-learning"
   ],

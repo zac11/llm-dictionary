@@ -5,6 +5,98 @@
   "type": "concept",
   "definition": "Crafting inputs that fool a model — imperceptible perturbations that flip predictions — used to probe and improve robustness.",
   "details": "Crafting inputs that fool a model — imperceptible perturbations that flip predictions — used to probe and improve robustness.",
+  "explainer": {
+    "lead": "An adversarial attack deliberately changes an input just enough to make a model produce the wrong prediction, often without a person noticing the change. These attacks reveal weaknesses that ordinary examples can miss and provide a way to test and improve robustness.",
+    "tiers": {
+      "eli5": "It is like slipping someone a test where tiny, invisible changes to the questions make them give the wrong answer.",
+      "practitioner": "Engineers use adversarial attacks to probe models and harden them; a key pitfall is that defenses tuned to one attack type often fail against another.",
+      "paperLevel": "An input is perturbed so the model's prediction flips while the perturbation stays imperceptible; robustness is typically measured as accuracy under a bounded perturbation, which gives no guarantee against unseen attacks."
+    },
+    "example": "A classifier correctly labels a photograph as a cat. An attacker makes tiny pixel changes that are imperceptible to a viewer, and the modified photograph is classified as a dog even though it still looks like the same cat.",
+    "usedIn": [
+      {
+        "name": "Model robustness testing",
+        "detail": "Checks whether small, crafted input changes can flip a model's predictions.",
+        "url": ""
+      },
+      {
+        "name": "Image classification",
+        "detail": "Tests whether nearly invisible pixel changes can cause an image to receive the wrong label.",
+        "url": ""
+      },
+      {
+        "name": "Robustness improvement",
+        "detail": "Uses discovered failures to probe weaknesses and work toward more reliable models.",
+        "url": ""
+      }
+    ],
+    "intuition": "A model can be highly confident about an input yet sensitive to tiny changes that people would ignore. An adversarial attack searches for those changes deliberately instead of waiting for mistakes to occur naturally.",
+    "howItWorks": [
+      "Start with an input that the model classifies.",
+      "Make a very small, carefully chosen change to that input.",
+      "Keep the change imperceptible so the input appears essentially unchanged to a person.",
+      "Run the changed input through the model.",
+      "Check whether the perturbation flips the prediction, exposing a robustness weakness."
+    ],
+    "whyItMatters": "Adversarial attacks show that correct predictions on ordinary inputs can coexist with surprising sensitivity to tiny changes. They provide concrete failure cases for probing robustness and guiding efforts to improve it.",
+    "misconceptions": [
+      "An adversarial attack does not require a large or obvious edit; the perturbation can be imperceptible.",
+      "High accuracy on ordinary inputs does not guarantee resistance to adversarial perturbations.",
+      "A flipped prediction is evidence of a robustness weakness, not proof that every prediction the model makes is unreliable."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "clean-input",
+          "label": "Original input",
+          "note": "An input with an initial model prediction."
+        },
+        {
+          "id": "perturbation",
+          "label": "Tiny perturbation",
+          "note": "A small change crafted to fool the model."
+        },
+        {
+          "id": "adv-input",
+          "label": "Adversarial input",
+          "note": "The changed input still looks essentially unchanged."
+        },
+        {
+          "id": "model",
+          "label": "Target model",
+          "note": "Processes the adversarial input."
+        },
+        {
+          "id": "prediction",
+          "label": "Flipped prediction",
+          "note": "The output differs from the original correct label."
+        }
+      ],
+      "edges": [
+        {
+          "from": "clean-input",
+          "to": "perturbation",
+          "label": "modified by"
+        },
+        {
+          "from": "perturbation",
+          "to": "adv-input",
+          "label": "creates"
+        },
+        {
+          "from": "adv-input",
+          "to": "model",
+          "label": "fed into"
+        },
+        {
+          "from": "model",
+          "to": "prediction",
+          "label": "produces"
+        }
+      ],
+      "caption": "A small crafted perturbation turns an original input into an adversarial input that causes the model to flip its prediction."
+    }
+  },
   "related": [
     "robustness"
   ],

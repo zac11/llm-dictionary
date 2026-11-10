@@ -5,7 +5,101 @@
   "type": "architecture",
   "definition": "NNUE, which stands for efficiently updatable neural network (often stylized as ƎUИИ) is a neural network made to replace the evaluation of Shogi, chess and other board games using alpha-beta searchers running on a CPU.",
   "details": "NNUE, which stands for efficiently updatable neural network (often stylized as ƎUИИ) is a neural network made to replace the evaluation of Shogi, chess and other board games using alpha-beta searchers running on a CPU.",
-  "story": "Picture an architect laying out a building where every room has to know which other rooms matter to it. The layout decides what the machine can even attempt, before it learns a single thing. It is the blueprint that makes everything else possible. It is the difference between a row of isolated cubicles and one big room where everyone can hear each other. And that shape of the machine — Efficiently updatable neural network — is what makes everything else possible.",
+  "explainer": {
+    "lead": "NNUE is a neural-network design for scoring board positions in games such as chess and Shogi. It lets an alpha-beta game engine use a neural evaluation on a CPU, with efficient updates as the search examines different positions.",
+    "tiers": {
+      "eli5": "Think of a chess engine with a fast lookup card it can update after each move instead of recomputing everything from scratch.",
+      "practitioner": "It is used as the position evaluator inside a CPU alpha-beta searcher, with incremental updates as moves are made; the pitfall is that the update scheme constrains the network architecture.",
+      "paperLevel": "A neural network designed to replace board-game evaluation for alpha-beta searchers running on a CPU. Limits: it targets CPU search rather than GPU-heavy evaluation."
+    },
+    "usedIn": [
+      {
+        "name": "Chess engines",
+        "detail": "Provides neural position evaluation for alpha-beta search on a CPU.",
+        "url": ""
+      },
+      {
+        "name": "Shogi engines",
+        "detail": "Replaces the conventional evaluation used while searching Shogi positions.",
+        "url": ""
+      },
+      {
+        "name": "Other board-game engines",
+        "detail": "Applies the same efficiently updated evaluation approach beyond chess and Shogi.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Board position",
+        "detail": "The game state that the engine needs to judge."
+      },
+      {
+        "name": "Efficiently updatable evaluation",
+        "detail": "The neural network produces a position evaluation and is designed for efficient updates as the searched position changes."
+      },
+      {
+        "name": "Alpha-beta search",
+        "detail": "The surrounding CPU-based search uses the evaluation when comparing lines of play."
+      }
+    ],
+    "flow": [
+      "Alpha-beta search reaches or changes a board position.",
+      "NNUE evaluates the position, updating its evaluation efficiently.",
+      "The resulting score is returned to the search.",
+      "The search continues through further candidate positions."
+    ],
+    "lineage": "NNUE replaces the evaluation function in CPU-based alpha-beta engines while leaving alpha-beta search in place.",
+    "whyItMatters": "It brings neural position evaluation to board-game search without requiring the evaluation to be recomputed from scratch for every changing position.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "search",
+          "label": "Alpha-beta search",
+          "note": "Explores candidate lines on a CPU."
+        },
+        {
+          "id": "position",
+          "label": "Board position",
+          "note": "The current game state to evaluate."
+        },
+        {
+          "id": "nnue",
+          "label": "NNUE evaluation",
+          "note": "Updates the neural evaluation efficiently."
+        },
+        {
+          "id": "score",
+          "label": "Position score",
+          "note": "The judgment returned to the search."
+        }
+      ],
+      "edges": [
+        {
+          "from": "search",
+          "to": "position",
+          "label": "selects"
+        },
+        {
+          "from": "position",
+          "to": "nnue",
+          "label": "evaluated by"
+        },
+        {
+          "from": "nnue",
+          "to": "score",
+          "label": "produces"
+        },
+        {
+          "from": "score",
+          "to": "search",
+          "label": "guides"
+        }
+      ],
+      "caption": "NNUE supplies efficiently updated position evaluations to the surrounding alpha-beta search."
+    },
+    "example": "A chess engine calls the NNUE evaluator at leaf nodes of its alpha-beta tree, updating features incrementally as pieces move."
+  },
   "related": [
     "neural-network",
     "capsule-neural-network",

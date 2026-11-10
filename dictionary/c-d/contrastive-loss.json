@@ -5,6 +5,116 @@
   "type": "algorithm",
   "definition": "Contrastive loss is used in learning algorithms that aim to learn from the similarity and dissimilarity between pairs of samples, commonly used in tasks like image captioning and face verification.",
   "details": "Contrastive loss is used in learning algorithms that aim to learn from the similarity and dissimilarity between pairs of samples, commonly used in tasks like image captioning and face verification.",
+  "explainer": {
+    "lead": "Contrastive loss trains a model to place similar pairs close together and dissimilar pairs far apart in a learned representation space. It is useful when relationships between examples matter more than assigning each example a fixed class label.",
+    "tiers": {
+      "eli5": "Imagine arranging photos on a table so pictures of the same person sit together and pictures of different people stay apart. Contrastive loss is the score that tells the model how badly it arranged each pair, helping it improve the arrangement.",
+      "practitioner": "Construct pairs with labels indicating whether they are similar, encode both samples, and optimize a distance-based pairwise loss. Training quality depends heavily on pair selection and label quality; uninformative pairs, imbalanced pair types, and a poorly chosen separation margin can hurt learning.",
+      "paperLevel": "A common pairwise form is L = y d^2 + (1 - y) max(0, m - d)^2, where d = ||f(x1) - f(x2)||2, y = 1 marks a similar pair, y = 0 marks a dissimilar pair, and m is a margin. The loss is summed or averaged over pairs, pulling similar embeddings together while penalizing dissimilar embeddings only when their distance is below m. Its behavior depends on the embedding space, pair construction, distance measure, and margin."
+    },
+    "example": "For two face images labelled as the same person, the model produces two embeddings and the loss penalizes a large distance between them; for images of different people, it penalizes embeddings that remain too close.",
+    "usedIn": [
+      {
+        "name": "Face verification",
+        "detail": "Trains representations so images of the same person are closer than images of different people.",
+        "url": ""
+      },
+      {
+        "name": "Image captioning",
+        "detail": "Uses similarity and dissimilarity between paired samples to learn useful representations.",
+        "url": ""
+      }
+    ],
+    "goal": "Learn representations in which similar sample pairs are nearby and dissimilar pairs are separated.",
+    "inputs": [
+      "Pairs of samples",
+      "A similar-or-dissimilar label for each pair",
+      "A model that maps samples to embeddings"
+    ],
+    "outputs": [
+      "A scalar loss for a pair or batch",
+      "Updated model parameters and learned embeddings"
+    ],
+    "steps": [
+      "Select a sample pair and its similarity label.",
+      "Pass both samples through the embedding model.",
+      "Measure the distance between their embeddings.",
+      "Compute the loss: reduce distance for similar pairs, or increase separation for dissimilar pairs.",
+      "Backpropagate the loss and update the model."
+    ],
+    "tradeoffs": [
+      "Requires useful pair labels or a reliable way to construct pairs.",
+      "Results can be sensitive to pair selection and the balance of similar and dissimilar examples.",
+      "The distance measure and separation margin may require careful tuning."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "pair",
+          "label": "Sample pair",
+          "note": "Two examples enter together."
+        },
+        {
+          "id": "encoder",
+          "label": "Embedding model",
+          "note": "Maps each sample to a vector."
+        },
+        {
+          "id": "distance",
+          "label": "Embedding distance",
+          "note": "Measures separation between vectors."
+        },
+        {
+          "id": "label",
+          "label": "Similarity label",
+          "note": "Marks the pair similar or dissimilar."
+        },
+        {
+          "id": "loss",
+          "label": "Contrastive loss",
+          "note": "Scores distance against the label."
+        },
+        {
+          "id": "update",
+          "label": "Parameter update",
+          "note": "Adjusts the embedding model."
+        }
+      ],
+      "edges": [
+        {
+          "from": "pair",
+          "to": "encoder",
+          "label": "encode"
+        },
+        {
+          "from": "encoder",
+          "to": "distance",
+          "label": "embeddings"
+        },
+        {
+          "from": "distance",
+          "to": "loss",
+          "label": ""
+        },
+        {
+          "from": "label",
+          "to": "loss",
+          "label": ""
+        },
+        {
+          "from": "loss",
+          "to": "update",
+          "label": "gradients"
+        },
+        {
+          "from": "update",
+          "to": "encoder",
+          "label": "improve"
+        }
+      ],
+      "caption": "A pair is encoded, its embedding distance is scored using the similarity label, and the resulting loss updates the model."
+    }
+  },
   "related": [
     "image-captioning",
     "face-verification"

@@ -8,7 +8,32 @@
   ],
   "definition": "A post-hoc calibration method that divides a model's logits by a single learned scalar temperature, softening or sharpening the predicted probabilities without changing which class is predicted.",
   "details": "Modern deep networks are often miscalibrated: they have become more accurate over time while their confidence has become less trustworthy, so a prediction made with 90% confidence may be right far less often. Temperature scaling, introduced by Guo and colleagues in their study of calibration in modern neural networks, fits one parameter T on a held-out validation set and rescales the logits by 1/T before the softmax. Because the transformation is monotonic, the predicted class and the accuracy are untouched - only the confidence changes. It is the simplest member of the vector and matrix scaling family, and it is remarkably effective: a single parameter often outperforms more elaborate methods on large vision and language models. Its appeal in practice is that it needs no retraining and can be applied to a frozen model, making it a standard step when a confidence score will be consumed by downstream code or compared against a threshold.",
-  "story": "Think of someone who has learned a great deal and now speaks as if everything they know is certain. The facts are fine; it is the tone that has drifted. One small correction - a dial turned until their confidence matches their record - and suddenly you can rely on their hedge as much as their answer. Nothing about what they know has changed. Only how loudly they say it. And that is Temperature scaling.",
+  "explainer": {
+    "lead": "Temperature scaling is a post-hoc calibration method that divides a model's logits by one learned scalar temperature. It matters because modern deep networks are often miscalibrated: a prediction made with 90% confidence may be right far less often.",
+    "tiers": {
+      "eli5": "It adjusts how confident a model sounds without changing its answer, like turning a volume knob on the confidence rather than the choice.",
+      "practitioner": "Engineers apply it after training, fitting a single parameter T on a held-out validation set and rescaling logits by 1/T before the softmax. The pitfall it avoids is mistaking sharp softmax scores for trustworthy confidence; because the transform is monotonic, predicted classes and accuracy do not change.",
+      "paperLevel": "A monotonic transform: apply softmax to logits divided by T, with one T fitted on held-out validation data; introduced by Guo and colleagues in their study of calibration in modern neural networks. Because it changes only confidence and not class ranking, it cannot fix accuracy and corrects only the confidence scale."
+    },
+    "example": "A network outputs a softmax score of 0.90 for its top class; fitting T on a validation set and dividing the logits by T yields a calibrated confidence while the same class remains predicted.",
+    "usedIn": [
+      {
+        "name": "Deep neural networks",
+        "detail": "post-hoc confidence calibration",
+        "url": ""
+      },
+      {
+        "name": "Held-out validation pipelines",
+        "detail": "single parameter fitted",
+        "url": ""
+      },
+      {
+        "name": "Classification models",
+        "detail": "softmax rescaling",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "calibration",
     "logistic-regression",

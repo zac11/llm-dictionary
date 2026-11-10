@@ -32,7 +32,6 @@ llm-dictionary/
 │   ├── classify-types.mjs # entity types: person, event, concept… (npm run types)
 │   ├── import-people.mjs  # bulk-add people from JSON lists (npm run import:people)
 │   ├── mark-deceased.mjs  # flags deceased people so LinkedIn is hidden (npm run deceased)
-│   ├── generate-stories.mjs# story vignettes for conceptual entries (npm run stories)
 │   ├── generate-og.mjs    # writes public/og.png (1200×630 preview card)
 │   └── prerender-share.mjs# post-build: per-term /term/<slug>/ share pages
 ├── src/
@@ -146,11 +145,10 @@ entry reads:
 
 | Type | Second spread |
 |---|---|
-| `concept` (default), `model`, `dataset`, `benchmark`, `tool` | 📖 the **story** vignette |
+| `concept` (default), `model`, `dataset`, `benchmark`, `tool`, `architecture`, `algorithm`, `metric`, `library` | 📖 a layered **explainer**: ELI5 / Practitioner / Paper-level tabs, an example and where it is used |
 | `person`, `organization` | 👤 a **profile**: what they did, where to find them (LinkedIn, Google Scholar, X…) |
 | `event`, `paper`, `venue`, `policy`, `award` | 🗞️ **coverage**: dated references plus who was involved |
 
-A person never gets a story — the vignette template only lands for a concept.
 People and organizations can carry `profile.highlights` and `profile.links`,
 events and policies can carry `coverage` entries; `related` entries are grouped
 by type on both spreads, so linking a person to their events builds a timeline.
@@ -172,8 +170,8 @@ leaving anything uncertain as `concept`.
   pulled out and opened straight to that word.
 - Every entry page shows a **❦ Citation** block with a **Read the source ↗**
   link to the underlying paper.
-- **Flip to the story / show the profile / see the coverage** turns to an
-  entry’s second spread — a story for a concept, a profile for a person, dated
+- **See how it works / show the profile / see the coverage** turns to an
+  entry’s second spread — a layered explainer for a concept, a profile for a person, dated
   coverage for an event.
 - **Esc** steps back (entry → contents → book returns to its shelf); deep-link
   with `?term=…` / `?volume=…` to share a specific word.

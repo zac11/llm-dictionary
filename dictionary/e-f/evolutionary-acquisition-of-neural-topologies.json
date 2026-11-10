@@ -5,7 +5,98 @@
   "type": "concept",
   "definition": "Evolutionary acquisition of neural topologies (EANT/EANT2) is an evolutionary reinforcement learning method that evolves both the topology and weights of artificial neural networks.",
   "details": "It is closely related to the works of Angeline et al. and Stanley and Miikkulainen. Like the work of Angeline et al., the method uses a type of parametric mutation that comes from evolution strategies and evolutionary programming (now using the most advanced form of the evolution strategies CMA-ES in EANT2), in which adaptive step sizes are used for optimizing the weights of the neural networks. Similar to the work of Stanley (NEAT), the method starts with minimal structures which gain complexity along the evolution path.",
-  "story": "Think of an orchestra warming up: no single instrument carries the piece, but together they make the sound. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. The layout decides what the machine can even attempt, before it learns a single thing. The shape of the machine is half the idea. That blueprint is Evolutionary acquisition of neural topologies.",
+  "explainer": {
+    "lead": "Evolutionary acquisition of neural topologies, or EANT, lets a neural network’s structure develop alongside its connection weights. This matters in reinforcement learning because the search is not limited to improving a fixed network design.",
+    "tiers": {
+      "eli5": "Like breeding animals where each generation can grow new body parts and better muscles, keeping the offspring that perform best.",
+      "practitioner": "Engineers apply it when the right network structure is unknown, starting from minimal structures that gain complexity and mutating weights with adaptive step sizes, using CMA-ES in EANT2. The pitfall is that joint search over structure and weights is expensive and may not beat careful hand design.",
+      "paperLevel": "Uses parametric mutation from evolution strategies and evolutionary programming, with adaptive step sizes for weight optimisation and CMA-ES in EANT2, starting from minimal structures that gain complexity, similar to NEAT. Cost scales with the number of evaluations, which limits large problems."
+    },
+    "example": "Suppose a small neural controller must learn from rewards. Evolution begins with minimal controllers, tests their behavior, and adjusts their weights; over successive candidates, a controller can acquire additional structure while its weights continue to be optimized, with CMA-ES handling that optimization in EANT2.",
+    "intuition": "Choosing a neural network’s shape and tuning its weights can be treated as one search problem. EANT begins small, so additional structure can emerge during evolution rather than having to be fixed at the outset.",
+    "howItWorks": [
+      "Begin with neural networks that have minimal structures.",
+      "Produce and test candidate networks in a reinforcement-learning setting.",
+      "Adjust weights through parametric mutation with adaptive step sizes.",
+      "In EANT2, use CMA-ES for this weight optimization.",
+      "Continue selecting and evolving candidates as successful structures gain complexity."
+    ],
+    "whyItMatters": "The method removes the requirement to settle the entire network topology before learning begins. It also combines structural growth with a dedicated adaptive mechanism for weight optimization.",
+    "misconceptions": [
+      "EANT evolves topology as well as weights.",
+      "It resembles NEAT but is not presented as the same method.",
+      "CMA-ES in EANT2 optimizes weights; it does not replace topology evolution."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "minimal",
+          "label": "Minimal networks",
+          "note": "Evolution starts with small structures."
+        },
+        {
+          "id": "candidates",
+          "label": "Candidate topologies",
+          "note": "Structures vary and can gain complexity."
+        },
+        {
+          "id": "weights",
+          "label": "Weight optimization",
+          "note": "Adaptive mutation tunes weights; EANT2 uses CMA-ES."
+        },
+        {
+          "id": "evaluation",
+          "label": "RL evaluation",
+          "note": "Candidate controllers are tested through reinforcement learning."
+        },
+        {
+          "id": "selection",
+          "label": "Evolutionary selection",
+          "note": "Candidates continue along the evolutionary path."
+        }
+      ],
+      "edges": [
+        {
+          "from": "minimal",
+          "to": "candidates",
+          "label": "initialize"
+        },
+        {
+          "from": "candidates",
+          "to": "weights",
+          "label": "parameters"
+        },
+        {
+          "from": "weights",
+          "to": "evaluation",
+          "label": "controllers"
+        },
+        {
+          "from": "evaluation",
+          "to": "selection",
+          "label": "results"
+        },
+        {
+          "from": "selection",
+          "to": "candidates",
+          "label": "next generation"
+        }
+      ],
+      "caption": "EANT jointly develops network structure and weights, starting from minimal topologies and repeating evolution through reinforcement-learning evaluation."
+    },
+    "usedIn": [
+      {
+        "name": "Neuroevolution",
+        "detail": "evolving topology and weights",
+        "url": ""
+      },
+      {
+        "name": "Reinforcement learning",
+        "detail": "evolved network controllers",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "automatic-acquisition-of-lexicon",
     "automatic-acquisition-of-sense-tagged-corpora",

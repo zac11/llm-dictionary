@@ -5,6 +5,97 @@
   "type": "concept",
   "definition": "Building the vocabulary on top of raw bytes so literally any input (any script, emoji, binary-ish text) is representable with no unknown tokens.",
   "details": "Building the vocabulary on top of raw bytes so literally any input (any script, emoji, binary-ish text) is representable with no unknown tokens. Byte-fallback hybrids are now standard.",
+  "explainer": {
+    "lead": "Byte-level tokenization gives a model a vocabulary built from the raw bytes computers use to store data. Because every text input ultimately has a byte representation, it can handle any script, emoji, or binary-ish text without needing an unknown-token placeholder.",
+    "tiers": {
+      "eli5": "Imagine a box of building blocks small enough to copy any writing, picture symbol, or computer code. Instead of needing a special block for every possible character, you use the tiny number blocks that computers already use to store everything, so nothing has to be replaced by a mystery block.",
+      "practitioner": "Encode input as bytes before token lookup, or use byte fallback in a hybrid tokenizer for spans not covered by its ordinary vocabulary. Decode the resulting bytes back to text on output, and do not assume that one token equals one visible character. Byte fallback is useful when inputs may include unfamiliar scripts, emoji, or binary-ish text.",
+      "paperLevel": "Let the base vocabulary be V = {0, 1, ..., 255}. Any byte sequence b = (b1, b2, ..., bn) can then be represented directly as T(b) = (b1, b2, ..., bn), so every input has a valid tokenization without an unknown token. This guarantees coverage but does not imply that bytes and characters coincide, nor does it prescribe a particular higher-level vocabulary."
+    },
+    "example": "The UTF-8 text \"Hi 👋\" becomes the bytes 72, 105, 32, 240, 159, 145, 139. A byte-level tokenizer can emit exactly those seven byte tokens, including four for the emoji, without using an unknown token.",
+    "usedIn": [
+      {
+        "name": "Multilingual text processing",
+        "detail": "Represents text in any script without script-specific unknown tokens.",
+        "url": ""
+      },
+      {
+        "name": "Emoji and symbol handling",
+        "detail": "Keeps emoji and other symbols representable through their underlying bytes.",
+        "url": ""
+      },
+      {
+        "name": "Binary-ish text processing",
+        "detail": "Covers unusual byte sequences that fall outside an ordinary text vocabulary.",
+        "url": ""
+      }
+    ],
+    "intuition": "Characters are a moving target: new scripts, symbols, and unusual inputs can always appear. Bytes provide a universal lower layer, so the tokenizer can represent the input even when its higher-level vocabulary has no suitable token.",
+    "howItWorks": [
+      "Convert the input into its raw byte sequence.",
+      "Use a base vocabulary containing all 256 possible byte values.",
+      "Map each byte to its corresponding token, or reserve these tokens as fallback in a hybrid vocabulary.",
+      "Pass the token sequence to the model, reversing the byte mapping when text output is needed."
+    ],
+    "whyItMatters": "It removes coverage gaps caused by characters or byte sequences missing from the vocabulary. Byte-fallback hybrids use the same guarantee as a safety net while retaining ordinary tokens for covered input, and are now standard.",
+    "misconceptions": [
+      "One byte is not necessarily one character; a single visible character can require several bytes.",
+      "Byte-level tokenization does not require every token to represent only one byte when used in a hybrid vocabulary.",
+      "Byte fallback is not an unknown token: it preserves the input's actual byte values."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Any input",
+          "note": "Text in any script, emoji, or binary-ish text"
+        },
+        {
+          "id": "bytes",
+          "label": "Raw bytes",
+          "note": "Input encoded as byte values"
+        },
+        {
+          "id": "vocabulary",
+          "label": "Byte vocabulary",
+          "note": "All 256 byte values are representable"
+        },
+        {
+          "id": "tokens",
+          "label": "Token sequence",
+          "note": "No unknown-token placeholder needed"
+        },
+        {
+          "id": "model",
+          "label": "Model input",
+          "note": "Receives the complete representation"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "bytes",
+          "label": "encode"
+        },
+        {
+          "from": "bytes",
+          "to": "vocabulary",
+          "label": "look up"
+        },
+        {
+          "from": "vocabulary",
+          "to": "tokens",
+          "label": "emit"
+        },
+        {
+          "from": "tokens",
+          "to": "model",
+          "label": ""
+        }
+      ],
+      "caption": "Raw bytes provide universal coverage between arbitrary input and the model."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

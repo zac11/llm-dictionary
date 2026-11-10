@@ -5,7 +5,97 @@
   "type": "concept",
   "definition": "AI systems, such as chatbots and voice assistants, designed to engage in natural, multi-turn dialogue with users.",
   "details": "Conversational AI encompasses both rule-based and modern LLM-powered dialogue systems, with the latter offering dramatically more flexible and open-ended interaction compared to earlier scripted chatbot approaches.",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. And that idea, made concrete, is Conversational AI.",
+  "explainer": {
+    "lead": "Conversational AI lets people interact with software by talking or typing much as they would to another person. It powers chatbots and voice assistants, making services easier to reach without navigating menus or learning special commands.",
+    "tiers": {
+      "eli5": "Conversational AI is like a computer receptionist that can listen, remember what you have already said, and answer. Instead of pressing buttons, you can ask, “Where is my order?” and then follow up with, “Can it arrive tomorrow?” Some versions follow a fixed script, while newer ones can handle a much wider range of questions.",
+      "practitioner": "Engineers build conversational AI as either rule-based dialogue flows or more flexible LLM-powered systems, often combining user input, conversation history, and a response step. It is applied in chatbots and voice assistants where multi-turn context must be maintained. Scripted systems can become restrictive outside their anticipated paths, while open-ended systems require careful handling of dialogue state and user requests.",
+      "paperLevel": "A conversational system can be written as r_t = f(h_t, u_t), where u_t is the user's input at turn t, h_t is the dialogue history, and r_t is the system response. The function f may be rule-based or implemented with an LLM. Multi-turn operation depends on retaining useful context; scripted approaches have limited flexibility, while LLM-powered approaches support more open-ended interaction."
+    },
+    "example": "A user tells a support chatbot, “My order is late,” and then provides order number A102. When the user next asks, “When will it arrive?”, the system uses the earlier order number to understand that “it” means order A102 and continues the same conversation.",
+    "usedIn": [
+      {
+        "name": "Customer support chatbots",
+        "detail": "Handle typed, multi-turn exchanges such as questions about an order or account.",
+        "url": ""
+      },
+      {
+        "name": "Voice assistants",
+        "detail": "Let users make requests and continue a dialogue through spoken language.",
+        "url": ""
+      }
+    ],
+    "intuition": "The core idea is to treat a conversation as an ongoing exchange rather than a series of isolated commands. Each answer depends not only on the latest message but also on what was said earlier.",
+    "howItWorks": [
+      "Receive a typed or spoken user message.",
+      "Interpret the request in the context of earlier turns.",
+      "Choose the next action or response using rules or an LLM.",
+      "Reply and retain relevant context for the next turn."
+    ],
+    "whyItMatters": "It provides a natural interface for getting help and completing tasks through ordinary language. Multi-turn dialogue also lets users clarify requests instead of having to express everything perfectly in one message.",
+    "misconceptions": [
+      "Not every chatbot uses an LLM; many conversational systems are rule-based.",
+      "Multi-turn dialogue means using conversation context, not merely answering several unrelated questions.",
+      "More open-ended conversation does not remove the need to manage dialogue state."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "user",
+          "label": "User message",
+          "note": "Typed or spoken input"
+        },
+        {
+          "id": "history",
+          "label": "Dialogue history",
+          "note": "Relevant earlier turns"
+        },
+        {
+          "id": "interpret",
+          "label": "Interpret request",
+          "note": "Combine message and context"
+        },
+        {
+          "id": "respond",
+          "label": "Response system",
+          "note": "Rules or an LLM"
+        },
+        {
+          "id": "reply",
+          "label": "Assistant reply",
+          "note": "Continues the conversation"
+        }
+      ],
+      "edges": [
+        {
+          "from": "user",
+          "to": "interpret",
+          "label": "input"
+        },
+        {
+          "from": "history",
+          "to": "interpret",
+          "label": "context"
+        },
+        {
+          "from": "interpret",
+          "to": "respond",
+          "label": "request"
+        },
+        {
+          "from": "respond",
+          "to": "reply",
+          "label": "response"
+        },
+        {
+          "from": "reply",
+          "to": "history",
+          "label": "next turn"
+        }
+      ],
+      "caption": "A conversational system combines the latest message with dialogue history, produces a reply, and carries relevant context forward."
+    }
+  },
   "related": [
     "ai-pair-programming",
     "emotional-ai",

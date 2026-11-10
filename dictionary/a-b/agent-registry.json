@@ -9,7 +9,118 @@
   ],
   "definition": "A directory service in which AI agents publish and discover each other's identity, capabilities and provenance, so that a multi-agent system can find and route work to the right agent.",
   "details": "As agent ecosystems grew, registries emerged as the discovery layer that keeps heterogeneous agents interoperable. Approaches range from centralized publication of descriptors (such as MCP Registry and enterprise directories) to decentralized, self-describing manifests (such as A2A Agent Cards) and cryptographically verifiable, distributed directories (such as the AGNTCY Agent Directory Service). They are typically judged on four dimensions: security, authentication, scalability and maintainability. A registry turns \"which agent can do this?\" into a lookup rather than a hard-coded integration.",
-  "story": "Think of a chess player who never commits to a move blindly — they consider the board, try an action, watch what changes, and only then decide what is next. The machine stops just answering one question and starts getting a job done, step by step, checking its work along the way. It plans a little, acts a little, looks at the result, and then decides what to do next. The model stops being a one-shot answer machine and becomes a coworker that checks its own work. That loop of reason, act, and observe is Agent Registry.",
+  "explainer": {
+    "lead": "An Agent Registry is like a phone book for AI agents: it lets one software agent find another that can handle a specific job, without humans hard-wiring every connection in advance. As companies deploy dozens or hundreds of specialized agents, registries become the glue that keeps multi-agent systems from collapsing into a tangle of one-off integrations.",
+    "tiers": {
+      "eli5": "Imagine you need someone who can fix bikes in your neighborhood. Instead of knocking on every door, you check a community bulletin board where people post what they're good at. An Agent Registry works the same way for AI programs—each agent pins up a card saying \"I can summarize emails\" or \"I can book flights,\" so other agents know who to ask for help.",
+      "practitioner": "In production, you implement an Agent Registry by having each agent publish a structured manifest—often JSON or YAML—describing its endpoints, required inputs, output schemas, and authentication requirements. Centralized registries like MCP Registry offer governance and versioning but create a single point of failure; decentralized approaches like A2A Agent Cards let agents carry their own descriptors. Pitfalls include stale metadata (agents change but don't update their entries), overly permissive discovery that exposes internal agents to external callers, and the classic thundering herd when a popular agent's registry entry triggers too many simultaneous requests.",
+      "paperLevel": "An Agent Registry is a directory service R = (E, Q, M) where E is a set of registered entities (agents), Q is a query interface for capability-based lookup, and M is a metadata schema encoding identity, capabilities, provenance, and operational constraints. The lookup problem reduces to matching a task specification τ against capability descriptors d ∈ D where each agent e ∈ E publishes some d_e.No originating formal publication is named in the available sources."
+    },
+    "example": "A customer-service agent receives a complaint about a billing error. Its descriptor says it handles general inquiries but not payment processing. It queries the registry for agents with capability=\"refund_processing\" and provenance=\"finance_dept\". The registry returns two matches: RefundBot-A (load: 80%) and RefundBot-B (load: 30%). The caller selects RefundBot-B, forwards the customer's account details per the descriptor's input schema, and receives a transaction ID in return.",
+    "usedIn": [
+      {
+        "name": "MCP Registry",
+        "detail": "Centralized publication of agent descriptors for enterprise multi-agent systems",
+        "url": ""
+      },
+      {
+        "name": "A2A Agent Cards",
+        "detail": "Decentralized, self-describing manifests that agents carry with them",
+        "url": ""
+      },
+      {
+        "name": "AGNTCY Agent Directory Service",
+        "detail": "Cryptographically verifiable, distributed directory for agent discovery",
+        "url": ""
+      }
+    ],
+    "intuition": "You don't hard-code every relationship between coworkers; you look them up in a directory when you need them. Agents deserve the same flexibility.",
+    "howItWorks": [
+      "Each agent publishes a descriptor to the registry, stating what it can do, what inputs it needs, and how to reach it.",
+      "When a task arrives, the querying agent or orchestrator searches the registry for descriptors matching the required capabilities.",
+      "The registry returns one or more candidate agents, often ranked by trust scores, latency, or load.",
+      "The caller routes the task to the chosen agent using the endpoint and protocol specified in its descriptor.",
+      "The chosen agent executes the task and may itself query the registry to delegate sub-tasks."
+    ],
+    "whyItMatters": "Without registries, every new agent requires manual integration work across every system that might use it—an O(n²) problem. Registries reduce this to O(n) and let organizations swap, upgrade, or scale agents without rewriting callers.",
+    "misconceptions": [
+      "An Agent Registry is just a database of API endpoints—it also encodes capabilities, provenance, and trust, not just URLs.",
+      "Registries must be centralized—decentralized and cryptographically verifiable designs exist and are actively used.",
+      "Discovery is the hard part—maintaining accurate, up-to-date descriptors at scale is often the bigger challenge."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "caller",
+          "label": "Caller Agent",
+          "note": "Has a task but needs help"
+        },
+        {
+          "id": "registry",
+          "label": "Agent Registry",
+          "note": "Stores and searches descriptors"
+        },
+        {
+          "id": "descriptor-a",
+          "label": "Descriptor A",
+          "note": "Agent A's capabilities and endpoint"
+        },
+        {
+          "id": "descriptor-b",
+          "label": "Descriptor B",
+          "note": "Agent B's capabilities and endpoint"
+        },
+        {
+          "id": "agent-a",
+          "label": "Agent A",
+          "note": "One candidate for the task"
+        },
+        {
+          "id": "agent-b",
+          "label": "Agent B",
+          "note": "Another candidate, selected"
+        }
+      ],
+      "edges": [
+        {
+          "from": "agent-a",
+          "to": "descriptor-a",
+          "label": "publishes"
+        },
+        {
+          "from": "agent-b",
+          "to": "descriptor-b",
+          "label": "publishes"
+        },
+        {
+          "from": "descriptor-a",
+          "to": "registry",
+          "label": "stored in"
+        },
+        {
+          "from": "descriptor-b",
+          "to": "registry",
+          "label": "stored in"
+        },
+        {
+          "from": "caller",
+          "to": "registry",
+          "label": "queries"
+        },
+        {
+          "from": "registry",
+          "to": "caller",
+          "label": "returns match"
+        },
+        {
+          "from": "caller",
+          "to": "agent-b",
+          "label": "routes task to"
+        }
+      ],
+      "caption": "Agents publish descriptors to a registry; a caller queries the registry to find and route work to the right agent."
+    }
+  },
   "related": [
     "multi-agent-system",
     "agentic-workflow",

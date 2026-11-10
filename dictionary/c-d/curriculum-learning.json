@@ -5,7 +5,92 @@
   "type": "concept",
   "definition": "A training strategy that presents training examples to a model in a meaningful order, typically progressing from easier to harder examples.",
   "details": "Curriculum learning is inspired by how humans often learn, and has been shown in some settings to speed up training convergence and improve final model performance.",
-  "story": "Imagine teaching a friend to shoot a basketball. They miss, and you walk them backwards through the shot — elbow, wrist, release — to find what needs fixing. It is the same loop you use to learn anything: try, miss, correct, try again. Underneath all the magic is a patient process of small improvements. It is learning from every miss instead of repeating the same mistake. And that is Curriculum Learning — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "Curriculum learning trains a model on examples in a meaningful order, usually starting with easier cases and moving toward harder ones. Borrowing an idea from human education, this ordering can sometimes help training converge faster or produce a better final model.",
+    "tiers": {
+      "eli5": "It is like learning addition before trying algebra, rather than seeing every kind of math problem mixed together from the start. A model begins with simple examples and gradually gets harder ones. In some cases, this helps it learn faster or do better in the end.",
+      "practitioner": "Define a difficulty measure, construct an easy-to-hard data schedule, and train with the usual model and objective. Compare convergence and final performance against randomly shuffled training, because the benefit is setting-dependent and a poor difficulty measure can undermine the schedule.",
+      "paperLevel": "Given D = {(x_i, y_i)}, assign each example a difficulty score s_i and train on a sequence of subsets or batches D_1, ..., D_T whose examples generally progress from lower to higher s_i. The schedule changes data presentation rather than the learning objective; improvements in convergence or final performance are empirical and are not guaranteed."
+    },
+    "example": "To train a model on arithmetic, begin with single-digit addition, move to multi-digit addition, and finish with multi-step word problems, while using the same model throughout.",
+    "usedIn": [
+      {
+        "name": "Machine learning",
+        "detail": "Training examples can be scheduled by estimated difficulty instead of being presented in an arbitrary order.",
+        "url": ""
+      },
+      {
+        "name": "Neural network training",
+        "detail": "Easy-to-hard batches can be used while keeping the network and training objective unchanged.",
+        "url": ""
+      }
+    ],
+    "intuition": "Early easy examples can establish basic patterns before the model faces more complicated cases, much as foundational lessons prepare a person for advanced material.",
+    "howItWorks": [
+      "Choose a way to estimate each example's difficulty.",
+      "Arrange examples or batches from easier to harder.",
+      "Train the model through that schedule.",
+      "Evaluate convergence and final performance."
+    ],
+    "whyItMatters": "Changing only the order of training data can sometimes speed up convergence and improve final performance, without requiring a different task or learning objective.",
+    "misconceptions": [
+      "It does not guarantee faster or better training.",
+      "It need not use one strict, permanent ordering.",
+      "It changes data presentation, not the task itself."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data",
+          "label": "Training examples",
+          "note": "The examples available for learning"
+        },
+        {
+          "id": "difficulty",
+          "label": "Difficulty estimate",
+          "note": "Examples are assessed as easier or harder"
+        },
+        {
+          "id": "schedule",
+          "label": "Learning schedule",
+          "note": "Presentation generally progresses easy to hard"
+        },
+        {
+          "id": "batches",
+          "label": "Ordered batches",
+          "note": "Data is supplied according to the schedule"
+        },
+        {
+          "id": "model",
+          "label": "Model updates",
+          "note": "The model trains on successive batches"
+        }
+      ],
+      "edges": [
+        {
+          "from": "data",
+          "to": "difficulty",
+          "label": "assess"
+        },
+        {
+          "from": "difficulty",
+          "to": "schedule",
+          "label": "order"
+        },
+        {
+          "from": "schedule",
+          "to": "batches",
+          "label": "produce"
+        },
+        {
+          "from": "batches",
+          "to": "model",
+          "label": "train"
+        }
+      ],
+      "caption": "Curriculum learning orders the training data while the model learns through its usual update process."
+    }
+  },
   "related": [
     "active-learning",
     "contrastive-learning",

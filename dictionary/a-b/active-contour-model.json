@@ -5,7 +5,134 @@
   "type": "tool",
   "definition": "Active contour model, also called snakes, is a framework in computer vision introduced by Michael Kass, Andrew Witkin, and Demetri Terzopoulos for delineating an object outline from a possibly noisy 2D image.",
   "details": "The snakes model is popular in computer vision, and snakes are widely used in applications like object tracking, shape recognition, segmentation, edge detection and stereo matching. A snake is an energy minimizing, deformable spline influenced by constraint and image forces that pull it towards object contours and internal forces that resist deformation. Snakes may be understood as a special case of the general technique of matching a deformable model to an image by means of energy minimization. In two dimensions, the active shape model represents a discrete version of this approach, taking advantage of the point distribution model to restrict the shape range to an explicit domain learnt from a training set. Snakes do not solve the entire problem of finding contours in images, since the method requires knowledge of the desired contour shape beforehand. Rather, they depend on other mechanisms such as interaction with a user, interaction with some higher level image understanding process, or information from image data adjacent in time or space.",
-  "story": "Imagine an art restorer who can spot a single cracked tile in a vast mosaic. What your eyes do without thinking, the machine does one careful layer at a time. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. The model looks the way you look at a crowd and finds the one face you know. That pixel-to-meaning climb is Active contour model.",
+  "explainer": {
+    "lead": "Active contour models, nicknamed \"snakes,\" are a classic computer vision technique for finding the edges of objects in messy images. They matter because they turned the vague idea of \"find the boundary\" into a precise, optimizable mathematical procedure that influenced decades of shape analysis research.",
+    "tiers": {
+      "eli5": "Imagine you have a blurry photo of a balloon, and you want to trace its outline. A snake is like a stretchy rubber band that you lay near the balloon. The rubber band wants to stay smooth and not get too wiggly, but it also gets pulled toward the balloon's edge by invisible forces. It slowly settles into the exact shape of the balloon's outline. You have to start it pretty close to the right place, though—it can't find the balloon if you drop it on the other side of the picture.",
+      "practitioner": "You initialize a snake near your target contour—often via user click, a rough detection, or prior frame in video—then iteratively minimize its energy function. The internal energy (controlled by α and β parameters) penalizes stretching and bending; the external energy pulls toward image gradients or other features. Watch for local minima: the snake can get stuck on the wrong edge or smooth over fine details. In practice, you'll often preprocess with Gaussian smoothing and may need simulated annealing or multiresolution strategies to escape poor configurations. Modern workflows frequently replace or augment snakes with deep learning, but the energy-minimization framework persists in deformable models and some medical segmentation pipelines.",
+      "paperLevel": "A snake is a parametric curve v(s): [0,1] → ℝ² that minimizes E*snake = ∫₀¹ [E_internal(v(s)) + E_image(v(s)) + E_con(v(s))] ds, where E_internal = ½(α(s)|v_s|² + β(s)|v_ss|²) enforces first- and second-order continuity, and E_image derives from image gradients (often via Gaussian-smoothed intensity). Introduced by Kass, Witkin, and Terzopoulos, the model solves the Euler-Lagrange equations via gradient descent or dynamic programming. Key limitations: requires initialization near the true contour, sensitive to local minima in the energy landscape, and tends to miss high-curvature features due to the smoothness prior."
+    },
+    "example": "A radiologist wants to outline a liver tumor in a CT slice. She clicks a rough circle around the tumor to initialize the snake. The snake's internal energy keeps the curve from becoming jagged, while its external energy pulls points toward bright-dark transitions in the image. Over 100 iterations, the circle deforms inward, snapping to the tumor's actual edge and ignoring nearby blood vessels because their gradients are weaker. The final contour gives a precise volume estimate for treatment planning.",
+    "usedIn": [
+      {
+        "name": "Medical imaging",
+        "detail": "Segmenting organs and lesions in CT and MRI where approximate shape is known a priori",
+        "url": ""
+      },
+      {
+        "name": "Object tracking",
+        "detail": "Following moving objects across video frames by propagating the contour from frame to frame",
+        "url": ""
+      },
+      {
+        "name": "Stereo matching",
+        "detail": "Finding corresponding edges between two camera views for depth estimation",
+        "url": ""
+      },
+      {
+        "name": "Edge detection",
+        "detail": "Refining rough boundaries into precise contours in noisy or low-contrast images",
+        "url": ""
+      }
+    ],
+    "intuition": "A snake behaves like a physical object with two competing desires: to stay smooth and compact (like a relaxed spring), and to cling to visible edges in the image (like iron filings to a magnet). The balance between these desires is tuned by parameters, and the snake's final position is wherever these forces reach equilibrium.",
+    "howItWorks": [
+      "Initialize a deformable curve (the snake) near the target contour, often from user input or prior knowledge",
+      "Define an energy function with internal terms (penalizing stretch and bend) and external terms (attracting to image features like edges)",
+      "Compute forces from the energy gradient: internal forces resist deformation, image forces pull toward contours, and optional constraint forces guide from external knowledge",
+      "Iteratively adjust the snake's points to lower total energy, typically via gradient descent or variational methods",
+      "Stop when the snake reaches a local energy minimum, yielding the final object boundary"
+    ],
+    "whyItMatters": "Snakes established the paradigm of deformable models and energy-based optimization for shape extraction, bridging low-level image processing with high-level shape constraints. They directly enabled active shape models and active appearance models, and their influence persists in modern variational methods and some neural network architectures for segmentation.",
+    "misconceptions": [
+      "Snakes automatically find objects anywhere in an image—they actually require initialization near the target",
+      "Snakes always converge to the correct contour—they often get trapped in local minima from clutter or noise",
+      "Snakes work well for highly detailed or branching shapes—their smoothness prior tends to oversimplify fine structures"
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "init",
+          "label": "Initial contour",
+          "note": "User-placed or propagated rough curve near target"
+        },
+        {
+          "id": "internal",
+          "label": "Internal energy",
+          "note": "Forces for continuity and smoothness (α, β)"
+        },
+        {
+          "id": "external",
+          "label": "External energy",
+          "note": "Image gradients and optional user constraints"
+        },
+        {
+          "id": "energy",
+          "label": "Total energy",
+          "note": "Combined function to minimize"
+        },
+        {
+          "id": "optimize",
+          "label": "Optimizer",
+          "note": "Gradient descent or variational solver"
+        },
+        {
+          "id": "output",
+          "label": "Final contour",
+          "note": "Deformed snake matching object boundary"
+        }
+      ],
+      "edges": [
+        {
+          "from": "init",
+          "to": "energy",
+          "label": "provides curve"
+        },
+        {
+          "from": "internal",
+          "to": "energy",
+          "label": "contributes"
+        },
+        {
+          "from": "external",
+          "to": "energy",
+          "label": "contributes"
+        },
+        {
+          "from": "energy",
+          "to": "optimize",
+          "label": "minimized by"
+        },
+        {
+          "from": "optimize",
+          "to": "output",
+          "label": "yields"
+        },
+        {
+          "from": "output",
+          "to": "init",
+          "label": "may reinitialize"
+        }
+      ],
+      "caption": "The snake starts as a rough contour, combines internal smoothness and external image forces into an energy function, and iteratively optimizes until it snaps to the object boundary."
+    },
+    "image": {
+      "src": "https://upload.wikimedia.org/wikipedia/commons/0/00/Snake-contour-example.jpg",
+      "alt": "Active contour model — Computer vision framework",
+      "width": 640,
+      "height": 302,
+      "credit": "Wikimedia Commons",
+      "license": "CC BY-SA 2.5",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5",
+      "page": "https://commons.wikimedia.org/wiki/File:Snake-contour-example.jpg"
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Active contour model",
+        "url": "https://en.wikipedia.org/wiki/Active_contour_model"
+      }
+    ]
+  },
   "related": [
     "active-appearance-model",
     "active-vision",

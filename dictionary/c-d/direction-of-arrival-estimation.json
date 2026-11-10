@@ -5,6 +5,97 @@
   "type": "concept",
   "definition": "Estimating the spatial direction a sound arrives from using a microphone array.",
   "details": "Estimating the spatial direction a sound arrives from using a microphone array. Beamforming and neural methods localize speakers for diarization, hearing aids, and robotics.",
+  "explainer": {
+    "lead": "Direction of arrival estimation tells a machine where a sound is coming from by comparing what several microphones receive. It lets devices focus on or locate a speaker instead of treating every sound in the room alike.",
+    "tiers": {
+      "eli5": "Imagine closing your eyes while a friend calls you: you can often tell which way their voice came from. A group of microphones can do something similar by comparing the sounds they pick up, helping a robot turn toward you or a hearing aid pay attention to the person you are facing.",
+      "practitioner": "Microphone-array signals are passed to a beamforming or neural estimator to produce a speaker direction for diarization, hearing aids, or robotics. The estimate depends on the array geometry, and noise, reverberation, or several active speakers can make localization harder. A direction alone does not identify the speaker or transcribe the speech.",
+      "paperLevel": "Given signals x_m(t) from microphones m = 1...M with known spatial positions, estimate the source direction theta, represented as theta_hat = arg max_theta S(theta), where S is a spatial score such as a beamforming response; neural methods instead learn the estimate from array observations. The task concerns spatial localization, with overlapping speakers and adverse acoustic conditions remaining practical difficulties."
+    },
+    "example": "A person speaks to a robot from its left. The robot's microphone array captures the voice, and a beamforming estimator reports a direction to the left, allowing the robot to turn toward the speaker.",
+    "usedIn": [
+      {
+        "name": "Speaker diarization",
+        "detail": "Provides spatial cues that help associate speech with different speakers.",
+        "url": ""
+      },
+      {
+        "name": "Hearing aids",
+        "detail": "Locates speakers so the device can use their direction when processing sound.",
+        "url": ""
+      },
+      {
+        "name": "Robotics",
+        "detail": "Helps a robot determine where a speaking person or other sound source is located.",
+        "url": ""
+      }
+    ],
+    "intuition": "A sound reaches microphones at different positions in slightly different ways. Comparing those array signals reveals which direction best explains the pattern.",
+    "howItWorks": [
+      "Record the same sound with a microphone array.",
+      "Compare the microphone signals while accounting for their spatial arrangement.",
+      "Use beamforming or a neural method to score or predict possible source directions.",
+      "Select the estimated direction and pass it to the application."
+    ],
+    "whyItMatters": "It adds a useful where dimension to audio processing, allowing systems to localize speakers and respond to the relevant voice rather than only analyzing a mixed recording.",
+    "misconceptions": [
+      "It estimates a sound's direction, not necessarily its exact distance or position.",
+      "Finding a speaker's direction is not the same as identifying who the speaker is.",
+      "It uses a microphone array; one isolated microphone does not provide the same spatial comparisons."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "source",
+          "label": "Sound source",
+          "note": "A speaker produces sound from one direction."
+        },
+        {
+          "id": "array",
+          "label": "Microphone array",
+          "note": "Several microphones record the sound."
+        },
+        {
+          "id": "compare",
+          "label": "Spatial comparison",
+          "note": "Signals are compared using the array layout."
+        },
+        {
+          "id": "estimator",
+          "label": "Direction estimator",
+          "note": "Beamforming or a neural method evaluates directions."
+        },
+        {
+          "id": "output",
+          "label": "Arrival direction",
+          "note": "The estimated direction goes to the application."
+        }
+      ],
+      "edges": [
+        {
+          "from": "source",
+          "to": "array",
+          "label": "sound"
+        },
+        {
+          "from": "array",
+          "to": "compare",
+          "label": "signals"
+        },
+        {
+          "from": "compare",
+          "to": "estimator",
+          "label": "spatial cues"
+        },
+        {
+          "from": "estimator",
+          "to": "output",
+          "label": "estimate"
+        }
+      ],
+      "caption": "An array turns spatial differences among microphone signals into an estimated sound direction."
+    }
+  },
   "related": [
     "robotics"
   ],

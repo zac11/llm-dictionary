@@ -5,6 +5,108 @@
   "type": "concept",
   "definition": "Detecting objects in a top-down bird’s-eye-view representation fused from multi-camera or LiDAR input — the standard formulation in autonomous driving perception.",
   "details": "Detecting objects in a top-down bird’s-eye-view representation fused from multi-camera or LiDAR input — the standard formulation in autonomous driving perception.",
+  "explainer": {
+    "lead": "Bird’s-eye-view object detection finds vehicles, people, and other objects on a top-down map instead of locating them only inside individual camera images. It gives autonomous driving systems a shared spatial view built from cameras, LiDAR, or both.",
+    "tiers": {
+      "eli5": "Imagine looking down at toy cars on a table from above: it is easier to see where everything is than by looking through several side windows. A self-driving car similarly combines what its cameras or laser sensors see into an overhead picture, then marks the objects it finds. This helps the car understand what is around it.",
+      "practitioner": "In an autonomous driving perception stack, features from multiple cameras or LiDAR are fused into a bird’s-eye-view representation, and a detector predicts objects in that shared space. The main design concerns are how inputs are represented and fused and whether detection errors arise before or after that fusion. A detection in bird’s-eye view is a spatial result, not a bounding box tied to just one camera image.",
+      "paperLevel": "Given multi-camera images and/or LiDAR measurements, construct a top-down representation B(x, y), fuse the input features into B, and predict object detections in that bird’s-eye-view space. This separates the detection target space from the viewpoint of any individual sensor. Detection quality depends on the quality of the fused representation as well as the detector itself."
+    },
+    "example": "A vehicle’s cameras see a cyclist from different angles while its LiDAR also observes the surrounding road. Their information is fused into an overhead representation, where the detector marks the cyclist and nearby cars as separate objects in one common scene.",
+    "usedIn": [
+      {
+        "name": "Autonomous driving perception",
+        "detail": "Detects surrounding objects in a top-down representation for a vehicle’s understanding of its environment.",
+        "url": ""
+      },
+      {
+        "name": "Multi-camera vehicle systems",
+        "detail": "Combines information from several camera viewpoints into one shared detection space.",
+        "url": ""
+      },
+      {
+        "name": "LiDAR-equipped vehicle systems",
+        "detail": "Uses LiDAR input, alone or fused with cameras, to detect objects from above.",
+        "url": ""
+      }
+    ],
+    "intuition": "Separate sensors see the road from different viewpoints, but a top-down map gives them one common place to describe the scene. Detecting objects there makes their locations directly comparable.",
+    "howItWorks": [
+      "Collect observations from multiple cameras, LiDAR, or both.",
+      "Represent the sensor information in a shared top-down coordinate space.",
+      "Fuse the available inputs into a bird’s-eye-view representation.",
+      "Run object detection on that representation.",
+      "Output the detected objects in the shared top-down scene."
+    ],
+    "whyItMatters": "It provides a standard way to detect objects across sensor viewpoints in autonomous driving. A shared top-down result is more useful for describing the surrounding scene than disconnected detections in individual inputs.",
+    "misconceptions": [
+      "It is not simply object detection in a single photograph taken from above; the bird’s-eye-view representation can be constructed from ordinary multi-camera or LiDAR input.",
+      "It does not require both cameras and LiDAR; the formulation can use either input type or fuse both.",
+      "Bird’s-eye view describes where detection happens, not one particular sensor-fusion or detector design."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "cameras",
+          "label": "Multiple cameras",
+          "note": "Different image viewpoints"
+        },
+        {
+          "id": "lidar",
+          "label": "LiDAR input",
+          "note": "Optional sensor observations"
+        },
+        {
+          "id": "fusion",
+          "label": "Feature fusion",
+          "note": "Combines available inputs"
+        },
+        {
+          "id": "bev",
+          "label": "BEV representation",
+          "note": "Shared top-down scene"
+        },
+        {
+          "id": "detector",
+          "label": "Object detector",
+          "note": "Finds objects in BEV"
+        },
+        {
+          "id": "objects",
+          "label": "Detected objects",
+          "note": "Objects in common space"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cameras",
+          "to": "fusion",
+          "label": "image features"
+        },
+        {
+          "from": "lidar",
+          "to": "fusion",
+          "label": "LiDAR features"
+        },
+        {
+          "from": "fusion",
+          "to": "bev",
+          "label": "fused features"
+        },
+        {
+          "from": "bev",
+          "to": "detector",
+          "label": "top-down input"
+        },
+        {
+          "from": "detector",
+          "to": "objects",
+          "label": "predictions"
+        }
+      ],
+      "caption": "Camera and/or LiDAR information is fused into a top-down representation before objects are detected."
+    }
+  },
   "citation": {
     "title": "Birds Eye View Object Detection",
     "authors": [],

@@ -5,7 +5,111 @@
   "type": "concept",
   "definition": "A machine learning approach that combines predictions from multiple models to produce a more accurate and robust result than any single model.",
   "details": "Ensemble methods (including bagging, boosting, and stacking) exploit the fact that different models often make different errors, so combining them can cancel out individual weaknesses.",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. That is Ensemble Learning — a small key that opens a big door.",
+  "explainer": {
+    "lead": "Ensemble learning asks several models for a prediction, then combines their answers. It matters because models often make different mistakes, so a well-combined group can be more accurate and robust than any one member.",
+    "tiers": {
+      "eli5": "Imagine asking three friends whether it will rain: one looks at the clouds, one checks the wind, and one remembers yesterday’s weather. If you combine their answers instead of trusting just one friend, a single bad guess is less likely to ruin the result. Ensemble learning does this with computer models.",
+      "practitioner": "Train several models and combine their outputs, commonly by averaging numeric predictions or taking a majority vote for classes. Bagging, boosting, and stacking are standard ensemble approaches. The main pitfall is a group whose members make the same errors, since combining them provides little correction.",
+      "paperLevel": "Given base predictors f_1(x), ..., f_M(x), an ensemble computes y_hat = Combine(f_1(x), ..., f_M(x)), for example by averaging or majority voting. Its benefit depends on individual errors differing enough for aggregation to cancel some of them; highly correlated errors limit that benefit."
+    },
+    "example": "Three classifiers examine the same email and predict “spam,” “not spam,” and “spam.” A majority vote produces the ensemble’s final prediction: “spam.”",
+    "usedIn": [
+      {
+        "name": "Classification",
+        "detail": "Multiple class labels can be combined, for example by majority vote.",
+        "url": ""
+      },
+      {
+        "name": "Regression",
+        "detail": "Numeric predictions from several models can be combined, for example by averaging.",
+        "url": ""
+      }
+    ],
+    "intuition": "A single model can fail in its own particular way, but different models often fail on different cases. Combining their predictions can reduce the influence of those individual weaknesses.",
+    "howItWorks": [
+      "Train multiple models to solve the same prediction task.",
+      "Give each model the same new input.",
+      "Collect their predictions, which may disagree.",
+      "Combine the predictions into one final answer, such as by averaging or voting."
+    ],
+    "whyItMatters": "Ensembles provide a practical way to improve accuracy and robustness without relying on one model to handle every case well. Their strength comes from complementing individual models rather than merely repeating them.",
+    "misconceptions": [
+      "More models do not automatically help if they all make the same mistakes.",
+      "An ensemble is not a single prediction copied several times; it combines outputs from multiple models."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input data",
+          "note": "The example to predict"
+        },
+        {
+          "id": "model-a",
+          "label": "Model A",
+          "note": "Produces one prediction"
+        },
+        {
+          "id": "model-b",
+          "label": "Model B",
+          "note": "May make different errors"
+        },
+        {
+          "id": "model-c",
+          "label": "Model C",
+          "note": "Adds another prediction"
+        },
+        {
+          "id": "combiner",
+          "label": "Prediction combiner",
+          "note": "Averages or votes"
+        },
+        {
+          "id": "output",
+          "label": "Final prediction",
+          "note": "The ensemble’s answer"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "model-a",
+          "label": ""
+        },
+        {
+          "from": "input",
+          "to": "model-b",
+          "label": ""
+        },
+        {
+          "from": "input",
+          "to": "model-c",
+          "label": ""
+        },
+        {
+          "from": "model-a",
+          "to": "combiner",
+          "label": "prediction"
+        },
+        {
+          "from": "model-b",
+          "to": "combiner",
+          "label": "prediction"
+        },
+        {
+          "from": "model-c",
+          "to": "combiner",
+          "label": "prediction"
+        },
+        {
+          "from": "combiner",
+          "to": "output",
+          "label": ""
+        }
+      ],
+      "caption": "Several models predict independently, and a combiner turns their outputs into one result."
+    }
+  },
   "related": [
     "decision-tree",
     "gradient-boosting",

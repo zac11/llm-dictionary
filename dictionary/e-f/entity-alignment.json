@@ -5,6 +5,102 @@
   "type": "concept",
   "definition": "Matching entity records that refer to the same real-world object across different knowledge graphs.",
   "details": "Matching entity records that refer to the same real-world object across different knowledge graphs. Embedding-based methods align graph structures so multilingual and multi-source KBs can be merged.",
+  "explainer": {
+    "lead": "Different knowledge graphs can hold separate records for the same person, place, or thing. Entity alignment finds those matching records so information from multiple languages and sources can be brought together without treating one real-world object as several.",
+    "tiers": {
+      "eli5": "Imagine two contact lists that both include your friend, but one uses a nickname and the other uses a full name. Entity alignment is like figuring out that both entries describe the same person. Computers do this for giant collections of facts, including collections written in different languages.",
+      "practitioner": "In an embedding-based pipeline, entity records and graph structures are represented so that corresponding entities across graphs can be matched. The resulting pairs support merges of multilingual or multi-source knowledge bases. Names alone can be unreliable, and an incorrect match can combine records for distinct real-world objects.",
+      "paperLevel": "Given entity sets E1 and E2 from two knowledge graphs, entity alignment seeks pairs (e1, e2) in E1 x E2 whose records denote the same real-world object. Embedding-based methods learn representations that align graph structures, enabling matches across languages and sources."
+    },
+    "example": "One graph contains “Paris — capital of — France,” while a French-language graph contains “Paris — capitale de — France.” Entity alignment links the two Paris records because they refer to the same city, allowing their information to be combined.",
+    "usedIn": [
+      {
+        "name": "Multilingual knowledge bases",
+        "detail": "Links records for the same real-world object across knowledge bases in different languages.",
+        "url": ""
+      },
+      {
+        "name": "Multi-source knowledge integration",
+        "detail": "Identifies corresponding entity records so separate knowledge bases can be merged.",
+        "url": ""
+      }
+    ],
+    "intuition": "The same real-world object may have different records, labels, and graph neighborhoods in different knowledge bases. Alignment uses those records and their structural context to decide which ones correspond.",
+    "howItWorks": [
+      "Take entity records from two knowledge graphs.",
+      "Represent the entities and their graph structures with embeddings.",
+      "Align the representations across the graphs.",
+      "Identify entity pairs that refer to the same real-world object.",
+      "Use those pairs to connect or merge the knowledge bases."
+    ],
+    "whyItMatters": "It reduces duplicate representations of the same object across knowledge graphs. That makes it possible to combine facts from multilingual and multi-source knowledge bases.",
+    "misconceptions": [
+      "It is not simply matching identical names; graph structure can also provide evidence.",
+      "Similar records are not necessarily matches if they describe different real-world objects."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "graph-a",
+          "label": "Knowledge graph A",
+          "note": "Entity records from one source or language"
+        },
+        {
+          "id": "graph-b",
+          "label": "Knowledge graph B",
+          "note": "Records from another source or language"
+        },
+        {
+          "id": "embeddings",
+          "label": "Entity embeddings",
+          "note": "Represent entities and graph structures"
+        },
+        {
+          "id": "alignment",
+          "label": "Structural alignment",
+          "note": "Brings corresponding graph representations into alignment"
+        },
+        {
+          "id": "pairs",
+          "label": "Matched entity pairs",
+          "note": "Records denoting the same real-world object"
+        },
+        {
+          "id": "merged",
+          "label": "Merged knowledge base",
+          "note": "Connected information from both graphs"
+        }
+      ],
+      "edges": [
+        {
+          "from": "graph-a",
+          "to": "embeddings",
+          "label": ""
+        },
+        {
+          "from": "graph-b",
+          "to": "embeddings",
+          "label": ""
+        },
+        {
+          "from": "embeddings",
+          "to": "alignment",
+          "label": ""
+        },
+        {
+          "from": "alignment",
+          "to": "pairs",
+          "label": ""
+        },
+        {
+          "from": "pairs",
+          "to": "merged",
+          "label": ""
+        }
+      ],
+      "caption": "Embedding-based entity alignment connects records across graphs and uses the matches to merge their information."
+    }
+  },
   "related": [
     "embedding",
     "align"

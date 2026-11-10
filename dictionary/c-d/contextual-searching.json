@@ -5,7 +5,113 @@
   "type": "concept",
   "definition": "Contextual search is a form of optimizing web-based search results based on context provided by the user and the computer being used to enter the query.",
   "details": "Contextual search services differ from current search engines based on traditional information retrieval that return lists of documents based on their relevance to the query. Rather, contextual search attempts to increase the precision of results based on how valuable they are to individual users.",
-  "story": "Think of a referee whose job is to be completely honest about who touched the ball last. Before trusting a machine, someone has to measure how good it really is — fairly and honestly. It is the exam that separates “it sounds good” from “it actually is good”. What gets measured is what actually gets better. And that, done honestly, is Contextual searching.",
+  "explainer": {
+    "lead": "Contextual searching improves web search results by considering the situation around a query, including context supplied by the user and the computer being used. Its goal is not just to find topically relevant documents, but to rank results by how useful they are likely to be to the individual searcher.",
+    "tiers": {
+      "eli5": "Imagine asking a librarian for a good place to eat. The librarian can give a better answer if you say you want lunch nearby and your phone shows where you are, rather than simply listing every restaurant mentioned in a book. Contextual searching works similarly: it uses extra clues from you and your computer to put the most useful answers first.",
+      "practitioner": "Apply contextual searching in a web-search ranking layer by supplying user and device context alongside the query, then scoring documents for their expected value to that individual. A conventional information-retrieval system can still provide candidate documents, while context influences their final ranking. Validate that contextual signals actually improve result precision rather than allowing them to override the query or promote irrelevant documents.",
+      "paperLevel": "A compact formulation is score(d) = value(d | q, c_user, c_device), where q is the query, c_user and c_device are the available user and computer context, and d is a candidate document. This differs from ranking solely by topical relevance, relevance(d | q), because the optimization target is precision in terms of value to an individual user. The formulation does not specify which contextual signals to use or how their value should be estimated."
+    },
+    "example": "Two people enter the same web query, but provide different user and device context. A contextual search service can rank the resulting documents differently, placing first the documents it estimates to be more valuable to each person rather than returning one relevance-only ordering.",
+    "usedIn": [
+      {
+        "name": "Web search",
+        "detail": "Search results can be optimized using context supplied with the query.",
+        "url": ""
+      },
+      {
+        "name": "Personalized information retrieval",
+        "detail": "Documents can be ranked according to their expected value to an individual user.",
+        "url": ""
+      },
+      {
+        "name": "Device-aware search",
+        "detail": "Context from the computer entering the query can help refine the result ranking.",
+        "url": ""
+      }
+    ],
+    "intuition": "The same words can represent different needs for different people or situations. Context gives the search system additional evidence for deciding which relevant documents will be most valuable to this particular user.",
+    "howItWorks": [
+      "Receive the user's search query.",
+      "Collect available context from the user and the computer.",
+      "Consider candidate documents related to the query.",
+      "Estimate each document's value to the individual user.",
+      "Rank the results to emphasize that value."
+    ],
+    "whyItMatters": "Traditional relevance ranking can return useful documents without identifying which ones best serve a particular searcher. Contextual searching aims to increase precision by making individual value part of the ranking decision.",
+    "misconceptions": [
+      "It does not replace the query with context; both inform the search.",
+      "It is not simply traditional relevance ranking with a different presentation.",
+      "Extra context does not automatically make a result valuable to the user."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "query",
+          "label": "User query",
+          "note": "The search terms entered by the user."
+        },
+        {
+          "id": "user-context",
+          "label": "User context",
+          "note": "Additional context provided by the user."
+        },
+        {
+          "id": "device-context",
+          "label": "Computer context",
+          "note": "Context from the computer entering the query."
+        },
+        {
+          "id": "candidates",
+          "label": "Candidate documents",
+          "note": "Documents related to the query."
+        },
+        {
+          "id": "ranking",
+          "label": "Contextual ranking",
+          "note": "Estimates value for the individual user."
+        },
+        {
+          "id": "results",
+          "label": "Search results",
+          "note": "Documents ordered for the individual."
+        }
+      ],
+      "edges": [
+        {
+          "from": "query",
+          "to": "candidates",
+          "label": "retrieves"
+        },
+        {
+          "from": "query",
+          "to": "ranking",
+          "label": ""
+        },
+        {
+          "from": "user-context",
+          "to": "ranking",
+          "label": ""
+        },
+        {
+          "from": "device-context",
+          "to": "ranking",
+          "label": ""
+        },
+        {
+          "from": "candidates",
+          "to": "ranking",
+          "label": "scores"
+        },
+        {
+          "from": "ranking",
+          "to": "results",
+          "label": "orders"
+        }
+      ],
+      "caption": "Contextual searching combines the query with user and computer context to rank candidate documents by individual value."
+    }
+  },
   "related": [
     "concept-searching-limited",
     "contextual-query-language",

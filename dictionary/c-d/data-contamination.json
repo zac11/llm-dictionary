@@ -5,7 +5,113 @@
   "type": "concept",
   "definition": "When evaluation or benchmark data inadvertently appears in a model's training dataset, inflating apparent performance on that benchmark.",
   "details": "Data contamination is a significant concern for evaluating web-scale-trained LLMs, since benchmark questions and answers may have been scraped into training corpora, undermining the validity of reported benchmark scores.",
-  "story": "Think of a referee whose job is to be completely honest about who touched the ball last. Before trusting a machine, someone has to measure how good it really is — fairly and honestly. It is the exam that separates “it sounds good” from “it actually is good”. What gets measured is what actually gets better. That shared ruler is Data Contamination.",
+  "explainer": {
+    "lead": "Data contamination happens when material used to test a model has already slipped into its training data. The model may then look more capable than it really is, making benchmark scores harder to trust.",
+    "tiers": {
+      "eli5": "Imagine a teacher accidentally giving you a practice sheet that includes the exact questions and answers for tomorrow's test. A high score would not show how well you can solve new problems. Data contamination is the same problem for AI models: they may remember test answers instead of demonstrating general skill.",
+      "practitioner": "When evaluating an LLM, check whether benchmark questions or answers overlap with its training corpus, especially when the corpus was scraped from the web. Treat strong results cautiously if that provenance is unclear, and compare performance on evaluation material kept separate from training. Exact-match checks can miss rewritten or otherwise altered benchmark material.",
+      "paperLevel": "Let D_train be the training dataset and D_eval the evaluation dataset; direct data contamination occurs when their intersection is non-empty, so evaluation items are available during training. The resulting benchmark score can reflect memorization of those items as well as generalization, and therefore need not estimate performance on unseen data. Web-scale collection makes this difficult to rule out, and detecting overlap does not by itself quantify how much a score was inflated."
+    },
+    "example": "Suppose a public benchmark contains the question \"What is 17 times 19?\" together with its answer, 323, and both are scraped into an LLM's training corpus. If the model later answers that exact test item correctly, its high benchmark score may partly reflect exposure to the answer rather than an ability to solve unseen arithmetic problems.",
+    "usedIn": [
+      {
+        "name": "Large language model evaluation",
+        "detail": "Benchmark results are interpreted cautiously when test material may have entered web-scraped training corpora.",
+        "url": ""
+      },
+      {
+        "name": "Benchmark score reporting",
+        "detail": "Possible training-test overlap is relevant when judging whether reported scores reflect performance on unseen tasks.",
+        "url": ""
+      },
+      {
+        "name": "Web-scale training corpus construction",
+        "detail": "Corpus collection can inadvertently include publicly available benchmark questions and answers.",
+        "url": ""
+      }
+    ],
+    "intuition": "A test measures new problem-solving only when its answers were not available during study. If benchmark material leaks into training, part of the test can become a memory exercise.",
+    "howItWorks": [
+      "Benchmark questions and answers are published or otherwise become available on the web.",
+      "A web scrape collects some of that material into a model's training corpus.",
+      "The model trains on text that overlaps with the later evaluation.",
+      "The benchmark is administered, and memorized content can help produce correct answers.",
+      "The resulting score may overstate performance on genuinely unseen examples."
+    ],
+    "whyItMatters": "Contamination undermines benchmark validity because a score no longer cleanly measures generalization to unseen data. For web-scale-trained LLMs, unclear corpus contents can make apparently strong results difficult to interpret or compare.",
+    "misconceptions": [
+      "Contamination is not necessarily deliberate cheating; benchmark data can enter training inadvertently through web scraping.",
+      "A high benchmark score alone does not prove contamination, but possible overlap weakens what that score can establish.",
+      "Removing an exact copy may not address every form of overlap, such as benchmark material reproduced in altered wording."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "benchmark",
+          "label": "Benchmark data",
+          "note": "Evaluation questions and answers"
+        },
+        {
+          "id": "scrape",
+          "label": "Web scraping",
+          "note": "Public pages enter collection"
+        },
+        {
+          "id": "corpus",
+          "label": "Training corpus",
+          "note": "Test material is inadvertently included"
+        },
+        {
+          "id": "model",
+          "label": "Trained LLM",
+          "note": "Overlapping content may be memorized"
+        },
+        {
+          "id": "evaluation",
+          "label": "Benchmark evaluation",
+          "note": "The model answers evaluation items"
+        },
+        {
+          "id": "score",
+          "label": "Inflated score",
+          "note": "Apparent performance can be overstated"
+        }
+      ],
+      "edges": [
+        {
+          "from": "benchmark",
+          "to": "scrape",
+          "label": "public material"
+        },
+        {
+          "from": "scrape",
+          "to": "corpus",
+          "label": ""
+        },
+        {
+          "from": "corpus",
+          "to": "model",
+          "label": "training"
+        },
+        {
+          "from": "benchmark",
+          "to": "evaluation",
+          "label": "test items"
+        },
+        {
+          "from": "model",
+          "to": "evaluation",
+          "label": ""
+        },
+        {
+          "from": "evaluation",
+          "to": "score",
+          "label": ""
+        }
+      ],
+      "caption": "Benchmark material can travel through web collection into training, then reappear during evaluation and distort the score."
+    }
+  },
   "related": [
     "synthetic-benchmark-contamination",
     "a-b-testing",

@@ -5,7 +5,134 @@
   "type": "concept",
   "definition": "Evaluation of a binary classifier typically assigns a numerical value, or values, to a classifier that represent its accuracy.",
   "details": "An example is error rate, which measures how frequently the classifier makes a mistake. There are many metrics that can be used; different fields have different preferences. For example, in medicine sensitivity and specificity are often used, while in computer science precision and recall are preferred. An important distinction is between metrics that are independent of the prevalence or skew (how often each class occurs in the population), and metrics that depend on the prevalence – both types are useful, but they have very different properties. Often, evaluation is used to compare two methods of classification, so that one can be adopted and the other discarded. Such comparisons are more directly achieved by a form of evaluation that results in a single unitary metric rather than a pair of metrics.",
-  "story": "Imagine a driving test that every new model has to pass before it is allowed on the road. It is the exam that separates “it sounds good” from “it actually is good”. A fair scoreboard keeps everyone honest. It is the exam that keeps everyone honest. That shared ruler is Evaluation of binary classifiers.",
+  "explainer": {
+    "lead": "A binary classifier sorts things into two groups, such as sick or healthy, and evaluation turns its mistakes and successes into useful numbers. Those numbers help people compare methods and understand whether a positive or negative result can be trusted.",
+    "tiers": {
+      "eli5": "Imagine checking whether a machine can correctly sort red and blue balls, then comparing its answers with an answer key. You count four things: balls sorted correctly into each colour, red balls called blue, and blue balls called red. Different calculations from these counts tell you different things, such as how many red balls were missed or how often a ball called red really was red.",
+      "practitioner": "Compare the classifier's output with a reference classification and tabulate TP, FP, TN, and FN in a 2×2 confusion matrix. Use sensitivity and specificity when prevalence-independent behaviour is the focus, and PPV and NPV when interpreting positive and negative predictions in a particular population. Precision and recall are commonly preferred in computer science, while sensitivity and specificity are common in medicine; ROC curves can help study the sensitivity–specificity relationship.",
+      "paperLevel": "Given TP, FP, TN, and FN, sensitivity or recall is TPR = TP/(TP + FN), specificity is TNR = TN/(TN + FP), and precision or positive predictive value is PPV = TP/(TP + FP). Sensitivity and specificity are prevalence-independent, whereas predictive values depend on prevalence. Sensitivity and specificity can both reach 100% in theory, but practical measurements based on imperfect surrogate markers often create a trade-off between them."
+    },
+    "example": "A disease test has 99% sensitivity and 99% specificity and is used on 2,000 people, of whom 100 are sick. The expected counts are 99 TP, 1 FN, 1,881 TN, and 19 FP, so PPV = 99/(99 + 19) ≈ 84%, even though both sensitivity and specificity are 99%; the probability of disease after a negative result is 1/1,882, or about 0.05%.",
+    "usedIn": [
+      {
+        "name": "Medical testing",
+        "detail": "Sensitivity and specificity describe how well a test identifies people with and without a disease.",
+        "url": ""
+      },
+      {
+        "name": "Computer science classification",
+        "detail": "Precision and recall are commonly used to evaluate two-class classifiers.",
+        "url": ""
+      },
+      {
+        "name": "Factory quality control",
+        "detail": "Higher sensitivity means fewer faulty products reach the market, while higher specificity means fewer good products are discarded.",
+        "url": ""
+      }
+    ],
+    "intuition": "A single count of correct answers does not describe every way a classifier can succeed or fail. Separating correct and incorrect positive and negative results lets each metric answer a specific question about performance.",
+    "howItWorks": [
+      "Run the classifier on a data set with a reference or gold-standard classification.",
+      "Count true positives, false positives, true negatives, and false negatives in a 2×2 contingency table.",
+      "Divide these counts by suitable row or column totals to obtain ratios such as sensitivity, specificity, PPV, and NPV.",
+      "Choose prevalence-independent or prevalence-dependent metrics according to the question being asked.",
+      "Use a metric pair to characterise performance, or a single unitary metric when directly comparing methods."
+    ],
+    "whyItMatters": "Evaluation makes classification methods comparable and reveals which kinds of errors they make. It also shows why the same test can inspire different levels of confidence in populations with different prevalences.",
+    "misconceptions": [
+      "A test with 99% sensitivity and specificity does not necessarily give a positive result a 99% chance of being correct; prevalence affects PPV.",
+      "Sensitivity and specificity do not always have to trade off, although imperfect real-world indicators often produce such a trade-off.",
+      "A metric pair and a single summary metric serve different purposes: pairs describe complementary behaviour, while single metrics make direct method comparisons more straightforward."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data",
+          "label": "Data set",
+          "note": "Items belonging to one of two classes."
+        },
+        {
+          "id": "classifier",
+          "label": "Binary classifier",
+          "note": "Produces a positive or negative prediction."
+        },
+        {
+          "id": "reference",
+          "label": "Gold standard",
+          "note": "Supplies the reference classification."
+        },
+        {
+          "id": "matrix",
+          "label": "Confusion matrix",
+          "note": "Cross-tabulates TP, FP, TN, and FN."
+        },
+        {
+          "id": "ratios",
+          "label": "Summary ratios",
+          "note": "Uses marginal totals to calculate performance statistics."
+        },
+        {
+          "id": "evaluation",
+          "label": "Metric selection",
+          "note": "Selects a pair or a single unitary metric."
+        },
+        {
+          "id": "comparison",
+          "label": "Method comparison",
+          "note": "Supports adopting one classification method over another."
+        }
+      ],
+      "edges": [
+        {
+          "from": "data",
+          "to": "classifier",
+          "label": "items"
+        },
+        {
+          "from": "classifier",
+          "to": "matrix",
+          "label": "predictions"
+        },
+        {
+          "from": "reference",
+          "to": "matrix",
+          "label": "outcomes"
+        },
+        {
+          "from": "matrix",
+          "to": "ratios",
+          "label": "four counts"
+        },
+        {
+          "from": "ratios",
+          "to": "evaluation",
+          "label": "statistics"
+        },
+        {
+          "from": "evaluation",
+          "to": "comparison",
+          "label": "scores"
+        }
+      ],
+      "caption": "Predictions and reference outcomes form a contingency table, whose counts are converted into metrics for interpretation and comparison."
+    },
+    "image": {
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/65/Binary-classification-labeled.svg/960px-Binary-classification-labeled.svg.png",
+      "alt": "Evaluation of binary classifiers — Quantitative measurement of accuracy",
+      "width": 640,
+      "height": 640,
+      "credit": "Nichtich",
+      "license": "Public domain",
+      "licenseUrl": "",
+      "page": "https://commons.wikimedia.org/wiki/File:Binary-classification-labeled.svg"
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Evaluation of binary classifiers",
+        "url": "https://en.wikipedia.org/wiki/Evaluation_of_binary_classifiers"
+      }
+    ]
+  },
   "related": [
     "binary-classification",
     "international-conference-on-language-resources-and-evaluation",

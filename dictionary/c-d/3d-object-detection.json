@@ -5,6 +5,92 @@
   "type": "concept",
   "definition": "Detecting objects in 3D space with oriented bounding boxes, typically from LiDAR or multi-view cameras.",
   "details": "Detecting objects in 3D space with oriented bounding boxes, typically from LiDAR or multi-view cameras. A core task in autonomous driving and robotics perception.",
+  "explainer": {
+    "lead": "3D object detection finds objects in a scene and places an oriented three-dimensional box around each one. It gives machines a practical sense of where things are, how large they are, and which way they face—essential information for driving and moving safely through physical spaces.",
+    "tiers": {
+      "eli5": "Imagine pointing out toys in a room, then drawing a tilted box around each one to show its size, position, and direction. A computer does something similar using laser measurements or pictures taken from several angles. This helps a car or robot understand not just what it sees, but where everything is around it.",
+      "practitioner": "Engineers feed LiDAR measurements or multi-view camera images into a detector that outputs object classes together with 3D box centers, dimensions, and orientations. These boxes can then support tracking, navigation, and planning in driving or robotics pipelines. Occlusion, sparse measurements, and ambiguous views can make position, size, or heading estimates unreliable.",
+      "paperLevel": "Given sensor observations X, the task is to predict a set f(X) = {(c_i, x_i, y_i, z_i, l_i, w_i, h_i, θ_i)}, where c_i is an object class, (x_i, y_i, z_i) locates its box, (l_i, w_i, h_i) gives its dimensions, and θ_i represents orientation. It therefore combines object recognition with metric 3D localization and pose estimation. Missing geometry from occlusion, sparse LiDAR returns, or restricted camera views can make the estimate ambiguous."
+    },
+    "example": "A vehicle’s detector examines LiDAR measurements and multi-view images of a car ahead. It returns a car box centered 12 metres forward and 1.5 metres to the left, measuring 4.5 by 1.8 by 1.5 metres and rotated 10 degrees relative to the vehicle’s direction.",
+    "usedIn": [
+      {
+        "name": "Autonomous driving",
+        "detail": "Locating road users and obstacles in 3D so a vehicle can reason about the space around it.",
+        "url": ""
+      },
+      {
+        "name": "Robotics perception",
+        "detail": "Giving robots object positions, sizes, and orientations for navigation and interaction with their surroundings.",
+        "url": ""
+      }
+    ],
+    "intuition": "A flat picture can show that a car is present without fully explaining where its body sits in space. 3D object detection adds depth, physical size, and heading, turning visible evidence into boxes that can be reasoned about in the scene.",
+    "howItWorks": [
+      "Capture the surroundings with LiDAR or cameras viewing the scene from multiple positions.",
+      "Combine the visual or geometric evidence in a shared three-dimensional coordinate frame.",
+      "Predict each object’s category along with a box center, length, width, height, and orientation.",
+      "Output the oriented boxes for downstream perception tasks such as tracking, navigation, or planning."
+    ],
+    "whyItMatters": "Knowing an object’s 3D extent and orientation helps a machine judge which spaces are occupied and how objects are aligned. That makes the task a core link between raw sensing and safe behaviour in autonomous driving and robotics.",
+    "misconceptions": [
+      "It is not simply 2D detection with a depth value: the output also describes three-dimensional size and orientation.",
+      "An oriented bounding box is an approximation of occupied space, not a detailed reconstruction of the object’s shape.",
+      "LiDAR is not mandatory; multi-view cameras are another typical input."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "sensors",
+          "label": "LiDAR or cameras",
+          "note": "Observe the surrounding scene."
+        },
+        {
+          "id": "evidence",
+          "label": "3D scene evidence",
+          "note": "Geometry and appearance in shared coordinates."
+        },
+        {
+          "id": "detector",
+          "label": "3D object detector",
+          "note": "Recognizes and localizes objects."
+        },
+        {
+          "id": "boxes",
+          "label": "Oriented 3D boxes",
+          "note": "Class, center, dimensions, and orientation."
+        },
+        {
+          "id": "downstream",
+          "label": "Tracking and planning",
+          "note": "Uses boxes for downstream decisions."
+        }
+      ],
+      "edges": [
+        {
+          "from": "sensors",
+          "to": "evidence",
+          "label": "observations"
+        },
+        {
+          "from": "evidence",
+          "to": "detector",
+          "label": "scene features"
+        },
+        {
+          "from": "detector",
+          "to": "boxes",
+          "label": "predictions"
+        },
+        {
+          "from": "boxes",
+          "to": "downstream",
+          "label": "object states"
+        }
+      ],
+      "caption": "Sensor observations become oriented 3D object boxes that downstream perception and decision systems can use."
+    }
+  },
   "related": [
     "robotics"
   ],

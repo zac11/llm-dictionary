@@ -5,7 +5,121 @@
   "type": "algorithm",
   "definition": "CoBoost is a semi-supervised training algorithm proposed by Collins and Singer in 1999.",
   "details": "The original application for the algorithm was the task of named-entity recognition using very weak learners, but it can be used for performing semi-supervised learning in cases where data features may be redundant. It may be seen as a combination of co-training and boosting. Each example is available in two views (subsections of the feature set), and boosting is applied iteratively in alternation with each view using predicted labels produced in the alternate view on the previous iteration. CoBoosting is not a valid boosting algorithm in the PAC learning sense.",
-  "story": "Think of a hiker descending a foggy hill in the dark, taking small steps and feeling for the steepest way down. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. It is the same loop you use to learn anything: try, miss, correct, try again. Skill, for a model, is just error pushed down until it is small enough to ignore. That steady, miss-by-miss improvement is CoBoosting.",
+  "explainer": {
+    "lead": "CoBoost is a semi-supervised learning algorithm that improves two weak classifiers by making them teach each other. It is useful when each example has two useful, partly redundant sets of features and only some examples are labeled.",
+    "tiers": {
+      "eli5": "Imagine two friends solving name puzzles, with each friend allowed to see different clues. They take turns making their best guesses, and each uses the other’s guesses to get better. CoBoost does this with two computer classifiers, although a wrong guess can also mislead the other classifier.",
+      "practitioner": "Split each example’s features into two views and alternate boosting with weak learners: one view is trained using labels predicted by the other view on the previous iteration. The approach was originally applied to named-entity recognition, but it requires suitably redundant views and can propagate incorrect predicted labels. It also does not provide the usual PAC-learning guarantee of a valid boosting algorithm.",
+      "paperLevel": "CoBoost was proposed by Collins and Singer in 1999 as a combination of co-training and boosting. At iteration t, boosting on view A uses labels predicted by view B at iteration t-1, then boosting on view B uses labels predicted by view A; this alternation continues over examples represented by two feature subsets. It is not a valid boosting algorithm in the PAC-learning sense."
+    },
+    "example": "For named-entity recognition, suppose one view describes a word’s spelling and capitalization, while the other describes its surrounding words. A weak classifier in the first view might predict that the capitalized token “Acme” in “Ada joined Acme” is an organization; that prediction can then help train the context-based classifier in the next round, whose predictions feed back into the first view.",
+    "usedIn": [
+      {
+        "name": "Named-entity recognition",
+        "detail": "This was CoBoost’s original application, using very weak learners.",
+        "url": ""
+      },
+      {
+        "name": "Semi-supervised learning",
+        "detail": "It can be applied when examples have two views and their data features may be redundant.",
+        "url": ""
+      }
+    ],
+    "goal": "Learn from a small amount of labeled data together with unlabeled data by alternately boosting classifiers on two feature views. Each view supplies predicted labels that help train the other.",
+    "inputs": [
+      "Labeled and unlabeled examples",
+      "Two feature views for every example",
+      "Very weak learners to be boosted in each view"
+    ],
+    "outputs": [
+      "Iteratively boosted classifiers for the two views",
+      "Predicted labels for unlabeled examples"
+    ],
+    "steps": [
+      "Represent every example with two subsets of its features, called views.",
+      "Boost weak learners on the first view.",
+      "Use that view’s predicted labels to boost learners on the second view.",
+      "Use the second view’s predictions to train the first view on the next iteration.",
+      "Continue alternating between the two views."
+    ],
+    "tradeoffs": [
+      "Requires two useful views with potentially redundant features",
+      "Incorrect predicted labels can be passed between views",
+      "Does not satisfy the PAC-learning definition of valid boosting"
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "examples",
+          "label": "Training examples",
+          "note": "Labeled and unlabeled data"
+        },
+        {
+          "id": "view-a",
+          "label": "Feature view A",
+          "note": "First feature subset"
+        },
+        {
+          "id": "view-b",
+          "label": "Feature view B",
+          "note": "Second feature subset"
+        },
+        {
+          "id": "boost-a",
+          "label": "Boost view A",
+          "note": "Train weak learners with current labels"
+        },
+        {
+          "id": "boost-b",
+          "label": "Boost view B",
+          "note": "Train using view A predictions"
+        },
+        {
+          "id": "predictions",
+          "label": "Predicted labels",
+          "note": "Output after iterative alternation"
+        }
+      ],
+      "edges": [
+        {
+          "from": "examples",
+          "to": "view-a",
+          "label": "features"
+        },
+        {
+          "from": "examples",
+          "to": "view-b",
+          "label": "features"
+        },
+        {
+          "from": "view-a",
+          "to": "boost-a",
+          "label": ""
+        },
+        {
+          "from": "boost-a",
+          "to": "boost-b",
+          "label": "predicted labels"
+        },
+        {
+          "from": "view-b",
+          "to": "boost-b",
+          "label": ""
+        },
+        {
+          "from": "boost-b",
+          "to": "boost-a",
+          "label": "next iteration"
+        },
+        {
+          "from": "boost-b",
+          "to": "predictions",
+          "label": ""
+        }
+      ],
+      "caption": "CoBoost alternates boosting between two feature views, passing predicted labels from one view to the other."
+    }
+  },
   "related": [
     "a-r-d-prasad",
     "abeba-birhane",

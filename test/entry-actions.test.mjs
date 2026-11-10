@@ -61,15 +61,15 @@ test('entrySecondPage maps a type to its spread, title, cue, and counter', () =>
   });
   assert.deepEqual(entrySecondPage({ type: 'concept' }), {
     presentation: 'story',
-    title: 'In a story',
-    cue: 'Flip to the story',
-    counter: 'story',
+    title: 'How it works',
+    cue: 'See how it works',
+    counter: 'explainer',
   });
   assert.equal(entrySecondPage(null).presentation, 'story');
 });
 
-test('hasSecondPage only hides the spread when a story is missing', () => {
-  assert.equal(hasSecondPage({ type: 'concept', story: 'Once upon a time' }), true);
+test('hasSecondPage hides the spread for a concept without an explainer, even with a legacy story', () => {
+  assert.equal(hasSecondPage({ type: 'concept', story: 'Once upon a time' }), false);
   assert.equal(hasSecondPage({ type: 'concept', story: '' }), false);
   assert.equal(hasSecondPage({ type: 'person' }), true);
   assert.equal(hasSecondPage({ type: 'event' }), true);

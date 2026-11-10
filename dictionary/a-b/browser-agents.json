@@ -5,6 +5,101 @@
   "type": "concept",
   "definition": "Agents that operate software the human way: reading screenshots or accessibility trees, clicking, typing, and navigating browsers and desktops.",
   "details": "Agents that operate software the human way: reading screenshots or accessibility trees, clicking, typing, and navigating browsers and desktops. Unlocks the long tail of software without APIs; current frontier work centers on reliability, speed, and safe handling of credentials and irreversible actions.",
+  "explainer": {
+    "lead": "A browser agent uses a computer much as a person would: it looks at the screen, clicks, types, and moves through websites or desktop programs. This lets it work with software that offers no API, although mistakes around credentials and irreversible actions remain important concerns.",
+    "tiers": {
+      "eli5": "Imagine asking a helper to use a website for you. The helper looks at the screen, clicks buttons, fills in boxes, and checks what happens next. It can use programs even when there is no special connection for computers, but someone still needs to make sure it does not press a risky button.",
+      "practitioner": "Engineers build these agents around screenshots or accessibility trees, with actions such as clicking, typing, and browser or desktop navigation. They are useful for software without APIs, but deployments must address reliability, speed, credential handling, and safeguards before irreversible actions.",
+      "paperLevel": "A browser agent can be described as a policy mapping an observation S, such as a screenshot or accessibility tree, to an action A, such as clicking, typing, or navigating; the resulting software state becomes the next observation. Current limits include reliability and speed, together with the safe handling of credentials and irreversible actions."
+    },
+    "example": "Given a request to update an account setting, an agent could inspect the page, open the settings section, click the relevant option, and read the screen again to check the result. A final confirmation step could require extra care if the change cannot be undone.",
+    "usedIn": [
+      {
+        "name": "Browser-based software",
+        "detail": "Agents navigate pages, click controls, and enter text through the visible interface.",
+        "url": ""
+      },
+      {
+        "name": "Desktop software",
+        "detail": "The same approach can operate programs that do not provide an API.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of asking a program for a special machine-readable interface, give an agent the same screen and controls a person uses. It repeatedly observes the interface, acts, and checks the result.",
+    "howItWorks": [
+      "Receive a task to complete in a browser or desktop program.",
+      "Read a screenshot or accessibility tree to understand the current interface.",
+      "Choose an action such as clicking, typing, or navigating.",
+      "Observe the updated interface and continue until the task is finished or stopped."
+    ],
+    "whyItMatters": "Browser agents can make the long tail of software without APIs accessible to automation. Their practical value depends on becoming reliable and fast while protecting credentials and handling irreversible actions safely.",
+    "misconceptions": [
+      "A browser agent is not limited to calling APIs; its defining behavior is operating the visible software interface.",
+      "Being able to click and type does not make every action safe, especially when credentials or irreversible changes are involved."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "task",
+          "label": "User task",
+          "note": "The requested outcome"
+        },
+        {
+          "id": "agent",
+          "label": "Browser agent",
+          "note": "Chooses the next action"
+        },
+        {
+          "id": "observe",
+          "label": "Read interface",
+          "note": "Screenshot or accessibility tree"
+        },
+        {
+          "id": "act",
+          "label": "Operate controls",
+          "note": "Click, type, or navigate"
+        },
+        {
+          "id": "software",
+          "label": "Browser or desktop",
+          "note": "Updates after each action"
+        }
+      ],
+      "edges": [
+        {
+          "from": "task",
+          "to": "agent",
+          "label": "goal"
+        },
+        {
+          "from": "agent",
+          "to": "observe",
+          "label": "requests state"
+        },
+        {
+          "from": "observe",
+          "to": "agent",
+          "label": "observation"
+        },
+        {
+          "from": "agent",
+          "to": "act",
+          "label": "next action"
+        },
+        {
+          "from": "act",
+          "to": "software",
+          "label": "input"
+        },
+        {
+          "from": "software",
+          "to": "observe",
+          "label": "new state"
+        }
+      ],
+      "caption": "The agent alternates between reading the interface and acting on it until the task ends."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

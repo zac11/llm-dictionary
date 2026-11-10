@@ -5,7 +5,123 @@
   "type": "concept",
   "definition": "A self-supervised learning approach that trains a model to pull representations of similar/related examples closer together and push dissimilar examples apart in embedding space.",
   "details": "Contrastive learning is widely used to train embeddings without requiring explicit labels, by constructing positive pairs (e.g., an image and its caption) and negative pairs from unlabeled data.",
-  "story": "Think of a hiker descending a foggy hill in the dark, taking small steps and feeling for the steepest way down. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. It is the same loop you use to learn anything: try, miss, correct, try again. Skill, for a model, is just error pushed down until it is small enough to ignore. That steady, miss-by-miss improvement is Contrastive Learning.",
+  "explainer": {
+    "lead": "Contrastive learning teaches a model what belongs together by comparing examples, without needing someone to label each one. It produces useful numerical representations, called embeddings, by making related examples similar and unrelated examples different.",
+    "tiers": {
+      "eli5": "Imagine sorting photos by matching each picture to its description, even though nobody has put them into labeled folders. You learn to bring a picture and its correct description closer together, while pushing it away from descriptions that do not fit. After enough practice, the model gets better at recognizing which things are related.",
+      "practitioner": "Construct positive pairs from related unlabeled examples, such as an image and its caption, and use dissimilar examples as negatives. Train an encoder so its embeddings score positive pairs as more similar than negative pairs. Pair quality matters: incorrect positives or negatives that are actually related can teach the model misleading distinctions.",
+      "paperLevel": "For an anchor x, a positive x+, and negatives x-_i, learn an encoder f such that sim(f(x), f(x+)) is large while sim(f(x), f(x-_i)) is small, where sim is a similarity measure in embedding space. This enables representation learning without explicit labels, but the learned embeddings depend on how positives and negatives are constructed; false positives and false negatives can distort the result."
+    },
+    "example": "Pair a photo of a dog with the caption “a dog running on grass” as a positive pair. Pair the same photo with “a boat crossing a lake” as a negative pair; training moves the photo’s embedding toward the matching caption and away from the mismatched one.",
+    "usedIn": [
+      {
+        "name": "Image–caption learning",
+        "detail": "An image and its matching caption form a positive pair, while mismatched images and captions provide negative pairs.",
+        "url": ""
+      },
+      {
+        "name": "Unlabeled embedding training",
+        "detail": "Collections without explicit labels can be used to learn representations by constructing related and unrelated pairs.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of telling a model the category of every example, show it which examples go together and which do not. Repeated comparisons shape an embedding space where related items sit closer together.",
+    "howItWorks": [
+      "Start with unlabeled examples.",
+      "Construct positive pairs of similar or related examples.",
+      "Construct negative pairs from dissimilar examples.",
+      "Encode each example into an embedding.",
+      "Update the model to bring positives closer and push negatives apart."
+    ],
+    "whyItMatters": "It lets models learn useful representations from unlabeled data, reducing the need for explicitly labeled examples. The resulting embeddings capture relationships that can support comparisons between different kinds of related content, such as images and captions.",
+    "misconceptions": [
+      "It does not always require explicit class labels; related and unrelated pairs can supply the training signal.",
+      "A negative pair is not guaranteed to be semantically unrelated just because it was sampled from different examples.",
+      "Closeness in embedding space reflects the relationships learned from the constructed pairs, not necessarily every meaningful similarity."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data",
+          "label": "Unlabeled examples",
+          "note": "Images, captions, or other examples without explicit labels."
+        },
+        {
+          "id": "pairs",
+          "label": "Pair construction",
+          "note": "Related examples become positives; dissimilar examples become negatives."
+        },
+        {
+          "id": "positive",
+          "label": "Positive pair",
+          "note": "Two examples that should have similar representations."
+        },
+        {
+          "id": "negative",
+          "label": "Negative pair",
+          "note": "Two examples that should have different representations."
+        },
+        {
+          "id": "encoder",
+          "label": "Embedding model",
+          "note": "Converts each example into a numerical representation."
+        },
+        {
+          "id": "objective",
+          "label": "Contrastive objective",
+          "note": "Rewards closeness for positives and separation for negatives."
+        },
+        {
+          "id": "space",
+          "label": "Embedding space",
+          "note": "Related examples are closer; dissimilar examples are farther apart."
+        }
+      ],
+      "edges": [
+        {
+          "from": "data",
+          "to": "pairs",
+          "label": "examples"
+        },
+        {
+          "from": "pairs",
+          "to": "positive",
+          "label": "related"
+        },
+        {
+          "from": "pairs",
+          "to": "negative",
+          "label": "dissimilar"
+        },
+        {
+          "from": "positive",
+          "to": "encoder",
+          "label": "encode"
+        },
+        {
+          "from": "negative",
+          "to": "encoder",
+          "label": "encode"
+        },
+        {
+          "from": "encoder",
+          "to": "objective",
+          "label": "embeddings"
+        },
+        {
+          "from": "objective",
+          "to": "space",
+          "label": "shapes"
+        },
+        {
+          "from": "objective",
+          "to": "encoder",
+          "label": "updates"
+        }
+      ],
+      "caption": "Positive and negative pairs provide the comparisons that train the embedding model."
+    }
+  },
   "related": [
     "active-learning",
     "curriculum-learning",

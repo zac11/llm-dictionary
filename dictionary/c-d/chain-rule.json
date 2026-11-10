@@ -8,6 +8,98 @@
   ],
   "definition": "by the derivative of its substrate (base) function; it deals with the substrate function as if it were a scalar function that scales the value of the compositor function; on the graph, the function is curved in terms of the substrate function.",
   "details": "by the derivative of its substrate (base) function; it deals with the substrate function as if it were a scalar function that scales the value of the compositor function; on the graph, the function is curved in terms of the substrate function. is differentiable at the point and is differentiable at , then the composite function is differentiable at , and: or in _Leibniz's notation_. 1) Envision the following in an Euclidean vector-space : 2) Envision the following in another Euclidean vector-spa",
+  "explainer": {
+    "lead": "The chain rule tells you how to differentiate a function built from other functions. It turns a nested calculation into a product of simpler derivatives, which is useful whenever one quantity depends on another through several steps.",
+    "tiers": {
+      "eli5": "Imagine two machines in a row: the first changes your input, and the second changes that result. To find how fast the final output changes, multiply how fast each machine responds at its own stage. This lets you handle the machines one at a time instead of tackling the whole nested process at once.",
+      "practitioner": "Identify the outer and inner functions, differentiate the outer function while leaving its inner expression unchanged, then multiply by the inner derivative. Repeat this for deeper nesting. A common error is differentiating only the outer function and dropping the inner derivative factor.",
+      "paperLevel": "If f is differentiable at x and g is differentiable at f(x), then g∘f is differentiable at x and (g∘f)'(x) = g'(f(x)) · f'(x). In Leibniz notation, with z depending on y and y depending on x, dz/dx = (dz/dy)(dy/dx). The stated differentiability conditions are part of the result."
+    },
+    "example": "For h(x) = sin(3x), the outer function is sin(u) and the inner function is u = 3x. Their derivatives are cos(u) and 3, so h'(x) = cos(3x) · 3 = 3cos(3x).",
+    "usedIn": [
+      {
+        "name": "Differential calculus",
+        "detail": "Computes derivatives of composite functions from the derivatives of their parts.",
+        "url": ""
+      },
+      {
+        "name": "Vector calculus",
+        "detail": "Extends the same composite-function reasoning to functions between Euclidean vector spaces.",
+        "url": ""
+      }
+    ],
+    "intuition": "A composite function changes its input in stages. The overall rate of change is the outer function's rate at the intermediate value, scaled by the inner function's rate.",
+    "howItWorks": [
+      "Write the expression as an outer function applied to an inner function.",
+      "Check that the inner function is differentiable at the point and the outer function is differentiable at the inner value.",
+      "Differentiate the outer function and evaluate it at the unchanged inner expression.",
+      "Multiply by the derivative of the inner function.",
+      "Repeat for any additional nested functions."
+    ],
+    "whyItMatters": "It makes nested functions manageable by reducing their differentiation to a sequence of simpler calculations. Without it, even routine composite expressions would require working directly from the definition of the derivative.",
+    "misconceptions": [
+      "The chain rule is not the product rule: it applies to composition, not multiplication of two functions.",
+      "Differentiating the outer function alone is incomplete; the inner derivative must also be included.",
+      "The outer derivative is evaluated at the inner function's value, not usually at the original input."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input x",
+          "note": "The original variable."
+        },
+        {
+          "id": "inner",
+          "label": "Inner function f",
+          "note": "Produces the intermediate value u = f(x)."
+        },
+        {
+          "id": "intermediate",
+          "label": "Intermediate u",
+          "note": "The input passed to the outer function."
+        },
+        {
+          "id": "outer",
+          "label": "Outer function g",
+          "note": "Produces y = g(u)."
+        },
+        {
+          "id": "derivative",
+          "label": "Derivative product",
+          "note": "dy/dx = g'(u) · f'(x)."
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "inner",
+          "label": "x"
+        },
+        {
+          "from": "inner",
+          "to": "intermediate",
+          "label": "f(x)"
+        },
+        {
+          "from": "intermediate",
+          "to": "outer",
+          "label": "u"
+        },
+        {
+          "from": "input",
+          "to": "derivative",
+          "label": "f'(x)"
+        },
+        {
+          "from": "outer",
+          "to": "derivative",
+          "label": "g'(u)"
+        }
+      ],
+      "caption": "The chain rule combines the derivative of each stage of a composite function."
+    }
+  },
   "citation": {
     "title": "Math Glossary for AI (François Fleuret notes)",
     "authors": [],

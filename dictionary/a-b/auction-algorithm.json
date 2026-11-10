@@ -5,7 +5,128 @@
   "type": "algorithm",
   "definition": "The term \"auction algorithm\" applies to several variations of a combinatorial optimization algorithm which solves assignment problems, and network optimization problems with linear and convex/nonlinear cost.",
   "details": "An auction algorithm has been used in a business setting to determine the best prices on a set of products offered to multiple buyers. It is an iterative procedure, so the name \"auction algorithm\" is related to a sales auction, where multiple bids are compared to determine the best offer, with the final sales going to the highest bidders. The original form of the auction algorithm is an iterative method to find the optimal prices and an assignment that maximizes the net benefit in a bipartite graph, the maximum weight matching problem (MWM). This algorithm was first proposed by Dimitri Bertsekas in 1979. The ideas of the auction algorithm and ε-scaling are also central in preflow-push algorithms for single commodity linear network flow problems. In fact the preflow-push algorithm for max-flow can be derived by applying the original 1979 auction algorithm to the max flow problem after reformulation as an assignment problem. Moreover, the preflow-push algorithm for the linear minimum cost flow problem is mathematically equivalent to the ε-relaxation method, which is obtained by applying the original auction algorithm after the problem is reformulated as an equivalent assignment problem. A later variation of the auction algorithm that solves shortest path problems was introduced by Bertsekas in 1991. It is a simple algorithm for finding shortest paths in a directed graph. In the single origin/single destination case, the auction algorithm maintains a single path starting at the origin, which is then extended or contracted by a single node at each iteration. Simultaneously, at most one dual variable will be adjusted at each iteration, in order to either improve or maintain the value of a dual function. In the case of multiple origins, the auction algorithm is well-suited for parallel computation. The algorithm is closely related to auction algorithms for other network flow problems. According to computational experiments, the auction algorithm is generally inferior to other state-of-the-art algorithms for the all destinations shortest path problem, but is very fast for problems with few destinations (substantially more than one and substantially less than the total number of nodes); see the article by Bertsekas, Pallottino, and Scutella, Polynomial Auction Algorithms for Shortest Paths. Auction algorithms for shortest hyperpath problems have been defined by De Leone and Pretolani in 1998. This is also a parallel auction algorithm for weighted bipartite matching, described by E. Jason Riedy in 2004.",
-  "story": "Imagine teaching a friend to shoot a basketball. They miss, and you walk them backwards through the shot — elbow, wrist, release — to find what needs fixing. It is the same loop you use to learn anything: try, miss, correct, try again. Underneath all the magic is a patient process of small improvements. It is learning from every miss instead of repeating the same mistake. That steady, miss-by-miss improvement is Auction algorithm.",
+  "explainer": {
+    "lead": "An auction algorithm solves matching and network-optimization problems by letting competing bids gradually determine prices and assignments. The same auction idea also connects to maximum-flow, minimum-cost-flow, and shortest-path algorithms.",
+    "tiers": {
+      "eli5": "Imagine several people bidding for different toys, with each person choosing the toy that seems like the best bargain. When two people want the same toy, its price rises until one prefers another option. Repeating this process can find both prices and a matching that gives the greatest total benefit.",
+      "practitioner": "For assignment problems, implement repeated bidding and price updates, using epsilon-scaling where appropriate; multiple-origin shortest-path variants are suited to parallel computation. Do not assume the shortest-path variant is universally fastest: experiments find it generally inferior for all-destinations problems but very fast when there are relatively few destinations.",
+      "paperLevel": "The original method, proposed by Dimitri Bertsekas in 1979, finds optimal prices and a maximum-weight matching in a bipartite graph, maximizing total net benefit. Applying it to assignment reformulations yields the preflow-push algorithm for max-flow and the epsilon-relaxation method for linear minimum-cost flow. Bertsekas introduced a shortest-path variant in 1991; it maintains one path that extends or contracts by a node while adjusting at most one dual variable per iteration."
+    },
+    "example": "Ana values a red bike at 12 and a blue bike at 1; Ben values them at 10 and 7. Both initially prefer red, but when bidding raises its price to 6, Ben's net benefit from red is 4 versus 7 from blue, so he switches. The resulting assignment gives Ana the red bike and Ben the blue bike, with total value 19 instead of 11 for the reverse assignment.",
+    "usedIn": [
+      {
+        "name": "Multi-buyer pricing",
+        "detail": "Used in business settings to compare bids and determine prices for products offered to multiple buyers.",
+        "url": ""
+      },
+      {
+        "name": "Weighted assignment",
+        "detail": "Finds optimal prices and a maximum-weight matching between the two sides of a bipartite graph.",
+        "url": ""
+      },
+      {
+        "name": "Network flow",
+        "detail": "Underlies preflow-push max-flow computation and the epsilon-relaxation method for linear minimum-cost flow.",
+        "url": ""
+      },
+      {
+        "name": "Shortest paths",
+        "detail": "Later variants find paths in directed graphs, including versions suited to multiple origins and parallel computation.",
+        "url": ""
+      }
+    ],
+    "goal": "Iteratively use competition over objects or network choices to find an assignment and prices that maximize net benefit, or to solve a related network-optimization problem.",
+    "inputs": [
+      "A bipartite assignment graph with weights or values",
+      "Competing buyers or agents and their net benefits",
+      "For variants, a directed graph or reformulated network-flow problem"
+    ],
+    "outputs": [
+      "An assignment or maximum-weight matching",
+      "Prices or corresponding dual values",
+      "For variants, a flow or shortest path"
+    ],
+    "steps": [
+      "Start with prices and an incomplete or provisional assignment.",
+      "Each unassigned participant compares net benefits after subtracting current prices.",
+      "Participants bid for their preferred objects, and competing bids raise prices.",
+      "Reassign objects as preferences change, then repeat the bidding and price updates.",
+      "Stop when the assignment and prices maximize net benefit."
+    ],
+    "tradeoffs": [
+      "The procedure is iterative, so assignments and prices evolve through repeated bids rather than one direct calculation.",
+      "Multiple-origin shortest-path cases are well suited to parallel computation.",
+      "For all-destinations shortest paths, computational experiments generally favor other state-of-the-art algorithms.",
+      "The shortest-path auction algorithm is very fast for an intermediate number of destinations: substantially more than one but far fewer than the number of nodes."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "values",
+          "label": "Values and prices",
+          "note": "Provide weights, current prices, and net benefits."
+        },
+        {
+          "id": "compare",
+          "label": "Compare net benefits",
+          "note": "Participants identify their preferred objects."
+        },
+        {
+          "id": "bid",
+          "label": "Submit bids",
+          "note": "Competing participants bid for preferred objects."
+        },
+        {
+          "id": "update",
+          "label": "Update prices",
+          "note": "Competition changes prices and preferences."
+        },
+        {
+          "id": "assign",
+          "label": "Revise assignment",
+          "note": "Objects are reassigned as bidding continues."
+        },
+        {
+          "id": "optimum",
+          "label": "Optimal result",
+          "note": "Return the assignment and prices maximizing net benefit."
+        }
+      ],
+      "edges": [
+        {
+          "from": "values",
+          "to": "compare",
+          "label": ""
+        },
+        {
+          "from": "compare",
+          "to": "bid",
+          "label": "preferences"
+        },
+        {
+          "from": "bid",
+          "to": "update",
+          "label": "competition"
+        },
+        {
+          "from": "update",
+          "to": "assign",
+          "label": "new prices"
+        },
+        {
+          "from": "assign",
+          "to": "compare",
+          "label": "repeat"
+        },
+        {
+          "from": "assign",
+          "to": "optimum",
+          "label": "when complete"
+        }
+      ],
+      "caption": "The original auction algorithm repeats bidding, price updates, and reassignment until it reaches an optimal assignment."
+    }
+  },
   "related": [
     "actor-critic-algorithm",
     "algorithm-imed",

@@ -8,6 +8,93 @@
   ],
   "definition": "Emerging standards for communication between independent agents across vendors and organizations: capability discovery, task delegation, and status exchange.",
   "details": "Emerging standards for communication between independent agents across vendors and organizations: capability discovery, task delegation, and status exchange. Complementary to MCP: MCP connects agents to tools; A2A connects agents to each other.",
+  "explainer": {
+    "lead": "A2A, or Agent-to-Agent Protocols, are emerging standards that let independent AI agents work together across vendors and organizations. They provide a common way to discover what another agent can do, hand it a task, and follow its progress.",
+    "tiers": {
+      "eli5": "It is like a common language and phone book that lets robots made by different companies call each other, ask what they can do, and hand over a job.",
+      "practitioner": "Engineers use A2A for capability discovery, task delegation, and status exchange between agents; a common pitfall is confusing it with tool access, since A2A connects agents to each other while MCP connects agents to tools.",
+      "paperLevel": "Defined by protocol standards covering capability discovery, task delegation, and status exchange between independent agents; as emerging standards, interoperability across vendors is not yet fully settled."
+    },
+    "example": "A company's planning agent needs a specialist agent operated by another organization. It discovers that the specialist can analyze a particular kind of request, delegates that request, and then receives status updates instead of having to poll an opaque, vendor-specific interface.",
+    "intuition": "Independent agents need more than a way to call tools: they need a shared etiquette for working with one another. A2A supplies that etiquette so one agent can find a suitable peer, delegate work, and track what happens.",
+    "howItWorks": [
+      "One agent discovers the capabilities offered by another agent.",
+      "It selects an agent that can handle the required work.",
+      "It delegates a task to that agent.",
+      "The agents exchange status information as the work proceeds.",
+      "The interaction can cross vendor and organizational boundaries."
+    ],
+    "whyItMatters": "A2A aims to make agents built by different vendors and organizations interoperable. That can reduce custom one-off integrations when tasks need to move between independent agents.",
+    "misconceptions": [
+      "A2A is not the same as MCP: MCP connects agents to tools, while A2A connects agents to other agents.",
+      "A2A is not a single agent or an agent architecture; it refers to emerging communication standards.",
+      "Capability discovery does not itself perform a task; delegation and status exchange are separate parts of the interaction."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "requester",
+          "label": "Requesting agent",
+          "note": "Needs work done by an independent peer"
+        },
+        {
+          "id": "capabilities",
+          "label": "Capability discovery",
+          "note": "Reveals what the other agent can do"
+        },
+        {
+          "id": "provider",
+          "label": "Providing agent",
+          "note": "Accepts the delegated task"
+        },
+        {
+          "id": "status",
+          "label": "Status exchange",
+          "note": "Communicates progress between the agents"
+        }
+      ],
+      "edges": [
+        {
+          "from": "requester",
+          "to": "capabilities",
+          "label": "discovers"
+        },
+        {
+          "from": "capabilities",
+          "to": "provider",
+          "label": "selects"
+        },
+        {
+          "from": "requester",
+          "to": "provider",
+          "label": "delegates task"
+        },
+        {
+          "from": "provider",
+          "to": "status",
+          "label": "reports"
+        },
+        {
+          "from": "status",
+          "to": "requester",
+          "label": "updates"
+        }
+      ],
+      "caption": "A2A lets one independent agent discover another's capabilities, delegate a task, and receive status updates."
+    },
+    "usedIn": [
+      {
+        "name": "Multi-vendor agent platforms",
+        "detail": "cross-organization task handoff",
+        "url": ""
+      },
+      {
+        "name": "Enterprise agent orchestration",
+        "detail": "capability discovery between agents",
+        "url": ""
+      }
+    ]
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

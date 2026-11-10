@@ -2,9 +2,117 @@
   "term": "Exact Match",
   "letter": "E",
   "category": "Evaluation and Benchmarks",
-  "type": "concept",
+  "type": "metric",
   "definition": "Span- and token-overlap metrics from the QA tradition: exact match is strict string equality with the gold answer, F1 gives partial credit for overlapping tokens.",
   "details": "Span- and token-overlap metrics from the QA tradition: exact match is strict string equality with the gold answer, F1 gives partial credit for overlapping tokens.",
+  "explainer": {
+    "lead": "Exact match is a strict way to score question-answering systems: the predicted answer must be identical to the gold answer to receive credit. It is often paired with token-level F1, which gives partial credit when the answers share words but are not exactly alike.",
+    "tiers": {
+      "eli5": "Imagine a quiz where your answer must match the teacher’s answer word for word. Exact match gives you a point only when it does, even if your different wording means the same thing. F1 is more forgiving because it awards some credit for words your answer shares with the teacher’s.",
+      "practitioner": "Use exact match when evaluating predicted answers against gold answers in question answering, and pair it with token-level F1 to capture partial overlap. Exact match is easy to interpret but can score a valid paraphrase as wrong. F1 softens that problem, although it still measures wording overlap rather than general semantic correctness.",
+      "paperLevel": "For N predictions, EM = (1/N) * sum_i 1[prediction_i = gold_i], where equality is strict string equality. For one answer, token F1 uses precision P = |shared tokens| / |predicted tokens| and recall R = |shared tokens| / |gold tokens|, with F1 = 2PR / (P + R). Exact match cannot distinguish a completely wrong answer from a differently worded answer with the same meaning, while F1 remains limited to token overlap."
+    },
+    "example": "If the gold answer is \"the Eiffel Tower\" and the prediction is \"Eiffel Tower\", exact match gives 0 because the strings differ. The prediction shares two tokens, so P = 2/2, R = 2/3, and F1 = 0.8; predicting \"the Eiffel Tower\" exactly would give both metrics a score of 1.",
+    "usedIn": [
+      {
+        "name": "Question answering",
+        "detail": "Scores predicted answers by strict equality with the gold answer, often alongside token-level F1.",
+        "url": ""
+      },
+      {
+        "name": "Reading-comprehension evaluation",
+        "detail": "Compares an extracted answer span with the reference span and uses F1 to credit partially overlapping spans.",
+        "url": ""
+      }
+    ],
+    "measures": "Exact match measures whether a predicted answer is strictly identical to its gold answer. Across a set of questions, it measures the proportion of predictions that satisfy that test.",
+    "howScored": [
+      "Compare the complete predicted answer string with the gold answer string.",
+      "Assign 1 when the strings are identical and 0 otherwise.",
+      "Average those binary scores over all evaluated questions.",
+      "Use token-level F1 separately when partially overlapping answers should receive partial credit."
+    ],
+    "formula": "EM = (1/N) * sum_i 1[prediction_i = gold_i]. For token F1, P = shared/predicted tokens, R = shared/gold tokens, and F1 = 2PR/(P + R).",
+    "caveats": [
+      "A correct answer expressed with different wording receives no exact-match credit.",
+      "Token F1 can award partial credit, but it still depends on surface overlap.",
+      "Exact match and F1 answer different scoring questions and should not be treated as interchangeable.",
+      "In Semantic Web contexts, exactMatch can instead indicate that two resources represent the same entity; that is a different use of the term."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "prediction",
+          "label": "Predicted answer",
+          "note": "The answer string produced by the system."
+        },
+        {
+          "id": "gold",
+          "label": "Gold answer",
+          "note": "The reference answer used for scoring."
+        },
+        {
+          "id": "string-compare",
+          "label": "String comparison",
+          "note": "Tests whether the two strings are identical."
+        },
+        {
+          "id": "em",
+          "label": "Exact match",
+          "note": "Returns 1 for equality and 0 otherwise."
+        },
+        {
+          "id": "token-overlap",
+          "label": "Token overlap",
+          "note": "Compares predicted and gold tokens."
+        },
+        {
+          "id": "f1",
+          "label": "Token F1",
+          "note": "Combines token precision and recall for partial credit."
+        }
+      ],
+      "edges": [
+        {
+          "from": "prediction",
+          "to": "string-compare",
+          "label": ""
+        },
+        {
+          "from": "gold",
+          "to": "string-compare",
+          "label": ""
+        },
+        {
+          "from": "string-compare",
+          "to": "em",
+          "label": "binary score"
+        },
+        {
+          "from": "prediction",
+          "to": "token-overlap",
+          "label": ""
+        },
+        {
+          "from": "gold",
+          "to": "token-overlap",
+          "label": ""
+        },
+        {
+          "from": "token-overlap",
+          "to": "f1",
+          "label": "partial credit"
+        }
+      ],
+      "caption": "The same prediction and gold answer feed strict exact-match scoring and token-overlap F1 scoring."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: SameAs",
+        "url": "https://en.wikipedia.org/wiki/SameAs"
+      }
+    ]
+  },
   "related": [
     "token"
   ],

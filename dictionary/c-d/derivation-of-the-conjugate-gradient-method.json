@@ -5,7 +5,123 @@
   "type": "algorithm",
   "definition": "In numerical linear algebra, the conjugate gradient method is an iterative method for numerically solving the linear system A x = b {\\displaystyle {\\boldsymbol {Ax}}={\\boldsymbol {b}}} where A {\\displaystyle {\\boldsymbol {A}}} is symmetric positive-definite, without computing A − 1 {\\displaystyle {\\boldsymbol {A}}^{-1}} explicitly.",
   "details": "The conjugate gradient method can be derived from several different perspectives, including specialization of the conjugate direction method for optimization, and variation of the Arnoldi/Lanczos iteration for eigenvalue problems. The intent of this article is to document the important steps in these derivations.",
-  "story": "Think of a hiker descending a foggy hill in the dark, taking small steps and feeling for the steepest way down. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. It is the same loop you use to learn anything: try, miss, correct, try again. Skill, for a model, is just error pushed down until it is small enough to ignore. That steady, miss-by-miss improvement is Derivation of the conjugate gradient method.",
+  "explainer": {
+    "lead": "This derivation explains how the conjugate gradient method obtains its search directions and step sizes for solving Ax=b. It matters because the method can solve a symmetric positive-definite system iteratively, using A directly rather than explicitly forming its inverse.",
+    "tiers": {
+      "eli5": "Imagine trying to reach the bottom of a smooth valley while carrying a set of directions that do not undo your earlier progress. Conjugate gradient chooses such directions, decides how far to travel along each one, and stops when the remaining error is small enough.",
+      "practitioner": "Use it for symmetric positive-definite linear systems, supplying matrix–vector products with A, a right-hand side b, an initial guess, and a stopping tolerance. Check symmetry and positive-definiteness, monitor the residual, and remember that floating-point rounding can disturb the ideal direction relationships.",
+      "paperLevel": "Given symmetric positive-definite A and Ax=b, define r_k=b-Ax_k and minimize the quadratic objective f(x)=1/2 x^T A x-b^T x along A-conjugate search directions. The updates are alpha_k=(r_k^T r_k)/(p_k^T A p_k), x_{k+1}=x_k+alpha_k p_k, r_{k+1}=r_k-alpha_k A p_k, beta_k=(r_{k+1}^T r_{k+1})/(r_k^T r_k), and p_{k+1}=r_{k+1}+beta_k p_k. The method can be derived by specializing conjugate-direction optimization or by varying the Arnoldi/Lanczos iteration, and its standard form requires A to be symmetric positive-definite."
+    },
+    "example": "For A=[[2,0],[0,1]], b=[2,1], and x0=[0,0], start with r0=p0=[2,1]. The first step gives alpha=5/9 and x1=[10/9,5/9]; the next conjugate-direction step gives x2=[1,1], which satisfies Ax=b exactly.",
+    "usedIn": [
+      {
+        "name": "Numerical linear algebra",
+        "detail": "Iterative solution of symmetric positive-definite systems Ax=b.",
+        "url": ""
+      },
+      {
+        "name": "Scientific computing",
+        "detail": "Approximate solution of linear systems without explicitly computing A inverse.",
+        "url": ""
+      },
+      {
+        "name": "Numerical optimization",
+        "detail": "A specialization of the conjugate-direction approach to quadratic minimization.",
+        "url": ""
+      }
+    ],
+    "goal": "Derive and carry out iterative updates that approximate the solution of Ax=b without explicitly computing A inverse.",
+    "inputs": [
+      "A symmetric positive-definite matrix A",
+      "A right-hand-side vector b",
+      "An initial guess x0",
+      "A residual-based stopping tolerance"
+    ],
+    "outputs": [
+      "An approximate solution x",
+      "A residual indicating remaining error"
+    ],
+    "steps": [
+      "Set r0=b-Ax0 and choose p0=r0.",
+      "Compute alpha=(r^T r)/(p^T A p).",
+      "Update x=x+alpha p and r=r-alpha A p.",
+      "Stop if the residual is sufficiently small.",
+      "Otherwise set beta=(r_new^T r_new)/(r_old^T r_old), form p=r_new+beta p, and repeat."
+    ],
+    "tradeoffs": [
+      "Avoids explicitly forming A inverse",
+      "Requires repeated products involving A",
+      "Standard derivation requires symmetric positive-definite A",
+      "Rounding can affect ideal residual and direction properties"
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "system",
+          "label": "System Ax=b",
+          "note": "Symmetric positive-definite A and vector b"
+        },
+        {
+          "id": "residual",
+          "label": "Compute residual",
+          "note": "Measure r=b-Ax"
+        },
+        {
+          "id": "direction",
+          "label": "Build direction",
+          "note": "Combine the new residual with the previous direction"
+        },
+        {
+          "id": "step",
+          "label": "Choose step",
+          "note": "Use alpha=(r^T r)/(p^T A p)"
+        },
+        {
+          "id": "update",
+          "label": "Update solution",
+          "note": "Move x along p and refresh the residual"
+        },
+        {
+          "id": "stop",
+          "label": "Check tolerance",
+          "note": "Return x or continue iterating"
+        }
+      ],
+      "edges": [
+        {
+          "from": "system",
+          "to": "residual",
+          "label": "A, b, x"
+        },
+        {
+          "from": "residual",
+          "to": "direction",
+          "label": "r"
+        },
+        {
+          "from": "direction",
+          "to": "step",
+          "label": "p"
+        },
+        {
+          "from": "step",
+          "to": "update",
+          "label": "alpha"
+        },
+        {
+          "from": "update",
+          "to": "stop",
+          "label": "x, r"
+        },
+        {
+          "from": "stop",
+          "to": "direction",
+          "label": "continue"
+        }
+      ],
+      "caption": "Each iteration uses the residual to build a conjugate search direction, chooses a step length, and updates the approximate solution."
+    }
+  },
   "related": [
     "gradient-method",
     "nonlinear-conjugate-gradient-method",

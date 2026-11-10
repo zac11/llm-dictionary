@@ -5,7 +5,134 @@
   "type": "algorithm",
   "definition": "In numerical optimization, the Broyden–Fletcher–Goldfarb–Shanno (BFGS) algorithm is an iterative method for solving unconstrained nonlinear optimization problems.",
   "details": "Like the related Davidon–Fletcher–Powell method, BFGS determines the descent direction by preconditioning the gradient with curvature information. It does so by gradually improving an approximation to the Hessian matrix of the loss function, obtained only from gradient evaluations (or approximate gradient evaluations) via a generalized secant method. Since the updates of the BFGS curvature matrix do not require matrix inversion, its computational complexity is only O ( n 2 ) {\\displaystyle {\\mathcal {O}}(n^{2})} , compared to O ( n 3 ) {\\displaystyle {\\mathcal {O}}(n^{3})} in Newton's method. Also in common use is L-BFGS, which is a limited-memory version of BFGS that is particularly suited to problems with very large numbers of variables (e.g., >1000). The BFGS-B variant handles simple box constraints. The BFGS matrix also admits a compact representation, which makes it better suited for large constrained problems. The algorithm is named after Charles George Broyden, Roger Fletcher, Donald Goldfarb and David Shanno. It is an instance of a more general algorithm by John Greenstadt.",
-  "story": "Think of a hiker descending a foggy hill in the dark, taking small steps and feeling for the steepest way down. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. It is the same loop you use to learn anything: try, miss, correct, try again. Skill, for a model, is just error pushed down until it is small enough to ignore. That steady, miss-by-miss improvement is Broyden–Fletcher–Goldfarb–Shanno algorithm.",
+  "explainer": {
+    "lead": "BFGS is an iterative method for finding a low point of a smooth nonlinear function without constraints. It uses gradient information to build an increasingly useful picture of the function's curvature, avoiding the matrix inversion required by Newton's method.",
+    "tiers": {
+      "eli5": "Imagine walking downhill through fog while trying to reach the bottom of a valley. BFGS uses the slope under your feet and remembers how that slope changes, helping it choose better directions as it walks. A version called L-BFGS remembers less so it can handle much bigger problems.",
+      "practitioner": "Use BFGS for unconstrained nonlinear optimization when gradient evaluations are available, L-BFGS for very large variable counts, and BFGS-B for simple box constraints. Its updates cost O(n^2), but the full curvature approximation can still be burdensome at large scales. Supplying useful gradient information is central, although approximate gradients can also be used.",
+      "paperLevel": "BFGS addresses min_x f(x), maintaining a matrix B_k that approximates the Hessian ∇²f(x_k) and preconditioning the gradient to determine a descent direction. Gradient evaluations update B_k through a generalized secant method without matrix inversion, giving O(n^2) update complexity rather than Newton's method's O(n^3). The method is named after Charles George Broyden, Roger Fletcher, Donald Goldfarb and David Shanno, and is an instance of a more general algorithm by John Greenstadt."
+    },
+    "example": "To minimize f(x) = x^2 starting at x = 4, the gradient is 8, so the method seeks a descent direction toward smaller values. After moving, it uses the new gradient to refine its curvature approximation; repeated iterations approach the minimizer x = 0.",
+    "usedIn": [
+      {
+        "name": "Nonlinear optimization",
+        "detail": "Solves unconstrained problems through iterative gradient-based updates.",
+        "url": ""
+      },
+      {
+        "name": "Large-scale optimization",
+        "detail": "L-BFGS suits problems with very large numbers of variables, such as more than 1000.",
+        "url": ""
+      },
+      {
+        "name": "Box-constrained optimization",
+        "detail": "BFGS-B handles simple lower and upper bounds on variables.",
+        "url": ""
+      },
+      {
+        "name": "Large constrained problems",
+        "detail": "A compact representation of the BFGS matrix makes it better suited to these problems.",
+        "url": ""
+      }
+    ],
+    "goal": "Find a solution to an unconstrained nonlinear optimization problem by iteratively improving both the current point and an approximation of the loss function's curvature.",
+    "inputs": [
+      "A nonlinear objective or loss function",
+      "Gradient evaluations or approximations",
+      "A starting point",
+      "An initial curvature approximation"
+    ],
+    "outputs": [
+      "An iteratively improved candidate solution",
+      "An approximate Hessian curvature matrix"
+    ],
+    "steps": [
+      "Start at a candidate point with an approximate curvature matrix.",
+      "Evaluate or approximate the gradient at that point.",
+      "Precondition the gradient with curvature information to find a descent direction.",
+      "Move to a new candidate point along that direction.",
+      "Use the new gradient information to update the curvature approximation.",
+      "Repeat until the iterative procedure finishes."
+    ],
+    "tradeoffs": [
+      "Updates avoid matrix inversion.",
+      "Update complexity is O(n^2), versus O(n^3) for Newton's method.",
+      "The full matrix is less suitable for very large problems than L-BFGS.",
+      "Basic BFGS is unconstrained; BFGS-B handles simple box constraints."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "point",
+          "label": "Current point",
+          "note": "The latest candidate solution."
+        },
+        {
+          "id": "gradient",
+          "label": "Gradient evaluation",
+          "note": "Measures the local slope."
+        },
+        {
+          "id": "curvature",
+          "label": "Curvature approximation",
+          "note": "Approximates the loss function's Hessian."
+        },
+        {
+          "id": "direction",
+          "label": "Descent direction",
+          "note": "The gradient preconditioned by curvature information."
+        },
+        {
+          "id": "move",
+          "label": "Update point",
+          "note": "Produces the next candidate solution."
+        },
+        {
+          "id": "secant",
+          "label": "Secant update",
+          "note": "Improves curvature using gradient information."
+        }
+      ],
+      "edges": [
+        {
+          "from": "point",
+          "to": "gradient",
+          "label": ""
+        },
+        {
+          "from": "gradient",
+          "to": "direction",
+          "label": ""
+        },
+        {
+          "from": "curvature",
+          "to": "direction",
+          "label": ""
+        },
+        {
+          "from": "direction",
+          "to": "move",
+          "label": ""
+        },
+        {
+          "from": "move",
+          "to": "point",
+          "label": "next iteration"
+        },
+        {
+          "from": "gradient",
+          "to": "secant",
+          "label": ""
+        },
+        {
+          "from": "secant",
+          "to": "curvature",
+          "label": ""
+        }
+      ],
+      "caption": "BFGS alternates between choosing a descent direction and improving its curvature approximation from gradients."
+    }
+  },
   "related": [
     "actor-critic-algorithm",
     "algorithm-imed",

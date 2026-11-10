@@ -5,7 +5,123 @@
   "type": "concept",
   "definition": "Adversarial information retrieval (adversarial IR) is a topic in information retrieval related to strategies for working with a data source where some portion of it has been manipulated maliciously.",
   "details": "Tasks can include gathering, indexing, filtering, retrieving and ranking information from such a data source. Adversarial IR includes the study of methods to detect, isolate, and defeat such manipulation. On the Web, the predominant form of such manipulation is search engine spamming (also known as spamdexing), which involves employing various techniques to disrupt the activity of web search engines, usually for financial gain. Examples of spamdexing are link-bombing, comment or referrer spam, spam blogs (splogs), malicious tagging. Reverse engineering of ranking algorithms, click fraud, and web content filtering may also be considered forms of adversarial data manipulation.",
-  "story": "Imagine a driving test that every new model has to pass before it is allowed on the road. It is the exam that separates “it sounds good” from “it actually is good”. A fair scoreboard keeps everyone honest. It is the exam that keeps everyone honest. And that, done honestly, is Adversarial information retrieval.",
+  "explainer": {
+    "lead": "Adversarial information retrieval is the art of finding useful information in a pile of data that someone has deliberately poisoned. It matters because every search engine, social feed, and recommendation system faces attackers who want to game the results for profit or mischief.",
+    "tiers": {
+      "eli5": "Imagine a library where some people sneak in fake books to trick you into reading them. Adversarial IR is like being a detective-librarian who spots the fakes, moves them out of the way, and helps real readers find what they actually need. The attackers keep trying new tricks, so the detective has to keep learning too.",
+      "practitioner": "In production, adversarial IR shows up in web search spam detection, social network integrity systems, and ad fraud prevention. You might build classifiers to detect cloaked pages, graph algorithms to find link farms, or behavioral models to spot click fraud. Key pitfalls include adversaries adapting to your defenses (concept drift), false positives that harm legitimate publishers, and the arms-race cost of keeping models updated against new attack vectors.",
+      "paperLevel": "Adversarial IR formalizes information retrieval under the assumption that a subset of the document collection D has been manipulated by an adversary with intent to subvert the retrieval function R(q,D) → ranked list. The field studies detection, isolation, and defeat of such manipulation. The term was coined in 2000 by Andrei Broder at TREC-9. Core challenges include the non-stationarity of attack distributions and the difficulty of obtaining ground-truth labels for adversarial instances."
+    },
+    "example": "A spammer creates thousands of fake blogs (splogs) that all link to a payday loan site, hoping to inflate its PageRank. An adversarial IR system notices that these blogs share registration patterns, use scraped content, and have no organic readership. It flags the link farm, discounts the artificial links, and the payday loan site drops back to its rightful obscurity.",
+    "usedIn": [
+      {
+        "name": "Web search engines",
+        "detail": "Detecting and demoting spamdexed pages to preserve result quality",
+        "url": ""
+      },
+      {
+        "name": "Social networks",
+        "detail": "Identifying astroturfing, sockpuppetry, and malicious tagging or voting",
+        "url": ""
+      },
+      {
+        "name": "Online advertising",
+        "detail": "Click fraud detection to protect advertiser budgets",
+        "url": ""
+      },
+      {
+        "name": "Content filtering systems",
+        "detail": "Blocking adversarial attempts to bypass filters or promote harmful content",
+        "url": ""
+      }
+    ],
+    "intuition": "Normal information retrieval assumes the data is messy but honest; adversarial IR assumes some of the mess is deliberate sabotage. The core shift is from 'how do we handle noise?' to 'how do we handle an intelligent opponent who adapts to our defenses?'",
+    "howItWorks": [
+      "Identify the attack surface: determine which parts of the system (ranking, indexing, user signals) an adversary could exploit",
+      "Detect manipulation: build classifiers, graph analyses, or behavioral models to flag suspicious patterns like sudden link spikes or coordinated tagging",
+      "Isolate affected content: quarantine, demote, or label manipulated items to limit their impact on downstream retrieval",
+      "Defeat and adapt: update defenses as attackers evolve, often through continuous retraining and adversarial testing"
+    ],
+    "whyItMatters": "Without adversarial IR, search engines and information systems become unusable—spammers would dominate results, fraud would drain advertising economies, and social platforms would drown in manufactured consensus. It preserves trust in the infrastructure of digital discovery.",
+    "misconceptions": [
+      "It is the same as adversarial machine learning: adversarial IR predates and is broader, encompassing non-ML retrieval systems and human-driven attacks",
+      "It only fights web spam: it also covers click fraud, content filtering evasion, and manipulation in social networks",
+      "Detection is enough: isolation and continuous adaptation are equally critical since attackers evolve"
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "web",
+          "label": "Web content",
+          "note": "Mix of legitimate and manipulated documents"
+        },
+        {
+          "id": "detect",
+          "label": "Detection layer",
+          "note": "Classifiers and graph analysis spot anomalies"
+        },
+        {
+          "id": "isolate",
+          "label": "Isolation layer",
+          "note": "Quarantine or demote suspicious items"
+        },
+        {
+          "id": "retrieve",
+          "label": "Clean retrieval",
+          "note": "Ranking on filtered, trusted subset"
+        },
+        {
+          "id": "feedback",
+          "label": "Feedback loop",
+          "note": "New attack patterns inform updated defenses"
+        },
+        {
+          "id": "attacker",
+          "label": "Adversary",
+          "note": "Continuously adapts manipulation tactics"
+        }
+      ],
+      "edges": [
+        {
+          "from": "web",
+          "to": "detect",
+          "label": "raw data"
+        },
+        {
+          "from": "detect",
+          "to": "isolate",
+          "label": "flags"
+        },
+        {
+          "from": "isolate",
+          "to": "retrieve",
+          "label": "cleaned data"
+        },
+        {
+          "from": "retrieve",
+          "to": "feedback",
+          "label": "residual attacks"
+        },
+        {
+          "from": "feedback",
+          "to": "detect",
+          "label": "updated rules"
+        },
+        {
+          "from": "attacker",
+          "to": "web",
+          "label": "injects spam"
+        }
+      ],
+      "caption": "The adversarial IR cycle: attackers inject manipulation into web content, detection and isolation layers clean the data for retrieval, and feedback from residual attacks continuously updates defenses."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Adversarial information retrieval",
+        "url": "https://en.wikipedia.org/wiki/Adversarial_information_retrieval"
+      }
+    ]
+  },
   "related": [
     "information-retrieval",
     "boolean-model-of-information-retrieval",

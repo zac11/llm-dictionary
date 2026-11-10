@@ -5,7 +5,102 @@
   "type": "concept",
   "definition": "Contrastive Hebbian learning is a biologically plausible form of Hebbian learning.",
   "details": "It is based on the contrastive divergence algorithm, which has been used to train a variety of energy-based latent variable models. In 2003, contrastive Hebbian learning was shown to be equivalent in power to the backpropagation algorithms commonly used in machine learning.",
-  "story": "Think of an orchestra warming up: no single instrument carries the piece, but together they make the sound. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. The layout decides what the machine can even attempt, before it learns a single thing. The shape of the machine is half the idea. That blueprint is Contrastive Hebbian learning.",
+  "explainer": {
+    "lead": "Contrastive Hebbian learning adjusts connections by comparing network activity under two different conditions. It offers a biologically plausible route to learning while retaining computational power comparable to backpropagation.",
+    "tiers": {
+      "eli5": "Imagine practicing a puzzle once on your own and once while looking at the answer. By comparing what happened in the two tries, you can decide which habits to strengthen. Contrastive Hebbian learning uses a similar comparison to adjust connections in a network.",
+      "practitioner": "It is relevant to energy-based latent-variable models and research into biologically motivated neural-network training. An implementation compares activity correlations between contrasting phases before updating weights. It should not be treated as backpropagation with a different name: the learning signal comes from Hebbian correlations rather than backpropagated error gradients.",
+      "paperLevel": "A generic contrastive Hebbian update can be written as Δw_ij ∝ <s_i s_j>_clamped − <s_i s_j>_free, using the difference between unit-activity correlations in two phases. It is based on contrastive divergence, used to train energy-based latent-variable models. In 2003, it was shown to be equivalent in power to commonly used backpropagation algorithms."
+    },
+    "example": "Suppose a small network is learning to activate a “cat” unit for a picture of a cat. Compare connected units’ activity when the network runs freely with their activity when the correct input and label are imposed, then adjust the connections from the difference. Repeating this process favors activity patterns associated with the correct label.",
+    "usedIn": [
+      {
+        "name": "Energy-based latent-variable models",
+        "detail": "The underlying contrastive-divergence approach has been used to train a variety of these models.",
+        "url": ""
+      },
+      {
+        "name": "Biologically motivated neural learning",
+        "detail": "The rule provides a Hebbian account of learning with computational power comparable to backpropagation.",
+        "url": ""
+      }
+    ],
+    "intuition": "Ordinary Hebbian learning adjusts a connection from the joint activity of the units it links. The contrastive version compares that joint activity across two conditions, so the update reflects what changes between them.",
+    "howItWorks": [
+      "Let the network produce activity in one condition.",
+      "Produce activity again under a contrasting condition.",
+      "Measure the joint activity of connected units in both conditions.",
+      "Update each connection according to the difference between those measurements.",
+      "Repeat the comparison and update for further training patterns."
+    ],
+    "whyItMatters": "It connects a biologically plausible Hebbian learning rule with the training of energy-based models. The 2003 equivalence result also showed that this approach need not be weaker than backpropagation in computational power.",
+    "misconceptions": [
+      "It is not simply ordinary Hebbian learning: the update uses a contrast between conditions.",
+      "Equivalence in power to backpropagation does not mean it performs the same error-gradient computation."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "network",
+          "label": "Neural network",
+          "note": "Connected units produce activity."
+        },
+        {
+          "id": "free",
+          "label": "Free activity",
+          "note": "Measure activity in one condition."
+        },
+        {
+          "id": "clamped",
+          "label": "Clamped activity",
+          "note": "Measure activity in the contrasting condition."
+        },
+        {
+          "id": "contrast",
+          "label": "Correlation contrast",
+          "note": "Compare joint activity across conditions."
+        },
+        {
+          "id": "update",
+          "label": "Weight update",
+          "note": "Adjust connections from the difference."
+        }
+      ],
+      "edges": [
+        {
+          "from": "network",
+          "to": "free",
+          "label": "activity"
+        },
+        {
+          "from": "network",
+          "to": "clamped",
+          "label": "activity"
+        },
+        {
+          "from": "free",
+          "to": "contrast",
+          "label": "correlations"
+        },
+        {
+          "from": "clamped",
+          "to": "contrast",
+          "label": "correlations"
+        },
+        {
+          "from": "contrast",
+          "to": "update",
+          "label": "difference"
+        },
+        {
+          "from": "update",
+          "to": "network",
+          "label": "new weights"
+        }
+      ],
+      "caption": "Learning comes from comparing network activity across two conditions and feeding that difference back into the connection weights."
+    }
+  },
   "related": [
     "competitive-learning",
     "extreme-learning-machine",

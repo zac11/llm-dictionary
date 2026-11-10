@@ -5,6 +5,116 @@
   "type": "concept",
   "definition": "Recording every run's config, code version, data version, metrics, and artifacts (W&B, MLflow) so results are comparable and reproducible.",
   "details": "Recording every run's config, code version, data version, metrics, and artifacts (W&B, MLflow) so results are comparable and reproducible. The lab notebook of ML teams; its absence is how organizations lose knowledge of why the shipped model works.",
+  "explainer": {
+    "lead": "Experiment tracking is the practice of keeping a structured record of every machine-learning run and what it produced. It lets a team compare results fairly and retrace the steps behind a model instead of relying on memory or scattered notes.",
+    "tiers": {
+      "eli5": "It is like writing down every time you bake cookies: the recipe, ingredients, oven settings, and how they tasted. When one batch turns out best, you can see exactly what you did and try it again.",
+      "practitioner": "For each run, log its configuration, code and data versions, metrics, and artifacts, typically with W&B or MLflow. Use those records to compare candidates and reconstruct the run behind a shipped model; unlogged manual changes and missing data versions weaken that history.",
+      "paperLevel": "A tracked run can be represented as r = (c, k, d, m, a), where c is configuration, k is code version, d is data version, m is metrics, and a is artifacts. Recording these fields supports run comparison and reproducibility, although keeping the records does not by itself establish that two runs differ only in the intended way."
+    },
+    "example": "A team trains a model with a learning rate of 0.001 and records code version k12, data version d7, an accuracy metric of 0.91, and the saved model artifact. A later run changes only the learning rate to 0.01 and reaches 0.87, giving the team a clear basis for comparison and a record of the better setup.",
+    "usedIn": [
+      {
+        "name": "W&B",
+        "detail": "Used to record run information so machine-learning results can be compared and reproduced.",
+        "url": ""
+      },
+      {
+        "name": "MLflow",
+        "detail": "Used to keep experiment records covering configurations, versions, metrics, and artifacts.",
+        "url": ""
+      },
+      {
+        "name": "Machine-learning teams",
+        "detail": "Used as a shared lab notebook for understanding and reconstructing model results.",
+        "url": ""
+      }
+    ],
+    "intuition": "A model result is not useful on its own if nobody knows which settings, code, and data produced it. Experiment tracking turns each run into a findable, comparable record.",
+    "howItWorks": [
+      "Capture the run's configuration before or as it executes.",
+      "Record the code version and data version used.",
+      "Store the resulting metrics and artifacts with that run.",
+      "Compare recorded runs and use the selected record to reconstruct its setup."
+    ],
+    "whyItMatters": "It preserves the reasoning and evidence behind model choices, making results comparable and reproducible. Without it, an organization can lose the knowledge of why its shipped model works.",
+    "misconceptions": [
+      "Saving only the final metrics is enough; without configurations and versions, the numbers are difficult to interpret or reproduce.",
+      "Tracking is just a results dashboard; its core purpose is to preserve a complete record of each run."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "config",
+          "label": "Run configuration",
+          "note": "Settings for this experiment"
+        },
+        {
+          "id": "versions",
+          "label": "Code and data",
+          "note": "Exact versions used"
+        },
+        {
+          "id": "run",
+          "label": "Experiment run",
+          "note": "Produces one result"
+        },
+        {
+          "id": "outputs",
+          "label": "Metrics and artifacts",
+          "note": "Recorded run outputs"
+        },
+        {
+          "id": "tracker",
+          "label": "Experiment tracker",
+          "note": "Stores the run record"
+        },
+        {
+          "id": "compare",
+          "label": "Compare and reproduce",
+          "note": "Use records across runs"
+        }
+      ],
+      "edges": [
+        {
+          "from": "config",
+          "to": "run",
+          "label": "configures"
+        },
+        {
+          "from": "versions",
+          "to": "run",
+          "label": "supplies"
+        },
+        {
+          "from": "run",
+          "to": "outputs",
+          "label": "produces"
+        },
+        {
+          "from": "config",
+          "to": "tracker",
+          "label": "logged"
+        },
+        {
+          "from": "versions",
+          "to": "tracker",
+          "label": "logged"
+        },
+        {
+          "from": "outputs",
+          "to": "tracker",
+          "label": "logged"
+        },
+        {
+          "from": "tracker",
+          "to": "compare",
+          "label": "enables"
+        }
+      ],
+      "caption": "Each run's setup and outputs are stored together so later runs can be compared and earlier setups reconstructed."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

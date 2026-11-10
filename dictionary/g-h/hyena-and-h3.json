@@ -8,6 +8,27 @@
   ],
   "definition": "Attention replacements built on long implicit convolutions evaluated via FFT, achieving subquadratic sequence mixing.",
   "details": "Attention replacements built on long implicit convolutions evaluated via FFT, achieving subquadratic sequence mixing. The research thread that, together with S4, led directly into the Mamba-era state space boom (see State Space Models).",
+  "explainer": {
+    "lead": "Hyena and H3 are sequence-mixing layers that replace attention with long implicit convolutions computed via FFT, giving subquadratic cost. They matter as a bridge from convolution-era ideas into the state space model boom.",
+    "tiers": {
+      "eli5": "Instead of every word looking at every other word, these layers let each word blend with a long stretch of neighbours in one cheap sweep.",
+      "practitioner": "Engineers use Hyena/H3-style layers when sequences are too long for attention's quadratic memory, computing convolutions in the frequency domain. Pitfall: FFT-based paths add implementation complexity and can underperform well-tuned attention at moderate lengths.",
+      "paperLevel": "Sequence mixing is expressed as long implicit convolutions combined with elementwise gating; the convolutions are evaluated in O(n log n) via the fast Fourier transform, so no explicit n-by-n attention matrix exists. Limits: gains depend on hardware-efficient FFT kernels and comparisons against strong attention baselines."
+    },
+    "example": "On a very long document, an H3 layer convolves the whole token sequence in the frequency domain rather than building an n-by-n attention matrix, keeping cost near n log n.",
+    "usedIn": [
+      {
+        "name": "Long-document language modelling",
+        "detail": "cheap long-range mixing",
+        "url": ""
+      },
+      {
+        "name": "State space model research",
+        "detail": "lineage into Mamba",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "attention"
   ],

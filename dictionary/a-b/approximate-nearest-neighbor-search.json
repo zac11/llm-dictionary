@@ -8,7 +8,82 @@
   ],
   "definition": "Algorithms for efficiently finding vectors in a large dataset that are approximately closest to a query vector, trading a small amount of accuracy for large speed gains.",
   "details": "ANN search algorithms (like HNSW) make it computationally feasible to perform similarity search over millions or billions of embeddings, which would be prohibitively slow with exact nearest-neighbor search.",
-  "story": "Think of a referee whose job is to be completely honest about who touched the ball last. Before trusting a machine, someone has to measure how good it really is — fairly and honestly. It is the exam that separates “it sounds good” from “it actually is good”. What gets measured is what actually gets better. That shared ruler is Approximate Nearest Neighbor Search.",
+  "explainer": {
+    "lead": "Approximate nearest neighbor search quickly finds vectors that are very close to a query vector, without insisting on the mathematically exact closest one. This small relaxation makes similarity search practical across millions or billions of embeddings.",
+    "tiers": {
+      "eli5": "Imagine trying to find the toy most like yours in a gigantic toy shop. Checking every toy would find the perfect match but take far too long, so you use a quicker search that finds a very similar toy instead. Approximate nearest neighbor search does this with mathematical representations of items.",
+      "practitioner": "Use an ANN method such as HNSW when exact nearest-neighbor search is too slow for a large embedding dataset. Evaluate both result quality and search speed, since the method can miss the exact closest vector. The central engineering choice is how much accuracy to trade for faster similarity search.",
+      "paperLevel": "Given a dataset D of vectors and a query q, exact nearest-neighbor search returns argmin over x in D of distance(x, q); ANN search instead returns an approximately closest vector or neighbor set. Methods such as HNSW reduce the computational cost enough to support similarity search over millions or billions of embeddings. The exact nearest neighbors are not guaranteed, and result accuracy must be balanced against speed."
+    },
+    "example": "Given a query embedding and a dataset of one billion embeddings, HNSW can efficiently return approximately closest embeddings. Exact search might find a slightly closer embedding, but would be prohibitively slow at that scale.",
+    "usedIn": [
+      {
+        "name": "Embedding similarity search",
+        "detail": "Finds vectors approximately closest to a query vector.",
+        "url": ""
+      },
+      {
+        "name": "Large-scale vector retrieval",
+        "detail": "Makes search over millions or billions of embeddings computationally feasible.",
+        "url": ""
+      }
+    ],
+    "intuition": "Finding the single best match by comparing everything can be prohibitively slow. ANN search aims for a match that is close enough, gaining a large speed improvement by giving up a little accuracy.",
+    "howItWorks": [
+      "Represent the dataset items and query as vectors.",
+      "Provide the query vector to an ANN search algorithm.",
+      "Use an efficient search method, such as HNSW, instead of exhaustive exact search.",
+      "Return dataset vectors that are approximately closest to the query."
+    ],
+    "whyItMatters": "It turns similarity search over very large embedding datasets from an impractical exact computation into a feasible operation. The speed gain is what makes million- or billion-scale vector search useful.",
+    "misconceptions": [
+      "Approximate does not mean random: the goal is still to find vectors very close to the query.",
+      "The exact closest vector is not guaranteed to appear in the results.",
+      "Here, ANN means approximate nearest neighbor, not artificial neural network."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "query",
+          "label": "Query vector",
+          "note": "The vector to match"
+        },
+        {
+          "id": "dataset",
+          "label": "Embedding dataset",
+          "note": "Millions or billions of vectors"
+        },
+        {
+          "id": "search",
+          "label": "ANN search",
+          "note": "Efficient approximate search"
+        },
+        {
+          "id": "results",
+          "label": "Nearest vectors",
+          "note": "Approximately closest matches"
+        }
+      ],
+      "edges": [
+        {
+          "from": "query",
+          "to": "search",
+          "label": "query"
+        },
+        {
+          "from": "dataset",
+          "to": "search",
+          "label": "vectors"
+        },
+        {
+          "from": "search",
+          "to": "results",
+          "label": "matches"
+        }
+      ],
+      "caption": "An ANN algorithm combines a query vector with an efficient search of the embedding dataset to return approximate nearest neighbors."
+    }
+  },
   "related": [
     "nearest-neighbor-search",
     "hybrid-search",

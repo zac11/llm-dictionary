@@ -5,6 +5,93 @@
   "type": "concept",
   "definition": "Guard models trained from explicit natural-language constitutions of allowed and disallowed content, screening inputs and outputs of a protected model.",
   "details": "Guard models trained from explicit natural-language constitutions of allowed and disallowed content, screening inputs and outputs of a protected model. Demonstrated large reductions in universal jailbreak success with modest over-refusal cost, the production-hardened descendant of Constitutional AI ideas.",
+  "explainer": {
+    "lead": "Constitutional Classifiers are safety guards for language models, trained using written rules about what content is allowed and what is not. They check both requests and answers, making universal jailbreaks much less successful while refusing relatively few legitimate requests.",
+    "tiers": {
+      "eli5": "Imagine a security guard with a clear rulebook standing beside a helpful assistant. The guard reads each question before it reaches the assistant and checks the answer before it is handed back. If either breaks the rules, the guard stops it instead of letting something harmful through.",
+      "practitioner": "Deploy the guard around a protected model: screen incoming prompts before generation and screen generated outputs before returning them. Express allowed and disallowed content explicitly in the natural-language constitution, then evaluate both universal jailbreak success and over-refusal. The main practical pitfall is blocking legitimate requests that superficially resemble disallowed ones.",
+      "paperLevel": "Given a natural-language constitution C, train a guard G_C and place it around protected model M: admit input x only if it passes screening, then return M(x) only if the output also passes; otherwise block or refuse. The approach descends from Constitutional AI and demonstrated large reductions in universal jailbreak success with modest over-refusal cost. It does not imply that jailbreaks are impossible, and stronger screening must be balanced against mistaken refusals."
+    },
+    "example": "A user sends a jailbreak prompt designed to make a protected assistant produce disallowed content. The input guard flags the request, so the protected model never generates the answer; if a harmful answer somehow gets generated, the output guard provides another chance to stop it.",
+    "usedIn": [
+      {
+        "name": "Language model safety",
+        "detail": "Guarding a model's inputs and outputs against content disallowed by an explicit constitution.",
+        "url": ""
+      },
+      {
+        "name": "Jailbreak evaluation",
+        "detail": "Measuring resistance to universal jailbreaks alongside the rate of legitimate requests being refused.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of relying only on the protected model to behave safely, give a separate guard an explicit rulebook and let it inspect both sides of the conversation. This turns broad safety principles into checks applied before a request reaches the model and before its answer reaches the user.",
+    "howItWorks": [
+      "Write a natural-language constitution describing allowed and disallowed content.",
+      "Train a guard model from that constitution.",
+      "Screen each incoming request before it reaches the protected model.",
+      "Generate an answer with the protected model when the request passes.",
+      "Screen the answer before returning it, blocking content that violates the constitution."
+    ],
+    "whyItMatters": "It adds a explicit, rule-based layer of defence against universal jailbreaks without requiring the protected model alone to catch every attack. Its demonstrated value is a large drop in jailbreak success while keeping over-refusal comparatively modest.",
+    "misconceptions": [
+      "It is not simply a longer prompt telling the protected model to behave; separate guards screen its inputs and outputs.",
+      "A large reduction in jailbreak success does not mean every jailbreak or harmful output is eliminated.",
+      "The constitution is not only a list of bans: it explicitly describes allowed content as well."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "request",
+          "label": "User request",
+          "note": "A prompt sent to the system"
+        },
+        {
+          "id": "input-guard",
+          "label": "Input guard",
+          "note": "Screens against the constitution"
+        },
+        {
+          "id": "model",
+          "label": "Protected model",
+          "note": "Generates an answer if admitted"
+        },
+        {
+          "id": "output-guard",
+          "label": "Output guard",
+          "note": "Checks the generated answer"
+        },
+        {
+          "id": "result",
+          "label": "Answer or block",
+          "note": "Returns passing content or stops it"
+        }
+      ],
+      "edges": [
+        {
+          "from": "request",
+          "to": "input-guard",
+          "label": "prompt"
+        },
+        {
+          "from": "input-guard",
+          "to": "model",
+          "label": "passes"
+        },
+        {
+          "from": "model",
+          "to": "output-guard",
+          "label": "answer"
+        },
+        {
+          "from": "output-guard",
+          "to": "result",
+          "label": "decision"
+        }
+      ],
+      "caption": "A constitution-trained guard screens content before and after the protected model."
+    }
+  },
   "related": [
     "constitutional-ai",
     "jailbreak",

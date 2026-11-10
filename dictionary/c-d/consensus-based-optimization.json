@@ -5,7 +5,107 @@
   "type": "algorithm",
   "definition": "Consensus-based optimization (CBO) is a multi-agent derivative-free optimization method, designed to obtain solutions for global optimization problems of the form min x ∈ X f ( x ) , {\\displaystyle \\min _{x\\in {\\cal {X}}}f(x),} where f : X → R {\\displaystyle f:{\\mathcal {X}}\\to \\mathbb {R} } denotes the objective function acting on the state space X {\\displaystyle {\\cal {X}}} , which is assumed to be a normed vector space.",
   "details": "The function f {\\displaystyle f} can potentially be nonconvex and nonsmooth. The algorithm employs particles or agents to explore the state space, which communicate with each other to update their positions. Their dynamics follows the paradigm of metaheuristics, which blend exploration with exploitation. In this sense, CBO is comparable to ant colony optimization, wind driven optimization, particle swarm optimization or Simulated annealing.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. That steady, miss-by-miss improvement is Consensus based optimization.",
+  "explainer": {
+    "lead": "Consensus-based optimization uses a group of communicating candidate solutions to search for the lowest value of an objective function. It is useful when derivatives are unavailable or unhelpful, including problems whose objective is nonconvex or nonsmooth.",
+    "tiers": {
+      "eli5": "Imagine several friends searching a dark field for its lowest point. They each test where they are standing, share what they find, and move while still exploring new places. Working together helps them look for a good low point without needing a map of the field.",
+      "practitioner": "Use CBO when you can evaluate an objective but want a derivative-free global search, including for nonconvex or nonsmooth functions. Multiple agents evaluate candidate positions, communicate, and update their positions while balancing exploration with exploitation. The main practical costs are repeated objective evaluations and coordinating the agents.",
+      "paperLevel": "CBO addresses min_{x in X} f(x), where X is a normed vector space and f: X -> R. It is a multi-agent, derivative-free metaheuristic in which communicating particles update their positions through a combination of exploration and exploitation. The objective may be nonconvex and nonsmooth."
+    },
+    "example": "To minimize f(x) = (x - 2)^2 + 1, start agents at x = 0, 1, 4, and 5, giving values 5, 2, 5, and 10. The agents communicate and update their positions, exploring while favoring promising regions; later evaluations near x = 2 give values near 1, so the search returns a candidate close to x = 2.",
+    "usedIn": [
+      {
+        "name": "Global optimization",
+        "detail": "Searches for solutions to minimization problems over a state space.",
+        "url": ""
+      },
+      {
+        "name": "Derivative-free optimization",
+        "detail": "Applies when objective values can guide the search without using derivatives.",
+        "url": ""
+      }
+    ],
+    "goal": "Find a candidate solution with a low objective value for a global minimization problem.",
+    "inputs": [
+      "An objective function f: X -> R",
+      "A normed state space X",
+      "A set of particle or agent positions"
+    ],
+    "outputs": [
+      "A candidate minimizer",
+      "Its objective value"
+    ],
+    "steps": [
+      "Place agents at candidate positions in X.",
+      "Evaluate f at their positions.",
+      "Let agents communicate their findings.",
+      "Update positions while exploring and exploiting promising regions.",
+      "Repeat the search and return a strong candidate."
+    ],
+    "tradeoffs": [
+      "Requires no derivatives of f.",
+      "Can handle nonconvex and nonsmooth objectives.",
+      "Uses repeated evaluations by multiple agents.",
+      "Must balance exploration with exploitation."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "initialize",
+          "label": "Initialize agents",
+          "note": "Choose candidate positions in X."
+        },
+        {
+          "id": "evaluate",
+          "label": "Evaluate objective",
+          "note": "Compute f at each position."
+        },
+        {
+          "id": "communicate",
+          "label": "Share findings",
+          "note": "Agents exchange information."
+        },
+        {
+          "id": "update",
+          "label": "Update positions",
+          "note": "Blend exploration with exploitation."
+        },
+        {
+          "id": "candidate",
+          "label": "Return candidate",
+          "note": "Output a low-value solution."
+        }
+      ],
+      "edges": [
+        {
+          "from": "initialize",
+          "to": "evaluate",
+          "label": ""
+        },
+        {
+          "from": "evaluate",
+          "to": "communicate",
+          "label": "objective values"
+        },
+        {
+          "from": "communicate",
+          "to": "update",
+          "label": ""
+        },
+        {
+          "from": "update",
+          "to": "evaluate",
+          "label": "repeat"
+        },
+        {
+          "from": "update",
+          "to": "candidate",
+          "label": ""
+        }
+      ],
+      "caption": "Agents repeatedly evaluate, communicate, and move before returning a candidate minimizer."
+    }
+  },
   "related": [
     "ant-colony-optimization-algorithms",
     "bacterial-colony-optimization",

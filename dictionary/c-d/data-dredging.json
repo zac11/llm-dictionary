@@ -5,7 +5,107 @@
   "type": "concept",
   "definition": "Data dredging, also known as data snooping or p-hacking, is the misuse of data analysis to find patterns in data that can be presented as statistically significant, thus dramatically increasing and understating the risk of false positives.",
   "details": "This is done by performing many statistical tests on the data and only reporting those that come back with significant results. Thus data dredging is also often a misused or misapplied form of data mining. The process of data dredging involves testing multiple hypotheses using a single data set by exhaustively searching—perhaps for combinations of variables that might show a correlation, and perhaps for groups of cases or observations that show differences in their mean or in their breakdown by some other variable. Conventional tests of statistical significance are based on the probability that a particular result would arise if chance alone were at work, and necessarily accept some risk of mistaken conclusions of a certain type (mistaken rejections of the null hypothesis). This level of risk is called the significance. When large numbers of tests are performed, some produce false results of this type; hence 5% of randomly chosen hypotheses might be (erroneously) reported to be statistically significant at the 5% significance level, 1% might be (erroneously) reported to be statistically significant at the 1% significance level, and so on, by chance alone. When enough hypotheses are tested, it is virtually certain that some will be reported to be statistically significant (even though this is misleading), since almost every data set with any degree of randomness is likely to contain (for example) some spurious correlations. If they are not cautious, researchers using data mining techniques can be easily misled by these results. The term p-hacking (in reference to p-values) was coined in a 2014 paper by the three researchers behind the blog Data Colada, which has been focusing on uncovering such problems in social sciences research. Data dredging is an example of disregarding the multiple comparisons problem. One form is when subgroups are compared without alerting the reader to the total number of subgroup comparisons examined. When misused it is a questionable research practice that can undermine scientific integrity.",
-  "story": "Picture a librarian organizing a million slips of paper so that any one of them can be found in a heartbeat. The examples a machine reads become the world it believes in. Better ingredients make a better meal, and the same is true here. Garbage in, garbage out — and the reverse: clean, representative data makes the model quietly brilliant. That care with the raw material is Data dredging.",
+  "explainer": {
+    "lead": "Data dredging means testing enough ideas against one dataset that some look convincing purely by chance, then reporting only those results. It matters because the usual significance test no longer means what it appears to mean when the many other tests are hidden.",
+    "tiers": {
+      "eli5": "Imagine rolling a handful of dice again and again until you get an amazing-looking result, then showing everyone only that roll. Data dredging is similar: someone checks lots of possible patterns and reports only the exciting ones. The lucky result can look like a real discovery even though chance explains it.",
+      "practitioner": "Data dredging arises during exploratory analysis when many hypotheses, variable combinations, or subgroups are tested and only significant outcomes are retained. A nominal threshold such as p < 0.05 is misleading unless the full search is considered, and undisclosed subgroup comparisons are a common pitfall. Results found this way should not be treated as confirmed statistical evidence merely because their reported p-values are small.",
+      "paperLevel": "For a single valid test, Pr(reject H0 | H0 is true) = alpha; performing many tests increases the probability of at least one false rejection beyond the nominal alpha. Data dredging disregards this multiple comparisons problem by searching a single dataset across hypotheses, variables, or subgroups and selectively reporting significant results. The term p-hacking was coined in a 2014 paper by the three researchers behind the Data Colada blog. A significant result produced through an undisclosed search does not provide the error control suggested by its reported significance level."
+    },
+    "example": "Suppose all 100 hypotheses tested on a dataset are actually false leads, meaning the null hypothesis holds in every case. At the 5% significance level, about 5 tests would be expected to look significant by chance alone; reporting only those tests would create a misleading set of apparent discoveries.",
+    "usedIn": [
+      {
+        "name": "Social science research",
+        "detail": "Selective reporting and related analysis problems are a focus of the Data Colada blog.",
+        "url": ""
+      },
+      {
+        "name": "Exploratory data mining",
+        "detail": "Exhaustive searches through a dataset can produce spurious correlations that researchers may mistake for genuine findings.",
+        "url": ""
+      },
+      {
+        "name": "Statistical subgroup analysis",
+        "detail": "Comparing many subgroups without disclosing the total number examined can hide how much opportunity chance had to create a significant result.",
+        "url": ""
+      }
+    ],
+    "intuition": "Random data occasionally produces impressive-looking patterns. Searching widely and showing only those patterns turns an expected run of luck into an apparently significant discovery.",
+    "howItWorks": [
+      "Start with one dataset and test many hypotheses, variable combinations, or subgroups.",
+      "Give each result a conventional significance test without accounting for the full search.",
+      "Expect some null hypotheses to be rejected by chance as the number of tests grows.",
+      "Report only the significant results, omitting the unsuccessful comparisons.",
+      "Present those selected results as though each had been the only hypothesis tested."
+    ],
+    "whyItMatters": "Data dredging dramatically increases false positives while making their risk look smaller than it is. When used as an undisclosed research practice, it can mislead researchers and readers and undermine scientific integrity.",
+    "misconceptions": [
+      "A small p-value does not by itself prove dredging; the problem is the undisclosed search and selective reporting behind it.",
+      "Data mining is not inherently data dredging, but its search techniques can mislead researchers when chance findings are treated as confirmed discoveries."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "dataset",
+          "label": "Single dataset",
+          "note": "Contains random variation and possible patterns."
+        },
+        {
+          "id": "search",
+          "label": "Exhaustive search",
+          "note": "Tests hypotheses, variables, and subgroups."
+        },
+        {
+          "id": "tests",
+          "label": "Many tests",
+          "note": "Each carries a chance of a false positive."
+        },
+        {
+          "id": "chance",
+          "label": "Chance hits",
+          "note": "Some results cross the significance threshold."
+        },
+        {
+          "id": "selection",
+          "label": "Selective reporting",
+          "note": "Only significant outcomes are retained."
+        },
+        {
+          "id": "claim",
+          "label": "Misleading finding",
+          "note": "The hidden search understates false-positive risk."
+        }
+      ],
+      "edges": [
+        {
+          "from": "dataset",
+          "to": "search",
+          "label": ""
+        },
+        {
+          "from": "search",
+          "to": "tests",
+          "label": ""
+        },
+        {
+          "from": "tests",
+          "to": "chance",
+          "label": "by chance"
+        },
+        {
+          "from": "chance",
+          "to": "selection",
+          "label": ""
+        },
+        {
+          "from": "selection",
+          "to": "claim",
+          "label": ""
+        }
+      ],
+      "caption": "Repeated testing creates chance hits; hiding the other tests makes those hits look like reliable discoveries."
+    }
+  },
   "related": [
     "acl-data-collection-initiative",
     "ai-data-center",

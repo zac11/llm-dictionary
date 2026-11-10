@@ -5,7 +5,98 @@
   "type": "concept",
   "definition": "The study and practice of ensuring machine learning systems do not produce discriminatory or systematically unequal outcomes across different groups.",
   "details": "Fairness in ML is a multifaceted and sometimes contested concept, with multiple mathematical definitions (e.g., demographic parity, equalized odds) that can be in tension with each other.",
-  "story": "Imagine a new medicine that works brilliantly in the lab but still has to be tested on real people before anyone takes it. Think of it as the quiet rule that a tool should be useful without being dangerous. The idea is simple: before something powerful is let loose, someone checks that it will not do real harm to real people. Rules and red-teaming are the brakes that make the speed trustworthy. That deliberate caution is Fairness (in ML).",
+  "explainer": {
+    "lead": "Fairness in machine learning asks whether a model treats different groups systematically unequally, and what to do about it. It matters because a model can be useful overall while still producing discriminatory outcomes for particular groups.",
+    "tiers": {
+      "eli5": "Imagine a game where one team keeps getting fewer turns than the other, even when players are equally skilled. Fairness means checking for patterns like that and deciding whether the rules need to change. There is more than one idea of what counts as fair, and those ideas can disagree.",
+      "practitioner": "In practice, teams define the relevant groups, choose a fairness criterion, and compare model outcomes across those groups alongside overall performance. Demographic parity and equalized odds measure different things, so the choice should match the decision being made. A pitfall is reporting one favorable metric while ignoring unequal errors or tensions with other criteria.",
+      "paperLevel": "For a sensitive attribute A and prediction Ŷ, demographic parity requires P(Ŷ=1 | A=0) = P(Ŷ=1 | A=1). Equalized odds requires P(Ŷ=1 | Y=y, A=0) = P(Ŷ=1 | Y=y, A=1) for y in {0,1}. These definitions capture different notions of fairness and can be in tension, so no single metric settles every fairness question."
+    },
+    "example": "Suppose a loan model approves 70% of applicants in one group and 50% in another. That gap violates demographic parity if the groups are compared directly; an equalized-odds analysis would separately compare approval rates among applicants who repay and those who do not.",
+    "usedIn": [
+      {
+        "name": "Hiring tools",
+        "detail": "Compare selection and error patterns across applicant groups.",
+        "url": ""
+      },
+      {
+        "name": "Credit scoring",
+        "detail": "Check whether loan decisions differ systematically between groups.",
+        "url": ""
+      },
+      {
+        "name": "Healthcare models",
+        "detail": "Examine unequal predictions or errors affecting patient groups.",
+        "url": ""
+      }
+    ],
+    "intuition": "A good overall score can hide consistently worse outcomes for one group. Fairness makes those group-level patterns visible, but different mathematical definitions embody different ideas about which inequalities matter.",
+    "howItWorks": [
+      "Identify the decision and relevant groups.",
+      "Choose a fairness definition suited to the concern.",
+      "Measure outcomes or errors for each group.",
+      "Compare the results and investigate disparities.",
+      "Reassess trade-offs instead of assuming one metric resolves fairness."
+    ],
+    "whyItMatters": "Fairness analysis can reveal discriminatory or systematically unequal outcomes that aggregate performance hides. It also forces teams to make their chosen notion of fairness explicit and recognize conflicts between criteria.",
+    "misconceptions": [
+      "One fairness metric captures every meaning of fairness.",
+      "A model can necessarily satisfy all fairness definitions at once.",
+      "Strong overall accuracy guarantees equal group outcomes."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "decision",
+          "label": "Model decision",
+          "note": "Define the outcome being assessed."
+        },
+        {
+          "id": "groups",
+          "label": "Relevant groups",
+          "note": "Identify groups for comparison."
+        },
+        {
+          "id": "criterion",
+          "label": "Fairness criterion",
+          "note": "Choose what equality should mean."
+        },
+        {
+          "id": "measurement",
+          "label": "Group measurement",
+          "note": "Calculate outcomes or errors by group."
+        },
+        {
+          "id": "comparison",
+          "label": "Disparity review",
+          "note": "Examine gaps and competing criteria."
+        }
+      ],
+      "edges": [
+        {
+          "from": "decision",
+          "to": "groups",
+          "label": "outcomes"
+        },
+        {
+          "from": "groups",
+          "to": "criterion",
+          "label": ""
+        },
+        {
+          "from": "criterion",
+          "to": "measurement",
+          "label": ""
+        },
+        {
+          "from": "measurement",
+          "to": "comparison",
+          "label": "group results"
+        }
+      ],
+      "caption": "Fairness evaluation compares group outcomes under an explicitly chosen criterion."
+    }
+  },
   "related": [
     "bias-in-ml",
     "bias-mitigation",

@@ -5,6 +5,118 @@
   "type": "concept",
   "definition": "Classifying content as fabricated or misleading using linguistic cues, propagation patterns, and fact-checking signals.",
   "details": "Classifying content as fabricated or misleading using linguistic cues, propagation patterns, and fact-checking signals. It overlaps with misinformation research and struggles with satire and fast-changing claims.",
+  "explainer": {
+    "lead": "Fake news detection uses computers to spot content that may be fabricated or misleading. It combines clues from the wording, the way a story spreads, and available fact-checking information, helping people prioritize claims that need scrutiny.",
+    "tiers": {
+      "eli5": "It is like a school crossing guard watching for stories that look suspicious before they spread further. The guard might notice exaggerated wording, lots of hurried retelling, or a mismatch with something already checked. A warning means the story deserves a closer look, not that it has definitely been proved false.",
+      "practitioner": "A detector typically combines text features with propagation features and fact-checking signals, then trains a classifier to flag fabricated or misleading content. It is commonly used to prioritize posts or articles for human review rather than to make final truth judgments. Satire, changing claims, and distribution shifts can make earlier predictions unreliable.",
+      "paperLevel": "Given content c, the task can be written as y_hat = f(L(c), P(c), F(c)), where L represents linguistic cues, P represents propagation patterns, F represents fact-checking signals, and y_hat is a fabricated-or-misleading prediction or score. Known difficulties include satire and fast-changing claims, and the classification does not by itself establish the truth of every statement in c."
+    },
+    "example": "A post makes an extraordinary new claim in highly charged wording, is rapidly reposted, and conflicts with an available fact-check. A detector combines those signals, flags the post as likely misleading, and places it in a queue for human review.",
+    "usedIn": [
+      {
+        "name": "Social media platforms",
+        "detail": "Flagging potentially misleading posts using content and sharing signals.",
+        "url": ""
+      },
+      {
+        "name": "Fact-checking",
+        "detail": "Helping prioritize suspicious claims for closer review.",
+        "url": ""
+      },
+      {
+        "name": "Misinformation research",
+        "detail": "Studying how misleading content is written and propagated.",
+        "url": ""
+      }
+    ],
+    "intuition": "A suspicious story often leaves several kinds of clues: how it is written, how it travels, and whether reliable checking information contradicts it. Detection works best when these clues are considered together.",
+    "howItWorks": [
+      "Collect the content and its available context.",
+      "Extract linguistic cues from the wording.",
+      "Measure patterns in how the content spreads.",
+      "Add relevant fact-checking signals.",
+      "Classify the content or assign it a suspicion score."
+    ],
+    "whyItMatters": "Misleading content can spread faster than people can manually check it. Automated detection can focus limited review efforts, although uncertain cases still need careful human judgment.",
+    "misconceptions": [
+      "A detection score is not proof that a claim is false.",
+      "Satire can look misleading to a classifier even when deception is not intended.",
+      "A model can struggle when claims or events change quickly."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "content",
+          "label": "Content and context",
+          "note": "Text plus available spreading and checking information"
+        },
+        {
+          "id": "language",
+          "label": "Linguistic cues",
+          "note": "Signals extracted from wording"
+        },
+        {
+          "id": "spread",
+          "label": "Propagation patterns",
+          "note": "Signals describing how content travels"
+        },
+        {
+          "id": "checks",
+          "label": "Fact-check signals",
+          "note": "Relevant information from checking"
+        },
+        {
+          "id": "classifier",
+          "label": "Detection classifier",
+          "note": "Combines signals into a prediction or score"
+        },
+        {
+          "id": "review",
+          "label": "Flag or review",
+          "note": "Prioritizes content for further scrutiny"
+        }
+      ],
+      "edges": [
+        {
+          "from": "content",
+          "to": "language",
+          "label": "wording"
+        },
+        {
+          "from": "content",
+          "to": "spread",
+          "label": "sharing"
+        },
+        {
+          "from": "content",
+          "to": "checks",
+          "label": "context"
+        },
+        {
+          "from": "language",
+          "to": "classifier",
+          "label": ""
+        },
+        {
+          "from": "spread",
+          "to": "classifier",
+          "label": ""
+        },
+        {
+          "from": "checks",
+          "to": "classifier",
+          "label": ""
+        },
+        {
+          "from": "classifier",
+          "to": "review",
+          "label": "prediction"
+        }
+      ],
+      "caption": "Fake news detection combines language, propagation, and fact-checking signals to flag content for scrutiny."
+    }
+  },
   "citation": {
     "title": "Fake News Detection",
     "authors": [],

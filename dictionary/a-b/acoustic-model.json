@@ -5,7 +5,113 @@
   "type": "concept",
   "definition": "An acoustic model is used in automatic speech recognition to represent the relationship between an audio signal and the phonemes or other linguistic units that make up speech.",
   "details": "The model is learned from a set of audio recordings and their corresponding transcripts. It is created by taking audio recordings of speech, and their text transcriptions, and using software to create statistical representations of the sounds that make up each word.",
-  "story": "Picture a translator at the United Nations, listening to one language and whispering the meaning into another in real time. It figures out meaning by noticing which words like to travel together. It does not memorize a rulebook; it absorbs a library. Meaning lives in company — a word is known by the words it keeps. That pattern-earned fluency is Acoustic model.",
+  "explainer": {
+    "lead": "An acoustic model is the part of a speech recognition system that learns to hear. It takes raw sound and guesses which phonetic building blocks—vowels, consonants, syllables—were spoken, so the rest of the system can figure out what words they form.",
+    "tiers": {
+      "eli5": "Imagine you're learning to recognize your friends' voices in a noisy cafeteria. At first you just hear a blur of sound, but slowly you learn that one friend's voice has a particular rise and fall, another has a scratchy quality. An acoustic model does something similar: it learns the 'shape' of each speech sound from thousands of examples, so when new audio comes in, it can say 'that sounds like the 'th' in 'think' or the 'ee' in 'tree'.",
+      "practitioner": "In production ASR pipelines, acoustic models typically consume MFCCs or filterbank features extracted from 10 ms frames, often fed into deep neural networks—CNNs, LSTMs, or transformers. The model outputs posterior probabilities over phonetic units (senones, context-dependent phones, or graphemes), which a decoder combines with language model scores via weighted finite-state transducers. A common pitfall is training-data mismatch: a model trained on 16 kHz/16-bit studio audio will degrade severely on 8 kHz telephony calls unless retrained or adapted.",
+      "paperLevel": "The acoustic model computes P(X|W), the likelihood of acoustic observations X given word sequence W, decomposed via the chain rule into P(X|P)P(P|W) where P represents phonetic units. Modern systems replace Gaussian mixture model–hidden Markov models (GMM-HMMs) with deep neural networks that directly model P(P|X), using the mel-frequency cepstrum to approximate human auditory frequency resolution. Convolutional neural networks have led to major improvements in acoustic modeling."
+    },
+    "example": "You say 'hello' into your phone. The acoustic model receives MFCC vectors for each 10 ms frame. For the first frame, it might output: 0.7 probability of phoneme /h/, 0.2 of silence, 0.1 of /æ/. For the next frames, probabilities shift through /ɛ/, /l/, /oʊ/. The decoder threads these together, and with the language model's help, arrives at 'hello' rather than 'hallow' or 'yellow'.",
+    "usedIn": [
+      {
+        "name": "Telephony IVR systems",
+        "detail": "Acoustic models trained on 8 kHz/8-bit audio to match land-line telephone bandwidth constraints",
+        "url": ""
+      },
+      {
+        "name": "Desktop dictation software",
+        "detail": "Uses 16 kHz/16-bit models as a compromise between accuracy and recognition speed",
+        "url": ""
+      },
+      {
+        "name": "Voice over IP applications",
+        "detail": "Models must match the codec's sampling rate and bit depth to avoid mismatch degradation",
+        "url": ""
+      }
+    ],
+    "intuition": "Speech is just air pressure waves, but we hear it as words. The acoustic model bridges that gap by learning which patterns of sound reliably correspond to which speech sounds in a given language.",
+    "howItWorks": [
+      "Raw audio is sliced into ~10 millisecond frames and transformed into numerical features, typically MFCCs that capture frequency content in a way similar to human hearing.",
+      "These features feed into a statistical model—historically GMM-HMMs, now mostly deep neural networks—that learns to associate feature patterns with phonetic units.",
+      "The model outputs probabilities: given this slice of sound, how likely is each possible phoneme or sub-phonetic state?",
+      "A decoder combines these acoustic probabilities with a language model's word-sequence probabilities to find the most likely transcription."
+    ],
+    "whyItMatters": "Without an acoustic model, speech recognition would have no way to connect physical sound to linguistic meaning. It is one of the two pillars of every ASR system, alongside the language model, and its accuracy directly determines whether 'recognize speech' becomes 'wreck a nice beach'.",
+    "misconceptions": [
+      "An acoustic model understands language—it does not; it only knows sounds, and needs a language model to form valid word sequences.",
+      "Higher sampling rate always means better recognition—excessively high rates can slow the engine without improving accuracy, and mismatch with training data hurts performance.",
+      "One acoustic model works for all audio—a model trained on clean studio speech will fail on noisy phone calls unless matched to similar recording conditions."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "audio",
+          "label": "Raw audio",
+          "note": "Waveform from microphone"
+        },
+        {
+          "id": "features",
+          "label": "Feature extraction",
+          "note": "MFCCs per 10 ms frame"
+        },
+        {
+          "id": "acoustic",
+          "label": "Acoustic model",
+          "note": "Outputs phoneme probabilities"
+        },
+        {
+          "id": "decoder",
+          "label": "Decoder",
+          "note": "Searches best path"
+        },
+        {
+          "id": "language",
+          "label": "Language model",
+          "note": "Word sequence scores"
+        },
+        {
+          "id": "text",
+          "label": "Transcription",
+          "note": "Final word output"
+        }
+      ],
+      "edges": [
+        {
+          "from": "audio",
+          "to": "features",
+          "label": "transform"
+        },
+        {
+          "from": "features",
+          "to": "acoustic",
+          "label": "feed"
+        },
+        {
+          "from": "acoustic",
+          "to": "decoder",
+          "label": "probabilities"
+        },
+        {
+          "from": "language",
+          "to": "decoder",
+          "label": "scores"
+        },
+        {
+          "from": "decoder",
+          "to": "text",
+          "label": "output"
+        }
+      ],
+      "caption": "How acoustic models fit into a speech recognition pipeline: raw sound becomes features, the acoustic model guesses phonemes, and a decoder combines these guesses with language knowledge to produce text."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Acoustic model",
+        "url": "https://en.wikipedia.org/wiki/Acoustic_model"
+      }
+    ]
+  },
   "related": [
     "action-model-learning",
     "bag-of-words-model",

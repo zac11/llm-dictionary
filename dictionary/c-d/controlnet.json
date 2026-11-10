@@ -8,6 +8,93 @@
   ],
   "definition": "Adding trainable branches to a frozen diffusion model so generation follows structural inputs: edges, depth maps, poses, layouts.",
   "details": "Adding trainable branches to a frozen diffusion model so generation follows structural inputs: edges, depth maps, poses, layouts. What turned image generation from slot-machine prompting into a controllable design tool.",
+  "explainer": {
+    "lead": "ControlNet gives a diffusion image generator a structural guide, such as an edge map, depth map, pose, or layout. The original model stays frozen while added trainable branches learn to make its output follow that guide, giving creators more control than prompting alone.",
+    "tiers": {
+      "eli5": "Imagine asking a talented artist to turn your stick figure or room sketch into a finished picture. The artist can choose the colors and details, but must keep the basic arrangement you supplied. ControlNet works similarly: it teaches an image generator extra skills for following a guide without retraining the whole artist.",
+      "practitioner": "Keep the diffusion model frozen and train the added conditioning branches against the structural input you want to use: edges, depth, pose, or layout. At generation time, supply the corresponding control signal alongside the normal generation request. Check that the guide accurately represents the desired structure, since errors or ambiguity in it can carry into the image.",
+      "paperLevel": "Let F be a frozen diffusion model and C a set of trainable conditioning branches. Given a structural signal s, such as edges, depth, pose, or layout, C conditions F's generation on s while F's parameters remain fixed. The approach adds structural controllability without replacing the underlying diffusion model."
+    },
+    "example": "An artist supplies a pose map of a person raising one arm and requests a painted character. ControlNet conditions the frozen image generator on that pose, so the generated character retains the raised-arm arrangement while its appearance is generated.",
+    "usedIn": [
+      {
+        "name": "Controllable image generation",
+        "detail": "Guides generated images with edges, depth maps, poses, or layouts instead of relying only on prompting.",
+        "url": ""
+      },
+      {
+        "name": "Design workflows",
+        "detail": "Lets a creator preserve a chosen structure while the diffusion model generates visual details.",
+        "url": ""
+      }
+    ],
+    "intuition": "A prompt can describe what you want without precisely fixing where everything goes. ControlNet supplies that missing structure: the frozen diffusion model provides its image-generating ability, while new branches learn to interpret and enforce the guide.",
+    "howItWorks": [
+      "Start with a pretrained diffusion model and freeze its parameters.",
+      "Add trainable branches that receive a structural input.",
+      "Train those branches so their conditioning makes generation follow the input.",
+      "At generation time, provide the desired edges, depth map, pose, or layout.",
+      "Generate an image whose structure follows that guide."
+    ],
+    "whyItMatters": "It turns structure into a direct input rather than something the user must hope a prompt will produce. That makes diffusion image generation more useful as a controllable design tool.",
+    "misconceptions": [
+      "ControlNet does not require retraining the entire diffusion model; the original model is frozen.",
+      "It is not limited to edge drawings: depth maps, poses, and layouts can also provide structure.",
+      "Structural conditioning does not remove the model's generative role; it guides generation rather than specifying every visual detail."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "structure",
+          "label": "Structural input",
+          "note": "Edges, depth, pose, or layout"
+        },
+        {
+          "id": "branches",
+          "label": "Trainable branches",
+          "note": "Learn to interpret the guide"
+        },
+        {
+          "id": "conditioning",
+          "label": "Structural conditioning",
+          "note": "Carries guidance into generation"
+        },
+        {
+          "id": "diffusion",
+          "label": "Frozen diffusion model",
+          "note": "Retains its original parameters"
+        },
+        {
+          "id": "image",
+          "label": "Generated image",
+          "note": "Follows the supplied structure"
+        }
+      ],
+      "edges": [
+        {
+          "from": "structure",
+          "to": "branches",
+          "label": "guides"
+        },
+        {
+          "from": "branches",
+          "to": "conditioning",
+          "label": ""
+        },
+        {
+          "from": "conditioning",
+          "to": "diffusion",
+          "label": "conditions"
+        },
+        {
+          "from": "diffusion",
+          "to": "image",
+          "label": "generates"
+        }
+      ],
+      "caption": "Trainable branches turn a structural guide into conditioning for a frozen diffusion model."
+    }
+  },
   "related": [
     "diffusion-model",
     "prompt-engineering"

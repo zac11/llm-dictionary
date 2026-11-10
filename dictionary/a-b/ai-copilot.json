@@ -8,7 +8,119 @@
   ],
   "definition": "An AI assistant embedded in a tool or workflow that helps users complete tasks with suggestions and actions.",
   "details": "Copilots differ from fully autonomous agents: they stay in the loop with a human, proposing code, drafts or next steps that the user reviews and confirms. The term became popular with GitHub Copilot, which uses a code-trained language model to autocomplete and generate code inside an editor.",
-  "story": "Imagine handing a to-do list to a very clever intern who refuses to guess: before each step, they look around, check the result, and adjust. It is the difference between a search engine and a helper who actually finishes the task. The machine stops just answering one question and starts getting a job done, step by step, checking its work along the way. The model stops being a one-shot answer machine and becomes a coworker that checks its own work. That loop of reason, act, and observe is AI Copilot.",
+  "explainer": {
+    "lead": "An AI copilot is an assistant built into the place where work happens, such as a code editor or email app. It suggests or carries out useful next steps while leaving the user in charge, so it can speed up routine work without handing over full control.",
+    "tiers": {
+      "eli5": "An AI copilot is like a helpful friend sitting beside you while you do your homework. It can suggest the next sentence or show you how to solve a step, but you check its ideas and decide what to keep. It helps you work rather than doing the whole job by itself.",
+      "practitioner": "Copilots are embedded in tools such as code editors, Microsoft 365, Windows, Bing and Edge, where they generate or complete content in response to the user's work. Typical uses include code completion, drafting, email generation and summarisation. Review outputs before accepting them: demonstrations of Bing Chat produced hallucinations, and its interface was vulnerable to prompt injection.",
+      "paperLevel": "An AI copilot can be described as a human-in-the-loop assistant C that maps the current workflow context x and user request q to a proposed suggestion or action a = C(x, q), with the user deciding whether to accept, edit or reject a. Unlike a fully autonomous agent, it does not independently carry a task through to completion. Generative implementations may still hallucinate, behave unpredictably in extended conversations or expose hidden instructions through prompt injection."
+    },
+    "example": "A programmer starts typing a function in an editor and asks GitHub Copilot to complete it. Copilot generates the remaining code from the surrounding context; the programmer reads it, changes anything unsuitable and accepts the version they want to keep.",
+    "usedIn": [
+      {
+        "name": "GitHub Copilot",
+        "detail": "Uses a code-trained language model to autocomplete and generate code inside an editor.",
+        "url": ""
+      },
+      {
+        "name": "Microsoft 365 Copilot",
+        "detail": "Assists with Microsoft 365 applications and services, including generating and summarising emails in Outlook.",
+        "url": ""
+      },
+      {
+        "name": "Microsoft Copilot",
+        "detail": "Provides a conversational assistant across consumer Microsoft products, including Windows, Bing and Edge.",
+        "url": ""
+      }
+    ],
+    "intuition": "The copilot metaphor captures a division of labour: the AI watches the current task and offers help, while the person remains the pilot. Its value comes from putting suggestions directly into the workflow instead of requiring a separate process.",
+    "howItWorks": [
+      "The user works in a host tool and asks for help or triggers an assistance feature.",
+      "The copilot uses the request and relevant task context, such as surrounding code or an email.",
+      "A generative model produces a completion, draft, summary or proposed next step.",
+      "The suggestion appears inside the tool for the user to inspect.",
+      "The user accepts, edits or rejects it before continuing the task."
+    ],
+    "whyItMatters": "Copilots make generative AI available at the moment a task is being performed, reducing the effort of switching tools and starting from a blank page. Keeping review and confirmation with the user also distinguishes this pattern from delegating an entire task to an autonomous agent.",
+    "misconceptions": [
+      "A copilot is not necessarily a fully autonomous agent: its proposals normally remain subject to human review and confirmation.",
+      "Copilot is not one single product or model: it is a general assistance pattern as well as a name used by products such as GitHub Copilot and Microsoft Copilot.",
+      "A fluent suggestion is not guaranteed to be correct, so generated code, summaries and advice still need checking."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "user",
+          "label": "User",
+          "note": "Requests help and controls the final decision."
+        },
+        {
+          "id": "tool",
+          "label": "Host tool",
+          "note": "Supplies the current workflow and task context."
+        },
+        {
+          "id": "copilot",
+          "label": "AI copilot",
+          "note": "Coordinates assistance within the tool."
+        },
+        {
+          "id": "model",
+          "label": "Generative model",
+          "note": "Produces code, text or another proposed next step."
+        },
+        {
+          "id": "suggestion",
+          "label": "Suggestion",
+          "note": "Returns to the user for acceptance, editing or rejection."
+        }
+      ],
+      "edges": [
+        {
+          "from": "user",
+          "to": "tool",
+          "label": "request"
+        },
+        {
+          "from": "tool",
+          "to": "copilot",
+          "label": "task context"
+        },
+        {
+          "from": "copilot",
+          "to": "model",
+          "label": "prompt"
+        },
+        {
+          "from": "model",
+          "to": "suggestion",
+          "label": "output"
+        },
+        {
+          "from": "suggestion",
+          "to": "user",
+          "label": "review"
+        }
+      ],
+      "caption": "A copilot generates help from the current task context, but the user reviews the result before work continues."
+    },
+    "image": {
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f3/Microsoft-copilot-2026-seeklogo.svg/960px-Microsoft-copilot-2026-seeklogo.svg.png",
+      "alt": "Microsoft Copilot — AI chatbot developed by Microsoft",
+      "width": 640,
+      "height": 600,
+      "credit": "Microsoft",
+      "license": "Public domain",
+      "licenseUrl": "",
+      "page": "https://commons.wikimedia.org/wiki/File:Microsoft-copilot-2026-seeklogo.svg"
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Microsoft Copilot",
+        "url": "https://en.wikipedia.org/wiki/Microsoft_Copilot"
+      }
+    ]
+  },
   "related": [
     "agentic-ai",
     "ai-agent",

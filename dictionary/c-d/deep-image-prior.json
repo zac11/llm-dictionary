@@ -5,7 +5,112 @@
   "type": "concept",
   "definition": "Deep image prior is a type of convolutional neural network used to enhance a given image with no prior training data other than the image itself.",
   "details": "A neural network is randomly initialized and used as prior to solve inverse problems such as noise reduction, super-resolution, and inpainting. Image statistics are captured by the structure of a convolutional image generator rather than by any previously learned capabilities.",
-  "story": "Picture a child pointing at pictures in a book — cat, car, cloud — learning to see by seeing a thousand examples. It turns a picture into an understanding: this is a cat, that is a stop sign. What your eyes do without thinking, the machine does one careful layer at a time. It is eyes made of arithmetic — pixels become edges, edges become shapes, shapes become meaning. That pixel-to-meaning climb is Deep image prior.",
+  "explainer": {
+    "lead": "Deep image prior restores a single image by fitting a randomly initialized convolutional network to that image alone. It makes tasks such as denoising, super-resolution, and inpainting possible without a separate training dataset.",
+    "tiers": {
+      "eli5": "Imagine giving an artist only a damaged picture and asking them to redraw it until it matches the parts you can see. Deep image prior works a bit like that: it starts with random settings and adjusts them using the same picture as its guide. The way its drawing machine is built helps it produce a cleaner or more complete image.",
+      "practitioner": "Apply it by optimizing a randomly initialized convolutional generator against a reconstruction objective for the single observed image, rather than training on an external dataset. The objective can express the relevant noise-reduction, super-resolution, or inpainting problem. Because the prior comes from network structure, this is not a pretrained general-purpose restorer.",
+      "paperLevel": "Given one observed image x0, optimize the parameters theta of a randomly initialized convolutional image generator f_theta using an objective that measures agreement between f_theta's output and x0 under the inverse problem. The prior is implicit in the convolutional architecture, so no previously learned weights or external image statistics are required. The method's prior knowledge is limited to the observation and the generator structure."
+    },
+    "example": "For a noisy portrait, repeatedly adjust a randomly initialized generator so its output fits the portrait under a denoising objective. The resulting generated image is the restored portrait, produced without training on any other portraits.",
+    "usedIn": [
+      {
+        "name": "Image denoising",
+        "detail": "Fits the generator to one noisy image to produce a noise-reduced version.",
+        "url": ""
+      },
+      {
+        "name": "Super-resolution",
+        "detail": "Uses the supplied image as the observation when solving for a higher-resolution result.",
+        "url": ""
+      },
+      {
+        "name": "Image inpainting",
+        "detail": "Fits the available image content to reconstruct an image with missing regions.",
+        "url": ""
+      }
+    ],
+    "intuition": "A convolutional generator's structure already favors certain image statistics, even before it has learned anything. Fitting that structure to one observation can therefore guide restoration without examples from other images.",
+    "howItWorks": [
+      "Start with a convolutional image generator whose parameters are randomly initialized.",
+      "Generate a candidate restored image from the network.",
+      "Measure how well that candidate agrees with the supplied image under the chosen inverse problem.",
+      "Update the network parameters to improve that agreement.",
+      "Use the fitted generator's output as the restored image."
+    ],
+    "whyItMatters": "It separates the useful image prior from previously learned weights: the prior comes from the generator's convolutional structure. This allows several image-restoration problems to be tackled using only the image being restored.",
+    "misconceptions": [
+      "It is not pretrained on a large image collection; the network starts with random parameters.",
+      "It does not learn a general restoration rule from many examples; fitting is based on the given image."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "observation",
+          "label": "Observed image",
+          "note": "The single noisy, low-resolution, or incomplete input."
+        },
+        {
+          "id": "generator",
+          "label": "Random generator",
+          "note": "A convolutional network with randomly initialized parameters."
+        },
+        {
+          "id": "candidate",
+          "label": "Candidate image",
+          "note": "The generator's current restoration."
+        },
+        {
+          "id": "fit",
+          "label": "Reconstruction fit",
+          "note": "Agreement with the observation under the inverse problem."
+        },
+        {
+          "id": "updates",
+          "label": "Parameter updates",
+          "note": "Adjustments that improve the reconstruction fit."
+        },
+        {
+          "id": "restored",
+          "label": "Restored image",
+          "note": "The output after fitting."
+        }
+      ],
+      "edges": [
+        {
+          "from": "generator",
+          "to": "candidate",
+          "label": ""
+        },
+        {
+          "from": "candidate",
+          "to": "fit",
+          "label": ""
+        },
+        {
+          "from": "observation",
+          "to": "fit",
+          "label": "reference"
+        },
+        {
+          "from": "fit",
+          "to": "updates",
+          "label": ""
+        },
+        {
+          "from": "updates",
+          "to": "generator",
+          "label": "repeat"
+        },
+        {
+          "from": "candidate",
+          "to": "restored",
+          "label": "after fitting"
+        }
+      ],
+      "caption": "The network is fitted to the single observation; its convolutional structure supplies the image prior."
+    }
+  },
   "related": [
     "automatic-image-annotation",
     "contrastive-language-image-pre-training",

@@ -5,6 +5,97 @@
   "type": "concept",
   "definition": "In deep learning, especially in models like transformers, attention blocks help the model focus on relevant parts of the input data, improving the accuracy and efficiency of tasks like language translation.",
   "details": "In deep learning, especially in models like transformers, attention blocks help the model focus on relevant parts of the input data, improving the accuracy and efficiency of tasks like language translation.",
+  "explainer": {
+    "lead": "An attention block is a transformer component that lets each part of an input draw information from the other parts most relevant to it. This helps a model use the right context instead of treating every word or element as equally important.",
+    "tiers": {
+      "eli5": "Imagine reading a sentence with a highlighter that marks the words you need to understand one particular word. An attention block does something similar: it gives more weight to useful words and less to unrelated ones. That helps the computer understand what each word means in its sentence.",
+      "practitioner": "In a transformer, attention blocks update token representations by mixing information according to learned relevance weights. Practitioners should check masking, sequence length, and computational cost, since comparing many input elements can become expensive. Attention improves how context is selected, but it does not guarantee that the model's final output is correct.",
+      "paperLevel": "For queries Q, keys K, and values V, a common form is Attention(Q,K,V) = softmax(QK^T / sqrt(d_k))V, where d_k is the key dimension. The score matrix determines how strongly each query draws on each value, and the square-root scaling controls the size of the dot products. Attention can be costly for long inputs because pairwise scoring grows rapidly with sequence length."
+    },
+    "example": "While translating “The bank by the river was calm,” an attention block processing “bank” can place more weight on “river” than on unrelated words. The resulting representation carries context that supports the water-edge meaning rather than the financial meaning.",
+    "usedIn": [
+      {
+        "name": "Transformer models",
+        "detail": "Attention blocks supply context by connecting relevant parts of the input.",
+        "url": ""
+      },
+      {
+        "name": "Language translation",
+        "detail": "Attention helps a translation model focus on source words relevant to the word being generated.",
+        "url": ""
+      }
+    ],
+    "intuition": "Understanding one part of an input often requires selecting the right clues from elsewhere in that input. Attention provides a learned way to make that selection for every position.",
+    "howItWorks": [
+      "Represent each input element with features used for comparison and information sharing.",
+      "Compare elements to estimate how relevant each one is to the current position.",
+      "Convert the relevance scores into attention weights.",
+      "Combine the available information using those weights.",
+      "Pass the context-enriched representations to later parts of the model."
+    ],
+    "whyItMatters": "Attention blocks let transformers use context flexibly, which can improve the accuracy and efficiency of tasks such as language translation. They provide a reusable mechanism for deciding which information matters at each position.",
+    "misconceptions": [
+      "Attention weights are not automatically a complete or reliable explanation of a model's decision.",
+      "An attention block selects and combines context; it does not by itself produce the final prediction."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input representations",
+          "note": "Features for each input element"
+        },
+        {
+          "id": "scores",
+          "label": "Relevance scores",
+          "note": "Comparisons between elements"
+        },
+        {
+          "id": "weights",
+          "label": "Attention weights",
+          "note": "Normalized focus strengths"
+        },
+        {
+          "id": "mix",
+          "label": "Weighted combination",
+          "note": "Relevant information is gathered"
+        },
+        {
+          "id": "output",
+          "label": "Contextual representations",
+          "note": "Updated features for later layers"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "scores",
+          "label": "compare"
+        },
+        {
+          "from": "scores",
+          "to": "weights",
+          "label": "normalize"
+        },
+        {
+          "from": "input",
+          "to": "mix",
+          "label": "information"
+        },
+        {
+          "from": "weights",
+          "to": "mix",
+          "label": "weighting"
+        },
+        {
+          "from": "mix",
+          "to": "output",
+          "label": "update"
+        }
+      ],
+      "caption": "An attention block turns relevance scores into weights, then uses them to gather contextual information."
+    }
+  },
   "related": [
     "attention",
     "deep-learning",

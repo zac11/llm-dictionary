@@ -8,7 +8,86 @@
   ],
   "definition": "Gaussian Error Linear Unit, a smooth activation function that weights inputs by their value under a standard normal cumulative distribution.",
   "details": "GELU is used in many transformer models, including BERT and GPT variants, because its smooth curve tends to improve optimization compared to ReLU.",
-  "story": "Picture an architect laying out a building where every room has to know which other rooms matter to it. The layout decides what the machine can even attempt, before it learns a single thing. It is the blueprint that makes everything else possible. It is the difference between a row of isolated cubicles and one big room where everyone can hear each other. That blueprint is GELU.",
+  "explainer": {
+    "lead": "GELU is a smooth activation function that scales a neuron’s input according to a standard normal distribution rather than simply keeping or discarding it. It matters because it is widely used in transformer models, where its smooth behavior can make optimization easier than with ReLU.",
+    "tiers": {
+      "eli5": "Imagine a dimmer switch that decides how much of a signal to let through instead of an on-off switch. GELU lets large positive signals through almost unchanged, strongly reduces large negative ones, and handles values near zero gently.",
+      "practitioner": "GELU is used as an activation in transformers such as BERT and GPT variants. Its smooth curve tends to improve optimization compared with ReLU, but that tendency is not a guarantee of better results in every model.",
+      "paperLevel": "GELU is defined as GELU(x) = x * Phi(x), where Phi is the cumulative distribution function of the standard normal distribution. The output therefore depends smoothly on x, without ReLU’s fixed cutoff at zero."
+    },
+    "example": "For x = 2, Phi(2) is approximately 0.977, so GELU(2) = 2 * 0.977, or about 1.954. The positive input is retained almost unchanged rather than being sharply switched on.",
+    "usedIn": [
+      {
+        "name": "BERT",
+        "detail": "Uses GELU as an activation function in its transformer architecture.",
+        "url": ""
+      },
+      {
+        "name": "GPT variants",
+        "detail": "Many GPT variants use GELU within their transformer models.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of treating activation as a hard on-or-off decision, GELU smoothly weights each input by its standard normal cumulative probability. Large positive inputs are mostly preserved, while large negative inputs are mostly suppressed.",
+    "howItWorks": [
+      "Take a real-valued input x.",
+      "Evaluate Phi(x), the standard normal cumulative distribution at x.",
+      "Multiply the original input by this weight: x * Phi(x).",
+      "Pass the smoothly scaled result to the next part of the network."
+    ],
+    "whyItMatters": "GELU provides a smooth alternative to ReLU and is used in many transformer models, including BERT and GPT variants. Its smooth curve tends to improve optimization compared with ReLU.",
+    "misconceptions": [
+      "GELU is not simply ReLU with a different threshold; it multiplies the input by a smooth probability-based weight.",
+      "Its use does not guarantee better performance than ReLU in every setting."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input x",
+          "note": "A real-valued activation input"
+        },
+        {
+          "id": "cdf",
+          "label": "Normal CDF",
+          "note": "Computes the weight Phi(x)"
+        },
+        {
+          "id": "multiply",
+          "label": "Scale input",
+          "note": "Multiplies x by Phi(x)"
+        },
+        {
+          "id": "output",
+          "label": "GELU output",
+          "note": "A smoothly weighted signal"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "cdf",
+          "label": "evaluate"
+        },
+        {
+          "from": "input",
+          "to": "multiply",
+          "label": "pass x"
+        },
+        {
+          "from": "cdf",
+          "to": "multiply",
+          "label": "weight"
+        },
+        {
+          "from": "multiply",
+          "to": "output",
+          "label": "result"
+        }
+      ],
+      "caption": "GELU weights the input by its standard normal cumulative probability and returns their product."
+    }
+  },
   "related": [
     "relu",
     "gated-recurrent-unit",

@@ -5,7 +5,112 @@
   "type": "concept",
   "definition": "A committee machine is a type of artificial neural network using a divide and conquer strategy in which the responses of multiple neural networks (experts) are combined into a single response.",
   "details": "The combined response of the committee machine is supposed to be superior to those of its constituent experts. Compare with ensembles of classifiers.",
-  "story": "Imagine a factory floor where each workstation can glance at every other workstation before doing its part. It is the blueprint that makes everything else possible. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. Structure decides what the model can even express — the blueprint before the bricks. That blueprint is Committee machine.",
+  "explainer": {
+    "lead": "A committee machine gets several neural networks to tackle the same problem, then combines their responses into one answer. The aim is a better result than any individual network, or expert, would produce alone.",
+    "tiers": {
+      "eli5": "You ask several specialists the same question and merge their answers into one, betting the group beats any one of them.",
+      "practitioner": "Engineers run several expert networks and combine their outputs rather than relying on a single model. It is related to ensembles of classifiers, so the pitfall is assuming combination always helps when experts err alike.",
+      "paperLevel": "A neural network architecture in which responses of multiple networks (experts) are combined into a single response, intended to be superior to those of the constituent experts. Limit: superiority is an aim, not a guarantee."
+    },
+    "example": "Three expert networks score an email's likelihood of being spam as 0.2, 0.7, and 0.8. If this committee uses averaging as its combination rule, its single response is (0.2 + 0.7 + 0.8) / 3 = 0.57.",
+    "intuition": "Different networks can contribute separate responses to the same input, much like specialists offering opinions. Combining those responses divides the work among experts while still giving the user one answer.",
+    "howItWorks": [
+      "Present the input to multiple neural networks called experts.",
+      "Let each expert produce its own response.",
+      "Pass those responses to a combination step.",
+      "Return one combined response intended to beat the individual experts."
+    ],
+    "whyItMatters": "It provides a divide-and-conquer way to use multiple neural networks as one system. Its central promise is that the combined response can be better than any constituent expert's response.",
+    "misconceptions": [
+      "It is not just a collection of separate answers: the responses must be combined into one.",
+      "A better committee response is the goal, not an automatic guarantee.",
+      "The concept does not require averaging as the combination rule."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Shared input",
+          "note": "The problem given to every expert"
+        },
+        {
+          "id": "expert-1",
+          "label": "Expert network 1",
+          "note": "Produces its own response"
+        },
+        {
+          "id": "expert-2",
+          "label": "Expert network 2",
+          "note": "Produces its own response"
+        },
+        {
+          "id": "expert-3",
+          "label": "Expert network 3",
+          "note": "Produces its own response"
+        },
+        {
+          "id": "combiner",
+          "label": "Response combiner",
+          "note": "Combines the expert responses"
+        },
+        {
+          "id": "output",
+          "label": "Single response",
+          "note": "The committee's final answer"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "expert-1",
+          "label": ""
+        },
+        {
+          "from": "input",
+          "to": "expert-2",
+          "label": ""
+        },
+        {
+          "from": "input",
+          "to": "expert-3",
+          "label": ""
+        },
+        {
+          "from": "expert-1",
+          "to": "combiner",
+          "label": "response"
+        },
+        {
+          "from": "expert-2",
+          "to": "combiner",
+          "label": "response"
+        },
+        {
+          "from": "expert-3",
+          "to": "combiner",
+          "label": "response"
+        },
+        {
+          "from": "combiner",
+          "to": "output",
+          "label": "combined"
+        }
+      ],
+      "caption": "Multiple expert networks respond to the same input, and their responses are combined into one output."
+    },
+    "usedIn": [
+      {
+        "name": "Neural network design",
+        "detail": "expert combination architectures",
+        "url": ""
+      },
+      {
+        "name": "Ensemble methods",
+        "detail": "related classifier ensembles",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "boltzmann-machine",
     "extreme-learning-machine",

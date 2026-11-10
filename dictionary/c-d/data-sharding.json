@@ -5,7 +5,111 @@
   "type": "concept",
   "definition": "The practice of splitting a large dataset into smaller partitions ('shards') that can be distributed across multiple machines or processed in parallel.",
   "details": "Data sharding is essential infrastructure for training large models on datasets too big to fit or be efficiently processed on a single machine, and it also enables parallel data loading during distributed training.",
-  "story": "Think of a historian sorting through boxes of letters, building a picture of an era one sentence at a time. Every machine is shaped by what it was shown, so someone has to choose that material with care. The examples a machine reads become the world it believes in. The words a model reads become the world it believes in. That care with the raw material is Data Sharding.",
+  "explainer": {
+    "lead": "Data sharding breaks a large dataset into smaller pieces that can live on different machines or be handled at the same time. It lets training jobs work with datasets that would be too large or slow to process on one machine.",
+    "tiers": {
+      "eli5": "Imagine a huge stack of worksheets that one person cannot finish quickly. You split the stack into smaller piles and give one pile to each person, so everyone can work at once. Data sharding does the same thing with pieces of a dataset and computers.",
+      "practitioner": "In distributed training, engineers partition the dataset and assign shards to different machines or workers. Each worker can load its portion in parallel, avoiding the need for one machine to hold or efficiently process the entire dataset. The practical goal is to divide the data so distributed loading and training can proceed across the available workers.",
+      "paperLevel": "Given a dataset D, sharding constructs partitions D1, D2, ..., Dk such that D is represented by the collection of shards, with each shard assigned to a machine or parallel processing worker. This supports distributed storage and parallel data loading when D is too large to fit or be processed efficiently on one machine. The entry does not specify a partitioning rule or formal guarantees about balance and coordination."
+    },
+    "example": "A training dataset with 1,000,000 examples is split into four shards of 250,000 examples each. Four machines receive one shard apiece and load their data in parallel, rather than one machine loading all 1,000,000 examples.",
+    "usedIn": [
+      {
+        "name": "Large-model training",
+        "detail": "Splits datasets that are too big to fit or be processed efficiently on a single machine.",
+        "url": ""
+      },
+      {
+        "name": "Distributed data loading",
+        "detail": "Lets multiple training workers load separate dataset partitions in parallel.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of making one machine handle an entire dataset, divide the data into manageable portions and spread the work across machines. Sharding partitions the data itself, allowing storage and processing to happen in parallel.",
+    "howItWorks": [
+      "Start with a dataset that is too large or slow for one machine to handle efficiently.",
+      "Split it into smaller partitions called shards.",
+      "Distribute the shards across multiple machines or parallel workers.",
+      "Have each machine or worker load and process its assigned shard during training."
+    ],
+    "whyItMatters": "Sharding makes large-scale training practical when a dataset exceeds what one machine can hold or process efficiently. It also enables parallel data loading, which supports distributed training.",
+    "misconceptions": [
+      "Sharding is not copying the whole dataset onto every machine; it divides the data into partitions.",
+      "It splits the training data, not the model itself."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "dataset",
+          "label": "Large dataset",
+          "note": "The complete collection of training examples."
+        },
+        {
+          "id": "shard-a",
+          "label": "Shard A",
+          "note": "The first data partition."
+        },
+        {
+          "id": "shard-b",
+          "label": "Shard B",
+          "note": "The second data partition."
+        },
+        {
+          "id": "shard-c",
+          "label": "Shard C",
+          "note": "The third data partition."
+        },
+        {
+          "id": "worker-a",
+          "label": "Machine A",
+          "note": "Loads and processes shard A."
+        },
+        {
+          "id": "worker-b",
+          "label": "Machine B",
+          "note": "Loads and processes shard B."
+        },
+        {
+          "id": "worker-c",
+          "label": "Machine C",
+          "note": "Loads and processes shard C."
+        }
+      ],
+      "edges": [
+        {
+          "from": "dataset",
+          "to": "shard-a",
+          "label": "partition"
+        },
+        {
+          "from": "dataset",
+          "to": "shard-b",
+          "label": "partition"
+        },
+        {
+          "from": "dataset",
+          "to": "shard-c",
+          "label": "partition"
+        },
+        {
+          "from": "shard-a",
+          "to": "worker-a",
+          "label": "assigned to"
+        },
+        {
+          "from": "shard-b",
+          "to": "worker-b",
+          "label": "assigned to"
+        },
+        {
+          "from": "shard-c",
+          "to": "worker-c",
+          "label": "assigned to"
+        }
+      ],
+      "caption": "A dataset is divided into shards, and each shard is assigned to a different machine for parallel loading and processing."
+    }
+  },
   "related": [
     "data-parallelism",
     "api-key",

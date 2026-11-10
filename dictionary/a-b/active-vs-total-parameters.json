@@ -5,6 +5,102 @@
   "type": "concept",
   "definition": "The MoE distinction between parameters used per token (active) and parameters stored overall (total).",
   "details": "The MoE distinction between parameters used per token (active) and parameters stored overall (total). \"A 671B model with 37B active\" means inference costs scale with 37B while capacity reflects 671B.",
+  "explainer": {
+    "lead": "Active and total parameters are two ways to measure a mixture-of-experts model. Active parameters are used for each token, while total parameters include everything the model stores, so the two counts describe different costs and capacity.",
+    "tiers": {
+      "eli5": "Imagine a huge library of specialists, but only a few are called to answer each question. The specialists answering are like active parameters, while everyone in the library makes up the total parameters. This lets the library hold a lot of knowledge without asking everyone to work on every question.",
+      "practitioner": "For an MoE model, report both counts: use active parameters when describing per-token inference cost and total parameters when describing stored capacity. Do not compare models using one count as though it were the other; “671B total, 37B active” means inference scales with 37B while capacity reflects 671B.",
+      "paperLevel": "Let P_total be all parameters stored by the model and P_active(t) be the parameters used to process token t. In an MoE model, these counts differ because only part of the model is active per token. Thus P_active(t) characterizes the per-token inference scale, while P_total characterizes overall capacity."
+    },
+    "example": "A model described as “671B with 37B active” stores 671B parameters overall. For each token, 37B parameters are active, so inference costs scale with 37B while the model’s capacity reflects 671B.",
+    "usedIn": [
+      {
+        "name": "Mixture-of-experts inference",
+        "detail": "Active parameters indicate the scale of computation used for each token.",
+        "url": ""
+      },
+      {
+        "name": "Model capacity reporting",
+        "detail": "Total parameters indicate how many parameters the model stores overall.",
+        "url": ""
+      }
+    ],
+    "intuition": "An MoE model is like a large team whose members are not all called in for every task. The whole team represents total capacity, while the members working on the current token represent the active portion.",
+    "howItWorks": [
+      "Store the model’s complete collection of parameters; this is the total count.",
+      "For each token, use only the portion selected by the MoE mechanism.",
+      "Count that per-token portion as the active parameters.",
+      "Interpret inference cost using the active count and model capacity using the total count."
+    ],
+    "whyItMatters": "The distinction prevents a large stored model from being mistaken for one that uses all its parameters on every token. It gives separate, clearer measures of per-token inference cost and overall capacity.",
+    "misconceptions": [
+      "Total parameters are not all necessarily used for each token.",
+      "Active parameters do not measure the model’s full stored capacity.",
+      "“37B active” does not mean the model stores only 37B parameters."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "token",
+          "label": "Input token",
+          "note": "One token enters the model."
+        },
+        {
+          "id": "router",
+          "label": "MoE selection",
+          "note": "Selects the portion used for this token."
+        },
+        {
+          "id": "active",
+          "label": "Active parameters",
+          "note": "37B used in the worked example."
+        },
+        {
+          "id": "inactive",
+          "label": "Other parameters",
+          "note": "Stored but not active for this token."
+        },
+        {
+          "id": "total",
+          "label": "Total parameters",
+          "note": "All 671B parameters stored overall."
+        },
+        {
+          "id": "output",
+          "label": "Token processing",
+          "note": "Inference scales with the active portion."
+        }
+      ],
+      "edges": [
+        {
+          "from": "token",
+          "to": "router",
+          "label": "routes"
+        },
+        {
+          "from": "router",
+          "to": "active",
+          "label": "selects"
+        },
+        {
+          "from": "active",
+          "to": "output",
+          "label": "processes"
+        },
+        {
+          "from": "active",
+          "to": "total",
+          "label": "included in"
+        },
+        {
+          "from": "inactive",
+          "to": "total",
+          "label": "included in"
+        }
+      ],
+      "caption": "Only part of the stored parameter set is active for a token; active and inactive parameters together make up the total."
+    }
+  },
   "related": [
     "inference",
     "token"

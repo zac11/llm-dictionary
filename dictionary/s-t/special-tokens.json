@@ -5,6 +5,32 @@
   "type": "concept",
   "definition": "Reserved tokens with structural meaning: beginning/end of sequence, padding, role markers, tool-call delimiters.",
   "details": "Reserved tokens with structural meaning: beginning/end of sequence, padding, role markers, tool-call delimiters. Mishandling them (double BOS, wrong EOS) is a classic source of silent quality bugs in fine-tuning.",
+  "explainer": {
+    "lead": "Reserved tokens that carry structural meaning, such as beginning and end of sequence, padding, role markers, and tool-call delimiters. They matter because mishandling them is a classic source of silent quality bugs in fine-tuning.",
+    "tiers": {
+      "eli5": "They are like punctuation marks and stage directions baked into the text, telling the model where a message starts, ends, or who is speaking.",
+      "practitioner": "Engineers must control how these tokens are added and stripped when preparing data and running inference. The known pitfall is a double BOS or a wrong EOS, which degrades output quality without raising an error.",
+      "paperLevel": "A special token is a reserved token with structural meaning: beginning or end of sequence, padding, role marker, or tool-call delimiter. Limit: incorrect handling produces silent quality failures rather than visible errors."
+    },
+    "example": "A fine-tuning pipeline accidentally prepends a second BOS token to every training example, and the model's outputs quietly degrade.",
+    "usedIn": [
+      {
+        "name": "LLM fine-tuning",
+        "detail": "data formatting",
+        "url": ""
+      },
+      {
+        "name": "Chat models",
+        "detail": "role markers",
+        "url": ""
+      },
+      {
+        "name": "Tool-calling systems",
+        "detail": "call delimiters",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "fine-tuning"
   ],

@@ -5,6 +5,96 @@
   "type": "concept",
   "definition": "Assigning fine-grained semantic types to entity mentions, e.g.",
   "details": "Assigning fine-grained semantic types to entity mentions, e.g. labeling “Einstein” as person/scientist/physicist. It supports relation extraction, question answering, and knowledge-base population.",
+  "explainer": {
+    "lead": "Entity typing gives a mentioned person, place, or thing a detailed description of what it is. This extra detail helps language systems answer questions, connect facts, and add useful information to knowledge bases.",
+    "tiers": {
+      "eli5": "It is like putting several labels on a person in a photo. Instead of only writing “person,” you might also write “scientist” and “physicist.” These labels help a computer understand who the person is and how they relate to other facts.",
+      "practitioner": "A system identifies an entity mention and predicts one or more fine-grained semantic types, often using the surrounding sentence as context. The predicted types can feed relation extraction, question answering, or knowledge-base population. A common pitfall is treating the labels as a single flat choice when a mention can validly receive several types, such as person, scientist, and physicist.",
+      "paperLevel": "Given an entity mention m and its context, entity typing predicts a set of semantic types T, such as T(\"Einstein\") = {person, scientist, physicist}. The task assigns fine-grained types rather than only a broad category such as person. Its predictions can support downstream relation extraction, question answering, and knowledge-base population."
+    },
+    "example": "For the mention “Einstein,” an entity typing system could assign person, scientist, and physicist. The output therefore includes both the broad category and more specific descriptions.",
+    "usedIn": [
+      {
+        "name": "Relation extraction",
+        "detail": "Entity types help describe the kinds of entities participating in a relation.",
+        "url": ""
+      },
+      {
+        "name": "Question answering",
+        "detail": "Detailed types provide useful semantic information about entities mentioned in questions and answers.",
+        "url": ""
+      },
+      {
+        "name": "Knowledge-base population",
+        "detail": "Predicted types help characterize entities when information is added to a knowledge base.",
+        "url": ""
+      }
+    ],
+    "intuition": "Calling Einstein a “person” is correct but not very specific. Entity typing adds progressively more informative labels, capturing that this mention refers to a person who is also a scientist and a physicist.",
+    "howItWorks": [
+      "Take an entity mention, such as “Einstein,” as the item to classify.",
+      "Consider the mention and its available context.",
+      "Assign one or more semantic types at the appropriate level of detail.",
+      "Pass the resulting types to tasks that use entity information."
+    ],
+    "whyItMatters": "Fine-grained types give downstream systems more information than a broad entity category alone. They support relation extraction, question answering, and knowledge-base population.",
+    "misconceptions": [
+      "Entity typing is not limited to assigning one broad category; a mention can receive several increasingly specific types.",
+      "It is not the same as deciding which real-world entity a mention refers to; its focus is the entity’s semantic types."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "mention",
+          "label": "Entity mention",
+          "note": "The text span to describe, such as “Einstein.”"
+        },
+        {
+          "id": "context",
+          "label": "Available context",
+          "note": "Surrounding information used when interpreting the mention."
+        },
+        {
+          "id": "typing",
+          "label": "Entity typing",
+          "note": "Predicts one or more fine-grained semantic types."
+        },
+        {
+          "id": "types",
+          "label": "Semantic types",
+          "note": "For example: person, scientist, physicist."
+        },
+        {
+          "id": "tasks",
+          "label": "Downstream tasks",
+          "note": "Relation extraction, question answering, and knowledge-base population."
+        }
+      ],
+      "edges": [
+        {
+          "from": "mention",
+          "to": "typing",
+          "label": "classify"
+        },
+        {
+          "from": "context",
+          "to": "typing",
+          "label": "inform"
+        },
+        {
+          "from": "typing",
+          "to": "types",
+          "label": "assign"
+        },
+        {
+          "from": "types",
+          "to": "tasks",
+          "label": "support"
+        }
+      ],
+      "caption": "An entity mention and its context are used to assign semantic types, which then support downstream language tasks."
+    }
+  },
   "related": [
     "knowledge-base",
     "question-answering",

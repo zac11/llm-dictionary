@@ -5,7 +5,32 @@
   "type": "concept",
   "definition": "In computational science, particle swarm optimization (PSO) is a computational method that optimizes a problem by iteratively trying to improve a population of candidate solutions with regard to a given measure of quality.",
   "details": "It solves a problem through interactions among a population of candidate solutions, dubbed particles, moving the particles around in the search-space according to simple mathematical formulae that adjust each particle's position and velocity. Each particle's movement is influenced by its own best known position so far, and by the best known position in its topological neighborhood (which may include the entire population if so specified); vectors are updated as better positions are found. This is expected to move the swarm toward good solutions. PSO is originally attributed to Kennedy and Eberhart and was first intended for simulating social behaviour, as a stylized representation of the movement of organisms in a bird flock or fish school, or the evolution of attitudes in a human population. Simulation of principles of social behavior was observed to be capable of solving hard mathematical problems. The book by Kennedy and Eberhart describes many philosophical aspects of PSO and swarm intelligence. An extensive survey of PSO applications is made by Poli. In 2017, a comprehensive review on theoretical and experimental works on PSO was published by Bonyadi and Michalewicz. PSO is a metaheuristic as it makes few or no assumptions about the problem being optimized and can search very large spaces of candidate solutions. Also, PSO does not use the gradient of the problem being optimized, which means PSO does not require that the optimization problem be differentiable as is required by classic optimization methods such as gradient descent and quasi-newton methods. However, metaheuristics such as PSO do not guarantee an optimal solution is ever found.",
-  "story": "Think of a hiker descending a foggy hill in the dark, taking small steps and feeling for the steepest way down. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. It is the same loop you use to learn anything: try, miss, correct, try again. Skill, for a model, is just error pushed down until it is small enough to ignore. That steady, miss-by-miss improvement is Particle swarm optimization.",
+  "explainer": {
+    "lead": "Particle swarm optimization searches for good solutions by moving a population of candidate solutions through the search space and letting them follow their own best discovery and their neighbours' best. It matters because it needs no gradients, making it usable on messy, non-differentiable objectives.",
+    "tiers": {
+      "eli5": "A flock of birds hunting for food: each bird remembers the best spot it found, and also heads toward the best spot any bird nearby has found, so the flock converges on good ground.",
+      "practitioner": "Engineers use it for tuning continuous parameters when gradients are unavailable or the objective is noisy. The classic pitfall is premature convergence: once the swarm collapses onto one region, exploration stops, so velocity limits and diversity are tuned carefully.",
+      "paperLevel": "Each particle i has position x_i and velocity v_i, updated from its personal best p_i and its neighbourhood best g: v_i <- v_i + c1*r1*(p_i - x_i) + c2*r2*(g - x_i), then x_i <- x_i + v_i, with r1, r2 random. It offers no optimality guarantee and can stall in local optima on multimodal problems."
+    },
+    "example": "Optimizing three continuous hyperparameters of a model: 30 particles are scattered in the space, each evaluated on validation loss, and after 50 iterations the swarm clusters around the lowest-loss settings.",
+    "usedIn": [
+      {
+        "name": "Neural network hyperparameter tuning",
+        "detail": "tuning continuous settings without gradients",
+        "url": ""
+      },
+      {
+        "name": "Antenna and circuit design",
+        "detail": "shaping geometries against simulators",
+        "url": ""
+      },
+      {
+        "name": "Control and robotics",
+        "detail": "tuning controller parameters",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "ant-colony-optimization-algorithms",
     "bacterial-colony-optimization",

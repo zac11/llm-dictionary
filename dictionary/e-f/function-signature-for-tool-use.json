@@ -5,7 +5,98 @@
   "type": "concept",
   "definition": "A formal specification of a tool or function's name, parameters, and expected input types, provided to a model so it can correctly generate valid tool-calling requests.",
   "details": "Well-defined function signatures, often described using a schema like JSON Schema, help a model understand exactly what arguments are required and their types when deciding to invoke a particular tool.",
-  "story": "Imagine handing a to-do list to a very clever intern who refuses to guess: before each step, they look around, check the result, and adjust. It is the difference between a search engine and a helper who actually finishes the task. The machine stops just answering one question and starts getting a job done, step by step, checking its work along the way. It is a loop of look, act, and learn — the same way you cook from a recipe you have never tried: add, taste, correct. And that habit of checking, acting, then checking again is Function Signature (for tool use).",
+  "explainer": {
+    "lead": "A function signature tells an AI model how to call a tool: what the tool is called and what arguments it expects. This shared format helps turn a model's decision to use a tool into a request that the tool can accept.",
+    "tiers": {
+      "eli5": "It is like a label on a cookie cutter that shows its name and what shapes of dough fit it. The AI reads the label before making a request, so it knows which pieces of information to include. That makes it less likely to ask the tool to do something in the wrong format.",
+      "practitioner": "Define each available tool with a name and typed parameters, commonly using JSON Schema, and provide that specification to the model. Check generated calls for required arguments and correct types; a well-formed call can still select the wrong tool or contain unsuitable values.",
+      "paperLevel": "A signature can be written as S = (n, P), where n is the function name and P = {(p_i, t_i, r_i)} specifies each parameter's name, type, and whether it is required. The model must produce a call whose arguments conform to P. The signature constrains request structure but does not establish correct tool selection or correct execution."
+    },
+    "example": "A signature for get_weather could require a parameter location of type string. Given “Weather in Paris?”, the model can generate {\"name\":\"get_weather\",\"arguments\":{\"location\":\"Paris\"}} rather than omitting the location or supplying an incompatible value.",
+    "usedIn": [
+      {
+        "name": "Tool-using AI agents",
+        "detail": "Signatures describe the actions an agent can request.",
+        "url": ""
+      },
+      {
+        "name": "Model tool-calling interfaces",
+        "detail": "Specifications guide the generation of structured requests.",
+        "url": ""
+      },
+      {
+        "name": "JSON Schema tool definitions",
+        "detail": "Parameter names, required arguments, and input types are expressed in a schema.",
+        "url": ""
+      }
+    ],
+    "intuition": "A model cannot reliably use a tool from its name alone; it also needs the tool's input contract. The signature supplies that contract in a form the model can follow.",
+    "howItWorks": [
+      "Describe the tool with a function name.",
+      "List its parameters, expected input types, and required arguments.",
+      "Provide the specification, often as JSON Schema, to the model.",
+      "The model selects a tool and generates arguments matching its signature.",
+      "The resulting request can be checked before the function is invoked."
+    ],
+    "whyItMatters": "Clear signatures reduce malformed tool calls by making required arguments and types explicit. They give models and calling systems a shared structure for requesting tool actions.",
+    "misconceptions": [
+      "A signature describes how to call a function, not how the function works internally.",
+      "A schema-valid call is not necessarily the right tool choice or a correct answer.",
+      "The function name alone is not enough when parameters or input types matter."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "signature",
+          "label": "Function signature",
+          "note": "Name, parameters, types, and requirements"
+        },
+        {
+          "id": "model",
+          "label": "AI model",
+          "note": "Chooses a tool and prepares arguments"
+        },
+        {
+          "id": "request",
+          "label": "Tool request",
+          "note": "Structured function name and arguments"
+        },
+        {
+          "id": "check",
+          "label": "Schema check",
+          "note": "Checks required fields and input types"
+        },
+        {
+          "id": "tool",
+          "label": "Tool function",
+          "note": "Receives the valid calling request"
+        }
+      ],
+      "edges": [
+        {
+          "from": "signature",
+          "to": "model",
+          "label": "input contract"
+        },
+        {
+          "from": "model",
+          "to": "request",
+          "label": "generates"
+        },
+        {
+          "from": "request",
+          "to": "check",
+          "label": "validates"
+        },
+        {
+          "from": "check",
+          "to": "tool",
+          "label": "invokes"
+        }
+      ],
+      "caption": "The signature guides the model's request, which is checked against the expected structure before invocation."
+    }
+  },
   "related": [
     "function-calling",
     "agent-registry",

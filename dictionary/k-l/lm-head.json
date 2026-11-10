@@ -5,6 +5,32 @@
   "type": "concept",
   "definition": "The final linear projection from the model's hidden state to vocabulary-sized logits.",
   "details": "The final linear projection from the model's hidden state to vocabulary-sized logits. Often weight-tied with the input embedding matrix.",
+  "explainer": {
+    "lead": "The LM head is the final linear layer that turns a model's hidden state into scores over the whole vocabulary. It is the step that converts internal representations into actual next-token predictions.",
+    "tiers": {
+      "eli5": "After all the thinking, this is the last machine that turns the model's thoughts into a list of candidate next words with scores.",
+      "practitioner": "Engineers often tie the head's weights to the input embedding matrix to save parameters; a pitfall is that a large vocabulary makes this projection and its softmax expensive.",
+      "paperLevel": "Given hidden state h of dimension d, the head computes logits z = W h with W of shape vocabulary size by d, followed by softmax; weight tying sets W equal to the input embedding matrix."
+    },
+    "example": "With a 50,000-token vocabulary and a 4,096-dimensional hidden state, the head is a 50,000 by 4,096 matrix producing 50,000 logits per position.",
+    "usedIn": [
+      {
+        "name": "Autoregressive LLMs",
+        "detail": "next-token prediction",
+        "url": ""
+      },
+      {
+        "name": "Weight tying",
+        "detail": "shared embedding matrix",
+        "url": ""
+      },
+      {
+        "name": "Text generation",
+        "detail": "sampling from logits",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "embedding",
     "logits"

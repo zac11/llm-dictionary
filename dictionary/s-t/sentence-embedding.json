@@ -5,7 +5,32 @@
   "type": "concept",
   "definition": "In natural language processing, a sentence embedding (or document embedding) is a representation of a natural language text as a vector of numbers which encodes meaningful semantic information.",
   "details": "The name stems from the initially limitations of the approach to embed sequences of text longer than a sentence, but this is no longer a limitation. State of the art embeddings are based on the learned hidden layer representation of dedicated sentence transformer models. BERT pioneered an approach involving the use of a dedicated [CLS] token prepended to the beginning of each sentence inputted into the model; the final hidden state vector of this token encodes information about the sentence and can be fine-tuned for use in sentence classification tasks. In practice however, BERT's sentence embedding with the [CLS] token achieves poor performance, often worse than simply averaging non-contextual word embeddings. SBERT later achieved superior sentence embedding performance by fine tuning BERT's [CLS] token embeddings through the usage of a siamese neural network architecture on the SNLI dataset. Other approaches are loosely based on the idea of distributional semantics applied to sentences. Skip-Thought trains an encoder-decoder structure for the task of neighboring sentences predictions; this has been shown to achieve worse performance than approaches such as InferSent or SBERT. An alternative direction is to aggregate word embeddings, such as those returned by Word2vec, into sentence embeddings. The most straightforward approach is to simply compute the average of word vectors, known as continuous bag-of-words (CBOW). However, more elaborate solutions based on word vector quantization have also been proposed. One such approach is the vector of locally aggregated word embeddings (VLAWE), which demonstrated performance improvements in downstream text classification tasks.",
-  "story": "Think of a historian sorting through boxes of letters, building a picture of an era one sentence at a time. Every machine is shaped by what it was shown, so someone has to choose that material with care. The examples a machine reads become the world it believes in. The words a model reads become the world it believes in. That care with the raw material is Sentence embedding.",
+  "explainer": {
+    "lead": "A sentence embedding represents a whole sentence as a numeric vector that encodes its meaning. It matters because it lets systems compare and search sentences by semantic similarity rather than exact words.",
+    "tiers": {
+      "eli5": "It's like turning a sentence into a list of numbers so a computer can tell which sentences mean similar things, even if they use different words.",
+      "practitioner": "Engineers use sentence embeddings for semantic search, clustering, and retrieval. A pitfall is that models trained on one domain may not transfer well, and embeddings can encode biases present in training data.",
+      "paperLevel": "A sentence embedding maps a natural language text to a vector that encodes semantic information; state-of-the-art methods use hidden-layer representations from dedicated sentence transformer models, and BERT pioneered using the final hidden state of a prepended [CLS] token. The approach was initially limited to sequences up to sentence length, a limitation that no longer applies."
+    },
+    "example": "Embedding 'The cat sat on the mat' and 'A feline rested on the rug' yields vectors close in cosine similarity, so a search engine can retrieve one when the other is queried.",
+    "usedIn": [
+      {
+        "name": "Semantic search",
+        "detail": "meaning-based retrieval",
+        "url": ""
+      },
+      {
+        "name": "Clustering",
+        "detail": "grouping similar texts",
+        "url": ""
+      },
+      {
+        "name": "Retrieval-augmented generation",
+        "detail": "context selection for LLMs",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "embedding",
     "embedding-machine-learning",

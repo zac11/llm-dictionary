@@ -5,7 +5,82 @@
   "type": "concept",
   "definition": "Feature scaling is a method used to normalize the range of independent variables or features of data.",
   "details": "In data processing, it is also known as data normalization and is generally performed during the data preprocessing step.",
-  "story": "Think of a historian sorting through boxes of letters, building a picture of an era one sentence at a time. Every machine is shaped by what it was shown, so someone has to choose that material with care. The examples a machine reads become the world it believes in. The words a model reads become the world it believes in. And that is Feature scaling — the unglamorous work everything else stands on.",
+  "explainer": {
+    "lead": "Feature scaling puts different input measurements onto comparable numeric ranges before they are used. It keeps a feature measured in thousands from looking more important than another simply because its numbers are larger.",
+    "tiers": {
+      "eli5": "Imagine one measurement goes from 1 to 10 and another from 1 to 10,000. The second looks enormous just because of its scale, like comparing centimetres with metres. Feature scaling adjusts the numbers so they are easier to compare without changing what the measurements describe.",
+      "practitioner": "Apply feature scaling during preprocessing to the independent variables. Record the chosen transformation and apply it consistently across datasets rather than scaling each one independently. Do not assume that normalization makes values normally distributed or removes the need to check for data errors.",
+      "paperLevel": "For feature j, write x'_{ij} = T_j(x_{ij}), where T_j transforms the original values to normalize their range, producing the transformed design matrix X'. The term describes range normalization rather than one uniquely specified transformation. Scaling does not imply that the resulting values follow a Gaussian distribution."
+    },
+    "example": "Suppose age ranges from 20 to 60 and annual income from 20,000 to 60,000. For illustration, dividing ages by 60 and incomes by 60,000 maps both minimum values to about 0.33 and both maximum values to 1, placing the two features on comparable ranges.",
+    "usedIn": [
+      {
+        "name": "Data preprocessing",
+        "detail": "Normalizes the ranges of independent variables before downstream processing.",
+        "url": ""
+      },
+      {
+        "name": "Machine-learning pipelines",
+        "detail": "Prepares features so their numeric scales are more comparable.",
+        "url": ""
+      }
+    ],
+    "intuition": "Raw measurements can use very different units and ranges even when both are useful inputs. Scaling makes their numerical ranges comparable instead of letting unit size alone determine how large the values appear.",
+    "howItWorks": [
+      "Identify the independent variables, or features, in the dataset.",
+      "Check whether their values occupy substantially different ranges.",
+      "Apply a chosen normalization transformation to each feature.",
+      "Pass the transformed features to the next processing step."
+    ],
+    "whyItMatters": "It reduces the influence of arbitrary measurement units on the numerical representation of a dataset. As a preprocessing step, it gives downstream methods features with more comparable ranges.",
+    "misconceptions": [
+      "Feature scaling does not necessarily make a feature's values follow a bell-shaped normal distribution.",
+      "It concerns independent variables, not a requirement to normalize the target or output.",
+      "Normalizing ranges is not the same as correcting invalid or erroneous data."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "raw",
+          "label": "Raw features",
+          "note": "Independent variables with different ranges"
+        },
+        {
+          "id": "inspect",
+          "label": "Inspect ranges",
+          "note": "Compare each feature's numerical scale"
+        },
+        {
+          "id": "scale",
+          "label": "Apply scaling",
+          "note": "Transform values into comparable ranges"
+        },
+        {
+          "id": "output",
+          "label": "Scaled features",
+          "note": "Normalized inputs for further processing"
+        }
+      ],
+      "edges": [
+        {
+          "from": "raw",
+          "to": "inspect",
+          "label": "feature values"
+        },
+        {
+          "from": "inspect",
+          "to": "scale",
+          "label": "ranges"
+        },
+        {
+          "from": "scale",
+          "to": "output",
+          "label": "transforms"
+        }
+      ],
+      "caption": "Feature scaling transforms raw independent variables into normalized inputs during preprocessing."
+    }
+  },
   "related": [
     "affine-scaling",
     "feature-hashing",

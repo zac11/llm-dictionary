@@ -5,6 +5,22 @@
   "type": "concept",
   "definition": "Keeping tokens whose probability is at least a fraction of the top token's probability.",
   "details": "Keeping tokens whose probability is at least a fraction of the top token's probability. Scales the cutoff with confidence and behaves better than top-p at high temperatures; popular in open-model serving.",
+  "explainer": {
+    "lead": "Min-p sampling keeps tokens whose probability is at least a fraction of the top token's probability. It matters because it scales the cutoff with model confidence and behaves better than top-p at high temperatures, which is why it is popular in open-model serving.",
+    "tiers": {
+      "eli5": "When a model picks its next word, it ignores any option far less likely than the best one — how far depends on how sure it is.",
+      "practitioner": "Engineers use min-p as a decoding filter in open-model serving, setting the fraction threshold that defines the cutoff. A pitfall is tuning as if it were top-p: min-p's scaled cutoff and high-temperature behaviour differ.",
+      "paperLevel": "Min-p sampling retains tokens whose probability is at least a fraction of the top token's probability; the cutoff scales with confidence, and it is reported to behave better than top-p at high temperatures."
+    },
+    "example": "With a fraction of 0.1 and a top token probability of 0.6, any token below 0.06 is dropped before sampling.",
+    "usedIn": [
+      {
+        "name": "Open-model serving",
+        "detail": "popular for decoding",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "model-serving"
   ],

@@ -5,7 +5,88 @@
   "type": "concept",
   "definition": "Behavior-based robotics (BBR) or behavioral robotics is an approach in robotics that focuses on robots that are able to exhibit complex-appearing behaviors despite little internal variable state to model its immediate environment, mostly gradually correcting its actions via sensory-motor links.",
   "details": "Behavior-based robotics (BBR) or behavioral robotics is an approach in robotics that focuses on robots that are able to exhibit complex-appearing behaviors despite little internal variable state to model its immediate environment, mostly gradually correcting its actions via sensory-motor links.",
-  "story": "Think of a lightbulb moment: the idea was always there, but someone had to point a finger at it. Behind the jargon is an idea you could explain to a friend over coffee. At its heart it is a simple notion, once you strip away the fancy name. Once you see it, you cannot unsee it. That is Behavior-based robotics — a small key that opens a big door.",
+  "explainer": {
+    "lead": "Behavior-based robotics builds robots that act through direct, continually corrected links between what they sense and how they move. It matters because behavior that looks complicated can emerge without the robot maintaining a detailed internal model of its surroundings.",
+    "tiers": {
+      "eli5": "Instead of building a detailed map in its head, the robot just reacts to what it senses, correcting its actions bit by bit, like someone feeling their way along a wall.",
+      "practitioner": "Engineers wire sensory-motor links so the robot gradually corrects its actions, keeping internal variable state small. The pitfall implied by the approach is that behaviour is achieved without modelling the environment, so it depends on those reactive links doing the work.",
+      "paperLevel": "Defined as an approach focusing on robots able to exhibit complex-appearing behaviors despite little internal variable state to model the immediate environment, mostly gradually correcting actions via sensory-motor links. No formalism for composing or guaranteeing behaviours is stated."
+    },
+    "example": "Suppose a small robot has a sensor that detects an obstacle close to its right side. Its sensory-motor response steers left, then the next reading guides another adjustment; when the obstacle is no longer close, it can continue forward. Repeating these local corrections can produce a complicated-looking route without maintaining a detailed map.",
+    "intuition": "Instead of working out everything from a rich internal picture of the world, the robot keeps sensing and adjusting. Complexity appears in the ongoing interaction between the robot and its environment, not necessarily in a complicated internal representation.",
+    "howItWorks": [
+      "Sensors capture information about the robot's immediate situation.",
+      "Sensory-motor links turn those readings into actions.",
+      "The actions change the robot's position or interaction with its environment.",
+      "New sensor readings feed back into further adjustments.",
+      "Repeating this loop can produce complex-appearing behavior with little internal variable state."
+    ],
+    "whyItMatters": "It shows that useful, complex-appearing robot behavior can arise from ongoing sensory feedback rather than extensive internal environmental state. This makes the robot's interaction with its immediate environment central to explaining what it does.",
+    "misconceptions": [
+      "Little internal variable state does not mean absolutely no internal state.",
+      "Complex-appearing behavior does not require a detailed internal map.",
+      "The approach is not a single unchanging reaction: actions are gradually corrected through continuing sensory feedback."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "environment",
+          "label": "Immediate environment",
+          "note": "Provides the situation the robot encounters."
+        },
+        {
+          "id": "sensors",
+          "label": "Sensors",
+          "note": "Measure current environmental information."
+        },
+        {
+          "id": "links",
+          "label": "Sensory-motor links",
+          "note": "Map readings toward corrective actions with little internal state."
+        },
+        {
+          "id": "motors",
+          "label": "Motor actions",
+          "note": "Change the robot's movement or interaction."
+        }
+      ],
+      "edges": [
+        {
+          "from": "environment",
+          "to": "sensors",
+          "label": "readings"
+        },
+        {
+          "from": "sensors",
+          "to": "links",
+          "label": "signals"
+        },
+        {
+          "from": "links",
+          "to": "motors",
+          "label": "commands"
+        },
+        {
+          "from": "motors",
+          "to": "environment",
+          "label": "changes"
+        }
+      ],
+      "caption": "A closed loop of sensing, action, and environmental change gradually corrects the robot's behavior."
+    },
+    "usedIn": [
+      {
+        "name": "Reactive robots",
+        "detail": "sensor-motor correction",
+        "url": ""
+      },
+      {
+        "name": "Behavioral robotics",
+        "detail": "little internal state",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "robotics",
     "afghan-girls-robotics-team",

@@ -5,7 +5,103 @@
   "type": "concept",
   "definition": "Conflict resolution strategies are used in production systems in artificial intelligence, such as in rule-based expert systems, to help in choosing which production rule to fire.",
   "details": "The need for such a strategy arises when the conditions of two or more rules are satisfied by the currently known facts.",
-  "story": "Think of a lightbulb moment: the idea was always there, but someone had to point a finger at it. Behind the jargon is an idea you could explain to a friend over coffee. At its heart it is a simple notion, once you strip away the fancy name. Once you see it, you cannot unsee it. And that idea, made concrete, is Conflict resolution strategy.",
+  "explainer": {
+    "lead": "A conflict resolution strategy is the selection step a rule-based AI system uses when several rules are ready to run. It matters because matching the facts to the rules can produce more than one valid choice, and the system needs a way to decide which production rule to fire.",
+    "tiers": {
+      "eli5": "Imagine a classroom where several children have their hands up because they all know the answer. The teacher needs a fair way to choose who speaks next. A conflict resolution strategy does something similar for a computer: when several rules fit what it knows, it chooses one rule to use.",
+      "practitioner": "In a production system or rule-based expert system, apply the strategy after rule matching has identified all rules whose conditions are satisfied. Its output is the rule to fire, not a new set of facts or a new set of matching rules. A pitfall is treating matching and selection as the same step: several rules can legitimately match, so selection is still needed.",
+      "paperLevel": "Let F be the currently known facts and let C = {r : the conditions of production rule r are satisfied by F} be the conflict set. When |C| > 1, a conflict resolution strategy selects a rule r* from C to fire. The definition does not prescribe a particular selection criterion."
+    },
+    "example": "Suppose the facts are “temperature is high” and “alarm is on.” Rule A says that high temperature should display a warning, while Rule B says that an active alarm should sound a bell. Both rules match, so the conflict resolution strategy selects Rule A, and the system fires that rule to display the warning.",
+    "usedIn": [
+      {
+        "name": "Production systems",
+        "detail": "Used to choose which eligible production rule fires when multiple rules match the known facts.",
+        "url": ""
+      },
+      {
+        "name": "Rule-based expert systems",
+        "detail": "Used during rule selection after the system finds more than one rule whose conditions are satisfied.",
+        "url": ""
+      }
+    ],
+    "intuition": "Finding every rule that fits the facts does not always leave just one action to take. Conflict resolution handles that remaining choice by selecting from the eligible rules.",
+    "howItWorks": [
+      "Start with the currently known facts and the system's production rules.",
+      "Check the rules' conditions against those facts.",
+      "Collect every rule whose conditions are satisfied; these are the eligible rules.",
+      "If more than one rule is eligible, apply the conflict resolution strategy.",
+      "Fire the selected rule."
+    ],
+    "whyItMatters": "Without a selection strategy, a production system has no defined way to proceed when several rules are simultaneously eligible. The strategy resolves that impasse by identifying the rule to fire.",
+    "misconceptions": [
+      "It does not determine whether a rule's conditions are true; rule matching has already identified the eligible rules.",
+      "It is not about settling disputes between people; here, the “conflict” is competition among matching production rules.",
+      "It is not a requirement that only one rule can ever match; the strategy exists precisely because multiple matches are possible."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "facts",
+          "label": "Known facts",
+          "note": "The system's current information"
+        },
+        {
+          "id": "rules",
+          "label": "Production rules",
+          "note": "Rules with conditions to check"
+        },
+        {
+          "id": "matching",
+          "label": "Rule matching",
+          "note": "Checks conditions against facts"
+        },
+        {
+          "id": "eligible",
+          "label": "Eligible rules",
+          "note": "All rules whose conditions match"
+        },
+        {
+          "id": "strategy",
+          "label": "Resolution strategy",
+          "note": "Selects from multiple eligible rules"
+        },
+        {
+          "id": "fire",
+          "label": "Fire rule",
+          "note": "Runs the selected production rule"
+        }
+      ],
+      "edges": [
+        {
+          "from": "facts",
+          "to": "matching",
+          "label": ""
+        },
+        {
+          "from": "rules",
+          "to": "matching",
+          "label": ""
+        },
+        {
+          "from": "matching",
+          "to": "eligible",
+          "label": "matches"
+        },
+        {
+          "from": "eligible",
+          "to": "strategy",
+          "label": "multiple"
+        },
+        {
+          "from": "strategy",
+          "to": "fire",
+          "label": "selection"
+        }
+      ],
+      "caption": "Rule matching produces the eligible set; conflict resolution selects the rule to fire when that set contains multiple rules."
+    }
+  },
   "related": [
     "name-resolution-semantics-and-text-extraction",
     "video-super-resolution",

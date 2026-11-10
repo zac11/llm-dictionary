@@ -5,7 +5,45 @@
   "type": "concept",
   "definition": "In information theory, the Hamming distance between two strings or vectors of equal length is the number of positions at which the corresponding symbols are different.",
   "details": "In other words, it measures the minimum number of substitutions required to change one string into the other, or equivalently, the minimum number of errors that could have transformed one string into the other. In a more general context, the Hamming distance is one of several string metrics for measuring the edit distance between two sequences. It is named after the American mathematician Richard Hamming. A major application is in coding theory, more specifically to block codes, in which the equal-length strings are vectors over a finite field.",
-  "story": "Imagine a chef tasting every ingredient before it goes into the pot, deciding what belongs and what would ruin the broth. Better ingredients make a better meal, and the same is true here. Every machine is shaped by what it was shown, so someone has to choose that material with care. It is the raw material; the model is only ever as good as what it was fed. That care with the raw material is Hamming distance.",
+  "explainer": {
+    "lead": "Hamming distance counts how many positions differ between two strings or vectors of equal length. It gives a simple way to measure errors or dissimilarity when every difference can be fixed by substituting one symbol for another.",
+    "tiers": {
+      "eli5": "Imagine two rows of coloured blocks with the same number of blocks in each row. Compare each pair of positions and count the places where the colours do not match. That count is the Hamming distance: it tells you how many blocks you would need to swap to make the rows identical.",
+      "practitioner": "Use Hamming distance for fixed-length strings or vectors where substitutions are the only changes of interest. Compare corresponding positions and sum the mismatches; for binary vectors, this is the population count of their bitwise XOR. It is not defined for unequal-length inputs, and insertions or deletions require a different edit distance.",
+      "paperLevel": "For equal-length sequences x = (x_1, ..., x_n) and y = (y_1, ..., y_n), the Hamming distance is d_H(x, y) = sum from i = 1 to n of 1[x_i != y_i]. It equals the minimum number of symbol substitutions needed to transform x into y. It is a string metric for equal-length sequences and does not directly accommodate insertions or deletions."
+    },
+    "example": "Compare 1011101 with 1001001. They differ at positions 3 and 5, so their Hamming distance is 2: two substitutions are enough to change either string into the other.",
+    "usedIn": [
+      {
+        "name": "Coding theory",
+        "detail": "Measures differences between equal-length codewords, especially in block codes.",
+        "url": ""
+      },
+      {
+        "name": "Error analysis",
+        "detail": "Counts how many symbol errors could have transformed one received string into another.",
+        "url": ""
+      },
+      {
+        "name": "Sequence comparison",
+        "detail": "Provides a substitution-only edit distance for fixed-length strings or vectors.",
+        "url": ""
+      }
+    ],
+    "intuition": "Line up two sequences and place a mark wherever their symbols disagree. The number of marks is both their Hamming distance and the minimum number of substitutions needed to make them match.",
+    "howItWorks": [
+      "Check that both sequences have the same length.",
+      "Compare the symbols at each corresponding position.",
+      "Count every position where the symbols differ.",
+      "Return that count as the Hamming distance."
+    ],
+    "whyItMatters": "It turns symbol-by-symbol disagreement into a simple count, making it useful for describing errors and comparing codewords in block codes. Its restriction to equal lengths also makes clear when a more general edit distance is needed.",
+    "misconceptions": [
+      "It cannot directly compare strings of unequal length.",
+      "It counts substitutions, not insertions or deletions.",
+      "A distance of zero means the sequences are identical, not merely similar."
+    ]
+  },
   "related": [
     "levenshtein-distance",
     "normalized-google-distance",

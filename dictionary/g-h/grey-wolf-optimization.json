@@ -5,7 +5,139 @@
   "type": "algorithm",
   "definition": "Grey Wolf Optimization (GWO) is a nature-inspired metaheuristic algorithm that mimics the leadership hierarchy and hunting behavior of grey wolves in the wild.",
   "details": "It was introduced by Seyedali Mirjalili in 2014 as a swarm intelligence-based technique for solving optimization problems. The algorithm is designed based on the social dominance structure of grey wolves, where the pack is led by an alpha, followed by beta and delta wolves, while omegas hold the lowest rank. This leadership hierarchy plays a crucial role in guiding the search for optimal solutions by balancing exploration and exploitation. The alpha wolves guide the hunt, while the beta and delta wolves assist in refining the movement and decision-making process. In GWO, optimization is performed through three main steps: encircling prey, hunting, and attacking or diverging towards new solutions. Encircling is the process where wolves adjust their positions relative to the best solutions found so far. Hunting involves the collective effort of alpha, beta, and delta wolves, which estimate the prey’s location and guide the pack toward optimal solutions. Finally, the attack phase focuses on intensifying the search by reducing the distance between wolves and the best-known solution, ensuring convergence. If the solution space needs further exploration, the wolves diverge, helping prevent premature convergence to local optima. One of the significant advantages of GWO is its simplicity and ability to handle complex optimization problems with fewer control parameters than other metaheuristic algorithms like genetic algorithms or particle swarm optimization. Its efficiency in finding global optima makes it suitable for a wide range of applications, including power system optimization, feature selection in machine learning, and structural engineering. Additionally, its ability to balance exploration and exploitation helps maintain diversity in the search process, reducing the likelihood of getting stuck in local minima. In power system applications, GWO has been widely used for optimizing network configurations, enhancing resilience, and reducing operational costs. For instance, in resilient distribution network design, GWO helps allocate feeder routing, substation facilities, and reinforcement strategies to mitigate the impact of physical attacks or natural disasters. By considering both economic and technical constraints, the algorithm finds an optimal trade-off between resilience and cost-effectiveness. Its adaptability to large-scale problems makes it particularly useful in complex power grid scenarios where multiple variables must be optimized simultaneously. Despite its advantages, GWO has some limitations, such as its reliance on the initial population and the potential for slow convergence in high-dimensional spaces. To improve its performance, researchers have proposed hybrid approaches that integrate GWO with other optimization techniques, such as fuzzy logic, artificial neural networks, or differential evolution. These modifications aim to enhance solution accuracy, speed, and adaptability in dynamic environments. Overall, GWO remains a powerful and flexible optimization tool with broad applications in engineering, machine learning, and power system resilience.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. And that is Grey Wolf Optimization — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "Grey Wolf Optimization is a search algorithm that treats candidate solutions as a wolf pack, with the best three acting as leaders. It offers a relatively simple way to optimize complicated engineering and machine-learning problems while alternating between refining good solutions and exploring new ones.",
+    "tiers": {
+      "eli5": "Imagine a pack of wolves trying different places to look for food. The wolves in the three best spots help guide the others, while the pack sometimes moves closer to those good spots and sometimes spreads out to search elsewhere. Grey Wolf Optimization uses this idea to let a computer gradually improve possible answers to a problem.",
+      "practitioner": "Represent each candidate solution as a wolf, evaluate the population, and use the best three solutions as alpha, beta, and delta to guide position updates. The attack phase intensifies the search around strong solutions, while divergence restores exploration; the algorithm has fewer control parameters than genetic algorithms or particle swarm optimization. Results can depend heavily on the initial population, convergence may be slow in high-dimensional spaces, and hybrids with fuzzy logic, neural networks, or differential evolution have been proposed to improve performance.",
+      "paperLevel": "For an objective f(x), GWO maintains a population of candidate positions {x_i} and designates the current best three as x_alpha, x_beta, and x_delta. Position updates first encircle and hunt relative to these leaders, then either reduce distances to the best-known solutions for exploitation or diverge for exploration. Introduced by Seyedali Mirjalili in 2014, the method can be sensitive to initialization and converge slowly in high-dimensional spaces."
+    },
+    "example": "Suppose a machine-learning task requires choosing a subset of features, and 20 candidate subsets form the initial pack. After evaluating them, the three best subsets guide the others; some candidates move toward those leaders, while others diverge to test different feature combinations. The algorithm finally returns the best-performing subset it found.",
+    "usedIn": [
+      {
+        "name": "Power system optimization",
+        "detail": "Optimizes network configurations and multiple grid variables while considering economic and technical constraints.",
+        "url": ""
+      },
+      {
+        "name": "Resilient distribution network design",
+        "detail": "Allocates feeder routing, substation facilities, and reinforcements to balance disaster or attack resilience against cost.",
+        "url": ""
+      },
+      {
+        "name": "Machine-learning feature selection",
+        "detail": "Searches candidate feature sets as part of the optimization process.",
+        "url": ""
+      },
+      {
+        "name": "Structural engineering",
+        "detail": "Applies the same population-based search to complex engineering optimization problems.",
+        "url": ""
+      }
+    ],
+    "goal": "Find a strong solution to an optimization problem by using a hierarchy of candidate solutions to guide the search. The procedure seeks a useful balance between exploring new regions and refining the best solutions found so far.",
+    "inputs": [
+      "An optimization problem with variables, an objective, and any constraints",
+      "An initial population of candidate solutions represented as wolves",
+      "A search space in which the wolves' positions can be updated"
+    ],
+    "outputs": [
+      "The best solution found by the pack",
+      "The corresponding optimized variable settings, such as network routes or selected features"
+    ],
+    "steps": [
+      "Initialize a population of wolves, each representing one candidate solution.",
+      "Evaluate the candidates and rank the best three as alpha, beta, and delta.",
+      "Encircle the prey by adjusting wolf positions relative to the best solutions found so far.",
+      "Hunt collectively, using the three leaders to estimate the prey's location and guide the pack.",
+      "Attack by moving closer to the best-known solution, or diverge when further exploration is needed.",
+      "Repeat the search and return the best solution after convergence."
+    ],
+    "tradeoffs": [
+      "Its simple structure and relatively few control parameters make it straightforward to apply.",
+      "Alternating between attack and divergence helps maintain diversity and reduce entrapment in local optima.",
+      "The outcome can rely heavily on the quality of the initial population.",
+      "Convergence can be slow in high-dimensional spaces.",
+      "Hybrid versions can improve accuracy, speed, or adaptability but add other optimization techniques."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "initialize",
+          "label": "Initialize wolf pack",
+          "note": "Create candidate solutions across the search space."
+        },
+        {
+          "id": "evaluate",
+          "label": "Evaluate candidate solutions",
+          "note": "Score each wolf using the optimization objective."
+        },
+        {
+          "id": "rank",
+          "label": "Rank pack leaders",
+          "note": "Select alpha, beta, and delta as the best three."
+        },
+        {
+          "id": "hunt",
+          "label": "Encircle and hunt",
+          "note": "Update positions using guidance from the leaders."
+        },
+        {
+          "id": "search",
+          "label": "Attack or diverge",
+          "note": "Intensify near good solutions or explore new regions."
+        },
+        {
+          "id": "check",
+          "label": "Check convergence",
+          "note": "Decide whether to continue the search."
+        },
+        {
+          "id": "result",
+          "label": "Return best solution",
+          "note": "Output the strongest candidate found."
+        }
+      ],
+      "edges": [
+        {
+          "from": "initialize",
+          "to": "evaluate",
+          "label": ""
+        },
+        {
+          "from": "evaluate",
+          "to": "rank",
+          "label": ""
+        },
+        {
+          "from": "rank",
+          "to": "hunt",
+          "label": "leader positions"
+        },
+        {
+          "from": "hunt",
+          "to": "search",
+          "label": "updated wolves"
+        },
+        {
+          "from": "search",
+          "to": "check",
+          "label": ""
+        },
+        {
+          "from": "check",
+          "to": "evaluate",
+          "label": "continue"
+        },
+        {
+          "from": "check",
+          "to": "result",
+          "label": "converged"
+        }
+      ],
+      "caption": "A wolf pack iteratively evaluates candidates, follows its three leaders, and chooses between refinement and exploration."
+    }
+  },
   "related": [
     "ant-colony-optimization-algorithms",
     "bacterial-colony-optimization",

@@ -6,67 +6,117 @@
   "definition": "In statistical analysis of binary classification and information retrieval systems, the F-score or F-measure is a measure of predictive performance.",
   "details": "It is calculated from the precision and recall of the test, where the precision is the number of true positive results divided by the number of all samples predicted to be positive, including those not identified correctly, and the recall is the number of true positive results divided by the number of all samples that should have been identified as positive. Precision is also known as positive predictive value, and recall is also known as sensitivity in diagnostic binary classification. The F1 score is the harmonic mean of the precision and recall. It thus symmetrically represents both precision and recall in one metric. The more generic F β {\\displaystyle F_{\\beta }} score applies additional weights, valuing one of precision or recall more than the other. The highest possible value of an F-score is 1.0, indicating perfect precision and recall, and the lowest possible value is 0, if the precision or the recall is zero.",
   "explainer": {
-    "lead": "The F-score boils a classifier's precision and recall down to one number. It only scores high when the model both finds most of the true cases and is usually right when it says “yes”.",
-    "measures": "How well a binary classifier or search system balances precision (how many of its positives are correct) and recall (how many real positives it found).",
-    "howScored": [
-      "Count true positives, false positives and false negatives on a test set.",
-      "Precision = TP / (TP + FP); recall = TP / (TP + FN).",
-      "Combine them with the harmonic mean, which punishes a large gap between the two."
+    "lead": "F-score summarizes how well a system identifies positive cases by combining precision and recall into one number. It is useful when both avoiding false positives and finding the true positives matter, with F1 treating those two goals equally.",
+    "tiers": {
+      "eli5": "Imagine a robot picking red apples from a tree: some apples it picks may not be red, and it may miss some red apples. F-score gives the robot one grade for both picking carefully and finding the apples it should find. The best grade is 1, and the grade can fall to 0.",
+      "practitioner": "In binary classification or information retrieval, compute TP, FP, and FN, then derive precision and recall and combine them with F1 = 2TP / (2TP + FP + FN). Use F1 when precision and recall should count equally, or F-beta when recall should be weighted more heavily; keep the underlying precision, recall, and counts visible because one F-score can hide different error patterns. Scores range from 0 to 1.",
+      "paperLevel": "With precision P = TP/(TP+FP) and recall R = TP/(TP+FN), F1 = 2PR/(P+R) = 2TP/(2TP+FP+FN), the harmonic mean of P and R. F-beta generalizes this weighting using a positive real factor beta, with recall considered beta^2 times as important. F1 is bounded by 0 and 1, reaching 0 when precision or recall is zero and 1 only with perfect precision and recall; the name F-measure is believed to derive from a different F function in Van Rijsbergen's book when introduced at MUC-4 in 1992."
+    },
+    "example": "Suppose a test produces 40 true positives, 10 false positives, and 20 false negatives. Precision is 40/(40+10) = 0.8 and recall is 40/(40+20) = 2/3, so F1 = 2×40/(2×40+10+20) = 80/110 ≈ 0.727.",
+    "usedIn": [
+      {
+        "name": "Binary classification",
+        "detail": "Measures predictive performance for positive versus negative outcomes.",
+        "url": ""
+      },
+      {
+        "name": "Information retrieval",
+        "detail": "Combines how accurate retrieved positive results are with how many relevant items are found.",
+        "url": ""
+      },
+      {
+        "name": "Diagnostic classification",
+        "detail": "Uses positive predictive value and sensitivity, also called precision and recall.",
+        "url": ""
+      }
     ],
-    "formula": "F1 = 2 · precision · recall / (precision + recall)\nFβ = (1 + β²) · precision · recall / (β² · precision + recall)",
-    "example": "A spam filter flags 50 emails, 40 of them spam (precision 0.8), but the inbox held 80 spam emails (recall 0.5). F1 = 2 × 0.8 × 0.5 / 1.3 ≈ 0.62.",
-    "typicalResults": "Ranges from 0 to 1; F1 is the common default, while F2 weights recall higher and F0.5 weights precision higher.",
+    "measures": "F-score measures the predictive performance of a binary classification or information retrieval system. Precision measures the share of predicted positives that are true positives, while recall measures the share of actual positives that are found.",
+    "howScored": [
+      "Count true positives, false positives, and false negatives.",
+      "Compute precision as TP/(TP+FP).",
+      "Compute recall as TP/(TP+FN).",
+      "For F1, take the harmonic mean of precision and recall.",
+      "Use F-beta instead when precision and recall need different weights."
+    ],
+    "formula": "F1 = 2 × (precision × recall) / (precision + recall) = 2TP / (2TP + FP + FN). F-beta is the more general weighted form, with recall considered beta^2 times as important.",
+    "typicalResults": "An F-score of 1.0 means perfect precision and recall, while 0 occurs if precision or recall is zero. If TP, FP, and FN are equal, F1 is 0.5; if FP equals FN, F1, precision, and recall are equal.",
     "caveats": [
-      "Ignores true negatives entirely.",
-      "Depends on the decision threshold you pick.",
-      "Averaging across classes (macro vs micro) can change the story."
+      "F1 weights precision and recall symmetrically.",
+      "F-beta is needed when one should matter more.",
+      "A single score does not show the separate precision and recall values.",
+      "The score cannot exceed 1 or fall below 0."
     ],
     "diagram": {
       "nodes": [
         {
-          "id": "preds",
-          "label": "Predictions vs labels",
-          "note": ""
+          "id": "outcomes",
+          "label": "Test outcomes",
+          "note": "Compare predicted positives with actual positives."
         },
         {
-          "id": "p",
-          "label": "Precision",
-          "note": ""
+          "id": "tp",
+          "label": "True positives",
+          "note": "Positive cases correctly identified."
         },
         {
-          "id": "r",
-          "label": "Recall",
-          "note": ""
+          "id": "fp",
+          "label": "False positives",
+          "note": "Cases incorrectly predicted as positive."
         },
         {
-          "id": "f",
-          "label": "F-score (harmonic mean)",
-          "note": ""
+          "id": "fn",
+          "label": "False negatives",
+          "note": "Actual positive cases that were missed."
+        },
+        {
+          "id": "pr",
+          "label": "Precision and recall",
+          "note": "Precision uses TP and FP; recall uses TP and FN."
+        },
+        {
+          "id": "f1",
+          "label": "F1 score",
+          "note": "The harmonic mean of precision and recall."
         }
       ],
       "edges": [
         {
-          "from": "preds",
-          "to": "p",
+          "from": "outcomes",
+          "to": "tp",
           "label": ""
         },
         {
-          "from": "preds",
-          "to": "r",
+          "from": "outcomes",
+          "to": "fp",
           "label": ""
         },
         {
-          "from": "p",
-          "to": "f",
+          "from": "outcomes",
+          "to": "fn",
           "label": ""
         },
         {
-          "from": "r",
-          "to": "f",
+          "from": "tp",
+          "to": "pr",
           "label": ""
+        },
+        {
+          "from": "fp",
+          "to": "pr",
+          "label": ""
+        },
+        {
+          "from": "fn",
+          "to": "pr",
+          "label": ""
+        },
+        {
+          "from": "pr",
+          "to": "f1",
+          "label": "harmonic mean"
         }
       ],
-      "caption": ""
+      "caption": "F1 is calculated from test outcomes through precision and recall."
     },
     "image": {
       "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/26/Precisionrecall.svg/960px-Precisionrecall.svg.png",

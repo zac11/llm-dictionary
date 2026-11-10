@@ -5,6 +5,113 @@
   "type": "concept",
   "definition": "Recovering the 3D positions of body joints from images or video, either by lifting 2D poses or regressing directly.",
   "details": "Recovering the 3D positions of body joints from images or video, either by lifting 2D poses or regressing directly. It feeds animation, sports analysis, and human-robot interaction.",
+  "explainer": {
+    "lead": "3D human pose estimation turns images or video into a three-dimensional map of a person's body joints. It lets computers understand posture and movement in depth, which is useful for animation, sports analysis, and human-robot interaction.",
+    "tiers": {
+      "eli5": "Imagine putting stickers on someone's shoulders, elbows, knees, and other joints, then working out where every sticker sits in a room—not just on a flat picture. A computer can do this from photos or video, either by first finding the joints in the flat picture and adding depth or by estimating their 3D positions directly. The result can help a digital character copy a person's movements.",
+      "practitioner": "A system can take a single image or video and either lift detected 2D joint positions into 3D or directly regress the 3D joint coordinates. The choice affects the pipeline: lifting depends on the quality of the 2D pose stage, while direct regression estimates the final output in one model. The output must be suitable for the downstream use, whether that is driving animation, analysing sport, or interpreting a person's movement near a robot.",
+      "paperLevel": "Given an image or video input I and J body joints, the task is to estimate X = {x_j in R^3 | j = 1, ..., J}. A lifting approach first estimates 2D positions P = {p_j in R^2} and learns X = f(P); direct regression learns X = g(I). Both formulations recover joint positions in three dimensions rather than only their image coordinates."
+    },
+    "example": "A video shows a person raising one arm. The system estimates 3D positions for joints such as the shoulder, elbow, and wrist, producing a moving skeleton that can represent the gesture for animation or movement analysis.",
+    "usedIn": [
+      {
+        "name": "Animation",
+        "detail": "Recovered joint positions can describe body movement for use in animated characters.",
+        "url": ""
+      },
+      {
+        "name": "Sports analysis",
+        "detail": "Three-dimensional poses provide a representation of an athlete's posture and movement.",
+        "url": ""
+      },
+      {
+        "name": "Human-robot interaction",
+        "detail": "Estimated body poses help robots interpret what a nearby person is doing.",
+        "url": ""
+      }
+    ],
+    "intuition": "A flat image shows where joints appear horizontally and vertically, but not their full positions in depth. 3D human pose estimation fills in that missing spatial information, producing a body skeleton made of three-dimensional joint coordinates.",
+    "howItWorks": [
+      "Provide an image or video containing a person.",
+      "Identify the body joints, either within a two-stage pipeline or as part of direct estimation.",
+      "For lifting, first estimate each joint's 2D image position and then infer its 3D position.",
+      "For direct regression, predict the 3D joint coordinates from the visual input without a separate 2D lifting stage.",
+      "Return the collection of 3D joint positions as the estimated body pose."
+    ],
+    "whyItMatters": "It bridges ordinary visual recordings and spatial understanding of the human body. That makes body movement usable by applications that need more than flat, two-dimensional joint locations.",
+    "misconceptions": [
+      "It is not the same as 2D pose estimation: the output includes depth as well as image-plane position.",
+      "Lifting and direct regression are different approaches to the same task, not different output goals.",
+      "The result is a set of body-joint positions, not necessarily a detailed model of the body's surface."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Image or video",
+          "note": "Visual input showing a person."
+        },
+        {
+          "id": "2d-pose",
+          "label": "2D joint positions",
+          "note": "Joint locations in the image plane."
+        },
+        {
+          "id": "lifting",
+          "label": "2D-to-3D lifting",
+          "note": "Adds the missing spatial dimension."
+        },
+        {
+          "id": "regression",
+          "label": "Direct regression",
+          "note": "Predicts 3D joints from visual input."
+        },
+        {
+          "id": "output",
+          "label": "3D body pose",
+          "note": "Three-dimensional coordinates for body joints."
+        },
+        {
+          "id": "applications",
+          "label": "Downstream applications",
+          "note": "Animation, sports analysis, or human-robot interaction."
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "2d-pose",
+          "label": "detect joints"
+        },
+        {
+          "from": "2d-pose",
+          "to": "lifting",
+          "label": "2D pose"
+        },
+        {
+          "from": "lifting",
+          "to": "output",
+          "label": "3D joints"
+        },
+        {
+          "from": "input",
+          "to": "regression",
+          "label": "direct path"
+        },
+        {
+          "from": "regression",
+          "to": "output",
+          "label": "3D joints"
+        },
+        {
+          "from": "output",
+          "to": "applications",
+          "label": "body motion"
+        }
+      ],
+      "caption": "The two main routes to a 3D body pose: lifting an intermediate 2D pose or regressing 3D joint positions directly."
+    }
+  },
   "related": [
     "human-robot-interaction"
   ],

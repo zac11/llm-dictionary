@@ -5,7 +5,96 @@
   "type": "concept",
   "definition": "A concept search (or conceptual search) is an automated information retrieval method that is used to search electronically stored unstructured text (for example, digital archives, email, scientific literature, etc.) for information that is conceptually similar to the information provided in a search query.",
   "details": "In other words, the ideas expressed in the information retrieved in response to a concept search query are relevant to the ideas contained in the text of the query.",
-  "story": "Think of a referee whose job is to be completely honest about who touched the ball last. Before trusting a machine, someone has to measure how good it really is — fairly and honestly. It is the exam that separates “it sounds good” from “it actually is good”. What gets measured is what actually gets better. That shared ruler is Concept search.",
+  "explainer": {
+    "lead": "Concept search finds text whose ideas are relevant to a query, even when the wording is different. It helps people search large collections of unstructured writing without having to guess the exact terms used by the author.",
+    "tiers": {
+      "eli5": "Imagine asking a librarian for stories about looking after pets, and they also bring you a book called \"Caring for Your Animal Friends.\" The title uses different words, but the idea is the same. Concept search tries to make that kind of match in emails, archives, and other writing.",
+      "practitioner": "Use concept search when people need relevant ideas from email, digital archives, or scientific literature but may not know the authors' exact terminology. Assess results by conceptual relevance rather than shared keywords alone; differently worded queries and documents expressing the same idea make useful test cases. The method does not prescribe a particular representation, similarity measure, or ranking algorithm.",
+      "paperLevel": "Given a query q and a collection D of unstructured text, concept search returns documents d in D whose expressed ideas are relevant to the ideas expressed in q. Conceptual similarity, rather than identical wording, is the retrieval criterion; no particular representation or similarity function is required by the definition."
+    },
+    "example": "A query about \"keeping food cold without electricity\" could retrieve a passage about \"non-electric refrigeration methods.\" The wording differs, but both concern the same underlying idea, so the passage is a conceptual match.",
+    "usedIn": [
+      {
+        "name": "Digital archives",
+        "detail": "Finding archived material about the ideas in a query across varied wording.",
+        "url": ""
+      },
+      {
+        "name": "Email search",
+        "detail": "Retrieving messages relevant to a query's meaning rather than only its exact terms.",
+        "url": ""
+      },
+      {
+        "name": "Scientific literature search",
+        "detail": "Locating papers that address related ideas when terminology differs.",
+        "url": ""
+      }
+    ],
+    "intuition": "Words are labels for ideas, and different labels can point to the same idea. Concept search aims at the underlying meaning of the query and the text, instead of treating matching words as the only sign of relevance.",
+    "howItWorks": [
+      "Start with a search query expressed in ordinary text.",
+      "Identify the ideas expressed by the query.",
+      "Compare those ideas with information in electronically stored unstructured text.",
+      "Return information whose ideas are conceptually similar or relevant to the query."
+    ],
+    "whyItMatters": "It reduces the need to predict every word or phrase an author might use. That makes relevant information in unstructured text easier to discover when vocabulary varies.",
+    "misconceptions": [
+      "Concept search is not merely a search for identical keywords; different wording can still express relevant ideas.",
+      "Conceptual similarity does not mean that the query and result must be worded alike or discuss exactly the same details."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "query",
+          "label": "Search query",
+          "note": "Text describing the wanted ideas"
+        },
+        {
+          "id": "query-ideas",
+          "label": "Query ideas",
+          "note": "The meaning expressed by the query"
+        },
+        {
+          "id": "collection",
+          "label": "Unstructured text",
+          "note": "Archives, email, or literature"
+        },
+        {
+          "id": "compare",
+          "label": "Compare concepts",
+          "note": "Assess conceptual similarity and relevance"
+        },
+        {
+          "id": "results",
+          "label": "Relevant results",
+          "note": "Text related to the query's ideas"
+        }
+      ],
+      "edges": [
+        {
+          "from": "query",
+          "to": "query-ideas",
+          "label": "expresses"
+        },
+        {
+          "from": "query-ideas",
+          "to": "compare",
+          "label": ""
+        },
+        {
+          "from": "collection",
+          "to": "compare",
+          "label": "candidate text"
+        },
+        {
+          "from": "compare",
+          "to": "results",
+          "label": "retrieves"
+        }
+      ],
+      "caption": "Concept search compares the ideas in a query with information in unstructured text and returns conceptually relevant results."
+    }
+  },
   "related": [
     "concept-searching-limited",
     "brs-search",

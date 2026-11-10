@@ -5,6 +5,88 @@
   "type": "concept",
   "definition": "The core formalism (an MDP): at each step the agent observes a state, selects an action, and receives a reward and next state.",
   "details": "The core formalism (an MDP): at each step the agent observes a state, selects an action, and receives a reward and next state. For LLM RL, the \"state\" is the conversation so far, the \"action\" is the next token (or full response), and the reward arrives at the end.",
+  "explainer": {
+    "lead": "The agent-environment loop describes learning through repeated interaction: observe a situation, act, and receive feedback plus a new situation. It gives reinforcement learning a common structure, and shows how a language model's conversation can be treated as that kind of interaction.",
+    "tiers": {
+      "eli5": "Imagine playing a game where you look at the board, make a move, and then see the new board and any points you earned. You repeat this until the game ends. For a language model, the conversation is like the board, its next word or answer is the move, and its score comes at the end.",
+      "practitioner": "In LLM reinforcement learning, represent the conversation so far as the state and choose whether an action is the next token or a complete response. After the action, update the conversation to form the next state, with the reward arriving at the end. Keep these choices explicit: treating only the latest message as the state or assuming a reward after every token would describe a different setup.",
+      "paperLevel": "At step t, the agent observes state s_t, selects action a_t, and receives reward r_t together with next state s_(t+1); this interaction is formalized as a Markov decision process (MDP). For LLM RL, s_t is the conversation prefix, a_t is the next token or full response, and the reward is delivered at the end."
+    },
+    "example": "A conversation contains the question \"What is 2 + 2?\" The language model produces the response \"4\"; the updated conversation becomes the next state, and the model receives its reward at the end of the episode.",
+    "usedIn": [
+      {
+        "name": "LLM reinforcement learning",
+        "detail": "The conversation is the state, generated output is the action, and feedback arrives as a final reward.",
+        "url": ""
+      },
+      {
+        "name": "Sequential decision-making",
+        "detail": "MDPs use the repeated observe-act-receive-feedback cycle to describe an agent interacting with an environment.",
+        "url": ""
+      }
+    ],
+    "intuition": "Learning is framed as a continuing exchange rather than a single isolated prediction. Each action changes what the agent observes next, while rewards provide feedback on the interaction.",
+    "howItWorks": [
+      "Observe the current state.",
+      "Select an action based on that state.",
+      "Apply the action in the environment.",
+      "Receive a reward and the next state.",
+      "Repeat from the new state."
+    ],
+    "whyItMatters": "The loop supplies a precise way to connect decisions, changing context, and feedback. It also makes clear how text generation can be expressed as sequential decision-making.",
+    "misconceptions": [
+      "The state is not necessarily just the latest message; for LLM RL, it is the conversation so far.",
+      "An action can be a single token or a full response, depending on the formulation.",
+      "A reward does not have to follow every generated token; in this LLM setup, it arrives at the end."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "state",
+          "label": "Current state",
+          "note": "The conversation so far"
+        },
+        {
+          "id": "action",
+          "label": "Agent action",
+          "note": "Next token or full response"
+        },
+        {
+          "id": "next-state",
+          "label": "Next state",
+          "note": "The updated conversation"
+        },
+        {
+          "id": "reward",
+          "label": "Final reward",
+          "note": "Feedback arriving at the end"
+        }
+      ],
+      "edges": [
+        {
+          "from": "state",
+          "to": "action",
+          "label": "observe"
+        },
+        {
+          "from": "action",
+          "to": "next-state",
+          "label": "update"
+        },
+        {
+          "from": "next-state",
+          "to": "state",
+          "label": "next step"
+        },
+        {
+          "from": "next-state",
+          "to": "reward",
+          "label": "at end"
+        }
+      ],
+      "caption": "The agent repeatedly turns the current state into an action and a next state, with the LLM reward arriving at the end."
+    }
+  },
   "related": [
     "token"
   ],

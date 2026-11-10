@@ -5,6 +5,32 @@
   "type": "concept",
   "definition": "The second-stage model in modern retrieval: take the top 50-200 candidates from fast first-stage retrieval and reorder them with a cross-encoder (or LLM judge).",
   "details": "The second-stage model in modern retrieval: take the top 50-200 candidates from fast first-stage retrieval and reorder them with a cross-encoder (or LLM judge). Usually the single highest-ROI upgrade to RAG quality.",
+  "explainer": {
+    "lead": "It is the second stage of modern retrieval, taking the top candidates from fast retrieval and reordering them with a stronger model. It matters because it is usually the single highest-return upgrade to retrieval-augmented generation quality.",
+    "tiers": {
+      "eli5": "A quick librarian pulls a rough pile of books, then an expert reads the pile and puts the best ones on top.",
+      "practitioner": "Engineers feed the top 50 to 200 first-stage hits to a cross-encoder or LLM judge for reordering. A pitfall is latency and cost: the stronger model only sees what the first stage surfaced, so a missed document cannot be recovered.",
+      "paperLevel": "A function scoring each query-document pair jointly, applied to the top-k candidate set from a fast first-stage retriever, producing a reordered list. Its quality ceiling is set by first-stage recall and its cost grows with the number of candidates scored."
+    },
+    "example": "A vector search returns 100 passages; a cross-encoder scores each against the question and moves the truly relevant passage from rank 40 to rank 1.",
+    "usedIn": [
+      {
+        "name": "RAG pipelines",
+        "detail": "retrieval quality boost",
+        "url": ""
+      },
+      {
+        "name": "Search engines",
+        "detail": "second-stage ranking",
+        "url": ""
+      },
+      {
+        "name": "Cross-encoders",
+        "detail": "joint query-document scoring",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "cross-encoder"
   ],

@@ -5,7 +5,32 @@
   "type": "concept",
   "definition": "Product of experts (PoE) is a machine learning technique.",
   "details": "It models a probability distribution by combining the output from several simpler distributions. It was proposed by Geoffrey Hinton in 1999, along with an algorithm for training the parameters of such a system. The core idea is to combine several probability distributions (\"experts\") by multiplying their density functions—making the PoE classification similar to an \"and\" operation. This allows each expert to make decisions on the basis of a few dimensions without having to cover the full dimensionality of a problem: P ( y | { x k } ) = 1 Z ∏ j = 1 M f j ( y | { x k } ) {\\displaystyle P(y|\\{x_{k}\\})={\\frac {1}{Z}}\\prod _{j=1}^{M}f_{j}(y|\\{x_{k}\\})} where f j {\\displaystyle f_{j}} are unnormalized expert densities and Z = ∫ d y ∏ j = 1 M f j ( y | { x k } ) {\\displaystyle Z=\\int {\\mbox{d}}y\\prod _{j=1}^{M}f_{j}(y|\\{x_{k}\\})} is a normalization constant (see partition function (statistical mechanics)). This is related to (but quite different from) a mixture model, where several probability distributions p j ( y | { x j } ) {\\displaystyle p_{j}(y|\\{x_{j}\\})} are combined via an \"or\" operation, which is a weighted sum of their density functions: P ( y | { x k } ) = ∑ j = 1 M α j p j ( y | { x k } ) , {\\displaystyle P(y|\\{x_{k}\\})=\\sum _{j=1}^{M}\\alpha _{j}p_{j}(y|\\{x_{k}\\}),} with ∑ j α j = 1. {\\displaystyle \\sum _{j}\\alpha _{j}=1.} The experts may be understood as each being responsible for enforcing a constraint in a high-dimensional space. A data point is considered likely if and only if none of the experts say that the point violates a constraint. To optimize it, he proposed the contrastive divergence minimization algorithm. This algorithm is most often used for learning restricted Boltzmann machines.",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. And that idea, made concrete, is Product of experts.",
+  "explainer": {
+    "lead": "Product of experts models a probability distribution by combining several simpler distributions. It matters because it lets each expert constrain only a few dimensions while jointly covering the whole space.",
+    "tiers": {
+      "eli5": "Several specialists each veto bad options, and only options that pass all of them are likely.",
+      "practitioner": "Engineers multiply expert density functions so weak constraints combine into a sharp distribution; a pitfall is that a single expert assigning near-zero probability can dominate the product.",
+      "paperLevel": "The joint density is the product of expert densities, behaving like an \"and\" operation; each expert judges from a few dimensions, so the full space need not be covered by any one expert."
+    },
+    "example": "Two experts each ruling out parts of a space yield a combined distribution where only points acceptable to both have high density.",
+    "usedIn": [
+      {
+        "name": "Generative modeling",
+        "detail": "product densities",
+        "url": ""
+      },
+      {
+        "name": "Energy-based models",
+        "detail": "expert multiplication",
+        "url": ""
+      },
+      {
+        "name": "Multi-expert systems",
+        "detail": "conjunctive combination",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "calais-reuters-product",
     "maximum-inner-product-search",

@@ -5,7 +5,116 @@
   "type": "algorithm",
   "definition": "Dykstra's algorithm is a method that computes a point in the intersection of convex sets, and is a variant of the alternating projection method (also called the projections onto convex sets method).",
   "details": "In its simplest form, the method finds a point in the intersection of two convex sets by iteratively projecting onto each of the convex set; it differs from the alternating projection method in that there are intermediate steps. A parallel version of the algorithm was developed by Gaffke and Mathar. The method is named after Richard L. Dykstra who proposed it in the 1980s. A key difference between Dykstra's algorithm and the standard alternating projection method occurs when there is more than one point in the intersection of the two sets. In this case, the alternating projection method gives some arbitrary point in this intersection, whereas Dykstra's algorithm gives a specific point: the projection of r onto the intersection, where r is the initial point used in the algorithm.",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. That is Dykstra's projection algorithm — a small key that opens a big door.",
+  "explainer": {
+    "lead": "Dykstra's projection algorithm finds a point shared by several convex sets by repeatedly projecting onto them, with extra correction steps along the way. When many shared points exist, it returns the one closest to the starting point rather than an arbitrary member of the intersection.",
+    "tiers": {
+      "eli5": "You bounce between two shapes, adjusting each time, until you land on a spot they share.",
+      "practitioner": "Engineers use it with the projections onto convex sets method, iteratively projecting onto each set with intermediate steps. The pitfall is ignoring that the intermediate steps matter once there are more than two sets.",
+      "paperLevel": "Iteratively projects onto each convex set, with intermediate steps, to find a point in their intersection; differs from standard alternating projection when there is more than one set beyond two. A parallel version was developed by Gaffke and Mathar; named after Richard L. Dykstra, who proposed it in the 1980s."
+    },
+    "example": "Let one set be the horizontal axis and the other be the vertical strip x ≤ 1. Starting from r = (2, 2), their intersection is the part of the horizontal axis with x ≤ 1, and Dykstra's algorithm returns (1, 0), the intersection point closest to r.",
+    "goal": "Find a point in the intersection of convex sets. If the intersection contains multiple points, return the projection of the initial point r onto that intersection—the intersection point closest to r.",
+    "inputs": [
+      "Two or more convex sets",
+      "A way to project a point onto each set",
+      "An initial point r"
+    ],
+    "outputs": [
+      "A point in the intersection of the sets",
+      "Specifically, the projection of r onto that intersection"
+    ],
+    "steps": [
+      "Start from the initial point r.",
+      "Project the current iterate onto one convex set.",
+      "Apply the intermediate correction associated with that projection.",
+      "Continue through the other sets in the same way.",
+      "Repeat the cycle until a point in the intersection is obtained."
+    ],
+    "tradeoffs": [
+      "It selects the intersection point nearest to r, rather than an arbitrary feasible point.",
+      "It requires more than simple alternating projections because intermediate correction steps must be maintained.",
+      "Each iteration depends on being able to project onto the individual convex sets."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "start",
+          "label": "Initial point r",
+          "note": "The point whose projection is sought"
+        },
+        {
+          "id": "project-a",
+          "label": "Project onto A",
+          "note": "Move toward the first convex set"
+        },
+        {
+          "id": "correct-a",
+          "label": "Apply correction",
+          "note": "Perform the intermediate step"
+        },
+        {
+          "id": "project-b",
+          "label": "Project onto B",
+          "note": "Move toward the second convex set"
+        },
+        {
+          "id": "correct-b",
+          "label": "Apply correction",
+          "note": "Complete the projection cycle"
+        },
+        {
+          "id": "output",
+          "label": "Nearest intersection point",
+          "note": "The projection of r onto A ∩ B"
+        }
+      ],
+      "edges": [
+        {
+          "from": "start",
+          "to": "project-a",
+          "label": ""
+        },
+        {
+          "from": "project-a",
+          "to": "correct-a",
+          "label": ""
+        },
+        {
+          "from": "correct-a",
+          "to": "project-b",
+          "label": ""
+        },
+        {
+          "from": "project-b",
+          "to": "correct-b",
+          "label": ""
+        },
+        {
+          "from": "correct-b",
+          "to": "project-a",
+          "label": "repeat"
+        },
+        {
+          "from": "correct-b",
+          "to": "output",
+          "label": "result"
+        }
+      ],
+      "caption": "For two convex sets, projection cycles include intermediate corrections and produce the intersection point nearest to r."
+    },
+    "usedIn": [
+      {
+        "name": "Convex feasibility",
+        "detail": "point in a set intersection",
+        "url": ""
+      },
+      {
+        "name": "Projections onto convex sets",
+        "detail": "variant of alternating projection",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "actor-critic-algorithm",
     "algorithm-imed",

@@ -5,7 +5,103 @@
   "type": "concept",
   "definition": "Fitness approximation aims to approximate the objective or fitness functions in evolutionary optimization by building up machine learning models based on data collected from numerical simulations or physical experiments.",
   "details": "The machine learning models for fitness approximation are also known as meta-models or surrogates, and evolutionary optimization based on approximated fitness evaluations are also known as surrogate-assisted evolutionary approximation. Fitness approximation in evolutionary optimization can be seen as a sub-area of data-driven evolutionary optimization.",
-  "story": "Think of a hiker descending a foggy hill in the dark, taking small steps and feeling for the steepest way down. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. It is the same loop you use to learn anything: try, miss, correct, try again. Skill, for a model, is just error pushed down until it is small enough to ignore. And that is Fitness approximation — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "Fitness approximation replaces some expensive fitness calculations in evolutionary optimization with predictions from a learned model. This lets the search use data from numerical simulations or physical experiments instead of directly evaluating every candidate.",
+    "tiers": {
+      "eli5": "Imagine testing lots of paper airplane designs, but each test takes a long time. After testing a few, you could learn to make a good guess about the others and use those guesses to guide your search. Fitness approximation works in a similar way.",
+      "practitioner": "Train a machine-learning surrogate, or meta-model, on results collected from simulations or experiments, then use its predictions for fitness evaluations in an evolutionary search. The predictions are approximate, so model errors can misguide optimization; newly collected evaluation data can be added to improve the surrogate.",
+      "paperLevel": "Given data D = {(x_i, f(x_i))} obtained from numerical simulations or physical experiments, learn a surrogate f_hat(x) that approximates the objective or fitness function f(x). Evolutionary optimization then uses f_hat(x) for approximated fitness evaluations, an approach also called surrogate-assisted evolutionary approximation and regarded as a sub-area of data-driven evolutionary optimization."
+    },
+    "example": "Suppose each candidate design requires a lengthy numerical simulation to obtain its fitness. Simulate an initial group of designs, train a surrogate on their results, and let the evolutionary algorithm use the surrogate's predicted fitness values to compare new designs; subsequent simulation results can be added to the training data.",
+    "usedIn": [
+      {
+        "name": "Numerical simulation",
+        "detail": "Simulation results provide data for learning approximate fitness values.",
+        "url": ""
+      },
+      {
+        "name": "Physical experiments",
+        "detail": "Experimental measurements can serve as training data for a surrogate.",
+        "url": ""
+      },
+      {
+        "name": "Data-driven evolutionary optimization",
+        "detail": "Fitness approximation forms a sub-area of this broader approach.",
+        "url": ""
+      }
+    ],
+    "intuition": "Directly measuring every candidate's fitness can require a numerical simulation or physical experiment. A surrogate learns from evaluations already collected and supplies approximate fitness values to guide the evolutionary search.",
+    "howItWorks": [
+      "Evaluate an initial set of candidate solutions using simulations or physical experiments.",
+      "Collect the candidates and their measured fitness values as training data.",
+      "Train a machine-learning model, called a meta-model or surrogate, on that data.",
+      "Use the surrogate's predictions as approximate fitness evaluations during evolutionary optimization.",
+      "Use further collected evaluations to extend the data and improve the approximation."
+    ],
+    "whyItMatters": "It allows evolutionary optimization to proceed using approximate evaluations when direct simulations or experiments are costly or limited. It also connects evolutionary search with machine-learning models built from collected data.",
+    "misconceptions": [
+      "A surrogate does not produce the true fitness function; it supplies an approximation learned from data.",
+      "Fitness approximation is not a separate name for evolutionary optimization itself, but a way of supporting its fitness evaluations.",
+      "The surrogate does not eliminate the need for simulations or experiments, because their results provide its training data."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "candidates",
+          "label": "Candidate solutions",
+          "note": "Designs proposed for evaluation"
+        },
+        {
+          "id": "evaluation",
+          "label": "Direct evaluation",
+          "note": "Numerical simulation or physical experiment"
+        },
+        {
+          "id": "data",
+          "label": "Evaluation data",
+          "note": "Candidates paired with measured fitness"
+        },
+        {
+          "id": "surrogate",
+          "label": "Surrogate model",
+          "note": "Machine-learning approximation of fitness"
+        },
+        {
+          "id": "search",
+          "label": "Evolutionary search",
+          "note": "Uses predicted fitness to guide optimization"
+        }
+      ],
+      "edges": [
+        {
+          "from": "candidates",
+          "to": "evaluation",
+          "label": "selected candidates"
+        },
+        {
+          "from": "evaluation",
+          "to": "data",
+          "label": "fitness results"
+        },
+        {
+          "from": "data",
+          "to": "surrogate",
+          "label": "training"
+        },
+        {
+          "from": "surrogate",
+          "to": "search",
+          "label": "predicted fitness"
+        },
+        {
+          "from": "search",
+          "to": "candidates",
+          "label": "new candidates"
+        }
+      ],
+      "caption": "Direct evaluations create training data for a surrogate, whose approximate fitness values guide further evolutionary search."
+    }
+  },
   "related": [
     "simultaneous-perturbation-stochastic-approximation",
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",

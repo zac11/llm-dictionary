@@ -5,7 +5,27 @@
   "type": "concept",
   "definition": "The raw, unnormalized output scores produced by a neural network's final layer before being converted into probabilities (typically via softmax).",
   "details": "Logits are useful for various downstream operations like temperature scaling during sampling, since they represent relative preferences before normalization compresses them into a probability distribution.",
-  "story": "Think of an orchestra warming up: no single instrument carries the piece, but together they make the sound. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. The layout decides what the machine can even attempt, before it learns a single thing. The shape of the machine is half the idea. And that shape of the machine — Logits — is what makes everything else possible.",
+  "explainer": {
+    "lead": "Logits are the raw, unnormalized scores a neural network's final layer produces before they are turned into probabilities. They matter because they carry the model's relative preferences, which downstream operations like sampling depend on.",
+    "tiers": {
+      "eli5": "Think of judges giving raw point scores before those scores are converted into percentages that add up to 100.",
+      "practitioner": "Engineers apply temperature scaling and other transformations directly to logits when sampling or calibrating outputs. A pitfall is that softmax compresses differences, so operations that need fine-grained preference should work on logits rather than probabilities.",
+      "paperLevel": "A logit is the pre-softmax output vector; softmax maps it to a probability distribution, and scaling the logits by a temperature changes the sharpness of that distribution. Because softmax is shift-invariant, only differences between logits affect the result."
+    },
+    "example": "A model outputs logits [2.0, 1.0, 0.1]; softmax converts them to roughly [0.66, 0.24, 0.10], and dividing the logits by a temperature above 1 flattens that distribution.",
+    "usedIn": [
+      {
+        "name": "Language model sampling",
+        "detail": "temperature and top-k",
+        "url": ""
+      },
+      {
+        "name": "Model calibration",
+        "detail": "pre-softmax adjustment",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "activation-function",
     "attention",

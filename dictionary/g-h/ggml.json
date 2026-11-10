@@ -2,9 +2,111 @@
   "term": "GGML",
   "letter": "G",
   "category": "AI/ML glossary",
-  "type": "concept",
+  "type": "library",
   "definition": "Georgi Gerganov Machine Learning, a C library focused on machine learning",
   "details": "Georgi Gerganov Machine Learning, a C library focused on machine learning",
+  "explainer": {
+    "lead": "GGML is Georgi Gerganov’s C library for machine learning, closely associated with running language models locally through llama.cpp. Its name also lives on in GGUF, the model-file format that replaced the original GGML format and made quantized models easier to package, share, and load.",
+    "tiers": {
+      "eli5": "GGML is a small C-language toolkit named after its maker, Georgi Gerganov, for doing machine-learning calculations. Think of it as a compact workshop for running models on ordinary computers. Its name was also used for an early way of packing model files; newer GGUF files keep the model pieces and instructions together so tools can load them more easily.",
+      "practitioner": "GGML is a C machine-learning library; in the llama.cpp ecosystem, the same name also refers to the original model-file format. Current local-inference work generally uses GGUF, with convert_hf_to_gguf.py converting Hugging Face checkpoints and llama-quantize producing integer-quantized variants. Do not treat legacy GGML files and GGUF as interchangeable: the original loader hard-coded hyperparameters and tokenizer details, so architecture or quantization changes could break compatibility.",
+      "paperLevel": "GGML (Georgi Gerganov Machine Learning) is a C library for machine learning. In the llama.cpp file-format lineage GGML -> GGMF -> GGJT -> GGUF, the original GGML format was a thin tensor container whose loader hard-coded model hyperparameters and tokenizer information. Consequently, new architectures or quantization schemes generally required loader changes that broke compatibility with existing files; GGUF replaced this with structured key-value metadata."
+    },
+    "example": "Start with a Hugging Face checkpoint in safetensors form: convert_hf_to_gguf.py emits an f16 GGUF file, llama-quantize turns it into a Q4_K variant, and Ollama or LM Studio can then load that quantized model for local inference. The lower-precision weights use less memory and may run faster, with some loss of accuracy.",
+    "usedIn": [
+      {
+        "name": "llama.cpp",
+        "detail": "The project that introduced GGUF and supplies its conversion, quantization, and programmatic file-reading tools.",
+        "url": ""
+      },
+      {
+        "name": "Ollama",
+        "detail": "Uses llama.cpp as its inference backend, with models pulled from its registry stored internally as GGUF files.",
+        "url": ""
+      },
+      {
+        "name": "Hugging Face",
+        "detail": "Hosts tens of thousands of GGUF checkpoints and provides a metadata viewer, inference-endpoint integration, and JavaScript parser.",
+        "url": ""
+      },
+      {
+        "name": "LM Studio",
+        "detail": "Consumes GGUF files directly for local model inference.",
+        "url": ""
+      }
+    ],
+    "createdBy": "The name expands to Georgi Gerganov Machine Learning. The GGUF specification was later formalized through pull request #302 in the ggerganov/ggml repository.",
+    "inAi": "The GGML/GGUF ecosystem supports local inference with quantized large language models. GGUF stores tensors, tokenizer data, and loading metadata in one file and can be memory-mapped, including for models larger than available RAM through operating-system paging.",
+    "jsNote": "Hugging Face provides a JavaScript parser library for GGUF; this supports the successor file format rather than providing a JavaScript version of the GGML C library.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "checkpoint",
+          "label": "Source checkpoint",
+          "note": "A Hugging Face model, commonly in safetensors form"
+        },
+        {
+          "id": "convert",
+          "label": "Conversion script",
+          "note": "convert_hf_to_gguf.py reads tensors and metadata"
+        },
+        {
+          "id": "base",
+          "label": "Base GGUF",
+          "note": "A self-contained f16 or bf16 model file"
+        },
+        {
+          "id": "quantize",
+          "label": "Quantization utility",
+          "note": "llama-quantize lowers weight precision"
+        },
+        {
+          "id": "quantized",
+          "label": "Quantized GGUF",
+          "note": "A smaller model using a format such as Q4_K"
+        },
+        {
+          "id": "inference",
+          "label": "Local inference",
+          "note": "Tools such as Ollama or LM Studio load the model"
+        }
+      ],
+      "edges": [
+        {
+          "from": "checkpoint",
+          "to": "convert",
+          "label": "model data"
+        },
+        {
+          "from": "convert",
+          "to": "base",
+          "label": "writes"
+        },
+        {
+          "from": "base",
+          "to": "quantize",
+          "label": "weights"
+        },
+        {
+          "from": "quantize",
+          "to": "quantized",
+          "label": "writes"
+        },
+        {
+          "from": "quantized",
+          "to": "inference",
+          "label": "loads"
+        }
+      ],
+      "caption": "A typical path from a source checkpoint to a quantized GGUF model running locally."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: GGUF",
+        "url": "https://en.wikipedia.org/wiki/GGUF"
+      }
+    ]
+  },
   "related": [
     "machine-learning"
   ],

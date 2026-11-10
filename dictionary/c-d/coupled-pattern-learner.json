@@ -5,7 +5,121 @@
   "type": "algorithm",
   "definition": "Coupled Pattern Learner (CPL) is a machine learning algorithm which couples the semi-supervised learning of categories and relations to forestall the problem of semantic drift associated with boot-strap learning methods..",
   "details": "Coupled Pattern Learner (CPL) is a machine learning algorithm which couples the semi-supervised learning of categories and relations to forestall the problem of semantic drift associated with boot-strap learning methods.",
-  "story": "Picture a translator at the United Nations, listening to one language and whispering the meaning into another in real time. It figures out meaning by noticing which words like to travel together. It does not memorize a rulebook; it absorbs a library. Meaning lives in company — a word is known by the words it keeps. That pattern-earned fluency is Coupled pattern learner.",
+  "explainer": {
+    "lead": "Coupled Pattern Learner, or CPL, learns categories and relations together rather than letting each one grow on its own. This shared learning process is intended to stop bootstrapping from gradually wandering away from its original meanings, a problem called semantic drift.",
+    "tiers": {
+      "eli5": "It is like learning words and their connections at the same time, so each keeps the other from wandering off track.",
+      "practitioner": "Engineers use CPL when extracting categories and relations from text without full supervision, letting each task constrain the other. A pitfall is that weak coupling can still let drift creep in.",
+      "paperLevel": "CPL is a machine learning algorithm which couples the semi-supervised learning of categories and relations to forestall the problem of semantic drift associated with boot-strap learning methods."
+    },
+    "example": "Suppose the seeds include “otter” as an Animal and (otter, river) for livesIn. New patterns may propose more animals and more livesIn pairs, with each learner providing context for the other. Coupling helps prevent a pattern that gradually collects unrelated entities from driving the category ever farther from its original meaning.",
+    "goal": "Expand knowledge of categories and relations through semi-supervised bootstrapping while reducing semantic drift.",
+    "inputs": [
+      "Initial examples of categories",
+      "Initial examples of relations",
+      "Candidate patterns and unlabeled examples"
+    ],
+    "outputs": [
+      "Additional learned category instances",
+      "Additional learned relation instances"
+    ],
+    "steps": [
+      "Start with seed category and relation examples.",
+      "Learn candidate patterns from those examples.",
+      "Use the patterns to propose new instances.",
+      "Check category and relation learning against each other.",
+      "Repeat with accepted additions."
+    ],
+    "tradeoffs": [
+      "Coupling targets the semantic drift of independent bootstrapping.",
+      "Joint learning requires coordination between category and relation learners.",
+      "Poor or inconsistent seeds can still mislead both learners."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "seeds",
+          "label": "Seed examples",
+          "note": "Initial categories and relations"
+        },
+        {
+          "id": "patterns",
+          "label": "Candidate patterns",
+          "note": "Clues learned from current examples"
+        },
+        {
+          "id": "categories",
+          "label": "Category learner",
+          "note": "Proposes new category instances"
+        },
+        {
+          "id": "relations",
+          "label": "Relation learner",
+          "note": "Proposes new relation instances"
+        },
+        {
+          "id": "coupling",
+          "label": "Mutual constraints",
+          "note": "Coordinates acceptance to limit drift"
+        },
+        {
+          "id": "expanded",
+          "label": "Expanded knowledge",
+          "note": "Accepted additions feed the next round"
+        }
+      ],
+      "edges": [
+        {
+          "from": "seeds",
+          "to": "patterns",
+          "label": ""
+        },
+        {
+          "from": "patterns",
+          "to": "categories",
+          "label": ""
+        },
+        {
+          "from": "patterns",
+          "to": "relations",
+          "label": ""
+        },
+        {
+          "from": "categories",
+          "to": "coupling",
+          "label": "category evidence"
+        },
+        {
+          "from": "relations",
+          "to": "coupling",
+          "label": "relation evidence"
+        },
+        {
+          "from": "coupling",
+          "to": "expanded",
+          "label": ""
+        },
+        {
+          "from": "expanded",
+          "to": "patterns",
+          "label": "next round"
+        }
+      ],
+      "caption": "CPL bootstraps categories and relations together, using their coupling to curb semantic drift."
+    },
+    "usedIn": [
+      {
+        "name": "Information extraction",
+        "detail": "semi-supervised category learning",
+        "url": ""
+      },
+      {
+        "name": "Bootstrapped relation learning",
+        "detail": "reducing semantic drift",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "frequent-pattern-discovery",
     "gestalt-pattern-matching",

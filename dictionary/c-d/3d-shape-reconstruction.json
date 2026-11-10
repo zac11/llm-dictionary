@@ -5,6 +5,102 @@
   "type": "concept",
   "definition": "Reconstructing complete 3D shape geometry from partial observations such as single images or sparse scans.",
   "details": "Reconstructing complete 3D shape geometry from partial observations such as single images or sparse scans.",
+  "explainer": {
+    "lead": "3D shape reconstruction fills in a complete three-dimensional object when only part of it can be observed, such as in one photograph or a sparse scan. It matters because cameras and scanners often miss backs, interiors, and occluded surfaces, while many applications need the whole shape.",
+    "tiers": {
+      "eli5": "Imagine seeing only the front of a toy and drawing what the whole toy probably looks like, including its back. A computer can do something similar with a picture or a few scattered measurements. It uses the visible clues to make a complete 3D model, though hidden parts may be guesses.",
+      "practitioner": "A system takes a single image or sparse scan as input and produces a complete geometric representation of the object. The main engineering challenge is constraining the unobserved regions so the output remains consistent with the visible evidence. Results should be checked for plausible but incorrect hidden surfaces, especially when the observation contains little information.",
+      "paperLevel": "Given a partial observation O, such as an image I or sparse point set P, estimate a mapping f(O) = S_hat that approximates the complete target shape S. The task is underdetermined because many complete shapes can explain the same observation. Its central limits are ambiguity in hidden regions and sensitivity to incomplete or noisy input."
+    },
+    "example": "Given one photograph of a mug showing its front and handle, a reconstruction system estimates the mug’s curved body, completes its unseen back, and outputs a full 3D surface. The back is inferred rather than directly observed.",
+    "usedIn": [
+      {
+        "name": "Robotics",
+        "detail": "Complete object geometry can support reasoning about objects whose far sides are not visible.",
+        "url": ""
+      },
+      {
+        "name": "Augmented reality",
+        "detail": "Reconstructed shapes provide 3D geometry for placing and displaying virtual content.",
+        "url": ""
+      },
+      {
+        "name": "3D content creation",
+        "detail": "Partial images or scans can be turned into complete object models for further editing.",
+        "url": ""
+      }
+    ],
+    "intuition": "The visible parts provide clues about the whole object, while prior knowledge about shapes helps fill in what cannot be seen. Reconstruction is therefore partly measurement and partly inference.",
+    "howItWorks": [
+      "Capture a partial observation, such as one image or a sparse scan.",
+      "Extract the visible geometric clues and their spatial relationships.",
+      "Infer the missing surfaces so they fit both the observation and a plausible object shape.",
+      "Combine the visible and inferred geometry into one complete 3D representation."
+    ],
+    "whyItMatters": "Partial observations are common, but complete geometry is often needed for visualization, interaction, and spatial reasoning. Reconstruction bridges that gap without requiring every surface to be captured directly.",
+    "misconceptions": [
+      "It does not recover hidden surfaces with certainty; several different shapes may fit the same input.",
+      "A visually plausible result is not necessarily geometrically accurate.",
+      "A sparse scan and a single image provide different observations, but both leave parts of the shape to be inferred."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "observation",
+          "label": "Partial observation",
+          "note": "A single image or sparse scan"
+        },
+        {
+          "id": "visible",
+          "label": "Visible geometry",
+          "note": "Extract observed shape clues"
+        },
+        {
+          "id": "inference",
+          "label": "Hidden-shape inference",
+          "note": "Estimate unobserved surfaces"
+        },
+        {
+          "id": "fusion",
+          "label": "Geometry combination",
+          "note": "Join observed and inferred parts"
+        },
+        {
+          "id": "shape",
+          "label": "Complete 3D shape",
+          "note": "Full reconstructed geometry"
+        }
+      ],
+      "edges": [
+        {
+          "from": "observation",
+          "to": "visible",
+          "label": "observed clues"
+        },
+        {
+          "from": "observation",
+          "to": "inference",
+          "label": "partial evidence"
+        },
+        {
+          "from": "visible",
+          "to": "fusion",
+          "label": "known surfaces"
+        },
+        {
+          "from": "inference",
+          "to": "fusion",
+          "label": "missing surfaces"
+        },
+        {
+          "from": "fusion",
+          "to": "shape",
+          "label": "reconstruction"
+        }
+      ],
+      "caption": "Observed and inferred geometry are combined to produce a complete 3D shape."
+    }
+  },
   "citation": {
     "title": "3D Shape Reconstruction",
     "authors": [],

@@ -5,7 +5,120 @@
   "type": "model",
   "definition": "DBRX is a large language model (LLM) developed by Mosaic under its parent company Databricks, released on March 27, 2024 under the Databricks Open Model License.",
   "details": "It is a mixture-of-experts transformer model, with 132 billion parameters in total. 36 billion parameters (4 out of 16 experts) are active for each token. The released model comes in either a base foundation model version or an instruction-tuned variant. At the time of its release, DBRX outperformed prominent models such as Meta's Llama 2, Mistral AI's Mixtral, and xAI's Grok-1, in several benchmarks ranging from language understanding, programming ability and mathematics. It was trained for 2.5 months and reported using on 3,072 Nvidia H100s connected by 3.2 terabytes per second bandwidth (InfiniBand), for a training cost of US$10M.",
-  "story": "Think of a grammar teacher who never memorized a rule but can still tell you when a sentence sounds wrong. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It figures out meaning by noticing which words like to travel together. The machine learns to read between the lines by reading an impossible number of lines. And that is DBRX — teaching a machine to read between the lines.",
+  "explainer": {
+    "lead": "DBRX is a large language model from Mosaic and Databricks that uses a mixture-of-experts design to keep only part of its 132 billion parameters active for each token. Released on March 27, 2024, it showed how this approach could deliver strong benchmark results while activating 36 billion parameters at a time.",
+    "tiers": {
+      "eli5": "DBRX is a computer program that works with language, a bit like a team of 16 specialists. For each small piece of text, it calls on four specialists instead of making the whole team work. It comes in a general version and another version trained to follow instructions.",
+      "practitioner": "Choose between the base foundation model and the instruction-tuned variant according to whether you need a general model or one prepared for instructions. Distinguish the 132 billion total parameters from the 36 billion active per token when planning capacity, and review the Databricks Open Model License before use.",
+      "paperLevel": "DBRX is a mixture-of-experts transformer with N_total = 132 billion parameters, E = 16 experts, k = 4 active experts per token, and N_active = 36 billion parameters. Training took 2.5 months on 3,072 Nvidia H100 GPUs connected by 3.2 TB/s InfiniBand bandwidth, at a reported cost of US$10 million. Release-time comparisons reported advantages over Llama 2, Mixtral, and Grok-1 on several language, programming, and mathematics benchmarks, without establishing results beyond those comparisons."
+    },
+    "example": "If the instruction-tuned model receives a request to solve a mathematics problem, its expert-routing machinery selects four of the 16 experts for each token. Those experts contribute to processing that token while the other 12 remain inactive.",
+    "usedIn": [
+      {
+        "name": "Language understanding",
+        "detail": "Evaluated in release-time benchmark comparisons against other prominent language models.",
+        "url": ""
+      },
+      {
+        "name": "Programming",
+        "detail": "Programming ability was one of the benchmark areas in which DBRX was compared with Llama 2, Mixtral, and Grok-1.",
+        "url": ""
+      },
+      {
+        "name": "Mathematics",
+        "detail": "Mathematical problem solving formed another area of its reported benchmark evaluation.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Transformer backbone",
+        "detail": "Processes tokens within the large language model architecture."
+      },
+      {
+        "name": "Sixteen experts",
+        "detail": "Provide separate processing capacity within the mixture-of-experts design."
+      },
+      {
+        "name": "Four-expert activation",
+        "detail": "Uses four experts per token, leaving 36 billion of the 132 billion total parameters active."
+      },
+      {
+        "name": "Base and instruct variants",
+        "detail": "Offer a base foundation model and an instruction-tuned version."
+      },
+      {
+        "name": "Training cluster",
+        "detail": "Used 3,072 Nvidia H100 GPUs linked by 3.2 TB/s InfiniBand bandwidth."
+      }
+    ],
+    "flow": [
+      "A token enters the transformer model.",
+      "The mixture-of-experts machinery selects four of the 16 experts for that token.",
+      "The selected experts process the token using 36 billion active parameters.",
+      "The model continues transformer processing to produce its output."
+    ],
+    "origin": "Mosaic developed DBRX under its parent company Databricks and released it on March 27, 2024 under the Databricks Open Model License. Its training lasted 2.5 months and had a reported cost of US$10 million.",
+    "lineage": "At release, DBRX was reported to outperform Meta's Llama 2, Mistral AI's Mixtral, and xAI's Grok-1 in several benchmarks covering language understanding, programming, and mathematics.",
+    "whyItMatters": "DBRX demonstrates a large mixture-of-experts language model in which only a fraction of the total parameters is used for each token. Its release also provided both base and instruction-tuned variants under the Databricks Open Model License.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "token",
+          "label": "Input token",
+          "note": "A unit of text enters DBRX."
+        },
+        {
+          "id": "transformer",
+          "label": "Transformer processing",
+          "note": "The model processes the token in context."
+        },
+        {
+          "id": "routing",
+          "label": "Expert selection",
+          "note": "Four of the 16 experts are selected."
+        },
+        {
+          "id": "experts",
+          "label": "Active experts",
+          "note": "36 billion parameters are active per token."
+        },
+        {
+          "id": "output",
+          "label": "Model output",
+          "note": "Processing contributes to the generated response."
+        }
+      ],
+      "edges": [
+        {
+          "from": "token",
+          "to": "transformer",
+          "label": "enters"
+        },
+        {
+          "from": "transformer",
+          "to": "routing",
+          "label": "routes"
+        },
+        {
+          "from": "routing",
+          "to": "experts",
+          "label": "selects four"
+        },
+        {
+          "from": "experts",
+          "to": "transformer",
+          "label": "returns"
+        },
+        {
+          "from": "transformer",
+          "to": "output",
+          "label": "produces"
+        }
+      ],
+      "caption": "For each token, DBRX activates four of its 16 experts within the transformer model."
+    }
+  },
   "related": [
     "ai-tiger",
     "alice-ai-ai-model-family",

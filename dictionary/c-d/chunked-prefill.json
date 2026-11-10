@@ -5,6 +5,102 @@
   "type": "concept",
   "definition": "Splitting long prompt prefills into chunks interleaved with decode steps, so one huge prompt does not stall token generation for everyone else in the batch.",
   "details": "Splitting long prompt prefills into chunks interleaved with decode steps, so one huge prompt does not stall token generation for everyone else in the batch.",
+  "explainer": {
+    "lead": "Chunked prefill is a scheduling technique for language-model serving that processes a long prompt in smaller pieces. It lets the server perform token-generation steps between those pieces, so other requests do not have to wait for one large prompt to finish.",
+    "tiers": {
+      "eli5": "Imagine a cook who must chop a huge pile of vegetables before serving anyone else. Chunked prefill is like chopping a smaller pile, serving a few waiting customers, and then returning to the next pile. The big job still gets done, but it does not block everyone else for one long stretch.",
+      "practitioner": "Apply it in the inference scheduler by splitting prefills into bounded chunks and allowing decode steps between chunks. Choose chunk sizes with both prompt-completion latency and decode responsiveness in mind: chunks that are too large can recreate the original stall.",
+      "paperLevel": "Given a prompt prefill P, partition it into chunks P1, P2, ..., Pk and schedule decode steps D between prefill-chunk executions rather than running P as one uninterrupted operation. The technique changes serving order, not the prompt contents; its purpose is to bound how long a large prefill can monopolize the batch."
+    },
+    "example": "Suppose a server splits an 8,000-token prompt's prefill into four 2,000-token chunks. After the first chunk, it can run decode steps for other requests, then process the second chunk, and continue alternating until all four chunks are done.",
+    "usedIn": [
+      {
+        "name": "Multi-user LLM serving",
+        "detail": "Keeps token generation responsive for other requests while a long prompt is being processed.",
+        "url": ""
+      },
+      {
+        "name": "Long-prompt inference",
+        "detail": "Breaks an otherwise lengthy prefill into smaller units that can share serving time with decoding.",
+        "url": ""
+      }
+    ],
+    "intuition": "A long prefill is like one very large job occupying a shared workstation. Dividing it into chunks creates natural points where the server can switch to decoding, reducing the uninterrupted wait imposed on other requests.",
+    "howItWorks": [
+      "Receive a prompt whose prefill would take a long uninterrupted run.",
+      "Split the prefill work into smaller chunks.",
+      "Run one chunk, then allow pending decode steps to run.",
+      "Repeat until every prefill chunk is complete and normal decoding can continue."
+    ],
+    "whyItMatters": "It prevents a single large prompt from creating one long pause in token generation for the rest of the batch. This makes shared inference serving more responsive without skipping any of the long prompt's prefill work.",
+    "misconceptions": [
+      "It does not shorten or discard part of the prompt; all prefill chunks are still processed.",
+      "It is not a way to generate several output tokens at once; it schedules prefill work around decode steps.",
+      "It does not eliminate the long prompt's total prefill work, but breaks that work into interruptible serving units."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "prompt",
+          "label": "Long prompt",
+          "note": "Requires a large prefill"
+        },
+        {
+          "id": "chunks",
+          "label": "Prefill chunks",
+          "note": "Smaller prefill units"
+        },
+        {
+          "id": "scheduler",
+          "label": "Serving scheduler",
+          "note": "Alternates available work"
+        },
+        {
+          "id": "prefill",
+          "label": "Prefill step",
+          "note": "Processes one chunk"
+        },
+        {
+          "id": "decode",
+          "label": "Decode steps",
+          "note": "Generates tokens for requests"
+        },
+        {
+          "id": "tokens",
+          "label": "Generated tokens",
+          "note": "Output continues between chunks"
+        }
+      ],
+      "edges": [
+        {
+          "from": "prompt",
+          "to": "chunks",
+          "label": "split"
+        },
+        {
+          "from": "chunks",
+          "to": "scheduler",
+          "label": "queue"
+        },
+        {
+          "from": "scheduler",
+          "to": "prefill",
+          "label": "one chunk"
+        },
+        {
+          "from": "scheduler",
+          "to": "decode",
+          "label": "interleave"
+        },
+        {
+          "from": "decode",
+          "to": "tokens",
+          "label": "emit"
+        }
+      ],
+      "caption": "The scheduler processes prefill in chunks while inserting decode steps, allowing token generation to continue during a long prompt's prefill."
+    }
+  },
   "related": [
     "token"
   ],

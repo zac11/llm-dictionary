@@ -5,7 +5,113 @@
   "type": "concept",
   "definition": "A clustering algorithm that partitions data into k groups by iteratively assigning points to the nearest cluster center and updating cluster centers.",
   "details": "K-means is one of the most widely used clustering algorithms due to its simplicity and efficiency, though it requires specifying the number of clusters in advance and assumes roughly spherical cluster shapes.",
-  "story": "Imagine a chef tasting every ingredient before it goes into the pot, deciding what belongs and what would ruin the broth. Better ingredients make a better meal, and the same is true here. Every machine is shaped by what it was shown, so someone has to choose that material with care. It is the raw material; the model is only ever as good as what it was fed. That care with the raw material is K-Means Clustering.",
+  "explainer": {
+    "lead": "K-means clustering sorts unlabeled data into a chosen number of groups, with each group summarized by its center. It offers a simple way to explore structure in data, provided you choose k and the clusters are roughly spherical.",
+    "tiers": {
+      "eli5": "Imagine dropping k magnets onto a floor covered with marbles. Each marble joins its nearest magnet, then each magnet moves to the middle of its marbles; repeating this sorts the marbles into k groups. You must decide how many groups you want before you start.",
+      "practitioner": "Choose k before fitting, then alternate between assigning each point to its nearest center and recomputing each center from its assigned points. Check whether the resulting groups are useful rather than assuming the algorithm has found a natural number of clusters. Results can be misleading when the data do not contain roughly spherical clusters.",
+      "paperLevel": "For points x_1, ..., x_n and k centers mu_1, ..., mu_k, k-means seeks assignments and centers that minimize sum_i ||x_i - mu_{c(i)}||^2, where c(i) is the cluster assigned to point i. Its alternating nearest-center assignment and center-update steps reduce this within-cluster squared-distance objective. The method requires k in advance and is limited by its preference for roughly spherical clusters."
+    },
+    "example": "For the one-dimensional points 1, 2, 3, 8, 9, and 10 with k = 2, k-means can produce the groups {1, 2, 3} and {8, 9, 10}, with centers 2 and 9. A new point at 8.5 would join the second group because it is closer to 9 than to 2.",
+    "usedIn": [
+      {
+        "name": "Customer segmentation",
+        "detail": "Groups customers with similar measured characteristics for exploratory analysis.",
+        "url": ""
+      },
+      {
+        "name": "Image color reduction",
+        "detail": "Groups similar colors and represents each group by a central color.",
+        "url": ""
+      },
+      {
+        "name": "Exploratory data analysis",
+        "detail": "Summarizes unlabeled numerical data as k groups for inspection.",
+        "url": ""
+      }
+    ],
+    "intuition": "Each cluster is represented by a center, and every point belongs to the cluster whose center is closest. Moving the centers to the middle of their assigned points and repeating makes the groups progressively fit that nearest-center rule.",
+    "howItWorks": [
+      "Choose k, the number of clusters.",
+      "Place one initial center for each cluster.",
+      "Assign every point to its nearest center.",
+      "Update each center from the points assigned to it.",
+      "Repeat assignment and updating until the grouping stabilizes."
+    ],
+    "whyItMatters": "Its simple assignment-and-update procedure makes it a widely used and efficient way to summarize unlabeled data. It is especially approachable because each cluster can be inspected through its center and members.",
+    "misconceptions": [
+      "K-means does not choose k automatically.",
+      "It is not designed to recover clusters of every shape; it assumes roughly spherical groups.",
+      "Cluster numbers are just labels, not a meaningful ranking."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "points",
+          "label": "Unlabeled points",
+          "note": "The data to be partitioned."
+        },
+        {
+          "id": "choose-k",
+          "label": "Choose k",
+          "note": "Set the cluster count in advance."
+        },
+        {
+          "id": "centers",
+          "label": "Initial centers",
+          "note": "Create one center per cluster."
+        },
+        {
+          "id": "assign",
+          "label": "Assign points",
+          "note": "Each point joins its nearest center."
+        },
+        {
+          "id": "update",
+          "label": "Update centers",
+          "note": "Recompute centers from cluster members."
+        },
+        {
+          "id": "clusters",
+          "label": "Final clusters",
+          "note": "Output k groups and their centers."
+        }
+      ],
+      "edges": [
+        {
+          "from": "points",
+          "to": "assign",
+          "label": ""
+        },
+        {
+          "from": "choose-k",
+          "to": "centers",
+          "label": ""
+        },
+        {
+          "from": "centers",
+          "to": "assign",
+          "label": ""
+        },
+        {
+          "from": "assign",
+          "to": "update",
+          "label": "memberships"
+        },
+        {
+          "from": "update",
+          "to": "assign",
+          "label": "repeat"
+        },
+        {
+          "from": "update",
+          "to": "clusters",
+          "label": "stabilized"
+        }
+      ],
+      "caption": "K-means alternates nearest-center assignment with center updates until the grouping stabilizes."
+    }
+  },
   "related": [
     "clustering",
     "end-to-end-learning",

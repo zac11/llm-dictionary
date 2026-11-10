@@ -5,7 +5,32 @@
   "type": "tool",
   "definition": "struc2vec is a framework to generate node vector representations on a graph that preserve the structural identity.",
   "details": "In contrast to node2vec, that optimizes node embeddings so that nearby nodes in the graph have similar embedding, struc2vec captures the roles of nodes in a graph, even if structurally similar nodes are far apart in the graph. It learns low-dimensional representations for nodes in a graph, generating random walks through a constructed multi-layer graph starting at each graph node. It is useful for machine learning applications where the downstream application is more related with the structural equivalence of the nodes (e.g., it can be used to detect nodes in networks with similar functions, such as interns in the social network of a corporation). struc2vec identifies nodes that play a similar role based solely on the structure of the graph, for example computing the structural identity of individuals in social networks. In particular, struc2vec employs a degree-based method to measure the pairwise structural role similarity, which is then adopted to build the multi-layer graph. Moreover, the distance between the latent representation of nodes is strongly correlated to their structural similarity. The framework contains three optimizations: reducing the length of degree sequences c",
-  "story": "Think of a jazz musician who has heard so many solos that a new one simply falls out of their fingers. Given a starting line, the machine imagines what comes next — a word, a note, a patch of a picture. It makes new things by recombining everything it has ever seen. Creation, here, is memory recombined at speed. That next-word, next-stroke magic is Struc2vec.",
+  "explainer": {
+    "lead": "struc2vec generates node vector representations on a graph that preserve structural identity. It matters when what a node does in the graph matters more than which nodes it sits near.",
+    "tiers": {
+      "eli5": "Like describing people by the shape of their social circle rather than who they happen to live next to.",
+      "practitioner": "Engineers use struc2vec when the downstream task depends on a node's role, running random walks through a constructed multi-layer graph from each node. Pitfall: unlike node2vec, it does not reward proximity, so it is the wrong tool when nearness is the signal.",
+      "paperLevel": "A framework learning low-dimensional node representations that preserve structural identity, generating random walks through a constructed multi-layer graph starting at each node. In contrast to node2vec, which makes nearby nodes similar, it captures node roles even when structurally similar nodes are far apart."
+    },
+    "example": "In a network of transactions, two accounts with identical connection patterns but in distant parts of the graph receive similar struc2vec embeddings, flagging them as playing the same role.",
+    "usedIn": [
+      {
+        "name": "Graph machine learning",
+        "detail": "role-based embeddings",
+        "url": ""
+      },
+      {
+        "name": "Fraud detection",
+        "detail": "structural role matching",
+        "url": ""
+      },
+      {
+        "name": "Social network analysis",
+        "detail": "node role discovery",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "a-r-d-prasad",
     "abeba-birhane",

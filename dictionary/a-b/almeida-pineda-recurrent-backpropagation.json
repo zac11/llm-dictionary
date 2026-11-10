@@ -5,7 +5,115 @@
   "type": "algorithm",
   "definition": "Almeida–Pineda recurrent backpropagation is an extension to the backpropagation algorithm that is applicable to recurrent neural networks.",
   "details": "It is a type of supervised learning. It was described somewhat cryptically in Richard Feynman's senior thesis, and rediscovered independently in the context of artificial neural networks by both Fernando Pineda and Luis B. Almeida. A recurrent neural network for this algorithm consists of some input units, some output units and eventually some hidden units. For a given set of (input, target) states, the network is trained to settle into a stable activation state with the output units in the target state, based on a given input state clamped on the input units.",
-  "story": "Think of a hiker descending a foggy hill in the dark, taking small steps and feeling for the steepest way down. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. It is the same loop you use to learn anything: try, miss, correct, try again. Skill, for a model, is just error pushed down until it is small enough to ignore. And that is Almeida–Pineda recurrent backpropagation — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "Almeida–Pineda recurrent backpropagation teaches a recurrent neural network by using examples of inputs and their desired outputs. Instead of only passing signals forward once, the network settles into a stable state, with training aimed at making that state produce the target output.",
+    "tiers": {
+      "eli5": "It is a way to teach a network that loops information back on itself by showing it examples and nudging it until its outputs settle on the right answers.",
+      "practitioner": "The network is trained to settle into a stable activation state with output units at the target values given input clamped on input units; a pitfall is that stable settling must be achieved for learning to work.",
+      "paperLevel": "A supervised learning extension of backpropagation for recurrent networks with input, output, and optionally hidden units; described in Feynman's senior thesis and rediscovered independently by Pineda and Almeida."
+    },
+    "example": "For a training pair with input state 1 and target output state 0, hold the input unit at 1 and let the recurrent network settle. If its output unit settles at 1, training adjusts the network so that repeated settling with the same clamped input brings the output state toward the target 0.",
+    "goal": "Train a recurrent neural network so that, for each clamped input, it settles into a stable activation state whose output units match the target state.",
+    "inputs": [
+      "A recurrent neural network",
+      "Input and output units",
+      "Optional hidden units",
+      "A set of input–target states"
+    ],
+    "outputs": [
+      "A trained recurrent network",
+      "A stable activation state",
+      "Output units matching the target"
+    ],
+    "steps": [
+      "Choose an input–target training pair.",
+      "Clamp the input state on the input units.",
+      "Let recurrent activation settle into a stable state.",
+      "Compare the settled output state with the target.",
+      "Train the network so settled outputs match their targets."
+    ],
+    "tradeoffs": [
+      "Requires supervised input–target pairs",
+      "Depends on stable activation settling",
+      "Inputs must remain clamped during settling",
+      "Hidden units are optional"
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "pairs",
+          "label": "Training pairs",
+          "note": "Input and target states"
+        },
+        {
+          "id": "clamp",
+          "label": "Clamped inputs",
+          "note": "Input state held fixed"
+        },
+        {
+          "id": "network",
+          "label": "Recurrent network",
+          "note": "Input, output and optional hidden units"
+        },
+        {
+          "id": "settle",
+          "label": "Stable activation",
+          "note": "Network settles into a state"
+        },
+        {
+          "id": "output",
+          "label": "Target outputs",
+          "note": "Settled outputs trained toward targets"
+        }
+      ],
+      "edges": [
+        {
+          "from": "pairs",
+          "to": "clamp",
+          "label": "input state"
+        },
+        {
+          "from": "clamp",
+          "to": "network",
+          "label": ""
+        },
+        {
+          "from": "network",
+          "to": "settle",
+          "label": "activation"
+        },
+        {
+          "from": "settle",
+          "to": "output",
+          "label": ""
+        },
+        {
+          "from": "pairs",
+          "to": "output",
+          "label": "target state"
+        }
+      ],
+      "caption": "Each clamped input drives recurrent settling, and training aligns the stable output state with its target."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Almeida–Pineda recurrent backpropagation",
+        "url": "https://en.wikipedia.org/wiki/Almeida%E2%80%93Pineda_recurrent_backpropagation"
+      }
+    ],
+    "usedIn": [
+      {
+        "name": "Recurrent neural networks",
+        "detail": "supervised training",
+        "url": ""
+      },
+      {
+        "name": "Early neural network research",
+        "detail": "recurrent learning methods",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "backpropagation",
     "a-r-d-prasad",

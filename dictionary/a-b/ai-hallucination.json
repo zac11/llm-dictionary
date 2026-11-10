@@ -5,6 +5,128 @@
   "type": "concept",
   "definition": "When an AI model generates confident, fluent output that is false or unsupported — inventing facts, citations, or details.",
   "details": "When an AI model generates confident, fluent output that is false or unsupported — inventing facts, citations, or details. Hallucinations arise because models optimize for plausible text, not verified truth, and are mitigated with retrieval grounding and citations.",
+  "explainer": {
+    "lead": "An AI hallucination is a false or misleading statement delivered as if it were fact, often inside an otherwise smooth, convincing answer. It matters because invented details and citations can be hard to spot, making unreliable AI output risky in settings such as medical diagnostics and supply-chain logistics.",
+    "tiers": {
+      "eli5": "Imagine a student who always gives a smooth, confident answer, even when they do not know, and sometimes makes up a book title to prove it. AI hallucination is like that: a computer writes something that sounds real but is false or unsupported. Looking information up and checking citations can help, but every answer still needs careful checking.",
+      "practitioner": "Treat generated claims, citations, and details as unverified, especially when the available evidence is incomplete. Ground responses with retrieval, expose supporting citations, and check that those sources actually support the claims; fluent wording and confidence are not reliability signals. Friendlier or more agreeable chatbot tuning can also reduce accuracy, and high-stakes uses require particular caution.",
+      "paperLevel": "For prompt x, let y = M(x) be a generated response; a hallucination is false or misleading content in y presented as factual. GPT-style pretraining optimizes next-word prediction, which encourages guessing when information is absent, while incomplete, inaccurate, or unrepresentative training data can introduce further errors. Detection and mitigation remain significant reliability challenges, and some researchers argue that the term anthropomorphizes statistical pattern completion."
+    },
+    "example": "When Meta's Galactica was asked to draft a paper on creating avatars, it cited a fictitious paper attributed to a real author who works in that area. The invented reference is a hallucination: the citation looks plausible, but the paper does not exist.",
+    "usedIn": [
+      {
+        "name": "ChatGPT",
+        "detail": "After its beta release in November 2022, users reported plausible-sounding falsehoods, including fabricated citations.",
+        "url": ""
+      },
+      {
+        "name": "BlenderBot 2",
+        "detail": "Meta warned in July 2021 that the system could make \"confident statements that are not true\".",
+        "url": ""
+      },
+      {
+        "name": "Galactica",
+        "detail": "Meta AI's scientific language model carried a hallucination warning and produced a fictitious citation in one reported case.",
+        "url": ""
+      },
+      {
+        "name": "Medical diagnostics",
+        "detail": "A high-stakes field where hallucinations pose a significant deployment and reliability challenge.",
+        "url": ""
+      }
+    ],
+    "intuition": "A language model is trained to produce likely continuations, not to verify every statement against reality. When its information is missing or wrong, the same fluency can carry a confident invention.",
+    "howItWorks": [
+      "Pretraining teaches the model to predict the next word, encouraging a guess even when information is missing.",
+      "Gaps, errors, or unrepresentative material in training data can supply misconceptions or fiction treated as fact.",
+      "The model weaves guesses into fluent statements, citations, or details without establishing that they are true.",
+      "Retrieval grounding and citations can reduce the risk, but detecting and mitigating hallucinations remains difficult."
+    ],
+    "whyItMatters": "Plausible errors can pass unnoticed and undermine the reliability of AI systems. This creates significant practical challenges in high-stakes settings including chip design, supply-chain logistics, and medical diagnostics.",
+    "misconceptions": [
+      "Not a conscious experience: the term is only a loose analogy with human hallucination, and some researchers consider it misleadingly anthropomorphic.",
+      "Not just obvious nonsense: plausible wording and real names can surround fabricated facts or citations.",
+      "Not fully solved by grounding: retrieval and citations help, but detection and mitigation remain significant challenges."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "prompt",
+          "label": "User prompt",
+          "note": "A question or task"
+        },
+        {
+          "id": "data",
+          "label": "Training data",
+          "note": "May contain gaps, errors, or misconceptions"
+        },
+        {
+          "id": "model",
+          "label": "LLM generation",
+          "note": "Predicts plausible next words"
+        },
+        {
+          "id": "grounding",
+          "label": "Retrieval grounding",
+          "note": "Supplies supporting material and citations"
+        },
+        {
+          "id": "answer",
+          "label": "Fluent answer",
+          "note": "Sounds confident and factual"
+        },
+        {
+          "id": "falsehood",
+          "label": "False claims",
+          "note": "Unsupported facts, details, or citations"
+        }
+      ],
+      "edges": [
+        {
+          "from": "prompt",
+          "to": "model",
+          "label": ""
+        },
+        {
+          "from": "data",
+          "to": "model",
+          "label": "learned patterns"
+        },
+        {
+          "from": "model",
+          "to": "answer",
+          "label": ""
+        },
+        {
+          "from": "grounding",
+          "to": "answer",
+          "label": "mitigates"
+        },
+        {
+          "from": "answer",
+          "to": "falsehood",
+          "label": "when unsupported"
+        }
+      ],
+      "caption": "Fluency and factual support are separate: generation can produce confident falsehoods, while grounding is a mitigation rather than a guarantee."
+    },
+    "image": {
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9c/Photoreal-train.webm/960px--Photoreal-train.webm.jpg",
+      "alt": "Hallucination (artificial intelligence) — Erroneous AI-generated content presented as true",
+      "width": 640,
+      "height": 360,
+      "credit": "Sora/OpenAI",
+      "license": "Public domain",
+      "licenseUrl": "",
+      "page": "https://commons.wikimedia.org/wiki/File:Photoreal-train.webm"
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Hallucination (artificial intelligence)",
+        "url": "https://en.wikipedia.org/wiki/Hallucination_(artificial_intelligence)"
+      }
+    ]
+  },
   "related": [
     "grounding"
   ],

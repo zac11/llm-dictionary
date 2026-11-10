@@ -5,6 +5,107 @@
   "type": "concept",
   "definition": "Extending software CI/CD with data and model gates: every change to prompts, models, or retrieval triggers the eval suite, and regressions block deployment.",
   "details": "Extending software CI/CD with data and model gates: every change to prompts, models, or retrieval triggers the eval suite, and regressions block deployment. For LLM products, the eval-in-CI loop replaces the unit-test safety net that nondeterministic outputs break.",
+  "explainer": {
+    "lead": "CI evaluation puts an AI system's evaluation suite inside its continuous integration pipeline. Changes to prompts, models, or retrieval must pass data and model quality gates before deployment, helping teams catch regressions that ordinary software tests can miss.",
+    "tiers": {
+      "eli5": "Imagine checking a robot with the same set of questions every time you adjust its instructions or memory. If it starts doing worse, you stop the change instead of letting the robot use it. This is like running a practice test before every update.",
+      "practitioner": "Engineers trigger the evaluation suite from CI/CD whenever prompts, models, or retrieval components change, then compare results with a baseline and block regressions. The main pitfalls are weak evaluation coverage, unreliable pass criteria, and treating nondeterministic outputs as if ordinary unit-test assertions were enough.",
+      "paperLevel": "For a change c affecting prompts, models, or retrieval, run evaluation suite E and compare its results with baseline b; deployment is permitted only when the configured regression gate passes: deploy(c) iff gate(E(c), E(b)) = pass. This extends CI/CD with data and model gates, but its protection is limited by suite coverage, gate design, and the nondeterminism of LLM outputs."
+    },
+    "example": "A team updates the retrieval component of a support assistant. CI runs its 100-question evaluation suite, detects a regression in billing answers, and blocks deployment until the team fixes the change and reruns the suite successfully.",
+    "usedIn": [
+      {
+        "name": "LLM products",
+        "detail": "Evaluation gates check prompt, model, and retrieval changes before release.",
+        "url": ""
+      },
+      {
+        "name": "Retrieval-based assistants",
+        "detail": "Retrieval updates trigger the evaluation suite so regressions can block deployment.",
+        "url": ""
+      },
+      {
+        "name": "Prompt-driven applications",
+        "detail": "Prompt edits are evaluated in CI rather than relying only on software unit tests.",
+        "url": ""
+      }
+    ],
+    "intuition": "A conventional unit test can check whether code runs, but it cannot reliably capture every acceptable answer from a nondeterministic LLM. CI evaluation adds a repeatable quality check that acts as a deployment gate for AI-specific changes.",
+    "howItWorks": [
+      "Keep an evaluation suite and baseline results for the current system.",
+      "Trigger the suite when prompts, models, or retrieval change.",
+      "Compare the new results against the baseline using data and model gates.",
+      "Block deployment on regressions; allow it when the gates pass."
+    ],
+    "whyItMatters": "It makes AI quality checks part of every relevant change instead of an occasional manual exercise. For LLM products, it provides a deployment safety net where nondeterministic outputs weaken the protection offered by unit tests alone.",
+    "misconceptions": [
+      "It does not replace unit tests; it adds data and model quality gates.",
+      "Passing the gates does not prove that every possible output is correct.",
+      "It is not a one-time evaluation: relevant changes trigger the suite again."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "change",
+          "label": "AI system change",
+          "note": "A prompt, model, or retrieval update."
+        },
+        {
+          "id": "ci",
+          "label": "CI pipeline",
+          "note": "The change triggers automated checks."
+        },
+        {
+          "id": "eval",
+          "label": "Evaluation suite",
+          "note": "The updated system is evaluated."
+        },
+        {
+          "id": "gates",
+          "label": "Regression gates",
+          "note": "Results are compared with the baseline."
+        },
+        {
+          "id": "block",
+          "label": "Block deployment",
+          "note": "A regression stops the release."
+        },
+        {
+          "id": "deploy",
+          "label": "Deploy change",
+          "note": "Passing gates allows release."
+        }
+      ],
+      "edges": [
+        {
+          "from": "change",
+          "to": "ci",
+          "label": "triggers"
+        },
+        {
+          "from": "ci",
+          "to": "eval",
+          "label": "runs"
+        },
+        {
+          "from": "eval",
+          "to": "gates",
+          "label": "results"
+        },
+        {
+          "from": "gates",
+          "to": "block",
+          "label": "regression"
+        },
+        {
+          "from": "gates",
+          "to": "deploy",
+          "label": "pass"
+        }
+      ],
+      "caption": "Relevant AI changes run the evaluation suite in CI, and regression gates determine whether deployment proceeds."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

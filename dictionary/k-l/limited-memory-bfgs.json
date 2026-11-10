@@ -5,7 +5,108 @@
   "type": "algorithm",
   "definition": "Limited-memory BFGS (L-BFGS or LM-BFGS) is an optimization algorithm in the collection of quasi-Newton methods that approximates the Broyden–Fletcher–Goldfarb–Shanno algorithm (BFGS) using a limited amount of computer memory.",
   "details": "It is a popular algorithm for parameter estimation in machine learning. The algorithm's target problem is to minimize f ( x ) {\\displaystyle f(\\mathbf {x} )} over unconstrained values of the real-vector x {\\displaystyle \\mathbf {x} } where f {\\displaystyle f} is a differentiable scalar function. Like the original BFGS, L-BFGS uses an estimate of the inverse Hessian matrix to steer its search through variable space, but where BFGS stores a dense n × n {\\displaystyle n\\times n} approximation to the inverse Hessian (n being the number of variables in the problem), L-BFGS stores only a few vectors that represent the approximation implicitly. Due to its resulting linear memory requirement, the L-BFGS method is particularly well suited for optimization problems with many variables. Instead of the inverse Hessian Hk, L-BFGS maintains a history of the past m updates of the position x and gradient ∇f(x), where generally the history size m can be small (often m &lt; 10 {\\displaystyle m&lt;10} ). These updates are used to implicitly do operations requiring the Hk-vector product.",
-  "story": "Imagine teaching a friend to shoot a basketball. They miss, and you walk them backwards through the shot — elbow, wrist, release — to find what needs fixing. It is the same loop you use to learn anything: try, miss, correct, try again. Underneath all the magic is a patient process of small improvements. It is learning from every miss instead of repeating the same mistake. That steady, miss-by-miss improvement is Limited-memory BFGS.",
+  "explainer": {
+    "lead": "Limited-memory BFGS is a way to find the lowest value of a smooth mathematical function without building a huge table describing its curvature. It remembers only a few recent changes in position and slope, making it useful for machine-learning problems with many adjustable parameters.",
+    "tiers": {
+      "eli5": "Imagine walking downhill in fog and trying to reach the bottom of a valley. Instead of carrying a giant map, you remember just your last few steps and how the slope changed, then use those memories to choose the next step. That small memory makes the method practical when there are lots and lots of directions you could adjust.",
+      "practitioner": "Use L-BFGS for unconstrained minimization of a differentiable objective by supplying function and gradient evaluations. A small history size m, often below 10, keeps memory linear in the number of variables while supporting implicit inverse-Hessian-vector products. It is not directly aimed at constrained or non-differentiable problems, and explicitly forming the dense n × n inverse-Hessian approximation would remove its memory advantage.",
+      "paperLevel": "L-BFGS addresses min_{x in R^n} f(x), where f is a differentiable scalar function. It approximates BFGS by retaining the last m position and gradient updates and using them to perform implicit H_k-vector products, rather than storing a dense n × n inverse-Hessian approximation H_k. Memory is therefore linear in n for a fixed small history, often m < 10; the stated problem setting is unconstrained and differentiable."
+    },
+    "example": "To minimize f(x1, x2) = (x1 - 3)^2 + 2(x2 + 1)^2, L-BFGS uses positions and gradients ∇f = (2(x1 - 3), 4(x2 + 1)) to update x1 and x2. After each update, it retains only a few recent position and gradient changes rather than a full 2 × 2 inverse-Hessian matrix. The minimum is at (x1, x2) = (3, -1), where f = 0.",
+    "usedIn": [
+      {
+        "name": "Machine learning",
+        "detail": "Parameter estimation, where the parameters are adjusted to minimize a differentiable objective.",
+        "url": ""
+      },
+      {
+        "name": "Large-scale optimization",
+        "detail": "Problems with many variables, where storing a dense n × n approximation would be impractical.",
+        "url": ""
+      }
+    ],
+    "goal": "Minimize a differentiable scalar function f(x) over unconstrained real-valued vectors x, while using much less memory than standard BFGS.",
+    "inputs": [
+      "A differentiable scalar objective f(x)",
+      "An initial real-vector position x",
+      "Gradient evaluations ∇f(x)",
+      "A history size m, often below 10"
+    ],
+    "outputs": [
+      "A position intended to minimize f(x)",
+      "A limited history of recent position and gradient updates"
+    ],
+    "steps": [
+      "Evaluate the objective and its gradient at the current position.",
+      "Keep only the most recent m position and gradient updates.",
+      "Use that history to perform the inverse-Hessian-vector operation implicitly.",
+      "Choose a new search direction and update the position.",
+      "Repeat evaluation and updating until the minimization is finished."
+    ],
+    "tradeoffs": [
+      "Memory grows linearly with the number of variables rather than requiring a dense n × n matrix.",
+      "A small m keeps storage low but retains only a short update history.",
+      "The inverse-Hessian approximation is implicit rather than a stored dense matrix.",
+      "The target setting requires a differentiable objective and unconstrained variables."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "objective",
+          "label": "Objective and gradient",
+          "note": "Evaluate f(x) and ∇f(x)."
+        },
+        {
+          "id": "history",
+          "label": "Recent update history",
+          "note": "Keep the past m position and gradient updates."
+        },
+        {
+          "id": "product",
+          "label": "Implicit matrix product",
+          "note": "Use the history instead of storing H_k densely."
+        },
+        {
+          "id": "direction",
+          "label": "Search direction",
+          "note": "Steer the next move through variable space."
+        },
+        {
+          "id": "position",
+          "label": "Updated position",
+          "note": "Move to a new real-vector x."
+        }
+      ],
+      "edges": [
+        {
+          "from": "objective",
+          "to": "history",
+          "label": "new updates"
+        },
+        {
+          "from": "history",
+          "to": "product",
+          "label": "m updates"
+        },
+        {
+          "from": "product",
+          "to": "direction",
+          "label": "steers"
+        },
+        {
+          "from": "direction",
+          "to": "position",
+          "label": "updates x"
+        },
+        {
+          "from": "position",
+          "to": "objective",
+          "label": "re-evaluate"
+        }
+      ],
+      "caption": "L-BFGS cycles between evaluating the objective and using a short update history to guide the next position."
+    }
+  },
   "related": [
     "limited-memory-ai",
     "hierarchical-temporal-memory",

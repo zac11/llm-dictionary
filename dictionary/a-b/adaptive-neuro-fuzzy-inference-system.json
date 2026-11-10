@@ -2,10 +2,94 @@
   "term": "Adaptive neuro fuzzy inference system",
   "letter": "A",
   "category": "Artificial neural networks",
-  "type": "concept",
+  "type": "architecture",
   "definition": "An adaptive neuro-fuzzy inference system or adaptive network-based fuzzy inference system (ANFIS) is a kind of artificial neural network that is based on Takagi–Sugeno fuzzy inference system, a class of fuzzy models introduced by Tomohiro Takagi and Michio Sugeno for system identification and control.",
   "details": "The technique was developed in the early 1990s. Since it integrates both neural networks and fuzzy logic principles, it has potential to capture the benefits of both in a single framework. Its inference system corresponds to a set of fuzzy IF–THEN rules that have learning capability to approximate nonlinear functions. Hence, ANFIS is considered to be a universal estimator. For using the ANFIS in a more efficient and optimal way, one can use the best parameters obtained by genetic algorithm. It has uses in intelligent situational aware energy management system.",
-  "story": "Picture an architect laying out a building where every room has to know which other rooms matter to it. The layout decides what the machine can even attempt, before it learns a single thing. It is the blueprint that makes everything else possible. It is the difference between a row of isolated cubicles and one big room where everyone can hear each other. That blueprint is Adaptive neuro fuzzy inference system.",
+  "explainer": {
+    "lead": "ANFIS is a hybrid brain that combines fuzzy logic's human-like reasoning with a neural network's ability to learn from data. It turns crisp numbers into fuzzy concepts like 'near' or 'far,' then tunes those concepts automatically to make better predictions.",
+    "tiers": {
+      "eli5": "Imagine you're deciding if a coffee is 'too hot,' 'just right,' or 'too cold.' Instead of picking exact temperatures, you use fuzzy words. ANFIS is like a robot that learns which temperatures count as 'too hot' by practicing with real cups of coffee, getting better each time—combining human-style fuzzy thinking with a computer's learning power.",
+      "practitioner": "ANFIS is typically deployed for nonlinear system identification and control problems where interpretability matters. You initialize membership functions, then use backpropagation or hybrid learning to tune premise and consequence parameters. Common pitfalls: membership function initialization strongly affects convergence, and the rule base grows exponentially with input dimensions. Genetic algorithms can optimize parameters when gradient methods stall.",
+      "paperLevel": "ANFIS implements a first-order Takagi–Sugeno fuzzy inference system as a feedforward neural network with five layers: fuzzification (membership functions), rule firing (product of membership degrees), normalization, defuzzification (linear combination of consequent parameters), and summation. The network is universal in the sense that it can approximate any continuous real function on a compact set to arbitrary accuracy, given sufficient rules. The technique was developed in the early 1990s."
+    },
+    "example": "A robot needs to judge how close it is to a wall using pixel distance (0–500). ANFIS splits this into three fuzzy neurons: 'near' (0–150), 'middle' (100–400), 'far' (350–500). For input 120 pixels, 'near' fires at 0.8 and 'middle' at 0.2. A rule might say: IF near THEN speed = 2×distance + 10. With normalized strengths, the final speed blends rule outputs—slowing smoothly as the robot approaches, with all membership boundaries learned from collision data.",
+    "usedIn": [
+      {
+        "name": "Intelligent situational aware energy management system",
+        "detail": "ANFIS optimizes energy distribution by fusing sensor data with fuzzy rules that adapt to changing load conditions.",
+        "url": ""
+      }
+    ],
+    "whyItMatters": "ANFIS offers interpretability that pure neural networks lack: you can inspect the fuzzy rules it learns. Yet it still adapts to data, making it valuable for control systems where operators need to understand and trust decisions.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Crisp input",
+          "note": "e.g., distance in pixels"
+        },
+        {
+          "id": "fuzzify",
+          "label": "Fuzzification",
+          "note": "membership functions: near, middle, far"
+        },
+        {
+          "id": "rules",
+          "label": "Rule firing",
+          "note": "compute IF–THEN rule strengths"
+        },
+        {
+          "id": "norm",
+          "label": "Normalization",
+          "note": "scale strengths to sum to 1"
+        },
+        {
+          "id": "consequent",
+          "label": "Consequence",
+          "note": "linear output per rule with params p,q,r"
+        },
+        {
+          "id": "output",
+          "label": "Crisp output",
+          "note": "final weighted sum"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "fuzzify",
+          "label": "raw value"
+        },
+        {
+          "from": "fuzzify",
+          "to": "rules",
+          "label": "memberships"
+        },
+        {
+          "from": "rules",
+          "to": "norm",
+          "label": "strengths"
+        },
+        {
+          "from": "norm",
+          "to": "consequent",
+          "label": "weights"
+        },
+        {
+          "from": "consequent",
+          "to": "output",
+          "label": "weighted outputs"
+        }
+      ],
+      "caption": "ANFIS processes data through five fixed layers: fuzzification converts numbers to degrees of membership, rules combine these into firing strengths, normalization balances their influence, consequent layers compute rule outputs, and the final layer sums them into one crisp result."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Adaptive neuro fuzzy inference system",
+        "url": "https://en.wikipedia.org/wiki/Adaptive_neuro_fuzzy_inference_system"
+      }
+    ]
+  },
   "related": [
     "inference",
     "neuro-fuzzy",

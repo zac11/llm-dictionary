@@ -5,6 +5,32 @@
   "type": "concept",
   "definition": "The deployed service wrapping a model with an API, batching, scheduling, and scaling (vLLM/SGLang behind a gateway, TensorRT-LLM/Triton stacks, managed endpoints).",
   "details": "The deployed service wrapping a model with an API, batching, scheduling, and scaling (vLLM/SGLang behind a gateway, TensorRT-LLM/Triton stacks, managed endpoints). The unit of production capacity planning.",
+  "explainer": {
+    "lead": "An inference server is the deployed service that wraps a model with an API, batching, scheduling, and scaling. It is the unit of production capacity planning — the thing you actually count when budgeting compute.",
+    "tiers": {
+      "eli5": "It's the counter at a shop: customers send orders, the server queues and batches them, and the kitchen (the model) fills them efficiently.",
+      "practitioner": "Engineers deploy stacks like vLLM or SGLang behind a gateway, or TensorRT-LLM/Triton or managed endpoints, and tune batching and scheduling for throughput. The pitfall is optimizing throughput at the cost of latency for individual requests.",
+      "paperLevel": "Defined operationally as the service layer combining a model with an API, request batching, scheduling, and scaling. Capacity planning is done at the granularity of the server rather than the bare model."
+    },
+    "example": "A team running an LLM behind vLLM batches incoming requests to raise throughput, then measures server count to plan how much capacity to provision.",
+    "usedIn": [
+      {
+        "name": "vLLM",
+        "detail": "batching and scheduling",
+        "url": ""
+      },
+      {
+        "name": "TensorRT-LLM",
+        "detail": "optimized serving stack",
+        "url": ""
+      },
+      {
+        "name": "Managed endpoints",
+        "detail": "hosted deployment",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "sglang",
     "tensorrt",

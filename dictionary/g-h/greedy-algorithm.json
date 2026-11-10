@@ -5,7 +5,118 @@
   "type": "algorithm",
   "definition": "A greedy algorithm is an algorithm which, at each step, makes the choice that is locally optimal, and subsequently does not reconsider past choices.",
   "details": "Greedy algorithms are often used to solve combinatorial optimization problems. If an optimization problem only depends on the partial solution of solving it for one subproblem, we can solve this problem by \"greedily\" considering only the locally optimal subproblem. In this sense, a greedy algorithm is a special case of a dynamic programming algorithm. Uriel Feige notes that: [Greedy algorithms] may be viewed as the ultimate form of dynamic programming, in which only one partial solution is maintained. The problem needs to have much more structure for this approach to work. In many cases, a greedy algorithm does not produce an exact solution, but can yield solutions that approximate an exact solution in a reasonable amount of time. An example of a problem which admits an exact greedy solution, the activity selection problem. Given a collection of tasks which can be done between allotted time intervals, the problem is to determine the maximum number of tasks that can be done. A greedy algorithm in O ( n log ⁡ ( n ) ) {\\displaystyle O(n\\log(n))} which solves this problem sorts the tasks by the end time and then repeatedly chooses the first task that begins after the last task ended. Many classic algorithms in computer science such as the Huffman coding algorithm, Prim's algorithm, Kruskal's algorithm, and Dijkstra's algorithm all use greedy properties in their design. Mathematicians frequently use greedy strategies in proofs as well. A classic example is what Raphael Yuster refers to as the greedy proof that every tournament contains a Hamiltonian path.",
-  "story": "Picture an engineer at a cluttered workbench, turning a clever idea over in their hands until it finally clicks. At its heart it is a simple notion, once you strip away the fancy name. A small key that opens a much bigger door. It is one of those ideas that feels obvious only after someone shows it to you. That is Greedy algorithm — a small key that opens a big door.",
+  "explainer": {
+    "lead": "A greedy algorithm builds a solution one choice at a time, always taking the option that looks best right then. It never reconsiders earlier choices, which can make it fast and simple, but it only guarantees an exact answer for problems with suitable structure.",
+    "tiers": {
+      "eli5": "Imagine packing your day with activities: each time you finish one, pick the next activity that ends soonest and fits. You keep going without changing your earlier picks. This simple rule can pack in the most activities, but the same “best right now” approach does not always give the best answer to other problems.",
+      "practitioner": "Greedy methods are common in combinatorial optimization, including Huffman coding, Prim's and Kruskal's algorithms, and Dijkstra's algorithm. For activity selection, sort tasks by end time and repeatedly take the first compatible task, giving O(n log n) time. The main pitfall is assuming local optimality implies a globally optimal result; without the required problem structure, the result may be inexact or only an approximation.",
+      "paperLevel": "At step t, a greedy algorithm selects a locally optimal extension of its current partial solution and never revises earlier selections. It can be viewed as a restricted dynamic-programming procedure that maintains only one partial solution, but exactness requires substantially more problem structure. When exactness is unavailable, a greedy procedure may still provide an approximate solution in reasonable time."
+    },
+    "example": "For tasks A = 9–10, B = 10–12, C = 11–13, and D = 12–14, sort by end time: A, B, C, D. Choose A, then B because it starts when A ends, skip C because it overlaps B, and choose D; the result is A, B, D, for a maximum of three tasks.",
+    "usedIn": [
+      {
+        "name": "Huffman coding",
+        "detail": "Uses greedy choices in its algorithm design.",
+        "url": ""
+      },
+      {
+        "name": "Prim's algorithm",
+        "detail": "A classic algorithm built around greedy properties.",
+        "url": ""
+      },
+      {
+        "name": "Kruskal's algorithm",
+        "detail": "Another classic algorithm using greedy properties.",
+        "url": ""
+      },
+      {
+        "name": "Dijkstra's algorithm",
+        "detail": "Uses greedy properties as part of its design.",
+        "url": ""
+      }
+    ],
+    "goal": "Build a solution through locally optimal choices, seeking either an exact answer or a useful approximation without revisiting earlier decisions.",
+    "inputs": [
+      "A set of candidate choices",
+      "A local optimality rule",
+      "Constraints on compatible choices"
+    ],
+    "outputs": [
+      "One constructed solution",
+      "An exact or approximate result"
+    ],
+    "steps": [
+      "Start with an empty partial solution.",
+      "Evaluate the choices allowed by the constraints.",
+      "Select the locally optimal choice.",
+      "Add it without reconsidering past choices.",
+      "Repeat until no further choice is allowed."
+    ],
+    "tradeoffs": [
+      "Simple decision procedure",
+      "No backtracking or revision",
+      "May not find an exact optimum",
+      "Can provide a timely approximation",
+      "Exactness needs suitable problem structure"
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "tasks",
+          "label": "Task intervals",
+          "note": "Candidate activities with start and end times."
+        },
+        {
+          "id": "sort",
+          "label": "Sort end times",
+          "note": "Order tasks from earliest to latest finish."
+        },
+        {
+          "id": "scan",
+          "label": "Scan tasks",
+          "note": "Inspect each task in sorted order."
+        },
+        {
+          "id": "choose",
+          "label": "Choose compatible",
+          "note": "Take the first task starting after the last finish."
+        },
+        {
+          "id": "solution",
+          "label": "Selected schedule",
+          "note": "Output the maximum set of non-overlapping tasks."
+        }
+      ],
+      "edges": [
+        {
+          "from": "tasks",
+          "to": "sort",
+          "label": "intervals"
+        },
+        {
+          "from": "sort",
+          "to": "scan",
+          "label": "ordered tasks"
+        },
+        {
+          "from": "scan",
+          "to": "choose",
+          "label": "next task"
+        },
+        {
+          "from": "choose",
+          "to": "scan",
+          "label": "repeat"
+        },
+        {
+          "from": "choose",
+          "to": "solution",
+          "label": "selections"
+        }
+      ],
+      "caption": "Activity selection uses one greedy rule: earliest finishing compatible task first."
+    }
+  },
   "related": [
     "actor-critic-algorithm",
     "algorithm-imed",

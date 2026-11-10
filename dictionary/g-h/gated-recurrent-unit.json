@@ -2,13 +2,117 @@
   "term": "Gated Recurrent Unit",
   "letter": "G",
   "category": "Architecture",
-  "type": "concept",
+  "type": "architecture",
   "aka": [
     "GRU"
   ],
   "definition": "A simplified variant of the LSTM that uses fewer gates while still addressing long-range dependency issues in sequence modeling.",
   "details": "GRUs merge the LSTM's forget and input gates into a single update gate, offering comparable performance with fewer parameters in many tasks.",
-  "story": "Imagine a factory floor where each workstation can glance at every other workstation before doing its part. It is the blueprint that makes everything else possible. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. Structure decides what the model can even express — the blueprint before the bricks. That blueprint is Gated Recurrent Unit.",
+  "explainer": {
+    "lead": "A Gated Recurrent Unit (GRU) is a compact neural network design for modeling sequences, where earlier context can affect later outputs. It simplifies the LSTM by combining two of its gates into one, often delivering comparable results with fewer parameters.",
+    "tiers": {
+      "eli5": "It's like a memory notebook that only has one switch deciding what to keep from the past and what to add, instead of several switches.",
+      "practitioner": "Engineers drop GRUs into sequence models when they want LSTM-like performance at lower cost. The pitfall is assuming the saving always holds, since comparable performance depends on the task.",
+      "paperLevel": "A GRU merges the LSTM's forget and input gates into a single update gate; the formal specification is the gate equations controlling reset and update. Fewer parameters is the known trade-off, not a guaranteed accuracy gain."
+    },
+    "usedIn": [
+      {
+        "name": "Sequence modeling",
+        "detail": "Processing ordered inputs when useful context may come from earlier positions.",
+        "url": ""
+      },
+      {
+        "name": "Long-range dependency tasks",
+        "detail": "Modeling relationships between distant parts of a sequence with a compact recurrent design.",
+        "url": ""
+      },
+      {
+        "name": "Parameter-conscious recurrent models",
+        "detail": "Serving as an LSTM alternative when reducing the number of parameters is desirable.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Update gate: combines the roles of the LSTM's input and forget gates.",
+        "detail": ""
+      },
+      {
+        "name": "Recurrent state: carries information from one sequence position to the next.",
+        "detail": ""
+      },
+      {
+        "name": "Compact parameterization: uses fewer parameters than the corresponding LSTM design.",
+        "detail": ""
+      }
+    ],
+    "flow": [
+      "The unit receives the next item in the sequence along with state from earlier steps.",
+      "Its update gate controls how that state is revised.",
+      "The revised state is passed forward so later sequence items can use earlier context.",
+      "The process repeats across the sequence."
+    ],
+    "lineage": "The GRU is a simplified variant of the LSTM. It merges the LSTM's forget and input gates into one update gate, reducing the gating structure and parameter count while retaining the goal of addressing long-range dependencies.",
+    "whyItMatters": "GRUs offer a practical trade-off: a simpler recurrent architecture that can match LSTM performance on many tasks while requiring fewer parameters. That makes them useful when sequence context matters but model size is a concern.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "sequence-item",
+          "label": "Sequence item",
+          "note": "The next element in the ordered input."
+        },
+        {
+          "id": "previous-state",
+          "label": "Previous state",
+          "note": "Context carried from earlier sequence positions."
+        },
+        {
+          "id": "gru-cell",
+          "label": "GRU cell",
+          "note": "A compact recurrent unit with fewer parameters than an LSTM."
+        },
+        {
+          "id": "update-gate",
+          "label": "Update gate",
+          "note": "Combines the LSTM input and forget gate roles."
+        },
+        {
+          "id": "new-state",
+          "label": "Updated state",
+          "note": "Revised context passed to the next sequence step."
+        }
+      ],
+      "edges": [
+        {
+          "from": "sequence-item",
+          "to": "gru-cell",
+          "label": "current input"
+        },
+        {
+          "from": "previous-state",
+          "to": "gru-cell",
+          "label": "earlier context"
+        },
+        {
+          "from": "gru-cell",
+          "to": "update-gate",
+          "label": "controls update"
+        },
+        {
+          "from": "update-gate",
+          "to": "new-state",
+          "label": "revises state"
+        },
+        {
+          "from": "new-state",
+          "to": "gru-cell",
+          "label": "next step"
+        }
+      ],
+      "caption": "At each sequence step, the GRU combines current input with earlier state and uses its update gate to revise the context passed forward."
+    },
+    "example": "A team modeling short sensor sequences picks a GRU over an LSTM and trains it faster because it has fewer parameters to update."
+  },
   "related": [
     "gelu",
     "mixture-of-experts",

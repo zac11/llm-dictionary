@@ -5,7 +5,113 @@
   "type": "dataset",
   "definition": "Classic monolingual Word Sense Disambiguation evaluation tasks uses WordNet as its sense inventory and is largely based on supervised / semi-supervised classification with the manually sense annotated corpora: Classic English WSD uses the Princeton WordNet as it sense inventory and the primary classification input is normally based on the SemCor corpus.",
   "details": "Classical WSD for other languages uses their respective WordNet as sense inventories and sense annotated corpora tagged in their respective languages. Often researchers will also tapped on the SemCor corpus and aligned bitexts with English as its source language",
-  "story": "Picture a scoreboard at a science fair: you need a fair, agreed way to tell who actually won. A fair scoreboard keeps everyone honest. Before trusting a machine, someone has to measure how good it really is — fairly and honestly. A good metric is a ruler that does not bend when you lean on it. That shared ruler is Classic monolingual word-sense disambiguation.",
+  "explainer": {
+    "lead": "Classic monolingual word-sense disambiguation is an evaluation setup for choosing the intended dictionary meaning of a word in one language. It matters because words such as “bank” can have several meanings, and a system must use context to select the right WordNet sense.",
+    "tiers": {
+      "eli5": "Imagine a word is a chameleon whose meaning changes with the sentence around it. This task tests whether a computer can pick the right meaning, using examples whose meanings people have already labelled. If it labels 84 out of 100 examples correctly, it gets 84%.",
+      "practitioner": "Train or tune a supervised or semi-supervised classifier on manually sense-annotated text, using SemCor as the usual primary input for classic English WSD and Princeton WordNet as its sense inventory. Evaluate predicted senses against manual annotations; for other languages, use the corresponding WordNet and language-specific annotated corpus, optionally adding SemCor and English-source aligned bitexts. Keep the sense labels and evaluation language consistent rather than treating every WordNet or corpus as interchangeable.",
+      "paperLevel": "Given a monolingual target-word occurrence x and a WordNet sense inventory S, learn a classifier f(x) -> s using manually sense-annotated corpora, with supervised or semi-supervised training. On n evaluated occurrences, accuracy = sum_i 1[f(x_i) = y_i] / n, where y_i is the manual gold sense. The setup depends on the chosen language’s WordNet and annotated data; aligned bitexts may supplement, but do not replace, that monolingual evaluation framing."
+    },
+    "example": "Suppose a test set contains 100 occurrences of ambiguous words, including “bank” in sentences about money and rivers. If the classifier selects the gold WordNet sense for 84 occurrences, its accuracy is 84 / 100 = 0.84, or 84%.",
+    "usedIn": [
+      {
+        "name": "English word-sense disambiguation",
+        "detail": "Uses Princeton WordNet senses, with SemCor normally providing the primary annotated classification input.",
+        "url": ""
+      },
+      {
+        "name": "Multilingual word-sense disambiguation",
+        "detail": "Other languages use their respective WordNets and sense-annotated corpora.",
+        "url": ""
+      },
+      {
+        "name": "Cross-lingual corpus research",
+        "detail": "Researchers may also use SemCor and English-source aligned bitexts as supporting resources.",
+        "url": ""
+      }
+    ],
+    "measures": "It measures how often a system assigns the manually annotated WordNet sense to a target-word occurrence. The evaluation is monolingual: English uses Princeton WordNet, while other languages use their respective WordNet inventories.",
+    "howScored": [
+      "Read each target word in its sentence context.",
+      "Predict one sense from the applicable WordNet inventory.",
+      "Compare the prediction with the manual sense annotation.",
+      "Report the fraction of evaluated occurrences labelled correctly."
+    ],
+    "formula": "accuracy = number of correctly disambiguated occurrences / total evaluated occurrences",
+    "caveats": [
+      "Results depend on the language’s WordNet sense inventory.",
+      "Scores reflect performance on manually annotated corpora.",
+      "SemCor is the usual primary input for classic English WSD, not a universal corpus for every language.",
+      "Aligned bitexts are optional supporting resources, not a required part of every setup."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "text",
+          "label": "Target-word occurrences",
+          "note": "Words presented in monolingual sentence contexts."
+        },
+        {
+          "id": "corpus",
+          "label": "Annotated corpus",
+          "note": "SemCor for classic English WSD; other languages use their own corpora."
+        },
+        {
+          "id": "wordnet",
+          "label": "WordNet senses",
+          "note": "Princeton WordNet for English, or the respective language’s WordNet."
+        },
+        {
+          "id": "classifier",
+          "label": "WSD classifier",
+          "note": "Learns through supervised or semi-supervised classification."
+        },
+        {
+          "id": "prediction",
+          "label": "Predicted senses",
+          "note": "One selected sense for each evaluated occurrence."
+        },
+        {
+          "id": "score",
+          "label": "Gold comparison",
+          "note": "Manual annotations determine the accuracy score."
+        }
+      ],
+      "edges": [
+        {
+          "from": "corpus",
+          "to": "classifier",
+          "label": "training examples"
+        },
+        {
+          "from": "wordnet",
+          "to": "classifier",
+          "label": "sense labels"
+        },
+        {
+          "from": "text",
+          "to": "classifier",
+          "label": "contexts"
+        },
+        {
+          "from": "classifier",
+          "to": "prediction",
+          "label": ""
+        },
+        {
+          "from": "prediction",
+          "to": "score",
+          "label": ""
+        },
+        {
+          "from": "corpus",
+          "to": "score",
+          "label": "gold senses"
+        }
+      ],
+      "caption": "Classic monolingual WSD learns from sense-annotated text and evaluates WordNet sense predictions against manual annotations."
+    }
+  },
   "related": [
     "word-sense-disambiguation",
     "word-sense-induction",

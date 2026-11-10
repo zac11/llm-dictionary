@@ -5,6 +5,108 @@
   "type": "concept",
   "definition": "Reinforcement learning tasks with continuous action spaces — torques, steering angles — benchmarked in MuJoCo and DeepMind Control Suite.",
   "details": "Reinforcement learning tasks with continuous action spaces — torques, steering angles — benchmarked in MuJoCo and DeepMind Control Suite.",
+  "explainer": {
+    "lead": "Continuous control is about choosing actions that can take any value within a range, such as exactly how far to turn a wheel or how much torque to apply. It matters because many physical systems need finely adjusted commands rather than a choice between a few fixed buttons.",
+    "tiers": {
+      "eli5": "Imagine steering a toy car with a wheel you can turn by any amount, instead of buttons marked only “left” and “right.” Continuous control is learning how to make those tiny, smooth adjustments. A learning program tries different steering or motor settings, sees what happens, and gradually gets better.",
+      "practitioner": "Continuous-control agents output real-valued action vectors, commonly representing joint torques or steering angles. MuJoCo and DeepMind Control Suite provide standard benchmark settings; implementations should respect actuator limits and check how action scaling affects learning. A useful evaluation looks beyond reward at whether the resulting behavior is stable and suitably controlled.",
+      "paperLevel": "Continuous control refers to reinforcement-learning problems with a continuous action space, typically A as a subset of R^d, where a policy produces a real-valued action a = pi(s). Examples include vectors of joint torques and scalar steering angles. MuJoCo and DeepMind Control Suite are common benchmarks for these tasks."
+    },
+    "example": "For a simulated steering task, the agent might output a steering angle of 0.15 radians. The simulator turns the wheels by that amount, returns the vehicle’s new state and a reward, and the agent uses the result to improve its next steering command.",
+    "usedIn": [
+      {
+        "name": "MuJoCo",
+        "detail": "A benchmark setting for reinforcement-learning tasks with continuous actions such as joint torques.",
+        "url": ""
+      },
+      {
+        "name": "DeepMind Control Suite",
+        "detail": "A collection of tasks used to benchmark learning with continuous control signals.",
+        "url": ""
+      },
+      {
+        "name": "Robotics research",
+        "detail": "Continuous motor commands provide a natural way to represent finely varying joint torques.",
+        "url": ""
+      },
+      {
+        "name": "Vehicle-control research",
+        "detail": "Steering angles can be represented as real-valued actions rather than discrete left-or-right choices.",
+        "url": ""
+      }
+    ],
+    "intuition": "Discrete control is like choosing from labeled buttons; continuous control is like moving a dial to any position within its range. The learner must choose both the kind of adjustment and its precise amount.",
+    "howItWorks": [
+      "The agent observes the current state of the system.",
+      "Its policy produces a real-valued action, such as a torque vector or steering angle.",
+      "The environment applies that action and changes state.",
+      "The agent receives a reward and a new observation.",
+      "Across repeated attempts, it adjusts its policy to improve future rewards."
+    ],
+    "whyItMatters": "It lets reinforcement learning represent the graded commands used by motors and steering systems. Shared benchmarks such as MuJoCo and DeepMind Control Suite also make different learning methods easier to compare on the same kinds of tasks.",
+    "misconceptions": [
+      "Continuous control describes the action space, not whether time itself is continuous.",
+      "Offering many discrete action choices does not make the action space continuous.",
+      "A real-valued action still has practical limits, such as a maximum motor torque or steering angle."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "state",
+          "label": "Current state",
+          "note": "Observations from the environment"
+        },
+        {
+          "id": "policy",
+          "label": "Control policy",
+          "note": "Chooses real-valued commands"
+        },
+        {
+          "id": "action",
+          "label": "Continuous action",
+          "note": "Torques or steering angles"
+        },
+        {
+          "id": "environment",
+          "label": "Environment",
+          "note": "Applies the command and updates"
+        },
+        {
+          "id": "feedback",
+          "label": "Reward and state",
+          "note": "Feedback for the next decision"
+        }
+      ],
+      "edges": [
+        {
+          "from": "state",
+          "to": "policy",
+          "label": "observation"
+        },
+        {
+          "from": "policy",
+          "to": "action",
+          "label": "outputs"
+        },
+        {
+          "from": "action",
+          "to": "environment",
+          "label": "applied"
+        },
+        {
+          "from": "environment",
+          "to": "feedback",
+          "label": "returns"
+        },
+        {
+          "from": "feedback",
+          "to": "state",
+          "label": "next step"
+        }
+      ],
+      "caption": "The control loop repeats: observations lead to real-valued actions, and the environment returns a new state and reward."
+    }
+  },
   "related": [
     "reinforcement-learning"
   ],

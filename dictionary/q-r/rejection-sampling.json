@@ -8,6 +8,32 @@
   ],
   "definition": "Generating N candidate responses and keeping the best according to a reward model or verifier, either for serving (better answers at N-times cost) or for creating high-quality SFT data from the model's own best outputs.",
   "details": "Generating N candidate responses and keeping the best according to a reward model or verifier, either for serving (better answers at N-times cost) or for creating high-quality SFT data from the model's own best outputs.",
+  "explainer": {
+    "lead": "Rejection sampling here means generating N candidate responses and keeping the best one according to a reward model or verifier. It matters because it raises answer quality at N-times the cost, or produces high-quality supervised fine-tuning data from the model's own best outputs.",
+    "tiers": {
+      "eli5": "Ask the model for several answers, then have a judge pick the best one—either to show the user or to use as a training example.",
+      "practitioner": "Engineers sample N outputs and score them with a verifier, selecting the top one for serving or for building SFT data. The pitfall is cost scaling linearly with N while gains diminish, and a weak verifier can pick confidently wrong answers.",
+      "paperLevel": "Given N samples from the model and a scoring function, the method returns the sample with the highest score. Quality is bounded by the verifier's accuracy and by N; cost grows with N."
+    },
+    "example": "A system samples 16 responses to a question, scores each with a reward model, and returns the highest-scoring one.",
+    "usedIn": [
+      {
+        "name": "LLM serving",
+        "detail": "best-of-N answers",
+        "url": ""
+      },
+      {
+        "name": "SFT data generation",
+        "detail": "selecting model outputs",
+        "url": ""
+      },
+      {
+        "name": "Reward-model pipelines",
+        "detail": "verifier-based selection",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "reward-model"
   ],

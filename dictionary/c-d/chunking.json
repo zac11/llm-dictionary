@@ -5,7 +5,108 @@
   "type": "concept",
   "definition": "The process of splitting long documents or text into smaller segments for processing, indexing, or inclusion in a model's context.",
   "details": "Chunking strategy (size, overlap, and boundaries) significantly affects retrieval quality in RAG systems, since chunks that are too large may dilute relevance while chunks that are too small may lose important context.",
-  "story": "Picture an engineer at a cluttered workbench, turning a clever idea over in their hands until it finally clicks. At its heart it is a simple notion, once you strip away the fancy name. A small key that opens a much bigger door. It is one of those ideas that feels obvious only after someone shows it to you. And that idea, made concrete, is Chunking.",
+  "explainer": {
+    "lead": "Chunking breaks a long document into smaller pieces so each piece can be searched, stored, or passed to a model on its own. The way those pieces are sized and separated can determine whether a system finds the right information and keeps enough context to use it well.",
+    "tiers": {
+      "eli5": "You cut a long book into labelled sections so you can look things up without rereading the whole thing.",
+      "practitioner": "Engineers tune chunk size, overlap and boundaries before indexing documents for RAG. The pitfall is a trade-off: oversized chunks dilute relevance, while undersized chunks lose important context.",
+      "paperLevel": "Defined by three parameters, size, overlap and boundary placement, which significantly affect retrieval quality in RAG systems. Known limit: no single setting avoids both relevance dilution and context loss."
+    },
+    "example": "A support team splits a 40-page troubleshooting guide into 300-word passages with 40 words of overlap. A retrieval system can then return the passage about resetting a device without including the whole guide, while the overlap helps preserve instructions that cross a boundary.",
+    "usedIn": [
+      {
+        "name": "Retrieval-augmented generation",
+        "detail": "Documents are divided into retrievable passages whose size and overlap affect the relevance of retrieved context.",
+        "url": ""
+      },
+      {
+        "name": "Document indexing",
+        "detail": "Long texts are stored as smaller segments that can be processed and searched individually.",
+        "url": ""
+      },
+      {
+        "name": "Model context preparation",
+        "detail": "Selected passages can be included in a model's context instead of an entire long document.",
+        "url": ""
+      }
+    ],
+    "intuition": "A chunk should be small enough to focus on a useful part of a document, but large enough to preserve the meaning around it. Chunking is therefore a balancing act, not simply cutting text at a fixed interval.",
+    "howItWorks": [
+      "Start with a document that is too long to process or include as a whole.",
+      "Choose a chunk size and decide where boundaries should fall.",
+      "Split the document into segments, adding overlap when neighboring chunks need shared context.",
+      "Process or index the chunks for later retrieval.",
+      "Place relevant retrieved chunks into the model's context."
+    ],
+    "whyItMatters": "Chunking directly shapes what a retrieval system can find and what context a model receives. Poor choices can bury a relevant fact inside unrelated material or separate it from information needed to understand it.",
+    "misconceptions": [
+      "Smaller chunks are not always better: they can lose essential surrounding context.",
+      "Bigger chunks are not automatically more informative: they can dilute relevance.",
+      "Chunking does not itself retrieve information or generate an answer; it prepares text for those later steps."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "document",
+          "label": "Long document",
+          "note": "The full text to process"
+        },
+        {
+          "id": "strategy",
+          "label": "Chunking strategy",
+          "note": "Size, overlap, and boundaries"
+        },
+        {
+          "id": "chunks",
+          "label": "Text chunks",
+          "note": "Smaller searchable segments"
+        },
+        {
+          "id": "index",
+          "label": "Search index",
+          "note": "Chunks prepared for retrieval"
+        },
+        {
+          "id": "matches",
+          "label": "Relevant chunks",
+          "note": "Passages selected for a query"
+        },
+        {
+          "id": "context",
+          "label": "Model context",
+          "note": "Selected text supplied to the model"
+        }
+      ],
+      "edges": [
+        {
+          "from": "document",
+          "to": "strategy",
+          "label": "split using"
+        },
+        {
+          "from": "strategy",
+          "to": "chunks",
+          "label": "produces"
+        },
+        {
+          "from": "chunks",
+          "to": "index",
+          "label": "indexed"
+        },
+        {
+          "from": "index",
+          "to": "matches",
+          "label": "retrieves"
+        },
+        {
+          "from": "matches",
+          "to": "context",
+          "label": "included in"
+        }
+      ],
+      "caption": "In a RAG workflow, chunking turns a long document into indexed segments, relevant ones of which are later added to the model's context."
+    }
+  },
   "related": [
     "overlap-in-chunking",
     "semantic-chunking",

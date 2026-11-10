@@ -5,6 +5,32 @@
   "type": "concept",
   "definition": "Residual connections, or shortcuts, help to avoid the vanishing gradient problem in deep networks by allowing gradients to flow through a shortcut path.",
   "details": "Residual connections, or shortcuts, help to avoid the vanishing gradient problem in deep networks by allowing gradients to flow through a shortcut path. They are used extensively in deep residual networks (ResNets).",
+  "explainer": {
+    "lead": "Residual connections let a network pass information and gradients straight past a block, which is what makes very deep networks trainable at all. Without them, gradients shrink as they propagate through many layers and learning stalls.",
+    "tiers": {
+      "eli5": "Imagine a staircase with a side ramp at every step: if a step is hard to climb, you can take the ramp instead, so you keep moving instead of getting stuck.",
+      "practitioner": "Engineers insert the shortcut into blocks as x + f(x), often with a projection when input and output shapes differ. A common pitfall is mismatched dimensions or loss of the shortcut if a nonlinearity is applied on the shortcut path.",
+      "paperLevel": "The motif is x ↦ f(x) + x, where f is an arbitrary neural network module. Its known function is to allow gradients to flow through a shortcut path, mitigating the vanishing gradient problem in deep networks; the definition does not guarantee performance on its own."
+    },
+    "example": "A block computes f(x) with two stacked layers and adds the original input x, so the layer output feeds forward and the input is carried around it.",
+    "usedIn": [
+      {
+        "name": "ResNets",
+        "detail": "used extensively",
+        "url": ""
+      },
+      {
+        "name": "Transformer models",
+        "detail": "common motif",
+        "url": ""
+      },
+      {
+        "name": "AlphaFold",
+        "detail": "common motif",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "vanishing-gradient-problem"
   ],

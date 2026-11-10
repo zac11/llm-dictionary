@@ -5,7 +5,108 @@
   "type": "concept",
   "definition": "Extremal Ensemble Learning (EEL) is a machine learning algorithmic paradigm for graph partitioning.",
   "details": "EEL creates an ensemble of partitions and then uses information contained in the ensemble to find new and improved partitions. The ensemble evolves and learns how to form improved partitions through extremal updating procedure. The final solution is found by achieving consensus among its member partitions about what the optimal partition is.",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. And that idea, made concrete, is Extremal Ensemble Learning.",
+  "explainer": {
+    "lead": "Extremal Ensemble Learning tackles graph partitioning by improving a collection of candidate partitions instead of relying on just one. It repeatedly updates that collection and finishes by forming a single answer through consensus among its members.",
+    "tiers": {
+      "eli5": "Like a group splitting up a neighbourhood into zones, then pooling everyone's maps to draw a better one that most of them agree on.",
+      "practitioner": "Engineers build an ensemble of partitions and use the information it contains to generate new, improved partitions through an extremal updating procedure, then pick the final solution by consensus among members. The pitfall is the cost of maintaining and updating many candidate partitions.",
+      "paperLevel": "EEL creates an ensemble of partitions, evolves it via an extremal updating procedure to learn how to form improved partitions, and takes the final solution as the consensus among member partitions about the optimal partition. No formal convergence guarantee is specified."
+    },
+    "example": "Suppose nodes A through F must be divided into two groups, and two initial candidates are {A,B,C}|{D,E,F} and {A,B,D}|{C,E,F}. EEL uses information across such candidates during extremal updating; if the improved members converge on {A,B,C}|{D,E,F}, that consensus becomes the final partition.",
+    "intuition": "Different candidate partitions can contain useful clues about a better division of a graph. EEL treats those candidates as an evolving ensemble, using their collective information to improve them before seeking agreement on a final partition.",
+    "howItWorks": [
+      "Create an ensemble of candidate partitions of the graph.",
+      "Extract useful information from the ensemble.",
+      "Apply the extremal updating procedure to form improved partitions.",
+      "Repeat the ensemble-based improvement process.",
+      "Produce the final partition through consensus among the members."
+    ],
+    "whyItMatters": "EEL provides a way to refine graph partitions using an evolving population of solutions rather than depending on a single initial partition. Its consensus step then turns the improved ensemble into one final answer.",
+    "misconceptions": [
+      "It is not just voting among a fixed set of partitions; the ensemble evolves through extremal updates.",
+      "It is a graph-partitioning paradigm, not a general method for combining predictive models.",
+      "Consensus among members is not, by itself, a guarantee of global optimality."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "graph",
+          "label": "Input graph",
+          "note": "The graph to be partitioned."
+        },
+        {
+          "id": "ensemble",
+          "label": "Partition ensemble",
+          "note": "Multiple candidate partitions."
+        },
+        {
+          "id": "information",
+          "label": "Ensemble information",
+          "note": "Clues drawn from the candidates."
+        },
+        {
+          "id": "update",
+          "label": "Extremal updating",
+          "note": "Uses ensemble information to improve partitions."
+        },
+        {
+          "id": "improved",
+          "label": "Improved ensemble",
+          "note": "The evolving set of better partitions."
+        },
+        {
+          "id": "consensus",
+          "label": "Consensus partition",
+          "note": "The final solution agreed by members."
+        }
+      ],
+      "edges": [
+        {
+          "from": "graph",
+          "to": "ensemble",
+          "label": "initialize"
+        },
+        {
+          "from": "ensemble",
+          "to": "information",
+          "label": "analyze"
+        },
+        {
+          "from": "information",
+          "to": "update",
+          "label": "guide"
+        },
+        {
+          "from": "update",
+          "to": "improved",
+          "label": "improve"
+        },
+        {
+          "from": "improved",
+          "to": "information",
+          "label": "repeat"
+        },
+        {
+          "from": "improved",
+          "to": "consensus",
+          "label": "agree"
+        }
+      ],
+      "caption": "EEL evolves an ensemble through extremal updates and returns a consensus partition."
+    },
+    "usedIn": [
+      {
+        "name": "Graph partitioning",
+        "detail": "consensus-based partitioning",
+        "url": ""
+      },
+      {
+        "name": "Combinatorial optimisation",
+        "detail": "ensembles of candidate solutions",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "ensemble-learning",
     "algorithmic-learning-theory",

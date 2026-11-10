@@ -5,7 +5,92 @@
   "type": "concept",
   "definition": "A phenomenon where gradients grow uncontrollably large during backpropagation, destabilizing training.",
   "details": "Exploding gradients are commonly addressed with gradient clipping, careful initialization, and normalization layers.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. That steady, miss-by-miss improvement is Exploding Gradient Problem.",
+  "explainer": {
+    "lead": "The exploding gradient problem happens when the signals used to update a neural network become enormous during training. Instead of making steady improvements, the network can take wild steps that destabilize learning, so engineers often limit gradients and design networks to keep them controlled.",
+    "tiers": {
+      "eli5": "Imagine adjusting a toy using instructions that get louder each time: first a whisper, then a shout, then a deafening blast. You would soon make huge, unhelpful changes instead of small improvements. Exploding gradients are like those runaway instructions, and gradient clipping is like putting a maximum volume on them.",
+      "practitioner": "During backpropagation, monitor whether gradients grow without bound and whether training becomes unstable. Gradient clipping is a common direct remedy; careful parameter initialization and normalization layers can also help keep gradients manageable, but none should be treated as a universal guarantee.",
+      "paperLevel": "For parameters theta and loss L, backpropagation computes g = dL/dtheta; exploding gradients occur when components or norms of g grow uncontrollably during training, producing destabilizing parameter updates. Gradient clipping bounds the applied gradient, while careful initialization and normalization aim to keep its scale controlled; clipping does not itself remove the underlying cause."
+    },
+    "example": "Suppose a parameter's gradient grows from 2 to 200 and then to 20,000 over successive training steps. An update using 20,000 can move the parameter far beyond a useful small correction; clipping that gradient before the update limits this jump.",
+    "usedIn": [
+      {
+        "name": "Neural network training",
+        "detail": "Gradient clipping, careful initialization, and normalization are used to keep backpropagation-based training stable.",
+        "url": ""
+      },
+      {
+        "name": "Deep learning research",
+        "detail": "Uncontrolled gradient growth is a training behavior considered when designing and debugging learning procedures.",
+        "url": ""
+      }
+    ],
+    "intuition": "Training should make many measured corrections, but an exploding gradient turns a correction into an excessively large jump. Once updates become that large, later calculations can become even less stable.",
+    "howItWorks": [
+      "The network computes a loss that measures its current error.",
+      "Backpropagation calculates gradients describing how parameters should change.",
+      "Some gradients grow uncontrollably large.",
+      "Parameter updates based on those gradients destabilize training.",
+      "Clipping, careful initialization, or normalization can help control the problem."
+    ],
+    "whyItMatters": "Uncontrolled gradients can prevent a model from settling into stable training. Recognizing the problem points practitioners toward concrete remedies rather than simply changing the model at random.",
+    "misconceptions": [
+      "Exploding gradients are not the same as vanishing gradients: one grows uncontrollably, while the other becomes extremely small.",
+      "Gradient clipping limits the gradient used for an update; it does not explain or necessarily fix why the gradient exploded."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "loss",
+          "label": "Training loss",
+          "note": "Measures the network's current error."
+        },
+        {
+          "id": "backprop",
+          "label": "Backpropagation",
+          "note": "Calculates gradients from the loss."
+        },
+        {
+          "id": "gradients",
+          "label": "Huge gradients",
+          "note": "Gradient values grow uncontrollably."
+        },
+        {
+          "id": "updates",
+          "label": "Parameter updates",
+          "note": "Large gradients produce destabilizing changes."
+        },
+        {
+          "id": "controls",
+          "label": "Gradient controls",
+          "note": "Clipping, initialization, and normalization help manage scale."
+        }
+      ],
+      "edges": [
+        {
+          "from": "loss",
+          "to": "backprop",
+          "label": "error signal"
+        },
+        {
+          "from": "backprop",
+          "to": "gradients",
+          "label": "computes"
+        },
+        {
+          "from": "gradients",
+          "to": "updates",
+          "label": "drives"
+        },
+        {
+          "from": "controls",
+          "to": "gradients",
+          "label": "limits scale"
+        }
+      ],
+      "caption": "Uncontrolled gradients flow from backpropagation into parameter updates, while common controls help keep their scale manageable."
+    }
+  },
   "related": [
     "vanishing-gradient-problem",
     "catastrophic-forgetting",

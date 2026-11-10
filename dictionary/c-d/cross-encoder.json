@@ -2,10 +2,112 @@
   "term": "Cross-Encoder",
   "letter": "C",
   "category": "Architecture",
-  "type": "concept",
+  "type": "architecture",
   "definition": "A model architecture that jointly encodes a pair of inputs (such as a query and a candidate document) together, allowing rich interaction between them for scoring relevance.",
   "details": "Cross-encoders typically achieve higher accuracy than bi-encoders for tasks like re-ranking search results, at the cost of being much slower since each query-document pair must be processed together rather than compared via precomputed embeddings.",
-  "story": "Picture an architect laying out a building where every room has to know which other rooms matter to it. The layout decides what the machine can even attempt, before it learns a single thing. It is the blueprint that makes everything else possible. It is the difference between a row of isolated cubicles and one big room where everyone can hear each other. That blueprint is Cross-Encoder.",
+  "explainer": {
+    "lead": "A cross-encoder reads a query and a candidate document together, letting the model compare their details directly before producing a relevance score. This can improve ranking accuracy, but every pair needs its own model pass, making it much slower than comparing precomputed embeddings.",
+    "tiers": {
+      "eli5": "Imagine judging whether an answer fits a question by reading both side by side, rather than reading short notes about each separately. Reading them together helps you notice important connections, but you have to repeat the whole job for every question-and-answer pair.",
+      "practitioner": "Use a cross-encoder to score or re-rank candidate documents for a query when relevance matters more than throughput. Each query–document pair is combined and passed through the model, so latency and compute grow with the number of candidates. Unlike bi-encoder workflows, document representations cannot be precomputed and reused for this joint scoring step.",
+      "paperLevel": "For query q and document d, a cross-encoder computes score(q, d) = f_theta(pair(q, d)), where f_theta jointly encodes both inputs rather than scoring separately computed embeddings. The joint encoding permits rich query–document interaction and typically improves re-ranking accuracy over bi-encoders. Its main limitation is computational cost: scoring N candidates requires N joint model evaluations for the query."
+    },
+    "example": "For a query and three candidate documents, the cross-encoder makes three separate passes: query with document 1, query with document 2, and query with document 3. The three resulting relevance scores determine the re-ranked order.",
+    "usedIn": [
+      {
+        "name": "Search result re-ranking",
+        "detail": "Scores query–candidate pairs to improve the order of search results.",
+        "url": ""
+      },
+      {
+        "name": "Query–document relevance scoring",
+        "detail": "Estimates how relevant a candidate document is to a query using their joint encoding.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Query: the input expressing what is being sought.",
+        "detail": ""
+      },
+      {
+        "name": "Candidate document: one possible match to score.",
+        "detail": ""
+      },
+      {
+        "name": "Paired input: the query and document presented together.",
+        "detail": ""
+      },
+      {
+        "name": "Joint encoder: processes the pair with rich interaction between them.",
+        "detail": ""
+      },
+      {
+        "name": "Relevance score: the model's assessment of the pair.",
+        "detail": ""
+      }
+    ],
+    "flow": [
+      "Take one query and one candidate document.",
+      "Combine them into a single paired input.",
+      "Process the pair together through the encoder.",
+      "Produce a relevance score for that pair.",
+      "Repeat for other candidates and use the scores to re-rank them."
+    ],
+    "whyItMatters": "Cross-encoders trade speed for more detailed comparison between inputs. They are especially useful when accurate re-ranking justifies processing every query–document pair individually.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "query",
+          "label": "Query",
+          "note": "The search or matching request."
+        },
+        {
+          "id": "document",
+          "label": "Candidate document",
+          "note": "One possible match."
+        },
+        {
+          "id": "pair",
+          "label": "Paired input",
+          "note": "Query and document combined."
+        },
+        {
+          "id": "encoder",
+          "label": "Joint encoder",
+          "note": "Encodes both inputs together."
+        },
+        {
+          "id": "score",
+          "label": "Relevance score",
+          "note": "Used to rank the candidate."
+        }
+      ],
+      "edges": [
+        {
+          "from": "query",
+          "to": "pair",
+          "label": ""
+        },
+        {
+          "from": "document",
+          "to": "pair",
+          "label": ""
+        },
+        {
+          "from": "pair",
+          "to": "encoder",
+          "label": "joint pass"
+        },
+        {
+          "from": "encoder",
+          "to": "score",
+          "label": ""
+        }
+      ],
+      "caption": "Each query–document pair is encoded together to produce its own relevance score."
+    }
+  },
   "related": [
     "bert",
     "bi-encoder",

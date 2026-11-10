@@ -5,6 +5,27 @@
   "type": "concept",
   "definition": "Next Sentence Prediction — BERT’s auxiliary pretraining task of predicting whether one sentence follows another; later dropped in models like RoBERTa as unnecessary.",
   "details": "Next Sentence Prediction — BERT’s auxiliary pretraining task of predicting whether one sentence follows another; later dropped in models like RoBERTa as unnecessary.",
+  "explainer": {
+    "lead": "NSP was an auxiliary pretraining task in BERT that taught the model to judge whether one sentence follows another. It shaped early language-model pretraining but was later shown to be droppable.",
+    "tiers": {
+      "eli5": "Show a model two sentences and ask: does the second one come right after the first? Practising that teaches it how text hangs together.",
+      "practitioner": "Engineers included NSP alongside masked-language-model loss when pretraining BERT-style encoders; the pitfall is that the task is easy and noisy, so it can add cost without helping downstream accuracy.",
+      "paperLevel": "Given sentence pair (A, B), the model predicts a binary label: IsNext if B truly follows A in the source text, NotNext if B is a random replacement. BERT reported that removing NSP hurts some tasks, but RoBERTa showed the task is unnecessary when pretraining is otherwise improved."
+    },
+    "example": "From a document, pair a real adjacent sentence as IsNext and swap in a sentence from another document as NotNext; the model learns to score the pair.",
+    "usedIn": [
+      {
+        "name": "BERT",
+        "detail": "original pretraining objective",
+        "url": ""
+      },
+      {
+        "name": "RoBERTa",
+        "detail": "dropped NSP",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "pretraining",
     "roberta"

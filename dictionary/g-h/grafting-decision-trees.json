@@ -5,7 +5,97 @@
   "type": "concept",
   "definition": "In machine learning, grafting is a technique for improving the classification accuracy of a decision tree.",
   "details": "A decision tree is a model used to make predictions by following a flowchart-like structure of choices based on the data. After an initial, simple tree is built from a set of training data, grafting carefully adds new decision points or \"branches\" to it. This process aims to increase the tree's predictive accuracy by refining its logic, especially in areas where the original tree made mistakes. Grafting is the conceptual opposite of pruning, a more common technique where branches are removed from a complex tree to simplify it and prevent overfitting. While pruning makes a tree more general by reducing its complexity, grafting selectively adds complexity where it is predicted to improve results.",
-  "story": "Picture a scoreboard at a science fair: you need a fair, agreed way to tell who actually won. A fair scoreboard keeps everyone honest. Before trusting a machine, someone has to measure how good it really is — fairly and honestly. A good metric is a ruler that does not bend when you lean on it. That shared ruler is Grafting (decision trees).",
+  "explainer": {
+    "lead": "Grafting improves a decision tree by adding carefully chosen branches after the first version has been built. It is useful when a simple tree makes recurring mistakes that a few extra decisions could correct, though added complexity must improve predictions rather than merely fit the training data.",
+    "tiers": {
+      "eli5": "Think of a flowchart that gets a few answers wrong; instead of cutting parts away, you slip in extra yes/no questions where it stumbles so it decides better next time.",
+      "practitioner": "Engineers start from a simple tree trained on the data, then graft new branches aimed at the areas where the original tree made mistakes. A pitfall is that adding branches without care can overfit and make the tree harder to interpret, so it is applied selectively.",
+      "paperLevel": "A decision tree is a model that predicts by following a flowchart-like structure of choices based on the data; grafting adds new decision points, or branches, to an initial simple tree. Its known limit is that it refines logic only where mistakes occur and is the conceptual opposite of pruning, which removes branches."
+    },
+    "example": "Suppose a tree predicting customer cancellation uses only contract length and misclassifies 20 of 100 training customers who have short contracts. A graft adds a branch asking whether those customers contacted support, separating 12 of the mistaken cases into the correct class. The resulting tree is more complex but classifies 92 rather than 80 of those 100 training customers correctly.",
+    "intuition": "A simple decision tree can divide data too coarsely, leaving some regions with repeated mistakes. Grafting treats those regions as places where a little extra decision logic may be worth adding.",
+    "howItWorks": [
+      "Build an initial, relatively simple decision tree from training data.",
+      "Identify parts of the tree where its classifications are often wrong.",
+      "Add selected decision points or branches to refine those parts.",
+      "Keep the additions when they are predicted to improve predictive accuracy."
+    ],
+    "whyItMatters": "Grafting offers a way to repair specific weaknesses without rebuilding or uniformly enlarging the whole tree. It also clarifies the trade-off between refining predictive logic and adding complexity that may not generalize.",
+    "misconceptions": [
+      "Grafting is not pruning: it adds branches, while pruning removes them.",
+      "A more accurate tree on training data is not automatically more accurate on unseen data.",
+      "Grafting does not require making every part of the tree more complex; additions are selective."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data",
+          "label": "Training data",
+          "note": "Examples used to build the tree"
+        },
+        {
+          "id": "initial",
+          "label": "Initial tree",
+          "note": "A simple set of decisions"
+        },
+        {
+          "id": "errors",
+          "label": "Classification errors",
+          "note": "Regions needing refinement"
+        },
+        {
+          "id": "graft",
+          "label": "Added branches",
+          "note": "Selected new decision points"
+        },
+        {
+          "id": "refined",
+          "label": "Refined tree",
+          "note": "More detailed prediction logic"
+        }
+      ],
+      "edges": [
+        {
+          "from": "data",
+          "to": "initial",
+          "label": "builds"
+        },
+        {
+          "from": "initial",
+          "to": "errors",
+          "label": "reveals"
+        },
+        {
+          "from": "errors",
+          "to": "graft",
+          "label": "guides"
+        },
+        {
+          "from": "initial",
+          "to": "refined",
+          "label": "extends"
+        },
+        {
+          "from": "graft",
+          "to": "refined",
+          "label": "forms"
+        }
+      ],
+      "caption": "Grafting uses weaknesses in an initial tree to guide selective additions."
+    },
+    "usedIn": [
+      {
+        "name": "Decision tree classifiers",
+        "detail": "refining tree logic",
+        "url": ""
+      },
+      {
+        "name": "Machine learning",
+        "detail": "contrasted with pruning",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "decision-tree",
     "alternating-decision-tree",

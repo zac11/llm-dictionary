@@ -5,7 +5,98 @@
   "type": "concept",
   "definition": "Techniques for reducing the number of tokens needed to represent a given piece of information in a model's context window, without losing essential meaning.",
   "details": "Context compression (through summarization, pruning less relevant content, or learned compression methods) helps manage the cost and latency implications of long context windows in production systems.",
-  "story": "Picture a librarian organizing a million slips of paper so that any one of them can be found in a heartbeat. The examples a machine reads become the world it believes in. Better ingredients make a better meal, and the same is true here. Garbage in, garbage out — and the reverse: clean, representative data makes the model quietly brilliant. And that is Context Compression — the unglamorous work everything else stands on.",
+  "explainer": {
+    "lead": "Context compression makes a model's input shorter while keeping the information needed for the task. It helps long prompts, conversations, and documents cost less and respond faster without requiring every original token to remain in the context window.",
+    "tiers": {
+      "eli5": "Imagine fitting a long story into a small backpack: you keep the important plot points and leave out repeated or unhelpful parts. Context compression does something similar for text given to an AI model. The challenge is making it shorter without losing a detail the model will need.",
+      "practitioner": "Production teams apply context compression to conversation history, retrieved passages, or other long inputs before sending them to a model. Common approaches include summarization, relevance-based pruning, and learned compression, tuned against answer quality as well as token count, cost, and latency. A key pitfall is discarding details that appear unimportant early but matter for a later question.",
+      "paperLevel": "Given an input context x, construct a compressed representation c = f(x) such that token_count(c) < token_count(x), while preserving information essential to the downstream task. f may summarize, prune less relevant content, or use a learned compressor. Essential information is task-dependent, so reducing tokens does not guarantee lossless preservation, and later queries may require details removed during compression."
+    },
+    "example": "A support assistant has accumulated a long conversation about a laptop that will not charge. Instead of retaining every message, it keeps a short summary stating the laptop model, troubleshooting already attempted, and the customer's deadline, while removing repeated greetings and unrelated discussion; the model can then respond using far fewer tokens.",
+    "usedIn": [
+      {
+        "name": "Production LLM applications",
+        "detail": "Shortening long inputs to manage token cost and response latency.",
+        "url": ""
+      },
+      {
+        "name": "Conversational assistants",
+        "detail": "Condensing earlier messages while retaining information needed to continue the conversation.",
+        "url": ""
+      },
+      {
+        "name": "Long-document analysis",
+        "detail": "Summarizing or pruning document content so relevant material fits within the available context.",
+        "url": ""
+      }
+    ],
+    "intuition": "A context window is limited working space, and not every token in it contributes equally to the answer. Compression keeps a shorter representation of the useful information rather than carrying the entire original input forward.",
+    "howItWorks": [
+      "Start with the original context and the task it needs to support.",
+      "Identify repeated, irrelevant, or less useful content.",
+      "Summarize important material, prune lower-value passages, or apply a learned compressor.",
+      "Place the resulting shorter representation in the model's context window.",
+      "Check that essential meaning and task performance remain acceptable."
+    ],
+    "whyItMatters": "Long contexts increase production cost and latency, so compression can make lengthy interactions more practical. Its value depends on preserving the details needed for the task, not merely achieving the smallest token count.",
+    "misconceptions": [
+      "Compression is not necessarily lossless: summarization and pruning can remove information needed later.",
+      "A shorter context is not automatically better if essential meaning or answer quality is lost.",
+      "It does not enlarge the model's context window; it reduces the tokens placed inside it."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "original",
+          "label": "Original context",
+          "note": "Long input containing useful and less useful material"
+        },
+        {
+          "id": "select",
+          "label": "Select content",
+          "note": "Identify relevant information and removable passages"
+        },
+        {
+          "id": "compress",
+          "label": "Compress representation",
+          "note": "Summarize, prune, or apply learned compression"
+        },
+        {
+          "id": "window",
+          "label": "Context window",
+          "note": "Receives the shorter token representation"
+        },
+        {
+          "id": "model",
+          "label": "Model output",
+          "note": "Uses retained information to perform the task"
+        }
+      ],
+      "edges": [
+        {
+          "from": "original",
+          "to": "select",
+          "label": "content"
+        },
+        {
+          "from": "select",
+          "to": "compress",
+          "label": "relevant material"
+        },
+        {
+          "from": "compress",
+          "to": "window",
+          "label": "fewer tokens"
+        },
+        {
+          "from": "window",
+          "to": "model",
+          "label": "model input"
+        }
+      ],
+      "caption": "Context compression turns a long input into a shorter representation before the model processes it."
+    }
+  },
   "related": [
     "prompt-compression",
     "sliding-context-window",

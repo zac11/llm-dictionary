@@ -5,7 +5,113 @@
   "type": "concept",
   "definition": "A training approach where the model itself selects which data points would be most informative to have labeled next, to minimize labeling cost while maximizing learning efficiency.",
   "details": "Active learning is especially valuable when labeling data is expensive or time-consuming, since it focuses human annotation effort on the examples the model finds most uncertain or informative.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. That steady, miss-by-miss improvement is Active Learning.",
+  "explainer": {
+    "lead": "Active learning flips the usual script: instead of humans choosing what to label, the model raises its hand and says 'this one confuses me—can you tell me what it is?' This saves enormous effort when labels require doctors, lawyers, or hours of expert time.",
+    "tiers": {
+      "eli5": "Imagine you're studying for a test by picking your own practice problems. You skip the easy ones you already know and the impossible ones you're not ready for. You focus on the tricky questions right at your level, so you learn faster with less work. That's active learning: the student (the AI) picks its own homework.",
+      "practitioner": "Active learning is typically deployed in a loop: train on current labeled data, score unlabeled pool samples by uncertainty (entropy, margin sampling, or least confidence), select top-k for human annotation, retrain. Common settings include medical imaging, legal document review, and NLP with large unlabeled corpora. Pitfalls include sampling bias (the model keeps asking about a narrow region), cold-start problems with no initial model, and the cost of retraining between rounds; batch active learning and diversity-aware selection help mitigate these.",
+      "paperLevel": "Active learning formalizes a sequential decision process where, at each round t, a model h_t trained on labeled set L_t queries an oracle for labels on a subset Q_t ⊂ U from unlabeled pool U, chosen by an acquisition function a(x, h_t) such as uncertainty sampling: a(x) = 1 - P(h_t(x) = ŷ|x), or query-by-committee disagreement. The objective is to minimize generalization error for a fixed labeling budget. Originating work is not named in available sources."
+    },
+    "example": "A hospital wants to train a pneumonia detector from chest X-rays. Instead of labeling all 100,000 scans, they label 1,000 at random and train a first model. The model is confident about clear lungs and obvious pneumonia, but uncertain about subtle shadowy patterns. It flags 500 of these uncertain scans for radiologists to label. After retraining, accuracy jumps sharply with only 1.5% of the data labeled. Each round targets the model's current blind spots.",
+    "usedIn": [
+      {
+        "name": "Medical imaging",
+        "detail": "Radiologists label only the scans an AI flags as most ambiguous, cutting annotation time for cancer detection datasets.",
+        "url": ""
+      },
+      {
+        "name": "Legal e-discovery",
+        "detail": "Law firms use active learning to find relevant documents in millions of emails without reviewing every page.",
+        "url": ""
+      },
+      {
+        "name": "Drug discovery",
+        "detail": "Chemists test only the molecules a model predicts as most informative for binding affinity.",
+        "url": ""
+      }
+    ],
+    "intuition": "The model knows enough to know what it doesn't know. By asking about its most uncertain examples, it gets the maximum information per question, like a student who only asks about the homework they genuinely don't understand.",
+    "howItWorks": [
+      "Start with a small labeled dataset and train an initial model.",
+      "Apply the model to a large pool of unlabeled data and score each point by how uncertain or informative the model finds it.",
+      "Select the top-scoring points and send them to a human expert for labeling.",
+      "Add the newly labeled data to the training set and retrain the model.",
+      "Repeat until the model performs well enough or the labeling budget runs out."
+    ],
+    "whyItMatters": "Expert labels can cost dollars to thousands of dollars each—pathology slides, legal judgments, molecular assays. Active learning stretches limited budgets by concentrating human effort where it teaches the model the most, often reaching near-full-dataset accuracy with a small fraction of the labels.",
+    "misconceptions": [
+      "Active learning means no human labels are needed—humans still label everything the model selects, just fewer total examples.",
+      "The model always picks the 'hardest' examples—it picks the most informative, which may be uncertain but not necessarily complex; redundant hard examples get skipped.",
+      "It works from zero labels—active learning needs some initial labeled data to know what to ask about; completely cold starts require other methods."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "unlabeled",
+          "label": "Unlabeled pool",
+          "note": "Large set of raw data without labels"
+        },
+        {
+          "id": "model",
+          "label": "Trained model",
+          "note": "Current best model from labeled data"
+        },
+        {
+          "id": "scorer",
+          "label": "Acquisition function",
+          "note": "Ranks unlabeled points by uncertainty or informativeness"
+        },
+        {
+          "id": "selector",
+          "label": "Top-k selector",
+          "note": "Picks the most valuable points to label"
+        },
+        {
+          "id": "oracle",
+          "label": "Human expert",
+          "note": "Provides ground-truth labels for selected points"
+        },
+        {
+          "id": "labeled",
+          "label": "Labeled set",
+          "note": "Growing collection of labeled training data"
+        }
+      ],
+      "edges": [
+        {
+          "from": "labeled",
+          "to": "model",
+          "label": "trains"
+        },
+        {
+          "from": "model",
+          "to": "scorer",
+          "label": "scores"
+        },
+        {
+          "from": "unlabeled",
+          "to": "scorer",
+          "label": "feeds"
+        },
+        {
+          "from": "scorer",
+          "to": "selector",
+          "label": "ranked"
+        },
+        {
+          "from": "selector",
+          "to": "oracle",
+          "label": "queries"
+        },
+        {
+          "from": "oracle",
+          "to": "labeled",
+          "label": "adds labels"
+        }
+      ],
+      "caption": "The active learning loop: the trained model identifies informative unlabeled examples, a human expert labels them, and the expanded labeled set retrains the model."
+    }
+  },
   "related": [
     "active-learning-machine-learning",
     "proactive-learning",

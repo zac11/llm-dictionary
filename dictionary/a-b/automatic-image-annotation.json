@@ -5,7 +5,107 @@
   "type": "concept",
   "definition": "Automatic image annotation (also known as automatic image tagging or linguistic indexing) is the process by which a computer system automatically assigns metadata in the form of captioning or keywords to a digital image.",
   "details": "This application of computer vision techniques is used in image retrieval systems to organize and locate images of interest from a database. This method can be regarded as a type of multi-class image classification with a very large number of classes - as large as the vocabulary size. Typically, image analysis in the form of extracted feature vectors and the training annotation words are used by machine learning techniques to attempt to automatically apply annotations to new images. The first methods learned the correlations between image features and training annotations. Subsequently, techniques were developed using machine translation to attempt to translate the textual vocabulary into the 'visual vocabulary,' represented by clustered regions known as blobs. Subsequent work has included classification approaches, relevance models, and other related methods. The advantages of automatic image annotation versus content-based image retrieval (CBIR) are that queries can be more naturally specified by the user. At present, Content-Based Image Retrieval (CBIR) generally requires users to search by image concepts such as color and texture or by finding example queries. However, certain image features in example images may override the concept that the user is truly focusing on. Traditional methods of image retrieval, such as those used by libraries, have relied on manually annotated images, which is expensive and time-consuming, especially given the large and constantly growing image databases in existence.",
-  "story": "Picture walking through a crowd and instantly picking out a familiar face without reading a single name tag. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. It turns a picture into an understanding: this is a cat, that is a stop sign. Sight, for a machine, is a long climb from raw light to a name. That pixel-to-meaning climb is Automatic image annotation.",
+  "explainer": {
+    "lead": "Automatic image annotation gives pictures searchable metadata, such as keywords or a caption, without someone labeling each one by hand. It helps people organize growing image collections and find what they want using ordinary words.",
+    "tiers": {
+      "eli5": "Imagine a helper who looks at a new photo and adds sticky notes saying what is in it. The helper learns by studying many photos that already have notes, then tries to add useful notes to photos it has not seen before. Those notes make it much easier to find the right photo later.",
+      "practitioner": "Build training pairs from extracted image feature vectors and annotation words, then use machine learning to predict keywords or captions for new images. This can be framed as multi-class classification with a very large number of classes, potentially as many as the vocabulary size. It supports word-based retrieval instead of searches by color, texture, or example images, but its predictions depend on the correlations learned from the training data.",
+      "paperLevel": "Given an image I, extract a feature vector x and learn a mapping from x to metadata y, where y is a keyword annotation or caption, using training pairs of image features and annotation words. Keyword assignment can be treated as multi-class classification with a class space as large as the annotation vocabulary. Approaches include learning feature–annotation correlations, machine translation between textual and visual vocabularies using clustered regions called blobs, classification approaches, and relevance models."
+    },
+    "example": "A system trained on annotated images analyzes a new beach photograph and assigns the keywords “beach” and “ocean.” A retrieval system can then include that photograph when a user searches for “ocean,” without anyone having labeled it manually.",
+    "usedIn": [
+      {
+        "name": "Image retrieval systems",
+        "detail": "Uses generated keywords or captions to organize images and locate relevant ones through more natural queries.",
+        "url": ""
+      },
+      {
+        "name": "Large image databases",
+        "detail": "Offers an alternative to manual annotation, which is expensive and time-consuming for large, constantly growing collections.",
+        "url": ""
+      }
+    ],
+    "intuition": "Pictures that look similar in measurable ways often share words in their descriptions. A system can learn those connections from labeled examples and use them to suggest descriptions for new pictures.",
+    "howItWorks": [
+      "Collect training images together with their annotation words.",
+      "Analyze the images to extract numerical feature vectors.",
+      "Use machine learning to learn relationships between those features and the training annotations.",
+      "Extract features from a new image and predict keywords or a caption for it.",
+      "Store the annotations as metadata so the image can be organized and retrieved."
+    ],
+    "whyItMatters": "It makes image collections searchable with natural words while reducing reliance on costly manual labeling. It also avoids some limitations of content-based image retrieval, where color, texture, or an example image can distract from the concept the user actually wants.",
+    "misconceptions": [
+      "It is not the same as content-based image retrieval: annotation produces textual metadata, while CBIR commonly searches using visual concepts or example images.",
+      "It is not limited to one small fixed set of labels; it can involve a vocabulary-sized number of classes."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "training",
+          "label": "Training image set",
+          "note": "Images paired with annotation words."
+        },
+        {
+          "id": "analysis",
+          "label": "Image analysis",
+          "note": "Extracts feature vectors from images."
+        },
+        {
+          "id": "learning",
+          "label": "Machine learning",
+          "note": "Learns links between features and annotation words."
+        },
+        {
+          "id": "new-image",
+          "label": "New digital image",
+          "note": "An image that needs metadata."
+        },
+        {
+          "id": "annotations",
+          "label": "Automatic annotations",
+          "note": "Predicted keywords or a caption."
+        },
+        {
+          "id": "retrieval",
+          "label": "Image retrieval",
+          "note": "Uses metadata to organize and find images."
+        }
+      ],
+      "edges": [
+        {
+          "from": "training",
+          "to": "analysis",
+          "label": "images"
+        },
+        {
+          "from": "analysis",
+          "to": "learning",
+          "label": "features"
+        },
+        {
+          "from": "training",
+          "to": "learning",
+          "label": "words"
+        },
+        {
+          "from": "new-image",
+          "to": "analysis",
+          "label": "new image"
+        },
+        {
+          "from": "learning",
+          "to": "annotations",
+          "label": "predicts"
+        },
+        {
+          "from": "annotations",
+          "to": "retrieval",
+          "label": "metadata"
+        }
+      ],
+      "caption": "Training images and their words teach the system to turn features from new images into searchable annotations."
+    }
+  },
   "related": [
     "automatic-acquisition-of-lexicon",
     "automatic-acquisition-of-sense-tagged-corpora",

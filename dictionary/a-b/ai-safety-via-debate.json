@@ -5,6 +5,97 @@
   "type": "concept",
   "definition": "Having two models argue opposing sides before a judge, on the hypothesis that lying is harder when an adversary can expose the lie.",
   "details": "Having two models argue opposing sides before a judge, on the hypothesis that lying is harder when an adversary can expose the lie. One of the few scalable oversight proposals with growing empirical study, including human-judge experiments.",
+  "explainer": {
+    "lead": "AI safety via debate is a way to supervise AI systems by making two of them argue opposite answers in front of a judge. The hope is that a truthful system can expose its opponent’s mistakes more easily than a dishonest system can hide them, helping people oversee tasks they could not check alone.",
+    "tiers": {
+      "eli5": "Imagine two classmates giving different answers to a hard homework question, with each trying to spot holes in the other’s explanation. A teacher listens and chooses the answer that holds up best. The idea is that cheating becomes harder when someone else is actively looking for the trick.",
+      "practitioner": "Set up two models with opposing positions, give them the same question, and let them exchange arguments before a judge selects the more convincing answer. Human judges can be used to test whether this actually improves oversight. A persuasive presentation is not proof of truth, so debate outcomes still need empirical evaluation.",
+      "paperLevel": "Given a question q, two debaters produce opposing answers and adversarial arguments; a judge J observes the transcript and selects a winner. The oversight hypothesis is that exposing a false claim through rebuttal is easier than defending it against an informed adversary. This does not guarantee truthful outcomes: its usefulness depends on the judge’s ability to recognize successful rebuttals, and empirical study includes human-judge experiments."
+    },
+    "example": "For a difficult technical question, one model answers “yes” and the other answers “no.” The first cites a key step in its reasoning; the second argues that the step does not support the conclusion, and the first replies. A human judge who could not easily solve the question alone reads both sides and selects the answer whose reasoning survives the challenge.",
+    "usedIn": [
+      {
+        "name": "Scalable oversight research",
+        "detail": "Studied as a way to supervise AI systems on questions that are difficult for a person to check directly.",
+        "url": ""
+      },
+      {
+        "name": "Human-judge experiments",
+        "detail": "People judge model debates so researchers can examine whether adversarial arguments help them identify better answers.",
+        "url": ""
+      }
+    ],
+    "intuition": "Checking one confident AI answer can be hard, but comparing it with an active challenge may reveal gaps, contradictions, or unsupported claims. Debate turns oversight into a contest in which each side has an incentive to expose the other’s errors.",
+    "howItWorks": [
+      "Give two models the same question and assign them opposing answers or positions.",
+      "Let the models present arguments and rebuttals, each trying to expose weaknesses in the other side.",
+      "Show the question and debate transcript to a judge.",
+      "Have the judge choose the more convincing answer, using the exchange as evidence."
+    ],
+    "whyItMatters": "It offers a possible route to overseeing AI systems when direct human verification is too difficult or expensive. It is also a concrete proposal that can be tested with human judges rather than treated only as a theoretical argument.",
+    "misconceptions": [
+      "The winning argument is not automatically true; the judge’s decision is an oversight mechanism, not a proof.",
+      "Debate is not just asking one model to check itself: two models argue opposing sides with incentives to rebut each other.",
+      "The goal is not better conversation for its own sake, but more reliable human or automated supervision of AI answers."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "question",
+          "label": "Shared question",
+          "note": "The task both models must address."
+        },
+        {
+          "id": "debater-a",
+          "label": "Debater A",
+          "note": "Argues for one answer."
+        },
+        {
+          "id": "debater-b",
+          "label": "Debater B",
+          "note": "Argues the opposing answer."
+        },
+        {
+          "id": "transcript",
+          "label": "Debate transcript",
+          "note": "Arguments and attempted rebuttals."
+        },
+        {
+          "id": "judge",
+          "label": "Judge",
+          "note": "Compares the cases and selects a winner."
+        }
+      ],
+      "edges": [
+        {
+          "from": "question",
+          "to": "debater-a",
+          "label": "same task"
+        },
+        {
+          "from": "question",
+          "to": "debater-b",
+          "label": "same task"
+        },
+        {
+          "from": "debater-a",
+          "to": "transcript",
+          "label": "arguments"
+        },
+        {
+          "from": "debater-b",
+          "to": "transcript",
+          "label": "rebuttals"
+        },
+        {
+          "from": "transcript",
+          "to": "judge",
+          "label": "evidence"
+        }
+      ],
+      "caption": "Two opposing models turn a hard-to-check question into arguments and rebuttals for a judge."
+    }
+  },
   "related": [
     "scalable-oversight"
   ],

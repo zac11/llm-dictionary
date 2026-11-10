@@ -5,7 +5,100 @@
   "type": "algorithm",
   "definition": "In machine learning, local case-control sampling is an algorithm used to reduce the complexity of training a logistic regression classifier.",
   "details": "The algorithm reduces the training complexity by selecting a small subsample of the original dataset for training. It assumes the availability of an (unreliable) pilot estimation of the parameters. It then performs a single pass over the entire dataset using the pilot estimation to identify the most \"surprising\" samples. In practice, the pilot may come from prior knowledge or training using a subsample of the dataset. The algorithm is most effective when the underlying dataset is imbalanced. It exploits the structures of conditional imbalanced datasets more efficiently than alternative methods, such as case control sampling and weighted case control sampling.",
-  "story": "Think of a jazz musician who has heard so many solos that a new one simply falls out of their fingers. Given a starting line, the machine imagines what comes next — a word, a note, a patch of a picture. It makes new things by recombining everything it has ever seen. Creation, here, is memory recombined at speed. And that is Local case-control sampling — making something new out of everything it has ever seen.",
+  "explainer": {
+    "lead": "Local case-control sampling speeds up logistic regression by training on a small, carefully chosen part of a large dataset. It uses an initial, possibly unreliable estimate of the model to find surprising examples, and is especially useful when one class is much rarer than the other.",
+    "tiers": {
+      "eli5": "Imagine studying for a test using a huge pile of practice questions. You first make a quick guess at what you know, then pick out the questions that surprise you most and practice with those. This method does something similar, saving time when one kind of answer is much rarer than the other.",
+      "practitioner": "Start with a pilot parameter estimate, obtained from prior knowledge or by fitting logistic regression on a subsample. Use it during one full pass over the data to select surprising observations, then train on the resulting smaller sample. The pilot can be unreliable, but its quality still affects which observations are retained; the method is most attractive for imbalanced data.",
+      "paperLevel": "Given a dataset D and pilot parameters theta_0, make one pass over D, use theta_0 to identify surprising observations, and form a subsample S for logistic-regression training. The aim is lower training complexity than fitting on all of D. Its advantage over case-control and weighted case-control sampling is strongest for conditionally imbalanced datasets."
+    },
+    "example": "Suppose a dataset contains 1,000,000 labeled transactions, with fraudulent transactions much rarer than legitimate ones. Train a rough logistic-regression pilot on a small subsample, scan all 1,000,000 transactions once, and keep the transactions the pilot finds most surprising; then train the final classifier on this much smaller selection.",
+    "usedIn": [
+      {
+        "name": "Logistic regression training",
+        "detail": "Reduces the amount of data used to fit a classifier.",
+        "url": ""
+      },
+      {
+        "name": "Imbalanced classification",
+        "detail": "Targets datasets where the class distribution makes full-data training costly.",
+        "url": ""
+      }
+    ],
+    "goal": "Reduce logistic-regression training complexity by replacing the full dataset with a small, informative subsample.",
+    "inputs": [
+      "The full labeled training dataset",
+      "A pilot estimate of the logistic-regression parameters"
+    ],
+    "outputs": [
+      "A small subsample of the original dataset",
+      "A logistic-regression classifier trained on that subsample"
+    ],
+    "steps": [
+      "Obtain a pilot parameter estimate from prior knowledge or training on a subsample.",
+      "Make a single pass over the entire dataset.",
+      "Use the pilot estimate to identify the most surprising samples.",
+      "Select those samples to form a smaller training set.",
+      "Train the logistic-regression classifier on the selected subsample."
+    ],
+    "tradeoffs": [
+      "Training uses less data, but every original sample must still be examined once.",
+      "The pilot may be unreliable, so sample selection depends on an imperfect initial estimate.",
+      "The method is most effective on imbalanced datasets rather than every classification problem."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "pilot",
+          "label": "Pilot estimate",
+          "note": "Prior knowledge or subsample training"
+        },
+        {
+          "id": "data",
+          "label": "Full dataset",
+          "note": "All labeled training samples"
+        },
+        {
+          "id": "scan",
+          "label": "Single pass",
+          "note": "Identify surprising samples"
+        },
+        {
+          "id": "subsample",
+          "label": "Small subsample",
+          "note": "Selected training observations"
+        },
+        {
+          "id": "model",
+          "label": "Logistic classifier",
+          "note": "Trained on the subsample"
+        }
+      ],
+      "edges": [
+        {
+          "from": "pilot",
+          "to": "scan",
+          "label": "guides"
+        },
+        {
+          "from": "data",
+          "to": "scan",
+          "label": "samples"
+        },
+        {
+          "from": "scan",
+          "to": "subsample",
+          "label": "selects"
+        },
+        {
+          "from": "subsample",
+          "to": "model",
+          "label": "trains"
+        }
+      ],
+      "caption": "A pilot estimate guides one pass over the data, producing a smaller training set for logistic regression."
+    }
+  },
   "related": [
     "case-based-reasoning",
     "deep-learning-super-sampling",

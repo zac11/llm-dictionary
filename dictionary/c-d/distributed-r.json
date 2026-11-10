@@ -5,7 +5,108 @@
   "type": "concept",
   "definition": "Distributed R is an open source, high-performance platform for the R language.",
   "details": "It splits tasks between multiple processing nodes to reduce execution time and analyze large data sets. Distributed R enhances R by adding distributed data structures, parallelism primitives to run functions on distributed data, a task scheduler, and multiple data loaders. It is mostly used to implement distributed versions of machine learning tasks. Distributed R is written in C++ and R, and retains the familiar look and feel of R. As of February 2015, Hewlett-Packard (HP) provides enterprise support for Distributed R with proprietary additions such as a fast data loader from the Vertica database.",
-  "story": "Imagine learning a language by reading every book in the library and noticing, over time, which words travel together. It does not memorize a rulebook; it absorbs a library. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It is fluency built from pattern, not from memorized rules. And that is Distributed R — teaching a machine to read between the lines.",
+  "explainer": {
+    "lead": "Distributed R lets familiar R programs work across several processing nodes instead of just one. By splitting data and computation, it can shorten execution time and make large-scale machine-learning analysis more practical while preserving R's look and feel.",
+    "tiers": {
+      "eli5": "Imagine one person trying to check a huge stack of worksheets. Distributed R is like sharing the stack among several people, letting them work at the same time, and bringing their answers together, while still giving instructions in a familiar way.",
+      "practitioner": "Engineers use R-like code with distributed data structures and parallelism primitives, while the task scheduler coordinates work across processing nodes and loaders bring in data. It is mainly applied to distributed machine-learning tasks on large data sets. HP's fast Vertica loader was a proprietary enterprise addition, not part of the open-source core.",
+      "paperLevel": "Given data D and computation f, Distributed R distributes D across processing nodes N1 through Nk and schedules f over the distributed data to reduce execution time and support larger data sets. The platform comprises distributed data structures, parallelism primitives, a task scheduler, and multiple data loaders, implemented in C++ and R. HP's enterprise offering added proprietary components, including a fast Vertica database loader."
+    },
+    "example": "A large table is loaded and divided across several processing nodes. A distributed machine-learning routine runs its calculations on the different portions in parallel and produces a result without requiring one R process to handle the entire table alone.",
+    "usedIn": [
+      {
+        "name": "Distributed machine learning",
+        "detail": "Its main use is implementing distributed versions of machine-learning tasks on large data sets.",
+        "url": ""
+      },
+      {
+        "name": "HP enterprise support",
+        "detail": "As of February 2015, Hewlett-Packard provided enterprise support with proprietary additions.",
+        "url": ""
+      },
+      {
+        "name": "Vertica database",
+        "detail": "HP's additions included a fast data loader from the Vertica database.",
+        "url": ""
+      }
+    ],
+    "intuition": "A single R process can struggle when data and computation become too large or slow. Distributed R spreads both across multiple processing nodes so they can work in parallel without abandoning the familiar R experience.",
+    "howItWorks": [
+      "Data loaders bring data into the platform.",
+      "Distributed data structures hold data across processing nodes.",
+      "Parallelism primitives run functions on that distributed data.",
+      "A task scheduler coordinates the tasks among the nodes.",
+      "Parallel execution reduces running time and supports analysis of large data sets."
+    ],
+    "whyItMatters": "It extends R toward large-data analysis by combining parallel execution with distributed data handling. Its familiar interface lets users approach distributed machine learning without switching to an entirely different-looking language.",
+    "misconceptions": [
+      "It is not a replacement for R; it enhances R while retaining its familiar look and feel.",
+      "It is not written only in R; its implementation uses both C++ and R.",
+      "HP's fast Vertica loader was a proprietary enterprise addition, not a feature of the open-source platform itself."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "r-code",
+          "label": "R program",
+          "note": "Familiar R-like instructions"
+        },
+        {
+          "id": "loaders",
+          "label": "Data loaders",
+          "note": "Bring data into platform"
+        },
+        {
+          "id": "data",
+          "label": "Distributed data",
+          "note": "Data structures spanning nodes"
+        },
+        {
+          "id": "scheduler",
+          "label": "Task scheduler",
+          "note": "Coordinates distributed work"
+        },
+        {
+          "id": "nodes",
+          "label": "Processing nodes",
+          "note": "Run functions in parallel"
+        },
+        {
+          "id": "result",
+          "label": "Analysis result",
+          "note": "Output of distributed computation"
+        }
+      ],
+      "edges": [
+        {
+          "from": "loaders",
+          "to": "data",
+          "label": "loads"
+        },
+        {
+          "from": "r-code",
+          "to": "scheduler",
+          "label": "parallel tasks"
+        },
+        {
+          "from": "data",
+          "to": "nodes",
+          "label": "distributed data"
+        },
+        {
+          "from": "scheduler",
+          "to": "nodes",
+          "label": "schedules"
+        },
+        {
+          "from": "nodes",
+          "to": "result",
+          "label": "computes"
+        }
+      ],
+      "caption": "Distributed R combines loaders, distributed data structures, scheduling, and parallel execution behind an R-like interface."
+    }
+  },
   "related": [
     "t-distributed-stochastic-neighbor-embedding",
     "a-r-d-prasad",

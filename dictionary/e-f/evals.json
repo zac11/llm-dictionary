@@ -8,6 +8,108 @@
   ],
   "definition": "The applied discipline of measuring whether a model or system performs *your* task: curated test sets, graded rubrics, automated judges, regression suites run on every change.",
   "details": "The applied discipline of measuring whether a model or system performs *your* task: curated test sets, graded rubrics, automated judges, regression suites run on every change. In production AI, the eval suite is the real specification of the product; \"vibes-based\" shipping fails silently.",
+  "explainer": {
+    "lead": "Evals are structured tests that show whether an AI system actually does the job you need it to do. They turn vague impressions into repeatable checks, making problems visible before a change reaches users.",
+    "tiers": {
+      "eli5": "An eval is like a quiz you make for an AI system, using the kinds of jobs it will really face. You check its answers against clear rules, then give the same quiz again after changes to see whether anything got better or worse.",
+      "practitioner": "Teams build task-specific test sets, apply rubrics or automated judges, and run the suite as a regression check on model, prompt, or system changes. The main pitfalls are tests that miss real usage, inconsistent grading, and treating an aggregate score as proof that every important case works.",
+      "paperLevel": "A task-specific evaluation can be written as S(M) = (1/N) * sum_i w_i * g_i(M(x_i), r_i), where x_i are curated inputs, r_i are references or rubrics, g_i are graders, and w_i are task weights. The estimate is specific to the chosen cases and grading procedure, and automated judges can introduce their own errors."
+    },
+    "example": "For a customer-support assistant, a team might test 100 representative requests and grade each answer for correctness, completeness, and whether it follows the support policy. If a prompt change raises the overall score but causes five billing answers to fail, the suite exposes a regression that a quick informal trial could miss.",
+    "usedIn": [
+      {
+        "name": "Production AI products",
+        "detail": "Checks whether the system meets the product's actual task requirements.",
+        "url": ""
+      },
+      {
+        "name": "Model development",
+        "detail": "Compares candidate models or configurations on the same curated cases.",
+        "url": ""
+      },
+      {
+        "name": "AI quality assurance",
+        "detail": "Runs regression suites to catch failures introduced by changes.",
+        "url": ""
+      }
+    ],
+    "intuition": "A general capability score does not tell you whether a system handles your particular workload well. A good eval is a small, repeatable version of that workload, paired with an explicit way to judge success.",
+    "howItWorks": [
+      "Collect representative tasks and expected outcomes or grading rubrics.",
+      "Run the model or full system on the curated test set.",
+      "Grade outputs with rules, human judgments, or automated judges.",
+      "Summarize results and inspect important failures.",
+      "Rerun the suite on every change to detect regressions."
+    ],
+    "whyItMatters": "The eval suite makes the intended product behavior concrete and testable. Without it, harmful changes can pass unnoticed because casual inspection creates an impression of quality without consistent evidence.",
+    "misconceptions": [
+      "An eval is not just a single overall score; individual failures still matter.",
+      "An automated judge is part of the measurement process, not a guarantee of correct grading.",
+      "Passing a task-specific suite does not establish performance on tasks or cases it does not cover."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "tasks",
+          "label": "Curated tasks",
+          "note": "Representative inputs and requirements"
+        },
+        {
+          "id": "system",
+          "label": "AI system",
+          "note": "Produces an output for each task"
+        },
+        {
+          "id": "rubrics",
+          "label": "Rubrics and references",
+          "note": "Define what a good output means"
+        },
+        {
+          "id": "graders",
+          "label": "Graders",
+          "note": "Apply rules, human review, or automated judging"
+        },
+        {
+          "id": "results",
+          "label": "Scores and failures",
+          "note": "Summarize performance and expose problem cases"
+        },
+        {
+          "id": "gate",
+          "label": "Regression check",
+          "note": "Compare results whenever the system changes"
+        }
+      ],
+      "edges": [
+        {
+          "from": "tasks",
+          "to": "system",
+          "label": "inputs"
+        },
+        {
+          "from": "system",
+          "to": "graders",
+          "label": "outputs"
+        },
+        {
+          "from": "rubrics",
+          "to": "graders",
+          "label": "criteria"
+        },
+        {
+          "from": "graders",
+          "to": "results",
+          "label": "grades"
+        },
+        {
+          "from": "results",
+          "to": "gate",
+          "label": "comparison"
+        }
+      ],
+      "caption": "A task-specific eval turns curated cases and grading criteria into repeatable scores, failure reports, and regression checks."
+    }
+  },
   "related": [
     "test-sets"
   ],

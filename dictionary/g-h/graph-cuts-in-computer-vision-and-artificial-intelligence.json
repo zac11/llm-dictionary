@@ -5,7 +5,103 @@
   "type": "concept",
   "definition": "As applied in the field of computer vision, graph cut optimization can be employed to efficiently solve a wide variety of low-level computer vision problems (early vision), such as image smoothing, the stereo correspondence problem, image segmentation, object co-segmentation, numerous military applications (eg Automatic target recognition) and many other problems that can be formulated in terms of energy minimization (eg Climate Science and Environmental modelling).",
   "details": "Graph cut techniques are now increasingly being used in combination with more general spatial Artificial intelligence techniques (eg to enforce structure in Large language model output to sharpen tumour boundaries and similarly for various Augmented reality, Self-driving car, Robotics, Google Maps applications etc). Many of these energy minimization problems can be approximated by solving a maximum flow problem in a graph (and thus, by the max-flow min-cut theorem, define a minimal cut of the graph). Under most formulations of such problems in computer vision, the minimum energy solution corresponds to the maximum a posteriori estimate of a solution. Although many computer vision algorithms involve cutting a graph (e.g. normalized cuts), the term \"graph cuts\" is applied specifically to those models which employ a max-flow/min-cut optimization (other graph cutting algorithms may be considered as graph partitioning algorithms). \"Binary\" problems (such as denoising a binary image) can be solved exactly using this approach; problems where pixels can be labeled with more than two different labels (such as stereo correspondence, or denoising of a grayscale image) cannot be solved exactly, but solutions produced are usually near the global optimum.",
-  "story": "Picture walking through a crowd and instantly picking out a familiar face without reading a single name tag. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. It turns a picture into an understanding: this is a cat, that is a stop sign. Sight, for a machine, is a long climb from raw light to a name. And that is Graph cuts in computer vision and artificial intelligence — giving a machine the gift of sight.",
+  "explainer": {
+    "lead": "Graph cuts turn a labelling problem, such as deciding which pixels belong to an object, into the task of splitting a connected graph into two parts. A max-flow calculation finds the split with the least cost, giving an efficient way to minimize many energy functions used in early computer vision.",
+    "tiers": {
+      "eli5": "Imagine a picture as a grid of friends holding hands, with stronger handholds between pixels that look alike. To separate an object from its background, you cut the cheapest set of handholds so the grid splits into two groups. A maximum-flow calculation finds that cheapest split, which can remove speckles from a black-and-white picture without losing its overall shapes.",
+      "practitioner": "Build a graph whose cut cost represents the energy: pixel-to-label costs capture fit to the observed data, while links between pixels encourage spatially coherent labels. Solve the corresponding maximum-flow problem and read the minimum cut as the labelling; binary cases such as binary-image denoising are solved exactly. Multi-label cases such as stereo correspondence or grayscale denoising are not solved exactly by this approach, although the resulting solutions are usually near the global optimum.",
+      "paperLevel": "For a graph G=(V,E), compute a maximum flow and use the max-flow min-cut theorem to obtain a minimum-capacity cut, which minimizes the corresponding energy. In the usual computer-vision formulation, the minimum-energy solution is the maximum a posteriori estimate. Exact optimization applies to binary problems; problems with more than two labels per pixel require approximate solutions, generally close to the global optimum."
+    },
+    "example": "To denoise a black-and-white image, give each pixel two possible labels: black or white. Costs favour keeping labels close to the observed pixels, while connections between neighbours make frequent label changes expensive. The minimum cut assigns every pixel to one side, exactly minimizing this binary energy and removing isolated speckles when their neighbourhood costs outweigh the benefit of keeping them.",
+    "usedIn": [
+      {
+        "name": "Image segmentation",
+        "detail": "Separates image regions, including sharpening tumour boundaries.",
+        "url": ""
+      },
+      {
+        "name": "Stereo vision",
+        "detail": "Approximates pixel labels for the stereo correspondence problem.",
+        "url": ""
+      },
+      {
+        "name": "Image restoration",
+        "detail": "Solves binary-image denoising exactly and supports image smoothing.",
+        "url": ""
+      },
+      {
+        "name": "Spatial AI systems",
+        "detail": "Used with broader spatial techniques in robotics, self-driving, and augmented-reality applications.",
+        "url": ""
+      }
+    ],
+    "intuition": "Pixels and their possible labels form a network in which cutting a connection has a cost. The cheapest cut balances agreeing with the image data against splitting similar, neighbouring pixels, so it produces a coherent labelling rather than independent pixel decisions.",
+    "howItWorks": [
+      "Write the vision task as an energy-minimization problem.",
+      "Build a graph whose edge capacities make each cut's total cost match the energy.",
+      "Compute a maximum flow through the graph.",
+      "Use the max-flow min-cut theorem to obtain the minimum cut.",
+      "Read the resulting partition as the solution's labels."
+    ],
+    "whyItMatters": "It gives one optimization framework for segmentation, smoothing, stereo correspondence, object co-segmentation, and other energy-based vision tasks. Binary problems can be solved exactly and efficiently, while the broader approach often yields near-optimal answers when exact solutions are unavailable.",
+    "misconceptions": [
+      "Graph cuts here specifically mean max-flow/min-cut optimization, not every algorithm that partitions a graph; normalized cuts are a different example.",
+      "The method does not exactly solve every multi-label vision problem, even though its approximate answers are usually near the global optimum.",
+      "A minimum cut is not found by simply removing the visually weakest edges; it comes from solving the maximum-flow problem."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "vision",
+          "label": "Vision problem",
+          "note": "Segmentation, smoothing, or another labelling task."
+        },
+        {
+          "id": "energy",
+          "label": "Energy function",
+          "note": "Scores data fit and spatial coherence."
+        },
+        {
+          "id": "graph",
+          "label": "Weighted graph",
+          "note": "Edge capacities encode cut costs."
+        },
+        {
+          "id": "flow",
+          "label": "Maximum flow",
+          "note": "Optimization identifies the minimum-capacity cut."
+        },
+        {
+          "id": "labels",
+          "label": "Pixel labels",
+          "note": "The cut partition supplies the vision solution."
+        }
+      ],
+      "edges": [
+        {
+          "from": "vision",
+          "to": "energy",
+          "label": "formulate"
+        },
+        {
+          "from": "energy",
+          "to": "graph",
+          "label": "encode"
+        },
+        {
+          "from": "graph",
+          "to": "flow",
+          "label": "solve"
+        },
+        {
+          "from": "flow",
+          "to": "labels",
+          "label": "minimum cut"
+        }
+      ],
+      "caption": "A vision energy is encoded as a graph, optimized by maximum flow, and converted back into labels through the minimum cut."
+    }
+  },
   "related": [
     "artificial-intelligence",
     "applications-of-artificial-intelligence",

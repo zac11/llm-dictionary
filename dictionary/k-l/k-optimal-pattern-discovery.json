@@ -5,7 +5,96 @@
   "type": "concept",
   "definition": "K-optimal pattern discovery is a data mining technique that provides an alternative to the frequent pattern discovery approach that underlies most association rule learning techniques.",
   "details": "Frequent pattern discovery techniques find all patterns for which there are sufficiently frequent examples in the sample data. In contrast, k-optimal pattern discovery techniques find the k patterns that optimize a user-specified measure of interest. The parameter k is also specified by the user. Examples of k-optimal pattern discovery techniques include: k-optimal classification rule discovery. k-optimal subgroup discovery. finding k most interesting patterns using sequential sampling. mining top.k frequent closed patterns without minimum support. k-optimal rule discovery. In contrast to k-optimal rule discovery and frequent pattern mining techniques, subgroup discovery focuses on mining interesting patterns with respect to a specified target property of interest. This includes, for example, binary, nominal, or numeric attributes, but also more complex target concepts such as correlations between several variables. Background knowledge like constraints and ontological relations can often be successfully applied for focusing and improving the discovery results.",
-  "story": "Picture a librarian organizing a million slips of paper so that any one of them can be found in a heartbeat. The examples a machine reads become the world it believes in. Better ingredients make a better meal, and the same is true here. Garbage in, garbage out — and the reverse: clean, representative data makes the model quietly brilliant. And that is K-optimal pattern discovery — the unglamorous work everything else stands on.",
+  "explainer": {
+    "lead": "K-optimal pattern discovery looks for the k best patterns in data according to a measure chosen by the user, rather than every pattern that passes a frequency threshold. It is useful when you want a short, ranked set of findings, such as the most interesting classification rules or subgroups.",
+    "tiers": {
+      "eli5": "Imagine searching a huge box of Lego creations for the three most surprising colour combinations, instead of writing down every combination that appears at least ten times. You choose what “surprising” means and how many results you want. K-optimal pattern discovery does the same kind of focused search with patterns in data.",
+      "practitioner": "Use it when a ranked shortlist is more useful than an exhaustive set of frequent patterns: specify k, choose an interestingness measure, and evaluate candidate patterns against it. In subgroup discovery, also define the target property, which may be binary, nominal, numeric, or a more complex relationship. Results depend strongly on that measure, and a top-k result set should not be mistaken for the complete output of a minimum-support search.",
+      "paperLevel": "Given a dataset D, a space of candidate patterns P, a user-specified quality measure q, and an integer k, k-optimal pattern discovery returns k patterns optimizing q, commonly expressed as the top k patterns under q. This differs from frequent pattern discovery, which returns all patterns meeting a minimum-frequency condition. Variants include k-optimal classification rule and subgroup discovery, sequential sampling for the k most interesting patterns, and mining top-k frequent closed patterns without minimum support."
+    },
+    "example": "Suppose an analyst sets k to 3 and chooses a measure for how interesting each customer-purchase pattern is. The method returns the three highest-scoring patterns, even if many other patterns occur often enough to appear in a conventional frequent-pattern result.",
+    "usedIn": [
+      {
+        "name": "Association rule learning",
+        "detail": "Provides an alternative to the frequent-pattern approach that underlies most association rule techniques.",
+        "url": ""
+      },
+      {
+        "name": "Classification rule discovery",
+        "detail": "Selects k classification rules that best optimize the chosen measure of interest.",
+        "url": ""
+      },
+      {
+        "name": "Subgroup discovery",
+        "detail": "Finds interesting patterns with respect to a specified target property, potentially using constraints or ontological relations as background knowledge.",
+        "url": ""
+      }
+    ],
+    "intuition": "Frequency is only one way to judge a pattern, and a frequency cutoff can produce more results than anyone wants to inspect. K-optimal discovery instead asks for a fixed number of patterns that score best under the user’s own notion of interestingness.",
+    "howItWorks": [
+      "Choose k and a measure of pattern interestingness.",
+      "Consider candidate patterns in the sample data.",
+      "Evaluate the candidates using that measure.",
+      "Return the k patterns that optimize it."
+    ],
+    "whyItMatters": "It gives the user direct control over both the quality criterion and the size of the result set. That makes it a focused alternative when optimizing interestingness matters more than enumerating every sufficiently frequent pattern.",
+    "misconceptions": [
+      "It is not simply frequent-pattern mining with k replacing the frequency threshold; the goal is to optimize a chosen measure.",
+      "Subgroup discovery is not identical to k-optimal rule discovery, because it centers on patterns related to a specified target property."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data",
+          "label": "Sample data",
+          "note": "Contains examples from which candidate patterns are found."
+        },
+        {
+          "id": "settings",
+          "label": "User settings",
+          "note": "Specifies k and the measure of interest."
+        },
+        {
+          "id": "candidates",
+          "label": "Candidate patterns",
+          "note": "Patterns considered for evaluation."
+        },
+        {
+          "id": "score",
+          "label": "Pattern evaluation",
+          "note": "Assesses candidates with the chosen measure."
+        },
+        {
+          "id": "output",
+          "label": "K best patterns",
+          "note": "The k patterns optimizing the measure."
+        }
+      ],
+      "edges": [
+        {
+          "from": "data",
+          "to": "candidates",
+          "label": "patterns"
+        },
+        {
+          "from": "candidates",
+          "to": "score",
+          "label": ""
+        },
+        {
+          "from": "settings",
+          "to": "score",
+          "label": "measure and k"
+        },
+        {
+          "from": "score",
+          "to": "output",
+          "label": "top k"
+        }
+      ],
+      "caption": "K-optimal discovery evaluates candidate patterns with a user-chosen measure and returns the k best."
+    }
+  },
   "related": [
     "frequent-pattern-discovery",
     "coupled-pattern-learner",

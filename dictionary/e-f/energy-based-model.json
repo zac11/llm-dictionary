@@ -5,7 +5,103 @@
   "type": "concept",
   "definition": "An energy-based model (EBM), also called Canonical Ensemble Learning (CEL) or Learning via Canonical Ensemble (LCE), is an application of canonical ensemble formulation from statistical physics for learning from data.",
   "details": "The approach prominently appears in generative AI. EBMs provide a unified framework for many probabilistic and non-probabilistic approaches to such learning, particularly for training graphical and other structured models. An EBM learns the characteristics of a target dataset and generates a similar but larger dataset. EBMs detect the latent variables of a dataset and generate new datasets with a similar distribution. Energy-based generative neural networks is a class of generative models, which aim to learn explicit probability distributions of data in the form of energy-based models, the energy functions of which are parameterized by modern deep neural networks. Boltzmann machines are a special form of energy-based models with a specific parametrization of the energy.",
-  "story": "Imagine a chef tasting every ingredient before it goes into the pot, deciding what belongs and what would ruin the broth. Better ingredients make a better meal, and the same is true here. Every machine is shaped by what it was shown, so someone has to choose that material with care. It is the raw material; the model is only ever as good as what it was fed. And that is Energy-based model — the unglamorous work everything else stands on.",
+  "explainer": {
+    "lead": "An energy-based model learns to score possible data: likely or realistic examples receive low energy, while unlikely ones receive high energy. Those scores define a probability distribution and can be used to generate new examples resembling the training data.",
+    "tiers": {
+      "eli5": "Imagine a landscape where balls roll downhill into valleys. The model learns to put its valleys where the training examples are, so new examples gathered from those valleys look similar. A lower energy simply means a better fit to what the model has learned.",
+      "practitioner": "EBMs are used for generative learning and for training graphical and other structured models; in modern generative networks, a deep neural network parameterizes the energy function. Training shapes the energy landscape, while generation requires finding or sampling low-energy configurations. Normalization and sampling can be computationally difficult, and Boltzmann machines are a specially parameterized case rather than the whole EBM family.",
+      "paperLevel": "An EBM defines p_theta(x) = exp(-E_theta(x)) / Z_theta, where Z_theta = integral exp(-E_theta(x)) dx, or the corresponding sum for discrete x. The energy may be parameterized by a deep neural network, giving an explicit probability distribution up to its normalizing constant. Computing Z_theta and drawing samples can be difficult, which complicates likelihood-based training and generation."
+    },
+    "example": "For a dataset clustered around x = 2, a simple energy could be E(x) = (x - 2)^2. Then x = 2 has energy 0, x = 3 has energy 1, and x = 6 has energy 16, so the distribution exp(-E(x))/Z concentrates near 2 and generation favors values resembling the dataset.",
+    "usedIn": [
+      {
+        "name": "Generative AI",
+        "detail": "Learns a target dataset's distribution and generates additional examples with a similar distribution.",
+        "url": ""
+      },
+      {
+        "name": "Graphical models",
+        "detail": "Provides a common energy-based formulation for probabilistic and non-probabilistic training approaches.",
+        "url": ""
+      },
+      {
+        "name": "Structured learning",
+        "detail": "Uses energies to represent which structured configurations are compatible with the learned data distribution.",
+        "url": ""
+      },
+      {
+        "name": "Boltzmann machines",
+        "detail": "A special form of energy-based model with a particular parameterization of the energy.",
+        "url": ""
+      }
+    ],
+    "intuition": "Think of energy as a learned measure of implausibility. Training lowers the energy of patterns found in the data and raises it elsewhere, turning the resulting landscape into a model of the data distribution.",
+    "howItWorks": [
+      "Start with examples from the target dataset.",
+      "Define an energy function, often parameterized by a neural network.",
+      "Train it so observed examples receive relatively low energy.",
+      "Convert energies to probabilities using exp(-energy), normalized over all configurations.",
+      "Generate new data by finding or sampling low-energy configurations."
+    ],
+    "whyItMatters": "EBMs give many probabilistic and non-probabilistic learning methods one shared framework, including graphical and structured models. They also let modern neural networks describe complex data distributions through an energy function rather than a restricted output form.",
+    "misconceptions": [
+      "Energy here is a mathematical score, not physical power consumption.",
+      "An EBM does not have to use a neural network, although modern generative EBMs often do.",
+      "Boltzmann machines are one special parameterization, not a synonym for every EBM."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data",
+          "label": "Training data",
+          "note": "Examples from the target distribution."
+        },
+        {
+          "id": "energy",
+          "label": "Energy function",
+          "note": "Assigns an energy to each configuration."
+        },
+        {
+          "id": "landscape",
+          "label": "Learned landscape",
+          "note": "Observed patterns occupy low-energy regions."
+        },
+        {
+          "id": "sampling",
+          "label": "Sample generation",
+          "note": "Searches or samples low-energy configurations."
+        },
+        {
+          "id": "output",
+          "label": "Generated dataset",
+          "note": "New examples with a similar distribution."
+        }
+      ],
+      "edges": [
+        {
+          "from": "data",
+          "to": "energy",
+          "label": "trains"
+        },
+        {
+          "from": "energy",
+          "to": "landscape",
+          "label": "defines"
+        },
+        {
+          "from": "landscape",
+          "to": "sampling",
+          "label": "guides"
+        },
+        {
+          "from": "sampling",
+          "to": "output",
+          "label": "produces"
+        }
+      ],
+      "caption": "Learning shapes an energy landscape; generation draws new examples from its low-energy regions."
+    }
+  },
   "related": [
     "flow-based-generative-model",
     "acoustic-model",

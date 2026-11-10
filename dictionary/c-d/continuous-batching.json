@@ -5,6 +5,102 @@
   "type": "concept",
   "definition": "Scheduling at the token level so new requests join and finished requests leave a running batch every step, instead of waiting for whole-batch completion.",
   "details": "Scheduling at the token level so new requests join and finished requests leave a running batch every step, instead of waiting for whole-batch completion. The single biggest throughput innovation in LLM serving (vLLM, TGI, TensorRT-LLM all implement it).",
+  "explainer": {
+    "lead": "Continuous batching keeps an LLM serving batch active while individual requests join or leave at each token-generation step. This avoids making short requests wait for the longest one, improving serving throughput.",
+    "tiers": {
+      "eli5": "Imagine a bus where passengers can get on or off at every stop, instead of everyone waiting until the slowest passenger finishes their trip. An AI answer is built in small pieces, and continuous batching lets new questions join while finished questions leave. That keeps the system busy instead of waiting around.",
+      "practitioner": "Use it through a serving engine such as vLLM, TGI, or TensorRT-LLM, which schedules work at token level as requests arrive and complete. Do not model a batch as fixed until its longest request finishes; admission and completion happen between steps. It targets throughput lost to whole-batch waiting, not a guaranteed fixed speedup for every workload.",
+      "paperLevel": "Let B_t be the set of active requests at token step t. After generating and scheduling at that step, completed requests are removed and waiting requests may be admitted, producing B_(t+1); thus B_t can change throughout serving rather than remaining fixed until all requests finish. The technique addresses idle capacity caused by whole-batch completion, without implying a fixed throughput gain."
+    },
+    "example": "Four requests generate tokens together, and one finishes after its next step. It leaves immediately, a waiting request joins the running batch, and the other three continue without waiting for a new whole batch to form.",
+    "usedIn": [
+      {
+        "name": "vLLM",
+        "detail": "Implements continuous batching for LLM serving.",
+        "url": ""
+      },
+      {
+        "name": "TGI",
+        "detail": "Implements continuous batching for serving text-generation requests.",
+        "url": ""
+      },
+      {
+        "name": "TensorRT-LLM",
+        "detail": "Implements continuous batching in its LLM serving stack.",
+        "url": ""
+      }
+    ],
+    "intuition": "A fixed batch wastes capacity when some requests finish early and others must wait to start. Token-level scheduling lets the batch change continuously, so work can keep flowing.",
+    "howItWorks": [
+      "Run the current requests through one token-generation step.",
+      "Remove requests that have finished.",
+      "Admit new requests that are ready to join.",
+      "Repeat with the updated running batch."
+    ],
+    "whyItMatters": "It prevents finished or long-running requests from holding up the entire batch, making it a major throughput innovation in LLM serving.",
+    "misconceptions": [
+      "It is not waiting for every request in the original batch to finish.",
+      "It does not require all requests to have the same output length.",
+      "It does not promise the same throughput improvement for every workload."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "waiting",
+          "label": "Waiting requests",
+          "note": "New requests ready to enter."
+        },
+        {
+          "id": "scheduler",
+          "label": "Token scheduler",
+          "note": "Updates membership every step."
+        },
+        {
+          "id": "batch",
+          "label": "Running batch",
+          "note": "Currently active requests."
+        },
+        {
+          "id": "model",
+          "label": "Token generation",
+          "note": "Advances requests by one step."
+        },
+        {
+          "id": "finished",
+          "label": "Finished requests",
+          "note": "Completed requests leave promptly."
+        }
+      ],
+      "edges": [
+        {
+          "from": "waiting",
+          "to": "scheduler",
+          "label": "arrivals"
+        },
+        {
+          "from": "scheduler",
+          "to": "batch",
+          "label": "admits"
+        },
+        {
+          "from": "batch",
+          "to": "model",
+          "label": "active work"
+        },
+        {
+          "from": "model",
+          "to": "scheduler",
+          "label": "next step"
+        },
+        {
+          "from": "model",
+          "to": "finished",
+          "label": "completions"
+        }
+      ],
+      "caption": "The scheduler refreshes the running batch after each token step, admitting new requests and releasing completed ones."
+    }
+  },
   "related": [
     "tensorrt",
     "throughput",

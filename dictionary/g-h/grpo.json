@@ -2,9 +2,114 @@
   "term": "GRPO",
   "letter": "G",
   "category": "Alignment and Post-Training",
-  "type": "concept",
+  "type": "algorithm",
   "definition": "A lighter RL algorithm (popularized by DeepSeek) that removes the value network: sample a group of responses per prompt, use the group's normalized scores as advantages.",
   "details": "A lighter RL algorithm (popularized by DeepSeek) that removes the value network: sample a group of responses per prompt, use the group's normalized scores as advantages. Cheap and stable enough to make large-scale reasoning RL widely accessible.",
+  "explainer": {
+    "lead": "GRPO is a reinforcement-learning algorithm for improving language models without training a separate value network. It generates several responses to the same prompt and compares their scores, making large-scale reasoning training cheaper and more accessible.",
+    "tiers": {
+      "eli5": "Imagine asking four friends to solve the same puzzle, then giving each answer a score. Instead of needing another friend to predict how good every answer should be, you simply compare the four answers with one another. The better-than-average answers are encouraged, and the worse-than-average ones are discouraged.",
+      "practitioner": "For each prompt, sample a group of responses, score them, and turn the scores into group-normalized advantages before updating the policy. This removes the value network from the RL setup, reducing its cost and complexity. Watch for groups whose responses all receive the same score, since they provide little or no relative learning signal.",
+      "paperLevel": "For a prompt, sample G responses with scores r_i and use a group-normalized advantage such as A_i = (r_i - mean(r)) / std(r), then update the policy without a learned value network. DeepSeek popularized the approach. Its relative signal depends on variation within each sampled group, so identical scores do not distinguish better from worse responses."
+    },
+    "example": "For one maths prompt, four responses receive scores 1, 1, 0, and 0. Their mean is 0.5 and their standard deviation is 0.5, giving advantages +1, +1, -1, and -1: the two correct responses are favored over the two incorrect ones without a value-network estimate.",
+    "usedIn": [
+      {
+        "name": "DeepSeek",
+        "detail": "Popularized GRPO as a lighter approach to reinforcement learning.",
+        "url": ""
+      },
+      {
+        "name": "Large-scale reasoning RL",
+        "detail": "Used to make reasoning-focused reinforcement learning more accessible by avoiding a value network.",
+        "url": ""
+      },
+      {
+        "name": "Language-model post-training",
+        "detail": "Improves a policy by comparing multiple scored responses to each prompt.",
+        "url": ""
+      }
+    ],
+    "goal": "Improve a language model using relative response quality, without training a separate value network.",
+    "inputs": [
+      "A prompt",
+      "A policy that samples responses",
+      "A score for each response"
+    ],
+    "outputs": [
+      "Normalized group advantages",
+      "An updated policy"
+    ],
+    "steps": [
+      "Sample a group of responses for one prompt.",
+      "Assign a score to every response.",
+      "Normalize scores within the group to obtain advantages.",
+      "Update the policy using those relative advantages."
+    ],
+    "tradeoffs": [
+      "No value network to train",
+      "Lower cost and complexity",
+      "Needs several responses per prompt",
+      "Equal group scores give weak relative signal"
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "prompt",
+          "label": "Prompt",
+          "note": "One shared training input"
+        },
+        {
+          "id": "policy",
+          "label": "Current policy",
+          "note": "Samples a response group"
+        },
+        {
+          "id": "scores",
+          "label": "Response scores",
+          "note": "One score per sampled response"
+        },
+        {
+          "id": "advantages",
+          "label": "Group advantages",
+          "note": "Scores normalized within the group"
+        },
+        {
+          "id": "update",
+          "label": "Policy update",
+          "note": "Learns without a value network"
+        }
+      ],
+      "edges": [
+        {
+          "from": "prompt",
+          "to": "policy",
+          "label": "shared input"
+        },
+        {
+          "from": "policy",
+          "to": "scores",
+          "label": "response group"
+        },
+        {
+          "from": "scores",
+          "to": "advantages",
+          "label": "normalize"
+        },
+        {
+          "from": "advantages",
+          "to": "update",
+          "label": "relative signal"
+        },
+        {
+          "from": "update",
+          "to": "policy",
+          "label": "improve"
+        }
+      ],
+      "caption": "GRPO compares responses within each prompt's group and uses their normalized scores to update the policy."
+    }
+  },
   "related": [
     "deepseek"
   ],

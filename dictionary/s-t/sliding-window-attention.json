@@ -5,7 +5,32 @@
   "type": "concept",
   "definition": "An attention pattern where each token only attends to a fixed-size local window of nearby tokens, rather than the entire sequence.",
   "details": "Sliding window attention reduces the quadratic computational cost of full self-attention, trading some long-range direct interaction for substantial efficiency gains, often combined with other mechanisms to preserve some long-range information flow.",
-  "story": "Think of an orchestra warming up: no single instrument carries the piece, but together they make the sound. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. The layout decides what the machine can even attempt, before it learns a single thing. The shape of the machine is half the idea. And that shape of the machine — Sliding Window Attention — is what makes everything else possible.",
+  "explainer": {
+    "lead": "Sliding window attention is an attention pattern where each token attends only to a fixed-size local window of nearby tokens rather than the entire sequence. It matters because it reduces the quadratic computational cost of full self-attention while trading away some long-range direct interaction.",
+    "tiers": {
+      "eli5": "Instead of every word in a sentence looking at every other word, each word only looks at its close neighbours. That's much cheaper, though distant words no longer see each other directly.",
+      "practitioner": "Engineers use local windows to cut the cost of self-attention on long sequences, often combining them with other mechanisms to preserve some long-range information flow. A pitfall is assuming the window alone captures long-range dependencies, which it does not.",
+      "paperLevel": "Each token attends to a fixed-size local window of nearby tokens instead of the full sequence, reducing the quadratic cost of full self-attention; some long-range direct interaction is lost and is often recovered via other mechanisms."
+    },
+    "example": "In a long document, a token attends only to the fixed number of tokens around it, and other mechanisms carry information between distant parts of the text.",
+    "usedIn": [
+      {
+        "name": "Long-sequence models",
+        "detail": "cheaper self-attention",
+        "url": ""
+      },
+      {
+        "name": "Efficient transformers",
+        "detail": "local attention patterns",
+        "url": ""
+      },
+      {
+        "name": "Language modelling",
+        "detail": "combined with long-range mechanisms",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "attention",
     "attention-score",

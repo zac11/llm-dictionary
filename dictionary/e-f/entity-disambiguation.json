@@ -5,6 +5,103 @@
   "type": "concept",
   "definition": "Resolving which real-world entity a mention refers to, such as deciding whether “Jordan” means the country, the river, or a person.",
   "details": "Resolving which real-world entity a mention refers to, such as deciding whether “Jordan” means the country, the river, or a person. It links surface forms to entries in a knowledge base using context, popularity priors, and learned similarity.",
+  "explainer": {
+    "lead": "Entity disambiguation works out which real-world thing a word or name refers to in a particular context. It matters because the same mention can have several meanings, and linking it to the wrong one can distort search results, extracted facts, and other language-processing output.",
+    "tiers": {
+      "eli5": "Imagine a friend says, “Jordan is amazing,” and you use the rest of the conversation to work out whether they mean a person, a country, or a river. Entity disambiguation teaches a computer to do something similar. It compares the possible meanings and chooses the one that best fits the situation.",
+      "practitioner": "A typical pipeline finds the mention, retrieves matching knowledge-base entries, and ranks them using the surrounding context, popularity priors, and learned similarity. The selected entry supplies a stable identity for downstream processing. Common failure points include sparse or misleading context, overreliance on popular entities, and mentions whose intended entity has no matching knowledge-base entry.",
+      "paperLevel": "Given mention m, context c, and candidate entities E(m), the task is to select e* = argmax over e in E(m) of Score(e | m, c), where the score can combine contextual evidence, a popularity prior, and learned similarity. The output is a link from the surface form to a knowledge-base entry rather than merely a descriptive label. Limits arise when context does not distinguish the candidates, popularity biases the ranking, or the intended entity is absent from the knowledge base."
+    },
+    "example": "For “Jordan borders Israel,” the candidate entities include the country, the river, and people named Jordan. The words “borders Israel” strongly support the country, so the system links “Jordan” to the knowledge-base entry for that country.",
+    "usedIn": [
+      {
+        "name": "Information extraction",
+        "detail": "Links ambiguous names in text to knowledge-base entries so extracted facts refer to the intended entity.",
+        "url": ""
+      },
+      {
+        "name": "Search systems",
+        "detail": "Uses query and document context to distinguish different entities that share a name.",
+        "url": ""
+      },
+      {
+        "name": "Conversational assistants",
+        "detail": "Resolves names in a request using the surrounding conversation before acting on them.",
+        "url": ""
+      }
+    ],
+    "intuition": "A mention is like an incomplete pointer: its wording may match several entities, while its context supplies clues to the intended one. Disambiguation turns that uncertain mention into a link to one knowledge-base entry.",
+    "howItWorks": [
+      "Identify the mention whose meaning needs resolving.",
+      "Find knowledge-base entries that the surface form could refer to.",
+      "Compare each candidate with the surrounding context.",
+      "Combine contextual evidence with popularity priors and learned similarity.",
+      "Link the mention to the best-supported candidate."
+    ],
+    "whyItMatters": "It keeps references to the same real-world entity consistent and prevents facts about different entities from being mixed together. That makes downstream language-processing results more useful and reliable.",
+    "misconceptions": [
+      "It is not just dictionary word-sense selection: its target is a specific real-world entity in a knowledge base.",
+      "The most popular candidate is not always the intended one; context can favor a less common entity.",
+      "Matching the surface form alone does not solve the task because several entities can share it."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "mention",
+          "label": "Mention and context",
+          "note": "The surface form plus surrounding clues"
+        },
+        {
+          "id": "lookup",
+          "label": "Candidate lookup",
+          "note": "Finds matching knowledge-base entries"
+        },
+        {
+          "id": "candidates",
+          "label": "Possible entities",
+          "note": "Country, river, or person"
+        },
+        {
+          "id": "score",
+          "label": "Evidence scoring",
+          "note": "Combines context, popularity, and similarity"
+        },
+        {
+          "id": "link",
+          "label": "Entity link",
+          "note": "Selects the best-supported entry"
+        }
+      ],
+      "edges": [
+        {
+          "from": "mention",
+          "to": "lookup",
+          "label": "surface form"
+        },
+        {
+          "from": "lookup",
+          "to": "candidates",
+          "label": ""
+        },
+        {
+          "from": "candidates",
+          "to": "score",
+          "label": ""
+        },
+        {
+          "from": "mention",
+          "to": "score",
+          "label": "context"
+        },
+        {
+          "from": "score",
+          "to": "link",
+          "label": ""
+        }
+      ],
+      "caption": "An ambiguous mention is matched to candidates, scored with contextual and prior evidence, and linked to one knowledge-base entity."
+    }
+  },
   "related": [
     "knowledge-base"
   ],

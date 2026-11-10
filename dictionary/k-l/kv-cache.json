@@ -8,7 +8,27 @@
   ],
   "definition": "Storing the key and value vectors of past tokens so autoregressive generation need not recompute them each step.",
   "details": "When a decoder generates token by token, earlier tokens’ attention keys and values do not change, so caching them turns each new step into an O(sequence) operation instead of recomputing the whole history. The cache grows with context length and can dominate memory, motivating techniques such as paged attention, which manages cache blocks like memory pages for higher utilization.",
-  "story": "Picture a novelist who has read so much that, given a first line, they cannot help but write the next one. It makes new things by recombining everything it has ever seen. The result feels creative because it is memory, reshuffled at speed. It is prediction pushed forward — each next word, or pixel, guessed from everything that came before it. And that is KV Cache — making something new out of everything it has ever seen.",
+  "explainer": {
+    "lead": "The KV cache stores key and value vectors of past tokens so autoregressive generation does not recompute them each step. It turns each new token into work proportional to sequence length rather than recomputing the whole history, at the cost of memory that grows with context.",
+    "tiers": {
+      "eli5": "When writing a sentence word by word, you don't re-read the whole page from the start each time; you keep notes on what you've already written.",
+      "practitioner": "Engineers rely on the cache to make generation tractable, and manage its growth because it can dominate memory. Paged attention, which manages cache blocks like memory pages, is one way to raise utilization.",
+      "paperLevel": "Earlier tokens' attention keys and values are unchanged during decoding, so caching them reduces each step to an O(sequence) operation instead of recomputing the full history. The cache grows with context length and can dominate memory."
+    },
+    "example": "Generating token 500, the model reuses cached keys and values for tokens 1 through 499 rather than recomputing attention over all of them.",
+    "usedIn": [
+      {
+        "name": "LLM inference",
+        "detail": "autoregressive decoding",
+        "url": ""
+      },
+      {
+        "name": "Paged attention",
+        "detail": "cache block management",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "beam-search",
     "best-of-n-sampling",

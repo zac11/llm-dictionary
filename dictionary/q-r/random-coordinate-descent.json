@@ -5,7 +5,27 @@
   "type": "algorithm",
   "definition": "Randomized (Block) Coordinate Descent Method is an optimization algorithm popularized by Nesterov (2010) and Richtárik and Takáč (2011).",
   "details": "The first analysis of this method, when applied to the problem of minimizing a smooth convex function, was performed by Nesterov (2010). In Nesterov's analysis the method needs to be applied to a quadratic perturbation of the original function with an unknown scaling factor. Richtárik and Takáč (2011) provide iteration complexity bounds that do not require this assumption, meaning the method is applied directly to the objective function. Additionally, they generalize the framework to the problem of minimizing a composite function, specifically the sum of a smooth convex function and a (possibly nonsmooth) convex block-separable function. F ( x ) = f ( x ) + Ψ ( x ) , {\\displaystyle F(x)=f(x)+\\Psi (x),} where Ψ ( x ) = ∑ i = 1 n Ψ i ( x ( i ) ) , {\\displaystyle \\Psi (x)=\\sum _{i=1}^{n}\\Psi _{i}(x^{(i)}),} x ∈ R N {\\displaystyle x\\in R^{N}} is decomposed into n {\\displaystyle n} blocks of variables/coordinates: x = ( x ( 1 ) , … , x ( n ) ) {\\displaystyle x=(x^{(1)},\\dots ,x^{(n)})} and Ψ 1 , … , Ψ n {\\displaystyle \\Psi _{1},\\dots ,\\Psi _{n}} are (simple) convex functions. Example (block decomposition): If x = ( x 1 , x 2 , … , x 5 ) ∈ R 5 {\\displaystyle x=(x_{1},x_{2},\\dots ,x_{5})\\",
-  "story": "Think of a hiker descending a foggy hill in the dark, taking small steps and feeling for the steepest way down. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. It is the same loop you use to learn anything: try, miss, correct, try again. Skill, for a model, is just error pushed down until it is small enough to ignore. That steady, miss-by-miss improvement is Random coordinate descent.",
+  "explainer": {
+    "lead": "Randomized (block) coordinate descent is an optimization algorithm popularized by Nesterov (2010) and Richtárik and Takáč (2011). It matters because it minimizes functions by updating random coordinates rather than computing full gradients.",
+    "tiers": {
+      "eli5": "To find the lowest spot on a hillside, you don't look everywhere at once — you pick one direction at random, take a step downhill there, and repeat.",
+      "practitioner": "Engineers apply it directly to smooth convex objectives, selecting coordinates or blocks at random each iteration. A pitfall is that Nesterov's original analysis required applying it to a quadratic perturbation with an unknown scaling factor.",
+      "paperLevel": "Nesterov (2010) gave the first analysis for minimizing a smooth convex function, requiring a quadratic perturbation with an unknown scaling factor; Richtárik and Takáč (2011) give iteration complexity bounds without that assumption, applied directly to the objective, and generalize the framework."
+    },
+    "example": "Minimizing a smooth convex loss, each iteration samples one coordinate at random and moves along it; Richtárik and Takáč's bounds apply to the original function with no perturbed surrogate.",
+    "usedIn": [
+      {
+        "name": "Machine learning optimization",
+        "detail": "large-scale convex problems",
+        "url": ""
+      },
+      {
+        "name": "Numerical optimization",
+        "detail": "randomized block updates",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "coordinate-descent",
     "adaptive-coordinate-descent",

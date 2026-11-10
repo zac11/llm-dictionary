@@ -5,7 +5,108 @@
   "type": "concept",
   "definition": "A Gödel machine is a hypothetical self-improving computer program that solves problems in an optimal way.",
   "details": "It uses a recursive self-improvement protocol in which it rewrites its own code when it can prove the new code provides a better strategy. The machine was invented by Jürgen Schmidhuber (first proposed in 2003), but is named after Kurt Gödel who inspired the mathematical theories. The Gödel machine is often discussed when dealing with issues of meta-learning, also known as \"learning to learn.\" Applications include automating human design decisions and transfer of knowledge between multiple related tasks, and may lead to design of more robust and general learning architectures. Though theoretically possible, no full implementation has been created. The Gödel machine is often compared with Marcus Hutter's AIXI, another formal specification for an artificial general intelligence. Schmidhuber points out that the Gödel machine could start out by implementing AIXItl as its initial sub-program, and self-modify after it finds proof that another algorithm for its search code will be better.",
-  "story": "Picture an engineer at a cluttered workbench, turning a clever idea over in their hands until it finally clicks. At its heart it is a simple notion, once you strip away the fancy name. A small key that opens a much bigger door. It is one of those ideas that feels obvious only after someone shows it to you. And that idea, made concrete, is Gödel machine.",
+  "explainer": {
+    "lead": "A Gödel machine is a proposed kind of program that improves itself, but only after proving that a rewrite will give it a better problem-solving strategy. It matters as a theoretical model of recursive self-improvement and artificial general intelligence, not as software that has already been built.",
+    "tiers": {
+      "eli5": "Imagine a robot with an instruction book that it is allowed to rewrite. Before changing any instructions, it must prove that the new version will help it solve problems better. This idea is called a Gödel machine, and no complete version has been made.",
+      "practitioner": "There is no full implementation or standard toolchain to use; engineers encounter the Gödel machine as a theoretical reference in meta-learning and AGI discussions. Its key constraint is that self-modification requires a proof of improvement, not merely good test results. A practical design would also need a clearly formalized objective against which candidate strategies could be compared.",
+      "paperLevel": "Given a current program p and a candidate program p', the machine replaces p with p' only when it can formally prove that p' provides a better strategy for its objective; applying this rule recursively is intended to yield optimal problem solving. Jürgen Schmidhuber first proposed the Gödel machine in 2003, naming it after Kurt Gödel, whose mathematical theories inspired it. Schmidhuber notes that it could initially implement AIXItl as a sub-program and later modify its search code after finding a suitable proof, but no full implementation exists."
+    },
+    "example": "Suppose a Gödel machine is assigning tasks to workers under a formal objective. It considers a new search routine, proves that the routine gives a better strategy for that objective, and rewrites its code to use it. If it cannot produce the proof, it keeps the old routine even if the new one appears promising.",
+    "usedIn": [
+      {
+        "name": "Meta-learning",
+        "detail": "A conceptual model for learning to learn by provably improving one's own strategy.",
+        "url": ""
+      },
+      {
+        "name": "Transfer learning",
+        "detail": "Discussed in connection with transferring knowledge between multiple related tasks.",
+        "url": ""
+      },
+      {
+        "name": "Automated design",
+        "detail": "Proposed as a way to automate decisions that humans would otherwise make during design.",
+        "url": ""
+      },
+      {
+        "name": "AGI theory",
+        "detail": "Compared with Marcus Hutter's AIXI as a formal approach to artificial general intelligence.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of hoping that a self-modification helps, the program must demonstrate mathematically that the new code is a better strategy. This turns recursive self-improvement into a proof-gated process aimed at optimal problem solving.",
+    "howItWorks": [
+      "Start with a program that can solve problems and examine its own code.",
+      "Search for a candidate rewrite, including a possible replacement for its search code.",
+      "Attempt to prove formally that the candidate provides a better strategy.",
+      "Adopt the rewrite only if that proof is found; otherwise, retain the current code.",
+      "Repeat the process so later improvements can build on earlier ones."
+    ],
+    "whyItMatters": "The idea connects self-improvement with formal proof and provides a reference point for meta-learning, knowledge transfer, and more general learning architectures. Its comparison with AIXI also helps frame different theoretical approaches to artificial general intelligence.",
+    "misconceptions": [
+      "It is not an existing, fully implemented software system.",
+      "Not every self-modifying program qualifies: the rewrite must be supported by a proof of improvement.",
+      "Kurt Gödel did not invent it; Jürgen Schmidhuber proposed it and named it after him."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "current",
+          "label": "Current program",
+          "note": "Solves problems and inspects its own code."
+        },
+        {
+          "id": "candidate",
+          "label": "Candidate rewrite",
+          "note": "A possible replacement strategy or search routine."
+        },
+        {
+          "id": "proof",
+          "label": "Proof of improvement",
+          "note": "Shows that the candidate is a better strategy."
+        },
+        {
+          "id": "decision",
+          "label": "Rewrite decision",
+          "note": "Adopts code only when the proof succeeds."
+        },
+        {
+          "id": "improved",
+          "label": "Improved program",
+          "note": "Continues solving problems and seeking further rewrites."
+        }
+      ],
+      "edges": [
+        {
+          "from": "current",
+          "to": "candidate",
+          "label": "proposes"
+        },
+        {
+          "from": "candidate",
+          "to": "proof",
+          "label": "evaluates"
+        },
+        {
+          "from": "proof",
+          "to": "decision",
+          "label": "gates"
+        },
+        {
+          "from": "decision",
+          "to": "improved",
+          "label": "if proven"
+        },
+        {
+          "from": "improved",
+          "to": "candidate",
+          "label": "repeats"
+        }
+      ],
+      "caption": "Recursive self-improvement: a rewrite is adopted only after a formal proof that it improves the program's strategy."
+    }
+  },
   "related": [
     "active-learning-machine-learning",
     "adversarial-machine-learning",

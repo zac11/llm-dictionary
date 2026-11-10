@@ -5,7 +5,110 @@
   "type": "algorithm",
   "definition": "A Graph Coarsening Algorithm is a family of metaheuristic algorithms used to reduce the size and complexity of a large graph while preserving its key structural properties.",
   "details": "These algorithms form the core of multilevel frameworks, which transform complex optimization problems on massive graphs into smaller, more manageable ones. The coarsening process involves merging nodes of a graph into clusters called supernodes and aggregating the edges between these clusters to create a new, smaller graph. This process is applied iteratively until the graph is small enough. Then, the original problem (such as partitioning or clustering) is solved on the final small graph, and the solution is progressively mapped back to the larger, original graphs.",
-  "story": "Picture an engineer at a cluttered workbench, turning a clever idea over in their hands until it finally clicks. At its heart it is a simple notion, once you strip away the fancy name. A small key that opens a much bigger door. It is one of those ideas that feels obvious only after someone shows it to you. That is Graph Coarsening Algorithm — a small key that opens a big door.",
+  "explainer": {
+    "lead": "Graph coarsening algorithms shrink a large graph by grouping nodes and combining edges while aiming to retain its important structure. This makes difficult tasks such as partitioning and clustering manageable: solve the problem on the small graph, then carry the solution back to the original one.",
+    "tiers": {
+      "eli5": "Imagine a huge map where every house and road is drawn. You group nearby houses into neighborhoods and replace the roads between them with a few neighborhood connections, making the map easier to work with. After solving a puzzle on the simple map, you use that answer to guide the puzzle on the full map.",
+      "practitioner": "Use coarsening as the first phase of a multilevel graph-partitioning or clustering pipeline: repeatedly build smaller graphs, solve the coarsest one, and project the solution back through each level. The main pitfall is a poor grouping that loses structure needed by the downstream problem, so the coarsened graph must remain a useful representation rather than merely a smaller one.",
+      "paperLevel": "Given G_0 = (V_0, E_0), construct G_(l+1) by partitioning V_l into clusters, representing each cluster by a supernode, and aggregating edges between clusters; repeat until the graph is sufficiently small. Solve the target optimization problem on the coarsest graph and progressively map the solution back to G_0. Its effectiveness depends on preserving the structural properties relevant to that problem during reduction."
+    },
+    "example": "Start with eight nodes and merge them into four pairs, producing four supernodes with aggregated edges. Merge again to obtain two supernodes, solve a partitioning problem on that two-node graph, then map the partition back through the four-node graph to all eight original nodes.",
+    "usedIn": [
+      {
+        "name": "Graph partitioning",
+        "detail": "A partition is computed on a reduced graph and then mapped back to the original graph.",
+        "url": ""
+      },
+      {
+        "name": "Graph clustering",
+        "detail": "Coarsening reduces a large clustering problem to a smaller one within a multilevel framework.",
+        "url": ""
+      }
+    ],
+    "goal": "Reduce a large graph's size and complexity while preserving key structural properties, so an optimization problem can be solved more manageably.",
+    "inputs": [
+      "A large graph with nodes and edges",
+      "A graph problem such as partitioning or clustering"
+    ],
+    "outputs": [
+      "A sequence of progressively smaller graphs",
+      "A solution mapped back to the original graph"
+    ],
+    "steps": [
+      "Merge nodes into clusters called supernodes.",
+      "Aggregate edges between clusters to form a smaller graph.",
+      "Repeat coarsening until the graph is small enough.",
+      "Solve the original problem on the smallest graph.",
+      "Progressively map the solution back to the original graph."
+    ],
+    "tradeoffs": [
+      "Smaller graphs make the optimization problem more manageable.",
+      "Merging nodes can lose structure needed for a good solution.",
+      "Coarsening and mapping back add several processing stages."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "large",
+          "label": "Large graph",
+          "note": "Original nodes and edges"
+        },
+        {
+          "id": "merge",
+          "label": "Merge nodes",
+          "note": "Clusters become supernodes"
+        },
+        {
+          "id": "edges",
+          "label": "Aggregate edges",
+          "note": "Connections form a smaller graph"
+        },
+        {
+          "id": "coarse",
+          "label": "Coarsest graph",
+          "note": "Repeated until small enough"
+        },
+        {
+          "id": "solve",
+          "label": "Solve problem",
+          "note": "Partition or cluster the small graph"
+        },
+        {
+          "id": "project",
+          "label": "Map solution back",
+          "note": "Return through each level to the original"
+        }
+      ],
+      "edges": [
+        {
+          "from": "large",
+          "to": "merge",
+          "label": ""
+        },
+        {
+          "from": "merge",
+          "to": "edges",
+          "label": ""
+        },
+        {
+          "from": "edges",
+          "to": "coarse",
+          "label": "repeat"
+        },
+        {
+          "from": "coarse",
+          "to": "solve",
+          "label": ""
+        },
+        {
+          "from": "solve",
+          "to": "project",
+          "label": ""
+        }
+      ],
+      "caption": "Multilevel graph coarsening reduces the graph, solves the small problem, and maps the solution back."
+    }
+  },
   "related": [
     "actor-critic-algorithm",
     "algorithm-imed",

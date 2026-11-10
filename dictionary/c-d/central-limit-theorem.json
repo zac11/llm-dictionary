@@ -5,6 +5,97 @@
   "type": "concept",
   "definition": "The central limit theorem states that, in most situations, when a large number of independent random variables are added, their properly normalized sum tends toward a normal distribution, even if the original variables themselves are not normally distributed.",
   "details": "The central limit theorem states that, in most situations, when a large number of independent random variables are added, their properly normalized sum tends toward a normal distribution, even if the original variables themselves are not normally distributed.",
+  "explainer": {
+    "lead": "The central limit theorem explains why bell-shaped patterns appear when many independent random effects are added together. It lets us approximate the behavior of large sums and averages without knowing the full shape of each individual effect.",
+    "tiers": {
+      "eli5": "Imagine flipping a coin once: the result is simply heads or tails, not a smooth pattern. Flip it hundreds of times and count the heads, and the likely totals form a bell shape around the middle. Many different kinds of small, independent random contributions can create that same familiar shape when added together.",
+      "practitioner": "It is commonly used to justify normal approximations for sample means and sums, including when constructing approximate confidence intervals. Check that observations are sufficiently independent and that the sample is large enough for the approximation; skewed or heavy-tailed data may require substantially more observations. The theorem concerns a standardized sum or mean, not the raw data becoming normal.",
+      "paperLevel": "For independent, identically distributed X_i with mean mu and finite variance sigma^2 > 0, the classical statement is sqrt(n)(Xbar_n - mu)/sigma ->d N(0,1) as n -> infinity. Equivalently, the standardized sum converges in distribution to a standard normal. The result does not apply to every collection of random variables: dependence and unsuitable tail behavior can invalidate this formulation."
+    },
+    "example": "For 1,000 independent fair coin flips, the number of heads has mean 500 and variance 250, so its standard deviation is about 15.81. The central limit theorem justifies approximating this count by a normal distribution with that mean and variance; for example, (520 - 500)/15.81 is about 1.27 standard deviations above the mean.",
+    "usedIn": [
+      {
+        "name": "Scientific measurement",
+        "detail": "Averages of many repeated measurements can be approximated with a normal distribution when the theorem's conditions are suitable.",
+        "url": ""
+      },
+      {
+        "name": "Quality control",
+        "detail": "Normal approximations can describe sums or averages of many small, independent variations in measurements.",
+        "url": ""
+      },
+      {
+        "name": "Opinion polling",
+        "detail": "The theorem supports approximate normal behavior for suitably sampled proportions based on many independent responses.",
+        "url": ""
+      }
+    ],
+    "intuition": "One random variable may have a lumpy, skewed, or otherwise non-normal distribution. Adding many independent contributions smooths out their individual shapes, so a properly rescaled total approaches the same bell-shaped distribution.",
+    "howItWorks": [
+      "Start with many independent random variables, which need not be normally distributed.",
+      "Add their values to obtain a total, or equivalently work with their average.",
+      "Center and rescale that total using the appropriate normalization.",
+      "As the number of variables grows, the normalized total approaches a normal distribution in the situations covered by the theorem."
+    ],
+    "whyItMatters": "It provides a common approximation for sums and averages even when the original distribution is unknown or not normal. This makes many calculations involving large collections of independent random contributions tractable.",
+    "misconceptions": [
+      "It does not say that the original variables become normally distributed.",
+      "It does not say that an unnormalized sum settles at a fixed normal distribution; centering and rescaling matter.",
+      "It does not apply automatically to every set of variables, since independence and other conditions can matter."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "variables",
+          "label": "Independent variables",
+          "note": "Many values with possibly non-normal distributions"
+        },
+        {
+          "id": "sum",
+          "label": "Combined sum",
+          "note": "The random contributions are added together"
+        },
+        {
+          "id": "normalize",
+          "label": "Proper normalization",
+          "note": "The total is centered and rescaled"
+        },
+        {
+          "id": "limit",
+          "label": "Growing count",
+          "note": "The approximation improves as more variables are included"
+        },
+        {
+          "id": "normal",
+          "label": "Normal distribution",
+          "note": "The normalized sum approaches a bell-shaped limit"
+        }
+      ],
+      "edges": [
+        {
+          "from": "variables",
+          "to": "sum",
+          "label": "add"
+        },
+        {
+          "from": "sum",
+          "to": "normalize",
+          "label": "rescale"
+        },
+        {
+          "from": "normalize",
+          "to": "limit",
+          "label": "repeat"
+        },
+        {
+          "from": "limit",
+          "to": "normal",
+          "label": "approaches"
+        }
+      ],
+      "caption": "Independent contributions are summed and normalized; as their number grows, the normalized sum approaches a normal distribution."
+    }
+  },
   "citation": {
     "title": "Math Glossary for AI (François Fleuret notes)",
     "authors": [],

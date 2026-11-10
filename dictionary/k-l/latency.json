@@ -5,7 +5,78 @@
   "type": "concept",
   "definition": "The time delay between sending a request to a model and receiving its response.",
   "details": "Latency is a critical metric for interactive AI applications, and is influenced by model size, hardware, batching strategy, and techniques like caching or speculative decoding.",
-  "story": "Think of a lightbulb moment: the idea was always there, but someone had to point a finger at it. Behind the jargon is an idea you could explain to a friend over coffee. At its heart it is a simple notion, once you strip away the fancy name. Once you see it, you cannot unsee it. That is Latency — a small key that opens a big door.",
+  "explainer": {
+    "lead": "Latency is the waiting time between asking an AI model for something and getting its response. It shapes how responsive an application feels, especially when someone is interacting with it in real time.",
+    "tiers": {
+      "eli5": "Latency is like the pause after you ask a friend a question and before they answer. A short pause makes a conversation feel quick and natural, while a long one makes you wait. AI apps have the same kind of pause between a request and a response.",
+      "practitioner": "Engineers track latency when building interactive model-backed applications and tune it through hardware, model size, batching, caching, and speculative decoding. Measure it under realistic request and batching conditions: a batching choice that improves overall processing can still leave individual users waiting longer.",
+      "paperLevel": "For a request sent at time t_request and a response received at time t_response, latency L = t_response - t_request. It is a response-delay measure rather than a measure of how much work a system completes overall. Its value depends on factors including model size, hardware, batching strategy, caching, and speculative decoding."
+    },
+    "example": "If a chat application sends a request at 10:00:00.000 and receives the model's response at 10:00:00.450, the latency is 450 milliseconds.",
+    "usedIn": [
+      {
+        "name": "AI chat interfaces",
+        "detail": "Latency affects how long a user waits after submitting a message.",
+        "url": ""
+      },
+      {
+        "name": "Voice assistants",
+        "detail": "The delay between a spoken request and the response shapes how natural the interaction feels.",
+        "url": ""
+      },
+      {
+        "name": "Interactive coding tools",
+        "detail": "Low waiting time helps model responses fit smoothly into a developer's workflow.",
+        "url": ""
+      }
+    ],
+    "intuition": "Think of latency as the stopwatch time for one round trip: the clock starts when the request goes out and stops when the response arrives.",
+    "howItWorks": [
+      "An application sends a request to a model.",
+      "The model processes the request on the available hardware.",
+      "Factors such as model size and batching strategy affect the processing delay.",
+      "Caching or speculative decoding may reduce the work or waiting involved.",
+      "The response arrives, and the elapsed time is the latency."
+    ],
+    "whyItMatters": "Interactive AI applications feel sluggish when responses take too long, even if the answers themselves are good. Managing latency helps make those applications responsive and practical to use.",
+    "misconceptions": [
+      "Latency is not the same as throughput: one measures response delay, while the other concerns how much work is completed over time.",
+      "Batching does not automatically reduce the delay experienced by each request.",
+      "Caching and speculative decoding can help reduce latency, but they do not remove it entirely."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "request",
+          "label": "User request",
+          "note": "The latency clock starts here."
+        },
+        {
+          "id": "model",
+          "label": "AI model",
+          "note": "Model size, hardware, and batching affect processing time."
+        },
+        {
+          "id": "response",
+          "label": "Model response",
+          "note": "The latency clock stops when the response arrives."
+        }
+      ],
+      "edges": [
+        {
+          "from": "request",
+          "to": "model",
+          "label": "request sent"
+        },
+        {
+          "from": "model",
+          "to": "response",
+          "label": "response returned"
+        }
+      ],
+      "caption": "Latency is the elapsed time from sending the request to receiving the response."
+    }
+  },
   "related": [
     "api-key",
     "approximate-nearest-neighbor-search",

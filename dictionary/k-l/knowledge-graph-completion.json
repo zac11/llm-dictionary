@@ -5,6 +5,32 @@
   "type": "concept",
   "definition": "Predicting missing facts in a knowledge graph — inferring (entity, relation, entity) triples — with embedding models like TransE and RotatE or LM-based scorers.",
   "details": "Predicting missing facts in a knowledge graph — inferring (entity, relation, entity) triples — with embedding models like TransE and RotatE or LM-based scorers.",
+  "explainer": {
+    "lead": "Knowledge graph completion fills in facts a knowledge graph is missing, predicting triples that were never recorded. It matters because real graphs are incomplete, and many downstream queries depend on facts nobody has entered yet.",
+    "tiers": {
+      "eli5": "Think of a friendship map with some lines missing; completion draws the likely lines between people who probably know each other.",
+      "practitioner": "Engineers train embedding models like TransE or RotatE, or score triples with language models, then rank candidate facts for review. A common pitfall is over-trusting high scores on popular entities, so predictions need validation before being written back.",
+      "paperLevel": "Given a graph of (entity, relation, entity) triples, learn a scoring function f(h, r, t) that rates how plausible a triple is, then rank unseen triples by that score; accuracy on rare relations is typically the limiting factor."
+    },
+    "example": "A graph knows Paris is the capital of France and Lyon is in France but lacks a direct link; a model scores (Lyon, capital_of, France) low and (Lyon, located_in, France) high, so the latter is proposed.",
+    "usedIn": [
+      {
+        "name": "Search engines",
+        "detail": "entity panels and fact boxes",
+        "url": ""
+      },
+      {
+        "name": "Biomedical databases",
+        "detail": "linking drugs, genes, diseases",
+        "url": ""
+      },
+      {
+        "name": "Recommendation systems",
+        "detail": "inferring user-item relations",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "embedding",
     "knowledge-graph"

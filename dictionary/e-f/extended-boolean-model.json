@@ -5,7 +5,97 @@
   "type": "concept",
   "definition": "The Extended Boolean model was described in a Communications of the ACM article appearing in 1983, by Gerard Salton, Edward A.",
   "details": "Fox, and Harry Wu. The goal of the Extended Boolean model is to overcome the drawbacks of the Boolean model that has been used in information retrieval. The Boolean model doesn't consider term weights in queries, and the result set of a Boolean query is often either too small or too big. The idea of the extended model is to make use of partial matching and term weights as in the vector space model. It combines the characteristics of the Vector Space Model with the properties of Boolean algebra and ranks the similarity between queries and documents. This way a document may be somewhat relevant if it matches some of the queried terms and will be returned as a result, whereas in the Standard Boolean model it wasn't. Thus, the extended Boolean model can be considered as a generalization of both the Boolean and vector space models; those two are special cases if suitable settings and definitions are employed. Further, research has shown effectiveness improves relative to that for Boolean query processing. Other research has shown that relevance feedback and query expansion can be integrated with extended Boolean query processing.",
-  "story": "Imagine a driving test that every new model has to pass before it is allowed on the road. It is the exam that separates “it sounds good” from “it actually is good”. A fair scoreboard keeps everyone honest. It is the exam that keeps everyone honest. And that, done honestly, is Extended Boolean model.",
+  "explainer": {
+    "lead": "The Extended Boolean model is a way to rank search results while keeping the structure of Boolean queries. It lets a document that matches only part of a query still count as somewhat relevant, instead of forcing search results to be an all-or-nothing set.",
+    "tiers": {
+      "eli5": "Imagine asking for a book about both cats and dogs. A strict search might ignore a book that mentions only cats, but this approach gives it partial credit and places it below books that mention both. It also lets some search words matter more than others.",
+      "practitioner": "Use it when a search interface needs Boolean-style query semantics but should return ranked results rather than an unweighted matching set. Assign term weights, score partial matches, and rank documents by query-document similarity. The Boolean and vector space models are special cases under suitable settings, so those settings determine how strict or flexible matching becomes.",
+      "paperLevel": "For a weighted query q and document d, compute score(q,d) using partial matching and term weights, then rank documents by score(q,d). Under suitable settings and definitions, standard Boolean retrieval and the vector space model are special cases. Gerard Salton, Edward A. Fox, and Harry Wu described the model in a 1983 Communications of the ACM article; research has reported effectiveness gains over Boolean query processing and integration with relevance feedback and query expansion."
+    },
+    "example": "For the equally weighted query “cats AND dogs,” a document discussing both animals receives a stronger match than one discussing only cats. The cats-only document can still appear in the ranked results, whereas the Standard Boolean model would exclude it.",
+    "usedIn": [
+      {
+        "name": "Information retrieval",
+        "detail": "Combines Boolean query structure with weighted, partial matching and ranked output.",
+        "url": ""
+      },
+      {
+        "name": "Boolean query processing",
+        "detail": "Addresses result sets that are often too small or too large and queries without term weights.",
+        "url": ""
+      },
+      {
+        "name": "Relevance feedback and query expansion",
+        "detail": "Research has shown that both techniques can be integrated with Extended Boolean query processing.",
+        "url": ""
+      }
+    ],
+    "intuition": "Strict Boolean search treats membership in the result set as yes or no. The Extended Boolean model instead gives partial credit for partial matches and uses term weights to produce a relevance ranking.",
+    "howItWorks": [
+      "Start with a query that retains Boolean structure and includes term weights.",
+      "Compare its terms with each document, allowing matches to be partial.",
+      "Combine the match information and weights into a query-document similarity score.",
+      "Return documents ranked by similarity, including partially matching documents when appropriate."
+    ],
+    "whyItMatters": "It avoids the Boolean model’s all-or-nothing behavior and its tendency to produce result sets that are too small or too large. It also generalizes both Boolean retrieval and the vector space model within one framework.",
+    "misconceptions": [
+      "It does not simply replace AND with OR; it combines Boolean properties with partial matching and term weights.",
+      "A partial match is not treated as fully relevant; it receives a lower similarity-based position than a stronger match.",
+      "It is not unrelated to vector-space retrieval: both that model and standard Boolean retrieval are special cases under suitable settings."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "query",
+          "label": "Weighted Boolean query",
+          "note": "Terms, Boolean structure, and weights"
+        },
+        {
+          "id": "documents",
+          "label": "Documents",
+          "note": "Candidate documents to compare"
+        },
+        {
+          "id": "matching",
+          "label": "Partial matching",
+          "note": "Some queried terms can match"
+        },
+        {
+          "id": "score",
+          "label": "Similarity score",
+          "note": "Matches and weights become a score"
+        },
+        {
+          "id": "ranking",
+          "label": "Ranked results",
+          "note": "Documents ordered by similarity"
+        }
+      ],
+      "edges": [
+        {
+          "from": "query",
+          "to": "matching",
+          "label": "terms and weights"
+        },
+        {
+          "from": "documents",
+          "to": "matching",
+          "label": ""
+        },
+        {
+          "from": "matching",
+          "to": "score",
+          "label": ""
+        },
+        {
+          "from": "score",
+          "to": "ranking",
+          "label": ""
+        }
+      ],
+      "caption": "The model turns weighted, partially matched Boolean queries into ranked document results."
+    }
+  },
   "related": [
     "boolean-model-of-information-retrieval",
     "binary-independence-model",

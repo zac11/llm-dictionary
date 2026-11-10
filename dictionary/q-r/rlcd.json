@@ -9,7 +9,27 @@
   ],
   "definition": "Training a model with reinforcement learning so that the probability, choice or score it returns for a typed decision is calibrated - the confidence it states matches how often it is actually right.",
   "details": "A model trained with reinforcement learning for calibrated decisions answers a typed question about an input - the state - with a probability, a choice or a score, and software acts on that answer without a person reading it. That shifts the requirement from fluent text to honest numbers: a decision consumed by code is only as useful as its calibration, because an overconfident answer propagates directly into the action taken. Calibration rewards therefore score the stated confidence against observed outcomes, so the policy is optimised not merely to be correct but to know how sure it is. Systems of this kind, such as Jev, are used as programmable primitives - routing, ranking, extraction and verification - where the judgement is a single typed value rather than a paragraph of prose. Because the answer is machine-readable, evaluating robustness is harder than for generative models: an attacked model still returns a well-formed answer even when manipulated, and identical requests can return different results, so benchmarks such as JevAdvBench score each attacked decision against the model's own clean decision rather than against static labels.",
-  "story": "Picture a weather forecaster who must also state the odds. Anyone can guess rain; the value is in being right about how often you are right. A forecast that cries certainty and delivers half the time will eventually get someone soaked - and the decisions that follow it will be worse than no forecast at all. Knowing what you do not know is the whole skill. And that is RLCD.",
+  "explainer": {
+    "lead": "RLCD trains a model with reinforcement learning so the confidence it states for a typed decision matches how often it is actually right. It matters because software acting on that answer has no human to notice an overconfident one.",
+    "tiers": {
+      "eli5": "Like a weather forecaster who says '70% chance of rain' — you want it to actually rain on 7 out of 10 of those days, or the forecast is useless to anyone planning a picnic.",
+      "practitioner": "Engineers use RLCD when a model's output feeds an automated pipeline rather than a reader, so the stated probability drives the action directly. The pitfall is that an overconfident answer propagates straight into the action taken.",
+      "paperLevel": "The model answers a typed question about an input (the state) with a probability, a choice or a score; calibration rewards score the stated confidence against observed outcomes. Known limit: a decision consumed by code is only as useful as its calibration."
+    },
+    "example": "A triage model states 0.9 confidence for routing a ticket to a specialist; calibration rewards check whether about 90% of such 0.9 answers were in fact correct.",
+    "usedIn": [
+      {
+        "name": "Automated decision pipelines",
+        "detail": "model output consumed by code",
+        "url": ""
+      },
+      {
+        "name": "Confidence-scored classifiers",
+        "detail": "stated probability drives action",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "calibration",
     "rlhf",

@@ -5,7 +5,113 @@
   "type": "concept",
   "definition": "A GeneRIF or Gene Reference Into Function is a short (255 characters or fewer) statement about the function of a gene.",
   "details": "GeneRIFs provide a simple mechanism for allowing scientists to add to the functional annotation of genes described in the Entrez Gene database. In practice, function is constructed quite broadly. For example, there are GeneRIFs that discuss the role of a gene in a disease, GeneRIFs that point the viewer towards a review article about the gene, and GeneRIFs that discuss the structure of a gene. However, the stated intent is for GeneRIFs to be about gene function. Currently over half a million geneRIFs have been created for genes from almost 1000 different species. GeneRIFs are always associated with specific entries in the Entrez Gene database. Each GeneRIF has a pointer to the PubMed ID (a type of document identifier) of a scientific publication that provides evidence for the statement made by the GeneRIF. GeneRIFs are often extracted directly from the document that is identified by the PubMed ID, very frequently from its title or from its final sentence. GeneRIFs are usually produced by NCBI indexers, but anyone may submit a GeneRIF. To be processed, a valid Gene ID must exist for the specific gene, or the Gene staff must have assigned an overall Gene ID to the species. The latter case is implemented via records in Gene with the symbol NEWENTRY. Once the Gene ID is identified, only three types of information are required to complete a submission: a concise phrase describing a function or functions (less than 255 characters in length, preferably more than a restatement of the title of the paper); a published paper describing that function, implemented by supplying the PubMed ID of a citation in PubMed; a valid e-mail address (which will remain confidential).",
-  "story": "Picture an engineer at a cluttered workbench, turning a clever idea over in their hands until it finally clicks. At its heart it is a simple notion, once you strip away the fancy name. A small key that opens a much bigger door. It is one of those ideas that feels obvious only after someone shows it to you. That is GeneRIF — a small key that opens a big door.",
+  "explainer": {
+    "lead": "GeneRIFs turn findings from scientific papers into short, traceable notes about genes. Each note is attached to a gene in Entrez Gene and points to the publication supporting it, making scattered functional knowledge easier to collect.",
+    "tiers": {
+      "eli5": "Think of a gene as one instruction in the body and its database entry as a library card. A GeneRIF is a tiny sticky note on that card saying something the instruction does, with a pointer to the scientific paper behind the claim. Scientists and database indexers can add these notes, helping others discover new findings without reading every paper first.",
+      "practitioner": "Treat GeneRIFs as concise, evidence-linked annotations associated with specific Entrez Gene records rather than as complete gene descriptions. A submission needs a valid Gene ID, a phrase under 255 characters, the supporting publication's PubMed ID, and a valid confidential email address. Remember that function is interpreted broadly and text is often taken directly from a paper's title or final sentence, so inspect the cited publication when context matters.",
+      "paperLevel": "Formally, a GeneRIF is a statement s about a gene g, with length(s) <= 255 characters, associated with a specific Entrez Gene entry and a PubMed ID identifying supporting evidence. Although intended to describe gene function, statements may instead concern disease roles, gene structure, or review articles. Statements are usually produced by NCBI indexers but can be submitted by anyone, and are frequently extracted directly from publication titles or final sentences."
+    },
+    "example": "Suppose a paper reports that gene X contributes to disease Y. A submitter could provide a concise phrase describing that disease role, gene X's valid Gene ID, the paper's PubMed ID, and a confidential email address; the resulting GeneRIF would connect the short statement, the gene entry, and its evidence.",
+    "usedIn": [
+      {
+        "name": "Entrez Gene",
+        "detail": "GeneRIFs are attached to specific gene entries to extend their functional annotation.",
+        "url": ""
+      },
+      {
+        "name": "PubMed",
+        "detail": "Each GeneRIF points to the PubMed ID of a publication supporting its statement.",
+        "url": ""
+      },
+      {
+        "name": "Multi-species gene annotation",
+        "detail": "More than half a million GeneRIFs have been created for genes from almost 1000 species.",
+        "url": ""
+      }
+    ],
+    "intuition": "A GeneRIF is like a one-sentence research note on a gene's record: it captures a useful claim while preserving a direct route back to the paper that supports it.",
+    "howItWorks": [
+      "Identify a valid Gene ID for the specific gene, or an overall species Gene ID assigned through a NEWENTRY record.",
+      "Write a concise phrase describing a function, using fewer than 255 characters and preferably adding more than a restatement of the paper title.",
+      "Supply the PubMed ID of a published paper supporting the phrase and a valid email address that remains confidential.",
+      "Once processed, the GeneRIF is associated with the relevant Entrez Gene entry; NCBI indexers usually create them, but anyone may submit one."
+    ],
+    "whyItMatters": "GeneRIFs provide a simple way for both indexers and other scientists to add literature-backed knowledge to gene records. Their use across almost 1000 species makes them a broad mechanism for collecting functional annotations.",
+    "misconceptions": [
+      "A GeneRIF is not necessarily limited to molecular function; it can discuss disease, gene structure, or point to a review.",
+      "The limit is 255 characters or fewer, not 255 words.",
+      "GeneRIFs are not created only by NCBI staff; anyone may submit one.",
+      "A GeneRIF is not an unsupported standalone claim because it must point to a supporting PubMed publication."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "paper",
+          "label": "Scientific publication",
+          "note": "Provides evidence for the statement"
+        },
+        {
+          "id": "pmid",
+          "label": "PubMed ID",
+          "note": "Identifies the supporting paper"
+        },
+        {
+          "id": "gene-id",
+          "label": "Valid Gene ID",
+          "note": "Identifies the gene or species entry"
+        },
+        {
+          "id": "submission",
+          "label": "GeneRIF submission",
+          "note": "Short phrase, identifiers, and confidential email"
+        },
+        {
+          "id": "generif",
+          "label": "Processed GeneRIF",
+          "note": "Statement linked to gene and evidence"
+        },
+        {
+          "id": "entrez",
+          "label": "Entrez Gene",
+          "note": "Specific record receiving the annotation"
+        }
+      ],
+      "edges": [
+        {
+          "from": "paper",
+          "to": "pmid",
+          "label": "identified by"
+        },
+        {
+          "from": "paper",
+          "to": "submission",
+          "label": "supports phrase"
+        },
+        {
+          "from": "pmid",
+          "to": "submission",
+          "label": "citation"
+        },
+        {
+          "from": "gene-id",
+          "to": "submission",
+          "label": "gene target"
+        },
+        {
+          "from": "submission",
+          "to": "generif",
+          "label": "processed as"
+        },
+        {
+          "from": "generif",
+          "to": "entrez",
+          "label": "annotates"
+        }
+      ],
+      "caption": "A concise statement and supporting identifiers become a GeneRIF attached to a specific Entrez Gene record."
+    }
+  },
   "related": [
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",
     "accelerated-linear-algebra",

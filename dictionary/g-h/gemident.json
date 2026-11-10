@@ -2,10 +2,90 @@
   "term": "GemIdent",
   "letter": "G",
   "category": "Computer vision",
-  "type": "concept",
+  "type": "tool",
   "definition": "GemIdent is an interactive image recognition program that identifies regions of interest in images and photographs.",
   "details": "It is specifically designed for images with few colors, where the objects of interest look alike with small variation. For example, color image segmentation of: Oranges from a tree Stained cells from microscopic images GemIdent also packages data analysis tools to investigate spatial relationships among the objects identified.",
-  "story": "Picture walking through a crowd and instantly picking out a familiar face without reading a single name tag. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. It turns a picture into an understanding: this is a cat, that is a stop sign. Sight, for a machine, is a long climb from raw light to a name. That pixel-to-meaning climb is GemIdent.",
+  "explainer": {
+    "lead": "GemIdent is an interactive program for finding objects of interest in images, especially when the picture has few colors and the objects look nearly alike. It can also analyze how the identified objects are positioned in relation to one another.",
+    "tiers": {
+      "eli5": "Imagine a photo of an orange tree where you want to circle every orange. GemIdent helps a person find matching objects like these, even when they look very similar. After finding them, it can help study where they are in relation to each other.",
+      "practitioner": "Use GemIdent for interactive segmentation of low-color images containing visually similar objects, such as stained cells in microscopy images. Its built-in data-analysis tools support investigation of spatial relationships among detected objects. Its narrow design makes it less suited to scenes with varied colors and highly dissimilar objects.",
+      "paperLevel": "GemIdent performs interactive image recognition, producing regions of interest in images with restricted color variation and small inter-object appearance differences. It combines segmentation with analysis of spatial relationships among the resulting objects. Its stated scope centers on repetitive, visually similar structures rather than unconstrained natural-scene recognition."
+    },
+    "example": "In a microscopic image containing many similarly stained cells, GemIdent can segment the cell regions from the surrounding image. Its analysis tools can then be used to investigate how those identified cells are distributed relative to one another.",
+    "usedIn": [
+      {
+        "name": "Microscopy",
+        "detail": "Segmenting stained cells from microscopic images.",
+        "url": ""
+      },
+      {
+        "name": "Fruit image analysis",
+        "detail": "Separating oranges from the rest of a tree image.",
+        "url": ""
+      },
+      {
+        "name": "Spatial image analysis",
+        "detail": "Examining relationships among the locations of identified objects.",
+        "url": ""
+      }
+    ],
+    "intuition": "When every target looks much like the others and the image uses only a few colors, recognition can focus on their shared appearance. Interaction lets a person guide that process instead of treating the image as a fully automatic, general-purpose scene-understanding problem.",
+    "howItWorks": [
+      "Open an image containing similar-looking objects of interest.",
+      "Use the interactive recognition process to identify their regions.",
+      "Apply color-based segmentation to distinguish targets such as stained cells or oranges.",
+      "Review the resulting objects and regions of interest.",
+      "Use the packaged analysis tools to investigate their spatial relationships."
+    ],
+    "whyItMatters": "It addresses repetitive, low-color imagery where finding many similar objects individually would be tedious. Combining identification with spatial analysis connects the question of what is present with where those objects occur.",
+    "misconceptions": [
+      "It is not presented as a general-purpose recognizer for arbitrary objects in complex, colorful scenes.",
+      "It does more than segmentation: it also includes tools for analyzing spatial relationships among identified objects."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "image",
+          "label": "Input image",
+          "note": "Few colors and similar-looking targets"
+        },
+        {
+          "id": "recognition",
+          "label": "Interactive recognition",
+          "note": "Finds objects of interest"
+        },
+        {
+          "id": "regions",
+          "label": "Object regions",
+          "note": "Segmented targets and their locations"
+        },
+        {
+          "id": "analysis",
+          "label": "Spatial analysis",
+          "note": "Investigates relationships among objects"
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "recognition",
+          "label": "pixels"
+        },
+        {
+          "from": "recognition",
+          "to": "regions",
+          "label": "segments"
+        },
+        {
+          "from": "regions",
+          "to": "analysis",
+          "label": "objects"
+        }
+      ],
+      "caption": "GemIdent links interactive object identification with analysis of the resulting objects' spatial relationships."
+    }
+  },
   "related": [
     "accord-net",
     "active-appearance-model",

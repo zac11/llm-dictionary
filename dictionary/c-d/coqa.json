@@ -5,6 +5,89 @@
   "type": "dataset",
   "definition": "CoQA is a large-scale dataset for building Conversational Question Answering systems.",
   "details": "CoQA is a large-scale dataset for building Conversational Question Answering systems. CoQA contains 127,000+ questions with answers collected from 8000+ conversations.",
+  "explainer": {
+    "lead": "CoQA is a collection of more than 127,000 questions and answers drawn from over 8,000 conversations. It gives researchers a shared resource for building systems that can answer questions while taking conversational context into account.",
+    "tiers": {
+      "eli5": "CoQA is like a huge stack of quiz cards, but the cards belong to conversations instead of being random questions. A later question might only make sense if you remember what was asked before. It helps computers practise keeping track of that conversation while finding answers.",
+      "practitioner": "CoQA can be used to train or compare conversational question-answering systems. Preserve earlier dialogue turns when constructing model inputs, since an isolated follow-up question may be ambiguous. Its scale—over 127,000 question-answer pairs from more than 8,000 conversations—supports repeatable experiments, but does not by itself specify an evaluation metric or training setup.",
+      "paperLevel": "CoQA can be represented as D = {(c_i, q_i, a_i)}, where c_i is conversational context, q_i is a question, and a_i is its collected answer. The dataset contains |D| > 127,000 question-answer instances drawn from more than 8,000 conversations. These counts characterize dataset scale rather than model performance, and no scoring function is defined here."
+    },
+    "example": "In an illustrative conversation, a system reads: “Maya moved to Lisbon for work.” It answers “Where did Maya move?” with “Lisbon,” then answers the follow-up “Why did she go there?” with “For work.” The second answer depends on remembering that “there” refers to Lisbon.",
+    "usedIn": [
+      {
+        "name": "Conversational question answering",
+        "detail": "Training and evaluating systems that answer questions within multi-turn conversations.",
+        "url": ""
+      },
+      {
+        "name": "Dialogue system research",
+        "detail": "Studying how earlier questions and answers affect the interpretation of later questions.",
+        "url": ""
+      }
+    ],
+    "measures": "CoQA provides question-answer examples for assessing whether a system can produce answers in conversational settings. Its conversational structure makes the handling of context and follow-up questions central to the task.",
+    "caveats": [
+      "A large question count does not by itself indicate how well any particular system will perform.",
+      "Evaluating questions without their conversational context can make follow-ups ambiguous."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "conversations",
+          "label": "8,000+ conversations",
+          "note": "The conversational source material"
+        },
+        {
+          "id": "questions",
+          "label": "Questions",
+          "note": "Includes context-dependent follow-ups"
+        },
+        {
+          "id": "answers",
+          "label": "Collected answers",
+          "note": "Answers paired with the questions"
+        },
+        {
+          "id": "dataset",
+          "label": "127,000+ pairs",
+          "note": "CoQA question-answer examples"
+        },
+        {
+          "id": "systems",
+          "label": "Conversational QA",
+          "note": "Systems built or evaluated with CoQA"
+        }
+      ],
+      "edges": [
+        {
+          "from": "conversations",
+          "to": "questions",
+          "label": ""
+        },
+        {
+          "from": "conversations",
+          "to": "answers",
+          "label": ""
+        },
+        {
+          "from": "questions",
+          "to": "dataset",
+          "label": ""
+        },
+        {
+          "from": "answers",
+          "to": "dataset",
+          "label": ""
+        },
+        {
+          "from": "dataset",
+          "to": "systems",
+          "label": "train or evaluate"
+        }
+      ],
+      "caption": "CoQA organizes questions and collected answers from conversations into a large resource for conversational question answering."
+    }
+  },
   "related": [
     "question-answering"
   ],

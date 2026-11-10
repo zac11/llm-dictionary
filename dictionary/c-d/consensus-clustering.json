@@ -5,7 +5,83 @@
   "type": "concept",
   "definition": "Consensus clustering is a method of aggregating (potentially conflicting) results from multiple clustering algorithms.",
   "details": "Also called cluster ensembles or aggregation of clustering (or partitions), it refers to the situation in which a number of different (input) clusterings have been obtained for a particular dataset and it is desired to find a single (consensus) clustering which is a better fit in some sense than the existing clusterings. Consensus clustering is thus the problem of reconciling clustering information about the same data set coming from different sources or from different runs of the same algorithm. When cast as an optimization problem, consensus clustering is known as median partition, and has been shown to be NP-complete, even when the number of input clusterings is three. Consensus clustering for unsupervised learning is analogous to ensemble learning in supervised learning.",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. That is Consensus clustering — a small key that opens a big door.",
+  "explainer": {
+    "lead": "Several clustering methods—or repeated runs of one method—can divide the same dataset in conflicting ways. Consensus clustering reconciles those divisions into a single clustering intended to fit the data better than the individual results.",
+    "tiers": {
+      "eli5": "Several people sort the same box of photos differently, so you combine their groupings into one everyone roughly agrees on.",
+      "practitioner": "Engineers run different algorithms or repeated runs and reconcile the partitions into a consensus. The pitfall is that reconciliation cannot recover structure none of the input clusterings captured.",
+      "paperLevel": "Also called cluster ensembles or aggregation of clustering partitions: given several input clusterings of a dataset, find one consensus clustering that is a better fit than the existing ones. Limit: quality is bounded by the input partitions."
+    },
+    "example": "Suppose three algorithms each split the same six documents into groups. One puts documents A and B together, another puts B and C together, and the third separates all three; consensus clustering reconciles these conflicting partitions into one final assignment of all six documents.",
+    "intuition": "Different clusterings can capture conflicting views of the same data. Consensus clustering looks for a compromise that fits the collection of views better, rather than simply accepting one of them.",
+    "howItWorks": [
+      "Start with one dataset and several clusterings of it.",
+      "Obtain those clusterings from different sources, different algorithms, or different runs of the same algorithm.",
+      "Compare and reconcile the grouping information in the input clusterings.",
+      "Search for one consensus clustering that is a better fit under the chosen criterion.",
+      "When this search is cast as optimization, it is called the median-partition problem."
+    ],
+    "whyItMatters": "It provides a way to combine clustering evidence instead of relying on a single potentially conflicting result. Its value is similar in spirit to ensemble learning in supervised learning, but it applies to unsupervised clustering.",
+    "misconceptions": [
+      "The input clusterings do not have to come from different algorithms; repeated runs of one algorithm also count.",
+      "Consensus clustering is not supervised ensemble learning, although the two ideas are analogous.",
+      "Finding the optimal consensus is not necessarily easy: median partition is NP-complete even with three inputs."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "dataset",
+          "label": "One dataset",
+          "note": "The same data is clustered each time."
+        },
+        {
+          "id": "inputs",
+          "label": "Input clusterings",
+          "note": "Results from sources, algorithms, or runs."
+        },
+        {
+          "id": "reconcile",
+          "label": "Reconcile partitions",
+          "note": "Resolve conflicting grouping information."
+        },
+        {
+          "id": "consensus",
+          "label": "Consensus clustering",
+          "note": "One clustering intended to fit better."
+        }
+      ],
+      "edges": [
+        {
+          "from": "dataset",
+          "to": "inputs",
+          "label": "clustered repeatedly"
+        },
+        {
+          "from": "inputs",
+          "to": "reconcile",
+          "label": "partitions"
+        },
+        {
+          "from": "reconcile",
+          "to": "consensus",
+          "label": "single result"
+        }
+      ],
+      "caption": "Multiple clusterings of one dataset are reconciled into a single consensus clustering."
+    },
+    "usedIn": [
+      {
+        "name": "Cluster ensembles",
+        "detail": "combining multiple partitions",
+        "url": ""
+      },
+      {
+        "name": "Data analysis",
+        "detail": "reconciling runs of one algorithm",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "clustering",
     "conceptual-clustering",

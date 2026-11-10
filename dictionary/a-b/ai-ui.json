@@ -5,6 +5,102 @@
   "type": "concept",
   "definition": "User interfaces powered by or designed around AI — chat, copilots, and generative UI patterns.",
   "details": "User interfaces powered by or designed around AI — chat, copilots, and generative UI patterns.",
+  "explainer": {
+    "lead": "AI UI is interface design built around an AI system, using conversation, assistance, or generated controls instead of relying only on fixed screens and menus. It matters because the interface has to help people steer an unpredictable system, check its output, and recover when it gets something wrong.",
+    "tiers": {
+      "eli5": "A normal app is like a vending machine with the same buttons every time; an AI UI is more like a helpful counter clerk who listens and brings out different options. You might ask for a weekend trip, then see a plan with buttons to change the dates or budget. The clerk can make mistakes, so you still need clear ways to check and correct the plan.",
+      "practitioner": "Engineers apply AI UI in chat panels, copilots, and interfaces that render model output as editable controls or structured content. Typical work includes streaming responses, mapping structured output to components, validating actions, and exposing undo or confirmation where mistakes have consequences. Common pitfalls are treating generated output as trustworthy, hiding uncertainty, and letting latency or layout changes disrupt the interaction.",
+      "paperLevel": "An AI UI can be described as an interaction loop: given user action a and context c, a model produces y = M(a, c), and the interface maps y to a conversational response or generated interface state s. Unlike a fixed interface, part of s may vary with model output rather than being fully specified in advance. Key limits include output errors, inconsistent behavior, latency, and the difficulty of keeping user control and evaluation criteria clear."
+    },
+    "example": "A user asks a travel app for a three-day Lisbon trip under a fixed budget. The app replies in chat and generates itinerary cards plus editable date and budget controls; when the user lowers the budget, the AI revises the plan, and nothing is booked until the user confirms it.",
+    "usedIn": [
+      {
+        "name": "Chat assistants",
+        "detail": "Conversation is the main way to request information and refine answers.",
+        "url": ""
+      },
+      {
+        "name": "Coding copilots",
+        "detail": "Suggestions appear beside a developer's work, with options to inspect, accept, or reject them.",
+        "url": ""
+      },
+      {
+        "name": "Generative UI tools",
+        "detail": "Model output can become controls, cards, or other interface elements tailored to a request.",
+        "url": ""
+      }
+    ],
+    "intuition": "The interface becomes a collaboration: the person expresses intent, the AI proposes a response or screen, and the person reviews and adjusts it. Good AI UI keeps the person in control even when the generated content changes from request to request.",
+    "howItWorks": [
+      "Capture a request through text, controls, or the current task context.",
+      "Send the request and relevant context to the AI system.",
+      "Receive text, structured data, or a proposed action.",
+      "Validate the result and render it as chat or interface elements.",
+      "Let the user edit, confirm, reject, or refine the result."
+    ],
+    "whyItMatters": "AI UI makes model capabilities accessible without requiring users to understand the model itself. Its design determines whether people can express intent, spot mistakes, and safely turn generated suggestions into actions.",
+    "misconceptions": [
+      "AI UI is not just a chat box; copilots and generated interface elements are also part of the idea.",
+      "A generated screen is not automatically correct or usable; outputs and consequential actions still need checks and user control."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "request",
+          "label": "User request",
+          "note": "Text, controls, or task intent"
+        },
+        {
+          "id": "context",
+          "label": "Task context",
+          "note": "Relevant state and constraints"
+        },
+        {
+          "id": "model",
+          "label": "AI model",
+          "note": "Produces a response or proposal"
+        },
+        {
+          "id": "validation",
+          "label": "Output checks",
+          "note": "Validate structure and proposed actions"
+        },
+        {
+          "id": "interface",
+          "label": "Adaptive interface",
+          "note": "Chat or generated controls for review"
+        }
+      ],
+      "edges": [
+        {
+          "from": "request",
+          "to": "model",
+          "label": "intent"
+        },
+        {
+          "from": "context",
+          "to": "model",
+          "label": "state"
+        },
+        {
+          "from": "model",
+          "to": "validation",
+          "label": "output"
+        },
+        {
+          "from": "validation",
+          "to": "interface",
+          "label": "render"
+        },
+        {
+          "from": "interface",
+          "to": "request",
+          "label": "feedback"
+        }
+      ],
+      "caption": "An AI UI turns requests and context into reviewable responses or controls, then uses user feedback to continue the loop."
+    }
+  },
   "citation": {
     "title": "AI Starter Guide",
     "authors": [],

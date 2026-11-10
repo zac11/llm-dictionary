@@ -2,10 +2,127 @@
   "term": "FaceNet",
   "letter": "F",
   "category": "Artificial neural networks",
-  "type": "concept",
+  "type": "architecture",
   "definition": "FaceNet is a facial recognition system developed by Florian Schroff, Dmitry Kalenichenko and James Philbin, a group of researchers affiliated with Google.",
   "details": "The system was first presented at the 2015 IEEE Conference on Computer Vision and Pattern Recognition. The system uses a deep convolutional neural network to learn a mapping (also called an embedding) from a set of face images to a 128-dimensional Euclidean space, and assesses the similarity between faces based on the square of the Euclidean distance between the images' corresponding normalized vectors in the 128-dimensional Euclidean space. The system uses the triplet loss function as its cost function and introduced a new online triplet mining method. The system achieved an accuracy of 99.63%, which is the highest score to date on the Labeled Faces in the Wild dataset using the unrestricted with labeled outside data protocol.",
-  "story": "Think of an orchestra warming up: no single instrument carries the piece, but together they make the sound. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. The layout decides what the machine can even attempt, before it learns a single thing. The shape of the machine is half the idea. And that shape of the machine — FaceNet — is what makes everything else possible.",
+  "explainer": {
+    "lead": "FaceNet turns face images into short numerical descriptions so that faces can be compared by measuring distance rather than matching pixels. Its approach made a compact face embedding useful for recognition, with a reported 99.63% accuracy on Labeled Faces in the Wild under a specific evaluation protocol.",
+    "tiers": {
+      "eli5": "FaceNet gives each face a set of 128 numbers, a bit like giving it a location on a very detailed map. Pictures of the same person should end up close together, while pictures of different people should be farther apart. It learns this by practicing with groups of three pictures and adjusting itself when the distances come out wrong.",
+      "practitioner": "Apply the convolutional network to each face image, normalize the resulting 128-dimensional vector, and compare vectors using squared Euclidean distance. Training uses triplet loss with online triplet mining. The 99.63% result is tied to the Labeled Faces in the Wild unrestricted with labeled outside data protocol, so it should not be treated as a guarantee for other settings.",
+      "paperLevel": "FaceNet learns a mapping f from face images to a 128-dimensional Euclidean space. For normalized embeddings u and v, face similarity is assessed using the squared Euclidean distance ||u - v||^2. Training uses triplet loss and an online triplet mining method; the system was presented at the 2015 IEEE Conference on Computer Vision and Pattern Recognition."
+    },
+    "example": "Take two photos of Ana in different lighting and one photo of Marcus. FaceNet converts all three into normalized 128-dimensional vectors; the distance between Ana's two vectors should be small, while the distance from either of her vectors to Marcus's vector should be larger.",
+    "usedIn": [
+      {
+        "name": "Facial recognition",
+        "detail": "Maps face images into embeddings that can be compared to recognize faces.",
+        "url": ""
+      },
+      {
+        "name": "Face similarity assessment",
+        "detail": "Uses squared Euclidean distance between normalized vectors to measure how similar two faces are.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Deep convolutional neural network",
+        "detail": ""
+      },
+      {
+        "name": "128-dimensional face embedding",
+        "detail": ""
+      },
+      {
+        "name": "Normalized embedding vectors",
+        "detail": ""
+      },
+      {
+        "name": "Squared Euclidean distance",
+        "detail": ""
+      },
+      {
+        "name": "Triplet loss",
+        "detail": ""
+      },
+      {
+        "name": "Online triplet mining",
+        "detail": ""
+      }
+    ],
+    "flow": [
+      "Provide face images to the deep convolutional neural network.",
+      "Map each image to a vector in a 128-dimensional Euclidean space.",
+      "Normalize the vectors representing the faces.",
+      "Compare faces using squared Euclidean distance between their vectors.",
+      "Train the mapping with triplet loss and online triplet mining."
+    ],
+    "origin": "FaceNet was developed by Florian Schroff, Dmitry Kalenichenko and James Philbin, researchers affiliated with Google. It was first presented at the 2015 IEEE Conference on Computer Vision and Pattern Recognition.",
+    "whyItMatters": "FaceNet represents each face with a compact embedding, allowing similarity to be assessed through a simple geometric distance. It achieved 99.63% accuracy on Labeled Faces in the Wild using the unrestricted with labeled outside data protocol, the highest score reported at that time.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "images",
+          "label": "Face images",
+          "note": "Input photographs of faces"
+        },
+        {
+          "id": "cnn",
+          "label": "Deep convolutional network",
+          "note": "Learns the mapping from images"
+        },
+        {
+          "id": "embedding",
+          "label": "128-dimensional embedding",
+          "note": "Numerical representation of each face"
+        },
+        {
+          "id": "normalized",
+          "label": "Normalized vectors",
+          "note": "Prepared for geometric comparison"
+        },
+        {
+          "id": "distance",
+          "label": "Squared Euclidean distance",
+          "note": "Measures similarity between faces"
+        },
+        {
+          "id": "training",
+          "label": "Triplet loss",
+          "note": "Trains the mapping using online triplet mining"
+        }
+      ],
+      "edges": [
+        {
+          "from": "images",
+          "to": "cnn",
+          "label": "input"
+        },
+        {
+          "from": "cnn",
+          "to": "embedding",
+          "label": "maps to"
+        },
+        {
+          "from": "embedding",
+          "to": "normalized",
+          "label": "normalize"
+        },
+        {
+          "from": "normalized",
+          "to": "distance",
+          "label": "compare"
+        },
+        {
+          "from": "embedding",
+          "to": "training",
+          "label": "training signal"
+        }
+      ],
+      "caption": "FaceNet embeds face images as normalized 128-dimensional vectors, compares them by squared Euclidean distance, and trains the embedding with triplet loss."
+    }
+  },
   "related": [
     "ablation-artificial-intelligence",
     "adaline",

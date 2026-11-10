@@ -5,7 +5,112 @@
   "type": "concept",
   "definition": "The constellation model is a probabilistic, generative model for category-level object recognition in computer vision.",
   "details": "Like other part-based models, the constellation model attempts to represent an object class by a set of N parts under mutual geometric constraints. Because it considers the geometric relationship between different parts, the constellation model differs significantly from appearance-only, or \"bag-of-words\" representation models, which explicitly disregard the location of image features. The problem of defining a generative model for object recognition is difficult. The task becomes significantly complicated by factors such as background clutter, occlusion, and variations in viewpoint, illumination, and scale. Ideally, we would like the particular representation we choose to be robust to as many of these factors as possible. In category-level recognition, the problem is even more challenging because of the fundamental problem of intra-class variation. Even if two objects belong to the same visual category, their appearances may be significantly different. However, for structured objects such as cars, bicycles, and people, separate instances of objects from the same category are subject to similar geometric constraints. For this reason, particular parts of an object such as the headli",
-  "story": "Picture a child pointing at pictures in a book — cat, car, cloud — learning to see by seeing a thousand examples. It turns a picture into an understanding: this is a cat, that is a stop sign. What your eyes do without thinking, the machine does one careful layer at a time. It is eyes made of arithmetic — pixels become edges, edges become shapes, shapes become meaning. That pixel-to-meaning climb is Constellation model.",
+  "explainer": {
+    "lead": "A constellation model recognizes a kind of object by considering both its parts and how those parts are arranged. This helps it tell structured objects such as cars, bicycles, and people apart even when individual examples look different.",
+    "tiers": {
+      "eli5": "Imagine recognizing a bicycle not just by spotting wheels and handlebars, but by checking that they fit together in a bicycle-like arrangement. A constellation model uses that same idea: the parts matter, and so do their positions relative to one another. This is useful because two bicycles can look quite different while still sharing a similar layout.",
+      "practitioner": "Use this approach for category-level recognition when object parts have useful geometric structure, rather than treating an image as an unordered collection of features. The representation must contend with background clutter, occlusion, changes in viewpoint, illumination and scale, and substantial appearance differences within a category. Geometry can help for structured categories, but it does not remove those difficulties.",
+      "paperLevel": "The model is probabilistic and generative: a visual category is represented by N parts under mutual geometric constraints, rather than by appearance alone. In contrast to a bag-of-words representation, feature locations and inter-part relationships contribute to the category model. Its main challenges include intra-class appearance variation, clutter, occlusion, and changes in viewpoint, illumination, and scale."
+    },
+    "example": "For bicycles, the model can represent parts such as wheels, a frame, and handlebars, together with constraints on their relative arrangement. Two bicycles may differ greatly in appearance, yet still fit similar geometric relationships between those parts.",
+    "usedIn": [
+      {
+        "name": "Category-level object recognition",
+        "detail": "Assigning images to object categories despite differences between individual instances.",
+        "url": ""
+      },
+      {
+        "name": "Part-based computer vision",
+        "detail": "Representing objects through parts and their mutual geometric constraints.",
+        "url": ""
+      },
+      {
+        "name": "Structured object categories",
+        "detail": "Categories such as cars, bicycles, and people, whose instances tend to share geometric structure.",
+        "url": ""
+      }
+    ],
+    "intuition": "An object category is more than a checklist of visual ingredients: a bicycle's wheels, frame, and handlebars also have characteristic relationships. The constellation model captures those relationships so that part locations are not thrown away.",
+    "howItWorks": [
+      "Represent an object category using N parts.",
+      "Describe each part's appearance.",
+      "Add probabilistic geometric constraints between the parts.",
+      "Use the combined part-and-geometry model for category-level recognition."
+    ],
+    "whyItMatters": "It addresses a weakness of bag-of-words models, which ignore where image features occur. Adding geometry provides a way to exploit the shared structure of objects within a category.",
+    "misconceptions": [
+      "It is not an appearance-only bag-of-words model: part locations and relationships are central.",
+      "It does not assume every instance of a category looks the same; intra-class variation is a core challenge.",
+      "Geometric constraints do not eliminate clutter, occlusion, or viewpoint and scale changes."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "image",
+          "label": "Object image",
+          "note": "Contains an instance of a visual category."
+        },
+        {
+          "id": "parts",
+          "label": "N object parts",
+          "note": "Represents the category through separate parts."
+        },
+        {
+          "id": "appearance",
+          "label": "Part appearance",
+          "note": "Describes what the individual parts look like."
+        },
+        {
+          "id": "geometry",
+          "label": "Mutual geometry",
+          "note": "Constrains how the parts are arranged."
+        },
+        {
+          "id": "model",
+          "label": "Generative category model",
+          "note": "Combines parts with probabilistic geometric structure."
+        },
+        {
+          "id": "recognition",
+          "label": "Category recognition",
+          "note": "Recognizes objects at the category level."
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "parts",
+          "label": "provides"
+        },
+        {
+          "from": "parts",
+          "to": "appearance",
+          "label": ""
+        },
+        {
+          "from": "parts",
+          "to": "geometry",
+          "label": ""
+        },
+        {
+          "from": "appearance",
+          "to": "model",
+          "label": ""
+        },
+        {
+          "from": "geometry",
+          "to": "model",
+          "label": ""
+        },
+        {
+          "from": "model",
+          "to": "recognition",
+          "label": ""
+        }
+      ],
+      "caption": "A category model combines object parts with their appearance and mutual geometric constraints."
+    }
+  },
   "related": [
     "constrained-conditional-model",
     "discrete-diffusion-model",

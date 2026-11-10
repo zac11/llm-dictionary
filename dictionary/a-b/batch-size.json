@@ -5,7 +5,103 @@
   "type": "concept",
   "definition": "The number of training examples processed together before the model's weights are updated.",
   "details": "Batch size affects gradient noise, memory usage, and training speed. Small batches give noisier but often more generalizable updates; large batches give smoother gradients but can require learning-rate tuning and more memory.",
-  "story": "Think of a hiker descending a foggy hill in the dark, taking small steps and feeling for the steepest way down. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. It is the same loop you use to learn anything: try, miss, correct, try again. Skill, for a model, is just error pushed down until it is small enough to ignore. And that is Batch Size — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "Batch size is how many training examples a model learns from before adjusting its weights. It shapes the balance between stable updates, memory use, and training speed.",
+    "tiers": {
+      "eli5": "Imagine checking your homework after every question, or after a whole page. A small batch is like checking often, while a large batch means gathering more answers before deciding what to fix. Both can help you learn, but they change how smoothly and quickly you improve.",
+      "practitioner": "Set batch size in the training data pipeline or framework configuration, then tune it alongside the learning rate. Small batches produce noisier updates and use less memory; large batches give smoother gradients but need more memory and may require learning-rate tuning. Watch memory limits and update quality rather than treating the largest possible batch as automatically best.",
+      "paperLevel": "For a mini-batch of B examples, batch size is B, and weights are updated after combining the gradients computed over those B examples. Increasing B generally reduces gradient noise while increasing memory requirements; decreasing B gives noisier updates that can often improve generalization. Large batches may also require learning-rate tuning."
+    },
+    "example": "With 10,000 training examples and a batch size of 100, the model processes 100 examples, updates its weights, and repeats until all 10,000 have been seen, giving 100 updates.",
+    "usedIn": [
+      {
+        "name": "Image model training",
+        "detail": "Controls how many images contribute to each weight update.",
+        "url": ""
+      },
+      {
+        "name": "Language model training",
+        "detail": "Sets how many training examples are grouped before an update.",
+        "url": ""
+      },
+      {
+        "name": "Speech model training",
+        "detail": "Balances gradient stability against memory use and training speed.",
+        "url": ""
+      }
+    ],
+    "intuition": "Each batch is a small vote on how the model should change. More examples make that vote steadier, while fewer examples make it noisier and require less memory.",
+    "howItWorks": [
+      "Choose a batch size.",
+      "Read that many training examples.",
+      "Run them through the model.",
+      "Combine their gradients and update the weights.",
+      "Repeat with the next batch."
+    ],
+    "whyItMatters": "Batch size directly affects gradient noise, memory usage, and training speed. Choosing it well can make training practical and may affect how well the resulting model generalizes.",
+    "misconceptions": [
+      "Bigger batches always train better models.",
+      "Batch size and learning rate are unrelated.",
+      "A batch is the entire training dataset."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data",
+          "label": "Training examples",
+          "note": "Examples waiting to be processed"
+        },
+        {
+          "id": "batch",
+          "label": "Batch of B",
+          "note": "B examples grouped together"
+        },
+        {
+          "id": "model",
+          "label": "Model forward pass",
+          "note": "Produces outputs for the batch"
+        },
+        {
+          "id": "gradients",
+          "label": "Combined gradients",
+          "note": "Gradients estimated from B examples"
+        },
+        {
+          "id": "update",
+          "label": "Weight update",
+          "note": "Weights change before the next batch"
+        }
+      ],
+      "edges": [
+        {
+          "from": "data",
+          "to": "batch",
+          "label": "group B"
+        },
+        {
+          "from": "batch",
+          "to": "model",
+          "label": "examples"
+        },
+        {
+          "from": "model",
+          "to": "gradients",
+          "label": "errors"
+        },
+        {
+          "from": "gradients",
+          "to": "update",
+          "label": "gradient step"
+        },
+        {
+          "from": "update",
+          "to": "data",
+          "label": "next batch"
+        }
+      ],
+      "caption": "One weight update follows the processing of each batch."
+    }
+  },
   "related": [
     "active-learning",
     "backpropagation",

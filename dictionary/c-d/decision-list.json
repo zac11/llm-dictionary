@@ -5,7 +5,96 @@
   "type": "concept",
   "definition": "Decision lists are a representation for Boolean functions which can be easily learned from examples.",
   "details": "Single term decision lists are more expressive than disjunctions and conjunctions; however, 1-term decision lists are less expressive than the general disjunctive normal form and the conjunctive normal form. The language specified by a k-length decision list includes as a subset the language specified by a k-depth decision tree. Learning decision lists can be used for attribute efficient learning, a type of machine learning.",
-  "story": "Think of a lightbulb moment: the idea was always there, but someone had to point a finger at it. Behind the jargon is an idea you could explain to a friend over coffee. At its heart it is a simple notion, once you strip away the fancy name. Once you see it, you cannot unsee it. And that idea, made concrete, is Decision list.",
+  "explainer": {
+    "lead": "A decision list is an ordered set of if-then rules for producing a yes-or-no answer. It uses the first rule whose condition matches, making it a compact way to represent Boolean functions and learn rules from examples.",
+    "tiers": {
+      "eli5": "Imagine getting dressed by checking a short list: if it is raining, wear a raincoat; otherwise, if it is cold, wear a jacket; otherwise, wear neither. You stop at the first instruction that fits, so the order matters. A decision list uses this same idea to answer yes-or-no questions.",
+      "practitioner": "A decision list can serve as an ordered rule classifier: evaluate each Boolean condition in sequence and return the label attached to the first match, or the default label if none matches. It is useful when learning from examples with many attributes, including attribute-efficient learning. Keep rule priority explicit, since moving a broad condition earlier can prevent later, more specific rules from ever firing.",
+      "paperLevel": "A decision list can be written as (t1, b1), (t2, b2), ..., (tk, bk), b, where each ti is a Boolean test and each bi is an output label. On input x, the output is bi for the smallest i with ti(x) = true, and b if no test succeeds. One-term decision lists are strictly more expressive than conjunctions and disjunctions, but less expressive than general DNF and CNF; the language represented by a k-length decision list includes that represented by a k-depth decision tree."
+    },
+    "example": "Consider the list: if x1 = 1, output 1; otherwise, if x2 = 1, output 0; otherwise, output 1. The input x1 = 0, x2 = 1 produces 0, while x1 = 1 produces 1 regardless of x2; if both variables are 0, the default output is 1.",
+    "usedIn": [
+      {
+        "name": "Boolean function learning",
+        "detail": "Represents yes-or-no functions as ordered rules that can be learned from examples.",
+        "url": ""
+      },
+      {
+        "name": "Attribute-efficient learning",
+        "detail": "Provides a rule representation for learning when examples have many attributes.",
+        "url": ""
+      }
+    ],
+    "intuition": "Think of a checklist with priority: earlier rules handle the cases they match, and everything else falls through to later rules or a default answer.",
+    "howItWorks": [
+      "Write an ordered sequence of Boolean tests, each paired with an output label.",
+      "Add a default label for inputs that satisfy none of the tests.",
+      "For a new input, evaluate the tests from top to bottom.",
+      "Stop at the first successful test and return its label; otherwise, return the default."
+    ],
+    "whyItMatters": "Decision lists combine a simple, readable rule structure with useful expressiveness and can be learned from examples. Their ordered form also connects them to decision trees while supporting attribute-efficient learning.",
+    "misconceptions": [
+      "A decision list is not an unordered rule set: changing rule order can change its output.",
+      "One-term decision lists do not represent every DNF or CNF formula, despite being more expressive than plain conjunctions and disjunctions."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Boolean input",
+          "note": "An example to classify."
+        },
+        {
+          "id": "tests",
+          "label": "Ordered tests",
+          "note": "Check conditions from top to bottom."
+        },
+        {
+          "id": "match",
+          "label": "First match",
+          "note": "Select the earliest successful rule."
+        },
+        {
+          "id": "default",
+          "label": "Default label",
+          "note": "Used when every test fails."
+        },
+        {
+          "id": "output",
+          "label": "Boolean output",
+          "note": "Return the selected yes-or-no label."
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "tests",
+          "label": "evaluate"
+        },
+        {
+          "from": "tests",
+          "to": "match",
+          "label": "test succeeds"
+        },
+        {
+          "from": "tests",
+          "to": "default",
+          "label": "no match"
+        },
+        {
+          "from": "match",
+          "to": "output",
+          "label": "rule label"
+        },
+        {
+          "from": "default",
+          "to": "output",
+          "label": "fallback"
+        }
+      ],
+      "caption": "A decision list returns the label of its first matching rule, or a default label when no rule matches."
+    }
+  },
   "related": [
     "automated-decision-making",
     "decision-tree-pruning",

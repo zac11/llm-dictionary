@@ -2,10 +2,95 @@
   "term": "CHAOS (chess)",
   "letter": "C",
   "category": "Artificial Intelligence",
-  "type": "concept",
+  "type": "tool",
   "definition": "CHAOS (Chess Heuristics and Other Stuff) is a chess playing program that was developed by programmers working at the RCA Systems Programming division in the late 1960s.",
   "details": "It played competitively in computer chess competitions in the 1970s and 1980s. It differed from other programs of that era in its look-ahead philosophy, choosing to use chess knowledge to evaluate fewer positions and continuations as opposed to simple evaluations that relied on deep look-ahead to avoid bad moves.",
-  "story": "Imagine an art restorer who can spot a single cracked tile in a vast mosaic. What your eyes do without thinking, the machine does one careful layer at a time. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. The model looks the way you look at a crowd and finds the one face you know. That pixel-to-meaning climb is CHAOS (chess).",
+  "explainer": {
+    "lead": "CHAOS was a chess-playing program built at RCA's Systems Programming division in the late 1960s and later entered in computer chess competitions. Its distinctive idea was to use chess knowledge to examine fewer, more promising lines of play rather than relying mainly on deep look-ahead with simple evaluations.",
+    "tiers": {
+      "eli5": "CHAOS played chess a bit like someone solving a maze by using clues to choose a few promising paths, instead of trying every path as far as possible. It used chess knowledge to decide which moves deserved closer attention, so it did not have to examine as many positions.",
+      "practitioner": "CHAOS is an early example of selective, knowledge-guided search: spend computation evaluating promising continuations rather than expanding a broad tree to great depth. For an engineer, its design illustrates the trade-off between evaluation quality and search volume. A key pitfall of selective search is that poor selection can discard a continuation that more extensive look-ahead would have exposed as important.",
+      "paperLevel": "CHAOS can be described as knowledge-guided selective search: use chess-knowledge-based evaluation to choose a relatively small set of positions and continuations for examination, rather than pairing simple evaluation with deep look-ahead. Its central design problem is deciding which continuations merit computation, not merely maximizing search depth."
+    },
+    "example": "From a complicated middlegame position, CHAOS's approach would be to identify a small set of promising attacking and defensive continuations using chess knowledge, then evaluate those lines rather than calculate every legal reply to the same great depth.",
+    "usedIn": [
+      {
+        "name": "Computer chess competitions",
+        "detail": "CHAOS competed during the 1970s and 1980s.",
+        "url": ""
+      },
+      {
+        "name": "Chess-program design",
+        "detail": "It exemplified knowledge-guided selection of positions and continuations instead of primarily deep look-ahead.",
+        "url": ""
+      }
+    ],
+    "intuition": "Searching more moves is not the only way to play better chess. CHAOS treated chess knowledge as a way to direct computation toward the positions and continuations most worth examining.",
+    "howItWorks": [
+      "Start from the current chess position and consider possible continuations.",
+      "Apply chess knowledge to judge which positions and lines deserve attention.",
+      "Evaluate those selected continuations instead of exploring a much larger set deeply.",
+      "Use the resulting assessments to choose a move."
+    ],
+    "whyItMatters": "CHAOS represented a distinct answer to a central computer-chess problem: limited computation can be spent either examining many lines with simple judgments or examining fewer lines with richer chess knowledge.",
+    "misconceptions": [
+      "CHAOS did not reject look-ahead entirely; it favored examining fewer knowledge-selected positions and continuations.",
+      "Its approach did not rely on simple evaluation alone; richer chess knowledge was the distinguishing feature.",
+      "It was developed in the late 1960s, while its competitive play extended into the 1970s and 1980s."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "position",
+          "label": "Current position",
+          "note": "The chessboard state being considered."
+        },
+        {
+          "id": "candidates",
+          "label": "Candidate continuations",
+          "note": "Possible lines of play from the position."
+        },
+        {
+          "id": "knowledge",
+          "label": "Chess knowledge",
+          "note": "Guides which positions and lines merit attention."
+        },
+        {
+          "id": "selected",
+          "label": "Selected evaluations",
+          "note": "A smaller set of continuations is assessed."
+        },
+        {
+          "id": "move",
+          "label": "Move choice",
+          "note": "The program chooses its next move."
+        }
+      ],
+      "edges": [
+        {
+          "from": "position",
+          "to": "candidates",
+          "label": "possible play"
+        },
+        {
+          "from": "candidates",
+          "to": "knowledge",
+          "label": "selection"
+        },
+        {
+          "from": "knowledge",
+          "to": "selected",
+          "label": "fewer lines"
+        },
+        {
+          "from": "selected",
+          "to": "move",
+          "label": "assessment"
+        }
+      ],
+      "caption": "CHAOS favored knowledge-guided selection and evaluation of fewer continuations over broad, deep look-ahead."
+    }
+  },
   "related": [
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",
     "accelerated-linear-algebra",

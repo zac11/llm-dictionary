@@ -5,6 +5,32 @@
   "type": "concept",
   "definition": "A sudden jump in training loss at scale, caused by bad data batches, numerical instability, or optimizer state issues.",
   "details": "A sudden jump in training loss at scale, caused by bad data batches, numerical instability, or optimizer state issues. Frontier recipes include spike detection, batch skipping, and checkpoint rollback because a single unhandled spike can waste enormous compute.",
+  "explainer": {
+    "lead": "A single sudden jump in training loss can derail a large run and burn enormous compute. Detecting and handling it early is now part of standard frontier training recipes.",
+    "tiers": {
+      "eli5": "It's like a car engine suddenly jolting mid-drive; you want to notice it fast, slow down, and recover before anything breaks.",
+      "practitioner": "Engineers monitor loss per step and respond with spike detection, skipping the offending batch, or rolling back to a checkpoint. A pitfall is ignoring spikes, since one unhandled jump can waste an entire run.",
+      "paperLevel": "A loss spike is a sudden, large increase in training loss relative to its recent trend, attributed to bad data batches, numerical instability, or optimizer state issues; no closed-form threshold exists, so detection is empirical."
+    },
+    "example": "Loss climbs from about 2.1 to 7.0 in one step; the trainer flags it, skips that batch, and training resumes on its prior trajectory.",
+    "usedIn": [
+      {
+        "name": "Large language model training",
+        "detail": "checkpoint rollback",
+        "url": ""
+      },
+      {
+        "name": "Distributed training pipelines",
+        "detail": "step-level loss monitoring",
+        "url": ""
+      },
+      {
+        "name": "Optimizer stability",
+        "detail": "state and gradient scaling",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "checkpoint"
   ],

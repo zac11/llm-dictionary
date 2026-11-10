@@ -5,6 +5,32 @@
   "type": "concept",
   "definition": "Having the LLM write a hypothetical answer to the query and retrieving with that text's embedding, exploiting the fact that answers resemble documents more than questions do.",
   "details": "Having the LLM write a hypothetical answer to the query and retrieving with that text's embedding, exploiting the fact that answers resemble documents more than questions do.",
+  "explainer": {
+    "lead": "HyDE has the LLM write a hypothetical answer to the query and retrieves using that answer's embedding instead of the query's. It matters because answers resemble the documents being searched more than questions do.",
+    "tiers": {
+      "eli5": "Instead of searching with your question, you first write a made-up answer and search with that, because it looks more like the pages you want.",
+      "practitioner": "Engineers add one LLM call before retrieval to generate a hypothetical document, then embed it for vector search; the pitfall is that a wrong hypothetical answer steers retrieval toward the wrong region, and the extra call adds latency.",
+      "paperLevel": "Retrieval uses the embedding of a generated hypothetical answer rather than the query embedding, exploiting the asymmetry between questions and documents. It depends on the LLM's answer being roughly on-topic; there is no guarantee, and errors propagate into retrieval."
+    },
+    "example": "For the question 'What causes tides?', the model writes a short passage about the moon's gravity, and that passage's embedding retrieves relevant documents even though the question's wording would not.",
+    "usedIn": [
+      {
+        "name": "RAG pipelines",
+        "detail": "query-to-document bridging",
+        "url": ""
+      },
+      {
+        "name": "Vector search",
+        "detail": "hypothetical embeddings",
+        "url": ""
+      },
+      {
+        "name": "Question answering",
+        "detail": "improve recall",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "embedding"
   ],

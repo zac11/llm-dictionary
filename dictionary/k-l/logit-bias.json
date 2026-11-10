@@ -5,6 +5,32 @@
   "type": "concept",
   "definition": "Directly adding offsets to specific tokens' logits to force, favor, or ban them, useful for classification-style outputs and blocklists.",
   "details": "Directly adding offsets to specific tokens' logits to force, favor, or ban them, useful for classification-style outputs and blocklists.",
+  "explainer": {
+    "lead": "Logit bias directly adds offsets to specific tokens' logits to force, favour or ban them. It matters for steering model output without retraining, especially for classification-style answers and blocklists.",
+    "tiers": {
+      "eli5": "It is like nudging the scales before a vote so certain words are pushed up or knocked out entirely.",
+      "practitioner": "Engineers apply it to constrain generation to a small set of labels, or to suppress unwanted tokens such as banned words. A pitfall is that a large negative offset can distort output quality, and the bias is applied per token, not per phrase.",
+      "paperLevel": "A chosen offset is added to the logit of each specified token before the softmax that yields the next-token distribution; strongly negative offsets approximate banning and positive offsets favour selection. The effect is local to the tokens listed."
+    },
+    "example": "To classify support tickets into three categories, a system sets favourable offsets on the tokens for billing, technical and account, so the model's next token falls in that set.",
+    "usedIn": [
+      {
+        "name": "Classification prompts",
+        "detail": "forced label tokens",
+        "url": ""
+      },
+      {
+        "name": "Content filtering",
+        "detail": "token blocklists",
+        "url": ""
+      },
+      {
+        "name": "Constrained generation",
+        "detail": "output steering",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "logits"
   ],

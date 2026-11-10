@@ -5,6 +5,98 @@
   "type": "concept",
   "definition": "Scoring how well an action was performed — a dive, a surgery step — from video.",
   "details": "Scoring how well an action was performed — a dive, a surgery step — from video. Applied in sports judging, rehabilitation, and skill assessment.",
+  "explainer": {
+    "lead": "Action Quality Assessment turns a video of someone performing an action into a score for how well they performed it. It can support fairer, more consistent feedback in activities where execution matters, from diving to surgery and rehabilitation.",
+    "tiers": {
+      "eli5": "Imagine two friends both jump into a pool, but one keeps their body straight while the other splashes and twists. A computer watching a video can learn to judge how well each jump was done, not just notice that both friends jumped. This kind of scoring can help athletes, patients, and learners understand how to improve.",
+      "practitioner": "An engineer can treat this as video-to-score prediction: prepare clips of the same action, represent the movement over time, and fit or validate a scorer against reference quality ratings. It applies to sports judging, rehabilitation, and skill assessment. Clips need to show the relevant execution clearly, and scores are only comparable when the action and scoring criteria are consistent.",
+      "paperLevel": "Given a video V of one performance, Action Quality Assessment estimates a quality score s_hat = f(V), rather than merely predicting the action's identity. In supervised settings, f is learned from videos paired with reference quality scores; the score scale, model architecture, and evaluation metric depend on the task. The assessment is therefore tied to the action and quality criteria represented by those references."
+    },
+    "example": "A system receives a video of one dive and analyzes its execution rather than simply labeling it as a dive. It returns a quality score that can be compared with scores for other performances assessed under the same diving criteria.",
+    "usedIn": [
+      {
+        "name": "Sports judging",
+        "detail": "Scoring the execution of actions such as dives from video.",
+        "url": ""
+      },
+      {
+        "name": "Rehabilitation",
+        "detail": "Assessing how well a patient performs a movement to support skill and recovery monitoring.",
+        "url": ""
+      },
+      {
+        "name": "Surgical skill assessment",
+        "detail": "Evaluating the quality of an individual surgery step shown in a recording.",
+        "url": ""
+      }
+    ],
+    "intuition": "Two videos can show the same action while differing greatly in control, form, and execution. Action Quality Assessment focuses on those differences, translating the visible performance into a quality score.",
+    "howItWorks": [
+      "Capture a video containing one performance of the action.",
+      "Identify the portion of the video in which the action is performed.",
+      "Represent how the movement and execution unfold over time.",
+      "Relate that performance to examples or criteria associated with different quality levels.",
+      "Output a score describing how well the action was performed."
+    ],
+    "whyItMatters": "It makes video useful not only for recording performance but also for assessing and improving it. Automated scores can provide repeatable feedback in sports, rehabilitation, and practical skill training.",
+    "misconceptions": [
+      "It is not action recognition: identifying a dive is different from judging how well the dive was performed.",
+      "A score is not automatically comparable across different actions or scoring criteria.",
+      "The output assesses visible execution; it does not by itself explain every reason an expert gave a particular judgment."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "video",
+          "label": "Performance video",
+          "note": "A recorded dive, movement, or surgery step."
+        },
+        {
+          "id": "segment",
+          "label": "Action segment",
+          "note": "The portion containing the performance."
+        },
+        {
+          "id": "motion",
+          "label": "Execution features",
+          "note": "A representation of movement through time."
+        },
+        {
+          "id": "scorer",
+          "label": "Quality scorer",
+          "note": "Maps execution to reference quality levels."
+        },
+        {
+          "id": "score",
+          "label": "Quality score",
+          "note": "An estimate of how well the action was performed."
+        }
+      ],
+      "edges": [
+        {
+          "from": "video",
+          "to": "segment",
+          "label": "isolate"
+        },
+        {
+          "from": "segment",
+          "to": "motion",
+          "label": "analyze"
+        },
+        {
+          "from": "motion",
+          "to": "scorer",
+          "label": "assess"
+        },
+        {
+          "from": "scorer",
+          "to": "score",
+          "label": "predict"
+        }
+      ],
+      "caption": "Action Quality Assessment moves from a recorded performance to an execution score."
+    }
+  },
   "citation": {
     "title": "Action Quality Assessment",
     "authors": [],

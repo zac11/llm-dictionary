@@ -5,6 +5,97 @@
   "type": "concept",
   "definition": "Inputs minimally perturbed to cause confident misclassification (the panda-to-gibbon pixel noise).",
   "details": "Inputs minimally perturbed to cause confident misclassification (the panda-to-gibbon pixel noise). The founding demonstration that neural networks' decision boundaries do not match human perception; the LLM analogues are adversarial suffixes and jailbreak strings.",
+  "explainer": {
+    "lead": "Adversarial examples are inputs with tiny, deliberate changes that make an AI system produce a confidently wrong answer. They matter because a model can appear accurate while relying on decision boundaries very different from human perception.",
+    "tiers": {
+      "eli5": "Imagine changing a few dots on a picture of a panda so slightly that you still see a panda, but a computer becomes sure it is a gibbon. That tricked picture is an adversarial example. It shows that computers can notice patterns and make decisions in ways people do not.",
+      "practitioner": "Use adversarial examples to probe classifier robustness and LLM safety rather than relying only on ordinary test inputs. For images, introduce a minimal perturbation and check the output and confidence; for LLMs, test adversarial suffixes and jailbreak strings. A model passing one set of attacks is not necessarily robust to differently crafted inputs.",
+      "paperLevel": "Given a classifier f and an input x, construct x' = x + delta, where delta is small under a chosen constraint, so that f(x') differs from the correct output and may be confidently wrong. The panda-to-gibbon case illustrates this with minimal pixel noise. Smallness depends on the chosen constraint, and LLM adversarial suffixes and jailbreak strings are analogues rather than identical pixel-level attacks."
+    },
+    "example": "Minimal pixel noise is added to a picture of a panda. A person still sees a panda, but the neural network confidently classifies the altered image as a gibbon.",
+    "usedIn": [
+      {
+        "name": "Image-classifier security testing",
+        "detail": "Small pixel perturbations test whether a classifier can be pushed into a confident misclassification.",
+        "url": ""
+      },
+      {
+        "name": "Neural-network robustness research",
+        "detail": "Adversarial inputs expose differences between model decision boundaries and human perception.",
+        "url": ""
+      },
+      {
+        "name": "LLM red-teaming",
+        "detail": "Adversarial suffixes and jailbreak strings provide language-model analogues for probing unsafe or unintended behavior.",
+        "url": ""
+      }
+    ],
+    "intuition": "A model does not necessarily see an input the way a person does. A change that looks negligible to us can cross the model's decision boundary and flip its answer without appearing suspicious.",
+    "howItWorks": [
+      "Start with an input the model would normally classify correctly.",
+      "Add a small, carefully chosen perturbation rather than an obvious alteration.",
+      "Keep the changed input perceptually almost identical to the original.",
+      "Feed it to the model and observe a different, often highly confident prediction."
+    ],
+    "whyItMatters": "Adversarial examples demonstrate that neural-network decision boundaries can diverge sharply from human perception. They provide a concrete way to test whether confident model outputs remain reliable under deliberately crafted inputs.",
+    "misconceptions": [
+      "The alteration does not have to be large or visible to a person.",
+      "An adversarial example is deliberately crafted, not merely any input a model gets wrong.",
+      "High confidence in the wrong answer does not mean the model has recognized the input correctly."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "original",
+          "label": "Original panda image",
+          "note": "The starting input looks ordinary."
+        },
+        {
+          "id": "noise",
+          "label": "Minimal pixel noise",
+          "note": "A small deliberate perturbation is constructed."
+        },
+        {
+          "id": "perturbed",
+          "label": "Perturbed image",
+          "note": "A person still perceives a panda."
+        },
+        {
+          "id": "classifier",
+          "label": "Neural classifier",
+          "note": "The perturbation crosses its decision boundary."
+        },
+        {
+          "id": "output",
+          "label": "Confident gibbon label",
+          "note": "The model returns the wrong classification."
+        }
+      ],
+      "edges": [
+        {
+          "from": "original",
+          "to": "noise",
+          "label": "perturb"
+        },
+        {
+          "from": "noise",
+          "to": "perturbed",
+          "label": "produces"
+        },
+        {
+          "from": "perturbed",
+          "to": "classifier",
+          "label": "input"
+        },
+        {
+          "from": "classifier",
+          "to": "output",
+          "label": "predicts"
+        }
+      ],
+      "caption": "A barely changed input can produce a confidently wrong model prediction."
+    }
+  },
   "related": [
     "jailbreak"
   ],

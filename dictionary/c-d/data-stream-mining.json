@@ -5,7 +5,118 @@
   "type": "concept",
   "definition": "Data stream mining (also known as stream learning) is the process of extracting knowledge structures from continuous, rapid data records.",
   "details": "A data stream is an ordered sequence of instances that in many applications of data stream mining can be read only once or a small number of times using limited computing and storage capabilities. In many data stream mining applications, the goal is to predict the class or value of new instances in the data stream given some knowledge about the class membership or values of previous instances in the data stream. Machine learning techniques can be used to learn this prediction task from labeled examples in an automated fashion. Often, concepts from the field of incremental learning are applied to cope with structural changes, on-line learning and real-time demands. In many applications, especially operating within non-stationary environments, the distribution underlying the instances or the rules underlying their labeling may change over time, i.e. the goal of the prediction, the class to be predicted or the target value to be predicted, may change over time. This problem is referred to as concept drift. Detecting concept drift is a central issue to data stream mining. Other challenges that arise when applying machine learning to streaming data include: partially and delayed labeled data, recovery from concept drifts, and temporal dependencies. Examples of data streams include computer network traffic, phone conversations, ATM transactions, web searches, and sensor data. Data stream mining can be considered a subfield of data mining, machine learning, and knowledge discovery.",
-  "story": "Picture a librarian organizing a million slips of paper so that any one of them can be found in a heartbeat. The examples a machine reads become the world it believes in. Better ingredients make a better meal, and the same is true here. Garbage in, garbage out — and the reverse: clean, representative data makes the model quietly brilliant. And that is Data stream mining — the unglamorous work everything else stands on.",
+  "explainer": {
+    "lead": "Data stream mining learns from records that arrive continuously and often cannot all be stored or revisited. It lets predictions keep pace with fast-changing data, while watching for changes in the patterns being learned.",
+    "tiers": {
+      "eli5": "Imagine sorting letters as they rush past on a conveyor belt, without being able to put them all in a pile for later. You learn from each letter, make your best guess about the next ones, and notice when the sorting rules seem to change. Data stream mining does this with fast-moving digital records.",
+      "practitioner": "Models are updated incrementally as instances arrive, under tight limits on computation, storage, and repeated passes over the data. Common prediction settings must handle non-stationary distributions, delayed or incomplete labels, temporal dependencies, and recovery after concept drift. Keeping a fixed model or assuming a stationary stream can make performance deteriorate unnoticed.",
+      "paperLevel": "Given an ordered stream S = (x1, x2, ...), often readable once or a few times with bounded computation and storage, the task is to learn a predictor for the class or value of new instances from previous instances and available labels. In a non-stationary environment, either the instance distribution P_t(x) or the labeling relationship P_t(y|x) may change over time, producing concept drift. Central problems include drift detection and recovery, partial or delayed supervision, and temporal dependencies."
+    },
+    "example": "An ATM system receives transactions one after another and predicts a class for each new transaction from patterns learned from earlier labeled transactions. It updates incrementally rather than retraining on every past transaction, and a change in the relationship between transaction features and labels is treated as possible concept drift.",
+    "usedIn": [
+      {
+        "name": "Computer network traffic",
+        "detail": "Learning from a continuing flow of traffic records as new records arrive.",
+        "url": ""
+      },
+      {
+        "name": "ATM transactions",
+        "detail": "Updating predictions from transaction records without repeatedly processing the full history.",
+        "url": ""
+      },
+      {
+        "name": "Web searches",
+        "detail": "Mining a rapid sequence of search events whose underlying patterns may change.",
+        "url": ""
+      },
+      {
+        "name": "Sensor data",
+        "detail": "Processing continuous readings within limited computing and storage resources.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of collecting a complete dataset and training once, treat learning as a continuing process. Each new instance can prompt a prediction and a small model update, while the system checks whether the old pattern still applies.",
+    "howItWorks": [
+      "Read ordered instances as they arrive, usually once or only a few times.",
+      "Use earlier instances and available labels to learn a prediction task.",
+      "Update the model incrementally to meet online or real-time demands.",
+      "Predict the class or value of new instances.",
+      "Detect and recover from concept drift while handling label delays and temporal dependencies."
+    ],
+    "whyItMatters": "Many data sources never stop and are too fast or large to revisit freely. Stream mining makes continual prediction possible under resource limits and addresses the fact that the target pattern can change over time.",
+    "misconceptions": [
+      "It is not simply ordinary data mining on a very large stored dataset.",
+      "A trained model cannot safely be assumed to remain valid forever.",
+      "It does not require every instance to have an immediate, complete label."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "stream",
+          "label": "Data stream",
+          "note": "Ordered instances arrive continuously."
+        },
+        {
+          "id": "processing",
+          "label": "Limited processing",
+          "note": "Few passes with bounded resources."
+        },
+        {
+          "id": "model",
+          "label": "Incremental model",
+          "note": "Knowledge is updated online."
+        },
+        {
+          "id": "prediction",
+          "label": "Predictions",
+          "note": "Classes or values for new instances."
+        },
+        {
+          "id": "labels",
+          "label": "Available labels",
+          "note": "May be partial or delayed."
+        },
+        {
+          "id": "drift",
+          "label": "Drift handling",
+          "note": "Detect changes and support recovery."
+        }
+      ],
+      "edges": [
+        {
+          "from": "stream",
+          "to": "processing",
+          "label": "instances"
+        },
+        {
+          "from": "processing",
+          "to": "model",
+          "label": "updates"
+        },
+        {
+          "from": "model",
+          "to": "prediction",
+          "label": ""
+        },
+        {
+          "from": "labels",
+          "to": "model",
+          "label": "supervision"
+        },
+        {
+          "from": "stream",
+          "to": "drift",
+          "label": ""
+        },
+        {
+          "from": "drift",
+          "to": "model",
+          "label": "adaptation"
+        }
+      ],
+      "caption": "A stream-learning loop: limited processing maintains an incremental model, while labels and drift handling shape its updates."
+    }
+  },
   "related": [
     "cyborg-data-mining",
     "data-mining",

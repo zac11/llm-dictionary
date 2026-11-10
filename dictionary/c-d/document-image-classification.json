@@ -5,6 +5,97 @@
   "type": "concept",
   "definition": "Categorizing document scans by type — invoice, form, letter — often as a stage in document AI pipelines like LayoutLM.",
   "details": "Categorizing document scans by type — invoice, form, letter — often as a stage in document AI pipelines like LayoutLM.",
+  "explainer": {
+    "lead": "Document image classification assigns a scanned document a category such as invoice, form, or letter. It gives document-processing systems a quick way to route each scan toward the right next step.",
+    "tiers": {
+      "eli5": "It is like sorting a pile of mail into bills, forms, and letters before opening each one. A computer looks at a picture of a document and chooses which pile it belongs in. This helps the computer decide what to do with it next.",
+      "practitioner": "Use it near the start of a document AI pipeline to route scans by document type, including pipelines built around LayoutLM. Watch for poor scan quality, visually similar classes, and documents that do not fit the defined labels. The predicted type can select downstream processing, but it does not itself extract fields or understand the full page.",
+      "paperLevel": "Given document images D and a finite set of document types C, learn or define a classifier f: D -> C that maps each scan to one type. The task concerns document-level categorization rather than layout analysis or field extraction. Performance can be limited by scan quality, ambiguity between types, and inputs outside the label set."
+    },
+    "example": "A mixed batch contains a supplier invoice, a completed application form, and a business letter. The classifier labels each scan accordingly, allowing the invoice to follow invoice processing while the form and letter take other routes.",
+    "usedIn": [
+      {
+        "name": "Invoice processing",
+        "detail": "Identifies invoice scans so they can be routed separately from other paperwork.",
+        "url": ""
+      },
+      {
+        "name": "Forms processing",
+        "detail": "Recognizes when an incoming scan is a form rather than a letter or invoice.",
+        "url": ""
+      },
+      {
+        "name": "Document AI pipelines",
+        "detail": "Provides a document-type label before later processing, including in pipelines associated with LayoutLM.",
+        "url": ""
+      }
+    ],
+    "intuition": "Different kinds of paperwork often need different handling, so the first useful question is simply, “What kind of document is this?” Document image classification answers that question from the scan.",
+    "howItWorks": [
+      "Collect the document scan that needs a type label.",
+      "Represent the scan with features useful for distinguishing the document categories.",
+      "Use a classifier to choose a category such as invoice, form, or letter.",
+      "Pass the scan and its predicted type to the appropriate next stage."
+    ],
+    "whyItMatters": "Knowing the document type helps a pipeline apply the right downstream process instead of treating every scan identically. It provides a simple organizing step for mixed collections of paperwork.",
+    "misconceptions": [
+      "It is not the same as extracting individual fields or values from a document.",
+      "A document-type label does not describe every element or region on the page.",
+      "Classifying a scan does not guarantee that its text or layout has been interpreted correctly."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "scan",
+          "label": "Document scan",
+          "note": "An incoming invoice, form, letter, or other document."
+        },
+        {
+          "id": "features",
+          "label": "Document features",
+          "note": "Information used to distinguish document types."
+        },
+        {
+          "id": "classifier",
+          "label": "Type classifier",
+          "note": "Maps the scan to a document category."
+        },
+        {
+          "id": "label",
+          "label": "Document type",
+          "note": "A category such as invoice, form, or letter."
+        },
+        {
+          "id": "pipeline",
+          "label": "Next pipeline stage",
+          "note": "Processing selected using the predicted type."
+        }
+      ],
+      "edges": [
+        {
+          "from": "scan",
+          "to": "features",
+          "label": ""
+        },
+        {
+          "from": "features",
+          "to": "classifier",
+          "label": ""
+        },
+        {
+          "from": "classifier",
+          "to": "label",
+          "label": "predicts"
+        },
+        {
+          "from": "label",
+          "to": "pipeline",
+          "label": "routes"
+        }
+      ],
+      "caption": "A scan is classified by document type, and the resulting label guides its route through later processing."
+    }
+  },
   "related": [
     "document-ai"
   ],

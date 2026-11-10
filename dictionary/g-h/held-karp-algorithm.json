@@ -5,7 +5,110 @@
   "type": "algorithm",
   "definition": "The Held–Karp algorithm, also called the Bellman–Held–Karp algorithm, is a dynamic programming algorithm proposed in 1962 independently by Bellman and by Held and Karp to solve the traveling salesman problem (TSP), in which the input is a distance matrix between a set of cities, and the goal is to find a minimum-length tour that visits each city exactly once before returning to the starting point.",
   "details": "It finds the exact solution to this problem, and to several related problems including the Hamiltonian cycle problem, in exponential time.",
-  "story": "Think of a hiker descending a foggy hill in the dark, taking small steps and feeling for the steepest way down. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. It is the same loop you use to learn anything: try, miss, correct, try again. Skill, for a model, is just error pushed down until it is small enough to ignore. And that is Held–Karp algorithm — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "The Held–Karp algorithm finds the shortest round trip through a set of cities when every city must be visited exactly once. It uses dynamic programming to guarantee an optimal answer, although its exponential running time makes large instances difficult.",
+    "tiers": {
+      "eli5": "Imagine planning the shortest trip that visits several friends once each and then brings you home. Instead of checking every possible order, the method remembers the best way to reach each friend after visiting each smaller group, then uses those answers to build longer trips. It always finds the best route, but the amount of remembering grows very quickly as you add friends.",
+      "practitioner": "Provide a distance matrix and build dynamic-programming states indexed by a visited subset and its final city. It is appropriate when an exact TSP or Hamiltonian-cycle result is needed and the instance is small enough for exponential time and storage; the main pitfall is expecting it to scale like a heuristic route optimizer.",
+      "paperLevel": "Fix city 1 and define C(S,j) as the minimum cost of a path from 1 that visits exactly the cities in S and ends at j, where S contains 1 and j. The recurrence is C({1,j},j)=d(1,j) and C(S,j)=min over k in S\\{j} of [C(S\\{j},k)+d(k,j)]; the optimum is min over j of [C(V,j)+d(j,1)]. Proposed independently in 1962 by Bellman and by Held and Karp, the algorithm solves TSP exactly in exponential time and also applies to related problems including Hamiltonian cycle."
+    },
+    "example": "For four cities A, B, C, and D, suppose AB=1, AC=4, AD=3, BC=2, BD=5, and CD=2. The algorithm compares the completed tours and finds A→B→C→D→A with length 1+2+2+3=8, while A→B→D→C→A costs 12 and A→C→B→D→A costs 14, so the 8-unit tour is returned.",
+    "usedIn": [
+      {
+        "name": "Exact route optimization",
+        "detail": "Computes minimum-length tours for suitably small traveling salesman instances.",
+        "url": ""
+      },
+      {
+        "name": "Hamiltonian-cycle solving",
+        "detail": "The same dynamic-programming approach can solve this related problem exactly.",
+        "url": ""
+      },
+      {
+        "name": "Algorithm comparison",
+        "detail": "Its guaranteed optimal tours can serve as reference answers for evaluating other TSP methods.",
+        "url": ""
+      }
+    ],
+    "goal": "Find a minimum-length tour that starts at a chosen city, visits every other city exactly once, and returns to the start.",
+    "inputs": [
+      "A set of cities.",
+      "A distance matrix giving the distance between each pair of cities."
+    ],
+    "outputs": [
+      "A minimum-length tour visiting each city exactly once.",
+      "The total length of that optimal tour."
+    ],
+    "steps": [
+      "Choose a starting city and initialize one-city trips from that start.",
+      "For each visited subset and possible final city, record the cheapest partial tour ending there.",
+      "Extend each partial tour by one unvisited city and keep the cheapest result for the new state.",
+      "Continue until a state contains every city and each possible final city.",
+      "Add the return distance to the start and select the completed tour with the smallest total length."
+    ],
+    "tradeoffs": [
+      "It guarantees an exact optimal solution rather than an approximation.",
+      "Its running time is exponential, so adding cities quickly increases the work.",
+      "Remembering costs for visited subsets creates substantial storage demands."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "matrix",
+          "label": "Distance matrix",
+          "note": "Distances between every city pair"
+        },
+        {
+          "id": "states",
+          "label": "Partial-tour states",
+          "note": "Visited subset plus final city"
+        },
+        {
+          "id": "extend",
+          "label": "Extend tours",
+          "note": "Add one unvisited city"
+        },
+        {
+          "id": "complete",
+          "label": "Complete tours",
+          "note": "Return to the starting city"
+        },
+        {
+          "id": "optimum",
+          "label": "Optimal tour",
+          "note": "Choose the minimum total length"
+        }
+      ],
+      "edges": [
+        {
+          "from": "matrix",
+          "to": "states",
+          "label": "initial costs"
+        },
+        {
+          "from": "states",
+          "to": "extend",
+          "label": "best paths"
+        },
+        {
+          "from": "extend",
+          "to": "states",
+          "label": "larger subsets"
+        },
+        {
+          "from": "states",
+          "to": "complete",
+          "label": "all cities"
+        },
+        {
+          "from": "complete",
+          "to": "optimum",
+          "label": "minimum"
+        }
+      ],
+      "caption": "Dynamic programming builds cheapest partial tours by visited subset, then closes them into complete tours and selects the shortest."
+    }
+  },
   "related": [
     "bellman-ford-algorithm",
     "automatic-basis-function-construction",

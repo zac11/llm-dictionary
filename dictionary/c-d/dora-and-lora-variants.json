@@ -5,6 +5,118 @@
   "type": "concept",
   "definition": "Refinements of LoRA (DoRA decomposes weights into magnitude and direction; rsLoRA, LoRA+ adjust scaling and learning rates) that close remaining gaps to full fine-tuning in some regimes.",
   "details": "Refinements of LoRA (DoRA decomposes weights into magnitude and direction; rsLoRA, LoRA+ adjust scaling and learning rates) that close remaining gaps to full fine-tuning in some regimes.",
+  "explainer": {
+    "lead": "DoRA and LoRA variants are ways to refine low-rank model adaptation rather than retraining every weight. They change how an adapter is represented, scaled, or optimized, and can narrow the gap to full fine-tuning in some settings.",
+    "tiers": {
+      "eli5": "Imagine adjusting a bicycle instead of building a new one: LoRA adds a small set of adjustable parts, while these variants change how those parts are shaped or tuned. DoRA separately adjusts how strong a change is and which way it points, while rsLoRA and LoRA+ change the adjustment dials. Sometimes these changes help the bicycle perform almost as well as one rebuilt from scratch.",
+      "practitioner": "Choose the variant when configuring a LoRA adapter: DoRA changes the weight decomposition, rsLoRA changes scaling, and LoRA+ changes learning-rate settings. Compare validation results with your LoRA baseline and full fine-tuning where feasible, rather than assuming a variant will always improve the outcome. Keep scaling and learning-rate choices distinct when diagnosing unstable or weak adaptation.",
+      "paperLevel": "DoRA decomposes weight adaptation into magnitude and directional components instead of representing the change only through the standard LoRA update. rsLoRA modifies the adapter scaling rule, while LoRA+ modifies the learning rates used for adapter optimization. These methods can close remaining gaps to full fine-tuning in some regimes, but that improvement is not universal."
+    },
+    "example": "For adapting a base model to classify support tickets, a standard LoRA run might still trail full fine-tuning on validation accuracy. You could try DoRA to separate magnitude and direction, or test rsLoRA scaling and LoRA+ learning rates, then compare each result with the same validation set.",
+    "usedIn": [
+      {
+        "name": "Parameter-efficient fine-tuning",
+        "detail": "Refining LoRA adapters when updating all model weights is undesirable.",
+        "url": ""
+      },
+      {
+        "name": "Task-specific model adaptation",
+        "detail": "Specializing a base model while comparing adapter quality with full fine-tuning.",
+        "url": ""
+      },
+      {
+        "name": "Adapter optimization experiments",
+        "detail": "Studying how decomposition, scaling, and learning rates affect adaptation.",
+        "url": ""
+      }
+    ],
+    "intuition": "A low-rank adapter can be improved without abandoning its basic efficiency-focused approach. These variants target different possible weaknesses: how the weight change is represented, how strongly it is applied, or how quickly its parts learn.",
+    "howItWorks": [
+      "Start with a model adapted through a LoRA-style weight update.",
+      "Use DoRA to separate the update into magnitude and direction.",
+      "Alternatively, use rsLoRA to adjust the adapter's scaling.",
+      "Alternatively, use LoRA+ to adjust adapter learning rates.",
+      "Evaluate the adapted model against LoRA and, when relevant, full fine-tuning."
+    ],
+    "whyItMatters": "The variants offer targeted ways to improve LoRA adaptation while retaining its low-rank foundation. Their value is regime-dependent: they can reduce the quality gap to full fine-tuning, but do not guarantee equal performance.",
+    "misconceptions": [
+      "DoRA, rsLoRA, and LoRA+ are not the same modification: they change decomposition, scaling, and learning rates respectively.",
+      "Closing the gap to full fine-tuning in some regimes does not mean these variants always match it.",
+      "These methods refine LoRA adaptation rather than replacing the base model's pretrained weights with an entirely new training run."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "base",
+          "label": "Pretrained weights",
+          "note": "Starting model parameters"
+        },
+        {
+          "id": "lora",
+          "label": "LoRA adaptation",
+          "note": "Low-rank weight update"
+        },
+        {
+          "id": "dora",
+          "label": "DoRA",
+          "note": "Separates magnitude and direction"
+        },
+        {
+          "id": "rslora",
+          "label": "rsLoRA",
+          "note": "Adjusts adapter scaling"
+        },
+        {
+          "id": "loraplus",
+          "label": "LoRA+",
+          "note": "Adjusts learning rates"
+        },
+        {
+          "id": "adapted",
+          "label": "Adapted model",
+          "note": "Evaluate against adaptation baselines"
+        }
+      ],
+      "edges": [
+        {
+          "from": "base",
+          "to": "lora",
+          "label": "adapt"
+        },
+        {
+          "from": "lora",
+          "to": "dora",
+          "label": "decompose"
+        },
+        {
+          "from": "lora",
+          "to": "rslora",
+          "label": "rescale"
+        },
+        {
+          "from": "lora",
+          "to": "loraplus",
+          "label": "retune"
+        },
+        {
+          "from": "dora",
+          "to": "adapted",
+          "label": ""
+        },
+        {
+          "from": "rslora",
+          "to": "adapted",
+          "label": ""
+        },
+        {
+          "from": "loraplus",
+          "to": "adapted",
+          "label": ""
+        }
+      ],
+      "caption": "Three LoRA refinements target different parts of adaptation before the resulting model is evaluated."
+    }
+  },
   "related": [
     "fine-tuning",
     "full-fine-tuning"

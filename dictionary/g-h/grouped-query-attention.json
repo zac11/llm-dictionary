@@ -8,6 +8,113 @@
   ],
   "definition": "The middle ground: query heads are divided into groups, each sharing one KV head.",
   "details": "The middle ground: query heads are divided into groups, each sharing one KV head. The standard choice in modern LLMs (Llama, Mistral, Qwen) because it keeps most of MHA's quality with most of MQA's memory savings.",
+  "explainer": {
+    "lead": "Grouped-query attention (GQA) lets several query heads share one key-value head instead of giving every query head its own. It balances the quality of multi-head attention against the memory savings of multi-query attention, which is why modern LLMs such as Llama, Mistral, and Qwen use it.",
+    "tiers": {
+      "eli5": "Imagine several students asking different questions but sharing reference books in small teams. Each team has its own books, so the teams can still look at different information, without buying a separate set for every student. This saves space while keeping much of the benefit of having many students.",
+      "practitioner": "Divide the query heads into groups and assign one shared key-value head to each group. Fewer groups move the design toward MQA's memory savings, while more groups move it toward MHA's quality; query heads still produce separate attention outputs.",
+      "paperLevel": "For H query heads divided into G groups, each group of H/G query heads shares one key head and one value head, giving G key-value heads in total. G = H recovers MHA, and G = 1 recovers MQA. GQA retains much of MHA's quality and much of MQA's memory savings, but does not make query heads themselves shared."
+    },
+    "example": "With eight query heads and two groups, four query heads share the first key-value head and the other four share the second. MHA would use eight key-value heads, while MQA would use only one.",
+    "usedIn": [
+      {
+        "name": "Llama",
+        "detail": "Uses GQA to retain much of MHA's quality while reducing memory use.",
+        "url": ""
+      },
+      {
+        "name": "Mistral",
+        "detail": "Uses GQA as part of the standard attention design in modern LLMs.",
+        "url": ""
+      },
+      {
+        "name": "Qwen",
+        "detail": "Uses GQA to balance attention quality with MQA-like memory savings.",
+        "url": ""
+      }
+    ],
+    "intuition": "Full multi-head attention stores separate keys and values for every query head, while multi-query attention makes all query heads share one set. GQA shares keys and values within smaller groups, sitting between those two extremes.",
+    "howItWorks": [
+      "Start with multiple query heads.",
+      "Divide the query heads into groups.",
+      "Give each group one shared key-value head.",
+      "Let each query head attend using its group's keys and values.",
+      "Keep the resulting attention outputs separate for each query head."
+    ],
+    "whyItMatters": "It keeps most of MHA's quality while gaining most of MQA's memory savings. That practical balance has made it a standard choice in modern LLMs.",
+    "misconceptions": [
+      "GQA is not MQA: MQA uses one shared key-value head for all query heads.",
+      "Query heads are grouped, not merged into a single query head.",
+      "GQA does not give every query head its own key-value head as MHA does."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "queries",
+          "label": "Query heads",
+          "note": "Multiple heads are divided into groups."
+        },
+        {
+          "id": "group-a",
+          "label": "Query group A",
+          "note": "Several query heads share one KV head."
+        },
+        {
+          "id": "group-b",
+          "label": "Query group B",
+          "note": "Another set of query heads forms a group."
+        },
+        {
+          "id": "kv-a",
+          "label": "Shared KV A",
+          "note": "Keys and values for query group A."
+        },
+        {
+          "id": "kv-b",
+          "label": "Shared KV B",
+          "note": "Keys and values for query group B."
+        },
+        {
+          "id": "outputs",
+          "label": "Attention outputs",
+          "note": "Each query head retains its own output."
+        }
+      ],
+      "edges": [
+        {
+          "from": "queries",
+          "to": "group-a",
+          "label": "group"
+        },
+        {
+          "from": "queries",
+          "to": "group-b",
+          "label": "group"
+        },
+        {
+          "from": "kv-a",
+          "to": "group-a",
+          "label": "shared KV"
+        },
+        {
+          "from": "kv-b",
+          "to": "group-b",
+          "label": "shared KV"
+        },
+        {
+          "from": "group-a",
+          "to": "outputs",
+          "label": ""
+        },
+        {
+          "from": "group-b",
+          "to": "outputs",
+          "label": ""
+        }
+      ],
+      "caption": "Each group of query heads shares one key-value head, between MHA's one-per-head arrangement and MQA's single shared head."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

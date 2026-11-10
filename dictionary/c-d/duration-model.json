@@ -5,6 +5,81 @@
   "type": "concept",
   "definition": "The TTS component predicting how long each phoneme lasts, aligning text to time in non-autoregressive systems (FastSpeech lineage).",
   "details": "The TTS component predicting how long each phoneme lasts, aligning text to time in non-autoregressive systems (FastSpeech lineage). Duration errors produce rushed, smeared, or droning speech.",
+  "explainer": {
+    "lead": "A duration model decides how long each sound in a text-to-speech system should last. This timing helps synthetic speech sound naturally paced rather than rushed, smeared, or monotonously drawn out.",
+    "tiers": {
+      "eli5": "Reading aloud is like stretching each sound to fit the rhythm of a sentence. A duration model tells a speech computer how long to hold every sound, so it does not race through some parts and drone through others.",
+      "practitioner": "In non-autoregressive TTS, including the FastSpeech lineage, the duration model supplies per-phoneme timing used to align text with speech. Inspect predicted durations when output sounds rushed, smeared, or droning; correcting overall speed alone may not fix uneven phoneme timing.",
+      "paperLevel": "For phonemes p1...pn, a duration model predicts d1...dn, where di is the duration assigned to phoneme pi. These predictions align the phoneme sequence to time in non-autoregressive synthesis, as in the FastSpeech lineage; duration errors can produce rushed, smeared, or droning speech."
+    },
+    "example": "For four phonemes, the model might predict durations of 2, 3, 2, and 5 speech frames. The result spans 12 frames, with the final phoneme held longest.",
+    "usedIn": [
+      {
+        "name": "FastSpeech-lineage TTS",
+        "detail": "Predicts phoneme durations for non-autoregressive text-to-speech alignment.",
+        "url": ""
+      },
+      {
+        "name": "Non-autoregressive speech synthesis",
+        "detail": "Maps text sounds to time so generated speech has appropriate pacing.",
+        "url": ""
+      }
+    ],
+    "intuition": "Text says which sounds to make, but not exactly how long to hold each one. The duration model supplies that missing timing, one phoneme at a time.",
+    "howItWorks": [
+      "Start with the sequence of phonemes to be spoken.",
+      "Predict a duration for each phoneme.",
+      "Use those durations to place the phonemes along a timeline.",
+      "Generate speech that follows the resulting alignment."
+    ],
+    "whyItMatters": "Per-phoneme timing is central to intelligible, natural-sounding pacing. Poor duration predictions can make speech hurried, blurred together, or unnaturally sustained.",
+    "misconceptions": [
+      "It does not choose which phonemes to speak; it predicts how long the given phonemes last.",
+      "It controls more than overall speaking speed: individual sounds can still be badly timed."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "phonemes",
+          "label": "Phoneme sequence",
+          "note": "The sounds to be spoken"
+        },
+        {
+          "id": "model",
+          "label": "Duration model",
+          "note": "Predicts timing per phoneme"
+        },
+        {
+          "id": "durations",
+          "label": "Phoneme durations",
+          "note": "A length for every sound"
+        },
+        {
+          "id": "speech",
+          "label": "Timed speech",
+          "note": "Audio follows the alignment"
+        }
+      ],
+      "edges": [
+        {
+          "from": "phonemes",
+          "to": "model",
+          "label": ""
+        },
+        {
+          "from": "model",
+          "to": "durations",
+          "label": "predicts"
+        },
+        {
+          "from": "durations",
+          "to": "speech",
+          "label": "aligns"
+        }
+      ],
+      "caption": "The duration model turns a phoneme sequence into the timing used for speech generation."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

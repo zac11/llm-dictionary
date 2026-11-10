@@ -5,7 +5,92 @@
   "type": "concept",
   "definition": "The task of maintaining an accurate representation of the current state of a conversation, including user goals and previously provided information, across multiple dialogue turns.",
   "details": "Dialogue state tracking was central to earlier task-oriented dialogue systems (like booking assistants), helping ensure the system correctly remembers and acts on information provided across a multi-turn conversation.",
-  "story": "Picture a translator at the United Nations, listening to one language and whispering the meaning into another in real time. It figures out meaning by noticing which words like to travel together. It does not memorize a rulebook; it absorbs a library. Meaning lives in company — a word is known by the words it keeps. And that is Dialogue State Tracking — teaching a machine to read between the lines.",
+  "explainer": {
+    "lead": "Dialogue state tracking is how a conversational system keeps track of what you want and what you have already told it. Without it, a booking assistant could forget your destination or date halfway through the conversation.",
+    "tiers": {
+      "eli5": "Imagine telling a friend what pizza to order: first the size, then the toppings, then your address. Your friend remembers all those details together instead of treating each sentence as a brand-new request. Dialogue state tracking gives a computer that kind of memory during a conversation.",
+      "practitioner": "In task-oriented dialogue systems, the tracker updates a representation of user goals and previously supplied information after each turn. The rest of the system uses that state to decide what still needs to be asked or done. Common failures include forgetting earlier details, carrying over information that is no longer relevant, and misunderstanding a new turn because earlier context was ignored.",
+      "paperLevel": "Given dialogue turns u_1, ..., u_t, dialogue state tracking estimates a state s_t that represents the user's goals and the information provided through turn t. The state is updated across turns rather than inferred independently from each utterance. Its accuracy is limited by whether the system correctly preserves and revises information as the conversation develops."
+    },
+    "example": "A user first says, “I need a train to London,” and the state records the destination as London. After the user adds, “On Tuesday, arriving before noon,” the state retains London while adding Tuesday and the arrival-time requirement. If the system then asks which station to depart from, it is using the tracked state rather than asking for the destination again.",
+    "usedIn": [
+      {
+        "name": "Booking assistants",
+        "detail": "Remember details such as a user's destination, date, and other requirements across multiple turns.",
+        "url": ""
+      },
+      {
+        "name": "Task-oriented dialogue systems",
+        "detail": "Maintain the information needed to understand and act on a user's goal throughout a conversation.",
+        "url": ""
+      }
+    ],
+    "intuition": "A conversation is more than its latest sentence: each turn can add to or clarify what came before. Dialogue state tracking keeps a running summary of the user's goal and known details so the system does not have to start over every time.",
+    "howItWorks": [
+      "Read the user's latest turn in the context of the conversation so far.",
+      "Identify information that describes the user's goal or adds a relevant detail.",
+      "Combine that information with the existing dialogue state.",
+      "Pass the updated state to the dialogue system so it can respond or act using the full conversation context."
+    ],
+    "whyItMatters": "It lets multi-turn systems remember and act on information consistently instead of repeatedly asking for details or losing the user's goal. This was central to earlier task-oriented systems such as booking assistants.",
+    "misconceptions": [
+      "It is not simply storing a transcript; it maintains a representation of goals and relevant information.",
+      "It is not the same as generating a reply; it supplies the conversation state that helps the system decide how to proceed.",
+      "It does not look only at the latest user message, because earlier turns may contain essential details."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "turn",
+          "label": "Latest user turn",
+          "note": "New information from the user"
+        },
+        {
+          "id": "history",
+          "label": "Earlier turns",
+          "note": "Goals and details already provided"
+        },
+        {
+          "id": "tracker",
+          "label": "State tracker",
+          "note": "Combines new and previous information"
+        },
+        {
+          "id": "state",
+          "label": "Dialogue state",
+          "note": "Current goals and remembered details"
+        },
+        {
+          "id": "system",
+          "label": "Dialogue system",
+          "note": "Uses the state to respond or act"
+        }
+      ],
+      "edges": [
+        {
+          "from": "turn",
+          "to": "tracker",
+          "label": "new details"
+        },
+        {
+          "from": "history",
+          "to": "tracker",
+          "label": "context"
+        },
+        {
+          "from": "tracker",
+          "to": "state",
+          "label": "updates"
+        },
+        {
+          "from": "state",
+          "to": "system",
+          "label": "informs"
+        }
+      ],
+      "caption": "The tracker combines the latest turn with earlier context to maintain the state used by the dialogue system."
+    }
+  },
   "related": [
     "coreference-resolution",
     "dependency-parsing",

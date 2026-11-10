@@ -5,7 +5,100 @@
   "type": "algorithm",
   "definition": "In computer science, constrained clustering is a class of semi-supervised learning algorithms.",
   "details": "Typically, constrained clustering incorporates either a set of must-link constraints, cannot-link constraints, or both, with a data clustering algorithm. A cluster in which the members conform to all must-link and cannot-link constraints is called a chunklet.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. That steady, miss-by-miss improvement is Constrained clustering.",
+  "explainer": {
+    "lead": "Constrained clustering groups data while following extra instructions about which items must stay together and which must stay apart. It is useful when ordinary similarity measures are not enough to capture what a good grouping should look like.",
+    "tiers": {
+      "eli5": "You sort items into groups while obeying rules like 'these two belong together' and 'those two must stay apart'.",
+      "practitioner": "Engineers supply must-link and/or cannot-link constraints alongside an existing clustering algorithm. The pitfall is that conflicting constraints can leave no valid grouping.",
+      "paperLevel": "Semi-supervised clustering incorporating must-link constraints, cannot-link constraints, or both; a cluster whose members conform to all such constraints is called a chunklet. Limit: validity depends on constraints being mutually satisfiable."
+    },
+    "example": "For six records A through F, require A and B to be together and C and D to be apart. One valid result is {A, B, E}, {C, F}, and {D}: A remains with B, C is separated from D, and each resulting cluster is a chunklet.",
+    "goal": "Produce clusters that group similar data while satisfying specified must-link and cannot-link constraints.",
+    "inputs": [
+      "A dataset to be clustered",
+      "Must-link pairs that must share a cluster",
+      "Cannot-link pairs that must occupy different clusters"
+    ],
+    "outputs": [
+      "A partition of the data into clusters",
+      "Chunklets whose members satisfy all applicable constraints"
+    ],
+    "steps": [
+      "Collect the data and the must-link and cannot-link pairs.",
+      "Supply the data and constraints to a clustering algorithm.",
+      "Form clusters while keeping must-linked items together and cannot-linked items apart.",
+      "Return the resulting partition and check that every constraint is satisfied."
+    ],
+    "tradeoffs": [
+      "Constraints add desired knowledge but reduce the set of possible clusterings.",
+      "A similarity-based grouping may need to change to obey the constraints.",
+      "Contradictory constraints can make a valid clustering impossible."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data",
+          "label": "Input data",
+          "note": "Items awaiting cluster assignments"
+        },
+        {
+          "id": "must",
+          "label": "Must-link pairs",
+          "note": "Items required to cluster together"
+        },
+        {
+          "id": "cannot",
+          "label": "Cannot-link pairs",
+          "note": "Items required to cluster separately"
+        },
+        {
+          "id": "cluster",
+          "label": "Clustering algorithm",
+          "note": "Builds a partition under the constraints"
+        },
+        {
+          "id": "output",
+          "label": "Valid chunklets",
+          "note": "Clusters satisfying every constraint"
+        }
+      ],
+      "edges": [
+        {
+          "from": "data",
+          "to": "cluster",
+          "label": ""
+        },
+        {
+          "from": "must",
+          "to": "cluster",
+          "label": "keeps together"
+        },
+        {
+          "from": "cannot",
+          "to": "cluster",
+          "label": "keeps apart"
+        },
+        {
+          "from": "cluster",
+          "to": "output",
+          "label": "partition"
+        }
+      ],
+      "caption": "Data and pairwise constraints flow into the clustering procedure, which returns constraint-satisfying clusters."
+    },
+    "usedIn": [
+      {
+        "name": "Semi-supervised learning",
+        "detail": "constraint-guided clustering",
+        "url": ""
+      },
+      {
+        "name": "Record linkage",
+        "detail": "grouping known duplicates",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "clustering",
     "conceptual-clustering",

@@ -5,6 +5,88 @@
   "type": "concept",
   "definition": "Alternating languages or varieties within one utterance (\"خلينا نعمل deploy للـ model بكرة\"), pervasive in Gulf and Egyptian tech and business speech, and in Arabic-French mixing in the Maghreb.",
   "details": "Alternating languages or varieties within one utterance (\"خلينا نعمل deploy للـ model بكرة\"), pervasive in Gulf and Egyptian tech and business speech, and in Arabic-French mixing in the Maghreb. Breaks monolingual ASR and NLP pipelines; handling it requires mixed training data and tokenizers, not post-hoc patches.",
+  "explainer": {
+    "lead": "Code-switching happens when someone moves between languages or language varieties within a single utterance. It is common in Gulf and Egyptian tech and business speech, as well as Arabic–French mixing in the Maghreb, and it can confuse language systems built for only one language at a time.",
+    "tiers": {
+      "eli5": "Imagine telling a story while swapping between two kinds of building blocks, using whichever piece fits best at that moment. People do something similar when they mix languages in one sentence. Computers can struggle because they may expect every block to come from the same set.",
+      "practitioner": "For ASR and downstream NLP, code-switching requires training data and tokenizers that represent mixed-language speech and text rather than assuming one language per input. Monolingual pipelines can fail when the language changes inside an utterance, and post-hoc patches are not a substitute for mixed training data.",
+      "paperLevel": "Formally, an utterance can be represented as a token sequence x1…xn with language labels l1…ln; code-switching occurs when those labels change within the utterance. Systems designed around a single language or variety can therefore break, while handling the phenomenon requires mixed training data and tokenizers."
+    },
+    "example": "In “خلينا نعمل deploy للـ model بكرة”, the speaker uses Arabic around the English words “deploy” and “model”, producing one mixed-language request rather than separate Arabic and English sentences.",
+    "usedIn": [
+      {
+        "name": "Automatic speech recognition",
+        "detail": "Transcribing mixed-language conversations in Gulf and Egyptian tech and business settings.",
+        "url": ""
+      },
+      {
+        "name": "Multilingual NLP",
+        "detail": "Processing utterances whose language changes midstream instead of treating each input as monolingual.",
+        "url": ""
+      },
+      {
+        "name": "Maghreb language processing",
+        "detail": "Handling Arabic–French mixing in text and speech pipelines.",
+        "url": ""
+      }
+    ],
+    "intuition": "Speakers do not always keep languages in separate boxes; they can draw on more than one within the same thought or sentence. A language system must therefore cope with alternation inside an utterance, not merely identify one language for the whole input.",
+    "howItWorks": [
+      "A speaker begins an utterance in one language or variety.",
+      "The speaker introduces material from another within that utterance.",
+      "The resulting sequence carries mixed-language input to ASR or NLP components.",
+      "Monolingual assumptions can cause those components to break.",
+      "Mixed training data and suitable tokenizers support direct handling of the alternation."
+    ],
+    "whyItMatters": "Code-switching is pervasive in several Arabic-speaking communities, so treating it as unusual noise can make speech and language systems fail on ordinary communication. Addressing it in training data and tokenization is necessary rather than relying on repairs after processing.",
+    "misconceptions": [
+      "It is not limited to switching between whole sentences; it can happen within one utterance.",
+      "Assigning a single language to the entire input does not capture the alternation.",
+      "A post-hoc patch does not replace mixed training data and suitable tokenizers."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "utterance",
+          "label": "Mixed utterance",
+          "note": "Languages alternate within one input."
+        },
+        {
+          "id": "processing",
+          "label": "ASR and tokenization",
+          "note": "The system receives mixed-language units."
+        },
+        {
+          "id": "monolingual",
+          "label": "Monolingual pipeline",
+          "note": "Single-language assumptions can break."
+        },
+        {
+          "id": "mixed",
+          "label": "Mixed-data pipeline",
+          "note": "Mixed training data and tokenizers handle alternation."
+        }
+      ],
+      "edges": [
+        {
+          "from": "utterance",
+          "to": "processing",
+          "label": "mixed input"
+        },
+        {
+          "from": "processing",
+          "to": "monolingual",
+          "label": "breaks"
+        },
+        {
+          "from": "processing",
+          "to": "mixed",
+          "label": "handles"
+        }
+      ],
+      "caption": "The same mixed utterance can break a monolingual pipeline, while a pipeline built with mixed training data and tokenizers is designed to handle it."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

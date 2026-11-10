@@ -5,7 +5,116 @@
   "type": "concept",
   "definition": "Cooperative Coevolution (CC) in the field of biological evolution is an evolutionary computation method.",
   "details": "It divides a large problem into subcomponents, and solves them independently in order to solve the large problem. The subcomponents are also called species. The subcomponents are implemented as subpopulations and the only interaction between subpopulations is in the cooperative evaluation of each individual of the subpopulations. The general CC framework is nature inspired where the individuals of a particular group of species mate amongst themselves, however, mating in between different species is not feasible. The cooperative evaluation of each individual in a subpopulation is done by concatenating the current individual with the best individuals from the rest of the subpopulations as described by M. Potter. The cooperative coevolution framework has been applied to real world problems such as pedestrian detection systems, large-scale function optimization and neural network training. It has also be further extended into another method, called Constructive cooperative coevolution.",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. And that idea, made concrete, is Cooperative coevolution.",
+  "explainer": {
+    "lead": "Cooperative coevolution is an evolutionary computation method that tackles a large problem by evolving separate pieces of its solution. The pieces improve largely on their own, but each is judged as part of a complete solution, so progress depends on how well they work together.",
+    "tiers": {
+      "eli5": "Imagine a team building a model rocket, with different groups working on the body, fins, and engine. Each group tries new versions of its own part, then tests them with the best parts made by the other groups. Over many tests, the parts improve together into a better rocket.",
+      "practitioner": "Implement each solution component as its own subpopulation, with mating confined to that subpopulation. To score an individual, concatenate it with the current best individuals from the other subpopulations and evaluate the complete candidate, as described by M. Potter. This framework has been applied to pedestrian detection, large-scale function optimization, and neural network training, and has been extended as constructive cooperative coevolution.",
+      "paperLevel": "Write a complete solution as x = (x_1, ..., x_k), with each x_i evolved by a separate subpopulation. For a candidate c_i, cooperative evaluation uses the best current collaborators b_j from the other subpopulations and scores F(b_1, ..., b_(i-1), c_i, b_(i+1), ..., b_k). Subpopulations interact through this evaluation rather than through mating between species."
+    },
+    "example": "To minimize a function f(x, y, z), create three subpopulations for x, y, and z. When testing a new candidate y', combine it with the current best values x* and z*, then score the complete solution using f(x*, y', z*). The other subpopulations are evaluated in the same cooperative way.",
+    "usedIn": [
+      {
+        "name": "Pedestrian detection",
+        "detail": "The cooperative coevolution framework has been applied to pedestrian detection systems.",
+        "url": ""
+      },
+      {
+        "name": "Large-scale optimization",
+        "detail": "Large functions can be divided into subcomponents that are evolved and evaluated cooperatively.",
+        "url": ""
+      },
+      {
+        "name": "Neural network training",
+        "detail": "Cooperative coevolution has been used as an approach to training neural networks.",
+        "url": ""
+      }
+    ],
+    "intuition": "A big solution can be easier to improve when its parts evolve separately, but a part cannot be judged in isolation. Cooperative coevolution combines separate evolution with joint testing: each candidate is assessed alongside good candidates for the remaining parts.",
+    "howItWorks": [
+      "Divide the large problem into subcomponents, also called species.",
+      "Represent each subcomponent with its own subpopulation, with mating only within that subpopulation.",
+      "Choose an individual to evaluate and combine it with the current best individuals from the other subpopulations.",
+      "Evaluate the resulting complete solution and use that cooperative evaluation to guide further evolution."
+    ],
+    "whyItMatters": "It provides a way to apply evolutionary computation to large problems by reducing each search to a subcomponent while retaining evaluation of the whole solution. Its applications include pedestrian detection, large-scale function optimization, and neural network training.",
+    "misconceptions": [
+      "The subpopulations are not completely independent: they interact whenever an individual is cooperatively evaluated.",
+      "Cooperation does not mean mating between species; individuals mate only within their own subpopulation."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "problem",
+          "label": "Large problem",
+          "note": "Split into solution subcomponents."
+        },
+        {
+          "id": "species-a",
+          "label": "Subpopulation A",
+          "note": "Evolves the first component."
+        },
+        {
+          "id": "species-b",
+          "label": "Subpopulation B",
+          "note": "Evolves the second component."
+        },
+        {
+          "id": "species-c",
+          "label": "Subpopulation C",
+          "note": "Evolves the third component."
+        },
+        {
+          "id": "assembly",
+          "label": "Complete candidate",
+          "note": "One individual plus the best collaborators."
+        },
+        {
+          "id": "evaluation",
+          "label": "Cooperative evaluation",
+          "note": "Scores the assembled solution."
+        }
+      ],
+      "edges": [
+        {
+          "from": "problem",
+          "to": "species-a",
+          "label": "decompose"
+        },
+        {
+          "from": "problem",
+          "to": "species-b",
+          "label": "decompose"
+        },
+        {
+          "from": "problem",
+          "to": "species-c",
+          "label": "decompose"
+        },
+        {
+          "from": "species-a",
+          "to": "assembly",
+          "label": "candidate"
+        },
+        {
+          "from": "species-b",
+          "to": "assembly",
+          "label": "best collaborator"
+        },
+        {
+          "from": "species-c",
+          "to": "assembly",
+          "label": "best collaborator"
+        },
+        {
+          "from": "assembly",
+          "to": "evaluation",
+          "label": "score"
+        }
+      ],
+      "caption": "Separate subpopulations evolve components, while evaluation assembles them into a complete solution."
+    }
+  },
   "related": [
     "constructive-cooperative-coevolution",
     "a-i-insight-forums",

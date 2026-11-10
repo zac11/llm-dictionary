@@ -8,6 +8,27 @@
   ],
   "definition": "Sharding a long sequence across devices and passing key-value blocks around a ring so attention is computed over the full context that no single GPU could hold.",
   "details": "Sharding a long sequence across devices and passing key-value blocks around a ring so attention is computed over the full context that no single GPU could hold. The systems technique that makes million-token context windows physically trainable and servable.",
+  "explainer": {
+    "lead": "Ring Attention shards a long sequence across devices and passes key-value blocks around a ring so attention is computed over the full context that no single GPU could hold. It matters because it is the systems technique that makes million-token context windows physically trainable and servable.",
+    "tiers": {
+      "eli5": "No single worker can hold the whole document, so the workers sit in a circle and pass chunks to each other until everyone has seen the whole thing.",
+      "practitioner": "Engineers split sequences across devices and circulate key-value blocks around the ring to compute attention over the full context. A pitfall is that the approach is a systems technique, so its value depends on the communication pattern across devices rather than on a change to the attention math.",
+      "paperLevel": "A long sequence is sharded across devices, with key-value blocks passed around a ring so attention covers the full context that no single GPU could hold; it enables million-token context windows to be physically trained and served."
+    },
+    "example": "A sequence too long for one GPU's memory is divided among several devices, which exchange key-value blocks in a ring so every device can attend over the entire sequence.",
+    "usedIn": [
+      {
+        "name": "Long-context training",
+        "detail": "million-token windows",
+        "url": ""
+      },
+      {
+        "name": "Model serving",
+        "detail": "distributed attention",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "attention",
     "token"

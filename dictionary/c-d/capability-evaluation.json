@@ -5,7 +5,103 @@
   "type": "concept",
   "definition": "Systematic testing designed to measure specific abilities of an AI model, such as reasoning, coding, or tool use, often as part of assessing frontier model risk.",
   "details": "Capability evaluations are increasingly used by AI labs and third parties to track how model abilities are progressing, informing both product decisions and safety-related deployment decisions.",
-  "story": "Think of a referee whose job is to be completely honest about who touched the ball last. Before trusting a machine, someone has to measure how good it really is — fairly and honestly. It is the exam that separates “it sounds good” from “it actually is good”. What gets measured is what actually gets better. That shared ruler is Capability Evaluation.",
+  "explainer": {
+    "lead": "Capability evaluation is a structured way to find out what an AI model can actually do, rather than relying on impressions from a few demonstrations. It helps teams track progress and make better-informed product and deployment decisions.",
+    "tiers": {
+      "eli5": "It is like giving different robots the same obstacle course to see which skills each one has. An AI model might get puzzles, coding problems, or tasks that require tools, with its answers scored in a consistent way. Comparing the scores can show whether a newer model has improved.",
+      "practitioner": "Engineers select tasks for the ability being tested, run models under controlled settings, and apply fixed scoring rules before comparing results across versions. Task choice, prompts, tool access, and scoring can all affect the outcome, so inconsistent setups can create misleading comparisons. Strong results on the selected tasks do not by themselves establish that a model is safe to deploy.",
+      "paperLevel": "For an ability a, let T_a be its task set and s(m,t) the score of model m on task t; a simple aggregate is C_a(m) = (1/|T_a|) sum_{t in T_a} s(m,t). The estimate is conditional on the chosen tasks, scoring procedure, and test conditions, so it need not capture the full ability or the model's overall risk."
+    },
+    "example": "A team gives two model versions the same 30 coding problems and applies the same fixed checks to every answer. If the first passes 18 problems and the second passes 22, the team has evidence of improvement on that coding test, though not proof of better performance on every coding task.",
+    "usedIn": [
+      {
+        "name": "AI laboratories",
+        "detail": "Used to track changes in abilities such as reasoning, coding, and tool use across model versions.",
+        "url": ""
+      },
+      {
+        "name": "Third-party evaluation",
+        "detail": "Used by independent testers to assess specific model capabilities.",
+        "url": ""
+      },
+      {
+        "name": "Product development",
+        "detail": "Used to inform decisions about model improvements and product releases.",
+        "url": ""
+      },
+      {
+        "name": "Deployment safety reviews",
+        "detail": "Used as one input when assessing frontier model risk and deployment decisions.",
+        "url": ""
+      }
+    ],
+    "intuition": "A capability evaluation works like a repeatable skills test: choose tasks that exercise one ability, score performance consistently, and compare the results. It turns broad questions such as “can this model code?” into evidence tied to particular tasks and conditions.",
+    "howItWorks": [
+      "Choose the specific ability to measure, such as reasoning, coding, or tool use.",
+      "Assemble tasks that exercise that ability.",
+      "Run the model under recorded, consistent test conditions.",
+      "Score the outputs with fixed criteria.",
+      "Compare results across models or versions to inform product or deployment decisions."
+    ],
+    "whyItMatters": "Repeated evaluations make capability progress easier to track and less dependent on anecdotes. They also provide evidence for product choices and safety-related deployment decisions, especially when assessing frontier model risk.",
+    "misconceptions": [
+      "A high score on one evaluation does not prove broad competence outside its tasks.",
+      "Capability evaluation is not the same as a complete safety assessment.",
+      "Scores are not directly comparable when tasks, test conditions, or scoring rules differ."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "ability",
+          "label": "Target ability",
+          "note": "Define the skill to measure."
+        },
+        {
+          "id": "tasks",
+          "label": "Evaluation tasks",
+          "note": "Select tasks that exercise it."
+        },
+        {
+          "id": "runs",
+          "label": "Model runs",
+          "note": "Test under controlled conditions."
+        },
+        {
+          "id": "scores",
+          "label": "Scored results",
+          "note": "Apply fixed scoring criteria."
+        },
+        {
+          "id": "decisions",
+          "label": "Informed decisions",
+          "note": "Compare versions and assess next steps."
+        }
+      ],
+      "edges": [
+        {
+          "from": "ability",
+          "to": "tasks",
+          "label": "guides"
+        },
+        {
+          "from": "tasks",
+          "to": "runs",
+          "label": "test inputs"
+        },
+        {
+          "from": "runs",
+          "to": "scores",
+          "label": "outputs"
+        },
+        {
+          "from": "scores",
+          "to": "decisions",
+          "label": "evidence"
+        }
+      ],
+      "caption": "A capability evaluation turns a target ability into tasks, controlled model runs, scored evidence, and decisions."
+    }
+  },
   "related": [
     "evaluation-dataset",
     "human-evaluation",

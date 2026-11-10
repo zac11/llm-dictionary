@@ -5,7 +5,124 @@
   "type": "concept",
   "definition": "AlphaEvolve is an evolutionary coding agent for designing advanced algorithms based on large language models such as Gemini.",
   "details": "It was developed by Google DeepMind and unveiled in May 2025.",
-  "story": "Think of a chess player who never commits to a move blindly — they consider the board, try an action, watch what changes, and only then decide what is next. The machine stops just answering one question and starts getting a job done, step by step, checking its work along the way. It plans a little, acts a little, looks at the result, and then decides what to do next. The model stops being a one-shot answer machine and becomes a coworker that checks its own work. That loop of reason, act, and observe is AlphaEvolve.",
+  "explainer": {
+    "lead": "AlphaEvolve is Google DeepMind’s system for turning a large language model into a repeated propose-test-select loop that improves algorithms written as code. Automatic testing lets it search for better mathematical solutions and computing-system designs with less human trial and error.",
+    "tiers": {
+      "eli5": "Imagine trying small changes to a set of instructions, then keeping only the changes that pass a test and work best. AlphaEvolve does that with computer code: an AI writes variations, a computer checks them, and the best ones become the starting point for the next round. This has helped it improve scheduling in Google’s data centres and find better answers to mathematical problems.",
+      "practitioner": "You provide an initial algorithm and an evaluation function with metrics to optimize. AlphaEvolve uses an LLM such as Gemini to generate code variants, evaluates them programmatically, and feeds the strongest candidates into further evolutionary rounds. It fits tasks whose candidates can be executed and scored automatically; a weak evaluation function can steer selection poorly, and tasks without programmatic scoring do not fit this loop directly.",
+      "paperLevel": "Given an initial algorithm A0 and a programmatic evaluation function f, an LLM generates code variants and evolutionary selection constructs subsequent candidate sets At+1 from the best-scoring algorithms, optionally optimizing multiple objectives. Unlike domain-specific systems such as AlphaFold and AlphaTensor, it is general-purpose, but it still requires both an initial algorithm and automatically computable evaluation metrics. Google’s reported results on 50 open mathematical problems were 75% rediscovery of state-of-the-art solutions and 20% improved solutions."
+    },
+    "example": "For data centre scheduling, AlphaEvolve starts with an existing scheduling heuristic and an automatic measure of resource use. It generates and evaluates modified heuristics, retains the best-performing versions, and repeats; the improved heuristic recovered 0.7% of Google’s stranded resources.",
+    "usedIn": [
+      {
+        "name": "Mathematical problem solving",
+        "detail": "Tested on 50 open problems, including an advance on the kissing number problem.",
+        "url": ""
+      },
+      {
+        "name": "Google data centre scheduling",
+        "detail": "Improved heuristics recovered 0.7% of stranded resources.",
+        "url": ""
+      },
+      {
+        "name": "TPU circuit design",
+        "detail": "Used to optimize circuits for Google’s tensor processing units.",
+        "url": ""
+      },
+      {
+        "name": "Gemini training",
+        "detail": "Used to optimize the matrix multiplication kernel used in training.",
+        "url": ""
+      }
+    ],
+    "intuition": "Language models can propose many plausible code changes, while automatic tests can measure which changes actually work. AlphaEvolve combines those abilities in an evolutionary loop, keeping strong variants and using them as parents for the next generation.",
+    "howItWorks": [
+      "Supply an initial algorithm and an evaluation function with target metrics.",
+      "Use the LLM to generate variants of the current algorithms.",
+      "Run programmatic evaluations to score each candidate.",
+      "Select the most effective candidates, including across multiple objectives.",
+      "Repeat the variation-and-selection loop to refine the algorithms."
+    ],
+    "whyItMatters": "The same code-modification and evaluation process can be applied across scientific and engineering tasks rather than being tied to one domain. Programmatic evaluation also reduces dependence on human review and helps guard against unchecked LLM hallucinations.",
+    "misconceptions": [
+      "It is not simply an LLM producing untested answers; candidates are evaluated programmatically.",
+      "It is not limited to one domain like AlphaFold or AlphaTensor.",
+      "It does not always improve a solution: on Google’s selected mathematical problems, improvements were reported 20% of the time."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "current",
+          "label": "Current algorithms",
+          "note": "Starts with an initial algorithm, then holds selected candidates."
+        },
+        {
+          "id": "llm",
+          "label": "Gemini LLM",
+          "note": "Proposes modifications to algorithm code."
+        },
+        {
+          "id": "variants",
+          "label": "Code variants",
+          "note": "Candidate algorithms produced in each round."
+        },
+        {
+          "id": "evaluation",
+          "label": "Programmatic evaluation",
+          "note": "Scores candidates using the supplied metrics."
+        },
+        {
+          "id": "selection",
+          "label": "Evolutionary selection",
+          "note": "Keeps the most effective candidates."
+        },
+        {
+          "id": "result",
+          "label": "Refined algorithm",
+          "note": "The optimized output of repeated rounds."
+        }
+      ],
+      "edges": [
+        {
+          "from": "current",
+          "to": "llm",
+          "label": "existing code"
+        },
+        {
+          "from": "llm",
+          "to": "variants",
+          "label": "modifications"
+        },
+        {
+          "from": "variants",
+          "to": "evaluation",
+          "label": "candidates"
+        },
+        {
+          "from": "evaluation",
+          "to": "selection",
+          "label": "scores"
+        },
+        {
+          "from": "selection",
+          "to": "current",
+          "label": "next generation"
+        },
+        {
+          "from": "selection",
+          "to": "result",
+          "label": "best output"
+        }
+      ],
+      "caption": "AlphaEvolve repeatedly generates code variants, evaluates them automatically, and selects candidates for the next round."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: AlphaEvolve",
+        "url": "https://en.wikipedia.org/wiki/AlphaEvolve"
+      }
+    ]
+  },
   "related": [
     "a-r-d-prasad",
     "abeba-birhane",

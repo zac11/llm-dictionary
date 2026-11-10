@@ -5,7 +5,103 @@
   "type": "concept",
   "definition": "The distributional learning theory or learning of probability distribution is a framework in computational learning theory.",
   "details": "It has been proposed from Michael Kearns, Yishay Mansour, Dana Ron, Ronitt Rubinfeld, Robert Schapire and Linda Sellie in 1994 and it was inspired from the PAC-framework introduced by Leslie Valiant. In this framework the input is a number of samples drawn from a distribution that belongs to a specific class of distributions. The goal is to find an efficient algorithm that, based on these samples, determines with high probability the distribution from which the samples have been drawn. Because of its generality, this framework has been used in a large variety of different fields like machine learning, approximation algorithms, applied probability and statistics. This article explains the basic definitions, tools and results in this framework from the theory of computation point of view.",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. And that idea, made concrete, is Distribution learning theory.",
+  "explainer": {
+    "lead": "Distribution learning theory studies how an algorithm can infer an unknown probability distribution from samples. It provides a framework for asking how many samples and how much computation are needed to get a reliable answer.",
+    "tiers": {
+      "eli5": "Imagine a mystery machine that produces coloured balls, and you want to work out how often it produces each colour. You cannot inspect the machine, so you watch some balls come out and use them to make a good guess. Distribution learning theory studies when that guess can be made quickly and reliably.",
+      "practitioner": "Use this framework to reason about learning a distribution when samples come from a known class but the particular distribution is unknown. The practical questions are sample requirements, computational efficiency, and confidence in the learned distribution. A common pitfall is expecting guarantees without the assumed distributional class, or treating a high-probability estimate as exact identification.",
+      "paperLevel": "Given samples from an unknown distribution D belonging to a known class C, the goal is an efficient algorithm that outputs a distribution D-hat which, with high probability, is the distribution from which the samples were drawn. The framework was proposed in 1994 by Michael Kearns, Yishay Mansour, Dana Ron, Ronitt Rubinfeld, Robert Schapire and Linda Sellie, inspired by Leslie Valiant's PAC framework. Its guarantees rely on the specified class and learning criterion; it does not generally imply exact recovery from finitely many samples."
+    },
+    "example": "Consider a biased coin whose distribution belongs to the class of Bernoulli distributions, with an unknown heads probability p. If 100 independent flips produce 70 heads and 30 tails, a learner could estimate p as 0.7 and output the corresponding coin distribution. Distribution learning theory asks how efficiently such a learner can produce a reliable estimate with high probability.",
+    "usedIn": [
+      {
+        "name": "Machine learning",
+        "detail": "Provides a way to analyse learning probability distributions from observed data.",
+        "url": ""
+      },
+      {
+        "name": "Approximation algorithms",
+        "detail": "Supports the study of efficient algorithms for approximately learning distributions.",
+        "url": ""
+      },
+      {
+        "name": "Applied probability",
+        "detail": "Frames inference of an unknown distribution using randomly drawn samples.",
+        "url": ""
+      },
+      {
+        "name": "Statistics",
+        "detail": "Connects sample-based distributional inference with computational learning guarantees.",
+        "url": ""
+      }
+    ],
+    "intuition": "If you know the general family an unknown distribution belongs to, repeated samples can reveal which member of that family generated them. The theory turns this intuition into requirements about efficiency and high-probability success.",
+    "howItWorks": [
+      "Specify a class of possible distributions.",
+      "Draw samples from an unknown distribution in that class.",
+      "Give the samples to a learning algorithm.",
+      "Have the algorithm determine or approximate the generating distribution.",
+      "Require the procedure to be efficient and to succeed with high probability."
+    ],
+    "whyItMatters": "The framework separates the statistical question of learning from samples from the computational question of doing so efficiently. Its generality makes it useful across machine learning, approximation algorithms, applied probability and statistics.",
+    "misconceptions": [
+      "It is not the same as PAC learning, although it was inspired by the PAC framework.",
+      "It does not promise that every unknown distribution can be learned without assumptions about its class.",
+      "A high-probability guarantee does not mean the learner is certain or always recovers the distribution exactly."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "class",
+          "label": "Distribution class",
+          "note": "The known set of possible distributions."
+        },
+        {
+          "id": "unknown",
+          "label": "Unknown distribution",
+          "note": "One member of the class generates the data."
+        },
+        {
+          "id": "samples",
+          "label": "Observed samples",
+          "note": "Random draws available to the learner."
+        },
+        {
+          "id": "learner",
+          "label": "Learning algorithm",
+          "note": "Uses samples within an efficiency requirement."
+        },
+        {
+          "id": "estimate",
+          "label": "Learned distribution",
+          "note": "The output, reliable with high probability."
+        }
+      ],
+      "edges": [
+        {
+          "from": "class",
+          "to": "unknown",
+          "label": "contains"
+        },
+        {
+          "from": "unknown",
+          "to": "samples",
+          "label": "generates"
+        },
+        {
+          "from": "samples",
+          "to": "learner",
+          "label": "input"
+        },
+        {
+          "from": "learner",
+          "to": "estimate",
+          "label": "outputs"
+        }
+      ],
+      "caption": "Samples from an unknown member of a known distribution class pass through a learning algorithm to produce a learned distribution."
+    }
+  },
   "related": [
     "algorithmic-learning-theory",
     "computational-learning-theory",

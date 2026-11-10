@@ -5,7 +5,117 @@
   "type": "algorithm",
   "definition": "Automatic clustering algorithms are algorithms that can perform clustering without prior knowledge of data sets.",
   "details": "In contrast with other clustering techniques, automatic clustering algorithms can determine the optimal number of clusters even in the presence of noise and outliers.",
-  "story": "Think of a historian sorting through boxes of letters, building a picture of an era one sentence at a time. Every machine is shaped by what it was shown, so someone has to choose that material with care. The examples a machine reads become the world it believes in. The words a model reads become the world it believes in. That care with the raw material is Automatic clustering algorithms.",
+  "explainer": {
+    "lead": "Automatic clustering algorithms group unlabeled data without being told how many groups to find. This is useful when the data may contain noise or outliers and the right number of clusters is not known in advance.",
+    "tiers": {
+      "eli5": "Ordinary clustering needs you to say up front how many groups to make. Automatic clustering works that number out for itself, even when some of the data is messy or doesn't fit anywhere.",
+      "practitioner": "Engineers use these algorithms when the cluster count is unknown and data is noisy, letting the algorithm select it. The pitfall versus other clustering techniques is precisely that reliance on the algorithm's own choice of cluster number rather than a value you set.",
+      "paperLevel": "Defined as algorithms that perform clustering without prior knowledge of the data sets and can determine the optimal number of clusters even in the presence of noise and outliers. The definition does not specify how optimality is measured."
+    },
+    "example": "For the values 0.9, 1.0, 1.2, 9.8, 10.0, 10.1, and 60, the algorithm is not given a cluster count. It could select two clusters, one containing the values near 1 and another containing those near 10, while treating 60 as an outlier.",
+    "goal": "Discover natural groups in unlabeled data while determining how many clusters to use, without requiring prior knowledge of the dataset.",
+    "inputs": [
+      "An unlabeled dataset",
+      "No predetermined cluster count"
+    ],
+    "outputs": [
+      "A chosen number of clusters",
+      "A cluster assignment for the data",
+      "Possible treatment of noise and outliers"
+    ],
+    "steps": [
+      "Receive the data without a preset cluster count.",
+      "Compare items to identify possible groupings.",
+      "Assess candidate cluster counts while allowing for noise and outliers.",
+      "Select the preferred grouping.",
+      "Return the cluster count and item assignments."
+    ],
+    "tradeoffs": [
+      "Removes the need to choose a cluster count beforehand.",
+      "Can accommodate noise and outliers.",
+      "The selected count depends on what the algorithm considers optimal.",
+      "An unusual grouping may still require human review."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data",
+          "label": "Unlabeled data",
+          "note": "No prior cluster count"
+        },
+        {
+          "id": "groupings",
+          "label": "Candidate groupings",
+          "note": "Possible ways to group items"
+        },
+        {
+          "id": "counts",
+          "label": "Cluster counts",
+          "note": "Different counts are assessed"
+        },
+        {
+          "id": "noise",
+          "label": "Noise handling",
+          "note": "Noise and outliers are considered"
+        },
+        {
+          "id": "selection",
+          "label": "Optimal selection",
+          "note": "The preferred grouping is chosen"
+        },
+        {
+          "id": "result",
+          "label": "Clustered output",
+          "note": "Cluster count and assignments"
+        }
+      ],
+      "edges": [
+        {
+          "from": "data",
+          "to": "groupings",
+          "label": ""
+        },
+        {
+          "from": "groupings",
+          "to": "counts",
+          "label": ""
+        },
+        {
+          "from": "data",
+          "to": "noise",
+          "label": "includes"
+        },
+        {
+          "from": "counts",
+          "to": "selection",
+          "label": ""
+        },
+        {
+          "from": "noise",
+          "to": "selection",
+          "label": ""
+        },
+        {
+          "from": "selection",
+          "to": "result",
+          "label": ""
+        }
+      ],
+      "caption": "Automatic clustering infers the grouping and its size while accounting for noise and outliers."
+    },
+    "usedIn": [
+      {
+        "name": "Data exploration",
+        "detail": "unknown cluster counts",
+        "url": ""
+      },
+      {
+        "name": "Noisy data sets",
+        "detail": "outliers handled",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "clustering",
     "ant-colony-optimization-algorithms",

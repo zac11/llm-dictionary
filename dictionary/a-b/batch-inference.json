@@ -8,6 +8,92 @@
   ],
   "definition": "Processing large request volumes without latency constraints, maximizing GPU utilization; API providers price it at large discounts.",
   "details": "Processing large request volumes without latency constraints, maximizing GPU utilization; API providers price it at large discounts. The right mode for evaluation runs, data generation, and backfills.",
+  "explainer": {
+    "lead": "Batch inference processes many model requests together when nobody needs an immediate answer. Trading responsiveness for fuller GPU utilization makes large jobs more efficient, and API providers often offer substantial discounts for this mode.",
+    "tiers": {
+      "eli5": "Imagine answering a huge stack of questionnaires all at once instead of stopping everything whenever one person hands you a question. A computer can do the same with AI requests, keeping its hardware busy on big piles of work. You wait longer for the results, but the whole pile can be handled more efficiently.",
+      "practitioner": "Use batch inference for evaluation runs, data generation, and backfills rather than interactive requests. Submit large request volumes as offline jobs and consume the outputs when processing finishes. The main pitfall is choosing it for latency-sensitive traffic: requests are handled for throughput and GPU utilization, not immediate responses.",
+      "paperLevel": "Given a large set of inference requests R, batch inference schedules and processes R offline without per-request latency constraints, optimizing for GPU utilization and overall throughput rather than response time. Providers may price this service at a large discount. Its central limitation is that it does not provide the responsiveness required by interactive applications."
+    },
+    "example": "A team evaluates a model on 10,000 prompts by submitting them as one offline batch. It does not need any response within seconds, so the provider can schedule the work for high GPU utilization, and the team collects all 10,000 outputs afterward for scoring.",
+    "usedIn": [
+      {
+        "name": "Model evaluation",
+        "detail": "Runs large prompt sets offline to produce responses for later assessment.",
+        "url": ""
+      },
+      {
+        "name": "Data generation",
+        "detail": "Produces large volumes of model-generated data without requiring immediate responses.",
+        "url": ""
+      },
+      {
+        "name": "Data backfills",
+        "detail": "Processes accumulated historical requests or records in bulk.",
+        "url": ""
+      },
+      {
+        "name": "Discounted API processing",
+        "detail": "Uses providers' offline batch options to trade immediacy for lower prices.",
+        "url": ""
+      }
+    ],
+    "intuition": "Interactive inference treats each request as urgent; batch inference treats the whole workload as a queue that can be organized to keep the GPU busy. The results arrive later, but large volumes can be processed more efficiently.",
+    "howItWorks": [
+      "Collect many requests into an offline job instead of serving each one immediately.",
+      "Schedule the accumulated work without per-request latency constraints.",
+      "Run the requests in large batches to maximize GPU utilization.",
+      "Return or store the completed outputs for later use."
+    ],
+    "whyItMatters": "Batch inference makes evaluations, data generation, and backfills practical at large scale by prioritizing efficient hardware use. Discounted API pricing can also reduce the cost of work that does not need immediate answers.",
+    "misconceptions": [
+      "It is not a faster way to answer one interactive request; it is designed for large jobs without latency constraints.",
+      "Batching does not mean results are unnecessary or disposable: the outputs are simply consumed after the job runs.",
+      "A discounted batch API does not change the basic trade-off between immediacy and utilization."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "requests",
+          "label": "Request volume",
+          "note": "Many prompts or records awaiting processing"
+        },
+        {
+          "id": "offline-job",
+          "label": "Offline job",
+          "note": "Work queued without response-time constraints"
+        },
+        {
+          "id": "gpu-batches",
+          "label": "GPU batches",
+          "note": "Large groups scheduled for high utilization"
+        },
+        {
+          "id": "outputs",
+          "label": "Stored outputs",
+          "note": "Responses collected for evaluation or later use"
+        }
+      ],
+      "edges": [
+        {
+          "from": "requests",
+          "to": "offline-job",
+          "label": "collected into"
+        },
+        {
+          "from": "offline-job",
+          "to": "gpu-batches",
+          "label": "scheduled as"
+        },
+        {
+          "from": "gpu-batches",
+          "to": "outputs",
+          "label": "produce"
+        }
+      ],
+      "caption": "Batch inference accumulates requests, processes them for GPU efficiency, and delivers the outputs afterward."
+    }
+  },
   "related": [
     "latency"
   ],

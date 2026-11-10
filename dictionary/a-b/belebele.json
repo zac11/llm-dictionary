@@ -2,9 +2,92 @@
   "term": "BELEBELE",
   "letter": "B",
   "category": "AI/ML glossary",
-  "type": "concept",
+  "type": "dataset",
   "definition": "A Bambara word meaning \"big, large, fat, great\".",
   "details": "A Bambara word meaning \"big, large, fat, great\". This is a dataset containing 900 unique multiple-choice reading comprehension questions, each associated with one of 488 distinct passages",
+  "explainer": {
+    "lead": "BELEBELE is a dataset for testing multiple-choice reading comprehension, with 900 questions linked to 488 distinct passages. It gives researchers a fixed set of reading tasks for checking whether a model selects the answer supported by a passage. Its name is a Bambara word meaning “big, large, fat, great.”",
+    "tiers": {
+      "eli5": "BELEBELE is like a reading quiz for computers. The computer reads a short passage, gets a question with several possible answers, and picks the one it thinks is right. With 900 questions, researchers can check how carefully it reads instead of just guessing.",
+      "practitioner": "Use BELEBELE as an evaluation set: provide the passage, question, and answer choices, then compare the model’s selected choice with the correct answer. Report results over the 900 questions and inspect mistakes to distinguish reading errors from formatting or answer-selection problems. Its small size means narrow score differences should be interpreted cautiously.",
+      "paperLevel": "BELEBELE can be represented as D = {(p_i, q_i, c_i, a_i)} for i = 1…900, where p_i is one of 488 distinct passages, q_i is a question, c_i is its set of answer choices, and a_i is the correct choice. For predictions ŷ_i, accuracy is (1/900) Σ_i 1[ŷ_i = a_i]. It evaluates multiple-choice reading comprehension rather than open-ended answer generation, and its 900-item size limits statistical resolution."
+    },
+    "example": "Suppose a passage says, “Amina left at dawn and arrived at noon,” and the question asks, “When did Amina arrive?” Given the choices “at dawn,” “at noon,” and “at midnight,” a correct system selects “at noon.”",
+    "usedIn": [
+      {
+        "name": "Reading-comprehension research",
+        "detail": "Provides fixed passage-and-question items for evaluating answer selection.",
+        "url": ""
+      },
+      {
+        "name": "Machine-learning model evaluation",
+        "detail": "Supports comparisons of models on the same 900 multiple-choice questions.",
+        "url": ""
+      }
+    ],
+    "measures": "BELEBELE measures whether a system can choose the correct answer to a question using its associated passage. The dataset contains 900 unique questions and 488 distinct passages.",
+    "howScored": [
+      "A model selects one of the provided answer choices for each question. Its selections are compared with the correct answers, and the results can be summarized as the proportion answered correctly."
+    ],
+    "formula": "Accuracy = number of correctly answered questions / 900.",
+    "caveats": [
+      "The 900-question size can make small score differences difficult to interpret.",
+      "Multiple-choice accuracy does not show whether a model can produce a good free-form answer.",
+      "A correct choice alone does not establish that the model used the intended reasoning."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "passages",
+          "label": "488 passages",
+          "note": "Distinct reading passages"
+        },
+        {
+          "id": "questions",
+          "label": "900 questions",
+          "note": "Each linked to a passage"
+        },
+        {
+          "id": "choices",
+          "label": "Answer choices",
+          "note": "Multiple-choice options"
+        },
+        {
+          "id": "model",
+          "label": "Model prediction",
+          "note": "Selects one answer"
+        },
+        {
+          "id": "score",
+          "label": "Accuracy",
+          "note": "Compares selections with correct answers"
+        }
+      ],
+      "edges": [
+        {
+          "from": "passages",
+          "to": "questions",
+          "label": "context"
+        },
+        {
+          "from": "questions",
+          "to": "choices",
+          "label": ""
+        },
+        {
+          "from": "choices",
+          "to": "model",
+          "label": ""
+        },
+        {
+          "from": "model",
+          "to": "score",
+          "label": "evaluate"
+        }
+      ],
+      "caption": "BELEBELE pairs passages with multiple-choice questions and scores a model’s selected answers."
+    }
+  },
   "related": [
     "reading-comprehension"
   ],

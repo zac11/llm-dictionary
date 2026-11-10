@@ -5,7 +5,103 @@
   "type": "concept",
   "definition": "Guillotine cutting is the process of producing small rectangular items of fixed dimensions from a given large rectangular sheet, using only guillotine-cuts.",
   "details": "A guillotine-cut (also called an edge-to-edge cut) is a straight bisecting line going from one edge of an existing rectangle to the opposite edge, similarly to a paper guillotine. Guillotine cutting is particularly common in the glass industry. Glass sheets are scored along horizontal and vertical lines, and then broken along these lines to obtain smaller panels. It is also useful for cutting steel plates, cutting of wood sheets to make furniture, and cutting of cardboard into boxes. There are various optimization problems related to guillotine cutting, such as: maximize the total area of the produced pieces, or their total value; minimize the amount of waste (unused parts) of the large sheet, or the total number of sheets. They have been studied in combinatorial geometry, operations research and industrial engineering. In microelectronics, in floorplanning, a \"sliceable floorplan\" is the one that can be produced by guillotine cutting. A related but different problem is guillotine partition. In that problem, the dimensions of the small rectangles are not fixed in advance. The challenge comes from the fact that the original sheet might not be rectangular - it can be any rectilinear polygon. In particular, it might contain holes (representing defects in the raw material). The optimization goal is usually to minimize the number of small rectangles, or minimize the total length of the cuts.",
-  "story": "Picture an engineer at a cluttered workbench, turning a clever idea over in their hands until it finally clicks. At its heart it is a simple notion, once you strip away the fancy name. A small key that opens a much bigger door. It is one of those ideas that feels obvious only after someone shows it to you. And that idea, made concrete, is Guillotine cutting.",
+  "explainer": {
+    "lead": "Guillotine cutting turns large rectangular sheets into smaller rectangles using only straight cuts that go completely across the piece being cut. It is useful in industries such as glass, wood, steel and cardboard, where cutting plans can affect both usable output and wasted material.",
+    "tiers": {
+      "eli5": "Imagine cutting a large sheet of paper, but every cut must go straight from one side to the other, like using a paper guillotine. You keep cutting the resulting pieces until you have the smaller rectangles you want. A good plan gives you useful pieces without leaving too much scrap.",
+      "practitioner": "In production planning, the item dimensions are fixed and the cutting plan must be expressible as successive edge-to-edge cuts of existing rectangles. Objectives include maximizing produced area or value, minimizing waste, and minimizing the number of sheets; checking guillotine feasibility is essential because a proposed arrangement cannot simply be assumed to have such a cutting sequence. For nonrectangular sheets, holes, or unfixed output dimensions, the related guillotine partition problem is the closer fit.",
+      "paperLevel": "Given a large rectangular sheet S and small rectangular item types with fixed dimensions, a guillotine cutting pattern is one generated entirely by straight cuts that bisect an existing rectangle from one edge to the opposite edge. Optimization objectives include max(total item area), max(total item value), min(unused sheet area), and min(number of sheets); the edge-to-edge restriction limits feasible patterns to those admitting such a recursive decomposition. Guillotine partition instead allows unfixed output dimensions and rectilinear input polygons, possibly with holes, typically minimizing rectangle count or total cut length."
+    },
+    "example": "To produce four 5-by-4 rectangles from a 10-by-8 sheet, first make one vertical cut across the sheet to create two 5-by-8 rectangles. Then make a horizontal edge-to-edge cut across each rectangle at its midpoint, yielding four 5-by-4 items with no unused material.",
+    "usedIn": [
+      {
+        "name": "Glass manufacturing",
+        "detail": "Sheets are scored along horizontal and vertical lines, then broken into smaller panels.",
+        "url": ""
+      },
+      {
+        "name": "Furniture manufacturing",
+        "detail": "Wood sheets are cut into rectangular components for furniture.",
+        "url": ""
+      },
+      {
+        "name": "Steel plate cutting",
+        "detail": "Large plates are divided into smaller rectangular pieces while managing unused material.",
+        "url": ""
+      },
+      {
+        "name": "Microelectronics floorplanning",
+        "detail": "A sliceable floorplan is one that can be produced by guillotine cutting.",
+        "url": ""
+      }
+    ],
+    "intuition": "Each cut splits one rectangle completely into two, so the cutting plan can be understood as repeatedly dividing rectangles until the desired pieces are obtained. The restriction makes planning different from freely arranging rectangles: every division must be achievable with a full edge-to-edge cut.",
+    "howItWorks": [
+      "Start with one large rectangular sheet and fixed dimensions for the small items.",
+      "Choose a straight horizontal or vertical line across an existing rectangle.",
+      "Make the full edge-to-edge cut, producing two smaller rectangles.",
+      "Repeat on selected rectangles until the required items are produced.",
+      "Evaluate the plan by item area or value, unused material, or sheets consumed."
+    ],
+    "whyItMatters": "The cutting pattern determines how much of an expensive sheet becomes useful product and how much becomes waste, as well as how many sheets are needed. It connects practical manufacturing with optimization problems studied in combinatorial geometry, operations research and industrial engineering.",
+    "misconceptions": [
+      "A guillotine cut is not any straight cut: it must run completely from one edge of an existing rectangle to the opposite edge.",
+      "Guillotine cutting is not the same as guillotine partition: partition uses unfixed output dimensions and may start with a nonrectangular rectilinear polygon containing holes.",
+      "A sliceable floorplan refers specifically to a layout producible through guillotine cuts."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "sheet",
+          "label": "Large sheet",
+          "note": "The initial rectangular material."
+        },
+        {
+          "id": "cut",
+          "label": "Full straight cut",
+          "note": "A horizontal or vertical edge-to-edge bisection."
+        },
+        {
+          "id": "pair",
+          "label": "Two rectangles",
+          "note": "Each cut divides one existing rectangle."
+        },
+        {
+          "id": "repeat",
+          "label": "Repeat cutting",
+          "note": "Selected rectangles are divided again."
+        },
+        {
+          "id": "items",
+          "label": "Items and waste",
+          "note": "Fixed-size outputs plus any unused material."
+        }
+      ],
+      "edges": [
+        {
+          "from": "sheet",
+          "to": "cut",
+          "label": ""
+        },
+        {
+          "from": "cut",
+          "to": "pair",
+          "label": "bisects"
+        },
+        {
+          "from": "pair",
+          "to": "repeat",
+          "label": ""
+        },
+        {
+          "from": "repeat",
+          "to": "items",
+          "label": "produces"
+        }
+      ],
+      "caption": "A guillotine cutting plan recursively splits rectangles until it produces the required items."
+    }
+  },
   "related": [
     "cutting-plane-method",
     "guillotine-partition",

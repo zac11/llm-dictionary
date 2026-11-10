@@ -5,7 +5,82 @@
   "type": "concept",
   "definition": "A loss function commonly used for classification tasks that measures the difference between predicted and true probability distributions.",
   "details": "Cross-entropy loss is the standard training objective for next-token prediction in language models, where the model predicts a probability distribution over the vocabulary at each step.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. And that is Cross-Entropy Loss — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "Cross-entropy loss turns the gap between what a model predicts and what actually happened into a number that training can reduce. It is especially important in classification and in language models, which learn by predicting the next token.",
+    "tiers": {
+      "eli5": "Imagine guessing which animal is behind a door and saying how sure you are about each animal. Cross-entropy gives you a smaller penalty when you put more confidence in the right answer, and a bigger penalty when you are confidently wrong. It helps the model learn not just what to guess, but how much probability to give each choice.",
+      "practitioner": "For classification, compare the predicted probability distribution with the true distribution and minimize the resulting loss. In language-model training, apply it at every token position to the distribution over the vocabulary; with a one-hot target, this is the negative log probability assigned to the actual next token. Watch predicted probabilities rather than accuracy alone, since a model can choose the right class while still assigning it little confidence.",
+      "paperLevel": "For true probabilities y_i and predicted probabilities p_i over classes, cross-entropy is L = -sum_i y_i log(p_i). For a single next-token target, this reduces to L = -log p(true token), and losses are commonly averaged across training examples or token positions. The score depends on the logarithm base and rewards calibrated probability mass on the target rather than merely a correct top-ranked prediction."
+    },
+    "example": "Suppose the true next token is \"dog\" among \"cat\", \"dog\", and \"bird\". A prediction of (0.2, 0.3, 0.5) gives loss -ln(0.3) ≈ 1.204, while (0.1, 0.8, 0.1) gives -ln(0.8) ≈ 0.223, so the second prediction is better.",
+    "usedIn": [
+      {
+        "name": "Language models",
+        "detail": "Standard training objective for predicting each next token over the vocabulary.",
+        "url": ""
+      },
+      {
+        "name": "Classification systems",
+        "detail": "Compares predicted class probabilities with the true class distribution.",
+        "url": ""
+      }
+    ],
+    "intuition": "A good classifier should place substantial probability on the correct outcome, not merely rank it first. Cross-entropy gives a larger loss when the true outcome receives little predicted probability.",
+    "howItWorks": [
+      "The model produces a probability for every possible class or token.",
+      "The prediction is compared with the true probability distribution.",
+      "Probability assigned to true outcomes reduces the loss; missing probability increases it.",
+      "Training adjusts the model to lower the loss on subsequent predictions."
+    ],
+    "whyItMatters": "It provides a training signal based on the full predicted probability distribution. This makes it the standard objective for teaching language models to predict the next token.",
+    "misconceptions": [
+      "It is not the same as accuracy: two predictions can have the correct top choice but different losses.",
+      "Lower is better; it is a training loss, not a percentage score.",
+      "It is not specific to language models and is also widely used for classification."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "prediction",
+          "label": "Predicted probabilities",
+          "note": "Model assigns probability to each choice."
+        },
+        {
+          "id": "target",
+          "label": "True distribution",
+          "note": "Target identifies the correct outcome."
+        },
+        {
+          "id": "loss",
+          "label": "Cross-entropy loss",
+          "note": "Comparison produces a numerical penalty."
+        },
+        {
+          "id": "training",
+          "label": "Training update",
+          "note": "The model is adjusted to reduce loss."
+        }
+      ],
+      "edges": [
+        {
+          "from": "prediction",
+          "to": "loss",
+          "label": "prediction"
+        },
+        {
+          "from": "target",
+          "to": "loss",
+          "label": "target"
+        },
+        {
+          "from": "loss",
+          "to": "training",
+          "label": "training signal"
+        }
+      ],
+      "caption": "Cross-entropy compares predicted and true distributions, then supplies a loss for training."
+    }
+  },
   "related": [
     "loss-function",
     "active-learning",

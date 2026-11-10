@@ -5,6 +5,93 @@
   "type": "concept",
   "definition": "When the data a deployed model sees differs from its training distribution: covariate shift (inputs change), label shift (class frequencies change), or concept drift (the input-output relationship itself changes).",
   "details": "When the data a deployed model sees differs from its training distribution: covariate shift (inputs change), label shift (class frequencies change), or concept drift (the input-output relationship itself changes). The main reason models decay in production.",
+  "explainer": {
+    "lead": "A model can stop performing well because the data it meets in use no longer resembles the data it learned from. Distribution shift names that mismatch and separates changes in inputs, class frequencies, and the relationship between inputs and outputs.",
+    "tiers": {
+      "eli5": "Imagine learning to recognize birds from summer photos, then being tested on snowy winter photos. The pictures, the mix of birds, or even the connection between clues and bird names might have changed. Distribution shift is this kind of change for an AI model, and it can make old lessons less useful.",
+      "practitioner": "In production, compare deployment data with training data by examining inputs and, where available, class frequencies and input-output behavior. Identifying which part of the distribution changed helps diagnose performance decay; collecting more data alone does not guarantee that it will match deployment conditions.",
+      "paperLevel": "Distribution shift means P_train(X, Y) differs from P_deploy(X, Y). It is commonly separated into changes in P(X) (covariate shift), changes in class frequencies (label shift), and changes in P(Y|X) (concept drift); these categories describe what changed, not a universal remedy."
+    },
+    "example": "A classifier is trained on cases where 90% are negative and 10% are positive. In deployment, positives rise to 50%, producing label shift; the model is unchanged, but its performance can still decay.",
+    "usedIn": [
+      {
+        "name": "Production machine learning",
+        "detail": "Used to describe why a deployed model's performance can decay as its data changes.",
+        "url": ""
+      },
+      {
+        "name": "Model monitoring",
+        "detail": "Used to distinguish changing inputs, changing class frequencies, and changing input-output relationships.",
+        "url": ""
+      }
+    ],
+    "intuition": "Training teaches a model patterns from one snapshot of the world. Distribution shift occurs when deployment presents a different snapshot, so those learned patterns may no longer apply as well.",
+    "howItWorks": [
+      "Train a model on data from a training distribution.",
+      "Deploy it on data from a deployment distribution.",
+      "Check whether the inputs have changed: covariate shift.",
+      "Check whether class frequencies have changed: label shift.",
+      "Check whether the input-output relationship has changed: concept drift."
+    ],
+    "whyItMatters": "It is the main reason models decay in production. Naming the kind of shift clarifies whether the inputs, class frequencies, or underlying input-output relationship have changed.",
+    "misconceptions": [
+      "It is not limited to changing inputs; labels and input-output relationships can change too.",
+      "Covariate shift, label shift, and concept drift are different changes, not interchangeable terms.",
+      "The model itself need not change for its performance to decay."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "train-data",
+          "label": "Training data",
+          "note": "Drawn from the training distribution"
+        },
+        {
+          "id": "model",
+          "label": "Trained model",
+          "note": "Learns patterns from training data"
+        },
+        {
+          "id": "deploy-data",
+          "label": "Deployment data",
+          "note": "May follow a different distribution"
+        },
+        {
+          "id": "shift",
+          "label": "Distribution shift",
+          "note": "Inputs, class frequencies, or relationships change"
+        },
+        {
+          "id": "decay",
+          "label": "Performance decay",
+          "note": "Production results can worsen"
+        }
+      ],
+      "edges": [
+        {
+          "from": "train-data",
+          "to": "model",
+          "label": "trains"
+        },
+        {
+          "from": "deploy-data",
+          "to": "model",
+          "label": "new inputs"
+        },
+        {
+          "from": "deploy-data",
+          "to": "shift",
+          "label": "differs"
+        },
+        {
+          "from": "shift",
+          "to": "decay",
+          "label": "can cause"
+        }
+      ],
+      "caption": "A model trained on one distribution can decay when deployment data differs in its inputs, class frequencies, or input-output relationship."
+    }
+  },
   "related": [
     "concept-drift"
   ],

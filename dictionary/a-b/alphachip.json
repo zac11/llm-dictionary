@@ -5,7 +5,139 @@
   "type": "concept",
   "definition": "AlphaChip is a deep reinforcement learning method for automated macro placement, a crucial step in chip floorplanning.",
   "details": "It is based on reinforcement learning (RL), a machine learning method in which a system iteratively improves its decisions by optimizing performance-based reward signals.. AlphaChip was developed at Google, where it was used in the design of their Tensor Processing Units, and then published in a Nature paper in 2021. The ideas behind AlphaChip, and the core developers, form the basis of the spinoff Ricursive. The claims of the 2021 paper have engendered considerable controversy, concerning the demonstrated quality of results, methodology, reproducibility and scientific integrity.",
-  "story": "Picture a gambler who slowly learns which slot machines pay out, not by reading a manual but by pulling the lever. The machine is not handed the answers — it tries things, earns a reward or a miss, and slowly figures out what works. It learns the way a child learns to walk: wobble, fall, adjust, repeat. The learner writes its own textbook from consequences. And that is AlphaChip — skill forged from consequences.",
+  "explainer": {
+    "lead": "AlphaChip uses deep reinforcement learning to decide where the large building blocks of a chip should go, a task that affects the finished chip’s speed, energy use, and size. Google developed it for Tensor Processing Unit design, but its reported advantages over established methods have been disputed and difficult for outside researchers to reproduce.",
+    "tiers": {
+      "eli5": "Imagine arranging big pieces of furniture in a room before filling the gaps with smaller things. AlphaChip learns by trying arrangements and receiving scores, placing one large piece at a time and remembering where the earlier pieces went. Google used it while designing parts of its TPU chips, although other researchers have questioned whether it really beats older arrangement methods.",
+      "practitioner": "AlphaChip is applied during floorplanning: a policy places macros sequentially on a discretized canvas, then force-directed placement handles standard cells while macro locations remain fixed. It is typically pre-trained on previous circuit designs and fine-tuned for a target block, with proxy objectives such as wirelength and congestion guiding learning. Reported runtime should be separated from pre-training cost, and quality claims require routing-based PPA evaluation, comparable compute budgets, and strong public-benchmark baselines.",
+      "paperLevel": "At step t, policy pi selects a location a_t for one macro, conditioned on the canvas and placements m_1...m_(t-1); deep RL trains pi to maximize a proxy reward reflecting final placement quality, such as wirelength and congestion. The 2021 Nature paper “A graph-placement methodology for fast chip design” introduced this sequential formulation, pre-trained on twenty prior designs, and reported placements in under six hours, excluding the 48-hour pre-training phase. Generalization depends on similar training designs, and reported benefits have not been demonstrated in external replications or direct comparisons on modern public benchmarks."
+    },
+    "example": "For a TPU floorplan block, AlphaChip chooses a grid location for the first macro, then places each remaining macro in light of those already positioned. It receives learning feedback from measures such as wirelength and congestion, after which standard cells are placed around the fixed macros and the wired design can be assessed for energy use, speed, and silicon area.",
+    "usedIn": [
+      {
+        "name": "Google Tensor Processing Units",
+        "detail": "AlphaChip was developed at Google Brain and used on blocks from four proprietary TPU designs.",
+        "url": ""
+      },
+      {
+        "name": "Chip floorplanning",
+        "detail": "It automates macro placement before standard-cell placement and routing determine final chip quality.",
+        "url": ""
+      },
+      {
+        "name": "Ricursive",
+        "detail": "The spin-out was founded on AlphaChip’s ideas and its core developers.",
+        "url": ""
+      }
+    ],
+    "intuition": "Macro placement can be treated as a sequence of decisions rather than one large simultaneous optimization. By learning from scores on earlier layouts, a policy can discover useful placement patterns and reuse them on new circuit blocks.",
+    "howItWorks": [
+      "Pre-train an RL policy on previous circuit designs to learn general placement patterns.",
+      "Place macros one at a time on a discretized chip canvas, conditioning each choice on earlier placements.",
+      "Optimize a proxy reward based on placement quality, such as wirelength and congestion.",
+      "Keep the macro locations fixed while force-directed placement arranges the connected standard cells.",
+      "Evaluate the routed result using power, performance, and area rather than relying only on the proxy."
+    ],
+    "whyItMatters": "Placement helps determine the cost and performance of a chip, while expert-driven chip design can take weeks or months. A reliable automated placer could shorten that process, but AlphaChip also shows why pre-training costs, routing-based evaluation, and reproducible comparisons matter when judging such claims.",
+    "misconceptions": [
+      "AlphaChip does not automate the whole chip-design process; its central task is macro placement.",
+      "The reported six-hour runtime covers evaluation, not the separate 48-hour pre-training phase.",
+      "Its superiority over established placers is not settled: external replication did not show the claimed advantage."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "prior",
+          "label": "Prior designs",
+          "note": "Examples used for pre-training"
+        },
+        {
+          "id": "pretrain",
+          "label": "Policy pre-training",
+          "note": "Learns general placement patterns"
+        },
+        {
+          "id": "target",
+          "label": "Target circuit",
+          "note": "A new block to place"
+        },
+        {
+          "id": "policy",
+          "label": "RL policy",
+          "note": "Chooses one macro location at a time"
+        },
+        {
+          "id": "macros",
+          "label": "Macro placement",
+          "note": "Locations become fixed obstacles"
+        },
+        {
+          "id": "cells",
+          "label": "Standard-cell placement",
+          "note": "Force-directed placement fills the layout"
+        },
+        {
+          "id": "reward",
+          "label": "Proxy reward",
+          "note": "Scores wirelength and congestion"
+        },
+        {
+          "id": "ppa",
+          "label": "Routed evaluation",
+          "note": "Measures power, performance, and area"
+        }
+      ],
+      "edges": [
+        {
+          "from": "prior",
+          "to": "pretrain",
+          "label": ""
+        },
+        {
+          "from": "pretrain",
+          "to": "policy",
+          "label": ""
+        },
+        {
+          "from": "target",
+          "to": "policy",
+          "label": "fine-tuning"
+        },
+        {
+          "from": "policy",
+          "to": "macros",
+          "label": ""
+        },
+        {
+          "from": "macros",
+          "to": "cells",
+          "label": ""
+        },
+        {
+          "from": "cells",
+          "to": "reward",
+          "label": "quality signal"
+        },
+        {
+          "from": "reward",
+          "to": "policy",
+          "label": "training"
+        },
+        {
+          "from": "cells",
+          "to": "ppa",
+          "label": "after routing"
+        }
+      ],
+      "caption": "AlphaChip learns a sequential macro-placement policy, then completes and evaluates the surrounding chip layout."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: AlphaChip",
+        "url": "https://en.wikipedia.org/wiki/AlphaChip"
+      }
+    ]
+  },
   "related": [
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",
     "accelerated-linear-algebra",

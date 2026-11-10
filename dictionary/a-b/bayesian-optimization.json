@@ -5,7 +5,98 @@
   "type": "concept",
   "definition": "Bayesian optimization is a sequential model-based strategy for global optimization of black-box objective functions whose evaluations are costly.",
   "details": "It is commonly used when a single observation requires an experiment, engineering computation, numerical simulation, or machine-learning run, and when derivatives are unavailable or unreliable. The objective need not have a closed-form expression. The method constructs a probabilistic model of the unknown function, often a Gaussian process (GP), and uses the resulting predictive distribution to choose the next evaluation point. This choice is made by optimizing a sampling criterion, also called an acquisition function. Common applications include hyperparameter optimization in machine learning, where each trial may require training and validating a model, and engineering design problems driven by expensive numerical simulations.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. And that is Bayesian optimization — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "Bayesian optimization helps find good settings when each test is expensive, such as training a machine-learning model or running an engineering simulation. It learns from previous tests to choose what to try next, rather than evaluating every possibility.",
+    "tiers": {
+      "eli5": "Imagine trying to bake the best cake, but each cake takes hours and you cannot try many recipes. After every attempt, you use what you learned to guess which oven setting and baking time are worth testing next. Bayesian optimization is a careful version of that process.",
+      "practitioner": "Use it for costly, black-box objectives such as hyperparameter search, especially when gradients are unavailable or unreliable. A Gaussian process commonly models the objective, and an acquisition function selects each new trial; every training, validation, experiment, or simulation result is then fed back into the model. It is less attractive when evaluations are cheap enough for extensive direct search.",
+      "paperLevel": "Given an unknown objective f(x) with no required closed-form expression, the goal is global optimization while limiting costly evaluations. A probabilistic surrogate, often a Gaussian process, gives a predictive distribution for f; the next point is chosen by optimizing an acquisition function based on that distribution. The approach depends on the surrogate and sampling criterion, and its sequential design targets evaluation cost rather than eliminating the cost of modeling and selecting trials."
+    },
+    "example": "To tune a machine-learning model, train and validate it at an initial set of hyperparameter values. Fit a Gaussian process to the resulting validation scores, optimize an acquisition function to select the next values, then run that training-and-validation trial and update the model before choosing again.",
+    "usedIn": [
+      {
+        "name": "Machine-learning hyperparameter optimization",
+        "detail": "Chooses settings for successive trials when each one requires training and validating a model.",
+        "url": ""
+      },
+      {
+        "name": "Engineering design",
+        "detail": "Searches design choices when assessing each candidate requires an expensive numerical simulation.",
+        "url": ""
+      }
+    ],
+    "intuition": "Each observation reduces uncertainty about the unknown objective and helps guide the next experiment. The aim is to spend a limited evaluation budget on points selected using both the model's predictions and its uncertainty.",
+    "howItWorks": [
+      "Evaluate the black-box objective at one or more initial points.",
+      "Fit a probabilistic model, often a Gaussian process, to the observations.",
+      "Use its predictive distribution to optimize an acquisition function.",
+      "Evaluate the objective at the selected point.",
+      "Add the result to the observations and repeat."
+    ],
+    "whyItMatters": "It can make global optimization practical when experiments, simulations, or training runs are too costly to test many candidates. It also handles objectives without closed-form expressions or dependable derivatives.",
+    "misconceptions": [
+      "It does not require the objective to have a formula or usable derivatives.",
+      "It is not limited to Gaussian processes; they are a common probabilistic model.",
+      "It reduces costly objective evaluations, but does not make every individual evaluation cheap."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "observations",
+          "label": "Past observations",
+          "note": "Evaluation points and their objective values"
+        },
+        {
+          "id": "surrogate",
+          "label": "Probabilistic model",
+          "note": "Often a Gaussian process"
+        },
+        {
+          "id": "prediction",
+          "label": "Predictive distribution",
+          "note": "Predictions with uncertainty"
+        },
+        {
+          "id": "acquisition",
+          "label": "Acquisition function",
+          "note": "Sampling criterion optimized to choose a point"
+        },
+        {
+          "id": "evaluation",
+          "label": "Costly evaluation",
+          "note": "Experiment, simulation, or training run"
+        }
+      ],
+      "edges": [
+        {
+          "from": "observations",
+          "to": "surrogate",
+          "label": "fits"
+        },
+        {
+          "from": "surrogate",
+          "to": "prediction",
+          "label": "produces"
+        },
+        {
+          "from": "prediction",
+          "to": "acquisition",
+          "label": "guides"
+        },
+        {
+          "from": "acquisition",
+          "to": "evaluation",
+          "label": "selects point"
+        },
+        {
+          "from": "evaluation",
+          "to": "observations",
+          "label": "adds result"
+        }
+      ],
+      "caption": "Bayesian optimization repeatedly updates a probabilistic model and uses an acquisition function to select the next costly evaluation."
+    }
+  },
   "related": [
     "ant-colony-optimization-algorithms",
     "bacterial-colony-optimization",

@@ -8,6 +8,97 @@
   ],
   "definition": "Tokenizer-free models operating on raw bytes, with learned dynamic patching (Byte Latent Transformer) to keep compute manageable.",
   "details": "Tokenizer-free models operating on raw bytes, with learned dynamic patching (Byte Latent Transformer) to keep compute manageable. Removes tokenizer fertility unfairness across scripts, a direct pain point for Arabic (see Tokenizer Fertility), and improves robustness to noise and rare words.",
+  "explainer": {
+    "lead": "Byte-level modeling lets language models work directly with raw bytes instead of first dividing text with a tokenizer. The Byte Latent Transformer, or BLT, adds learned dynamic patches so this approach remains computationally manageable. It matters because tokenizers can treat different writing systems unfairly and struggle with noise or rare words.",
+    "tiers": {
+      "eli5": "Imagine reading a message one tiny piece at a time instead of relying on a dictionary that decides how to chop it up. Byte-level models do that with text, then learn to bundle pieces into useful groups so the work does not become too heavy. This can help them handle Arabic, unusual words, and messy typing more fairly.",
+      "practitioner": "Apply the approach by feeding raw bytes into the model and using learned dynamic patching, as in BLT, rather than a separate tokenizer. It is especially relevant when evaluating processing across scripts, noisy inputs, or rare words. Do not equate operating on bytes with running full model computation at every byte; patching is what keeps compute manageable.",
+      "paperLevel": "Given an input byte sequence b_1, ..., b_n, byte-level modeling avoids a fixed tokenizer and learned dynamic patching maps the bytes into variable patches for subsequent model computation. The Byte Latent Transformer is the named instantiation in this entry. Its motivation is to control the compute burden of byte-level processing while reducing tokenizer-fertility disparities across scripts and improving robustness to noise and rare words."
+    },
+    "example": "An Arabic sentence containing a rare name and a noisy typo is read directly as bytes. BLT learns patches over those bytes for processing, avoiding dependence on the tokenizer's fertility for Arabic while remaining robust to the unusual and noisy forms.",
+    "usedIn": [
+      {
+        "name": "Byte Latent Transformer",
+        "detail": "Uses learned dynamic patching to make tokenizer-free modeling over raw bytes computationally manageable.",
+        "url": ""
+      },
+      {
+        "name": "Arabic text processing",
+        "detail": "Addresses tokenizer-fertility unfairness that can put Arabic at a disadvantage relative to other scripts.",
+        "url": ""
+      },
+      {
+        "name": "Noisy and rare-word text processing",
+        "detail": "Byte-level inputs improve robustness when text contains noise or words poorly served by a tokenizer.",
+        "url": ""
+      }
+    ],
+    "intuition": "A tokenizer decides in advance how text should be split, and those decisions can work better for some scripts and words than others. Byte-level modeling starts from raw bytes instead, then learns where useful patches should form.",
+    "howItWorks": [
+      "Take text directly as a sequence of raw bytes.",
+      "Learn dynamic patches rather than applying a fixed tokenizer.",
+      "Run the Byte Latent Transformer over the resulting patches.",
+      "Use patching to keep computation manageable."
+    ],
+    "whyItMatters": "It removes a source of cross-script unfairness by eliminating tokenizer fertility differences, a direct concern for Arabic. It also improves robustness to noise and rare words without abandoning compute management.",
+    "misconceptions": [
+      "Byte-level modeling is not just a conventional tokenizer with a byte vocabulary; it is tokenizer-free.",
+      "BLT does not require full computation at every byte because learned dynamic patches reduce the processing burden.",
+      "Its benefits are not limited to Arabic; they also extend across scripts and to noisy or rare words."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "text",
+          "label": "Input text",
+          "note": "Text in any script, including noisy or rare forms."
+        },
+        {
+          "id": "bytes",
+          "label": "Raw bytes",
+          "note": "The model receives bytes without a tokenizer."
+        },
+        {
+          "id": "patching",
+          "label": "Dynamic patching",
+          "note": "Learned patches group the byte sequence."
+        },
+        {
+          "id": "patches",
+          "label": "Patch sequence",
+          "note": "Patches provide manageable units for computation."
+        },
+        {
+          "id": "blt",
+          "label": "Byte Latent Transformer",
+          "note": "The model computes over the patched representation."
+        }
+      ],
+      "edges": [
+        {
+          "from": "text",
+          "to": "bytes",
+          "label": "encoded as"
+        },
+        {
+          "from": "bytes",
+          "to": "patching",
+          "label": "grouped by"
+        },
+        {
+          "from": "patching",
+          "to": "patches",
+          "label": "produces"
+        },
+        {
+          "from": "patches",
+          "to": "blt",
+          "label": "processed by"
+        }
+      ],
+      "caption": "BLT replaces fixed tokenization with raw-byte input and learned dynamic patches."
+    }
+  },
   "related": [
     "robustness",
     "transformer",

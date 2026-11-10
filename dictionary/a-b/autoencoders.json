@@ -5,6 +5,148 @@
   "type": "architecture",
   "definition": "Neural networks trained to reconstruct their input through a bottleneck — learning compressed representations used for dimensionality reduction, denoising, and anomaly detection.",
   "details": "Neural networks trained to reconstruct their input through a bottleneck — learning compressed representations used for dimensionality reduction, denoising, and anomaly detection.",
+  "explainer": {
+    "lead": "An autoencoder learns to squeeze data into a compact code and then rebuild the original from that code. Because it learns from unlabeled examples, it can produce useful representations, remove noise, and expose unusual inputs that it struggles to reconstruct.",
+    "tiers": {
+      "eli5": "Imagine describing a detailed picture in a tiny note, then asking a friend to redraw the picture using only that note. An autoencoder learns both jobs: writing the note and redrawing the picture. If it has practiced on ordinary pictures and then makes a mess of an unusual one, that poor copy can help flag something odd.",
+      "practitioner": "Train the encoder and decoder jointly with gradient descent, commonly using squared reconstruction error, and keep the latent space smaller than the input when compression is the goal. For anomaly detection, score new inputs by reconstruction error; for denoising, corrupt training inputs while keeping the clean originals as targets. Avoid relying on bottleneck size alone: overcomplete or high-capacity models can learn the identity function, although they may still learn useful features.",
+      "paperLevel": "For x in X, an encoder computes z = E_phi(x) in Z and a decoder returns x' = D_theta(z); commonly X = R^m and Z = R^n with m > n. Training minimizes L(theta, phi) = E_{x~mu_ref}[d(x, D_theta(E_phi(x)))], often the empirical mean of ||x_i - x'_i||_2^2, using gradient descent. Undercompleteness discourages simple copying, while overcomplete or high-capacity models can learn the identity function despite sometimes learning useful features; variational autoencoders instead use a latent space composed of distributions and a different mathematical formulation."
+    },
+    "example": "Suppose each normal sensor record contains 100 measurements and the autoencoder compresses it into a code of 10 values before reconstructing all 100. A record unlike the training data may be reconstructed poorly, and its large reconstruction error can flag it for inspection.",
+    "usedIn": [
+      {
+        "name": "Anomaly detection",
+        "detail": "Reconstruction quality can reveal inputs that differ from the data learned during training.",
+        "url": ""
+      },
+      {
+        "name": "Feature learning",
+        "detail": "Lower-dimensional encodings can supply embeddings to later machine-learning algorithms.",
+        "url": ""
+      },
+      {
+        "name": "Facial recognition",
+        "detail": "Autoencoders are applied to facial recognition and feature detection.",
+        "url": ""
+      },
+      {
+        "name": "Language processing",
+        "detail": "They can be used to learn representations of the meaning of words.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Encoder",
+        "detail": "Maps an input x to its code z, often using a multilayer perceptron."
+      },
+      {
+        "name": "Latent code",
+        "detail": "The encoded representation z, usually lower-dimensional than the input in an undercomplete autoencoder."
+      },
+      {
+        "name": "Decoder",
+        "detail": "Maps the code back to a reconstructed message x′, often using another multilayer perceptron."
+      },
+      {
+        "name": "Reconstruction objective",
+        "detail": "Measures the difference between x and x′, commonly with squared L2 error, and guides optimization of both networks."
+      }
+    ],
+    "flow": [
+      "An unlabeled input x enters the encoder.",
+      "The encoder produces the latent code z = E_phi(x).",
+      "The decoder reconstructs x′ = D_theta(z).",
+      "A quality function compares x′ with the original x.",
+      "Gradient descent updates the encoder and decoder to reduce reconstruction loss."
+    ],
+    "origin": "Mark A. Kramer originally called the denoising autoencoder a \"robust autoassociative network.\"",
+    "lineage": "Regularized variants include sparse, denoising, and contractive autoencoders. Variational autoencoders share architectural similarities but use distributions rather than fixed latent vectors and can serve as generative models.",
+    "whyItMatters": "Autoencoders turn unlabeled data into compact representations that can support later machine-learning tasks. The same reconstruction framework also connects dimensionality reduction, denoising, anomaly detection, and data generation.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input x",
+          "note": "The original unlabeled message."
+        },
+        {
+          "id": "encoder",
+          "label": "Encoder Eφ",
+          "note": "Transforms the message into a code."
+        },
+        {
+          "id": "code",
+          "label": "Latent code z",
+          "note": "Usually a compressed representation."
+        },
+        {
+          "id": "decoder",
+          "label": "Decoder Dθ",
+          "note": "Rebuilds a message from the code."
+        },
+        {
+          "id": "output",
+          "label": "Reconstruction x′",
+          "note": "The decoded approximation of x."
+        },
+        {
+          "id": "loss",
+          "label": "Reconstruction loss",
+          "note": "Compares x with x′ during training."
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "encoder",
+          "label": "encodes"
+        },
+        {
+          "from": "encoder",
+          "to": "code",
+          "label": "produces"
+        },
+        {
+          "from": "code",
+          "to": "decoder",
+          "label": "decodes"
+        },
+        {
+          "from": "decoder",
+          "to": "output",
+          "label": "reconstructs"
+        },
+        {
+          "from": "output",
+          "to": "loss",
+          "label": "compared"
+        },
+        {
+          "from": "input",
+          "to": "loss",
+          "label": "target"
+        }
+      ],
+      "caption": "During training, the encoder and decoder are adjusted so that the reconstruction x′ closely matches the input x without merely copying it."
+    },
+    "image": {
+      "src": "https://upload.wikimedia.org/wikipedia/commons/3/37/Autoencoder_schema.png",
+      "alt": "Autoencoder — Neural network that learns efficient data encoding in an unsupervised manner",
+      "width": 640,
+      "height": 582,
+      "credit": "Michela Massi",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Autoencoder_schema.png"
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Autoencoder",
+        "url": "https://en.wikipedia.org/wiki/Autoencoder"
+      }
+    ]
+  },
   "related": [
     "anomaly-detection",
     "dimensionality-reduction"

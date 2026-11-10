@@ -5,7 +5,32 @@
   "type": "concept",
   "definition": "A simple auxiliary classifier trained on a model's internal representations to test whether specific information (like syntactic structure) is encoded in those representations.",
   "details": "Probing classifiers are a common interpretability research tool for investigating what kinds of linguistic or semantic knowledge different layers of a language model have learned to encode.",
-  "story": "Think of a hiker descending a foggy hill in the dark, taking small steps and feeling for the steepest way down. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. It is the same loop you use to learn anything: try, miss, correct, try again. Skill, for a model, is just error pushed down until it is small enough to ignore. That steady, miss-by-miss improvement is Probing Classifier.",
+  "explainer": {
+    "lead": "A simple auxiliary classifier trained on a model's internal representations to test whether specific information is encoded there. It matters because it reveals what a model has learned to represent without relying on its outputs.",
+    "tiers": {
+      "eli5": "You attach a tiny quiz to a hidden layer to see if the information you care about is written there.",
+      "practitioner": "Researchers train lightweight classifiers per layer to localize knowledge such as syntax or entities; a pitfall is that a high probe score may reflect the probe's own capacity rather than clean encoding.",
+      "paperLevel": "Fit a simple classifier on frozen activations to predict a target property; limits are that probe accuracy is correlational and does not establish causal use by the model."
+    },
+    "example": "A linear probe on layer 6 activations of a language model predicts part-of-speech tags with high accuracy, suggesting syntactic information is present there.",
+    "usedIn": [
+      {
+        "name": "Interpretability research",
+        "detail": "representation analysis",
+        "url": ""
+      },
+      {
+        "name": "Language model studies",
+        "detail": "what layers encode",
+        "url": ""
+      },
+      {
+        "name": "Model auditing",
+        "detail": "locating knowledge",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "attention-visualization",
     "circuit-in-interpretability",

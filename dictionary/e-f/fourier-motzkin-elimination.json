@@ -5,7 +5,103 @@
   "type": "algorithm",
   "definition": "Fourier–Motzkin elimination, also known as the FME method, is a mathematical algorithm for eliminating variables from a system of linear inequalities.",
   "details": "It can output real solutions. The algorithm is named after Joseph Fourier who proposed the method in 1826 and Theodore Motzkin who re-discovered it in 1936.",
-  "story": "Picture an engineer at a cluttered workbench, turning a clever idea over in their hands until it finally clicks. At its heart it is a simple notion, once you strip away the fancy name. A small key that opens a much bigger door. It is one of those ideas that feels obvious only after someone shows it to you. And that idea, made concrete, is Fourier–Motzkin elimination.",
+  "explainer": {
+    "lead": "Fourier–Motzkin elimination removes unwanted variables from a system of linear inequalities, leaving constraints on the variables that remain. This can reduce a problem to a simpler form while preserving information about its real solutions.",
+    "tiers": {
+      "eli5": "You remove one unknown at a time by combining pairs of inequalities, until what is left tells you what the remaining unknowns can be.",
+      "practitioner": "Engineers use it to project linear inequality systems onto fewer variables, for instance in scheduling or verification; the pitfall is that the number of inequalities can grow quickly with each eliminated variable.",
+      "paperLevel": "To eliminate a variable, every inequality bounding it from above is combined with every inequality bounding it from below, and the original inequalities are discarded; the method is exact but its inequality count can grow rapidly."
+    },
+    "example": "Start with x ≤ y and y ≤ 2. Eliminating y combines the lower bound x on y with the upper bound 2 on y, giving x ≤ 2. The new inequality constrains real values of x without mentioning y.",
+    "goal": "Eliminate selected variables from a system of linear inequalities while preserving the constraints that govern real solutions in the remaining variables.",
+    "inputs": [
+      "A system of linear inequalities",
+      "Real variables and a variable chosen for elimination"
+    ],
+    "outputs": [
+      "A system with the selected variable removed",
+      "Inequalities describing real solutions in the remaining variables"
+    ],
+    "steps": [
+      "Choose a variable to eliminate.",
+      "Rewrite its inequalities as lower bounds, upper bounds, or constraints not involving that variable.",
+      "Combine each lower bound with each upper bound to form inequalities without the variable.",
+      "Keep the unaffected inequalities and repeat for any further variables."
+    ],
+    "tradeoffs": [
+      "Removing a variable simplifies the system but can create many new inequalities.",
+      "Repeated elimination can leave a large collection of constraints to simplify and manage."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "system",
+          "label": "Linear inequality system",
+          "note": "Real variables and constraints"
+        },
+        {
+          "id": "choose",
+          "label": "Choose variable",
+          "note": "Select the next variable to remove"
+        },
+        {
+          "id": "bounds",
+          "label": "Form bounds",
+          "note": "Separate lower and upper bounds"
+        },
+        {
+          "id": "combine",
+          "label": "Combine bounds",
+          "note": "Create inequalities without the variable"
+        },
+        {
+          "id": "result",
+          "label": "Reduced system",
+          "note": "Repeat or return remaining constraints"
+        }
+      ],
+      "edges": [
+        {
+          "from": "system",
+          "to": "choose",
+          "label": ""
+        },
+        {
+          "from": "choose",
+          "to": "bounds",
+          "label": ""
+        },
+        {
+          "from": "bounds",
+          "to": "combine",
+          "label": "paired bounds"
+        },
+        {
+          "from": "combine",
+          "to": "result",
+          "label": "new constraints"
+        }
+      ],
+      "caption": "Each elimination replaces constraints involving one variable with constraints on the remaining variables."
+    },
+    "usedIn": [
+      {
+        "name": "Linear inequality solving",
+        "detail": "variable elimination",
+        "url": ""
+      },
+      {
+        "name": "Program verification",
+        "detail": "projection of constraints",
+        "url": ""
+      },
+      {
+        "name": "Operations research",
+        "detail": "polyhedral analysis",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",
     "accelerated-linear-algebra",

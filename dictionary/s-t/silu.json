@@ -8,6 +8,32 @@
   ],
   "definition": "Common activations. ReLU (max(0, x)) is cheap and sparse but can \"die.\" GELU and SiLU are smooth variants that empirically train better in transformers; most modern LLMs use SiLU inside gated FFNs (see SwiGLU).",
   "details": "Common activations. ReLU (max(0, x)) is cheap and sparse but can \"die.\" GELU and SiLU are smooth variants that empirically train better in transformers; most modern LLMs use SiLU inside gated FFNs (see SwiGLU).",
+  "explainer": {
+    "lead": "SiLU is a smooth activation function used alongside GELU as an alternative to ReLU, which is cheap and sparse but can \"die.\" It matters because smooth variants empirically train better in transformers, and most modern LLMs use SiLU inside gated FFNs.",
+    "tiers": {
+      "eli5": "ReLU is a simple on-off switch that can get stuck off; SiLU is a smoother switch that tends to keep working better.",
+      "practitioner": "Engineers place SiLU inside gated feed-forward networks, typically in the SwiGLU pattern, when training transformers. A pitfall is forgetting that ReLU's sparsity is lost with smooth activations.",
+      "paperLevel": "Presented as a common activation: ReLU is max(0, x), cheap and sparse but able to die; GELU and SiLU are smooth variants that empirically train better in transformers, and most modern LLMs use SiLU inside gated FFNs (see SwiGLU)."
+    },
+    "example": "A transformer's gated feed-forward block uses SiLU inside a SwiGLU configuration instead of ReLU.",
+    "usedIn": [
+      {
+        "name": "Modern LLMs",
+        "detail": "gated FFNs",
+        "url": ""
+      },
+      {
+        "name": "SwiGLU",
+        "detail": "gated feed-forward",
+        "url": ""
+      },
+      {
+        "name": "Transformers",
+        "detail": "smooth activation",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "swiglu"
   ],

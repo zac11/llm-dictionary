@@ -5,7 +5,120 @@
   "type": "algorithm",
   "definition": "Graph cut optimization is a combinatorial optimization method applicable to a family of functions of discrete variables, named after the concept of cut in the theory of flow networks.",
   "details": "Thanks to the max-flow min-cut theorem, determining the minimum cut over a graph representing a flow network is equivalent to computing the maximum flow over the network. Given a pseudo-Boolean function f {\\displaystyle f} , if it is possible to construct a flow network with positive weights such that each cut C {\\displaystyle C} of the network can be mapped to an assignment of variables x {\\displaystyle \\mathbf {x} } to f {\\displaystyle f} (and vice versa), and the cost of C {\\displaystyle C} equals f ( x ) {\\displaystyle f(\\mathbf {x} )} (up to an additive constant) then it is possible to find the global optimum of f {\\displaystyle f} in polynomial time by computing a minimum cut of the graph. The mapping between cuts and variable assignments is done by representing each variable with one node in the graph and, given a cut, each variable will have a value of 0 if the corresponding node belongs to the component connected to the source, or 1 if it belong to the component connected to the sink. Not all pseudo-Boolean functions can be represented by a flow network, and in the general case the global optimization problem is NP-hard. There exist sufficient conditions to characterise fa",
-  "story": "Picture a child pointing at pictures in a book — cat, car, cloud — learning to see by seeing a thousand examples. It turns a picture into an understanding: this is a cat, that is a stop sign. What your eyes do without thinking, the machine does one careful layer at a time. It is eyes made of arithmetic — pixels become edges, edges become shapes, shapes become meaning. That pixel-to-meaning climb is Graph cut optimization.",
+  "explainer": {
+    "lead": "Graph cut optimization finds the best assignment of discrete variables by turning their costs into a weighted network. When such a network can be built, a minimum-cut calculation gives the global optimum in polynomial time rather than requiring a search through every assignment.",
+    "tiers": {
+      "eli5": "Imagine sorting switches into two teams, where cutting certain connecting strings has a price. Arrange the strings so the total cutting price matches the switches' score; the cheapest way to separate the teams then reveals the best switch settings.",
+      "practitioner": "First check that the objective can be represented by a positively weighted flow network, then create one node per variable and connect the network to a source and sink. Compute a minimum cut, equivalently a maximum flow, and label variables 0 or 1 according to whether their nodes remain connected to the source or sink. The main pitfalls are attempting to represent an unsupported objective and forgetting that cut costs may differ from the original function by an additive constant.",
+      "paperLevel": "For a pseudo-Boolean function f(x), suppose a positively weighted flow network exists whose cuts C correspond bijectively to assignments x and satisfy cost(C) = f(x) + c for a constant c. By the max-flow min-cut theorem, computing a minimum cut therefore yields the global optimum of f in polynomial time. Not every pseudo-Boolean function admits this representation, and global optimization is NP-hard in the general case."
+    },
+    "example": "Let f(x1,x2) = 1 if x1 = 1, plus 2 if x1 and x2 differ, and 0 otherwise. Use an edge of capacity 1 from x1 to the sink and an edge of capacity 2 between x1 and x2. The assignments 00, 01, 10, and 11 give cut costs 0, 3, 3, and 1 respectively, so the minimum cut selects x1 = 0 and x2 = 0, with optimum 0.",
+    "usedIn": [
+      {
+        "name": "Computer vision",
+        "detail": "Optimizing discrete variable assignments when the vision objective can be encoded as a flow network.",
+        "url": ""
+      },
+      {
+        "name": "Discrete optimization",
+        "detail": "Finding global optima of representable pseudo-Boolean functions through minimum-cut computations.",
+        "url": ""
+      }
+    ],
+    "goal": "Find a globally optimal assignment for a discrete objective by converting the optimization problem into a minimum-cut problem.",
+    "inputs": [
+      "A pseudo-Boolean function f(x)",
+      "A positively weighted flow network representing f",
+      "Source and sink nodes",
+      "One graph node per variable"
+    ],
+    "outputs": [
+      "A minimum cut of the network",
+      "A binary assignment to the variables",
+      "The global optimum of f, up to an additive constant"
+    ],
+    "steps": [
+      "Check whether the objective can be represented by a flow network.",
+      "Construct the network so every cut corresponds to a variable assignment.",
+      "Make each cut's cost equal f(x), possibly plus a constant.",
+      "Compute a minimum cut, using its equivalence to maximum flow.",
+      "Assign 0 to variables on the source side and 1 to those on the sink side.",
+      "Return the assignment as the global optimum."
+    ],
+    "tradeoffs": [
+      "Representable objectives can be optimized globally in polynomial time.",
+      "Constructing the required network is not always possible.",
+      "General pseudo-Boolean global optimization is NP-hard.",
+      "Cut costs may include an additive constant."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "objective",
+          "label": "Discrete objective",
+          "note": "A pseudo-Boolean function f(x)."
+        },
+        {
+          "id": "network",
+          "label": "Flow network",
+          "note": "Weighted edges encode assignment costs."
+        },
+        {
+          "id": "variables",
+          "label": "Variable nodes",
+          "note": "Each variable receives one node."
+        },
+        {
+          "id": "mincut",
+          "label": "Minimum cut",
+          "note": "Computed equivalently through maximum flow."
+        },
+        {
+          "id": "sides",
+          "label": "Source sink sides",
+          "note": "Nodes are separated into two components."
+        },
+        {
+          "id": "optimum",
+          "label": "Optimal assignment",
+          "note": "Source-side variables are 0; sink-side variables are 1."
+        }
+      ],
+      "edges": [
+        {
+          "from": "objective",
+          "to": "network",
+          "label": "encode costs"
+        },
+        {
+          "from": "network",
+          "to": "variables",
+          "label": "contains"
+        },
+        {
+          "from": "network",
+          "to": "mincut",
+          "label": "solve"
+        },
+        {
+          "from": "mincut",
+          "to": "sides",
+          "label": "separates"
+        },
+        {
+          "from": "variables",
+          "to": "optimum",
+          "label": "map values"
+        },
+        {
+          "from": "sides",
+          "to": "optimum",
+          "label": "determines"
+        }
+      ],
+      "caption": "A suitable objective is encoded as a flow network; its minimum cut is translated back into an optimal binary assignment."
+    }
+  },
   "related": [
     "accord-net",
     "active-appearance-model",

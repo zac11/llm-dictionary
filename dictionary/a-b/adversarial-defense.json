@@ -5,6 +5,98 @@
   "type": "concept",
   "definition": "Techniques that make models robust to adversarial perturbations — adversarial training, certified defenses, input purification — an ongoing arms race.",
   "details": "Techniques that make models robust to adversarial perturbations — adversarial training, certified defenses, input purification — an ongoing arms race.",
+  "explainer": {
+    "lead": "Adversarial defense is the collection of techniques used to keep a model reliable when someone deliberately tweaks its input to cause a mistake. It matters because a prediction can look confidently correct to the model even when the input has been manipulated.",
+    "tiers": {
+      "eli5": "Imagine a quiz-taker who can be fooled by changing a few tiny marks on a picture. Adversarial defense is like practicing with those tricky pictures, cleaning them up before answering, or proving that small changes cannot change the answer. New tricks keep appearing, so the practice has to continue.",
+      "practitioner": "A common workflow is to evaluate a model with adversarial examples, add adversarial training or input purification where appropriate, and test both clean and perturbed inputs. Certified defenses can provide robustness guarantees within a specified perturbation bound, while other defenses may only improve measured robustness. Evaluation should cover attacks beyond those used during training, since robustness against one attack does not establish robustness against all attacks.",
+      "paperLevel": "For classifier fθ and allowed perturbations Δ, the goal is for fθ(x + δ) to remain correct for δ in Δ, commonly expressed as Δ = {δ : ||δ||_p <= ε}. Adversarial training uses the robust objective minθ E_(x,y) [max_(δ in Δ) L(fθ(x + δ), y)], while certified defenses seek a guarantee over Δ and input purification transforms the input before prediction. Robustness is bound- and threat-model-specific, and defenses remain part of an ongoing arms race rather than a universal solution."
+    },
+    "example": "A handwritten-digit model correctly reads an image as 7, but tiny pixel changes make it predict 2. During adversarial training, similar perturbed images are generated and paired with the correct label 7, teaching the model to preserve that prediction; a separate test then checks whether new perturbations still fool it.",
+    "usedIn": [
+      {
+        "name": "Image classification",
+        "detail": "Protects predictions against small, deliberately crafted pixel changes.",
+        "url": ""
+      },
+      {
+        "name": "Biometric recognition",
+        "detail": "Tests whether manipulated face or other biometric inputs can cause incorrect decisions.",
+        "url": ""
+      },
+      {
+        "name": "Safety-critical perception",
+        "detail": "Evaluates whether sensor inputs with adversarial changes can destabilize downstream decisions.",
+        "url": ""
+      }
+    ],
+    "intuition": "An attacker searches for a small input change that produces a large change in the model's answer. A defense either trains the model to resist such changes, removes them before prediction, or certifies that no change within a defined limit can alter the answer.",
+    "howItWorks": [
+      "Define the input changes the defense must handle.",
+      "Generate perturbed examples to expose model failures.",
+      "Apply adversarial training, input purification, or a certified defense.",
+      "Evaluate predictions on both clean and adversarial inputs.",
+      "Repeat testing as attacks and threat assumptions change."
+    ],
+    "whyItMatters": "Ordinary test accuracy can hide failures on deliberately manipulated inputs. Defenses make robustness measurable and, with certification, can provide guarantees for a precisely defined range of perturbations.",
+    "misconceptions": [
+      "High clean-input accuracy does not imply adversarial robustness.",
+      "Success against one attack does not prove safety against every attack.",
+      "A certified defense guarantees robustness only within its stated assumptions and perturbation bound."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "clean",
+          "label": "Clean input",
+          "note": "The original example and its label."
+        },
+        {
+          "id": "attack",
+          "label": "Adversarial perturbation",
+          "note": "A bounded change designed to cause an error."
+        },
+        {
+          "id": "hostile",
+          "label": "Perturbed input",
+          "note": "The manipulated example presented to the system."
+        },
+        {
+          "id": "defense",
+          "label": "Defense method",
+          "note": "Training, purification, or certification."
+        },
+        {
+          "id": "prediction",
+          "label": "Robust prediction",
+          "note": "The output checked against the correct label."
+        }
+      ],
+      "edges": [
+        {
+          "from": "clean",
+          "to": "attack",
+          "label": "modified by"
+        },
+        {
+          "from": "attack",
+          "to": "hostile",
+          "label": "produces"
+        },
+        {
+          "from": "hostile",
+          "to": "defense",
+          "label": "processed by"
+        },
+        {
+          "from": "defense",
+          "to": "prediction",
+          "label": "outputs"
+        }
+      ],
+      "caption": "A defense aims to preserve the correct output when an input is deliberately perturbed."
+    }
+  },
   "citation": {
     "title": "Adversarial Defense",
     "authors": [],

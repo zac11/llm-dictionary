@@ -5,7 +5,93 @@
   "type": "concept",
   "definition": "A large, publicly available repository of web-crawled data, widely used as a raw data source for pretraining large language models.",
   "details": "Common Crawl provides petabytes of web page data collected over many years, and is typically filtered, deduplicated, and cleaned extensively before being used in LLM pretraining pipelines.",
-  "story": "Think of a historian sorting through boxes of letters, building a picture of an era one sentence at a time. Every machine is shaped by what it was shown, so someone has to choose that material with care. The examples a machine reads become the world it believes in. The words a model reads become the world it believes in. That care with the raw material is Common Crawl.",
+  "explainer": {
+    "lead": "Common Crawl is a huge public collection of web pages gathered over many years. It gives AI teams a vast starting pool of text, but turning that raw material into useful language-model training data takes extensive cleaning.",
+    "tiers": {
+      "eli5": "Imagine a giant library filled with copies of pages from across the web, built up over many years. Before using those pages to teach a language model, people remove repeats and unwanted material, much like sorting and cleaning a messy box of papers.",
+      "practitioner": "Teams use Common Crawl as raw input to LLM pretraining pipelines rather than as a ready-made training corpus. At petabyte scale, filtering, deduplication, and cleaning are central pipeline stages; skipping or weakening them leaves more duplicate and unwanted web material in the training data.",
+      "paperLevel": "Let C denote Common Crawl's repository of web pages collected across many crawls. A pretraining corpus can be represented as D = Clean(Deduplicate(Filter(C))), with substantial processing required before D is suitable for LLM pretraining."
+    },
+    "example": "A team building a language model selects Common Crawl pages, removes duplicate documents, filters and cleans the remaining text, and uses the resulting corpus for pretraining rather than training directly on the raw crawl.",
+    "usedIn": [
+      {
+        "name": "Large language model pretraining",
+        "detail": "A widely used source of raw web text for building pretraining corpora.",
+        "url": ""
+      },
+      {
+        "name": "Web-data processing pipelines",
+        "detail": "Crawl data is filtered, deduplicated, and cleaned before training use.",
+        "url": ""
+      }
+    ],
+    "intuition": "Common Crawl is like a vast raw supply of web pages: plentiful and publicly accessible, but not automatically clean or training-ready.",
+    "howItWorks": [
+      "Collect web pages across many crawls over many years.",
+      "Store the resulting petabyte-scale data in a public repository.",
+      "Filter the raw data to select material for training.",
+      "Deduplicate and clean the selected pages extensively.",
+      "Feed the processed text into an LLM pretraining pipeline."
+    ],
+    "whyItMatters": "It makes an enormous amount of web data publicly available, providing raw material for language-model development at a scale that would otherwise require collecting and storing web pages independently.",
+    "misconceptions": [
+      "It is not a clean, ready-to-use LLM training set.",
+      "It is a data repository, not a language model.",
+      "Using it does not remove the need for filtering, deduplication, and cleaning."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "web",
+          "label": "Web pages",
+          "note": "Pages collected across many crawls."
+        },
+        {
+          "id": "repository",
+          "label": "Common Crawl",
+          "note": "A public petabyte-scale repository."
+        },
+        {
+          "id": "filter",
+          "label": "Filter data",
+          "note": "Select material for the training pipeline."
+        },
+        {
+          "id": "clean",
+          "label": "Deduplicate and clean",
+          "note": "Process the selected data extensively."
+        },
+        {
+          "id": "pretrain",
+          "label": "LLM pretraining",
+          "note": "Train on the processed web text."
+        }
+      ],
+      "edges": [
+        {
+          "from": "web",
+          "to": "repository",
+          "label": "crawled data"
+        },
+        {
+          "from": "repository",
+          "to": "filter",
+          "label": "raw pages"
+        },
+        {
+          "from": "filter",
+          "to": "clean",
+          "label": "selected data"
+        },
+        {
+          "from": "clean",
+          "to": "pretrain",
+          "label": "training text"
+        }
+      ],
+      "caption": "Raw crawl data becomes LLM pretraining input through extensive processing."
+    }
+  },
   "related": [
     "data-curation",
     "data-labeling",

@@ -2,10 +2,109 @@
   "term": "Dropout (neural networks)",
   "letter": "D",
   "category": "Artificial Intelligence",
-  "type": "architecture",
+  "type": "algorithm",
   "definition": "Dropout is a regularization technique for reducing overfitting in artificial neural networks by preventing complex co-adaptations on training data.",
   "details": "The technique consists of randomly setting the inputs and/or outputs of neurons to zero. It is performed during the training process of a neural network, not during inference. A related older technique is dilution, which randomly decreases weights towards zero.",
-  "story": "Imagine teaching a friend to shoot a basketball. They miss, and you walk them backwards through the shot — elbow, wrist, release — to find what needs fixing. It is the same loop you use to learn anything: try, miss, correct, try again. Underneath all the magic is a patient process of small improvements. It is learning from every miss instead of repeating the same mistake. That steady, miss-by-miss improvement is Dropout (neural networks).",
+  "explainer": {
+    "lead": "Dropout is a training technique that helps neural networks avoid memorizing their training data too closely. It randomly zeroes some neuron inputs or outputs so neurons become less dependent on one another, then stops doing this when the trained network makes predictions.",
+    "tiers": {
+      "eli5": "During practice, the network randomly ignores some of its neurons so it cannot rely on any single one too much.",
+      "practitioner": "Engineers randomly set neuron inputs and/or outputs to zero during training only, not during inference. The pitfall is leaving dropout active at inference unless deliberately using it as an uncertainty method.",
+      "paperLevel": "Regularization that randomly sets inputs and/or outputs of neurons to zero during training; a related older technique, dilution, randomly decreases weights towards zero. It is a training-time procedure, not applied during inference."
+    },
+    "example": "During one training step, suppose four neuron outputs are [0.8, 0.2, 0.5, 0.1]. If dropout randomly selects the second and fourth, the result is [0.8, 0, 0.5, 0]; when the trained network is later used for inference, dropout is not applied.",
+    "goal": "Reduce overfitting in an artificial neural network by preventing complex co-adaptations on training data.",
+    "inputs": [
+      "A neural network undergoing training, together with the neuron inputs or outputs selected for random zeroing."
+    ],
+    "outputs": [
+      "A network trained with reduced reliance on complex co-adaptations. During inference, its neuron inputs and outputs are no longer randomly zeroed by dropout."
+    ],
+    "steps": [
+      "Begin a training pass through the neural network.",
+      "Randomly select neuron inputs and/or outputs.",
+      "Set the selected values to zero.",
+      "Continue training with the remaining values.",
+      "Disable random zeroing when performing inference."
+    ],
+    "tradeoffs": [
+      "Dropout targets overfitting and complex co-adaptations, but its random zeroing must be limited to training rather than inference. It also differs from dilution, which modifies weights instead of neuron inputs or outputs."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "training-data",
+          "label": "Training data",
+          "note": "Examples used to train the network."
+        },
+        {
+          "id": "activations",
+          "label": "Neuron signals",
+          "note": "Inputs and outputs passing between neurons."
+        },
+        {
+          "id": "dropout",
+          "label": "Random zeroing",
+          "note": "Selected signals are set to zero."
+        },
+        {
+          "id": "training-pass",
+          "label": "Training pass",
+          "note": "Learning continues with the remaining signals."
+        },
+        {
+          "id": "trained-network",
+          "label": "Trained network",
+          "note": "Training finishes with dropout no longer active."
+        },
+        {
+          "id": "inference",
+          "label": "Inference",
+          "note": "Predictions are made without random zeroing."
+        }
+      ],
+      "edges": [
+        {
+          "from": "training-data",
+          "to": "activations",
+          "label": "feeds"
+        },
+        {
+          "from": "activations",
+          "to": "dropout",
+          "label": "training only"
+        },
+        {
+          "from": "dropout",
+          "to": "training-pass",
+          "label": "zeroed signals"
+        },
+        {
+          "from": "training-pass",
+          "to": "trained-network",
+          "label": "produces"
+        },
+        {
+          "from": "trained-network",
+          "to": "inference",
+          "label": "no dropout"
+        }
+      ],
+      "caption": "Dropout randomly zeroes neuron signals during training, but the trained network performs inference without it."
+    },
+    "usedIn": [
+      {
+        "name": "Neural network training",
+        "detail": "reducing overfitting",
+        "url": ""
+      },
+      {
+        "name": "Regularization pipelines",
+        "detail": "standard training-time technique",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "dropout",
     "large-width-limits-of-neural-networks",

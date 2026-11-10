@@ -5,6 +5,107 @@
   "type": "concept",
   "definition": "Sharding optimizer states, gradients, and parameters across data-parallel ranks (DeepSpeed ZeRO stages 1-3; PyTorch FSDP) so no device holds the full training state.",
   "details": "Sharding optimizer states, gradients, and parameters across data-parallel ranks (DeepSpeed ZeRO stages 1-3; PyTorch FSDP) so no device holds the full training state. The standard way to train models far larger than a single GPU's memory.",
+  "explainer": {
+    "lead": "FSDP splits a model's training state across multiple devices instead of giving every device a complete copy. This makes it possible to train models whose parameters, gradients, and optimizer states would not fit in one GPU's memory.",
+    "tiers": {
+      "eli5": "Imagine a notebook so huge that one person cannot carry it. A group can each carry a different section and share information when they need to work together. FSDP does something similar with the information a computer needs while training a very large model.",
+      "practitioner": "Apply it through PyTorch FSDP or DeepSpeed ZeRO stages 1–3, which progressively shard optimizer states, gradients, and parameters across data-parallel ranks. Size the setup using aggregate device memory rather than expecting each GPU to hold the full state. It addresses memory capacity, but ranks must still coordinate their shards and sharding alone does not guarantee faster training.",
+      "paperLevel": "For R data-parallel ranks, partition parameters P, gradients G, and optimizer states O into disjoint shards so rank r holds P_r, G_r, and O_r, with the union of shards recovering each complete training-state component. DeepSpeed ZeRO stages 1–3 introduce these three levels of sharding, while PyTorch FSDP implements the fully sharded approach. The method removes full-state replication but still requires coordination among ranks and sufficient aggregate memory."
+    },
+    "example": "With four data-parallel ranks, each rank can hold roughly one quarter of the parameters, gradients, and optimizer states. The ranks coordinate to train the model without any one GPU storing the complete training state.",
+    "usedIn": [
+      {
+        "name": "PyTorch FSDP",
+        "detail": "Shards parameters, gradients, and optimizer states across data-parallel ranks.",
+        "url": ""
+      },
+      {
+        "name": "DeepSpeed ZeRO",
+        "detail": "Stages 1–3 progressively shard optimizer states, gradients, and parameters.",
+        "url": ""
+      },
+      {
+        "name": "Large-model training",
+        "detail": "Used when the complete training state exceeds a single GPU's memory.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of every worker carrying an entire heavy load, each worker keeps one slice and the workers cooperate. The full training state exists across the group, not in its entirety on any one device.",
+    "howItWorks": [
+      "Divide the optimizer states across data-parallel ranks.",
+      "Also divide the gradients so each rank keeps only its shard.",
+      "Divide the parameters as well for full sharding.",
+      "Coordinate the ranks during training so computation and updates use the distributed shards."
+    ],
+    "whyItMatters": "Full copies of parameters, gradients, and optimizer states can make a model impossible to fit on one GPU. Sharding lets the combined memory of multiple devices hold that state, enabling training at much larger scales.",
+    "misconceptions": [
+      "It is not ordinary data parallelism with a full model replica on every device.",
+      "It does not mean each device needs enough memory for the full training state.",
+      "It removes a memory constraint but does not by itself guarantee faster training."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "state",
+          "label": "Full training state",
+          "note": "Parameters, gradients, and optimizer states."
+        },
+        {
+          "id": "shard",
+          "label": "Shard across ranks",
+          "note": "Divide each component among devices."
+        },
+        {
+          "id": "rank1",
+          "label": "Rank 1",
+          "note": "Holds its own state shard."
+        },
+        {
+          "id": "rank2",
+          "label": "Rank 2",
+          "note": "Holds its own state shard."
+        },
+        {
+          "id": "rank3",
+          "label": "Rank 3",
+          "note": "Holds its own state shard."
+        },
+        {
+          "id": "rank4",
+          "label": "Rank 4",
+          "note": "Holds its own state shard."
+        }
+      ],
+      "edges": [
+        {
+          "from": "state",
+          "to": "shard",
+          "label": "partition"
+        },
+        {
+          "from": "shard",
+          "to": "rank1",
+          "label": "shard 1"
+        },
+        {
+          "from": "shard",
+          "to": "rank2",
+          "label": "shard 2"
+        },
+        {
+          "from": "shard",
+          "to": "rank3",
+          "label": "shard 3"
+        },
+        {
+          "from": "shard",
+          "to": "rank4",
+          "label": "shard 4"
+        }
+      ],
+      "caption": "FSDP distributes the complete training state across ranks so no device holds all of it."
+    }
+  },
   "related": [
     "deepspeed",
     "pytorch"

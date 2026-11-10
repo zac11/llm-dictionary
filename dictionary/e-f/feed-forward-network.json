@@ -5,6 +5,100 @@
   "type": "architecture",
   "definition": "The simplest deep architecture: fully connected layers stacked with nonlinearities.",
   "details": "The simplest deep architecture: fully connected layers stacked with nonlinearities. Inside a transformer, the \"FFN\" blocks that follow attention are MLPs and hold most of the parameters.",
+  "explainer": {
+    "lead": "A feed-forward network turns an input into an output by passing it through fully connected layers, with a nonlinearity between them. It is a basic building block of deep learning and, inside transformers, its FFN blocks hold most of the parameters.",
+    "tiers": {
+      "eli5": "Information enters at one end and moves straight through the layers to the exit, never looping back.",
+      "practitioner": "Engineers stack linear layers with activations for classification or regression, and rely on them as the FFN blocks after attention; the pitfall is parameter blowup in wide hidden layers.",
+      "paperLevel": "Fully connected layers stacked with nonlinearities, with no cycles. In a transformer, the position-wise FFN blocks after attention are MLPs and hold most of the parameters. Limits: no built-in handling of sequence order or recurrence."
+    },
+    "usedIn": [
+      {
+        "name": "Transformer models",
+        "detail": "FFN blocks follow attention and hold most of the parameters.",
+        "url": ""
+      },
+      {
+        "name": "Deep neural networks",
+        "detail": "Fully connected layers stacked with nonlinearities form the simplest deep architecture.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Fully connected layers",
+        "detail": "Each layer mixes its inputs through learned weighted connections."
+      },
+      {
+        "name": "Nonlinearities",
+        "detail": "Applied between layers so the stack can represent nonlinear transformations."
+      },
+      {
+        "name": "Transformer FFN blocks",
+        "detail": "MLPs placed after attention that contain most of a transformer's parameters."
+      }
+    ],
+    "flow": [
+      "The input enters the first fully connected layer.",
+      "A nonlinearity transforms that layer's output.",
+      "Further fully connected layers and nonlinearities repeat the process.",
+      "The last layer produces the network's output."
+    ],
+    "whyItMatters": "It is the simplest deep architecture and a direct way to build expressive layered transformations. Its central role in transformer FFN blocks also makes it important to model size and computation.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input vector",
+          "note": "Values entering the network"
+        },
+        {
+          "id": "linear1",
+          "label": "Connected layer",
+          "note": "Learned weighted mixing"
+        },
+        {
+          "id": "nonlinear",
+          "label": "Nonlinearity",
+          "note": "Bends the transformed values"
+        },
+        {
+          "id": "linear2",
+          "label": "More layers",
+          "note": "Repeat mixing and nonlinearities"
+        },
+        {
+          "id": "output",
+          "label": "Output vector",
+          "note": "Final transformed representation"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "linear1",
+          "label": "values"
+        },
+        {
+          "from": "linear1",
+          "to": "nonlinear",
+          "label": "activations"
+        },
+        {
+          "from": "nonlinear",
+          "to": "linear2",
+          "label": "features"
+        },
+        {
+          "from": "linear2",
+          "to": "output",
+          "label": "result"
+        }
+      ],
+      "caption": "Data flows in one direction through fully connected layers and nonlinearities, with no attention step inside the FFN itself."
+    },
+    "example": "A two-layer network maps an input vector through a hidden layer with ReLU to class scores; in a transformer, an MLP applies the same feed-forward transform to each token."
+  },
   "related": [
     "attention",
     "transformer"

@@ -5,7 +5,27 @@
   "type": "concept",
   "definition": "A distributed training technique that splits a model's layers across multiple devices, with different devices processing different stages of the forward and backward pass in a pipelined fashion.",
   "details": "Pipeline parallelism complements data and model (tensor) parallelism, together forming the combination of parallelization strategies used to train today's largest language models across thousands of accelerators.",
-  "story": "Think of a hiker descending a foggy hill in the dark, taking small steps and feeling for the steepest way down. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. It is the same loop you use to learn anything: try, miss, correct, try again. Skill, for a model, is just error pushed down until it is small enough to ignore. That steady, miss-by-miss improvement is Pipeline Parallelism.",
+  "explainer": {
+    "lead": "It splits a model's layers across devices so different stages work on different batches in overlapping fashion. It is one of the strategies that makes training the largest language models across thousands of accelerators feasible.",
+    "tiers": {
+      "eli5": "Like an assembly line: each worker does one part of the job on an item, then passes it on while starting the next.",
+      "practitioner": "Engineers shard layer blocks across GPUs and schedule micro-batches to keep stages busy. A common pitfall is pipeline bubbles — idle time while stages wait on each other.",
+      "paperLevel": "The model's layers are partitioned into stages on separate devices, with forward and backward passes executed in a pipelined schedule; it complements data and tensor parallelism to form the combined parallelization used for very large models."
+    },
+    "example": "A model split into four stages on four GPUs processes micro-batches so stage one works on batch five while stage four finishes batch two.",
+    "usedIn": [
+      {
+        "name": "Large language model training",
+        "detail": "thousands of accelerators",
+        "url": ""
+      },
+      {
+        "name": "Distributed deep learning",
+        "detail": "combined with tensor parallelism",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "data-parallelism",
     "model-parallelism",

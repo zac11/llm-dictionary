@@ -5,7 +5,93 @@
   "type": "concept",
   "definition": "The task of determining which words or phrases in a text refer to the same underlying entity, such as linking a pronoun back to the noun it refers to.",
   "details": "Coreference resolution is important for tasks requiring a coherent understanding of a document as a whole, such as summarization or question answering over long texts with many pronouns and repeated references.",
-  "story": "Picture a translator at the United Nations, listening to one language and whispering the meaning into another in real time. It figures out meaning by noticing which words like to travel together. It does not memorize a rulebook; it absorbs a library. Meaning lives in company — a word is known by the words it keeps. And that is Coreference Resolution — teaching a machine to read between the lines.",
+  "explainer": {
+    "lead": "Coreference resolution connects words and phrases that point to the same person, thing, or group in a text. It helps software follow who did what across sentences instead of treating every pronoun or repeated description as unrelated.",
+    "tiers": {
+      "eli5": "Imagine reading a story and putting matching stickers on every word that points to the same character or object. \"Aisha,\" \"she,\" and \"her\" might get blue stickers, while \"the bicycle\" and \"it\" get green ones. Coreference resolution teaches a computer to place those stickers using the story's meaning.",
+      "practitioner": "A system identifies mentions in a document and groups those judged to refer to the same entity, often feeding the resulting clusters into summarization or question answering. Long documents, ambiguous pronouns, and several similar entities can make the links unreliable, so incorrect clusters may spread errors to downstream tasks.",
+      "paperLevel": "Given a document D and its mentions M, coreference resolution partitions M into clusters such that two mentions belong to the same cluster when they refer to the same underlying entity. The task includes linking pronouns as well as repeated names and descriptions; difficulty grows with ambiguous references and long-range dependencies."
+    },
+    "example": "In \"Maya lost her keys because she left them on the bus,\" the mentions \"Maya,\" \"her,\" and \"she\" form one cluster referring to Maya. \"Her keys\" and \"them\" form another cluster referring to the keys.",
+    "usedIn": [
+      {
+        "name": "Document summarization",
+        "detail": "Keeps references to the same entity connected so a summary can follow the document as a whole.",
+        "url": ""
+      },
+      {
+        "name": "Question answering",
+        "detail": "Helps answer questions over long texts containing many pronouns and repeated references.",
+        "url": ""
+      }
+    ],
+    "intuition": "A text often mentions an entity once by name and then refers to it indirectly. Resolving those references creates a clearer picture of the entities and how they relate across the text.",
+    "howItWorks": [
+      "Read the text as a connected document.",
+      "Find words and phrases that may refer to entities.",
+      "Compare mentions using their surrounding context.",
+      "Group mentions that refer to the same entity.",
+      "Pass the groups to tasks such as summarization."
+    ],
+    "whyItMatters": "Without these links, a system can lose track of entities between sentences. That is especially damaging when a task requires a coherent understanding of an entire long document.",
+    "misconceptions": [
+      "It is not only pronoun replacement; names and descriptions can also corefer.",
+      "Repeated words do not automatically refer to the same entity.",
+      "A cluster connects references, not merely words with similar meanings."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "text",
+          "label": "Document text",
+          "note": "Sentences containing names, descriptions, and pronouns."
+        },
+        {
+          "id": "mentions",
+          "label": "Candidate mentions",
+          "note": "Words and phrases that may refer to entities."
+        },
+        {
+          "id": "compare",
+          "label": "Compare references",
+          "note": "Context is used to judge whether mentions corefer."
+        },
+        {
+          "id": "clusters",
+          "label": "Entity clusters",
+          "note": "Each group represents one underlying entity."
+        },
+        {
+          "id": "tasks",
+          "label": "Downstream tasks",
+          "note": "Summarization and question answering use the links."
+        }
+      ],
+      "edges": [
+        {
+          "from": "text",
+          "to": "mentions",
+          "label": "identify"
+        },
+        {
+          "from": "mentions",
+          "to": "compare",
+          "label": "context"
+        },
+        {
+          "from": "compare",
+          "to": "clusters",
+          "label": "group"
+        },
+        {
+          "from": "clusters",
+          "to": "tasks",
+          "label": "support"
+        }
+      ],
+      "caption": "Mentions in a document are compared and grouped by the entity they refer to, producing links that downstream language tasks can use."
+    }
+  },
   "related": [
     "dependency-parsing",
     "dialogue-state-tracking",

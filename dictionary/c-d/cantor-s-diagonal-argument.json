@@ -5,6 +5,91 @@
   "type": "concept",
   "definition": "Cantor's diagonal argument is a mathematical proof that there are sets which cannot be put into one-to-one correspondence with the natural numbers, such as the set of real numbers, proving it uncountable.",
   "details": "Cantor's diagonal argument is a mathematical proof that there are sets which cannot be put into one-to-one correspondence with the natural numbers, such as the set of real numbers, proving it uncountable.",
+  "explainer": {
+    "lead": "Cantor’s diagonal argument shows that some infinite collections are too large to list, even using an endless list numbered 1, 2, 3, and so on. From any proposed list of real numbers, it builds one the list must have missed, which is why the real numbers are called uncountable.",
+    "tiers": {
+      "eli5": "Imagine someone claims to have written every decimal number in an endless list. Take the first decimal digit from the first number, the second digit from the second number, and so on, then change each one. The new number cannot match any row, so every such list must leave something out.",
+      "practitioner": "This is a proof technique rather than an algorithm to implement. Engineers encounter its conclusion when distinguishing integer-indexed sequences from uncountable real-valued domains. When reconstructing the proof, ensure the constructed number differs from every row in a specific digit; avoiding 0 and 9 as replacement digits sidesteps duplicate decimal representations.",
+      "paperLevel": "For any f: N -> [0,1], write f(n) = 0.d_{n,1}d_{n,2}.... Choose e_n in {1,...,8} with e_n != d_{n,n}, and set x = 0.e_1e_2.... Then x differs from f(n) in decimal place n for every n, so f is not surjective; therefore [0,1], and hence R, is uncountable. The argument refutes every proposed enumeration rather than providing a finite listing procedure."
+    },
+    "example": "Suppose a list begins 0.5000..., 0.1234..., 0.7777..., and 0.3141.... Its first four diagonal digits are 5, 2, 7, and 1; changing 5 to 6 and each other digit to 7 gives 0.6777.... Continuing this rule produces a number that differs from row n at decimal place n, so it cannot occur anywhere in the list.",
+    "usedIn": [
+      {
+        "name": "Set theory",
+        "detail": "A foundational demonstration that infinite sets can have different sizes.",
+        "url": ""
+      },
+      {
+        "name": "Real analysis",
+        "detail": "Establishes that the interval [0,1], and therefore the real numbers, cannot be enumerated.",
+        "url": ""
+      }
+    ],
+    "intuition": "A list pairs each entry with a natural number. Diagonalization turns that pairing against itself, using one position from every entry to guarantee that a new entry is missing.",
+    "howItWorks": [
+      "Suppose every real number in [0,1] appears in a list r1, r2, r3, and so on.",
+      "Write each number as a decimal expansion and mark digit n in row n.",
+      "Build a new decimal by changing every marked digit, choosing replacements other than 0 and 9.",
+      "The new number differs from every row, contradicting the claim that the list was complete."
+    ],
+    "whyItMatters": "It proves that infinite sets are not all the same size: the natural numbers are countable, while the real numbers are uncountable.",
+    "misconceptions": [
+      "It does not claim that every infinite set is uncountable; the natural numbers are infinite but countable.",
+      "The contradiction does not depend on the list being finite: the constructed number differs from every entry in an endless list as well."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "list",
+          "label": "Proposed list",
+          "note": "Rows claim to contain every real."
+        },
+        {
+          "id": "grid",
+          "label": "Decimal grid",
+          "note": "Mark digit n in row n."
+        },
+        {
+          "id": "change",
+          "label": "Changed diagonal",
+          "note": "Choose a different digit each time."
+        },
+        {
+          "id": "missing",
+          "label": "New real number",
+          "note": "It differs from every listed row."
+        },
+        {
+          "id": "result",
+          "label": "No complete list",
+          "note": "The original assumption fails."
+        }
+      ],
+      "edges": [
+        {
+          "from": "list",
+          "to": "grid",
+          "label": "expand"
+        },
+        {
+          "from": "grid",
+          "to": "change",
+          "label": "read diagonal"
+        },
+        {
+          "from": "change",
+          "to": "missing",
+          "label": "construct"
+        },
+        {
+          "from": "missing",
+          "to": "result",
+          "label": "contradiction"
+        }
+      ],
+      "caption": "Any proposed enumeration yields a constructed real number that the enumeration must omit."
+    }
+  },
   "citation": {
     "title": "Math Glossary for AI (François Fleuret notes)",
     "authors": [],

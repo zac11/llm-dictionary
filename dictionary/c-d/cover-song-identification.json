@@ -5,6 +5,97 @@
   "type": "concept",
   "definition": "Determining whether two music recordings are versions of the same underlying song despite differences in tempo, key, instrumentation, or arrangement.",
   "details": "Determining whether two music recordings are versions of the same underlying song despite differences in tempo, key, instrumentation, or arrangement. Systems compare melody- and harmony-based representations such as chroma features or learned embeddings.",
+  "explainer": {
+    "lead": "Cover song identification helps a computer recognize the same song across different performances, even when the tempo, key, instruments, or arrangement change. It makes music search and comparison focus on the underlying composition rather than on identical audio.",
+    "tiers": {
+      "eli5": "Imagine two people telling the same story: one speaks quickly and the other slowly, but the main events still match. Cover song identification does something similar with music, looking for a shared tune and harmony instead of expecting the recordings to sound exactly alike.",
+      "practitioner": "Systems typically turn recordings into chroma features or learned embeddings, then compare the representations for similarity. Chroma-based approaches are useful when pitch content matters more than timbre, while embeddings can be used for compact similarity search. Evaluation should include versions with changes in tempo, key, instrumentation, and arrangement, since matching surface audio characteristics alone can miss covers.",
+      "paperLevel": "Given recordings x and y, learn or construct representations f(x) and f(y) that emphasize melody and harmony, then decide cover(x, y) = 1 when a similarity or distance criterion between f(x) and f(y) passes a chosen threshold. Chroma features and learned embeddings are common representations. The central difficulty is preserving song identity while remaining insensitive to tempo, key, instrumentation, and arrangement."
+    },
+    "example": "A slow piano ballad and a fast guitar-rock recording are compared. Although their tempo, key, and instrumentation differ, their chroma-based representations show similar melodic and harmonic patterns, so the system identifies them as versions of the same song.",
+    "usedIn": [
+      {
+        "name": "Music information retrieval",
+        "detail": "Finding alternate performances of a query song within a collection of recordings.",
+        "url": ""
+      },
+      {
+        "name": "Music catalog organization",
+        "detail": "Grouping recordings that may represent versions of the same underlying song.",
+        "url": ""
+      },
+      {
+        "name": "Audio similarity research",
+        "detail": "Studying representations that distinguish a song's composition from the sound of a particular performance.",
+        "url": ""
+      }
+    ],
+    "intuition": "A cover can sound very different while keeping enough of the original melody and harmony to be recognizable. The task is to compare those musical patterns rather than requiring the raw recordings to match.",
+    "howItWorks": [
+      "Take two music recordings that may be versions of the same song.",
+      "Represent each recording with melody- and harmony-sensitive features, such as chroma features or a learned embedding.",
+      "Compare the two representations while allowing for performance differences such as tempo or key changes.",
+      "Use their similarity to decide whether the recordings share the same underlying song."
+    ],
+    "whyItMatters": "It lets music systems connect performances that an ordinary audio match would treat as unrelated. This shifts retrieval from recognizing a specific recording toward recognizing the song itself.",
+    "misconceptions": [
+      "It is not the same as audio fingerprinting: two cover recordings need not share matching audio.",
+      "Similar instrumentation or genre does not by itself establish that two recordings are covers.",
+      "Transposing a song or changing its tempo does not necessarily change its underlying identity."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "recording-a",
+          "label": "Recording A",
+          "note": "One performance of a possible song match."
+        },
+        {
+          "id": "recording-b",
+          "label": "Recording B",
+          "note": "A second performance with possible musical changes."
+        },
+        {
+          "id": "features",
+          "label": "Musical Representations",
+          "note": "Chroma features or learned embeddings capture melody and harmony."
+        },
+        {
+          "id": "compare",
+          "label": "Similarity Comparison",
+          "note": "Representations are compared beyond surface audio differences."
+        },
+        {
+          "id": "decision",
+          "label": "Cover Decision",
+          "note": "The system judges whether both recordings share one song."
+        }
+      ],
+      "edges": [
+        {
+          "from": "recording-a",
+          "to": "features",
+          "label": "encode"
+        },
+        {
+          "from": "recording-b",
+          "to": "features",
+          "label": "encode"
+        },
+        {
+          "from": "features",
+          "to": "compare",
+          "label": "compare"
+        },
+        {
+          "from": "compare",
+          "to": "decision",
+          "label": "classify"
+        }
+      ],
+      "caption": "Two recordings are mapped into melody- and harmony-focused representations, compared, and judged for a shared underlying song."
+    }
+  },
   "citation": {
     "title": "Cover Song Identification",
     "authors": [],

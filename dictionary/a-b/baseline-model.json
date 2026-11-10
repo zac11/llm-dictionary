@@ -5,7 +5,97 @@
   "type": "concept",
   "definition": "A simple or standard reference model used for comparison, to contextualize how much a new method actually improves performance.",
   "details": "Establishing strong baselines is essential for meaningful evaluation, since without them it's difficult to know whether a new technique's reported gains are genuinely significant.",
-  "story": "Imagine a driving test that every new model has to pass before it is allowed on the road. It is the exam that separates “it sounds good” from “it actually is good”. A fair scoreboard keeps everyone honest. It is the exam that keeps everyone honest. That shared ruler is Baseline Model.",
+  "explainer": {
+    "lead": "A baseline model gives you something solid to compare a new method against. Without that reference point, a better-looking score tells you little about whether the new approach is genuinely useful.",
+    "tiers": {
+      "eli5": "If someone says their new recipe is better, you need the old recipe to compare against. A baseline model is that old recipe.",
+      "practitioner": "Engineers establish strong baselines before claiming a new technique works, reporting results against them. The pitfall is a weak baseline, which makes a modest gain look significant when it isn't.",
+      "paperLevel": "Defined as a simple or standard reference model used for comparison to contextualize how much a new method improves performance. The definition establishes the role of baselines, not any selection criterion or metric."
+    },
+    "example": "A baseline model scores 80% on a task, while a new method scores 82% under the same evaluation. The observed gain is 2 percentage points over the baseline; that comparison is more informative than reporting 82% alone, though it does not by itself prove the gain is significant.",
+    "intuition": "A score only becomes meaningful when you know what a reasonable existing approach achieves on the same task. The baseline supplies that reference point, turning an isolated number into a comparison.",
+    "howItWorks": [
+      "Choose a simple or standard reference model for the task.",
+      "Evaluate the baseline and the new method on comparable data with the same metric.",
+      "Compare their scores to measure the new method's improvement.",
+      "Use a strong baseline to check that the improvement reflects a genuine advance."
+    ],
+    "whyItMatters": "Strong baselines make evaluation meaningful by showing how much a new technique improves on established performance. They help prevent small or unsurprising gains from being presented as major advances.",
+    "misconceptions": [
+      "A baseline is not necessarily the weakest or a random model; a strong standard model can be a baseline.",
+      "Beating a baseline does not automatically mean the improvement is significant.",
+      "Comparisons are hard to interpret when the baseline and new method are evaluated under different conditions."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "task",
+          "label": "Task and data",
+          "note": "The shared evaluation setting"
+        },
+        {
+          "id": "baseline",
+          "label": "Baseline model",
+          "note": "The simple or standard reference"
+        },
+        {
+          "id": "method",
+          "label": "New method",
+          "note": "The approach being assessed"
+        },
+        {
+          "id": "scores",
+          "label": "Comparable scores",
+          "note": "Results measured with the same metric"
+        },
+        {
+          "id": "gain",
+          "label": "Measured gain",
+          "note": "The improvement over the baseline"
+        }
+      ],
+      "edges": [
+        {
+          "from": "task",
+          "to": "baseline",
+          "label": "evaluate"
+        },
+        {
+          "from": "task",
+          "to": "method",
+          "label": "evaluate"
+        },
+        {
+          "from": "baseline",
+          "to": "scores",
+          "label": ""
+        },
+        {
+          "from": "method",
+          "to": "scores",
+          "label": ""
+        },
+        {
+          "from": "scores",
+          "to": "gain",
+          "label": "compare"
+        }
+      ],
+      "caption": "A baseline and a new method are evaluated in comparable settings, and their scores reveal the observed improvement."
+    },
+    "usedIn": [
+      {
+        "name": "Model evaluation",
+        "detail": "reference comparison",
+        "url": ""
+      },
+      {
+        "name": "Benchmarking",
+        "detail": "measuring genuine gains",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "elo-rating-for-model-comparison",
     "model-evaluation",

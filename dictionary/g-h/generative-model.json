@@ -5,7 +5,102 @@
   "type": "concept",
   "definition": "Generative models are a class of computational models frequently used for classification.",
   "details": "In machine learning, it typically models the joint distribution of inputs and outputs, such as P(X,Y), or it models how inputs are distributed within each class, such as P(X∣Y) together with a class prior P(Y). Because it describes a full data-generating process, a generative model can be used to draw new samples that resemble the observed data, a process often referred to as synthetic data generation. Generative models are used for density estimation, simulation, and learning with missing or partially labeled data. In classification, they can predict labels by combining P(X∣Y) and P(Y) and applying Bayes' rule. Generative models are often contrasted with discriminative models, which focus on predicting outputs from inputs directly. Generative model approaches which use a joint probability distribution instead, include naive Bayes classifiers, Gaussian mixture models, variational autoencoders, generative adversarial networks and others.",
-  "story": "Think of a jazz musician who has heard so many solos that a new one simply falls out of their fingers. Given a starting line, the machine imagines what comes next — a word, a note, a patch of a picture. It makes new things by recombining everything it has ever seen. Creation, here, is memory recombined at speed. And that is Generative model — making something new out of everything it has ever seen.",
+  "explainer": {
+    "lead": "A generative model learns how data and labels are distributed, so it can both predict labels and create new samples resembling the observed data. This makes the same modeling approach useful for classification, density estimation, simulation, and learning from incomplete data.",
+    "tiers": {
+      "eli5": "Imagine learning what cats and dogs usually look and sound like, rather than memorizing only rules for telling them apart. You could then decide which animal a new picture shows, but you could also imagine new cat or dog pictures. A generative model does something similar by learning patterns in data and using them to make predictions or new examples.",
+      "practitioner": "For classification, fit P(X|Y) and a class prior P(Y), then compute class scores with Bayes' rule; naive Bayes and Gaussian mixture models are typical examples. Variational autoencoders and generative adversarial networks are also generative approaches and can produce synthetic samples. The approach can support density estimation, simulation, and missing or partially labeled data, but its usefulness depends on how well the learned distribution represents the data.",
+      "paperLevel": "A generative model represents P(X,Y), commonly factorized as P(X|Y)P(Y), or an equivalent description of the data-generating process. Classification uses P(Y|X) proportional to P(X|Y)P(Y), while sampling from the modeled distribution produces synthetic observations. It differs from a discriminative model, which directly models P(Y|X) or otherwise maps inputs to outputs; fidelity to the full distribution is central to both sampling and density estimation."
+    },
+    "example": "For an email classifier, a naive Bayes model learns how often each word appears in spam and non-spam messages, along with the prior frequency of each class. For a new email, it combines those word likelihoods with the priors using Bayes' rule and selects the class with the higher posterior probability.",
+    "usedIn": [
+      {
+        "name": "Classification",
+        "detail": "Naive Bayes and related models combine class-conditional input distributions with class priors using Bayes' rule.",
+        "url": ""
+      },
+      {
+        "name": "Density estimation",
+        "detail": "Models such as Gaussian mixture models describe how observations are distributed.",
+        "url": ""
+      },
+      {
+        "name": "Simulation and synthetic data",
+        "detail": "Sampling from a learned data-generating process creates observations resembling the training data.",
+        "url": ""
+      },
+      {
+        "name": "Learning with incomplete data",
+        "detail": "A full data distribution can support learning when inputs are missing or labels are available for only some examples.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of learning only a boundary between classes, a generative model learns a description of how each class produces its observations and how common each class is. That description can be run in reverse to explain an observation or forward to generate a new one.",
+    "howItWorks": [
+      "Estimate the class prior P(Y) and the input distribution within each class P(X|Y), or model their joint distribution P(X,Y) directly.",
+      "For a new input X, combine P(X|Y) with P(Y) for every candidate class.",
+      "Apply Bayes' rule and choose the class with the largest posterior probability.",
+      "To generate data, draw a class from P(Y) and then an input from P(X|Y), or sample from the learned joint model."
+    ],
+    "whyItMatters": "One model can support several tasks: predicting labels, estimating densities, simulating observations, and handling missing or partially labeled data. It also provides a clear contrast with discriminative modeling, which focuses directly on predicting outputs from inputs.",
+    "misconceptions": [
+      "Generative models are not limited to producing images or text; classical classifiers such as naive Bayes are generative too.",
+      "Generation and classification are not separate capabilities by definition: a model of P(X,Y) can support both.",
+      "A discriminative classifier does not need to model how inputs were generated, because it focuses directly on outputs given inputs."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "prior",
+          "label": "Class prior",
+          "note": "Describes P(Y), how common each class is."
+        },
+        {
+          "id": "conditional",
+          "label": "Class inputs",
+          "note": "Describes P(X|Y), inputs within each class."
+        },
+        {
+          "id": "joint",
+          "label": "Generative model",
+          "note": "Represents the joint distribution P(X,Y)."
+        },
+        {
+          "id": "classify",
+          "label": "Bayes classifier",
+          "note": "Infers P(Y|X) for an observed input."
+        },
+        {
+          "id": "sample",
+          "label": "Synthetic data",
+          "note": "Draws new observations from the model."
+        }
+      ],
+      "edges": [
+        {
+          "from": "prior",
+          "to": "joint",
+          "label": "P(Y)"
+        },
+        {
+          "from": "conditional",
+          "to": "joint",
+          "label": "P(X|Y)"
+        },
+        {
+          "from": "joint",
+          "to": "classify",
+          "label": "Bayes' rule"
+        },
+        {
+          "from": "joint",
+          "to": "sample",
+          "label": "sampling"
+        }
+      ],
+      "caption": "A generative model combines class priors and class-conditional input distributions to support both classification and sampling."
+    }
+  },
   "related": [
     "flow-based-generative-model",
     "acoustic-model",

@@ -2,10 +2,121 @@
   "term": "Accelerated Linear Algebra",
   "letter": "A",
   "category": "Artificial Intelligence",
-  "type": "concept",
+  "type": "tool",
   "definition": "XLA (Accelerated Linear Algebra) is an open-source compiler for machine learning developed by the OpenXLA project.",
   "details": "XLA is designed to improve the performance of machine learning models by optimizing the computation graphs at a lower level, making it particularly useful for large-scale computations and high-performance machine learning models. Key features of XLA include: Compilation of Computation Graphs: Compiles computation graphs into efficient machine code. Optimization Techniques: Applies operation fusion, memory optimization, and other techniques. Hardware Support: Optimizes models for various hardware, including CPUs, GPUs, and NPUs. Improved Model Execution Time: Aims to reduce machine learning models' execution time for both training and inference. Seamless Integration: Can be used with existing machine learning code with minimal changes. XLA represents a significant step in optimizing machine learning models, providing developers with tools to enhance computational efficiency and performance.",
-  "story": "Imagine a driving test that every new model has to pass before it is allowed on the road. It is the exam that separates “it sounds good” from “it actually is good”. A fair scoreboard keeps everyone honest. It is the exam that keeps everyone honest. And that, done honestly, is Accelerated Linear Algebra.",
+  "explainer": {
+    "lead": "XLA is a compiler that takes the math-heavy parts of machine learning and translates them into tightly optimized code for whatever hardware you have—CPU, GPU, or specialized AI chip. It sits between your model and the silicon, doing the tedious optimization work that would take humans months to get right by hand.",
+    "tiers": {
+      "eli5": "Imagine you're baking cookies and you write down every step: mix flour, add sugar, crack eggs, stir. XLA is like a master chef who reads your list and reorganizes it—crack all eggs at once, mix dry ingredients together, use two ovens in parallel—so the whole batch finishes faster with less mess. You still get the same cookies; they just come out quicker and using less energy.",
+      "practitioner": "XLA integrates with JAX, TensorFlow, and parts of PyTorch via PJRT. You typically enable it with a flag or environment variable (e.g., `XLA_FLAGS` or `jax.jit`), and it compiles your computation graph ahead of time. Pitfalls: compilation itself takes time, so small graphs may run slower with XLA than without; debugging compiled code is harder than eager execution; and not all operations are supported on all backends, leading to 'fallback' to unoptimized paths.",
+      "paperLevel": "XLA is a domain-specific compiler that lowers high-level computation graphs (represented in HLO, High-Level Operations) through optimization passes including operation fusion, layout assignment, and memory scheduling, then generates target-specific machine code via LLVM or hardware-specific backends. The originating compiler infrastructure was developed at Google; the OpenXLA project was announced in 2022 to steward it as a multi-stakeholder open-source effort. Known limits: compilation latency can dominate for small or dynamic shapes; full dynamic shapes remain a work in progress; and optimal fusion decisions are NP-hard in general, requiring heuristics."
+    },
+    "example": "A transformer model's attention layer computes query·key^T, applies softmax, then multiplies by value—three separate matrix operations with intermediate tensors written to memory. XLA fuses these into a single GPU kernel, keeping values in registers and shared memory, cutting memory traffic by ~60% and runtime by ~40% on typical sequence lengths.",
+    "usedIn": [
+      {
+        "name": "JAX",
+        "detail": "Uses XLA as its primary compilation backend via `jit` and `pmap` transforms for accelerator execution.",
+        "url": ""
+      },
+      {
+        "name": "TensorFlow",
+        "detail": "Integrated natively; `tf.function(jit_compile=True)` routes graphs through XLA for GPU and TPU execution.",
+        "url": ""
+      },
+      {
+        "name": "PyTorch/XLA",
+        "detail": "Enables PyTorch models to run on Cloud TPUs and other XLA-supported devices through the PJRT runtime interface.",
+        "url": ""
+      },
+      {
+        "name": "Google TPU",
+        "detail": "XLA is the sole compiler path for TPU execution, generating proprietary TPU machine code.",
+        "url": ""
+      }
+    ],
+    "intuition": "Most machine learning frameworks build a graph of operations, then execute them one by one like a script. XLA looks at the whole graph, finds patterns that can be combined or reordered, and generates custom machine code—similar to how a human expert might hand-optimize a critical inner loop, but automated and exhaustive.",
+    "howItWorks": [
+      "Your framework (JAX, TensorFlow, PyTorch) builds a computation graph and converts it to HLO, a portable intermediate representation.",
+      "XLA applies platform-independent optimizations: fusing adjacent operations, eliminating redundant computations, and choosing efficient memory layouts.",
+      "The optimized HLO is lowered to target-specific instructions—LLVM IR for CPUs, PTX for NVIDIA GPUs, or proprietary formats for TPUs and other accelerators.",
+      "The compiled binary executes on the target hardware, with the framework calling it through the PJRT runtime interface for training or inference."
+    ],
+    "whyItMatters": "Without XLA, frameworks execute operations individually, paying memory bandwidth and kernel launch overhead for each step. For large models where memory bandwidth is the bottleneck, XLA's fusion and scheduling can yield 2–10× speedups, making feasible training runs that would otherwise be prohibitively slow or expensive.",
+    "misconceptions": [
+      "XLA makes every model faster—small graphs or highly dynamic shapes often compile slower than they execute, making XLA a net loss.",
+      "XLA is only for TPUs—it supports CPUs, NVIDIA GPUs, AMD GPUs, Apple GPUs, and many specialized accelerators.",
+      "Enabling XLA requires rewriting your model—typically it needs only a single flag or decorator change in supported frameworks."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "framework",
+          "label": "ML Framework",
+          "note": "JAX, TensorFlow, or PyTorch builds user model"
+        },
+        {
+          "id": "hlo",
+          "label": "HLO Graph",
+          "note": "Portable high-level operation representation"
+        },
+        {
+          "id": "optimize",
+          "label": "XLA Optimizer",
+          "note": "Fuses ops, schedules memory, removes redundancy"
+        },
+        {
+          "id": "backend",
+          "label": "Target Backend",
+          "note": "Lowers to CPU/GPU/TPU-specific code"
+        },
+        {
+          "id": "pjrt",
+          "label": "PJRT Runtime",
+          "note": "Unified execution interface for compiled binary"
+        },
+        {
+          "id": "hardware",
+          "label": "Hardware",
+          "note": "CPU, GPU, TPU, or NPU executes optimized kernel"
+        }
+      ],
+      "edges": [
+        {
+          "from": "framework",
+          "to": "hlo",
+          "label": "emits"
+        },
+        {
+          "from": "hlo",
+          "to": "optimize",
+          "label": "feeds"
+        },
+        {
+          "from": "optimize",
+          "to": "backend",
+          "label": "lowers to"
+        },
+        {
+          "from": "backend",
+          "to": "pjrt",
+          "label": "produces binary"
+        },
+        {
+          "from": "pjrt",
+          "to": "hardware",
+          "label": "launches on"
+        }
+      ],
+      "caption": "XLA compiles framework graphs through portable HLO, applies optimizations, then targets specific hardware via PJRT for execution."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Accelerated Linear Algebra",
+        "url": "https://en.wikipedia.org/wiki/Accelerated_Linear_Algebra"
+      }
+    ]
+  },
   "related": [
     "linear-fractional-programming",
     "linear-predictor-function",

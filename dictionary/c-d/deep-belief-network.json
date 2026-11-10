@@ -5,7 +5,106 @@
   "type": "architecture",
   "definition": "In machine learning, a deep belief network (DBN) is a generative graphical model, or alternatively a class of deep neural network, composed of multiple layers of latent variables (\"hidden units\"), with connections between the layers but not between units within each layer.",
   "details": "When trained without supervision on a set of examples, a DBN can learn to probabilistically reconstruct its inputs. The layers then act as feature detectors. After this learning step, a DBN can be further trained with supervision to perform classification. DBNs can be viewed as a composition of simple, unsupervised networks such as restricted Boltzmann machines (RBMs) or autoencoders, where each sub-network's hidden layer serves as the visible layer for the next. An RBM is an undirected, generative energy-based model with a \"visible\" input layer and a hidden layer and connections between but not within layers. This composition leads to a fast, layer-by-layer unsupervised training procedure, where contrastive divergence is applied to each sub-network in turn, starting from the \"lowest\" pair of layers (the lowest visible layer is a training set). The observation that DBNs can be trained greedily, one layer at a time, led to one of the first effective deep learning algorithms. Overall, there are many attractive implementations and uses of DBNs in real-life applications and scenarios (e.g., electroencephalography, drug discovery).",
-  "story": "Imagine a factory floor where each workstation can glance at every other workstation before doing its part. It is the blueprint that makes everything else possible. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. Structure decides what the model can even express — the blueprint before the bricks. That blueprint is Deep belief network.",
+  "explainer": {
+    "lead": "A deep belief network is a layered neural network that can learn useful features from unlabelled examples by trying to reconstruct them. Those learned features can then support supervised tasks such as classification.",
+    "tiers": {
+      "eli5": "Imagine learning to recognise objects by practising drawing pictures you have seen. A deep belief network learns in layers, with each layer noticing patterns and passing what it learns to the next. After this practice, it can be taught with labelled examples to sort new pictures into groups.",
+      "practitioner": "Build the network from restricted Boltzmann machines or autoencoders, with each sub-network's hidden layer becoming the next one's visible layer. Train the sub-networks greedily from the lowest layer upward, using contrastive divergence for the RBM-based procedure, then use labelled data for supervised classification training. The absence of connections between units within a layer is part of the architecture, and applications include electroencephalography and drug discovery.",
+      "paperLevel": "A DBN is a generative graphical model with visible input x and multiple latent layers h1, h2, ..., hL, with connections between layers but not between units within a layer. It can be composed from RBMs or autoencoders and trained greedily, one sub-network at a time; an RBM is an undirected, generative energy-based model with visible and hidden layers. Unsupervised training learns probabilistic input reconstruction and feature detectors, after which supervised training can perform classification."
+    },
+    "example": "Given a collection of unlabelled electroencephalography recordings, a DBN can first learn features that help it reconstruct the recordings. It can then receive further supervised training so that those features are used to classify recordings.",
+    "usedIn": [
+      {
+        "name": "Electroencephalography",
+        "detail": "DBNs are used in applications involving electroencephalography.",
+        "url": ""
+      },
+      {
+        "name": "Drug discovery",
+        "detail": "DBNs are used in real-life drug-discovery applications.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Visible input layer",
+        "detail": "Receives the training examples and provides the visible layer for the lowest sub-network."
+      },
+      {
+        "name": "Hidden layers",
+        "detail": "Contain latent variables that act as feature detectors after unsupervised learning."
+      },
+      {
+        "name": "RBM or autoencoder sub-networks",
+        "detail": "Form the DBN, with each sub-network's hidden layer serving as the visible layer of the next."
+      },
+      {
+        "name": "Supervised classification stage",
+        "detail": "Uses additional training after unsupervised learning to perform classification."
+      }
+    ],
+    "flow": [
+      "Training examples enter the lowest visible layer.",
+      "The lowest pair of layers is trained first, followed by each higher sub-network in turn.",
+      "Each sub-network's hidden layer becomes the visible input to the next sub-network.",
+      "The resulting layers learn features that allow the network to probabilistically reconstruct its inputs.",
+      "Labelled examples can then be used for further supervised training and classification."
+    ],
+    "lineage": "The observation that DBNs could be trained greedily, one layer at a time, led to one of the first effective deep learning algorithms.",
+    "whyItMatters": "DBNs provided an effective way to train deep networks layer by layer without requiring labelled examples for the initial feature-learning stage. The same learned representation can then be adapted to supervised classification.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "examples",
+          "label": "Training examples",
+          "note": "Unlabelled inputs for initial learning"
+        },
+        {
+          "id": "visible",
+          "label": "Visible layer",
+          "note": "Receives the input examples"
+        },
+        {
+          "id": "subnets",
+          "label": "Stacked sub-networks",
+          "note": "RBMs or autoencoders trained in turn"
+        },
+        {
+          "id": "features",
+          "label": "Feature detectors",
+          "note": "Hidden layers supporting reconstruction"
+        },
+        {
+          "id": "classifier",
+          "label": "Supervised classifier",
+          "note": "Further trained with labelled examples"
+        }
+      ],
+      "edges": [
+        {
+          "from": "examples",
+          "to": "visible",
+          "label": "inputs"
+        },
+        {
+          "from": "visible",
+          "to": "subnets",
+          "label": "layerwise training"
+        },
+        {
+          "from": "subnets",
+          "to": "features",
+          "label": "learns"
+        },
+        {
+          "from": "features",
+          "to": "classifier",
+          "label": "supervised training"
+        }
+      ],
+      "caption": "A DBN learns features through layer-by-layer unsupervised training, then can use them for supervised classification."
+    }
+  },
   "related": [
     "convolutional-deep-belief-network",
     "capsule-neural-network",

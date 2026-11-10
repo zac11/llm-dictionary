@@ -5,6 +5,103 @@
   "type": "concept",
   "definition": "Assigning a label to an entire graph — e.g.",
   "details": "Assigning a label to an entire graph — e.g. classifying molecules by activity — using graph neural networks that pool node information into a graph-level representation.",
+  "explainer": {
+    "lead": "Graph classification gives one label to an entire network of connected things, rather than labeling each thing separately. It matters when the overall pattern of connections—such as the structure of a molecule—determines the answer.",
+    "tiers": {
+      "eli5": "Imagine looking at a whole team and deciding whether it is a football team or a basketball team, instead of labeling every player. Graph classification does something similar with connected dots: it considers the whole pattern and gives it one label. For example, it can look at a molecule's structure and predict whether that molecule is active.",
+      "practitioner": "Train on graphs that each have a graph-level label, using a graph neural network to produce node representations and a pooling step to combine them into one graph representation. A classifier then predicts the label. A key pitfall is that pooling can discard structural details needed to distinguish graphs, so the pooling choice deserves testing.",
+      "paperLevel": "Given a graph G and its label y, graph classification learns a function f(G) that predicts y. A graph neural network computes node representations, pooling maps them to a graph-level representation h_G, and a classifier maps h_G to the predicted label. Pooling creates a fixed graph-level summary but can lose information present in the node representations."
+    },
+    "example": "Represent a molecule as a graph, pool the information learned for its nodes into one molecular representation, and classify the molecule as active or inactive.",
+    "usedIn": [
+      {
+        "name": "Molecular activity prediction",
+        "detail": "Classifying a molecule's graph by whether it shows a particular activity.",
+        "url": ""
+      },
+      {
+        "name": "Graph neural networks",
+        "detail": "Pooling node information into a representation used for graph-level prediction.",
+        "url": ""
+      }
+    ],
+    "intuition": "A graph can have a meaningful property that belongs to the whole structure, not to any single node. Graph classification summarizes the nodes and their connections so the entire graph can receive one label.",
+    "howItWorks": [
+      "Provide a graph with nodes and connections.",
+      "Use a graph neural network to build node representations.",
+      "Pool the node information into one graph-level representation.",
+      "Pass that representation to a classifier.",
+      "Output a single label for the whole graph."
+    ],
+    "whyItMatters": "It turns an entire relational structure into a prediction, allowing graph neural networks to handle tasks whose labels describe whole graphs. Molecular activity classification is one example.",
+    "misconceptions": [
+      "It is not node classification: the output labels the whole graph, not individual nodes.",
+      "Pooling is not the final classification: it creates the representation that the classifier uses.",
+      "One graph produces one graph-level label, even when it contains many nodes."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "graph",
+          "label": "Input graph",
+          "note": "Nodes and their connections."
+        },
+        {
+          "id": "gnn",
+          "label": "Graph neural network",
+          "note": "Builds representations for the nodes."
+        },
+        {
+          "id": "nodes",
+          "label": "Node representations",
+          "note": "Learned information for each node."
+        },
+        {
+          "id": "pool",
+          "label": "Pooling",
+          "note": "Combines node information."
+        },
+        {
+          "id": "embedding",
+          "label": "Graph representation",
+          "note": "One summary of the entire graph."
+        },
+        {
+          "id": "label",
+          "label": "Graph label",
+          "note": "The classifier's single prediction."
+        }
+      ],
+      "edges": [
+        {
+          "from": "graph",
+          "to": "gnn",
+          "label": ""
+        },
+        {
+          "from": "gnn",
+          "to": "nodes",
+          "label": ""
+        },
+        {
+          "from": "nodes",
+          "to": "pool",
+          "label": ""
+        },
+        {
+          "from": "pool",
+          "to": "embedding",
+          "label": ""
+        },
+        {
+          "from": "embedding",
+          "to": "label",
+          "label": "classify"
+        }
+      ],
+      "caption": "A graph neural network turns node information into one graph-level representation, which is used to predict a single label."
+    }
+  },
   "citation": {
     "title": "Graph Classification",
     "authors": [],

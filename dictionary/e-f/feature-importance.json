@@ -5,7 +5,97 @@
   "type": "concept",
   "definition": "Feature Importance (or Variable Importance or Feature Attribution) refers to a set of techniques and mathematical frameworks used in machine learning, statistics, and their applications to quantify the contribution of input variables (features) to a model's output or to the underlying data-generating process.",
   "details": "It is a component of Explainable Artificial Intelligence (XAI) and Interpretable Machine Learning (IML) and is used for model improvement, scientific inference, and feature selection. Feature importance is a context-dependent score that varies based on the scope of the explanation, the model (or data) of interest, and the ultimate purpose of the analysis.",
-  "story": "Think of a jazz musician who has heard so many solos that a new one simply falls out of their fingers. Given a starting line, the machine imagines what comes next — a word, a note, a patch of a picture. It makes new things by recombining everything it has ever seen. Creation, here, is memory recombined at speed. That next-word, next-stroke magic is Feature Importance.",
+  "explainer": {
+    "lead": "Feature importance describes ways of estimating how much each input variable contributes to a model’s output or to the process that generated the data. It helps people decide which variables deserve attention when improving a model, selecting features, or investigating a scientific question.",
+    "tiers": {
+      "eli5": "Imagine a recipe where you want to know which ingredient changes the taste the most. Feature importance is like tasting different versions to see whether more sugar, less salt, or another ingredient makes the biggest difference. The answer can change depending on the recipe and what you are trying to learn.",
+      "practitioner": "Feature importance can support model improvement, feature selection, and scientific inference. Interpret scores within their intended scope: the explanation’s scope, the chosen model or data, and the analysis goal all affect the result. A ranking should not automatically be treated as evidence that a feature causes an outcome.",
+      "paperLevel": "Given features X = (X_1, ..., X_p), feature importance assigns a context-dependent quantity I_j to X_j, intended to quantify its contribution to a model output or to the underlying data-generating process. The meaning of I_j depends on the explanation scope, the model or data under study, and the purpose of the analysis. Consequently, importance values are not universally comparable, and an importance ranking alone does not establish causal influence."
+    },
+    "example": "Suppose a loan-repayment model gives one applicant a score of 0.60 and an otherwise identical applicant with higher savings a score of 0.75. That comparison indicates a substantial contribution from savings in this case; repeating the analysis across features could help rank their contributions, without proving that savings alone cause repayment.",
+    "usedIn": [
+      {
+        "name": "Model improvement",
+        "detail": "Examining which input variables contribute to outputs can guide further model analysis.",
+        "url": ""
+      },
+      {
+        "name": "Scientific inference",
+        "detail": "Researchers can investigate variables relevant to an underlying data-generating process.",
+        "url": ""
+      },
+      {
+        "name": "Feature selection",
+        "detail": "Importance information can help decide which variables to retain for analysis.",
+        "url": ""
+      }
+    ],
+    "intuition": "If a model were a decision made from several clues, feature importance would ask how much each clue contributed. It is a score with a particular context and purpose, not a single universal property of a variable.",
+    "howItWorks": [
+      "Choose the model or data-generating process to study.",
+      "Define the explanation’s scope and analysis goal.",
+      "Apply a technique that quantifies each feature’s contribution.",
+      "Interpret the resulting scores within that chosen context."
+    ],
+    "whyItMatters": "It connects model behavior or data analysis to the input variables people can examine and discuss. Used carefully, it supports debugging and improvement, feature selection, and scientific investigation as part of explainable AI and interpretable machine learning.",
+    "misconceptions": [
+      "A high importance score does not prove causation.",
+      "There is no single context-free importance value for a feature.",
+      "A feature ranking is not automatically a good feature-selection rule."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "features",
+          "label": "Input features",
+          "note": "Variables supplied to the analysis"
+        },
+        {
+          "id": "target",
+          "label": "Model or data",
+          "note": "The object whose contributions are studied"
+        },
+        {
+          "id": "context",
+          "label": "Scope and purpose",
+          "note": "Defines what the explanation should mean"
+        },
+        {
+          "id": "analysis",
+          "label": "Importance analysis",
+          "note": "Quantifies feature contributions"
+        },
+        {
+          "id": "scores",
+          "label": "Importance scores",
+          "note": "Context-dependent results for interpretation"
+        }
+      ],
+      "edges": [
+        {
+          "from": "features",
+          "to": "target",
+          "label": "inputs"
+        },
+        {
+          "from": "target",
+          "to": "analysis",
+          "label": ""
+        },
+        {
+          "from": "context",
+          "to": "analysis",
+          "label": "guides"
+        },
+        {
+          "from": "analysis",
+          "to": "scores",
+          "label": "produces"
+        }
+      ],
+      "caption": "Feature importance results from analyzing a model or data-generating process under a chosen scope and purpose."
+    }
+  },
   "related": [
     "feature-hashing",
     "feature-machine-learning",

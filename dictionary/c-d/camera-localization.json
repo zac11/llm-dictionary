@@ -5,6 +5,93 @@
   "type": "concept",
   "definition": "Estimating a camera’s position and orientation within a known map — a core component of visual SLAM and AR.",
   "details": "Estimating a camera’s position and orientation within a known map — a core component of visual SLAM and AR.",
+  "explainer": {
+    "lead": "Camera localization works out where a camera is and which way it is pointing by relating what it sees to a map that already exists. It gives visual SLAM and augmented reality the camera pose needed to interpret new images consistently with that map.",
+    "tiers": {
+      "eli5": "Imagine walking through a room with a map while looking through a camera. By comparing what you see with landmarks on the map, you can work out both where you are standing and which direction the camera is facing.",
+      "practitioner": "A localization system takes the current camera image and a known map, then estimates a pose that places visual observations in the map. It can supply the camera state within a visual SLAM or AR pipeline. A useful diagnostic is to distinguish poor pose estimates from an inaccurate or outdated map, since localization assumes that the map is known.",
+      "paperLevel": "Given a known map M and camera observations, camera localization estimates the pose T = (R, t), where R is orientation and t is position. Equivalently, it recovers the camera's six degrees of freedom: three for translation and three for rotation. Unlike full SLAM, the task presupposes M rather than requiring map estimation and localization together."
+    },
+    "example": "An AR phone has a known map of a living room and captures an image showing one wall and a corner of a table. Localization estimates that the phone is 1.5 metres from that wall and turned toward the table, allowing the AR system to place new camera views in the same room coordinates.",
+    "usedIn": [
+      {
+        "name": "Visual SLAM",
+        "detail": "Estimates the camera pose relative to the spatial map used by the system.",
+        "url": ""
+      },
+      {
+        "name": "Augmented reality",
+        "detail": "Provides the position and viewing direction needed to relate the camera view to a known environment.",
+        "url": ""
+      }
+    ],
+    "intuition": "A familiar scene looks different depending on where you stand and which way you look. Camera localization reverses that relationship: it uses the view and a known map to infer the viewpoint.",
+    "howItWorks": [
+      "Start with the current camera image and an existing map.",
+      "Relate parts of the observed view to information in the map.",
+      "Estimate the camera position that best explains those relationships.",
+      "Estimate the camera orientation alongside its position.",
+      "Return the combined pose for use by visual SLAM or AR."
+    ],
+    "whyItMatters": "Without a camera pose, observations cannot be placed consistently in the map's coordinate system. Reliable localization therefore underpins camera tracking in visual SLAM and stable spatial alignment in AR.",
+    "misconceptions": [
+      "It is not just finding coordinates: orientation is part of the answer too.",
+      "It is not the same as building a map: camera localization starts with a known map.",
+      "It does not describe where objects are in an image; it describes the camera's pose in the map."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "image",
+          "label": "Camera image",
+          "note": "The current view"
+        },
+        {
+          "id": "map",
+          "label": "Known map",
+          "note": "Existing spatial reference"
+        },
+        {
+          "id": "match",
+          "label": "View-map relations",
+          "note": "Connect observations to the map"
+        },
+        {
+          "id": "estimate",
+          "label": "Pose estimation",
+          "note": "Infers position and orientation"
+        },
+        {
+          "id": "pose",
+          "label": "Camera pose",
+          "note": "Output for SLAM or AR"
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "match",
+          "label": "observations"
+        },
+        {
+          "from": "map",
+          "to": "match",
+          "label": "reference"
+        },
+        {
+          "from": "match",
+          "to": "estimate",
+          "label": "constraints"
+        },
+        {
+          "from": "estimate",
+          "to": "pose",
+          "label": "R and t"
+        }
+      ],
+      "caption": "Camera localization combines a current view with a known map to estimate position and orientation."
+    }
+  },
   "citation": {
     "title": "Camera Localization",
     "authors": [],

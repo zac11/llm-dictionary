@@ -5,6 +5,32 @@
   "type": "concept",
   "definition": "Risk-managed rollout patterns: canary sends a small traffic slice to the new version and watches metrics before ramping; shadow runs the new version on real traffic without serving its outputs.",
   "details": "Risk-managed rollout patterns: canary sends a small traffic slice to the new version and watches metrics before ramping; shadow runs the new version on real traffic without serving its outputs. Standard practice for model and prompt upgrades, because offline evals never cover everything.",
+  "explainer": {
+    "lead": "Shadow deployment runs a new model or prompt on live traffic while the existing system keeps serving users, so you catch problems offline testing misses. It matters because real traffic exposes failures that evaluations never surface.",
+    "tiers": {
+      "eli5": "It's like having a trainee quietly do the same work alongside an experienced employee, without the trainee's answers ever reaching the customer.",
+      "practitioner": "Engineers mirror production requests to the new version, log its outputs, and compare them against the live system before promoting it. A common pitfall is ignoring added latency and compute cost, since shadow traffic doubles inference load.",
+      "paperLevel": "No single formal definition; it is a rollout pattern where the candidate version f(x) is evaluated on the same inputs as the served version g(x), with only g(x) returned to users. It requires enough paired traffic to detect differences, and it cannot measure user reactions to the new outputs."
+    },
+    "example": "A support chatbot's new prompt is run on all incoming messages in parallel; its answers are stored and reviewed but the old prompt's answers are what customers see.",
+    "usedIn": [
+      {
+        "name": "Canary releases",
+        "detail": "small traffic slice with metric watch",
+        "url": ""
+      },
+      {
+        "name": "Model upgrades",
+        "detail": "compare before promotion",
+        "url": ""
+      },
+      {
+        "name": "Prompt changes",
+        "detail": "catch regressions live",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "evals",
     "canary"

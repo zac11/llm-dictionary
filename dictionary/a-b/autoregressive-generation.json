@@ -5,6 +5,87 @@
   "type": "concept",
   "definition": "Producing output one token at a time, each conditioned on everything generated so far.",
   "details": "Producing output one token at a time, each conditioned on everything generated so far. The source of LLMs' fluency and also of their sequential inference cost.",
+  "explainer": {
+    "lead": "Autoregressive generation is how large language models produce text: one token at a time, with each new token based on everything before it. This step-by-step conditioning helps create fluent output, but it also means a long response requires many sequential generation steps.",
+    "tiers": {
+      "eli5": "It is like writing a story by choosing one small piece at a time and rereading what you have written before choosing the next piece. Each choice builds on the last, so the story can flow naturally. The downside is that you cannot write the whole story in one go.",
+      "practitioner": "At inference, decode a token, append it to the existing prefix, and run the next decoding step with that extended prefix. Because these steps are sequential, longer outputs require more steps and increase inference cost.",
+      "paperLevel": "For tokens x_1 through x_T, autoregressive generation factorizes the sequence probability as p(x_1, ..., x_T) = product over t of p(x_t | x_1, ..., x_(t-1)). Each token is therefore conditioned on the full generated prefix. This supports fluent language-model output while making inference inherently sequential."
+    },
+    "example": "Given the prefix “The sky is”, a model might generate “blue” and extend the text to “The sky is blue”. It then conditions on that entire text when choosing the next token, such as “today”.",
+    "usedIn": [
+      {
+        "name": "Large language models",
+        "detail": "Generate text token by token, conditioning each new token on the preceding text.",
+        "url": ""
+      },
+      {
+        "name": "Text generation",
+        "detail": "Builds an output sequentially rather than producing the entire sequence at once.",
+        "url": ""
+      }
+    ],
+    "intuition": "Writing becomes a repeated prediction: look at the text so far, choose what comes next, then include that choice in the text for the following prediction. Fluency comes from this continual conditioning, while inference cost comes from having to repeat the process.",
+    "howItWorks": [
+      "Start with the input text as the current prefix.",
+      "Use the language model to choose the next token from that prefix.",
+      "Append the chosen token to the prefix.",
+      "Repeat, using the extended prefix to generate each following token."
+    ],
+    "whyItMatters": "This mechanism connects two central properties of LLMs: coherent, context-sensitive text and sequential inference cost. Generating more tokens requires more dependent steps.",
+    "misconceptions": [
+      "It does not generate the whole output independently in one step.",
+      "A token is the unit of generation, not necessarily a whole word.",
+      "Fluent output does not remove the cost of sequential generation."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "prefix",
+          "label": "Current prefix",
+          "note": "Input plus tokens generated so far"
+        },
+        {
+          "id": "model",
+          "label": "Language model",
+          "note": "Conditions on the full prefix"
+        },
+        {
+          "id": "token",
+          "label": "Next token",
+          "note": "One generated output token"
+        },
+        {
+          "id": "append",
+          "label": "Append token",
+          "note": "Extends the prefix for the next step"
+        }
+      ],
+      "edges": [
+        {
+          "from": "prefix",
+          "to": "model",
+          "label": "conditions on"
+        },
+        {
+          "from": "model",
+          "to": "token",
+          "label": "generates"
+        },
+        {
+          "from": "token",
+          "to": "append",
+          "label": ""
+        },
+        {
+          "from": "append",
+          "to": "prefix",
+          "label": "updates"
+        }
+      ],
+      "caption": "Each generated token is appended to the prefix, which then conditions the next generation step."
+    }
+  },
   "related": [
     "fluency",
     "inference",

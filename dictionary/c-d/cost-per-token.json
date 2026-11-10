@@ -5,7 +5,97 @@
   "type": "concept",
   "definition": "The monetary cost charged (typically by an API provider) for processing or generating a single token, usually priced separately for input and output tokens.",
   "details": "Cost per token is a key factor in the economics of deploying LLM-based applications at scale, influencing decisions about model choice, prompt length, and caching strategies.",
-  "story": "Picture a librarian organizing a million slips of paper so that any one of them can be found in a heartbeat. The examples a machine reads become the world it believes in. Better ingredients make a better meal, and the same is true here. Garbage in, garbage out — and the reverse: clean, representative data makes the model quietly brilliant. That care with the raw material is Cost Per Token.",
+  "explainer": {
+    "lead": "Cost per token is the price an API provider charges for each unit of text a model reads or writes. It helps teams estimate deployment costs and make practical choices about models, prompt length, and caching.",
+    "tiers": {
+      "eli5": "Using a language model can be a bit like paying for each small piece of a message you send and receive. The price for one piece is tiny, but a busy app can process enormous numbers of them. Shorter messages and reusable answers can therefore reduce the bill.",
+      "practitioner": "Estimate request cost from input-token count, output-token count, and their respective prices, then multiply by expected traffic. Compare models using realistic prompts and response lengths rather than token prices alone, and monitor both sides of the bill. Long prompts and unbounded outputs can dominate spending; caching can help when it avoids repeated processing or generation.",
+      "paperLevel": "For input price p_in, output price p_out, input-token count n_in, and output-token count n_out, request cost C = p_in * n_in + p_out * n_out. Prices are often quoted per large block of tokens, so the quoted block price must first be divided by its block size. Cost per token is a pricing unit, not a complete efficiency measure: total cost also depends on token counts, output length, request volume, and caching."
+    },
+    "example": "Suppose a hypothetical provider charges $1 per million input tokens and $5 per million output tokens. A request with 2,000 input tokens and 500 output tokens costs $0.002 + $0.0025 = $0.0045. At 100,000 identical requests, the estimated token bill is $450.",
+    "usedIn": [
+      {
+        "name": "LLM API deployment",
+        "detail": "Estimating request and application operating costs from expected token volumes.",
+        "url": ""
+      },
+      {
+        "name": "Model selection",
+        "detail": "Comparing candidate models using their input and output token prices.",
+        "url": ""
+      },
+      {
+        "name": "Prompt engineering",
+        "detail": "Weighing shorter prompts against application quality and repeated input costs.",
+        "url": ""
+      },
+      {
+        "name": "Response caching",
+        "detail": "Reducing repeated processing or generation when cached results can be reused.",
+        "url": ""
+      }
+    ],
+    "intuition": "A token is the billing unit: the model consumes input tokens and produces output tokens, and each stream can have its own price. The small unit price becomes meaningful only when multiplied by token counts and request volume.",
+    "howItWorks": [
+      "Count the tokens in the request sent to the model.",
+      "Apply the provider's input-token price to that count.",
+      "Count the generated output tokens and apply their separate price.",
+      "Add both charges, then scale the estimate across expected requests."
+    ],
+    "whyItMatters": "At scale, token pricing directly affects the economics of an LLM application. It informs model choice, prompt-length decisions, output limits, and whether caching is worthwhile.",
+    "misconceptions": [
+      "Cost per token is not the cost per request; token counts and request volume determine the larger bill.",
+      "Input and output tokens should not be assumed to have the same price, since providers typically price them separately.",
+      "A cheaper token price does not by itself guarantee the cheapest application if a model requires more tokens or generates longer responses."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "prompt",
+          "label": "Input prompt",
+          "note": "Text sent for processing"
+        },
+        {
+          "id": "input-tokens",
+          "label": "Input tokens",
+          "note": "Counted at the input price"
+        },
+        {
+          "id": "output-tokens",
+          "label": "Output tokens",
+          "note": "Generated at the output price"
+        },
+        {
+          "id": "bill",
+          "label": "Request cost",
+          "note": "Input charge plus output charge"
+        }
+      ],
+      "edges": [
+        {
+          "from": "prompt",
+          "to": "input-tokens",
+          "label": "tokenized"
+        },
+        {
+          "from": "input-tokens",
+          "to": "output-tokens",
+          "label": "model generates"
+        },
+        {
+          "from": "input-tokens",
+          "to": "bill",
+          "label": "input charge"
+        },
+        {
+          "from": "output-tokens",
+          "to": "bill",
+          "label": "output charge"
+        }
+      ],
+      "caption": "A request's bill combines separately priced input and output token counts."
+    }
+  },
   "related": [
     "token",
     "token-budget",

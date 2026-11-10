@@ -10,7 +10,27 @@
   ],
   "definition": "A language model specifically designed or adapted to handle very large context windows, spanning tens of thousands to millions of tokens.",
   "details": "Long-context models enable use cases like reasoning over entire books, codebases, or extensive conversation histories, but require architectural and engineering innovations to remain efficient as context length grows. Two costs set the ceiling: attention compares every token with every other, so compute grows quadratically with sequence length, while the KV cache grows linearly, so memory can bind before compute does. A separate obstacle is positional generalisation — a model trained on a few thousand tokens degrades past that range unless its position encoding is extended. The main families of fixes are positional, such as interpolating or rescaling rotation frequencies (Position Interpolation, YaRN, LongRoPE) or using a linear attention bias like ALiBi that extrapolates by construction, and architectural, such as the sliding-window and sparse attention of Longformer. Serving innovations — paged attention, chunked prefill and prompt caching — make a long prompt affordable once it fits at all. A longer window is not automatically a better-used one: facts placed in the middle of a long prompt are recalled less reliably than facts at the edges, an effect known as “lost in the middle”.",
-  "story": "Picture an architect laying out a building where every room has to know which other rooms matter to it. The layout decides what the machine can even attempt, before it learns a single thing. It is the blueprint that makes everything else possible. It is the difference between a row of isolated cubicles and one big room where everyone can hear each other. And that shape of the machine — Long-Context Model — is what makes everything else possible.",
+  "explainer": {
+    "lead": "A long-context model is a language model designed or adapted to handle very large context windows, from tens of thousands to millions of tokens. It matters because it enables reasoning over entire books, codebases or long conversation histories.",
+    "tiers": {
+      "eli5": "It is a reader with an enormous desk, so you can spread out a whole book at once instead of handing over pages one at a time.",
+      "practitioner": "Engineers use these models for whole-document analysis and long conversations, but must manage cost carefully. Two limits set the ceiling: attention compute grows quadratically with sequence length, and the KV cache grows linearly so memory can bind before compute.",
+      "paperLevel": "Efficiency is bounded by attention's quadratic cost in sequence length and the KV cache's linear memory growth; a separate obstacle is positional generalisation when a model is trained on far shorter sequences."
+    },
+    "example": "Feeding a whole codebase into a long-context model lets it answer questions that require cross-file references no single file reveals.",
+    "usedIn": [
+      {
+        "name": "Document reasoning",
+        "detail": "whole-book analysis",
+        "url": ""
+      },
+      {
+        "name": "Code assistants",
+        "detail": "whole-repository context",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "autoregressive-model",
     "frontier-model",

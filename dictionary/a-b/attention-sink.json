@@ -5,6 +5,97 @@
   "type": "concept",
   "definition": "The empirical phenomenon where models dump excess attention mass onto the first token(s).",
   "details": "The empirical phenomenon where models dump excess attention mass onto the first token(s). Preserving these sink tokens is what makes streaming inference with windowed caches (StreamingLLM-style) work without quality collapse.",
+  "explainer": {
+    "lead": "An attention sink is a tendency for a language model to place a surprisingly large share of its attention on the first token or tokens. Keeping those tokens available during streaming inference can prevent quality from collapsing when older parts of the cache are discarded.",
+    "tiers": {
+      "eli5": "Imagine someone reading a long story who keeps glancing back at its very first word, even when that word does not seem important. Some language models do something similar with their attention. If they are allowed to remember only the newest words, keeping that first word as well can help them continue sensibly.",
+      "practitioner": "In StreamingLLM-style serving, retain the initial sink tokens in the cache alongside a sliding window of recent tokens rather than keeping only the window. This lets the cache stay bounded without the quality collapse caused by evicting the sinks. A pitfall is assuming the first tokens are disposable merely because they carry little apparent meaning.",
+      "paperLevel": "For query position i, let alpha_i,j be the attention weight on key position j, with sum_j alpha_i,j = 1. An attention sink occurs when a small initial set S receives excess attention mass, so sum_{j in S} alpha_i,j is disproportionately large. The phenomenon is empirical rather than a universal rule with a fixed threshold; preserving the corresponding initial cache entries is central to StreamingLLM-style windowed inference."
+    },
+    "example": "A stream begins with token A followed by thousands of generated tokens, and many attention queries assign much of their weight to A. With a small recent-token window, evicting A causes quality to collapse; retaining A and evicting older middle tokens lets streaming continue without that collapse.",
+    "usedIn": [
+      {
+        "name": "StreamingLLM-style inference",
+        "detail": "Preserves initial sink tokens while older tokens outside the recent window are evicted.",
+        "url": ""
+      },
+      {
+        "name": "Windowed-cache language generation",
+        "detail": "Uses sink retention to support long streams without quality collapse.",
+        "url": ""
+      }
+    ],
+    "intuition": "Attention has to place its weight somewhere, and models can offload excess weight onto the earliest tokens. Those tokens can therefore act as stable resting places for attention even when they are not the most informative parts of the text.",
+    "howItWorks": [
+      "A model computes attention over the tokens currently available to it.",
+      "Across queries, some attention heads place unusually large weight on the first token or tokens.",
+      "During streaming, the cache keeps these initial sink tokens plus a moving window of recent tokens.",
+      "Older non-sink tokens can be evicted while the attention sinks remain available.",
+      "This preserves generation quality where a recent-only cache would cause collapse."
+    ],
+    "whyItMatters": "It explains why a tiny set of initial cache entries can matter disproportionately. Exploiting that structure makes bounded-cache streaming inference practical without keeping the entire sequence.",
+    "misconceptions": [
+      "The first tokens are sinks because they are especially meaningful; they can attract excess attention without being semantically important.",
+      "A sliding cache should contain only recent tokens; discarding the initial sink tokens can trigger the quality collapse this approach avoids."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "sequence",
+          "label": "Token sequence",
+          "note": "Initial tokens followed by a growing stream."
+        },
+        {
+          "id": "attention",
+          "label": "Attention weights",
+          "note": "Each query distributes weight across available tokens."
+        },
+        {
+          "id": "sink",
+          "label": "Initial sink tokens",
+          "note": "The earliest positions receive excess attention mass."
+        },
+        {
+          "id": "cache",
+          "label": "Streaming cache",
+          "note": "Keeps sinks and recent tokens while evicting older middle tokens."
+        },
+        {
+          "id": "generation",
+          "label": "Continued generation",
+          "note": "Streaming proceeds without sink-eviction quality collapse."
+        }
+      ],
+      "edges": [
+        {
+          "from": "sequence",
+          "to": "attention",
+          "label": "attends over"
+        },
+        {
+          "from": "attention",
+          "to": "sink",
+          "label": "excess mass"
+        },
+        {
+          "from": "sink",
+          "to": "cache",
+          "label": "preserve"
+        },
+        {
+          "from": "sequence",
+          "to": "cache",
+          "label": "recent window"
+        },
+        {
+          "from": "cache",
+          "to": "generation",
+          "label": "supports"
+        }
+      ],
+      "caption": "Windowed streaming retains the initial attention sinks alongside recent tokens."
+    }
+  },
   "related": [
     "attention",
     "inference",

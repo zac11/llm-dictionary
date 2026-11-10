@@ -8,7 +8,32 @@
   ],
   "definition": "A training approach that fine-tunes a model specifically to make better use of retrieved documents provided in its context, improving RAG system performance.",
   "details": "RAFT-style approaches train models to distinguish relevant from irrelevant retrieved passages and to cite evidence appropriately, addressing weaknesses that arise when a general-purpose model is simply given retrieved context at inference time without task-specific training.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. And that is Retrieval-Augmented Fine-Tuning — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "RAFT trains a model specifically to work well with retrieved documents in its context, rather than assuming a general model will use them well. It matters because standard RAG pipelines often stumble when the context is noisy or irrelevant.",
+    "tiers": {
+      "eli5": "Instead of just handing a student a pile of notes and hoping they use the right ones, you practice with them on piles that include junk, so they learn to pick out what matters.",
+      "practitioner": "Engineers fine-tune on examples mixing relevant and irrelevant passages so the model learns to cite the right evidence and ignore distractors. A common pitfall is training only on clean contexts, which leaves the model fragile when real retrieval returns noise.",
+      "paperLevel": "A supervised fine-tuning procedure where training examples pair a question with retrieved passages containing both relevant and distractor documents, and the target includes a reasoning chain plus citations to the relevant passages; performance is bounded by the quality and coverage of the retrieval corpus used in training."
+    },
+    "example": "A model is fine-tuned on questions where half the supplied passages are off-topic; at inference it learns to quote the two relevant documents and ignore the rest, improving answer accuracy over an untuned RAG baseline.",
+    "usedIn": [
+      {
+        "name": "RAG pipelines",
+        "detail": "context-robust answering",
+        "url": ""
+      },
+      {
+        "name": "Enterprise QA",
+        "detail": "citation-backed responses",
+        "url": ""
+      },
+      {
+        "name": "Domain assistants",
+        "detail": "noisy document sets",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "fine-tuning",
     "fine-grained-grounding",

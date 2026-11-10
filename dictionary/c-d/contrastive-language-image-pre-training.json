@@ -5,7 +5,118 @@
   "type": "concept",
   "definition": "Contrastive Language–Image Pre-training (CLIP) is a technique for training a pair of neural network models, one for image understanding and one for text understanding, using a contrastive objective.",
   "details": "This method has enabled broad applications across multiple domains, including cross-modal retrieval, text-to-image generation, and aesthetic ranking.",
-  "story": "Picture walking through a crowd and instantly picking out a familiar face without reading a single name tag. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. It turns a picture into an understanding: this is a cat, that is a stop sign. Sight, for a machine, is a long climb from raw light to a name. And that is Contrastive Language–Image Pre-training — giving a machine the gift of sight.",
+  "explainer": {
+    "lead": "Contrastive Language–Image Pre-training, or CLIP, teaches separate image and text models to place matching pictures and descriptions close together in a shared representation space. This shared understanding supports tasks such as finding images with text, guiding text-to-image generation, and ranking visual appeal.",
+    "tiers": {
+      "eli5": "Imagine matching photographs to the right captions. CLIP gives one student the pictures and another the captions, then rewards them whenever their answers agree and corrects them when they choose the wrong match. After lots of practice, a caption can help find a suitable picture, and a picture can help find a suitable caption.",
+      "practitioner": "Use an image encoder and a text encoder to produce embeddings, then compare their similarity for retrieval, generation guidance, or aesthetic ranking. Training requires paired images and text; a practical pitfall is treating the encoders as a single network or expecting CLIP itself to generate images.",
+      "paperLevel": "For N image–text pairs, let f(I_i) and g(T_j) be the image and text embeddings and define s_ij = cos(f(I_i), g(T_j)). A contrastive objective trains f and g to increase s_ii for each matching pair relative to similarities with unmatched items in the batch."
+    },
+    "example": "Given a photo of a dog, a photo of a bicycle, and the caption “a dog,” training rewards a high similarity between the dog photo and that caption. It also pushes the model to give lower similarity to the bicycle photo paired with “a dog.”",
+    "usedIn": [
+      {
+        "name": "Cross-modal retrieval",
+        "detail": "Matching images and text through their learned representations, such as retrieving pictures for a written description.",
+        "url": ""
+      },
+      {
+        "name": "Text-to-image generation",
+        "detail": "Providing a connection between written descriptions and visual content for image-generation applications.",
+        "url": ""
+      },
+      {
+        "name": "Aesthetic ranking",
+        "detail": "Supporting the ordering of images by visual appeal.",
+        "url": ""
+      }
+    ],
+    "intuition": "A picture and its correct caption are two views of the same idea, so their representations should be similar. Pictures paired with unrelated captions should have less similar representations.",
+    "howItWorks": [
+      "Collect paired images and text descriptions.",
+      "Pass images through the image model and descriptions through the text model.",
+      "Compare the resulting representations across matching and non-matching pairs.",
+      "Update both models so correct pairs become more similar and incorrect pairs become less similar.",
+      "Use the learned image–text relationship for downstream applications."
+    ],
+    "whyItMatters": "Learning a shared relationship between vision and language lets the same approach support several kinds of applications. It provides a common basis for retrieving images, connecting text with image generation, and ranking images aesthetically.",
+    "misconceptions": [
+      "CLIP is not one neural network: it trains separate image and text models.",
+      "CLIP is a training technique, not by itself a text-to-image generator.",
+      "Matching means bringing related representations closer, not making image and text data identical."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "images",
+          "label": "Paired images",
+          "note": "Visual training inputs"
+        },
+        {
+          "id": "texts",
+          "label": "Paired texts",
+          "note": "Matching descriptions"
+        },
+        {
+          "id": "image-encoder",
+          "label": "Image model",
+          "note": "Processes visual inputs"
+        },
+        {
+          "id": "text-encoder",
+          "label": "Text model",
+          "note": "Processes descriptions"
+        },
+        {
+          "id": "image-vectors",
+          "label": "Image embeddings",
+          "note": "Visual representations"
+        },
+        {
+          "id": "text-vectors",
+          "label": "Text embeddings",
+          "note": "Language representations"
+        },
+        {
+          "id": "objective",
+          "label": "Contrastive objective",
+          "note": "Matches correct pairs"
+        }
+      ],
+      "edges": [
+        {
+          "from": "images",
+          "to": "image-encoder",
+          "label": ""
+        },
+        {
+          "from": "texts",
+          "to": "text-encoder",
+          "label": ""
+        },
+        {
+          "from": "image-encoder",
+          "to": "image-vectors",
+          "label": ""
+        },
+        {
+          "from": "text-encoder",
+          "to": "text-vectors",
+          "label": ""
+        },
+        {
+          "from": "image-vectors",
+          "to": "objective",
+          "label": "compare"
+        },
+        {
+          "from": "text-vectors",
+          "to": "objective",
+          "label": "compare"
+        }
+      ],
+      "caption": "Two models turn paired images and text into embeddings, while a contrastive objective aligns matching pairs and separates mismatches."
+    }
+  },
   "related": [
     "pre-training",
     "post-training-of-large-language-models",

@@ -5,6 +5,96 @@
   "type": "concept",
   "definition": "Detecting and counting eye blinks from video, used in driver fatigue monitoring, liveness detection, and clinical analysis.",
   "details": "Detecting and counting eye blinks from video, used in driver fatigue monitoring, liveness detection, and clinical analysis.",
+  "explainer": {
+    "lead": "Blink estimation turns eye movements in video into detected blink events and counts. It provides a practical signal for monitoring driver fatigue, checking liveness, and supporting clinical analysis.",
+    "tiers": {
+      "eli5": "It is like watching a friend in a video and making a tally every time their eyes close and open. A computer does the counting, and the result can help spot tiredness or check that a real person is in front of the camera.",
+      "practitioner": "A video pipeline typically locates the eyes, estimates whether they are open or closed across frames, and groups a closing-and-opening sequence into one blink. The resulting events or counts can feed driver-fatigue monitoring, liveness detection, or clinical analysis. Changes in the visible eye region and video conditions can affect the observations, so blink counts should be treated as estimates rather than infallible measurements.",
+      "paperLevel": "Given a video sequence, estimate eye state e_t for each frame t and detect blink events as closing-and-opening patterns in that sequence; the blink count is the number of detected events. The task therefore combines per-frame eye-state estimation with temporal event detection. Its output is an estimate from visible video evidence, not by itself a clinical diagnosis or a complete measure of fatigue or liveness."
+    },
+    "example": "In a short clip, a system observes open eyes at first, closed eyes in the next few frames, and open eyes again; it records one blink. When that pattern occurs twice more later in the clip, the estimated total is three blinks.",
+    "usedIn": [
+      {
+        "name": "Driver fatigue monitoring",
+        "detail": "Blink events and counts provide an eye-based signal for monitoring fatigue.",
+        "url": ""
+      },
+      {
+        "name": "Liveness detection",
+        "detail": "Observed blinking can contribute evidence about activity in front of the camera.",
+        "url": ""
+      },
+      {
+        "name": "Clinical analysis",
+        "detail": "Video-derived blink measurements can support analysis of eye-blinking behaviour.",
+        "url": ""
+      }
+    ],
+    "intuition": "A blink appears as a short-lived pattern across video frames rather than as a single picture: the eyes close and then open again. Tracking that pattern lets a system distinguish individual blinks and count them.",
+    "howItWorks": [
+      "Read the video as a sequence of frames.",
+      "Locate the visible eye regions in the frames.",
+      "Estimate how the eyes change from open to closed and back again.",
+      "Group each closing-and-opening pattern into a blink event and count the events."
+    ],
+    "whyItMatters": "It converts ordinary video into measurable blink events without requiring the observer to count them manually. Those measurements can support applications where blinking is a useful signal, from fatigue monitoring to liveness detection and clinical analysis.",
+    "misconceptions": [
+      "A closed-eye frame alone is not necessarily a complete blink.",
+      "A blink count is not by itself a diagnosis or proof of liveness."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "video",
+          "label": "Video frames",
+          "note": "Images ordered over time"
+        },
+        {
+          "id": "eyes",
+          "label": "Eye regions",
+          "note": "Visible eyes located in frames"
+        },
+        {
+          "id": "state",
+          "label": "Eye states",
+          "note": "Open and closed changes tracked"
+        },
+        {
+          "id": "events",
+          "label": "Blink events",
+          "note": "Closing-and-opening patterns grouped"
+        },
+        {
+          "id": "count",
+          "label": "Blink count",
+          "note": "Detected events tallied"
+        }
+      ],
+      "edges": [
+        {
+          "from": "video",
+          "to": "eyes",
+          "label": "locate"
+        },
+        {
+          "from": "eyes",
+          "to": "state",
+          "label": "track"
+        },
+        {
+          "from": "state",
+          "to": "events",
+          "label": "group"
+        },
+        {
+          "from": "events",
+          "to": "count",
+          "label": "tally"
+        }
+      ],
+      "caption": "Blink estimation turns ordered video frames into eye-state changes, discrete blink events, and a count."
+    }
+  },
   "citation": {
     "title": "Blink Estimation",
     "authors": [],

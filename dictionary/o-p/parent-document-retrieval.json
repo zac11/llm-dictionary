@@ -8,6 +8,32 @@
   ],
   "definition": "Indexing and matching on small precise chunks, but feeding the model their larger parent sections, getting matching precision and generation context simultaneously.",
   "details": "Indexing and matching on small precise chunks, but feeding the model their larger parent sections, getting matching precision and generation context simultaneously.",
+  "explainer": {
+    "lead": "Parent-document retrieval indexes small, precise chunks for matching but hands the model the larger section each chunk came from. This gives sharp retrieval and broad generation context at the same time.",
+    "tiers": {
+      "eli5": "You look things up by the page number, but once you find the right spot you read the whole chapter around it.",
+      "practitioner": "Engineers embed fine-grained chunks, then map a hit back to its parent section before putting it in the prompt. The pitfall is context bloat: parents that are too large crowd the window and dilute the model's attention.",
+      "paperLevel": "The scheme uses two granularities: retrieval scores are computed on child chunks, and the returned document is the parent of the top-scoring child. Its limits are inherited from chunking choices, since parent size bounds the context and child size bounds matching precision."
+    },
+    "example": "A query matches a single sentence in a handbook, and the system returns that sentence's whole section to the generator instead of the sentence alone.",
+    "usedIn": [
+      {
+        "name": "Retrieval-augmented generation",
+        "detail": "precise hits, wider context",
+        "url": ""
+      },
+      {
+        "name": "Document question answering",
+        "detail": "section-level answers",
+        "url": ""
+      },
+      {
+        "name": "Enterprise search",
+        "detail": "chunk index, parent results",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "precision"
   ],

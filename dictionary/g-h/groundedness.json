@@ -5,7 +5,97 @@
   "type": "concept",
   "definition": "The extent to which a model's output is supported by, and consistent with, a given source of evidence such as retrieved documents or provided context.",
   "details": "Groundedness is a key evaluation criterion for RAG systems, measuring whether generated claims can actually be traced back to the supplied context rather than being fabricated or drawn from unsupported parametric knowledge.",
-  "story": "Imagine a driving test that every new model has to pass before it is allowed on the road. It is the exam that separates “it sounds good” from “it actually is good”. A fair scoreboard keeps everyone honest. It is the exam that keeps everyone honest. That shared ruler is Groundedness.",
+  "explainer": {
+    "lead": "Groundedness checks whether an AI answer actually follows from the evidence it was given. It matters because a fluent answer can still contain claims that the supplied documents do not support.",
+    "tiers": {
+      "eli5": "Imagine answering a question using only pages from a book. Groundedness means every important part of your answer can be found in those pages, rather than being made up or added from somewhere else.",
+      "practitioner": "In RAG evaluation, groundedness is applied by checking whether generated claims can be traced to retrieved documents or provided context. A useful check separates individual claims and tests their support, since an answer can be partly grounded while still including unsupported additions.",
+      "paperLevel": "Groundedness is the degree to which output claims are supported by and consistent with a specified evidence source, such as retrieved documents or context. It evaluates support relative to that source, not whether the source itself is factually correct or complete."
+    },
+    "example": "If the supplied document says, “The library opens at 9 a.m.,” the answer “It opens at 9 a.m.” is grounded. Adding “It has a café” is unsupported because the document says nothing about a café.",
+    "usedIn": [
+      {
+        "name": "Retrieval-augmented generation",
+        "detail": "Evaluates whether generated claims are supported by the retrieved context.",
+        "url": ""
+      },
+      {
+        "name": "Context-based question answering",
+        "detail": "Checks that answers follow the provided documents rather than unsupported model knowledge.",
+        "url": ""
+      }
+    ],
+    "intuition": "Think of groundedness as asking, “Where does the evidence say that?” for each claim in an answer. A grounded response sticks to what the supplied material supports.",
+    "howItWorks": [
+      "Provide the model with evidence, such as retrieved documents.",
+      "Generate an answer from that evidence.",
+      "Identify the answer’s individual claims.",
+      "Check each claim for support and consistency in the evidence."
+    ],
+    "whyItMatters": "Groundedness helps expose fabricated or unsupported claims in RAG outputs, making it a key criterion for judging whether retrieval is actually supporting generation.",
+    "misconceptions": [
+      "Groundedness is not proof that a claim is true in the real world.",
+      "A confident or well-written answer is not necessarily grounded.",
+      "An answer can be partly grounded rather than entirely supported or unsupported."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "question",
+          "label": "Question",
+          "note": "The user’s information need"
+        },
+        {
+          "id": "retrieval",
+          "label": "Document retrieval",
+          "note": "Finds relevant evidence"
+        },
+        {
+          "id": "context",
+          "label": "Supplied context",
+          "note": "Evidence available to the model"
+        },
+        {
+          "id": "answer",
+          "label": "Generated answer",
+          "note": "Contains one or more claims"
+        },
+        {
+          "id": "check",
+          "label": "Groundedness check",
+          "note": "Tests support for each claim"
+        }
+      ],
+      "edges": [
+        {
+          "from": "question",
+          "to": "retrieval",
+          "label": "guides"
+        },
+        {
+          "from": "retrieval",
+          "to": "context",
+          "label": "supplies"
+        },
+        {
+          "from": "context",
+          "to": "answer",
+          "label": "informs"
+        },
+        {
+          "from": "answer",
+          "to": "check",
+          "label": "claims"
+        },
+        {
+          "from": "context",
+          "to": "check",
+          "label": "evidence"
+        }
+      ],
+      "caption": "Groundedness compares the claims in a generated answer with the evidence supplied to the model."
+    }
+  },
   "related": [
     "a-b-testing",
     "ablation-study",

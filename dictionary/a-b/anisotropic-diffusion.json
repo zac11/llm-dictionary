@@ -5,7 +5,114 @@
   "type": "concept",
   "definition": "In image processing and computer vision, anisotropic diffusion, also called Perona–Malik diffusion, is a technique aiming at reducing image noise without removing significant parts of the image content, typically edges, lines or other details that are important for the interpretation of the image.",
   "details": "Anisotropic diffusion resembles the process that creates a scale space, where an image generates a parameterized family of successively more and more blurred images based on a diffusion process. Each of the resulting images in this family are given as a convolution between the image and a 2D isotropic Gaussian filter, where the width of the filter increases with the parameter. This diffusion process is a linear and space-invariant transformation of the original image. Anisotropic diffusion is a generalization of this diffusion process: it produces a family of parameterized images, but each resulting image is a combination between the original image and a filter that depends on the local content of the original image. As a consequence, anisotropic diffusion is a non-linear and space-variant transformation of the original image. In its original formulation, presented by Perona and Malik in 1987, the space-variant filter is in fact isotropic but depends on the image content such that it approximates an impulse function close to edges and other structures that should be preserved in the image over the different levels of the resulting scale space. This formulation was referred to as an",
-  "story": "Picture walking through a crowd and instantly picking out a familiar face without reading a single name tag. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. It turns a picture into an understanding: this is a cat, that is a stop sign. Sight, for a machine, is a long climb from raw light to a name. That pixel-to-meaning climb is Anisotropic diffusion.",
+  "explainer": {
+    "lead": "Anisotropic diffusion cleans up a noisy image by smoothing some places more than others. It spreads small variations within fairly uniform regions while slowing down near edges and lines, so the result can be less noisy without throwing away the details needed to understand the picture.",
+    "tiers": {
+      "eli5": "Imagine gently wiping dust off a pencil drawing: you can wipe the empty paper more firmly, but you need a lighter touch near the pencil lines. Anisotropic diffusion does something similar with a picture, repeatedly softening tiny speckles while being careful around important boundaries. After enough gentle wipes, the picture looks cleaner, but wiping for too long can still make it blurry.",
+      "practitioner": "Apply it as an iterative approximation of the generalized diffusion equation, computing each image from the previous one until smoothing is sufficient. Choose the diffusion coefficient as a function of the image gradient; the constant K controls edge sensitivity and is usually selected experimentally or from the image noise. Monitor the stopping point, because larger diffusion times produce progressively blurrier images.",
+      "paperLevel": "For grayscale images I(·,t) on Ω ⊂ R², with I(·,0) as input, the evolution is ∂I/∂t = div(c(x,y,t)∇I) = ∇c·∇I + cΔI. Perona and Malik presented the original formulation in 1987 and in 1990 proposed gradient-dependent coefficients c(||∇I||) = exp(-(||∇I||/K)²) and c(||∇I||) = 1/(1+(||∇I||/K)²), reducing diffusion at strong gradients. K must be chosen experimentally or as a function of noise, and continuing to larger t gives blurrier outputs."
+    },
+    "example": "Take a noisy grayscale scan of dark text on light paper. Within a fairly uniform patch of paper, small pixel differences allow substantial diffusion, so speckles are averaged away over successive updates; at a strong dark-to-light transition around a letter, the gradient lowers the diffusion coefficient and slows smoothing there. The process stops when the paper is sufficiently clean, before continued iterations make the letter boundaries too blurry.",
+    "usedIn": [
+      {
+        "name": "Image noise reduction",
+        "detail": "Smooths noisy images while aiming to retain edges, lines, and other details important for interpretation.",
+        "url": ""
+      },
+      {
+        "name": "Edge- and line-preserving smoothing",
+        "detail": "More general formulations orient smoothing along linear structures and restrict it across them.",
+        "url": ""
+      },
+      {
+        "name": "Scale-space image analysis",
+        "detail": "Produces a parameterized family of increasingly smoothed images using local image content rather than a fixed Gaussian filter.",
+        "url": ""
+      }
+    ],
+    "intuition": "Ordinary diffusion treats every location alike, so noise and meaningful edges are blurred together. Anisotropic diffusion makes smoothing depend on local image content: it is stronger in relatively uniform areas and weaker where a large gradient suggests an edge worth preserving.",
+    "howItWorks": [
+      "Start with the input grayscale image at t = 0.",
+      "Measure local image variation, typically using the image gradient.",
+      "Use that variation to set the diffusion coefficient, reducing diffusion near likely edges.",
+      "Apply one update of the generalized diffusion equation to obtain the next image.",
+      "Repeat until sufficient smoothing is reached, accepting that longer diffusion produces blurrier images."
+    ],
+    "whyItMatters": "It connects denoising with the structure needed for later image interpretation, rather than treating every fluctuation as disposable. It also generalizes Gaussian scale-space smoothing from a linear, space-invariant operation into a nonlinear, space-variant one governed by local image content.",
+    "misconceptions": [
+      "It is not ordinary Gaussian blurring: Gaussian scale space is linear and space-invariant, whereas this process adapts to local content.",
+      "The original Perona–Malik filter was locally isotropic despite the name; truly anisotropic filters appear in more general formulations.",
+      "Edge sensitivity does not mean edges can never blur, since larger diffusion times still produce blurrier images and K must be chosen."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input image",
+          "note": "The noisy grayscale image at t = 0."
+        },
+        {
+          "id": "gradient",
+          "label": "Local gradient",
+          "note": "Measures variation and highlights likely edges."
+        },
+        {
+          "id": "coefficient",
+          "label": "Diffusion coefficient",
+          "note": "Uses the gradient and K to control smoothing."
+        },
+        {
+          "id": "update",
+          "label": "Diffusion update",
+          "note": "Applies the generalized diffusion equation."
+        },
+        {
+          "id": "output",
+          "label": "Smoothed image",
+          "note": "Becomes the next iterate or the final output."
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "gradient",
+          "label": "local content"
+        },
+        {
+          "from": "gradient",
+          "to": "coefficient",
+          "label": ""
+        },
+        {
+          "from": "coefficient",
+          "to": "update",
+          "label": "controls rate"
+        },
+        {
+          "from": "input",
+          "to": "update",
+          "label": "current image"
+        },
+        {
+          "from": "update",
+          "to": "output",
+          "label": ""
+        },
+        {
+          "from": "output",
+          "to": "gradient",
+          "label": "next iteration"
+        }
+      ],
+      "caption": "Each iteration adapts diffusion to the current image, then feeds the smoothed result back until enough smoothing has been obtained."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Anisotropic diffusion",
+        "url": "https://en.wikipedia.org/wiki/Anisotropic_diffusion"
+      }
+    ]
+  },
   "related": [
     "accord-net",
     "active-appearance-model",

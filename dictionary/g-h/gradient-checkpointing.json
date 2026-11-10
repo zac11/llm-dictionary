@@ -8,6 +8,92 @@
   ],
   "definition": "Discarding intermediate activations during the forward pass and recomputing them during backward, trading roughly 30% extra compute for a large memory reduction.",
   "details": "Discarding intermediate activations during the forward pass and recomputing them during backward, trading roughly 30% extra compute for a large memory reduction. Essential for training big models on finite GPU memory.",
+  "explainer": {
+    "lead": "Gradient checkpointing makes it possible to train larger neural networks with limited GPU memory by saving fewer intermediate results. It later repeats some calculations to recover what was not saved, accepting roughly 30% extra compute for a large reduction in memory use.",
+    "tiers": {
+      "eli5": "Imagine solving a long maths problem without writing down every step, but keeping a few notes along the way. When you need to check your work, you redo the missing steps from those notes. It takes longer, but you need far less paper.",
+      "practitioner": "Use gradient checkpointing when storing intermediate activations prevents a large model from fitting into available GPU memory. Choose checkpoint boundaries so that backward passes can recompute each section from a saved input, and expect longer training in exchange for lower memory use. It does not remove the need to store some activations, and poor placement can increase recomputation.",
+      "paperLevel": "For a block f with input x, retain x rather than all intermediate activations produced while evaluating f(x). During backpropagation, recompute those intermediates from x and use them to calculate gradients. This trades roughly 30% additional compute for a large activation-memory reduction; it adds runtime and still requires memory for checkpointed values."
+    },
+    "example": "A 24-layer network can retain activations at a few layer boundaries instead of at every layer. When backpropagation reaches a block, it reruns that block’s forward pass to recover the activations needed for its gradients. The run performs extra work but can fit into GPU memory that would otherwise be exceeded.",
+    "usedIn": [
+      {
+        "name": "Large-model training",
+        "detail": "Reduces activation memory so bigger models can be trained on finite GPU memory.",
+        "url": ""
+      },
+      {
+        "name": "Memory-constrained GPU training",
+        "detail": "Uses additional computation to fit training runs that would otherwise require more memory.",
+        "url": ""
+      }
+    ],
+    "intuition": "Training normally keeps many intermediate answers so the backward pass can calculate gradients. Checkpointing keeps only selected answers and recreates the others when needed, much like redoing work instead of storing every page of scratch calculations.",
+    "howItWorks": [
+      "Run the forward pass through the model.",
+      "Discard many intermediate activations, retaining selected checkpoint values.",
+      "During backpropagation, rerun forward calculations from those checkpoints.",
+      "Use the recomputed activations to calculate gradients."
+    ],
+    "whyItMatters": "It makes training large models practical on finite GPU memory without requiring every intermediate activation to remain stored. The cost is additional computation and therefore extra training work.",
+    "misconceptions": [
+      "It does not make the forward and backward calculations disappear; many are simply performed again.",
+      "It does not eliminate activation storage, because selected checkpoint values must still be retained.",
+      "It is a memory–compute trade-off, not a way to make training faster."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Model input",
+          "note": "Starts the forward pass"
+        },
+        {
+          "id": "forward",
+          "label": "Forward pass",
+          "note": "Computes intermediate activations"
+        },
+        {
+          "id": "checkpoints",
+          "label": "Saved checkpoints",
+          "note": "Retains selected values"
+        },
+        {
+          "id": "recompute",
+          "label": "Recompute activations",
+          "note": "Reruns forward calculations"
+        },
+        {
+          "id": "gradients",
+          "label": "Gradient calculation",
+          "note": "Uses recovered activations"
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "forward",
+          "label": ""
+        },
+        {
+          "from": "forward",
+          "to": "checkpoints",
+          "label": "keeps selected"
+        },
+        {
+          "from": "checkpoints",
+          "to": "recompute",
+          "label": "during backward"
+        },
+        {
+          "from": "recompute",
+          "to": "gradients",
+          "label": ""
+        }
+      ],
+      "caption": "Selected activations are saved during the forward pass, then missing activations are recomputed for gradient calculation."
+    }
+  },
   "related": [
     "forward-pass"
   ],

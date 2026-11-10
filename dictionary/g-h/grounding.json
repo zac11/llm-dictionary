@@ -8,7 +8,103 @@
   ],
   "definition": "Connecting a model's output to real, verifiable sources or data instead of letting it answer from memory alone.",
   "details": "Grounded systems retrieve documents or query tools, then constrain the answer to what those sources support — which reduces hallucination and makes claims auditable. Retrieval-augmented generation is the most common way to implement it.",
-  "story": "Think of a jazz musician who has heard so many solos that a new one simply falls out of their fingers. Given a starting line, the machine imagines what comes next — a word, a note, a patch of a picture. It makes new things by recombining everything it has ever seen. Creation, here, is memory recombined at speed. That next-word, next-stroke magic is Grounding.",
+  "explainer": {
+    "lead": "Grounding means making an AI answer from evidence you can inspect, rather than relying only on what the model learned during training. It gives people a way to check claims and reduces the chance of the model inventing information.",
+    "tiers": {
+      "eli5": "Imagine answering a quiz with an open textbook instead of guessing from memory. Grounding works the same way: the AI looks up useful information first, then builds its answer from what it finds. You can check the book pages behind the answer instead of simply trusting it.",
+      "practitioner": "A typical implementation retrieves relevant documents or calls tools, then passes the results to the generator with instructions to stay within that evidence. Retrieval-augmented generation is the most common approach. The main pitfalls are incomplete or irrelevant retrieval and answers that include claims the supplied evidence does not actually support.",
+      "paperLevel": "For a query q, let E be evidence obtained from documents or tools; grounded generation produces an output y = M(q, E) whose claims are constrained to those supported by E. Grounding differs from generation based solely on model parameters, but it cannot guarantee correctness when E is incomplete, irrelevant, or misinterpreted. Its auditable evidence makes unsupported claims easier to inspect."
+    },
+    "example": "A user asks, “What does our refund policy say about opened software?” The system retrieves the company’s refund-policy document, finds the section covering opened software, and answers only from that passage while pointing to it as support. If the retrieved policy does not address the case, a grounded answer should acknowledge that rather than invent a rule.",
+    "usedIn": [
+      {
+        "name": "Document question answering",
+        "detail": "Answers are generated from retrieved passages so readers can check the supporting text.",
+        "url": ""
+      },
+      {
+        "name": "Customer support",
+        "detail": "Support answers can be tied to retrieved help documents rather than model memory alone.",
+        "url": ""
+      },
+      {
+        "name": "Tool-assisted assistants",
+        "detail": "Assistants can query tools and constrain their responses to the returned information.",
+        "url": ""
+      }
+    ],
+    "intuition": "A model’s memory can fill gaps with plausible-sounding text, so grounding gives it outside evidence to work from. The answer becomes a claim about identifiable sources, not just something the model happens to say.",
+    "howItWorks": [
+      "Take the user’s question or task.",
+      "Retrieve relevant documents or query an appropriate tool.",
+      "Provide the returned evidence to the model alongside the question.",
+      "Generate an answer constrained to claims the evidence supports.",
+      "Keep the supporting sources available so claims can be audited."
+    ],
+    "whyItMatters": "Grounding reduces hallucination by limiting answers to available evidence. It also makes claims auditable, allowing people to inspect the documents or tool results behind an answer.",
+    "misconceptions": [
+      "Grounding does not guarantee truth: retrieved evidence can be incomplete, irrelevant, or wrong.",
+      "Adding retrieval is not enough if the generator is still allowed to make unsupported claims.",
+      "Grounding is not simply asking a model to sound confident or provide a citation; the source must actually support the answer."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "query",
+          "label": "User question",
+          "note": "The task that needs an evidence-based answer."
+        },
+        {
+          "id": "retrieval",
+          "label": "Retrieve or query",
+          "note": "Searches documents or calls tools."
+        },
+        {
+          "id": "evidence",
+          "label": "Supporting evidence",
+          "note": "Documents or tool results returned for the question."
+        },
+        {
+          "id": "generator",
+          "label": "Grounded generator",
+          "note": "Answers within what the evidence supports."
+        },
+        {
+          "id": "answer",
+          "label": "Auditable answer",
+          "note": "Claims can be checked against their sources."
+        }
+      ],
+      "edges": [
+        {
+          "from": "query",
+          "to": "retrieval",
+          "label": "question"
+        },
+        {
+          "from": "retrieval",
+          "to": "evidence",
+          "label": "returns"
+        },
+        {
+          "from": "evidence",
+          "to": "generator",
+          "label": "context"
+        },
+        {
+          "from": "query",
+          "to": "generator",
+          "label": "task"
+        },
+        {
+          "from": "generator",
+          "to": "answer",
+          "label": "produces"
+        }
+      ],
+      "caption": "Grounding routes a question through documents or tools, then uses the returned evidence to produce an answer that can be checked."
+    }
+  },
   "related": [
     "fine-grained-grounding",
     "common-crawl",

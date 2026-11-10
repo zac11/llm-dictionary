@@ -5,7 +5,97 @@
   "type": "concept",
   "definition": "In mathematical optimization, fractional programming is a generalization of linear-fractional programming.",
   "details": "The objective function in a fractional program is a ratio of two functions that are in general nonlinear. The ratio to be optimized often describes some kind of efficiency of a system.",
-  "story": "Think of a hiker descending a foggy hill in the dark, taking small steps and feeling for the steepest way down. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. It is the same loop you use to learn anything: try, miss, correct, try again. Skill, for a model, is just error pushed down until it is small enough to ignore. That steady, miss-by-miss improvement is Fractional programming.",
+  "explainer": {
+    "lead": "Fractional programming is optimization where the goal is a ratio, such as benefit divided by cost, rather than a single quantity. It matters when the best choice is the one that makes a system most efficient, not simply the one that maximizes output or minimizes input.",
+    "tiers": {
+      "eli5": "Imagine choosing a bicycle route by comparing how much fun you have with how tired you get. You want the most fun for each bit of tiredness, so you compare a fraction rather than either number alone. Fractional programming does this kind of comparison with functions that can bend and curve instead of following simple straight-line rules.",
+      "practitioner": "Formulate the decision as minimizing or maximizing f(x)/g(x), with any feasibility requirements placed on x. Check the denominator's sign and keep it away from zero; because either function may be nonlinear, assess the resulting problem before choosing a nonlinear optimization solver. Do not assume that optimizing the numerator and denominator separately will optimize their ratio.",
+      "paperLevel": "A fractional program can be written as minimize f(x)/g(x) subject to x in X and g(x) != 0, or as the corresponding maximization problem. Linear-fractional programming is the special case with affine numerator and denominator, while fractional programming generally allows both to be nonlinear. This generality means that linear-fractional techniques and guarantees do not automatically carry over."
+    },
+    "example": "Choose x from {1, 2, 3} to minimize f(x)/g(x) = x^2/(1+x). The three values are 1/2, 4/3, and 9/4, so x = 1 is optimal.",
+    "usedIn": [
+      {
+        "name": "System efficiency optimization",
+        "detail": "A ratio can express how much useful result a design obtains per unit of resource.",
+        "url": ""
+      },
+      {
+        "name": "Nonlinear mathematical optimization",
+        "detail": "The framework covers ratio objectives whose numerator and denominator are generally nonlinear.",
+        "url": ""
+      }
+    ],
+    "intuition": "A ratio measures one quantity relative to another, often capturing efficiency. Fractional programming searches for the decision giving the best such trade-off.",
+    "howItWorks": [
+      "Define the decision variables and feasible choices.",
+      "Choose a numerator f(x) for the quantity of interest.",
+      "Choose a nonzero denominator g(x) for the quantity used as the basis of comparison.",
+      "Minimize or maximize f(x)/g(x) over the feasible choices."
+    ],
+    "whyItMatters": "It provides a direct way to optimize efficiency-like measures without replacing the ratio with separate goals. Its nonlinear generality also covers ratio objectives beyond linear-fractional programming.",
+    "misconceptions": [
+      "It is not limited to linear functions; the numerator and denominator are generally nonlinear.",
+      "Maximizing the numerator alone need not maximize the ratio.",
+      "The denominator cannot simply be ignored when it approaches zero or changes sign."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "choice",
+          "label": "Feasible choice",
+          "note": "A candidate value of x"
+        },
+        {
+          "id": "numerator",
+          "label": "Numerator f(x)",
+          "note": "First function of the choice"
+        },
+        {
+          "id": "denominator",
+          "label": "Denominator g(x)",
+          "note": "Second, nonzero function"
+        },
+        {
+          "id": "ratio",
+          "label": "Ratio objective",
+          "note": "Compute f(x)/g(x)"
+        },
+        {
+          "id": "best",
+          "label": "Best choice",
+          "note": "Minimize or maximize the ratio"
+        }
+      ],
+      "edges": [
+        {
+          "from": "choice",
+          "to": "numerator",
+          "label": ""
+        },
+        {
+          "from": "choice",
+          "to": "denominator",
+          "label": ""
+        },
+        {
+          "from": "numerator",
+          "to": "ratio",
+          "label": ""
+        },
+        {
+          "from": "denominator",
+          "to": "ratio",
+          "label": ""
+        },
+        {
+          "from": "ratio",
+          "to": "best",
+          "label": "optimize"
+        }
+      ],
+      "caption": "A feasible choice feeds two functions, whose ratio becomes the objective to optimize."
+    }
+  },
   "related": [
     "linear-fractional-programming",
     "bayesian-programming",

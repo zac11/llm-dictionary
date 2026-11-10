@@ -5,7 +5,102 @@
   "type": "concept",
   "definition": "Various methods for the evaluation for machine translation have been employed.",
   "details": "This article focuses on the evaluation of the output of machine translation, rather than on performance or usability evaluation.",
-  "story": "Picture a translator at the United Nations, listening to one language and whispering the meaning into another in real time. It figures out meaning by noticing which words like to travel together. It does not memorize a rulebook; it absorbs a library. Meaning lives in company — a word is known by the words it keeps. And that is Evaluation of machine translation — teaching a machine to read between the lines.",
+  "explainer": {
+    "lead": "Evaluation of machine translation is the process of judging how good a translated sentence or document is. It helps researchers and translation teams compare systems and decide whether their output is fit for use.",
+    "tiers": {
+      "eli5": "Imagine asking two friends to translate the same sentence and checking which version sounds right and keeps the original meaning. Machine translation is tested in a similar way: people or automatic checks compare its translations with good examples. This shows where a system works well and where it makes mistakes.",
+      "practitioner": "Teams evaluate system output on test sentences, often using reference translations, automatic scores, and human review. Results can guide model comparisons and error analysis, but a single score may hide problems with particular sentence types or meanings. Evaluation here concerns translation quality, not speed, interface usability, or other aspects of system performance.",
+      "paperLevel": "For source text x, a system produces output y-hat, which may be compared with a set of reference translations R using a metric m(y-hat, R) or assessed through human judgments. Scores are aggregated over a test set to describe or compare output quality. Reference-based comparisons can be affected by the fact that a source text may have several valid translations, and output evaluation does not measure performance or usability."
+    },
+    "example": "A system translates “I closed the window” as “J’ai fermé la fenêtre.” An evaluator compares it with the same reference translation and marks it as correct; an output such as “J’ai ouvert la fenêtre” is flagged because it reverses the action, even though it is grammatical French.",
+    "usedIn": [
+      {
+        "name": "Machine translation research",
+        "detail": "Researchers compare the translated output of different systems on shared test material.",
+        "url": ""
+      },
+      {
+        "name": "Translation services",
+        "detail": "Teams check output quality before choosing or updating a translation system.",
+        "url": ""
+      },
+      {
+        "name": "Localization quality assurance",
+        "detail": "Reviewers examine machine-translated text for meaning and language errors.",
+        "url": ""
+      }
+    ],
+    "intuition": "A translation should be judged by what it says and how well it says it, not merely by whether a system produced text. Evaluation makes that judgment systematic by examining outputs across many examples.",
+    "howItWorks": [
+      "Choose source texts for the evaluation.",
+      "Run the machine translation system on them.",
+      "Compare the outputs with references or obtain human judgments.",
+      "Combine the results and inspect recurring errors."
+    ],
+    "whyItMatters": "Without output evaluation, improvements and regressions would be difficult to distinguish, and teams could select systems that produce fluent but incorrect translations. Consistent evaluation supports fairer comparisons and more targeted error correction.",
+    "misconceptions": [
+      "A fluent translation is not necessarily an accurate one.",
+      "One automatic score does not capture every aspect of quality.",
+      "Output evaluation is separate from measuring speed or usability."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "source",
+          "label": "Source texts",
+          "note": "Sentences selected for testing"
+        },
+        {
+          "id": "system",
+          "label": "Translation system",
+          "note": "Produces machine translations"
+        },
+        {
+          "id": "references",
+          "label": "Reference translations",
+          "note": "Example correct translations"
+        },
+        {
+          "id": "evaluation",
+          "label": "Output evaluation",
+          "note": "Automatic comparison or human judgment"
+        },
+        {
+          "id": "report",
+          "label": "Quality results",
+          "note": "Scores, judgments, and error patterns"
+        }
+      ],
+      "edges": [
+        {
+          "from": "source",
+          "to": "system",
+          "label": "input"
+        },
+        {
+          "from": "source",
+          "to": "references",
+          "label": "translated"
+        },
+        {
+          "from": "system",
+          "to": "evaluation",
+          "label": "outputs"
+        },
+        {
+          "from": "references",
+          "to": "evaluation",
+          "label": "comparison"
+        },
+        {
+          "from": "evaluation",
+          "to": "report",
+          "label": "results"
+        }
+      ],
+      "caption": "Machine-translated output is assessed against references or through human judgment, producing quality results and error findings."
+    }
+  },
   "related": [
     "machine-translation",
     "arabic-machine-translation",

@@ -5,7 +5,103 @@
   "type": "concept",
   "definition": "A Boltzmann machine (also called Sherrington–Kirkpatrick model with external field or stochastic Ising model), named after Ludwig Boltzmann, is a spin-glass model with an external field, i.e., a Sherrington–Kirkpatrick model, that is a stochastic Ising model.",
   "details": "It is a statistical physics technique applied in the context of cognitive science. It is also classified as a Markov random field. Boltzmann machines are theoretically intriguing because of the locality and Hebbian nature of their training algorithm (being trained by Hebb's rule), and because of their parallelism and the resemblance of their dynamics to simple physical processes. Boltzmann machines with unconstrained connectivity have not been proven useful for practical problems in machine learning or inference, but if the connectivity is properly constrained, the learning can be made efficient enough to be useful for practical problems. They are named after the Boltzmann distribution in statistical mechanics, which is used in their sampling function. They were heavily popularized and promoted by Geoffrey Hinton, Terry Sejnowski and Yann LeCun in cognitive sciences communities, particularly in machine learning, as part of \"energy-based models\" (EBM), because Hamiltonians of spin glasses as energy are used as a starting point to define the learning task.",
-  "story": "Imagine a factory floor where each workstation can glance at every other workstation before doing its part. It is the blueprint that makes everything else possible. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. Structure decides what the model can even express — the blueprint before the bricks. That blueprint is Boltzmann machine.",
+  "explainer": {
+    "lead": "A Boltzmann machine is a stochastic network whose activity follows patterns governed by an energy function and the Boltzmann distribution. It connects ideas from statistical physics and learning, with local, Hebbian training rules, although practical use depends on constraining its connectivity.",
+    "tiers": {
+      "eli5": "Imagine a group of light switches that keep flipping on and off, with some whole-room patterns appearing more often than others. The machine learns which switches tend to be on together and adjusts their connections, so it gradually favors useful patterns instead of treating every pattern alike.",
+      "practitioner": "Treat it as a stochastic, energy-based model: sample configurations, then use local Hebbian updates to adjust connections. Unconstrained connectivity has not proved useful for practical machine learning or inference, so constrained connectivity is the important setting for making learning efficient enough to use.",
+      "paperLevel": "A Boltzmann machine is a Sherrington–Kirkpatrick spin-glass model with an external field, equivalently a stochastic Ising model, and is also a Markov random field. State probabilities follow the Boltzmann distribution, written P(s) proportional to exp(-E(s)), where the spin-glass Hamiltonian supplies the energy E(s). Its local Hebbian training and parallel dynamics are theoretically appealing, but unrestricted connectivity has not yielded demonstrated practical usefulness in machine learning or inference."
+    },
+    "example": "Consider four units representing an on/off activity pattern. If two units are repeatedly active together during training, Hebb's rule reinforces their connection; subsequent Boltzmann sampling favors configurations according to their resulting energies rather than choosing every pattern equally.",
+    "usedIn": [
+      {
+        "name": "Cognitive science",
+        "detail": "Applied as a statistical-physics technique and promoted within cognitive-science communities.",
+        "url": ""
+      },
+      {
+        "name": "Machine learning",
+        "detail": "Studied as an energy-based model, with constrained connectivity enabling useful practical learning.",
+        "url": ""
+      },
+      {
+        "name": "Statistical physics",
+        "detail": "Uses spin-glass Hamiltonians, stochastic Ising dynamics, and Boltzmann sampling.",
+        "url": ""
+      }
+    ],
+    "intuition": "The network explores possible states rather than producing one fixed state, with the energy function shaping which states are sampled. Learning changes connections through local activity, following Hebb's rule.",
+    "howItWorks": [
+      "Represent a state with interacting stochastic units.",
+      "Include pairwise interactions and an external field.",
+      "Use the spin-glass Hamiltonian as the state's energy.",
+      "Sample states according to the Boltzmann distribution.",
+      "Adjust connections locally with Hebbian learning."
+    ],
+    "whyItMatters": "It links learning to simple physical processes through parallelism, local Hebbian updates, and energy-based sampling. It also shows why connectivity constraints matter: they can turn an otherwise impractical learning scheme into an efficient one.",
+    "misconceptions": [
+      "It is stochastic, not a network with one fixed activity pattern.",
+      "Unrestricted connectivity has not proved useful for practical learning or inference.",
+      "Its learning rule is local and Hebbian, not a separate global training procedure."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "units",
+          "label": "Stochastic units",
+          "note": "Form configurations of activity."
+        },
+        {
+          "id": "connections",
+          "label": "Connections and field",
+          "note": "Define interactions and external influence."
+        },
+        {
+          "id": "energy",
+          "label": "Hamiltonian energy",
+          "note": "Assigns energy to each configuration."
+        },
+        {
+          "id": "sampling",
+          "label": "Boltzmann sampling",
+          "note": "Turns energies into state probabilities."
+        },
+        {
+          "id": "learning",
+          "label": "Hebbian learning",
+          "note": "Updates connections from local activity."
+        }
+      ],
+      "edges": [
+        {
+          "from": "units",
+          "to": "energy",
+          "label": "configuration"
+        },
+        {
+          "from": "connections",
+          "to": "energy",
+          "label": "interactions"
+        },
+        {
+          "from": "energy",
+          "to": "sampling",
+          "label": "energies"
+        },
+        {
+          "from": "sampling",
+          "to": "learning",
+          "label": "activity"
+        },
+        {
+          "from": "learning",
+          "to": "connections",
+          "label": "updates"
+        }
+      ],
+      "caption": "Configurations acquire energies, Boltzmann sampling produces stochastic activity, and local Hebbian updates modify the connections."
+    }
+  },
   "related": [
     "restricted-boltzmann-machine",
     "committee-machine",

@@ -5,7 +5,92 @@
   "type": "concept",
   "definition": "Dynamic topic models are generative models in natural language processing that analyze the evolution of latent topics within a collection of documents over time.",
   "details": "This family of topic models was proposed by David Blei and John Lafferty and was initially an extension to Latent Dirichlet Allocation (LDA) that can handle sequential documents. In LDA, both the order the words appear in a document and the order the documents appear in the corpus are oblivious to the model. Whereas words are still assumed to be exchangeable, in a dynamic topic model the order of the documents plays a fundamental role. More precisely, the documents are binned by time period, with the assumption that the topics of each group persist and evolved from the set of the previous slice. Since its inception, dynamic topic modeling has seen the introduction of several new models, including BERTopic.",
-  "story": "Think of a jazz musician who has heard so many solos that a new one simply falls out of their fingers. Given a starting line, the machine imagines what comes next — a word, a note, a patch of a picture. It makes new things by recombining everything it has ever seen. Creation, here, is memory recombined at speed. That next-word, next-stroke magic is Dynamic topic model.",
+  "explainer": {
+    "lead": "A dynamic topic model finds hidden themes in documents and tracks how those themes change over time. This makes it useful when the order of documents carries meaning that an ordinary topic model would ignore.",
+    "tiers": {
+      "eli5": "Imagine reading a school newspaper from every month of the year and noticing how the big stories change. A dynamic topic model does something similar: it groups the newspapers by month and connects each month’s main ideas to the month before. It cares about the order of the newspapers, but not the order of words inside each article.",
+      "practitioner": "Start with sequential, time-stamped documents and bin them into time periods. Fit topics for each period so that they persist and evolve from the preceding period, while retaining the exchangeable-words assumption within documents. Ordinary LDA is a poor match when document chronology matters because it ignores corpus order; later models in this area include BERTopic.",
+      "paperLevel": "Let D_t denote the documents assigned to time slice t. A dynamic topic model estimates latent topics for each slice under the assumption that the topics at t persist and evolve from those at t-1, while words within documents remain exchangeable. David Blei and John Lafferty proposed the family as an extension of Latent Dirichlet Allocation, which ignores both word order and corpus document order. The approach therefore depends on a sequential collection and a chosen binning into time periods."
+    },
+    "example": "Take news articles published in 2000, 2001, and 2002 and place them into three yearly slices. The model estimates topics for 2000, derives the 2001 topics from that set, and then derives the 2002 topics from 2001, allowing a latent spaceflight topic to be followed across the three years.",
+    "usedIn": [
+      {
+        "name": "Natural language processing",
+        "detail": "Finds latent topics in document collections while accounting for their temporal sequence.",
+        "url": ""
+      },
+      {
+        "name": "Longitudinal document analysis",
+        "detail": "Groups documents by time period to follow how topics persist and evolve from one period to the next.",
+        "url": ""
+      }
+    ],
+    "intuition": "Think of topics as threads running through a sequence of document collections: each period inherits its threads from the previous one, but those threads can change. Unlike LDA, the model uses document order to describe that evolution.",
+    "howItWorks": [
+      "Arrange the documents in their sequential order.",
+      "Bin them into groups by time period.",
+      "Estimate latent topics for each time slice.",
+      "Relate each slice’s topics to the preceding slice so they persist and evolve.",
+      "Treat words within each document as exchangeable."
+    ],
+    "whyItMatters": "It reveals temporal change that independent topic estimates can miss. It also supplies a principled alternative to LDA for collections where document chronology is fundamental.",
+    "misconceptions": [
+      "It does not model word order: words within a document remain exchangeable.",
+      "It is not equivalent to running unrelated LDA models on separate time slices, because topics evolve from the previous slice."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "documents",
+          "label": "Sequential documents",
+          "note": "A corpus whose document order matters."
+        },
+        {
+          "id": "slices",
+          "label": "Time slices",
+          "note": "Documents binned by period."
+        },
+        {
+          "id": "previous",
+          "label": "Previous topics",
+          "note": "Latent topics from slice t-1."
+        },
+        {
+          "id": "current",
+          "label": "Current topics",
+          "note": "Topics persist and evolve in slice t."
+        },
+        {
+          "id": "trajectory",
+          "label": "Topic evolution",
+          "note": "Changes traced across periods."
+        }
+      ],
+      "edges": [
+        {
+          "from": "documents",
+          "to": "slices",
+          "label": "binned by time"
+        },
+        {
+          "from": "slices",
+          "to": "previous",
+          "label": "earlier slice"
+        },
+        {
+          "from": "previous",
+          "to": "current",
+          "label": "evolve"
+        },
+        {
+          "from": "current",
+          "to": "trajectory",
+          "label": "over time"
+        }
+      ],
+      "caption": "Documents are grouped by time, and each slice’s topics evolve from those of the preceding slice."
+    }
+  },
   "related": [
     "topic-model",
     "acoustic-model",

@@ -5,7 +5,98 @@
   "type": "concept",
   "definition": "Techniques for reducing the number of input variables in a dataset while preserving as much meaningful information as possible.",
   "details": "Common methods include Principal Component Analysis (PCA) and t-SNE, used for visualization, noise reduction, and improving downstream model efficiency.",
-  "story": "Picture a librarian organizing a million slips of paper so that any one of them can be found in a heartbeat. The examples a machine reads become the world it believes in. Better ingredients make a better meal, and the same is true here. Garbage in, garbage out — and the reverse: clean, representative data makes the model quietly brilliant. That care with the raw material is Dimensionality Reduction.",
+  "explainer": {
+    "lead": "Dimensionality reduction turns data with many input variables into a smaller set that still captures useful structure. It can make data easier to visualize, reduce noise, and help later models run more efficiently.",
+    "tiers": {
+      "eli5": "Imagine describing a pile of toys using hundreds of measurements, when color and size already tell you most of what makes them different. Dimensionality reduction finds a shorter description that keeps the important patterns. You could then place the toys on a simple two-dimensional map and still see which ones are similar.",
+      "practitioner": "PCA is commonly used to create a smaller set of components for visualization, noise reduction, or more efficient downstream modeling, while t-SNE is commonly used to reveal local structure in two- or three-dimensional plots. Scale inputs when their units would otherwise dominate PCA, fit transformations on training data only, and choose the retained dimension by checking downstream performance and information loss. Do not treat a t-SNE plot as proof of separated clusters or interpret its axes as the original measurements.",
+      "paperLevel": "Given X with shape n x p, dimensionality reduction constructs Z with shape n x k, where k < p, while retaining structure relevant to the task. PCA uses orthogonal directions that maximize retained variance; t-SNE instead emphasizes preservation of local neighborhood relationships for visualization. Reducing dimensions necessarily discards some information, and a low-dimensional visualization need not preserve every distance or relationship in the original data."
+    },
+    "example": "Suppose 1,000 observations each have 500 numeric measurements. Applying PCA and keeping two components produces two values per observation, allowing all 1,000 observations to be shown on a single scatter plot; the plot uses a compact summary rather than displaying all 500 original variables.",
+    "usedIn": [
+      {
+        "name": "Data visualization",
+        "detail": "Projects high-dimensional observations into two or three dimensions so their structure can be plotted.",
+        "url": ""
+      },
+      {
+        "name": "Noise reduction",
+        "detail": "Keeps a compact representation of meaningful variation while discarding less useful variation.",
+        "url": ""
+      },
+      {
+        "name": "Predictive modeling",
+        "detail": "Supplies fewer input variables to downstream models, which can improve computational efficiency.",
+        "url": ""
+      }
+    ],
+    "intuition": "Many measurements describe overlapping aspects of the same underlying patterns, so a dataset can often be summarized with fewer coordinates. The goal is not merely to delete columns, but to build a smaller representation that retains useful information.",
+    "howItWorks": [
+      "Start with observations described by many input variables.",
+      "Choose a method and a smaller target dimension.",
+      "Learn a compact representation: PCA finds variance-preserving components, while t-SNE arranges points to emphasize local neighborhoods.",
+      "Use the representation for plotting or as input to another process.",
+      "Check whether the retained information is sufficient for the intended task."
+    ],
+    "whyItMatters": "A smaller representation can reveal patterns that are hard to inspect across hundreds of variables. It can also reduce noise and the computation required by later models, provided the discarded information was not essential.",
+    "misconceptions": [
+      "It is not always just selecting and deleting original columns; methods such as PCA create new combined variables.",
+      "Fewer dimensions do not guarantee better model accuracy, because useful information may be lost.",
+      "A visually tidy t-SNE plot does not by itself prove that the original data contains well-separated clusters."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data",
+          "label": "Many input variables",
+          "note": "Observations in the original dataset"
+        },
+        {
+          "id": "method",
+          "label": "Reduction method",
+          "note": "For example PCA or t-SNE"
+        },
+        {
+          "id": "compact",
+          "label": "Compact representation",
+          "note": "Fewer values per observation"
+        },
+        {
+          "id": "plot",
+          "label": "Visualization",
+          "note": "A view of structure in the data"
+        },
+        {
+          "id": "model",
+          "label": "Downstream model",
+          "note": "Uses fewer inputs more efficiently"
+        }
+      ],
+      "edges": [
+        {
+          "from": "data",
+          "to": "method",
+          "label": "input"
+        },
+        {
+          "from": "method",
+          "to": "compact",
+          "label": "reduces"
+        },
+        {
+          "from": "compact",
+          "to": "plot",
+          "label": "visualized as"
+        },
+        {
+          "from": "compact",
+          "to": "model",
+          "label": "features"
+        }
+      ],
+      "caption": "Dimensionality reduction maps many input variables to a compact representation that can support visualization or downstream modeling."
+    }
+  },
   "related": [
     "multifactor-dimensionality-reduction",
     "common-crawl",

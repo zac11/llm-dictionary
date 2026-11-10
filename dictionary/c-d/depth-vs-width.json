@@ -5,6 +5,45 @@
   "type": "concept",
   "definition": "Two axes of scaling a network: more layers (depth) vs.",
   "details": "Two axes of scaling a network: more layers (depth) vs. larger layers (width). Depth adds compositional power, width adds capacity per step; scaling recipes balance both along with data.",
+  "explainer": {
+    "lead": "Depth and width are two ways to make a neural network bigger: depth adds layers, while width makes individual layers larger. Choosing between them shapes how a model builds up computations and how much capacity each layer has, so useful scaling considers both together with the available data.",
+    "tiers": {
+      "eli5": "Imagine solving a puzzle with a team. Depth is like passing the work through more people, each adding another step; width is like having more people working on each step. More of either can help, but the best mix depends on the problem and how much practice material you have.",
+      "practitioner": "In a model configuration, depth is the layer count and width is the per-layer size, such as its number of hidden units. Tune both against validation performance while tracking computational cost, and scale training data alongside model capacity rather than assuming that increasing either axis will always help.",
+      "paperLevel": "For a feed-forward network, depth L is the number of learned layers and width w_l is the number of units in layer l. A fully connected layer has approximately w_(l-1) * w_l + w_l parameters, so widening changes per-layer capacity while adding layers lengthens the composite function f_L(...f_1(x)). No single depth–width trade-off is implied; scaling must be considered together with data."
+    },
+    "example": "One design stacks 8 layers of 128 units each, while another uses 2 layers of 512 units each. The first provides a longer sequence of transformations; the second provides larger transformations at each step. Training both on the same dataset and comparing validation results tests which balance suits the task without assuming that either axis wins automatically.",
+    "usedIn": [
+      {
+        "name": "Computer vision",
+        "detail": "Network designs choose how many processing stages to stack and how large each stage should be.",
+        "url": ""
+      },
+      {
+        "name": "Natural language processing",
+        "detail": "Scaling decisions balance successive layers against the capacity available within each layer.",
+        "url": ""
+      },
+      {
+        "name": "Speech recognition",
+        "detail": "Model size can be adjusted through additional sequential processing, larger layers, or both.",
+        "url": ""
+      }
+    ],
+    "intuition": "A deep network applies many transformations in sequence, which supports building computations compositionally. A wide network gives each transformation more units, increasing capacity at that step.",
+    "howItWorks": [
+      "Count the layers to set the network’s depth.",
+      "Set each layer’s size, such as its number of units, to determine width.",
+      "Use depth for more successive compositional steps and width for more capacity within a step.",
+      "Adjust both axes together with the amount of training data, then compare the resulting designs."
+    ],
+    "whyItMatters": "Treating model size as a single number hides two different design choices. Balancing depth and width helps match compositional computation and per-layer capacity to the task and available data.",
+    "misconceptions": [
+      "Deeper is always better: extra layers are not a substitute for suitable width or enough data.",
+      "Wider and deeper mean the same thing: depth changes the number of successive steps, while width changes capacity within a step.",
+      "One fixed depth-to-width ratio fits every network: scaling recipes balance both axes together with data."
+    ]
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

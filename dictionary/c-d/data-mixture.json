@@ -5,7 +5,108 @@
   "type": "concept",
   "definition": "The specific proportions of different data sources or domains (such as web text, code, and books) combined to form a language model's pretraining dataset.",
   "details": "Data mixture composition significantly influences a pretrained model's capabilities and knowledge, with practitioners carefully tuning the balance of sources like code, academic text, and general web content to shape desired downstream behaviors.",
-  "story": "Think of a hiker descending a foggy hill in the dark, taking small steps and feeling for the steepest way down. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. It is the same loop you use to learn anything: try, miss, correct, try again. Skill, for a model, is just error pushed down until it is small enough to ignore. That steady, miss-by-miss improvement is Data Mixture.",
+  "explainer": {
+    "lead": "A data mixture is the recipe for a language model's pretraining data, setting how much comes from sources such as web text, code, and books. Changing that recipe can change what the model knows and what it becomes good at.",
+    "tiers": {
+      "eli5": "Making a data mixture is like making trail mix with nuts, fruit, and chocolate: the ingredients you emphasize change the result. A language model trained with lots of code gets a different learning diet from one trained mostly with web pages or books.",
+      "practitioner": "Set target proportions for each source, build the pretraining corpus to match them, and tune the balance against desired downstream behaviors. For example, a 100-billion-token mixture might allocate 60 billion tokens to web text, 25 billion to code, and 15 billion to books. The main pitfall is assuming that one mixture serves every goal: code, academic text, and general web content push capabilities and knowledge in different directions.",
+      "paperLevel": "For sources D_1, ..., D_k, a mixture is specified by weights w_i >= 0 with sum_i w_i = 1, where w_i is source i's share of the pretraining data. The mixture is a design variable of pretraining because it shapes the resulting model's capabilities and knowledge. Its effect is task-dependent, so the desired downstream behavior must guide the choice of weights."
+    },
+    "example": "For a 100-billion-token pretraining dataset, a team might choose 60% general web text, 25% code, and 15% books. The resulting corpus contains 60 billion web tokens, 25 billion code tokens, and 15 billion book tokens, giving code much more influence than a mixture with only a small code share.",
+    "usedIn": [
+      {
+        "name": "General-purpose language model pretraining",
+        "detail": "Balances general web content with other sources to shape broad knowledge and behavior.",
+        "url": ""
+      },
+      {
+        "name": "Programming assistants",
+        "detail": "Uses code as a deliberate share of pretraining data to support coding-related capabilities.",
+        "url": ""
+      },
+      {
+        "name": "Academic text applications",
+        "detail": "Can include academic text alongside web content when scholarly material is an important part of the desired behavior.",
+        "url": ""
+      }
+    ],
+    "intuition": "Pretraining data is a model's learning diet, and the mixture sets the serving size of each source. The proportions matter because the model's capabilities and knowledge reflect what it was trained on.",
+    "howItWorks": [
+      "Choose sources such as web text, code, books, and academic text.",
+      "Assign each source a proportion of the pretraining dataset.",
+      "Combine the sources according to those proportions.",
+      "Pretrain the language model on the combined dataset.",
+      "Adjust the balance to support desired downstream behaviors."
+    ],
+    "whyItMatters": "The mixture is a practical lever for shaping a model before downstream use. Careful tuning can emphasize the knowledge and capabilities wanted from the pretrained model rather than letting the available data determine them by default.",
+    "misconceptions": [
+      "A data mixture is a list of sources, not just the total dataset size.",
+      "Including a source does not guarantee a particular downstream behavior; its proportion matters too.",
+      "The best mixture depends on the desired capabilities, so there is no universal recipe stated here."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "web",
+          "label": "Web text",
+          "note": "General web content"
+        },
+        {
+          "id": "code",
+          "label": "Code",
+          "note": "Programming source data"
+        },
+        {
+          "id": "books",
+          "label": "Books",
+          "note": "Book text source"
+        },
+        {
+          "id": "mixture",
+          "label": "Data mixture",
+          "note": "Sources combined by chosen proportions"
+        },
+        {
+          "id": "pretraining",
+          "label": "Pretraining",
+          "note": "Model learns from the mixture"
+        },
+        {
+          "id": "model",
+          "label": "Pretrained model",
+          "note": "Capabilities and knowledge emerge"
+        }
+      ],
+      "edges": [
+        {
+          "from": "web",
+          "to": "mixture",
+          "label": "60%"
+        },
+        {
+          "from": "code",
+          "to": "mixture",
+          "label": "25%"
+        },
+        {
+          "from": "books",
+          "to": "mixture",
+          "label": "15%"
+        },
+        {
+          "from": "mixture",
+          "to": "pretraining",
+          "label": "training data"
+        },
+        {
+          "from": "pretraining",
+          "to": "model",
+          "label": ""
+        }
+      ],
+      "caption": "An example mixture combines three sources in fixed proportions and feeds the result into language model pretraining."
+    }
+  },
   "related": [
     "data-augmentation",
     "active-learning",

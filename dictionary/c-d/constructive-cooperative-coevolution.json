@@ -5,7 +5,122 @@
   "type": "algorithm",
   "definition": "The constructive cooperative coevolutionary algorithm (also called C3) is a global optimisation algorithm in artificial intelligence based on the multi-start architecture of the greedy randomized adaptive search procedure (GRASP).",
   "details": "It incorporates the existing cooperative coevolutionary algorithm (CC). The considered problem is decomposed into subproblems. These subproblems are optimised separately while exchanging information in order to solve the complete problem. An optimisation algorithm, usually but not necessarily an evolutionary algorithm, is embedded in C3 for optimising those subproblems. The nature of the embedded optimisation algorithm determines whether C3's behaviour is deterministic or stochastic. The C3 optimisation algorithm was originally designed for simulation-based optimisation but it can be used for global optimisation problems in general. Its strength over other optimisation algorithms, specifically cooperative coevolution, is that it is better able to handle non-separable optimisation problems. An improved version was proposed later, called the Improved Constructive Cooperative Coevolutionary Differential Evolution (C3iDE), which removes several limitations with the previous version. A novel element of C3iDE is the advanced initialisation of the subpopulations. C3iDE initially optimises the subpopulations in a partially co-adaptive fashion. During the initial optimisation of a subpopula",
-  "story": "Imagine a factory floor where each workstation can glance at every other workstation before doing its part. It is the blueprint that makes everything else possible. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. Structure decides what the model can even express — the blueprint before the bricks. That blueprint is Constructive cooperative coevolution.",
+  "explainer": {
+    "lead": "Constructive cooperative coevolution, or C3, solves a large optimisation problem by splitting it into smaller parts that improve separately while sharing information. It is especially useful when the parts interact, making the problem non-separable and harder for ordinary cooperative coevolution.",
+    "tiers": {
+      "eli5": "Imagine tuning several connected knobs on a machine, where changing one knob affects what the others should do. C3 lets different helpers work on different knobs, but they keep telling one another what works best. It tries several starting arrangements and combines what it learns into one good setting for the whole machine.",
+      "practitioner": "Apply C3 by decomposing the decision variables, embedding an optimiser for the subproblems, and exchanging candidate information across multiple starts. The embedded optimiser can be evolutionary but need not be, and it determines whether the overall behaviour is deterministic or stochastic. C3 was designed for simulation-based optimisation; its later C3iDE variant adds advanced subpopulation initialisation and initially optimises subpopulations in a partially co-adaptive fashion.",
+      "paperLevel": "For min_x f(x), C3 partitions x into subvectors and optimises the resulting subproblems separately while exchanging information, within a GRASP-style multi-start architecture. The embedded subproblem optimiser is not restricted to an evolutionary algorithm. C3 targets general global optimisation, with an advantage over cooperative coevolution on non-separable problems; C3iDE removes several limitations of the earlier version through changes including advanced subpopulation initialisation."
+    },
+    "example": "Suppose the goal is to minimise f(x,y)=(x+y-3)^2+(x-y-1)^2, with x and y handled as separate subproblems. Each subproblem improves its own variable using the current value of the other, and the two exchange their updated information. Cooperation can reach x=2 and y=1, giving f(2,1)=0.",
+    "usedIn": [
+      {
+        "name": "Simulation-based optimisation",
+        "detail": "The setting for which C3 was originally designed, where candidate solutions are evaluated through simulation.",
+        "url": ""
+      },
+      {
+        "name": "Global optimisation",
+        "detail": "C3 can also be applied to general global optimisation problems, including non-separable ones.",
+        "url": ""
+      }
+    ],
+    "goal": "Find a strong candidate solution to a complete optimisation problem by cooperatively solving its interacting subproblems across multiple starts.",
+    "inputs": [
+      "A global optimisation problem",
+      "A decomposition into subproblems",
+      "An embedded subproblem optimiser"
+    ],
+    "outputs": [
+      "A candidate solution for the complete problem",
+      "Optimised information from the cooperating subproblems"
+    ],
+    "steps": [
+      "Generate multiple starts using the GRASP-style architecture.",
+      "Decompose the complete problem into subproblems.",
+      "Optimise each subproblem with the embedded algorithm.",
+      "Exchange information between subproblems so their solutions cooperate.",
+      "Return a candidate solution for the complete problem."
+    ],
+    "tradeoffs": [
+      "Handles non-separable problems better than cooperative coevolution",
+      "Behaviour depends on the embedded optimiser",
+      "Can be deterministic or stochastic",
+      "C3iDE addresses several limitations of C3"
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "problem",
+          "label": "Complete problem",
+          "note": "The global optimisation task"
+        },
+        {
+          "id": "starts",
+          "label": "Multiple starts",
+          "note": "GRASP-style multi-start architecture"
+        },
+        {
+          "id": "split",
+          "label": "Subproblem split",
+          "note": "Decomposes the decision variables"
+        },
+        {
+          "id": "sub-a",
+          "label": "Subproblem A",
+          "note": "Optimised by the embedded algorithm"
+        },
+        {
+          "id": "sub-b",
+          "label": "Subproblem B",
+          "note": "Optimised separately from A"
+        },
+        {
+          "id": "solution",
+          "label": "Complete candidate",
+          "note": "Combines the cooperating results"
+        }
+      ],
+      "edges": [
+        {
+          "from": "problem",
+          "to": "starts",
+          "label": "starts"
+        },
+        {
+          "from": "starts",
+          "to": "split",
+          "label": "decomposes"
+        },
+        {
+          "from": "split",
+          "to": "sub-a",
+          "label": ""
+        },
+        {
+          "from": "split",
+          "to": "sub-b",
+          "label": ""
+        },
+        {
+          "from": "sub-a",
+          "to": "sub-b",
+          "label": "shares information"
+        },
+        {
+          "from": "sub-a",
+          "to": "solution",
+          "label": ""
+        },
+        {
+          "from": "sub-b",
+          "to": "solution",
+          "label": ""
+        }
+      ],
+      "caption": "C3 uses multiple starts, separate subproblem optimisation, and information exchange to build a complete candidate solution."
+    }
+  },
   "related": [
     "cooperative-coevolution",
     "constructive-heuristic",

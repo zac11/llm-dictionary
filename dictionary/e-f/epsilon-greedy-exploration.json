@@ -5,6 +5,102 @@
   "type": "concept",
   "definition": "An exploration strategy that picks the best-known action with probability 1−ε and a random action with probability ε — the simplest way to balance exploration and exploitation in RL and bandits.",
   "details": "An exploration strategy that picks the best-known action with probability 1−ε and a random action with probability ε — the simplest way to balance exploration and exploitation in RL and bandits.",
+  "explainer": {
+    "lead": "Epsilon-greedy exploration helps a learning agent avoid sticking with the first action that seems good. It usually takes the best-known action but occasionally tries a random one, providing a simple balance between using current knowledge and discovering something better.",
+    "tiers": {
+      "eli5": "Imagine choosing an ice-cream flavour each week. Most of the time you pick your favourite, but sometimes you choose at random in case another flavour is even better. Epsilon-greedy gives a computer that same habit: use what you know most of the time, while leaving some chances to experiment.",
+      "practitioner": "In an RL or bandit action-selection loop, choose the action with the highest current estimate with probability 1−ε and a random action with probability ε. A smaller ε favours exploitation, while a larger ε produces more exploration. Treat the estimates as provisional: the best-known action is not necessarily the truly best action.",
+      "paperLevel": "Let a* = argmax_a Q(a), where Q(a) is the current estimate for action a. Epsilon-greedy selects a* with probability 1−ε and selects a random action with probability ε. The rule is deliberately simple, but its random exploration does not distinguish among unfamiliar or uncertain actions."
+    },
+    "example": "Suppose actions A, B, and C have estimated values 8, 5, and 2, and ε = 0.1. The agent chooses A with probability 0.9; with probability 0.1 it chooses randomly among A, B, and C, so B and C still receive occasional trials.",
+    "usedIn": [
+      {
+        "name": "Reinforcement learning",
+        "detail": "Used to choose actions while an agent learns which actions appear best.",
+        "url": ""
+      },
+      {
+        "name": "Bandit problems",
+        "detail": "Used to alternate between the best-known option and random alternatives.",
+        "url": ""
+      }
+    ],
+    "intuition": "Always following current estimates can prevent the agent from trying alternatives that might be better. Adding a small chance of random choice buys new experience while preserving mostly greedy behaviour.",
+    "howItWorks": [
+      "Keep the current estimate for each available action.",
+      "Identify the action with the highest estimate.",
+      "With probability 1−ε, choose that best-known action.",
+      "Otherwise, with probability ε, choose a random action."
+    ],
+    "whyItMatters": "It gives RL and bandit agents an explicit, easily controlled way to explore without abandoning the action that currently looks best. The single parameter ε directly controls how often random exploration occurs.",
+    "misconceptions": [
+      "The best-known action is not guaranteed to be the truly best action.",
+      "ε controls random exploration, not the value of an action.",
+      "A random exploratory choice can also select the best-known action."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "estimates",
+          "label": "Action estimates",
+          "note": "Current knowledge about available actions."
+        },
+        {
+          "id": "select",
+          "label": "Epsilon-greedy selection",
+          "note": "Compare ε with the selection draw."
+        },
+        {
+          "id": "greedy",
+          "label": "Best-known action",
+          "note": "Chosen with probability 1−ε."
+        },
+        {
+          "id": "random",
+          "label": "Random action",
+          "note": "Chosen with probability ε."
+        },
+        {
+          "id": "outcome",
+          "label": "Action outcome",
+          "note": "Experience from the selected action."
+        }
+      ],
+      "edges": [
+        {
+          "from": "estimates",
+          "to": "select",
+          "label": "rank actions"
+        },
+        {
+          "from": "select",
+          "to": "greedy",
+          "label": "1−ε"
+        },
+        {
+          "from": "select",
+          "to": "random",
+          "label": "ε"
+        },
+        {
+          "from": "greedy",
+          "to": "outcome",
+          "label": ""
+        },
+        {
+          "from": "random",
+          "to": "outcome",
+          "label": ""
+        },
+        {
+          "from": "outcome",
+          "to": "estimates",
+          "label": "new experience"
+        }
+      ],
+      "caption": "Each decision usually follows current estimates, occasionally explores randomly, and produces new experience."
+    }
+  },
   "citation": {
     "title": "AI Starter Guide",
     "authors": [],

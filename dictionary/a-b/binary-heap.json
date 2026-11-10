@@ -5,6 +5,118 @@
   "type": "concept",
   "definition": "A binary heap is a complete binary tree which satisfies the heap ordering property.",
   "details": "A binary heap is a complete binary tree which satisfies the heap ordering property. It can be seen as a binary tree with two additional constraints: the shape property and the heap property, often used in priority queues.",
+  "explainer": {
+    "lead": "A binary heap keeps a collection arranged so that the smallest or largest item is always at the top, without keeping the whole collection sorted. That makes it a practical foundation for priority queues and heapsort, with insertion and top-item removal taking O(log n) time.",
+    "tiers": {
+      "eli5": "Imagine a tournament chart where every player must be at least as strong as the two players below them. The strongest player is always on top, and a new player takes the next open spot, swapping upward until the rule holds. You can find the champion immediately, but finding one particular player may still mean checking everyone.",
+      "practitioner": "Store the heap implicitly in an array, using positions rather than child pointers: insert at the end and sift up, or replace the root with the last element and sift down for extraction. Both operations take O(log n) worst-case time, while arbitrary search is O(n). Python provides heappushpop and heapreplace to combine insertion and extraction with one down-heap operation; remember that a heap is not a sorted array.",
+      "paperLevel": "A binary heap is a complete binary tree, with the last level filled left to right, whose keys satisfy a total order: each parent key is ≥ its children's keys in a max-heap or ≤ them in a min-heap. J. W. J. Williams introduced it in 1964 as a data structure for implementing heapsort. Insertion and root extraction are O(log n), but arbitrary-element search is O(n)."
+    },
+    "example": "In a max-heap whose root is 11 and whose child is 8, inserting 15 first places it in the leftmost open slot below 8. Since 15 > 8, swap them; since 15 > 11, swap again. The final root is 15, and no further swaps are needed.",
+    "usedIn": [
+      {
+        "name": "Priority queues",
+        "detail": "Supports logarithmic-time insertion and removal of the minimum or maximum element.",
+        "url": ""
+      },
+      {
+        "name": "Heapsort",
+        "detail": "Uses an array-backed binary heap as an implicit data structure, allowing in-place sorting.",
+        "url": ""
+      },
+      {
+        "name": "Python heap operations",
+        "detail": "heappushpop and heapreplace combine insertion and extraction to avoid separate up-heap and down-heap passes.",
+        "url": ""
+      }
+    ],
+    "intuition": "A heap maintains just enough order to make the extreme item cheap to reach: every parent outranks its children, but the rest of the collection need not be sorted. Its complete, left-filled shape keeps the tree shallow and lets array positions encode parent-child relationships.",
+    "howItWorks": [
+      "Choose a min-heap to keep the smallest key at the root, or a max-heap to keep the largest key there.",
+      "Keep every level full except possibly the last, filling that level from left to right.",
+      "Insert at the leftmost open slot, then swap upward with parents until the heap ordering holds.",
+      "Extract the root by moving the last element into its place, then swapping downward with the appropriate child until ordering is restored."
+    ],
+    "whyItMatters": "Binary heaps provide the two essential priority-queue operations efficiently while remaining compact enough to store in an array. This combination also makes them central to the in-place heapsort algorithm.",
+    "misconceptions": [
+      "A heap is not fully sorted: finding an arbitrary element takes O(n) time.",
+      "Shape and ordering are separate constraints: updates first preserve the complete shape, then restore parent-child ordering.",
+      "A heap does not need explicit tree pointers: an array's relative positions can represent children and parents."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "new",
+          "label": "New element",
+          "note": "The key being inserted."
+        },
+        {
+          "id": "slot",
+          "label": "Leftmost open slot",
+          "note": "Preserves the complete-tree shape."
+        },
+        {
+          "id": "compare",
+          "label": "Compare with parent",
+          "note": "Checks the min- or max-heap ordering."
+        },
+        {
+          "id": "swap",
+          "label": "Swap with parent",
+          "note": "Moves the new element upward."
+        },
+        {
+          "id": "valid",
+          "label": "Valid heap",
+          "note": "Shape and heap properties both hold."
+        }
+      ],
+      "edges": [
+        {
+          "from": "new",
+          "to": "slot",
+          "label": "place"
+        },
+        {
+          "from": "slot",
+          "to": "compare",
+          "label": ""
+        },
+        {
+          "from": "compare",
+          "to": "swap",
+          "label": "wrong order"
+        },
+        {
+          "from": "swap",
+          "to": "compare",
+          "label": "repeat"
+        },
+        {
+          "from": "compare",
+          "to": "valid",
+          "label": "correct order"
+        }
+      ],
+      "caption": "Insertion preserves the heap's shape first, then restores ordering through upward swaps."
+    },
+    "image": {
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/38/Max-Heap.svg/960px-Max-Heap.svg.png",
+      "alt": "Binary heap — Variant of heap data structure",
+      "width": 640,
+      "height": 768,
+      "credit": "Ermishin",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Max-Heap.svg"
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Binary heap",
+        "url": "https://en.wikipedia.org/wiki/Binary_heap"
+      }
+    ]
+  },
   "citation": {
     "title": "Math Glossary for AI (François Fleuret notes)",
     "authors": [],

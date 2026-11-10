@@ -5,7 +5,91 @@
   "type": "concept",
   "definition": "Dex-net is a robotic.",
   "details": "It uses a Grasp Quality Convolutional Neural Network to learn how to grasp unusually shaped objects.",
-  "story": "Picture an architect laying out a building where every room has to know which other rooms matter to it. The layout decides what the machine can even attempt, before it learns a single thing. It is the blueprint that makes everything else possible. It is the difference between a row of isolated cubicles and one big room where everyone can hear each other. And that shape of the machine — DexNet — is what makes everything else possible.",
+  "explainer": {
+    "lead": "Dex-Net is a robotic grasping approach for handling objects with unusual shapes. It uses a Grasp Quality Convolutional Neural Network, or GQ-CNN, to learn which grasps are likely to work, helping a robot choose how to take hold of an object.",
+    "tiers": {
+      "eli5": "Picking up a cup is fairly easy, but grabbing a toy with lots of odd bumps and corners can be tricky. Dex-Net is like practice for a robot: it learns how good different grips are, then uses that learning to choose a way to hold an unusual object.",
+      "practitioner": "Dex-Net fits into a grasp-selection pipeline: candidate grasps are assessed with a GQ-CNN that has learned grasp quality, and a promising grasp is selected for execution. Validate performance on the target objects and robot setup, since learned grasp quality is not a guarantee of successful execution.",
+      "paperLevel": "Dex-Net is a robotic grasping approach in which a Grasp Quality Convolutional Neural Network learns a quality estimate q for candidate grasps, supporting selection of a grasp for unusually shaped objects. Its central prediction concerns grasp quality rather than general object recognition, and a high estimated quality does not by itself guarantee a successful physical grasp."
+    },
+    "example": "For a toy with a narrow handle and several uneven protrusions, Dex-Net can assess gripping the handle differently from gripping one of the protrusions. If the handle grasp receives the better learned quality estimate, the robot selects that grasp for its pickup attempt.",
+    "usedIn": [
+      {
+        "name": "Robotic grasping",
+        "detail": "Learning and selecting grasps for objects with unusual shapes.",
+        "url": ""
+      },
+      {
+        "name": "Robot object manipulation",
+        "detail": "Providing the grasp-selection step before a robot attempts to take hold of an object.",
+        "url": ""
+      }
+    ],
+    "intuition": "An irregular object offers some grips that are secure and others that are awkward or unstable. Dex-Net learns to judge grasp quality so the robot can make that choice from experience rather than treating every possible grip as equally good.",
+    "howItWorks": [
+      "Present the robot with an object that needs to be grasped.",
+      "Consider possible ways the gripper could take hold of it.",
+      "Use the GQ-CNN to assess the learned quality of those candidate grasps.",
+      "Select a promising grasp and attempt it with the robot."
+    ],
+    "whyItMatters": "Unusually shaped objects make a single fixed gripping rule unreliable. Learning grasp quality gives a robot a way to choose among grips based on the object it is trying to handle.",
+    "misconceptions": [
+      "Dex-Net is not simply an object-recognition system; its focus is grasping.",
+      "The GQ-CNN assesses grasp quality rather than guaranteeing that every attempted grasp will succeed."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "object",
+          "label": "Unusual object",
+          "note": "The item the robot must grasp"
+        },
+        {
+          "id": "candidates",
+          "label": "Candidate grasps",
+          "note": "Possible ways to take hold"
+        },
+        {
+          "id": "gqcnn",
+          "label": "GQ-CNN",
+          "note": "Assesses learned grasp quality"
+        },
+        {
+          "id": "selection",
+          "label": "Grasp selection",
+          "note": "Chooses a promising candidate"
+        },
+        {
+          "id": "robot",
+          "label": "Robot attempt",
+          "note": "Executes the selected grasp"
+        }
+      ],
+      "edges": [
+        {
+          "from": "object",
+          "to": "candidates",
+          "label": ""
+        },
+        {
+          "from": "candidates",
+          "to": "gqcnn",
+          "label": "grasps"
+        },
+        {
+          "from": "gqcnn",
+          "to": "selection",
+          "label": "quality"
+        },
+        {
+          "from": "selection",
+          "to": "robot",
+          "label": ""
+        }
+      ],
+      "caption": "Dex-Net uses learned grasp-quality assessment to guide a robot from candidate grips to a grasp attempt."
+    }
+  },
   "related": [
     "ablation-artificial-intelligence",
     "adaline",

@@ -5,7 +5,142 @@
   "type": "architecture",
   "definition": "Feedback neural networks are neural networks with the ability to provide bottom-up and top-down design feedback to their input or previous layers, based on their outputs or subsequent layers.",
   "details": "This is notably used in large language models, specifically in reasoning language models (RLM). This process is designed to mimic self-assessment and internal deliberation, aiming to minimize errors (like hallucinations) and increase interpretability. This reflection is a form of \"test-time compute\", where additional computational resources are used during inference.",
-  "story": "Imagine a factory floor where each workstation can glance at every other workstation before doing its part. It is the blueprint that makes everything else possible. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. Structure decides what the model can even express — the blueprint before the bricks. And that shape of the machine — Feedback neural network — is what makes everything else possible.",
+  "explainer": {
+    "lead": "A feedback neural network can revisit its own work instead of treating every answer as a one-way calculation. In reasoning language models, that extra pass can support error checking and multi-step reasoning, at the cost of additional computation during inference.",
+    "tiers": {
+      "eli5": "It is like re-reading your own answer before handing it in, then fixing mistakes you notice.",
+      "practitioner": "Engineers use it via chain-of-thought prompting or latent feedback loops at inference; the pitfall is that extra deliberation costs compute and can still reinforce a wrong answer.",
+      "paperLevel": "Networks providing bottom-up and top-down feedback to inputs or previous layers based on outputs or subsequent layers; feedback can occur after full decoding or continuously in latent space by feeding the last layer back to the first. It is a form of test-time compute aimed at self-assessment, reducing hallucinations and increasing interpretability. Limits: additional inference compute, no guarantee of correctness."
+    },
+    "usedIn": [
+      {
+        "name": "DeepSeek-R1",
+        "detail": "Uses Group Relative Policy Optimization to steer chain-of-thought without a separate critic model.",
+        "url": ""
+      },
+      {
+        "name": "Reflexion",
+        "detail": "Uses post-hoc reflection to critique an initial output and suggest improvements.",
+        "url": ""
+      },
+      {
+        "name": "Tree-of-Thoughts",
+        "detail": "Supports iterative reflection through backtracking and exploration of alternatives.",
+        "url": ""
+      },
+      {
+        "name": "Google DeepMind SCoRe",
+        "detail": "Self-Correction via Reinforcement Learning rewards models for improving their responses.",
+        "url": ""
+      }
+    ],
+    "components": [
+      {
+        "name": "Feedforward network",
+        "detail": "Processes the input and produces an initial output."
+      },
+      {
+        "name": "Feedback path",
+        "detail": "Returns information from outputs or later layers to the input or earlier layers."
+      },
+      {
+        "name": "Token feedback",
+        "detail": "Decodes a completed pass into tokens and passes the result back for another pass."
+      },
+      {
+        "name": "Latent feedback",
+        "detail": "Continuously routes the final layer's latent state back to the first layer."
+      },
+      {
+        "name": "Reflection controller",
+        "detail": "Supports post-hoc critique, revision during generation, or built-in self-monitoring."
+      }
+    ],
+    "flow": [
+      "The network receives an input and performs an initial forward pass.",
+      "It produces an output or subsequent-layer state to evaluate.",
+      "Feedback returns decoded tokens or latent information to the input or earlier layers.",
+      "The model critiques, revises, backtracks, or continues its reasoning.",
+      "Further passes may repeat the cycle before a final response is produced."
+    ],
+    "origin": "These methods developed in response to the difficulty single-pass feedforward networks have with complex, especially compositional, tasks. Chain-of-thought prompting was an important related technique because it encouraged intermediate reasoning steps.",
+    "lineage": "The approach extends one-pass feedforward processing into internal deliberation, with token-level or latent-space return paths. Its methods include longer chains of thought, Reflexion, Tree-of-Thoughts, reinforcement-learning steering such as GRPO, and intrinsic self-correction such as SCoRe.",
+    "whyItMatters": "Feedback gives models a mechanism for checking and revising reasoning, with the goals of reducing errors such as hallucinations and improving interpretability. It also makes inference cost a tunable part of performance through test-time compute.",
+    "diagram": {
+      "nodes": [
+        {
+          "id": "input",
+          "label": "Input",
+          "note": "Receives the task and any returned feedback."
+        },
+        {
+          "id": "forward",
+          "label": "Forward pass",
+          "note": "Processes the input through the network."
+        },
+        {
+          "id": "output",
+          "label": "Initial output",
+          "note": "Provides tokens or later-layer states."
+        },
+        {
+          "id": "reflect",
+          "label": "Reflection",
+          "note": "Critiques, revises, or explores alternatives."
+        },
+        {
+          "id": "feedback",
+          "label": "Feedback path",
+          "note": "Returns tokens or latent state."
+        },
+        {
+          "id": "final",
+          "label": "Final response",
+          "note": "Produced after reflection finishes."
+        }
+      ],
+      "edges": [
+        {
+          "from": "input",
+          "to": "forward",
+          "label": ""
+        },
+        {
+          "from": "forward",
+          "to": "output",
+          "label": ""
+        },
+        {
+          "from": "output",
+          "to": "reflect",
+          "label": ""
+        },
+        {
+          "from": "reflect",
+          "to": "feedback",
+          "label": "revision signal"
+        },
+        {
+          "from": "feedback",
+          "to": "input",
+          "label": "another pass"
+        },
+        {
+          "from": "reflect",
+          "to": "final",
+          "label": ""
+        }
+      ],
+      "caption": "A feedback network sends outputs or later-layer information back for further processing instead of stopping after one forward pass."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Feedback neural network",
+        "url": "https://en.wikipedia.org/wiki/Feedback_neural_network"
+      }
+    ],
+    "example": "A reasoning model generates intermediate steps, then revises its draft answer before returning it, spending extra inference compute on self-correction."
+  },
   "related": [
     "neural-network",
     "circuit-neural-network",

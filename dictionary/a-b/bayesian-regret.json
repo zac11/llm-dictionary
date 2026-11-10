@@ -5,7 +5,97 @@
   "type": "concept",
   "definition": "In stochastic game theory, Bayesian regret is the expected difference (\"regret\") between the utility of a given strategy and the utility of the best possible strategy in hindsight—i.e., the strategy that would have maximized expected payoff if the true underlying model or distribution were known.",
   "details": "This notion of regret measures how much is lost, on average, due to uncertainty or imperfect information.",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. That is Bayesian regret — a small key that opens a big door.",
+  "explainer": {
+    "lead": "Bayesian regret measures the average payoff you give up by choosing a strategy without knowing the true underlying model. It compares your strategy with the best strategy you could have chosen with full knowledge, showing the cost of uncertainty.",
+    "tiers": {
+      "eli5": "Imagine picking a move in a game before you know which version of the game you are playing. Bayesian regret is the average number of points you lose compared with the move you would pick if someone told you the version first.",
+      "practitioner": "To evaluate a strategy, specify a probability distribution over possible models, then compare its expected utility with that of the optimal strategy for each known model. The weighted average shortfall is the Bayesian regret; the result depends on the model distribution, and a low average can still conceal large regret for some models.",
+      "paperLevel": "Let M denote the unknown model, pi the chosen strategy, and pi*_M the strategy maximizing expected payoff when M is known. Bayesian regret is R_B(pi) = E_M[U_M(pi*_M) - U_M(pi)], where U_M is expected utility under M. It is an expectation rather than a worst-case guarantee and depends on the distribution placed over M."
+    },
+    "example": "Suppose two models are equally likely: a strategy earns 8 under the first and 4 under the second, while the best fully informed strategies earn 10 and 6 respectively. The shortfall is 2 in either case, so the Bayesian regret is 0.5 × 2 + 0.5 × 2 = 2 utility units.",
+    "usedIn": [
+      {
+        "name": "Stochastic game theory",
+        "detail": "Compares strategies by their expected payoff loss when the underlying model is uncertain.",
+        "url": ""
+      },
+      {
+        "name": "Decision-making under imperfect information",
+        "detail": "Quantifies the average value lost because a decision-maker does not know the true situation.",
+        "url": ""
+      }
+    ],
+    "intuition": "An uninformed strategy can still perform well, but it may fall short of what perfect knowledge would allow. Bayesian regret turns that shortfall into an average measure of the cost of not knowing the true model.",
+    "howItWorks": [
+      "Describe the possible underlying models and their probabilities.",
+      "Evaluate the chosen strategy's expected utility under each model.",
+      "Find the utility of the best strategy for each model if it were known.",
+      "Average the resulting utility gaps to obtain Bayesian regret."
+    ],
+    "whyItMatters": "It gives a single measure of how much uncertainty costs a strategy on average. This makes strategies comparable by their expected distance from fully informed optimal play.",
+    "misconceptions": [
+      "It is an expected shortfall, not a worst-case shortfall.",
+      "It compares utilities, not merely observed winnings after one play.",
+      "A low average does not rule out large regret under some models."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "models",
+          "label": "Possible models",
+          "note": "Alternatives weighted by their probabilities."
+        },
+        {
+          "id": "chosen",
+          "label": "Chosen strategy",
+          "note": "Produces expected utility under each model."
+        },
+        {
+          "id": "best",
+          "label": "Hindsight optimum",
+          "note": "Best utility when the model is known."
+        },
+        {
+          "id": "gap",
+          "label": "Utility gap",
+          "note": "Hindsight utility minus chosen-strategy utility."
+        },
+        {
+          "id": "regret",
+          "label": "Bayesian regret",
+          "note": "Probability-weighted average of the gaps."
+        }
+      ],
+      "edges": [
+        {
+          "from": "models",
+          "to": "chosen",
+          "label": "evaluate"
+        },
+        {
+          "from": "models",
+          "to": "best",
+          "label": "optimize"
+        },
+        {
+          "from": "chosen",
+          "to": "gap",
+          "label": "utility"
+        },
+        {
+          "from": "best",
+          "to": "gap",
+          "label": "utility"
+        },
+        {
+          "from": "gap",
+          "to": "regret",
+          "label": "average"
+        }
+      ],
+      "caption": "Bayesian regret averages the gap between uninformed play and fully informed optimal play."
+    }
+  },
   "related": [
     "bayesian-interpretation-of-kernel-regularization",
     "bayesian-learning-mechanisms",

@@ -5,7 +5,123 @@
   "type": "concept",
   "definition": "Cluster analysis, or clustering, is a data analysis technique aimed at partitioning a set of objects into groups such that objects within the same group (called a cluster) exhibit greater similarity to one another (in some specific sense defined by the analyst) than to those in other groups (clusters).",
   "details": "It is a main task of exploratory data analysis, and a common technique for statistical data analysis, used in many fields, including pattern recognition, image analysis, information retrieval, bioinformatics, data compression, computer graphics and machine learning. Cluster analysis refers to a family of algorithms and tasks rather than one specific algorithm. It can be achieved by various algorithms that differ significantly in their understanding of what constitutes a cluster and how to efficiently find them. Popular notions of clusters include groups with small distances between cluster members, dense areas of the data space, intervals or particular statistical distributions. Clustering can therefore be formulated as a multi-objective optimization problem. The appropriate clustering algorithm and parameter settings (including parameters such as the distance function to use, a density threshold or the number of expected clusters) depend on the individual data set and intended use of the results. Cluster analysis as such is not an automatic task, but an iterative process of knowledge discovery or interactive multi-objective optimization that involves trial and failure. It is often necessary to modify data preprocessing and model parameters until the result achieves the desired properties. Besides the term clustering, there are a number of terms with similar meanings, including automatic classification, numerical taxonomy, botryology (from Greek: βότρυς 'grape'), typological analysis, and community detection. The subtle differences are often in the use of the results: while in data mining, the resulting groups are the matter of interest, in automatic classification the resulting discriminative power is of interest. Cluster analysis originated in anthropology by Driver and Kroeber in 1932 and introduced to psychology by Joseph Zubin in 1938 and Robert Tryon in 1939 and famously used by Cattell beginning in 1943 for trait theory classification in personality psychology.",
-  "story": "Think of a historian sorting through boxes of letters, building a picture of an era one sentence at a time. Every machine is shaped by what it was shown, so someone has to choose that material with care. The examples a machine reads become the world it believes in. The words a model reads become the world it believes in. That care with the raw material is Cluster analysis.",
+  "explainer": {
+    "lead": "Cluster analysis looks for natural groupings in data, putting similar objects together and keeping dissimilar objects apart. It helps people explore unfamiliar datasets and discover structure, but the meaning of “similar” and the usefulness of the groups depend on choices made by the analyst.",
+    "tiers": {
+      "eli5": "Imagine emptying a box of mixed buttons onto a table and making piles of buttons that look alike. You might sort by color, size, or shape, and different choices would give different piles. Cluster analysis does something similar with data, using rules to decide which items belong together.",
+      "practitioner": "Choose preprocessing, a similarity or distance measure, and an algorithm whose idea of a cluster fits the data, then set parameters such as a density threshold or expected cluster count. Inspect the resulting groups and revise preprocessing and parameters until they serve the intended use. Common pitfalls include treating one algorithm’s output as the only valid grouping and assuming clustering is an automatic, one-pass task.",
+      "paperLevel": "Given objects X = {x1, ..., xn}, clustering seeks a partition C = {C1, ..., Ck} such that objects within each Ci are more similar, under an analyst-defined criterion, than objects in different clusters. Cluster notions based on distance, density, intervals, or statistical distributions lead to substantially different algorithms and objectives, and clustering can be formulated as multi-objective optimization. There is no universally appropriate algorithm or parameter setting; results depend on the dataset and intended use and typically require iterative evaluation."
+    },
+    "example": "For an image containing a red apple, green leaves, and blue sky, represent each pixel by chosen color and position features and select a distance function. A clustering algorithm might separate pixels into three candidate groups corresponding largely to apple, leaves, and sky. If shadows split the apple into several unhelpful groups, the analyst can revise the preprocessing, distance function, or parameter settings and run the analysis again.",
+    "usedIn": [
+      {
+        "name": "Pattern recognition",
+        "detail": "Groups patterns to reveal recurring structure in data.",
+        "url": ""
+      },
+      {
+        "name": "Image analysis",
+        "detail": "Groups similar image elements for exploration and interpretation.",
+        "url": ""
+      },
+      {
+        "name": "Information retrieval",
+        "detail": "Organizes similar retrieved items into groups.",
+        "url": ""
+      },
+      {
+        "name": "Bioinformatics",
+        "detail": "Explores biological data by grouping similar observations.",
+        "url": ""
+      }
+    ],
+    "intuition": "Clustering is like sorting an unfamiliar collection into piles without being given the piles in advance. The analyst must decide what makes two objects alike, because distance, density, and statistical distribution can each suggest a different grouping.",
+    "howItWorks": [
+      "Prepare the objects and choose the features that represent them.",
+      "Define similarity, for example through a distance function or density criterion.",
+      "Select an algorithm and parameters suited to the data and goal.",
+      "Run the algorithm to partition the objects into candidate clusters.",
+      "Examine the groups and repeat with revised preprocessing or parameters if needed."
+    ],
+    "whyItMatters": "It provides a way to explore complex datasets and summarize them through groups that may support further analysis. Its flexibility makes it useful across science and engineering, while its dependence on analyst choices makes careful interpretation essential.",
+    "misconceptions": [
+      "Cluster analysis is not one specific algorithm; it is a family of algorithms and tasks.",
+      "It is not fully automatic: useful results usually require iteration, adjustment, and trial and failure.",
+      "There is no single universal meaning of a cluster; algorithms can use distance, density, intervals, or statistical distributions."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "objects",
+          "label": "Input objects",
+          "note": "The dataset to be explored."
+        },
+        {
+          "id": "preprocess",
+          "label": "Prepare data",
+          "note": "Select and preprocess object features."
+        },
+        {
+          "id": "similarity",
+          "label": "Define similarity",
+          "note": "Choose distance, density, or another criterion."
+        },
+        {
+          "id": "algorithm",
+          "label": "Run algorithm",
+          "note": "Apply suitable settings and parameters."
+        },
+        {
+          "id": "clusters",
+          "label": "Candidate clusters",
+          "note": "Objects are partitioned into groups."
+        },
+        {
+          "id": "review",
+          "label": "Review results",
+          "note": "Check whether groups serve the intended use."
+        }
+      ],
+      "edges": [
+        {
+          "from": "objects",
+          "to": "preprocess",
+          "label": ""
+        },
+        {
+          "from": "preprocess",
+          "to": "similarity",
+          "label": ""
+        },
+        {
+          "from": "similarity",
+          "to": "algorithm",
+          "label": ""
+        },
+        {
+          "from": "algorithm",
+          "to": "clusters",
+          "label": ""
+        },
+        {
+          "from": "clusters",
+          "to": "review",
+          "label": ""
+        },
+        {
+          "from": "review",
+          "to": "preprocess",
+          "label": "revise"
+        },
+        {
+          "from": "review",
+          "to": "algorithm",
+          "label": "retune"
+        }
+      ],
+      "caption": "Clustering is an iterative process: candidate groups are reviewed, then data preparation or algorithm settings are adjusted as needed."
+    }
+  },
   "related": [
     "affinity-analysis",
     "archetypal-analysis",

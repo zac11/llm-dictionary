@@ -5,6 +5,97 @@
   "type": "concept",
   "definition": "Distinguishing subordinate categories that differ subtly — bird species, car models, dog breeds.",
   "details": "Distinguishing subordinate categories that differ subtly — bird species, car models, dog breeds. It requires attention to small discriminative parts beyond coarse object recognition.",
+  "explainer": {
+    "lead": "Fine-grained image classification is the task of telling apart very similar kinds of objects, such as two bird species or two car models. It matters because the useful clues are often tiny details that a system recognizing only broad categories would overlook.",
+    "tiers": {
+      "eli5": "Imagine telling apart two backpacks that look almost identical by noticing a different zipper or pocket. Fine-grained image classification does something similar with pictures, such as separating bird species by small differences in their beaks or feathers. It goes beyond simply deciding that a picture contains a bird.",
+      "practitioner": "Use this setting when all labels belong to closely related subordinate categories and overall appearance provides limited separation. The recognition process needs to preserve and compare small discriminative parts rather than relying only on coarse object features. A key pitfall is treating it like ordinary object recognition and missing the local details that distinguish the classes.",
+      "paperLevel": "Given an image x and a set Y of subordinate categories within a broader object class, learn a mapping f: x -> y, where y is in Y and classes differ subtly. The task requires features that capture small discriminative parts, not merely the coarse representation needed to recognize the parent category. Its central difficulty is that relevant inter-class evidence may be highly localized."
+    },
+    "example": "Given photos of two bird species with similar size and coloring, a coarse classifier labels both simply as birds. A fine-grained classifier examines differences such as beak shape and wing markings, then assigns each photo to its corresponding species.",
+    "usedIn": [
+      {
+        "name": "Bird identification",
+        "detail": "Separating bird species whose overall shapes and colors may be very similar.",
+        "url": ""
+      },
+      {
+        "name": "Car model recognition",
+        "detail": "Distinguishing closely related car models rather than merely detecting a car.",
+        "url": ""
+      },
+      {
+        "name": "Dog breed identification",
+        "detail": "Assigning a dog image to a specific breed using subtle visual differences.",
+        "url": ""
+      }
+    ],
+    "intuition": "Coarse recognition asks what kind of object is present; fine-grained recognition asks which very similar variant it is. The answer often depends on small parts or markings instead of the object's overall silhouette.",
+    "howItWorks": [
+      "Start with an image whose possible labels are closely related subordinate categories.",
+      "Recognize the broad object well enough to place the task in the right category.",
+      "Examine small regions and details that may differ between those categories.",
+      "Compare those discriminative cues across the candidate labels.",
+      "Predict the specific subordinate category, such as a bird species or car model."
+    ],
+    "whyItMatters": "Many useful visual questions require a specific subordinate label, not just a broad object category. Fine-grained classification addresses cases where that label depends on details coarse recognition can safely ignore.",
+    "misconceptions": [
+      "It is not simply ordinary classification with a longer label list; the defining challenge is subtle variation between related categories.",
+      "Recognizing the broad object is not enough, because the decisive evidence may lie in small discriminative parts."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "image",
+          "label": "Input image",
+          "note": "A photo containing one of several similar categories."
+        },
+        {
+          "id": "coarse",
+          "label": "Coarse recognition",
+          "note": "Establish the broad object category."
+        },
+        {
+          "id": "parts",
+          "label": "Local parts",
+          "note": "Examine small regions beyond overall appearance."
+        },
+        {
+          "id": "cues",
+          "label": "Discriminative cues",
+          "note": "Compare subtle details between candidate labels."
+        },
+        {
+          "id": "label",
+          "label": "Subordinate label",
+          "note": "Output the specific species, model, or breed."
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "coarse",
+          "label": "object"
+        },
+        {
+          "from": "coarse",
+          "to": "parts",
+          "label": "focus"
+        },
+        {
+          "from": "parts",
+          "to": "cues",
+          "label": "details"
+        },
+        {
+          "from": "cues",
+          "to": "label",
+          "label": "prediction"
+        }
+      ],
+      "caption": "Fine-grained classification moves from broad object recognition to localized visual evidence and a specific subordinate label."
+    }
+  },
   "related": [
     "attention"
   ],

@@ -5,7 +5,130 @@
   "type": "algorithm",
   "definition": "Algorithm selection (sometimes also called per-instance algorithm selection or offline algorithm selection) is a meta-algorithmic technique to choose an algorithm from a portfolio on an instance-by-instance basis.",
   "details": "It is motivated by the observation that on many practical problems, different algorithms have different performance characteristics. That is, while one algorithm performs well in some scenarios, it performs poorly in others and vice versa for another algorithm. If we can identify when to use which algorithm, we can optimize for each scenario and improve overall performance. This is what algorithm selection aims to do. The only prerequisite for applying algorithm selection techniques is that there exists (or that there can be constructed) a set of complementary algorithms.",
-  "story": "Think of a lightbulb moment: the idea was always there, but someone had to point a finger at it. Behind the jargon is an idea you could explain to a friend over coffee. At its heart it is a simple notion, once you strip away the fancy name. Once you see it, you cannot unsee it. That is Algorithm selection — a small key that opens a big door.",
+  "explainer": {
+    "lead": "Algorithm selection chooses the best-suited algorithm from a portfolio separately for each problem instance. It can improve overall performance when algorithms have complementary strengths, rather than relying on one algorithm for every case.",
+    "tiers": {
+      "eli5": "Imagine having several bicycles: one is best on hills, another on smooth roads, and another on rough paths. Algorithm selection is like learning which bicycle to use after looking at the route ahead. It checks the features of each new problem and picks the algorithm most likely to handle it well.",
+      "practitioner": "Build a portfolio of complementary algorithms, compute numerical features for each instance, and train a selector using measured performance under a cost metric such as runtime or error rate. Common approaches include performance regression, clustering, and pairwise cost-sensitive classification; in machine learning, this is also known as meta-learning. Include feature-computation time in runtime measurements, since expensive probing or graph features can erase the benefit of a good selection.",
+      "paperLevel": "Given a portfolio P, instances I, and cost metric m: P × I → R, algorithm selection seeks a mapping s: I → P that optimizes Σ(i∈I) m(s(i), i). It is commonly learned from instance features as multi-class classification, with regression, clustering, and pairwise cost-sensitive classification also used. Its usefulness depends on complementary portfolio algorithms, and feature costs or inaccurate performance predictions can limit or eliminate its gains."
+    },
+    "example": "For Boolean satisfiability, use a portfolio of complementary SAT solvers and describe each formula by features such as its numbers of variables and clauses and its average clause length. Train on measured solver performance, then use those features to select a solver for each new formula, with average runtime or the number of unsolved instances as the cost metric.",
+    "usedIn": [
+      {
+        "name": "Boolean satisfiability solving",
+        "detail": "Selectors choose among complementary SAT solvers for individual Boolean formulas; SATzilla, 3S, and CSHC are competition-winning systems.",
+        "url": ""
+      },
+      {
+        "name": "Machine learning",
+        "detail": "Known as meta-learning, it predicts which algorithm, such as Random Forest, SVM, or DNN, should have a low error rate on a dataset.",
+        "url": ""
+      },
+      {
+        "name": "Hard combinatorial problems",
+        "detail": "The same approach applies to mixed integer programming, CSP, AI planning, TSP, MAXSAT, QBF, and answer set programming.",
+        "url": ""
+      }
+    ],
+    "goal": "Optimize total cost across a set of instances by assigning each one to a well-performing algorithm from a portfolio.",
+    "inputs": [
+      "A portfolio of complementary algorithms",
+      "A set of problem instances",
+      "A cost metric such as runtime, unsolved-instance count, or error rate",
+      "Numerical instance features and performance measurements for training"
+    ],
+    "outputs": [
+      "A learned mapping from instances to portfolio algorithms",
+      "A selected algorithm for each new instance"
+    ],
+    "steps": [
+      "Assemble algorithms whose strengths differ across scenarios.",
+      "Define the instances and the performance cost to optimize.",
+      "Compute static or probing features that describe each instance.",
+      "Train a selector using classification, regression, or clustering.",
+      "For a new instance, compute its features and choose an algorithm.",
+      "Run that algorithm and account for selection overhead in its cost."
+    ],
+    "tradeoffs": [
+      "A useful portfolio must contain, or make it possible to construct, complementary algorithms.",
+      "Static features can be cheap, while probing features often cost more to compute.",
+      "When runtime is the metric, omitting feature-computation time can overstate performance.",
+      "Even perfectly accurate choices bring no benefit if obtaining the features costs as much as running the portfolio algorithms."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "instance",
+          "label": "Problem instance",
+          "note": "A formula, dataset, or other input"
+        },
+        {
+          "id": "features",
+          "label": "Instance features",
+          "note": "Static statistics or probing results"
+        },
+        {
+          "id": "portfolio",
+          "label": "Algorithm portfolio",
+          "note": "Algorithms with complementary strengths"
+        },
+        {
+          "id": "selector",
+          "label": "Trained selector",
+          "note": "Maps features to a portfolio algorithm"
+        },
+        {
+          "id": "chosen",
+          "label": "Selected algorithm",
+          "note": "Runs on the current instance"
+        },
+        {
+          "id": "cost",
+          "label": "Performance cost",
+          "note": "Includes relevant feature overhead"
+        }
+      ],
+      "edges": [
+        {
+          "from": "instance",
+          "to": "features",
+          "label": "described by"
+        },
+        {
+          "from": "features",
+          "to": "selector",
+          "label": "guides"
+        },
+        {
+          "from": "portfolio",
+          "to": "selector",
+          "label": "choices"
+        },
+        {
+          "from": "selector",
+          "to": "chosen",
+          "label": "picks"
+        },
+        {
+          "from": "instance",
+          "to": "chosen",
+          "label": "solved by"
+        },
+        {
+          "from": "chosen",
+          "to": "cost",
+          "label": "measured by"
+        }
+      ],
+      "caption": "A selector uses instance features to choose one portfolio algorithm, whose performance is evaluated with feature overhead included when relevant."
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Algorithm selection",
+        "url": "https://en.wikipedia.org/wiki/Algorithm_selection"
+      }
+    ]
+  },
   "related": [
     "actor-critic-algorithm",
     "algorithm-imed",

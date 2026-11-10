@@ -5,6 +5,106 @@
   "type": "concept",
   "definition": "Estimating the 3D or 2D joint positions of a hand from images, enabling gesture interfaces, AR manipulation, and sign-language analysis.",
   "details": "Estimating the 3D or 2D joint positions of a hand from images, enabling gesture interfaces, AR manipulation, and sign-language analysis.",
+  "explainer": {
+    "lead": "Hand pose estimation turns an image of a hand into the 2D or 3D positions of its joints. This gives software a usable description of the hand's shape and position, supporting gesture controls, AR manipulation, and sign-language analysis.",
+    "tiers": {
+      "eli5": "Imagine putting small stickers on the joints of a hand and asking a computer where each sticker is in a photo. Hand pose estimation does something similar without the stickers, producing a map of the hand that a computer can use to understand gestures or control virtual objects.",
+      "practitioner": "A system takes an image as input and predicts hand-joint coordinates in image space or 3D space. Those coordinates can feed gesture-recognition logic, AR object manipulation, or sign-language analysis; the output representation must match the application's need for 2D or 3D positions.",
+      "paperLevel": "Given an image I, hand pose estimation learns or applies a function f such that P = f(I), where P contains the estimated positions of the hand joints. Each position is represented either as a 2D image coordinate, p_j = (u_j, v_j), or as a 3D coordinate, p_j = (x_j, y_j, z_j)."
+    },
+    "example": "An AR application receives an image of a user's hand, estimates its joint positions in 3D, and uses that hand configuration to support manipulation of a virtual object.",
+    "usedIn": [
+      {
+        "name": "Gesture interfaces",
+        "detail": "Joint positions provide a description of the hand that can be used to interpret gestures.",
+        "url": ""
+      },
+      {
+        "name": "Augmented-reality manipulation",
+        "detail": "Estimated hand poses can support interaction with virtual objects.",
+        "url": ""
+      },
+      {
+        "name": "Sign-language analysis",
+        "detail": "Hand-joint positions supply a structured representation of hand configuration for analysis.",
+        "url": ""
+      }
+    ],
+    "intuition": "Instead of treating a hand image as a collection of pixels, the system summarizes it as a set of connected joint locations. That compact representation describes the hand's configuration in a form software can act on.",
+    "howItWorks": [
+      "Provide an image containing a hand.",
+      "Estimate the position of each hand joint.",
+      "Express the positions as 2D image coordinates or 3D coordinates.",
+      "Pass the resulting hand pose to a gesture, AR, or sign-language application."
+    ],
+    "whyItMatters": "It lets applications work with a structured description of a hand rather than raw pixels alone. That makes hand movements useful as input for interaction and analysis.",
+    "misconceptions": [
+      "It estimates joint positions; it does not by itself assign a meaning or label to a gesture.",
+      "A 2D pose gives positions in the image, while a 3D pose also represents spatial depth."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "image",
+          "label": "Hand image",
+          "note": "Input showing a hand"
+        },
+        {
+          "id": "estimator",
+          "label": "Pose estimator",
+          "note": "Infers hand-joint locations"
+        },
+        {
+          "id": "pose",
+          "label": "Joint positions",
+          "note": "2D or 3D coordinates"
+        },
+        {
+          "id": "gesture",
+          "label": "Gesture interface",
+          "note": "Uses poses as interaction input"
+        },
+        {
+          "id": "ar",
+          "label": "AR manipulation",
+          "note": "Supports virtual-object interaction"
+        },
+        {
+          "id": "sign",
+          "label": "Sign-language analysis",
+          "note": "Analyzes hand configurations"
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "estimator",
+          "label": "pixels"
+        },
+        {
+          "from": "estimator",
+          "to": "pose",
+          "label": "coordinates"
+        },
+        {
+          "from": "pose",
+          "to": "gesture",
+          "label": ""
+        },
+        {
+          "from": "pose",
+          "to": "ar",
+          "label": ""
+        },
+        {
+          "from": "pose",
+          "to": "sign",
+          "label": ""
+        }
+      ],
+      "caption": "A hand image is converted into joint coordinates, which downstream applications can use."
+    }
+  },
   "citation": {
     "title": "Hand Pose Estimation",
     "authors": [],

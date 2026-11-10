@@ -5,7 +5,89 @@
   "type": "algorithm",
   "definition": "Co-training is a machine learning algorithm used when there are only small amounts of labeled data and large amounts of unlabeled data.",
   "details": "One of its uses is in text mining for search engines. It was introduced by Avrim Blum and Tom Mitchell in 1998.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. That steady, miss-by-miss improvement is Co-training.",
+  "explainer": {
+    "lead": "Co-training stretches a small set of labeled examples by learning from a much larger unlabeled collection. It is useful when obtaining labels is difficult or costly, including in text mining for search engines.",
+    "tiers": {
+      "eli5": "Imagine you have a few flash cards with answers and a huge stack without answers. Co-training is like using the answered cards to start learning, then using the unanswered stack to keep practicing instead of asking someone to fill in every card. You still need those first answers, and mistakes can lead later practice astray.",
+      "practitioner": "Use co-training when the labeled dataset is small but unlabeled examples are abundant. Start with the labeled data, incorporate useful information from the unlabeled pool, and monitor the result for errors introduced during training. One application area is text mining for search engines.",
+      "paperLevel": "Given a labeled set L with |L| small and an unlabeled set U with |U| large, co-training seeks to learn using both L and U rather than L alone. It was introduced by Avrim Blum and Tom Mitchell in 1998. Its usefulness depends on whether U provides helpful training signal without introducing too many errors."
+    },
+    "example": "Suppose a search-engine team has 100 web pages labeled by topic and 100,000 unlabeled pages. Co-training starts with the 100 labeled pages and uses the much larger unlabeled collection to improve learning, avoiding the need to manually label all 100,000 pages.",
+    "usedIn": [
+      {
+        "name": "Text mining",
+        "detail": "A stated application area where labeled text may be scarce and unlabeled text plentiful.",
+        "url": ""
+      },
+      {
+        "name": "Search engines",
+        "detail": "Co-training can support text-mining tasks using large collections of unlabeled material.",
+        "url": ""
+      }
+    ],
+    "goal": "Learn effectively without requiring every example in a large dataset to be labeled.",
+    "inputs": [
+      "A small set of labeled examples",
+      "A large set of unlabeled examples"
+    ],
+    "outputs": [
+      "A learner trained using both labeled and unlabeled data",
+      "A way to reduce the amount of manual labeling required"
+    ],
+    "steps": [
+      "Begin with the small labeled dataset.",
+      "Learn an initial mapping from examples to labels.",
+      "Use the large unlabeled dataset to provide additional learning signal.",
+      "Continue training while checking that the unlabeled data is improving rather than degrading learning."
+    ],
+    "tradeoffs": [
+      "It can exploit plentiful unlabeled data instead of relying only on costly manual labels.",
+      "It still requires an initial labeled dataset.",
+      "Errors introduced while learning from unlabeled examples can harm later training."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "labeled",
+          "label": "Small labeled set",
+          "note": "Examples with known labels"
+        },
+        {
+          "id": "unlabeled",
+          "label": "Large unlabeled set",
+          "note": "Examples without labels"
+        },
+        {
+          "id": "cotraining",
+          "label": "Co-training",
+          "note": "Learns from both collections"
+        },
+        {
+          "id": "learner",
+          "label": "Trained learner",
+          "note": "Uses more than the initial labels"
+        }
+      ],
+      "edges": [
+        {
+          "from": "labeled",
+          "to": "cotraining",
+          "label": "initial labels"
+        },
+        {
+          "from": "unlabeled",
+          "to": "cotraining",
+          "label": "extra examples"
+        },
+        {
+          "from": "cotraining",
+          "to": "learner",
+          "label": ""
+        }
+      ],
+      "caption": "Co-training combines scarce labels with abundant unlabeled examples to train a learner."
+    }
+  },
   "related": [
     "co-occurrence-network",
     "contrastive-language-image-pre-training",

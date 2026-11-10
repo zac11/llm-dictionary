@@ -5,7 +5,93 @@
   "type": "concept",
   "definition": "In computer vision, the essential matrix is a 3 × 3 {\\displaystyle 3\\times 3} matrix, E {\\displaystyle \\mathbf {E} } that relates corresponding points in stereo images assuming that the cameras satisfy the pinhole camera model.",
   "details": "In computer vision, the essential matrix is a 3 × 3 {\\displaystyle 3\\times 3} matrix, E {\\displaystyle \\mathbf {E} } that relates corresponding points in stereo images assuming that the cameras satisfy the pinhole camera model.",
-  "story": "Picture a child pointing at pictures in a book — cat, car, cloud — learning to see by seeing a thousand examples. It turns a picture into an understanding: this is a cat, that is a stop sign. What your eyes do without thinking, the machine does one careful layer at a time. It is eyes made of arithmetic — pixels become edges, edges become shapes, shapes become meaning. And that is Essential matrix — giving a machine the gift of sight.",
+  "explainer": {
+    "lead": "Two cameras photographing the same scene see each landmark from slightly different viewpoints. The essential matrix captures the geometric relationship between matching image points, helping a vision system check whether two observations really can belong to the same point in 3D.",
+    "tiers": {
+      "eli5": "Imagine taking two photos of a toy, one from where each of your eyes would be. The toy's parts move to different places in the photos, but their positions are still connected by geometry. The essential matrix is a small grid of nine numbers that describes that connection, so a computer can test whether a dot in one photo and a dot in the other could be the same part of the toy.",
+      "practitioner": "Use it with corresponding points from two cameras that satisfy the pinhole model, typically after expressing the points in calibrated camera coordinates. It supplies an epipolar constraint for estimating or validating stereo geometry; poor correspondences and imaging that violates the pinhole assumption can undermine the result. It relates matches rather than detecting or describing them.",
+      "paperLevel": "For corresponding points represented by homogeneous calibrated image coordinates x and x', the essential matrix E is a 3×3 matrix satisfying x'^T E x = 0. The relation assumes that both cameras follow the pinhole camera model. It constrains corresponding observations but is not itself a 3D reconstruction."
+    },
+    "example": "Suppose the tip of the same lamppost is marked in a left image at coordinates x and in a right image at x'. Substituting both coordinate vectors into x'^T E x = 0 checks the match: a geometrically consistent pair satisfies the constraint, while an unrelated right-image point generally does not.",
+    "usedIn": [
+      {
+        "name": "Stereo vision",
+        "detail": "Relating a point observed in one camera image to its corresponding point in the other.",
+        "url": ""
+      },
+      {
+        "name": "3D reconstruction",
+        "detail": "Providing a geometric constraint on matched image observations before scene structure is reconstructed.",
+        "url": ""
+      }
+    ],
+    "intuition": "A point in one stereo image cannot match just anywhere in the other image: camera geometry restricts the possibilities. The essential matrix packs that restriction into nine numbers.",
+    "howItWorks": [
+      "Start with two images captured by pinhole cameras.",
+      "Identify a pair of points believed to show the same scene landmark.",
+      "Represent both points in suitable image coordinates.",
+      "Use the 3×3 essential matrix to test their geometric compatibility through x'^T E x = 0.",
+      "Apply the constraint across correspondences to reason about the stereo geometry."
+    ],
+    "whyItMatters": "It turns the geometry between two camera views into a compact algebraic constraint. That lets stereo systems reason about corresponding observations without treating every pair of image locations as equally plausible.",
+    "misconceptions": [
+      "It does not find corresponding points; it relates correspondences supplied to it.",
+      "It is not a general model for every camera: the stated relationship assumes pinhole cameras.",
+      "It is not itself a depth map or a 3D model of the scene."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "left-point",
+          "label": "Left image point",
+          "note": "Coordinates of a landmark in the first view."
+        },
+        {
+          "id": "right-point",
+          "label": "Right image point",
+          "note": "Coordinates of its proposed match in the second view."
+        },
+        {
+          "id": "correspondence",
+          "label": "Point correspondence",
+          "note": "The pair believed to show one scene landmark."
+        },
+        {
+          "id": "essential",
+          "label": "Essential matrix",
+          "note": "A 3×3 description of the two-view relationship."
+        },
+        {
+          "id": "constraint",
+          "label": "Epipolar constraint",
+          "note": "Tests the pair through x'^T E x = 0."
+        }
+      ],
+      "edges": [
+        {
+          "from": "left-point",
+          "to": "correspondence",
+          "label": "first point"
+        },
+        {
+          "from": "right-point",
+          "to": "correspondence",
+          "label": "second point"
+        },
+        {
+          "from": "correspondence",
+          "to": "constraint",
+          "label": "coordinates"
+        },
+        {
+          "from": "essential",
+          "to": "constraint",
+          "label": "geometry"
+        }
+      ],
+      "caption": "The essential matrix and a proposed point correspondence jointly form a geometric consistency test for two pinhole-camera images."
+    }
+  },
   "related": [
     "camera-matrix",
     "fundamental-matrix-computer-vision",

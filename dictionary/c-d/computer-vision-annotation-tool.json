@@ -2,10 +2,101 @@
   "term": "Computer Vision Annotation Tool",
   "letter": "C",
   "category": "Computer vision",
-  "type": "concept",
+  "type": "tool",
   "definition": "Computer Vision Annotation Tool (CVAT) is an open source, web-based image and video annotation tool used for labeling data for computer vision algorithms.",
   "details": "Originally developed by Intel, CVAT is designed for use by a professional data annotation team, with a user interface optimized for computer vision annotation tasks. CVAT supports the primary tasks of supervised machine learning: object detection, image classification, and image segmentation. CVAT allows users to annotate data for each of these cases. CVAT has many powerful features, including interpolation of shapes between key frames, semi-automatic annotation using deep learning models, shortcuts for most critical actions, a dashboard with a list of annotation projects and tasks, LDAP and basic access authentication, etc. CVAT is written mainly in TypeScript, React, Ant Design, CSS, Python, and Django. It is distributed under the MIT License, and its source code is available on GitHub. CVAT team hosts an online version of the data annotation platform at cvat.ai as SaaS.",
-  "story": "Imagine an art restorer who can spot a single cracked tile in a vast mosaic. What your eyes do without thinking, the machine does one careful layer at a time. The machine learns to see the way we do — starting with shapes and edges, then building up to whole objects and faces. The model looks the way you look at a crowd and finds the one face you know. That pixel-to-meaning climb is Computer Vision Annotation Tool.",
+  "explainer": {
+    "lead": "CVAT is an open-source, web-based workspace for adding labels to images and videos so they can be used to train computer vision systems. It gives annotation teams one place to organize projects, draw and edit labels, and speed up repetitive work.",
+    "tiers": {
+      "eli5": "Imagine teaching a computer to recognize things by putting stickers on photos that say what each thing is. CVAT is like an online sticker book where a team can label pictures and videos, organize their work, and get some help filling in repeated labels.",
+      "practitioner": "Use CVAT to create annotation projects and tasks for object detection, image classification, or image segmentation, either self-hosted or through the hosted service at cvat.ai. Shape interpolation between video key frames and deep-learning-assisted annotation can reduce manual work, but interpolated shapes and automatic suggestions still need review. Teams can use shortcuts for frequent actions and LDAP or basic access authentication.",
+      "paperLevel": "CVAT implements supervised dataset construction as a mapping from raw visual inputs x to task-specific annotations y, producing pairs (x, y) for detection, classification, or segmentation. Its interface combines manual annotation with shape interpolation across video key frames and semi-automatic labeling using deep learning models; it is an annotation system, not a computer vision model or training algorithm."
+    },
+    "example": "To label a video of a moving car, an annotator marks the car's shape in selected key frames. CVAT can interpolate the shape between those frames, after which the annotator reviews and adjusts the labels before using the annotated video for object detection training.",
+    "usedIn": [
+      {
+        "name": "Object detection",
+        "detail": "Annotators mark objects in images or video to create detection training data.",
+        "url": ""
+      },
+      {
+        "name": "Image classification",
+        "detail": "Users assign class labels to images for supervised learning.",
+        "url": ""
+      },
+      {
+        "name": "Image segmentation",
+        "detail": "Users annotate shapes and regions for segmentation datasets.",
+        "url": ""
+      }
+    ],
+    "intuition": "A computer vision dataset needs more than pictures: it needs labels describing what the pictures contain. CVAT turns that labeling work into an organized, collaborative web workflow, with automation for repetitive parts.",
+    "howItWorks": [
+      "Create an annotation project and task, then add the images or videos to be labeled.",
+      "Choose annotations suited to detection, classification, or segmentation.",
+      "Annotate the data in the web interface, using shortcuts for frequent actions.",
+      "For video, interpolate shapes between key frames or use deep learning models for semi-automatic annotation.",
+      "Manage work through the project and task dashboard and use the resulting labels as supervised training data."
+    ],
+    "whyItMatters": "Supervised computer vision depends on labeled examples, and producing them consistently can take substantial team effort. CVAT combines task management, a specialized interface, and annotation assistance in one open-source tool.",
+    "misconceptions": [
+      "CVAT labels data; it does not itself perform object detection, classification, or segmentation on behalf of a trained application.",
+      "Semi-automatic annotation and shape interpolation assist annotators rather than eliminating the need to check their output.",
+      "CVAT is a specific tool, not a general name for every image-labeling program."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "media",
+          "label": "Images and video",
+          "note": "Raw visual data awaiting labels"
+        },
+        {
+          "id": "tasks",
+          "label": "Projects and tasks",
+          "note": "Dashboard organizes annotation work"
+        },
+        {
+          "id": "editor",
+          "label": "Annotation interface",
+          "note": "Users create and edit labels"
+        },
+        {
+          "id": "assistance",
+          "label": "Annotation assistance",
+          "note": "Interpolation and deep learning models"
+        },
+        {
+          "id": "dataset",
+          "label": "Labeled dataset",
+          "note": "Supervised examples for vision training"
+        }
+      ],
+      "edges": [
+        {
+          "from": "media",
+          "to": "tasks",
+          "label": "added to"
+        },
+        {
+          "from": "tasks",
+          "to": "editor",
+          "label": "assigned work"
+        },
+        {
+          "from": "assistance",
+          "to": "editor",
+          "label": "suggestions"
+        },
+        {
+          "from": "editor",
+          "to": "dataset",
+          "label": "annotations"
+        }
+      ],
+      "caption": "CVAT organizes raw media into annotation tasks, assists labeling in its editor, and produces labeled training data."
+    }
+  },
   "related": [
     "computer-vision",
     "bag-of-words-model-in-computer-vision",

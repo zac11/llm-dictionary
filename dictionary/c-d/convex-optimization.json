@@ -5,7 +5,39 @@
   "type": "concept",
   "definition": "A branch of optimization dealing with problems where the objective function is convex, guaranteeing that any local minimum is also the global minimum.",
   "details": "While classical convex optimization theory provides strong guarantees, most deep learning loss functions are non-convex, meaning many of the guarantees from convex optimization theory don't directly apply, motivating more empirical and heuristic approaches to training.",
-  "story": "Think of a hiker descending a foggy hill in the dark, taking small steps and feeling for the steepest way down. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. It is the same loop you use to learn anything: try, miss, correct, try again. Skill, for a model, is just error pushed down until it is small enough to ignore. That steady, miss-by-miss improvement is Convex Optimization.",
+  "explainer": {
+    "lead": "Convex optimization studies a particularly well-behaved kind of optimization problem, where finding a local minimum is enough to know you have found the best possible solution. Its guarantees are valuable, but they generally do not carry over to the non-convex loss functions used in deep learning.",
+    "tiers": {
+      "eli5": "A convex problem is like a single-bottomed bowl: however you roll the ball, it settles at the one lowest point. Many real problems are bumpier than that.",
+      "practitioner": "Engineers reach for convex formulations when they need guaranteed convergence, but deep learning loss surfaces are non-convex, motivating more empirical and heuristic training approaches. A pitfall is assuming a local minimum is global.",
+      "paperLevel": "A branch of optimization dealing with problems where the objective function is convex, guaranteeing that any local minimum is also the global minimum. This guarantee does not hold for non-convex objectives."
+    },
+    "example": "Minimize f(x) = (x - 3)^2 over real-valued x. This objective is convex, and its minimum occurs at x = 3, where f(3) = 0; because 0 is the smallest value a square can take, this local minimum is the global minimum.",
+    "intuition": "A convex objective has no separate local dips that can be mistaken for the best overall solution. This makes the search for a minimum much more dependable than it is for a general non-convex objective.",
+    "howItWorks": [
+      "Define the objective function whose value you want to minimize.",
+      "Establish that the objective is convex.",
+      "Optimize until you reach a local minimum.",
+      "Conclude that this point is also a global minimum."
+    ],
+    "whyItMatters": "Convexity turns a local optimality result into a global one, providing a strong guarantee about solution quality. The contrast with non-convex deep learning losses also explains why training neural networks often relies on empirical and heuristic methods.",
+    "misconceptions": [
+      "A local minimum of every optimization problem is globally optimal: the guarantee requires a convex objective.",
+      "Convex optimization guarantees that deep learning training finds the global minimum: most deep learning losses are non-convex."
+    ],
+    "usedIn": [
+      {
+        "name": "Support vector machines",
+        "detail": "convex training problems",
+        "url": ""
+      },
+      {
+        "name": "Deep learning",
+        "detail": "non-convex losses needing heuristics",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "non-convex-optimization",
     "bias-variance-tradeoff",

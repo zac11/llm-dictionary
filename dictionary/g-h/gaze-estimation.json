@@ -5,6 +5,97 @@
   "type": "concept",
   "definition": "Predicting where a person is looking from eye or face images.",
   "details": "Predicting where a person is looking from eye or face images. It enables attention-aware interfaces, driver monitoring, and accessibility input.",
+  "explainer": {
+    "lead": "Gaze estimation turns an image of someone’s eyes or face into an estimate of where they are looking. It lets computers respond to visual attention, supporting uses such as safer driving and accessible input.",
+    "tiers": {
+      "eli5": "Imagine a computer playing a guessing game: it looks at a picture of your eyes or face and guesses what you are looking at. That guess can help a car tell whether the driver is watching the road, or let someone use their gaze to control a computer.",
+      "practitioner": "A gaze-estimation system takes eye or face images as input and produces a gaze estimate for an application to consume. Typical deployments include attention-aware interfaces, driver monitoring, and accessibility input. The output should be treated as an estimate of looking location, not as evidence of a person’s intentions.",
+      "paperLevel": "Given an eye or face image I, gaze estimation learns a mapping f(I) = g, where g represents where the person is looking. The task concerns visual attention rather than identification or interpretation of mental state."
+    },
+    "example": "A driver-monitoring system receives a face image and estimates that the driver’s gaze is directed away from the road. It can then use that estimate as a signal of where the driver’s visual attention is directed.",
+    "usedIn": [
+      {
+        "name": "Attention-aware interfaces",
+        "detail": "Software can use an estimated gaze target to respond to where a user is looking.",
+        "url": ""
+      },
+      {
+        "name": "Driver monitoring",
+        "detail": "A vehicle system can estimate whether the driver is looking toward the road.",
+        "url": ""
+      },
+      {
+        "name": "Accessibility input",
+        "detail": "Gaze estimates can provide a way to direct computer input through looking.",
+        "url": ""
+      }
+    ],
+    "intuition": "The appearance of the eyes and face carries visual cues about looking direction. Gaze estimation converts those cues into a prediction of the person’s gaze target.",
+    "howItWorks": [
+      "Capture an eye or face image.",
+      "Extract visual cues relevant to looking direction.",
+      "Map those cues to a gaze estimate.",
+      "Pass the estimate to the application."
+    ],
+    "whyItMatters": "It gives computers a way to use visual attention as an input. That supports monitoring, responsive interfaces, and computer access through gaze.",
+    "misconceptions": [
+      "A gaze estimate does not reveal what someone is thinking.",
+      "Gaze estimation is not the same as identifying a person.",
+      "The result is a prediction, not a direct measurement of attention or intention."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "image",
+          "label": "Eye or face image",
+          "note": "Visual input showing the person."
+        },
+        {
+          "id": "cues",
+          "label": "Visual cues",
+          "note": "Image information relevant to gaze."
+        },
+        {
+          "id": "model",
+          "label": "Gaze estimator",
+          "note": "Maps visual cues to a prediction."
+        },
+        {
+          "id": "estimate",
+          "label": "Gaze estimate",
+          "note": "Predicted looking location."
+        },
+        {
+          "id": "application",
+          "label": "Application",
+          "note": "Uses gaze for monitoring or input."
+        }
+      ],
+      "edges": [
+        {
+          "from": "image",
+          "to": "cues",
+          "label": "provides"
+        },
+        {
+          "from": "cues",
+          "to": "model",
+          "label": "input"
+        },
+        {
+          "from": "model",
+          "to": "estimate",
+          "label": "predicts"
+        },
+        {
+          "from": "estimate",
+          "to": "application",
+          "label": "used by"
+        }
+      ],
+      "caption": "Gaze estimation maps eye or face images to a looking-location estimate that an application can use."
+    }
+  },
   "related": [
     "attention"
   ],

@@ -5,7 +5,107 @@
   "type": "concept",
   "definition": "Deep learning speech synthesis refers to the application of deep learning models to generate natural-sounding human speech from written text (text-to-speech) or spectrum (vocoder).",
   "details": "Deep neural networks are trained using large amounts of recorded speech and, in the case of a text-to-speech system, the associated labels and/or input text.",
-  "story": "Think of a grammar teacher who never memorized a rule but can still tell you when a sentence sounds wrong. The machine learns language the way you did — by hearing so much of it that the patterns sink in. It figures out meaning by noticing which words like to travel together. The machine learns to read between the lines by reading an impossible number of lines. That pattern-earned fluency is Deep learning speech synthesis.",
+  "explainer": {
+    "lead": "Deep learning speech synthesis uses neural networks to produce natural-sounding speech from written words or from a spectrum describing sound. It provides the voice-generation part of text-to-speech systems and vocoders, but learning a convincing voice requires large amounts of recorded speech.",
+    "tiers": {
+      "eli5": "Imagine teaching a computer to read aloud by playing it lots of people talking and showing it the matching words. Over time, it learns how written words should sound and can say a new sentence aloud. It can also learn to turn a description of a sound into speech you can hear.",
+      "practitioner": "Apply it either as text-to-speech, where the input is written text, or as a vocoder, where the input is a spectrum. Training requires large speech datasets, with associated labels and/or input text for text-to-speech; the quantity of recordings and the quality of their associations are central practical concerns.",
+      "paperLevel": "In plain-text notation, text-to-speech learns f_theta(text) -> speech, while a vocoder learns g_phi(spectrum) -> speech. The parameters theta and phi belong to deep neural networks trained on large amounts of recorded speech, with associated labels and/or text for text-to-speech; this creates a substantial training-data requirement."
+    },
+    "example": "A text-to-speech model trained on many speech recordings and their matching text receives the sentence “The train leaves at noon.” It generates an audio recording in which that sentence is spoken aloud.",
+    "usedIn": [
+      {
+        "name": "Text-to-speech systems",
+        "detail": "Generate spoken audio from written text using models trained on speech recordings and associated text and/or labels.",
+        "url": ""
+      },
+      {
+        "name": "Vocoders",
+        "detail": "Generate speech audio from a spectrum using deep neural networks trained on recorded speech.",
+        "url": ""
+      }
+    ],
+    "intuition": "A neural network learns patterns connecting speech audio with text, labels, or spectral input. Once trained, it can use those patterns to generate natural-sounding speech for new input.",
+    "howItWorks": [
+      "Collect a large training set of recorded speech.",
+      "For text-to-speech, include the associated labels and/or input text.",
+      "Train a deep neural network on this material.",
+      "Give the trained system new text or a spectrum.",
+      "Generate the corresponding speech audio."
+    ],
+    "whyItMatters": "It allows written text or spectral representations to become natural-sounding spoken audio. The same deep-learning approach supports both complete text-to-speech generation and the vocoder stage.",
+    "misconceptions": [
+      "It is not limited to converting text directly into speech; vocoders instead start from a spectrum.",
+      "The model does not simply replay its recordings; it trains on them to generate speech for new input."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "training",
+          "label": "Training recordings",
+          "note": "Large amounts of recorded speech, with text and/or labels for TTS"
+        },
+        {
+          "id": "text",
+          "label": "Written text",
+          "note": "New text to be spoken"
+        },
+        {
+          "id": "tts",
+          "label": "TTS network",
+          "note": "Deep network trained to generate speech from text"
+        },
+        {
+          "id": "spectrum",
+          "label": "Speech spectrum",
+          "note": "Spectral input for speech generation"
+        },
+        {
+          "id": "vocoder",
+          "label": "Vocoder network",
+          "note": "Deep network that converts a spectrum into speech"
+        },
+        {
+          "id": "audio",
+          "label": "Speech audio",
+          "note": "Natural-sounding generated speech"
+        }
+      ],
+      "edges": [
+        {
+          "from": "training",
+          "to": "tts",
+          "label": "training"
+        },
+        {
+          "from": "training",
+          "to": "vocoder",
+          "label": "training"
+        },
+        {
+          "from": "text",
+          "to": "tts",
+          "label": "input"
+        },
+        {
+          "from": "tts",
+          "to": "spectrum",
+          "label": "spectral output"
+        },
+        {
+          "from": "spectrum",
+          "to": "vocoder",
+          "label": "input"
+        },
+        {
+          "from": "vocoder",
+          "to": "audio",
+          "label": "generates"
+        }
+      ],
+      "caption": "Recorded speech trains the networks; new text can be processed through text-to-speech and a vocoder to produce audio."
+    }
+  },
   "related": [
     "speech-synthesis",
     "deep-learning",

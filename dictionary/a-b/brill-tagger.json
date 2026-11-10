@@ -5,7 +5,106 @@
   "type": "concept",
   "definition": "The Brill tagger is an inductive method for part-of-speech tagging.",
   "details": "It was described and invented by Eric Brill in his 1993 PhD thesis. It can be summarized as an \"error-driven transformation-based tagger\". It is: a form of supervised learning, which aims to minimize error; and, a transformation-based process, in the sense that a tag is assigned to each word and changed using a set of predefined rules. In the transformation process, if the word is known, it first assigns the most frequent tag, or if the word is unknown, it naively assigns the tag \"noun\" to it. High accuracy is eventually achieved by applying these rules iteratively and changing the incorrect tags. This approach ensures that valuable information such as the morphosyntactic construction of words is employed in an automatic tagging process.",
-  "story": "Picture a translator at the United Nations, listening to one language and whispering the meaning into another in real time. It figures out meaning by noticing which words like to travel together. It does not memorize a rulebook; it absorbs a library. Meaning lives in company — a word is known by the words it keeps. And that is Brill tagger — teaching a machine to read between the lines.",
+  "explainer": {
+    "lead": "The Brill tagger labels each word with its part of speech, then improves those labels by repeatedly applying rules that correct mistakes. It matters because it turns examples of correctly tagged text into an automatic tagging process that can also use information about word structure and context.",
+    "tiers": {
+      "eli5": "Imagine giving every word in a sentence a sticker saying what kind of word it is. The tagger makes a quick first guess, then checks its mistakes and uses rules to fix the stickers, over and over, until they become much more accurate.",
+      "practitioner": "Apply it as a supervised part-of-speech tagger: initialize known words with their most frequent tags and unknown words as nouns, then iteratively apply the transformation rules. The main pitfalls are poor initial guesses for ambiguous words and the naive noun default for unseen vocabulary, with final quality depending on the error-correcting rules.",
+      "paperLevel": "For known words, initialize t_i = argmax_t frequency(w_i, t); for unknown words, initialize t_i = noun. Iteratively apply transformation rules to revise tags so as to minimize tagging error, as introduced by Eric Brill in his 1993 PhD thesis. The method is supervised, and its accuracy depends on the training evidence and rule set rather than on the initial assignments alone."
+    },
+    "example": "In \"I can run,\" suppose \"can\" initially receives its most frequent tag, \"noun.\" A transformation rule can then change that tag to \"verb\" in this context, correcting the initial guess while leaving the other words to be handled by the same iterative process.",
+    "usedIn": [
+      {
+        "name": "Part-of-speech tagging",
+        "detail": "Automatically assigns grammatical tags to words and refines incorrect assignments.",
+        "url": ""
+      },
+      {
+        "name": "Linguistic text analysis",
+        "detail": "Brings information such as the morphosyntactic construction of words into automatic tagging.",
+        "url": ""
+      }
+    ],
+    "intuition": "Start with a simple guess, learn from its errors, and keep repairing the guesses with targeted rules. The repeated corrections are what turn crude initial tags into accurate ones.",
+    "howItWorks": [
+      "Assign each known word its most frequent part-of-speech tag.",
+      "Assign the tag \"noun\" to each unknown word as a naive starting point.",
+      "Compare the results with correct tags to identify errors during supervised learning.",
+      "Apply transformation rules iteratively, changing incorrect tags until high accuracy is achieved."
+    ],
+    "whyItMatters": "It shows how a straightforward initial tagger can become highly accurate through supervised, error-driven corrections. It also makes morphosyntactic information useful in an automatic tagging process.",
+    "misconceptions": [
+      "It does not simply keep every word's most frequent tag; those tags are only the starting point for known words.",
+      "Calling unknown words nouns is an initialization heuristic, not a claim that every unseen word is really a noun."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "words",
+          "label": "Input words",
+          "note": "Known and unknown words enter the tagger."
+        },
+        {
+          "id": "frequent",
+          "label": "Frequent tags",
+          "note": "Known words receive their most frequent tags."
+        },
+        {
+          "id": "noun",
+          "label": "Noun default",
+          "note": "Unknown words initially receive the noun tag."
+        },
+        {
+          "id": "initial",
+          "label": "Initial tagging",
+          "note": "Every word now has a provisional tag."
+        },
+        {
+          "id": "rules",
+          "label": "Error-driven rules",
+          "note": "Transformations iteratively correct tagging mistakes."
+        },
+        {
+          "id": "output",
+          "label": "Refined tags",
+          "note": "Repeated corrections produce the final tagging."
+        }
+      ],
+      "edges": [
+        {
+          "from": "words",
+          "to": "frequent",
+          "label": "known"
+        },
+        {
+          "from": "words",
+          "to": "noun",
+          "label": "unknown"
+        },
+        {
+          "from": "frequent",
+          "to": "initial",
+          "label": ""
+        },
+        {
+          "from": "noun",
+          "to": "initial",
+          "label": ""
+        },
+        {
+          "from": "initial",
+          "to": "rules",
+          "label": "errors"
+        },
+        {
+          "from": "rules",
+          "to": "output",
+          "label": "iterate"
+        }
+      ],
+      "caption": "The Brill tagger initializes word tags, then uses error-driven transformation rules to refine them."
+    }
+  },
   "related": [
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",
     "accelerated-linear-algebra",

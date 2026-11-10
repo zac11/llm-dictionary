@@ -5,6 +5,82 @@
   "type": "concept",
   "definition": "Estimating the 3D joint locations of a hand from images or depth, enabling gesture and manipulation interfaces.",
   "details": "Estimating the 3D joint locations of a hand from images or depth, enabling gesture and manipulation interfaces.",
+  "explainer": {
+    "lead": "3D hand pose estimation turns an image or depth reading into the three-dimensional locations of a hand’s joints. This gives computers a geometric description of the hand that can drive gesture controls and manipulation interfaces.",
+    "tiers": {
+      "eli5": "Imagine showing your hand to a camera and having the computer place a dot on each knuckle and fingertip. Instead of only knowing where those dots appear on the screen, it also works out how near or far they are. The computer can then use that hand shape to understand gestures or help control something.",
+      "practitioner": "A system takes an image or depth map and outputs 3D coordinates for the modeled hand joints, typically for consumption by gesture-recognition or manipulation logic. The key distinction from a 2D pipeline is that depth is part of the prediction, so plausible-looking joint positions can still have incorrect spatial geometry. The output should therefore be checked in three dimensions and in the downstream interface, not only by its projection onto the image.",
+      "paperLevel": "Given an image I or depth observation D, learn a mapping f such that f(I) or f(D) produces J in R^(Kx3), where K is the number of modeled hand joints and each row is a joint’s 3D location. The task estimates hand geometry rather than directly predicting a gesture label or control action. Those later decisions require additional processing of the estimated joints."
+    },
+    "example": "A depth camera observes a hand making a pinch. The estimator outputs 3D locations for the thumb tip, index fingertip, and other joints; the interface sees those two fingertips close together in space and uses that configuration as a pinch gesture.",
+    "usedIn": [
+      {
+        "name": "Gesture interfaces",
+        "detail": "Estimated joint locations provide a 3D description of the hand for interpreting gestures.",
+        "url": ""
+      },
+      {
+        "name": "Manipulation interfaces",
+        "detail": "The spatial positions of hand joints can serve as input to systems that respond to hand movements.",
+        "url": ""
+      }
+    ],
+    "intuition": "A flat picture shows where hand joints appear, but a useful spatial description also needs their depth. The goal is to recover a 3D joint map of the hand from visual or depth observations.",
+    "howItWorks": [
+      "Capture an image or depth observation containing a hand.",
+      "Identify the hand-joint information represented in that observation.",
+      "Estimate a three-dimensional location for each modeled joint.",
+      "Pass the resulting set of joint coordinates to gesture or manipulation software."
+    ],
+    "whyItMatters": "Representing the hand in 3D supplies spatial information that a flat set of image coordinates does not. That information gives gesture and manipulation interfaces a direct geometric input to work with.",
+    "misconceptions": [
+      "It is not limited to locating joints in a flat 2D image; depth is part of the estimated pose.",
+      "It does not require depth input in every case, because the observation can also be an image.",
+      "Estimating joint locations is not the same as classifying a gesture, which is a separate downstream step."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "observation",
+          "label": "Image or depth",
+          "note": "Observation containing the hand"
+        },
+        {
+          "id": "estimator",
+          "label": "3D pose estimation",
+          "note": "Infers spatial joint locations"
+        },
+        {
+          "id": "joints",
+          "label": "3D joint coordinates",
+          "note": "Three coordinates per modeled joint"
+        },
+        {
+          "id": "interface",
+          "label": "Gesture or manipulation",
+          "note": "Uses the estimated hand geometry"
+        }
+      ],
+      "edges": [
+        {
+          "from": "observation",
+          "to": "estimator",
+          "label": "hand observation"
+        },
+        {
+          "from": "estimator",
+          "to": "joints",
+          "label": "predicts"
+        },
+        {
+          "from": "joints",
+          "to": "interface",
+          "label": "drives"
+        }
+      ],
+      "caption": "An image or depth observation is converted into 3D hand-joint coordinates for use by an interface."
+    }
+  },
   "citation": {
     "title": "3D Hand Pose Estimation",
     "authors": [],

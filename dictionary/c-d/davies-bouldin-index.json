@@ -2,9 +2,107 @@
   "term": "Davies-Bouldin Index",
   "letter": "D",
   "category": "Machine learning performance metrics",
-  "type": "concept",
+  "type": "metric",
   "definition": "A clustering-quality metric comparing within-cluster scatter to between-cluster separation — lower is better.",
   "details": "A clustering-quality metric comparing within-cluster scatter to between-cluster separation — lower is better.",
+  "explainer": {
+    "lead": "The Davies-Bouldin Index scores a clustering by weighing how spread out each cluster is against how far apart the clusters are. It helps compare candidate clusterings without needing known correct labels: lower scores indicate tighter, better-separated groups.",
+    "tiers": {
+      "eli5": "Imagine sorting toys into boxes. A good sorting keeps similar toys close together in each box and keeps boxes holding different kinds of toys clearly apart. This index gives the sorting a score, and a smaller score means the boxes are neater and more distinct.",
+      "practitioner": "Use it to compare cluster counts, algorithms, or parameter settings on the same dataset, then prefer the candidate with the lower score. Compute it after applying the same feature scaling and distance choices across candidates. Do not treat the score as proof that clusters are meaningful, and inspect alternatives when centroids coincide or the clustering is degenerate.",
+      "paperLevel": "For cluster i, let S_i be its within-cluster scatter and M_ij the separation between clusters i and j; define R_ij = (S_i + S_j) / M_ij. With k clusters, DB = (1/k) sum_i max_(j != i) R_ij, so every cluster contributes its worst pairwise ratio. Lower values are better, but the index summarizes clustering through scatter and separation and can be misleading when those quantities do not capture the data's structure."
+    },
+    "example": "Suppose three clusters have worst pairwise ratios of 0.6, 0.8, and 0.4. Their index is (0.6 + 0.8 + 0.4) / 3 = 0.6. Another clustering with worst ratios of 1.0, 0.7, and 0.9 scores about 0.867, so the first clustering is preferred by this metric.",
+    "usedIn": [
+      {
+        "name": "Cluster analysis",
+        "detail": "Compares candidate clusterings and helps choose among different cluster counts or settings.",
+        "url": ""
+      },
+      {
+        "name": "Customer segmentation",
+        "detail": "Checks whether proposed customer groups are internally compact and clearly separated.",
+        "url": ""
+      },
+      {
+        "name": "Exploratory data analysis",
+        "detail": "Provides one quantitative check alongside visual inspection and other validation methods.",
+        "url": ""
+      }
+    ],
+    "measures": "It measures the balance between within-cluster scatter and between-cluster separation. A lower value indicates that clusters are compact relative to the distance separating them.",
+    "howScored": [
+      "Measure each cluster's internal scatter.",
+      "Measure separation between cluster pairs.",
+      "For each cluster, find its worst scatter-to-separation ratio.",
+      "Average those worst ratios; lower is better."
+    ],
+    "formula": "R_ij = (S_i + S_j) / M_ij, where S_i is within-cluster scatter and M_ij is between-cluster separation. DB = (1/k) sum_i max_(j != i) R_ij for k clusters.",
+    "typicalResults": "The score has no universal target range, so it is most useful for relative comparisons made consistently on the same data. The preferred candidate is the one with the smallest index, not the one closest to any fixed threshold.",
+    "caveats": [
+      "Lower scores do not prove that the clusters are real or useful.",
+      "Feature scaling and distance choices can change comparisons.",
+      "A single cluster or coincident cluster centers can make the score unsuitable.",
+      "Use it alongside other validation checks rather than alone."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "clusters",
+          "label": "Clustered data",
+          "note": "Points assigned to groups"
+        },
+        {
+          "id": "scatter",
+          "label": "Within-cluster scatter",
+          "note": "How spread out each group is"
+        },
+        {
+          "id": "separation",
+          "label": "Between-cluster separation",
+          "note": "How far apart groups are"
+        },
+        {
+          "id": "ratios",
+          "label": "Pairwise ratios",
+          "note": "Scatter divided by separation"
+        },
+        {
+          "id": "score",
+          "label": "Davies-Bouldin score",
+          "note": "Average of each cluster's worst ratio"
+        }
+      ],
+      "edges": [
+        {
+          "from": "clusters",
+          "to": "scatter",
+          "label": "measure"
+        },
+        {
+          "from": "clusters",
+          "to": "separation",
+          "label": "measure"
+        },
+        {
+          "from": "scatter",
+          "to": "ratios",
+          "label": "numerator"
+        },
+        {
+          "from": "separation",
+          "to": "ratios",
+          "label": "denominator"
+        },
+        {
+          "from": "ratios",
+          "to": "score",
+          "label": "worst, average"
+        }
+      ],
+      "caption": "The index combines cluster compactness and separation, then averages each cluster's worst pairwise ratio."
+    }
+  },
   "related": [
     "clustering"
   ],

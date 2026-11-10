@@ -5,7 +5,92 @@
   "type": "concept",
   "definition": "An associative classifier (AC) is a kind of supervised learning model that uses association rules to assign a target value.",
   "details": "The term associative classification was coined by Bing Liu et al., in which the authors defined a model made of rules \"whose right-hand side are restricted to the classification class attribute\".",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. And that idea, made concrete, is Associative classifier.",
+  "explainer": {
+    "lead": "An associative classifier makes predictions with if–then rules learned from labelled examples. It adapts association rules to classification by requiring each rule to end in a class, giving predictions a readable form.",
+    "tiers": {
+      "eli5": "Think of rules like \"if a basket has bread and butter, it also has jam\". An associative classifier builds rules of that shape, but every rule ends in the class label it predicts.",
+      "practitioner": "Engineers mine association rules from labelled data, keeping only rules whose right-hand side is the class attribute, then use them to predict. The pitfall sits in the rule set itself: it can grow large and requires handling to be usable for classification.",
+      "paperLevel": "Defined by Bing Liu et al. as a model made of rules whose right-hand side are restricted to the classification class attribute, built via association rules to assign a target value. The definition specifies the rule form, not selection or scoring criteria."
+    },
+    "example": "Given weather records labelled with whether a match was played, a classifier might learn “if outlook = sunny and humidity = high, then play = no.” A new day matching both conditions is assigned the class “no.”",
+    "intuition": "The idea is to classify by combining pattern discovery with readable rules: find conditions associated with known outcomes, then use rules pointing to a class to label new cases.",
+    "howItWorks": [
+      "Start with training examples and their known target values.",
+      "Find association rules linking attribute conditions to outcomes.",
+      "Keep rules whose right-hand side is the class attribute.",
+      "Apply the resulting rule-based classifier to assign a target value."
+    ],
+    "whyItMatters": "It turns association rules into a supervised classifier while expressing decisions as explicit if–then statements. The class restriction distinguishes these classification rules from associations between arbitrary attributes.",
+    "misconceptions": [
+      "It is supervised learning, not classification without labelled outcomes.",
+      "Not every association rule qualifies: its right-hand side must be the class attribute.",
+      "It is a rule-based classifier, not merely a collection of unrelated patterns."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data",
+          "label": "Labelled examples",
+          "note": "Attributes with known target values"
+        },
+        {
+          "id": "mine",
+          "label": "Find rules",
+          "note": "Discover associations in the examples"
+        },
+        {
+          "id": "filter",
+          "label": "Class rules",
+          "note": "Right-hand side is the class attribute"
+        },
+        {
+          "id": "classifier",
+          "label": "Rule classifier",
+          "note": "Uses the selected rules"
+        },
+        {
+          "id": "prediction",
+          "label": "Target value",
+          "note": "Class assigned to a new example"
+        }
+      ],
+      "edges": [
+        {
+          "from": "data",
+          "to": "mine",
+          "label": "training"
+        },
+        {
+          "from": "mine",
+          "to": "filter",
+          "label": "associations"
+        },
+        {
+          "from": "filter",
+          "to": "classifier",
+          "label": "rules"
+        },
+        {
+          "from": "classifier",
+          "to": "prediction",
+          "label": "assigns"
+        }
+      ],
+      "caption": "Association rules are restricted to class consequents and then used for prediction."
+    },
+    "usedIn": [
+      {
+        "name": "Rule-based prediction",
+        "detail": "class-attribute rules",
+        "url": ""
+      },
+      {
+        "name": "Supervised learning",
+        "detail": "association-rule model",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "classifier-chains",
     "learning-classifier-system",

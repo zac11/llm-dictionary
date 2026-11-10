@@ -5,7 +5,32 @@
   "type": "concept",
   "definition": "A form of model parallelism that splits individual tensor operations (like large matrix multiplications) across multiple devices, rather than splitting whole layers.",
   "details": "Tensor parallelism allows very large individual layers, which don't fit in a single device's memory, to be computed collaboratively across multiple devices, complementing pipeline and data parallelism strategies.",
-  "story": "Imagine a factory floor where each workstation can glance at every other workstation before doing its part. It is the blueprint that makes everything else possible. At the bottom of every machine is a design — the shape of it, and how its pieces talk to each other. Structure decides what the model can even express — the blueprint before the bricks. And that shape of the machine — Tensor Parallelism — is what makes everything else possible.",
+  "explainer": {
+    "lead": "Tensor parallelism is a form of model parallelism that splits individual tensor operations, such as large matrix multiplications, across multiple devices instead of splitting whole layers. It matters because it lets single layers too large for one device's memory be computed collaboratively.",
+    "tiers": {
+      "eli5": "Instead of giving each worker a whole chapter to write, you split one giant calculation into pieces and have workers do their pieces at the same time.",
+      "practitioner": "Engineers use it to serve models whose individual layers exceed a single device's memory, alongside pipeline and data parallelism. The pitfall is frequent cross-device communication inside every operation, so slow interconnects can erase the gain.",
+      "paperLevel": "Model parallelism at the operation level: a tensor operation is partitioned across devices and results combined. It complements pipeline and data parallelism; the main limit is communication overhead scaling with the degree of splitting."
+    },
+    "example": "A matrix multiplication too large for one GPU's memory is split across several GPUs, each computing a slice, with partial results combined to produce the layer output.",
+    "usedIn": [
+      {
+        "name": "Large model serving",
+        "detail": "layers exceeding device memory",
+        "url": ""
+      },
+      {
+        "name": "Model parallelism",
+        "detail": "combined with pipeline splitting",
+        "url": ""
+      },
+      {
+        "name": "Distributed training",
+        "detail": "multi-device computation",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "data-parallelism",
     "model-parallelism",

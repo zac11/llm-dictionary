@@ -5,7 +5,93 @@
   "type": "concept",
   "definition": "A document-term matrix is a mathematical matrix that describes the frequency of terms that occur in each document in a collection.",
   "details": "In a document-term matrix, rows correspond to documents in the collection and columns correspond to terms. This matrix is a specific instance of a document-feature matrix where \"features\" may refer to other properties of a document besides terms. It is also common to encounter the transpose, or term-document matrix where documents are the columns and terms are the rows. They are useful in the field of natural language processing and computational text analysis. While the value of the cells is commonly the raw count of a given term, there are various schemes for weighting the raw counts such as row normalizing (i.e. relative frequency/proportions) and tf-idf. Terms are commonly single words separated by whitespace or punctuation on either side (a.k.a. unigrams). In such a case, this is also referred to as \"bag of words\" representation because the counts of individual words is retained, but not the order of the words in the document.",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. That is Document-term matrix — a small key that opens a big door.",
+  "explainer": {
+    "lead": "A document-term matrix turns a collection of texts into a table of numbers: each row is a document, each column is a term, and each cell records how often that term appears. It gives natural language processing and computational text analysis a common numerical representation of text.",
+    "tiers": {
+      "eli5": "Imagine making a tally chart for several stories. Each story gets its own row, each word gets its own column, and you write down how many times that word appears in that story. This lets you compare the stories by their word counts, although it forgets the order in which the words appeared.",
+      "practitioner": "Build one row per document and one column per term, usually treating whitespace- or punctuation-separated unigrams as terms. Cells can hold raw counts, row-normalized relative frequencies, or tf-idf weights; check the matrix orientation, since the transposed term-document layout is also common. With a unigram bag-of-words representation, individual word counts remain but word order is discarded.",
+      "paperLevel": "For n documents and m terms, a document-term matrix is D with shape n x m, where D_ij is the frequency of term j in document i. Raw frequencies may be transformed by row normalization or weighting schemes such as tf-idf, and the transpose D^T is called a term-document matrix. In the unigram bag-of-words case, the representation retains term counts but not their order within each document."
+    },
+    "example": "For the documents \"Cats chase mice\" and \"Dogs chase cats\", using lowercase unigrams and columns [cats, chase, mice, dogs], the rows are [1, 1, 1, 0] and [1, 1, 0, 1]. Each row records that document's counts, while the shared cats and chase columns both contain 1.",
+    "usedIn": [
+      {
+        "name": "Natural language processing",
+        "detail": "Represents document collections as numerical term frequencies or weighted counts.",
+        "url": ""
+      },
+      {
+        "name": "Computational text analysis",
+        "detail": "Provides a document-by-term table for analyzing text collections.",
+        "url": ""
+      }
+    ],
+    "intuition": "It is a spreadsheet-like summary of a text collection: documents run down the rows, terms run across the columns, and the cells contain frequencies. Different documents can then be represented and compared as rows of numbers.",
+    "howItWorks": [
+      "Choose the documents in the collection.",
+      "Choose the terms, commonly single-word unigrams.",
+      "Count each term in each document.",
+      "Place those counts in the corresponding matrix cells.",
+      "Optionally replace raw counts with row-normalized frequencies or tf-idf weights."
+    ],
+    "whyItMatters": "The matrix converts text into a consistent numerical form while preserving term-frequency information for each document. It also supports alternative weightings, so raw counts are not the only possible representation.",
+    "misconceptions": [
+      "It does not have to contain raw counts: relative frequencies and tf-idf weights are also common.",
+      "A term-document matrix contains the same basic information in transposed form, with terms as rows and documents as columns.",
+      "A unigram bag-of-words matrix retains word counts but not word order."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "documents",
+          "label": "Document collection",
+          "note": "One future row per document"
+        },
+        {
+          "id": "counting",
+          "label": "Term counting",
+          "note": "Count each chosen term"
+        },
+        {
+          "id": "matrix",
+          "label": "Raw count matrix",
+          "note": "Documents by terms"
+        },
+        {
+          "id": "weighting",
+          "label": "Optional weighting",
+          "note": "Normalize or apply tf-idf"
+        },
+        {
+          "id": "analysis",
+          "label": "Text analysis",
+          "note": "Use the numerical representation"
+        }
+      ],
+      "edges": [
+        {
+          "from": "documents",
+          "to": "counting",
+          "label": "terms"
+        },
+        {
+          "from": "counting",
+          "to": "matrix",
+          "label": "counts"
+        },
+        {
+          "from": "matrix",
+          "to": "weighting",
+          "label": "raw values"
+        },
+        {
+          "from": "weighting",
+          "to": "analysis",
+          "label": "weighted values"
+        }
+      ],
+      "caption": "Documents become rows of term counts, with optional weighting before analysis."
+    }
+  },
   "related": [
     "document-classification",
     "document-structuring",

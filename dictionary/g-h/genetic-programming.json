@@ -5,7 +5,129 @@
   "type": "algorithm",
   "definition": "Genetic programming (GP) is an evolutionary algorithm, an artificial intelligence technique mimicking natural evolution, which operates on a population of programs.",
   "details": "It applies the genetic operators selection according to a predefined fitness measure, mutation and crossover. The crossover operation involves swapping specified parts of selected pairs (parents) to produce new and different offspring that become part of the new generation of programs. Some programs not selected for reproduction are copied from the current generation to the new generation. Mutation involves substitution of some random part of a program with some other random part of a program. Then the selection and other operations are recursively applied to the new generation of programs. Typically, members of each new generation are on average more fit than the members of the previous generation, and the best-of-generation program is often better than the best-of-generation programs from previous generations. Termination of the evolution usually occurs when some individual program reaches a predefined proficiency or fitness level. It may and often does happen that a particular run of the algorithm results in premature convergence to some local maximum that is not a globally optimal or even good solution. Multiple runs (dozens to hundreds) are usually necessary to produce a very ",
-  "story": "Think of a lightbulb moment: the idea was always there, but someone had to point a finger at it. Behind the jargon is an idea you could explain to a friend over coffee. At its heart it is a simple notion, once you strip away the fancy name. Once you see it, you cannot unsee it. And that idea, made concrete, is Genetic programming.",
+  "explainer": {
+    "lead": "Genetic programming automatically improves a population of computer programs by imitating natural evolution. Instead of writing every rule by hand, you define what a good program should achieve and let selection, mutation, and crossover search for one.",
+    "tiers": {
+      "eli5": "You breed a herd of small computer programs, keep the ones that do the job best, mix and tweak them, and repeat until one works well.",
+      "practitioner": "Engineers define a fitness measure, then apply selection, crossover of parts between parent programs, and random mutation, copying some unselected programs into the next generation. A pitfall is that fitness must be well specified or the population drifts toward programs that score well without solving the task.",
+      "paperLevel": "An evolutionary algorithm operating on a population of programs, using selection according to a predefined fitness measure, crossover (swapping specified parts between selected parents) and mutation (substituting a random part with another random part); some programs not selected are copied to the next generation. Limits are those of the chosen fitness measure and evolutionary search."
+    },
+    "example": "Suppose the task is to find an arithmetic program that outputs x + 1, with fitness based on how few test cases it gets wrong. If the population contains x + 2, a mutation replacing 2 with 1 produces x + 1; that program passes every test, reaches the target fitness, and ends the run.",
+    "goal": "Evolve a program that performs well according to a predefined fitness measure, stopping when one reaches the required level.",
+    "inputs": [
+      "An initial population of programs",
+      "A predefined fitness measure",
+      "Selection, crossover, and mutation operations",
+      "A termination fitness level"
+    ],
+    "outputs": [
+      "A new generation of programs after each evolutionary cycle",
+      "A program that reaches the target fitness, if the run succeeds"
+    ],
+    "steps": [
+      "Start with a population of programs.",
+      "Measure each program's fitness.",
+      "Select parent programs according to fitness.",
+      "Swap specified parts of selected parents through crossover.",
+      "Replace random program parts through mutation, and copy some unselected programs unchanged.",
+      "Evaluate the new generation and repeat until a program reaches the target fitness."
+    ],
+    "tradeoffs": [
+      "Searches programs automatically once fitness and genetic operations are defined",
+      "Often produces fitter generations and better best-of-generation programs",
+      "Can converge prematurely to a local maximum that is not a good solution",
+      "Usually requires dozens to hundreds of runs to obtain a very good solution"
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "population",
+          "label": "Program population",
+          "note": "The current generation of candidate programs"
+        },
+        {
+          "id": "fitness",
+          "label": "Fitness evaluation",
+          "note": "Scores programs with the predefined measure"
+        },
+        {
+          "id": "selection",
+          "label": "Parent selection",
+          "note": "Chooses programs according to fitness"
+        },
+        {
+          "id": "variation",
+          "label": "Crossover and mutation",
+          "note": "Swaps parent parts and substitutes random parts"
+        },
+        {
+          "id": "generation",
+          "label": "New generation",
+          "note": "Contains offspring and copied programs"
+        },
+        {
+          "id": "termination",
+          "label": "Fitness target",
+          "note": "Stops when a program reaches the required level"
+        }
+      ],
+      "edges": [
+        {
+          "from": "population",
+          "to": "fitness",
+          "label": ""
+        },
+        {
+          "from": "fitness",
+          "to": "selection",
+          "label": "scores"
+        },
+        {
+          "from": "selection",
+          "to": "variation",
+          "label": "parents"
+        },
+        {
+          "from": "population",
+          "to": "generation",
+          "label": "copies"
+        },
+        {
+          "from": "variation",
+          "to": "generation",
+          "label": "offspring"
+        },
+        {
+          "from": "generation",
+          "to": "termination",
+          "label": ""
+        },
+        {
+          "from": "termination",
+          "to": "population",
+          "label": "repeat"
+        }
+      ],
+      "caption": "Each generation is evaluated, varied, and partly copied until a program reaches the fitness target."
+    },
+    "usedIn": [
+      {
+        "name": "Symbolic regression",
+        "detail": "evolving formulas",
+        "url": ""
+      },
+      {
+        "name": "Automated programming",
+        "detail": "evolving code",
+        "url": ""
+      },
+      {
+        "name": "Feature construction",
+        "detail": "evolving expressions",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "cartesian-genetic-programming",
     "inductive-logic-programming",

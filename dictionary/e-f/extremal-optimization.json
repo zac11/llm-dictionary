@@ -5,7 +5,115 @@
   "type": "algorithm",
   "definition": "Extremal optimization (EO) is an optimization heuristic inspired by the Bak–Sneppen model of self-organized criticality from the field of statistical physics.",
   "details": "This heuristic was designed initially to address combinatorial optimization problems such as the travelling salesman problem and spin glasses, although the technique has been demonstrated to function in optimization domains.",
-  "story": "Picture a potter shaping clay on a spinning wheel: every nudge is tiny, but each one is guided by how the last attempt wobbled. Underneath all the magic is a patient process of small improvements. The machine starts out clumsy, makes mistakes, and is nudged a little less wrong every time. Each pass is a tiny course-correction — the model gets a little less wrong every time. And that is Extremal optimization — the quiet loop that turns flailing into skill.",
+  "explainer": {
+    "lead": "Extremal optimization is a search heuristic that improves a candidate solution by repeatedly changing its weakest-looking parts. It offers a way to tackle difficult combinatorial problems, such as finding short travel routes, without examining every possible solution.",
+    "tiers": {
+      "eli5": "Imagine building a tower from blocks and repeatedly replacing the block that seems to be causing the most trouble. You keep the new tower, even if it is not immediately better, and remember the best one you have seen. Extremal optimization uses this idea to search for good answers to puzzles with too many possibilities to check one by one.",
+      "practitioner": "Encode a candidate solution, define local scores that identify poorly contributing components, and repeatedly modify a weak component while recording the best complete solution found. The scoring and update rules are problem-specific, and a poor local score can make the search ineffective; the method does not guarantee an optimal result.",
+      "paperLevel": "For a candidate solution S with components x_i, assign each component a local fitness lambda_i, select a poorly ranked component, and update it to obtain S'. Accept S' as the next search state, evaluate the complete solution, and retain the best solution encountered. EO is inspired by the Bak–Sneppen model of self-organized criticality and is a heuristic, so optimality is not guaranteed."
+    },
+    "example": "For the route A–B–C–D–A, score the route's parts and identify one that contributes a large detour. Change the visiting order to A–C–B–D–A, continue the search from that route, and keep the original only in the best-so-far record if its total distance is shorter.",
+    "usedIn": [
+      {
+        "name": "Combinatorial optimization",
+        "detail": "Searches discrete choices where testing every combination can be impractical.",
+        "url": ""
+      },
+      {
+        "name": "Travelling salesman problem",
+        "detail": "Searches for improved city-visiting orders by modifying weak parts of a route.",
+        "url": ""
+      },
+      {
+        "name": "Spin glasses",
+        "detail": "Addresses optimization problems associated with spin-glass configurations.",
+        "url": ""
+      }
+    ],
+    "goal": "Find a high-quality solution to a difficult optimization problem by repeatedly altering components with poor local contributions.",
+    "inputs": [
+      "A candidate-solution representation",
+      "An overall objective to optimize",
+      "Local scores for solution components",
+      "A rule for changing weak components",
+      "A stopping condition"
+    ],
+    "outputs": [
+      "The best solution found",
+      "Its objective value"
+    ],
+    "steps": [
+      "Create an initial candidate solution.",
+      "Score the contribution of each component.",
+      "Identify and change a weak component.",
+      "Accept the changed solution as the next search state.",
+      "Record it if it is the best complete solution so far.",
+      "Repeat until the stopping condition is met."
+    ],
+    "tradeoffs": [
+      "Avoids enumerating every candidate solution",
+      "Does not guarantee an optimal answer",
+      "Requires meaningful local component scores",
+      "Results depend on the update and stopping rules"
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "candidate",
+          "label": "Candidate solution",
+          "note": "The current route or configuration"
+        },
+        {
+          "id": "score",
+          "label": "Score components",
+          "note": "Estimate each part's local contribution"
+        },
+        {
+          "id": "select",
+          "label": "Select weak part",
+          "note": "Choose a poorly contributing component"
+        },
+        {
+          "id": "modify",
+          "label": "Modify solution",
+          "note": "Change the selected component"
+        },
+        {
+          "id": "best",
+          "label": "Track best",
+          "note": "Save the best complete solution found"
+        }
+      ],
+      "edges": [
+        {
+          "from": "candidate",
+          "to": "score",
+          "label": ""
+        },
+        {
+          "from": "score",
+          "to": "select",
+          "label": ""
+        },
+        {
+          "from": "select",
+          "to": "modify",
+          "label": ""
+        },
+        {
+          "from": "modify",
+          "to": "best",
+          "label": ""
+        },
+        {
+          "from": "modify",
+          "to": "candidate",
+          "label": "next iteration"
+        }
+      ],
+      "caption": "EO repeatedly changes a weak component while separately retaining the best complete solution found."
+    }
+  },
   "related": [
     "ant-colony-optimization-algorithms",
     "bacterial-colony-optimization",

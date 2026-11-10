@@ -5,6 +5,97 @@
   "type": "concept",
   "definition": "A binary or additive mask controlling which positions may attend to which: causal masks for generation, padding masks for batched variable-length inputs, and custom masks for structured tasks.",
   "details": "A binary or additive mask controlling which positions may attend to which: causal masks for generation, padding masks for batched variable-length inputs, and custom masks for structured tasks.",
+  "explainer": {
+    "lead": "An attention mask is a rulebook that tells a model which positions it may look at when processing a sequence. It keeps generated text from peeking ahead, ignores padding added to align inputs of different lengths, and can enforce other task-specific restrictions.",
+    "tiers": {
+      "eli5": "Imagine answering clues in a story while some pages are covered so you cannot cheat by reading ahead. An attention mask covers those pages, and it can also cover blank spaces added to make several stories fit on the same-size sheet. The reader then pays attention only to the uncovered parts.",
+      "practitioner": "Use a causal mask during autoregressive generation and a padding mask when variable-length sequences share a batch; custom masks can impose additional structure. Masks are commonly applied to attention scores before softmax, with disallowed positions receiving a large negative additive value. Check mask shapes, broadcasting, padding alignment, and causal indexing carefully, since an off-by-one error can hide the current token or reveal the next one.",
+      "paperLevel": "For query position i and key position j, masked attention can be written as A_ij = Q_i K_j^T / sqrt(d_k) + M_ij, followed by a softmax over j. Here M_ij = 0 permits attention and M_ij = -infinity forbids it, giving that connection zero weight after softmax; a binary mask expresses the same permissions with 1 and 0. The mask restricts connectivity but does not itself determine the attention scores or the values passed onward."
+    },
+    "example": "For the tokens \"The cat sat\", the causal row for \"cat\" allows attention to \"The\" and \"cat\" but masks \"sat\", so the model cannot use that future word. If a fourth position is only padding, a padding mask also excludes it; with additive masking, these excluded entries receive -infinity before softmax and therefore get zero weight.",
+    "usedIn": [
+      {
+        "name": "Text generation",
+        "detail": "A causal mask prevents each position from attending to future tokens.",
+        "url": ""
+      },
+      {
+        "name": "Batched sequence processing",
+        "detail": "A padding mask keeps added padding positions from influencing attention.",
+        "url": ""
+      },
+      {
+        "name": "Structured sequence tasks",
+        "detail": "Custom masks restrict attention to the connections allowed by the task.",
+        "url": ""
+      }
+    ],
+    "intuition": "Attention first considers possible connections between positions; the mask decides which connections are allowed to exist. Everything else can still compete for attention, while masked-out positions are excluded.",
+    "howItWorks": [
+      "Start with one row of attention scores for each query position, covering the possible key positions.",
+      "Build a mask from the requirement: no future positions for causal generation, no padding for batched inputs, or custom allowed connections.",
+      "Apply the binary mask or add the additive mask to the scores before normalization.",
+      "Normalize the remaining scores so disallowed positions receive no attention and permitted positions supply the output."
+    ],
+    "whyItMatters": "Masks make generation consistent with the information available at each step and let sequences of different lengths share a batch without treating padding as content. Custom masks also let attention follow restrictions that ordinary all-to-all attention would ignore.",
+    "misconceptions": [
+      "A causal mask and a padding mask solve different problems: one blocks future positions, while the other blocks non-content padding.",
+      "A mask does not delete tokens from the input; it prevents selected attention connections.",
+      "Masking a score does not automatically make the remaining model output correct—it only enforces the permitted attention pattern."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "scores",
+          "label": "Attention scores",
+          "note": "Query-key compatibility at every position pair"
+        },
+        {
+          "id": "rules",
+          "label": "Mask rules",
+          "note": "Causal, padding, or custom permissions"
+        },
+        {
+          "id": "masked",
+          "label": "Masked scores",
+          "note": "Disallowed connections are excluded"
+        },
+        {
+          "id": "weights",
+          "label": "Attention weights",
+          "note": "Softmax normalizes the permitted scores"
+        },
+        {
+          "id": "output",
+          "label": "Position outputs",
+          "note": "Values combine using allowed weights only"
+        }
+      ],
+      "edges": [
+        {
+          "from": "scores",
+          "to": "masked",
+          "label": "scores"
+        },
+        {
+          "from": "rules",
+          "to": "masked",
+          "label": "permissions"
+        },
+        {
+          "from": "masked",
+          "to": "weights",
+          "label": "softmax"
+        },
+        {
+          "from": "weights",
+          "to": "output",
+          "label": "weighted sum"
+        }
+      ],
+      "caption": "The mask filters attention scores before they become the weights used to build each position's output."
+    }
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

@@ -5,7 +5,149 @@
   "type": "concept",
   "definition": "Apple Intelligence is a collection of artificial intelligence features developed by Apple.",
   "details": "Relying on a combination of on-device and server processing, it was announced on June 10, 2024, at the 2024 Worldwide Developers Conference, as a built-in feature of Apple's iOS 18, iPadOS 18, and macOS Sequoia, which were announced alongside Apple Intelligence. Apple Intelligence is free for all users with supported devices. On macOS, Apple Intelligence is available only on Apple silicon Mac computers; Intel-based Mac computers are not supported. Features include writing tools that assist users with grammar and proofreading, image generation, summaries of system notifications, AI-assisted image retouching in the Photos app, and integration with ChatGPT, a chatbot by OpenAI.",
-  "story": "Picture a scoreboard at a science fair: you need a fair, agreed way to tell who actually won. A fair scoreboard keeps everyone honest. Before trusting a machine, someone has to measure how good it really is — fairly and honestly. A good metric is a ruler that does not bend when you lean on it. And that, done honestly, is Apple Intelligence.",
+  "explainer": {
+    "lead": "Apple Intelligence is Apple's built-in set of AI features for tasks such as editing text, summarizing notifications, and creating images. It combines processing on the user's device with server-based models, aiming to bring generative AI into everyday apps while supporting Apple's privacy approach.",
+    "tiers": {
+      "eli5": "Apple Intelligence is like a group of helpful assistants built into an iPhone, iPad, or Mac. One can tidy up your writing, another can shorten long messages, and another can turn a description into a picture. Some work happens on your device, while bigger jobs can use Apple's special cloud computers.",
+      "practitioner": "Apple Intelligence appears through system features and Apple's operating systems rather than as one standalone application. Developers can access Apple Foundation Models through the Foundation Models API, which supports structured data responses and tool calling. Test against actual device support: Intel-based Macs are excluded, and some newer model variants are limited to certain newer devices.",
+      "paperLevel": "Apple Intelligence can be represented as a feature layer F(x) that uses on-device or server-based Apple Foundation Models, with task-specific adapters for functions such as summarization and tone adjustment. Its server processing uses Private Cloud Compute, while ChatGPT is available as an integration in features such as Writing Tools. Apple's own human evaluation reported competitive results against selected small on-device models, GPT-3, and GPT-4, but hardware support and the division of work between device and server remain practical constraints."
+    },
+    "example": "A user selects a long, awkwardly worded email and asks Writing Tools to make it concise and professional. Apple Intelligence rewrites the selected text, and the user can also request a summary or key points instead.",
+    "usedIn": [
+      {
+        "name": "Writing Tools",
+        "detail": "Proofreads and rewrites selected text, adjusts its tone, and produces summaries, key points, tables, and lists.",
+        "url": ""
+      },
+      {
+        "name": "Image Playground",
+        "detail": "Generates images from descriptions with customizable styles, including Animation and Sketch.",
+        "url": ""
+      },
+      {
+        "name": "Photos",
+        "detail": "Provides AI-assisted image retouching within Apple's Photos app.",
+        "url": ""
+      },
+      {
+        "name": "Siri",
+        "detail": "Apple announced an updated Siri, named Siri AI, powered by a newer version of Apple Intelligence.",
+        "url": ""
+      }
+    ],
+    "intuition": "Think of Apple Intelligence as a shared AI layer inside Apple's apps, not simply a chatbot. It pairs general foundation models with specialized adapters and splits processing between the device and Apple's servers.",
+    "howItWorks": [
+      "A user asks for help with text, images, translation, notifications, or another supported task.",
+      "Apple Intelligence processes the request on the device, through server-based models, or using both.",
+      "Apple Foundation Models provide general capabilities, with adapters specializing in tasks such as summarization and tone adjustment.",
+      "Server requests use Private Cloud Compute, which Apple designed around verifiable software and end-to-end encryption.",
+      "Some features can also use integrated third-party capabilities, such as ChatGPT in Writing Tools."
+    ],
+    "whyItMatters": "It brings generative AI into familiar system apps, so users do not have to move every task into a separate chatbot. Its on-device and server split also illustrates one way consumer AI products can balance capability, hardware limits, and privacy.",
+    "misconceptions": [
+      "Apple Intelligence is not a single chatbot; it is a collection of features across Apple's software.",
+      "It does not run entirely on-device, because some processing uses Apple's server models.",
+      "It is free only for users with supported devices, and Intel-based Macs are not supported."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "request",
+          "label": "User request",
+          "note": "Text, image, translation, or another supported task"
+        },
+        {
+          "id": "layer",
+          "label": "Apple Intelligence",
+          "note": "Coordinates AI features in Apple's apps"
+        },
+        {
+          "id": "device",
+          "label": "On-device AFM",
+          "note": "Apple Foundation Model running on supported hardware"
+        },
+        {
+          "id": "cloud",
+          "label": "Private Cloud Compute",
+          "note": "Server models using Apple's cloud platform"
+        },
+        {
+          "id": "adapters",
+          "label": "Task adapters",
+          "note": "Specialize models for summarization, tone adjustment, and other tasks"
+        },
+        {
+          "id": "chatgpt",
+          "label": "ChatGPT integration",
+          "note": "Adds optional third-party capabilities to supported features"
+        },
+        {
+          "id": "result",
+          "label": "Feature output",
+          "note": "Rewritten text, summaries, generated images, or other results"
+        }
+      ],
+      "edges": [
+        {
+          "from": "request",
+          "to": "layer",
+          "label": "task"
+        },
+        {
+          "from": "layer",
+          "to": "device",
+          "label": "on device"
+        },
+        {
+          "from": "layer",
+          "to": "cloud",
+          "label": "server processing"
+        },
+        {
+          "from": "device",
+          "to": "adapters",
+          "label": ""
+        },
+        {
+          "from": "cloud",
+          "to": "adapters",
+          "label": ""
+        },
+        {
+          "from": "layer",
+          "to": "chatgpt",
+          "label": "integration"
+        },
+        {
+          "from": "adapters",
+          "to": "result",
+          "label": ""
+        },
+        {
+          "from": "chatgpt",
+          "to": "result",
+          "label": ""
+        }
+      ],
+      "caption": "Apple Intelligence combines device and server foundation models, specialized adapters, and selected third-party integrations to produce results inside Apple features."
+    },
+    "image": {
+      "src": "https://upload.wikimedia.org/wikipedia/commons/f/f5/Apple_Intelligence.png",
+      "alt": "Apple Intelligence — Suite of artificial intelligence tools developed by Apple Inc.",
+      "width": 640,
+      "height": 640,
+      "credit": "Apple Inc.",
+      "license": "Public domain",
+      "licenseUrl": "",
+      "page": "https://commons.wikimedia.org/wiki/File:Apple_Intelligence.png"
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Apple Intelligence",
+        "url": "https://en.wikipedia.org/wiki/Apple_Intelligence"
+      }
+    ]
+  },
   "related": [
     "aaai-conference-on-artificial-intelligence",
     "advanced-machine-intelligence-labs",

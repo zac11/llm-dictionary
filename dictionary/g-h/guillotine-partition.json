@@ -5,7 +5,98 @@
   "type": "concept",
   "definition": "Guillotine partition is the process of partitioning a rectilinear polygon, possibly containing some holes, into rectangles, using only guillotine-cuts.",
   "details": "A guillotine-cut (also called an edge-to-edge cut) is a straight bisecting line going from one edge of an existing polygon to the opposite edge, similarly to a paper guillotine. Guillotine partition is particularly common in designing floorplans in microelectronics. An alternative term for a guillotine-partition in this context is a slicing partition or a slicing floorplan. Guillotine partitions are also the underlying structure of binary space partitions. There are various optimization problems related to guillotine partition, such as: minimizing the number of rectangles or the total length of cuts. These are variants of polygon partitioning problems, where the cuts are constrained to be guillotine cuts. A related but different problem is guillotine cutting. In that problem, the original sheet is a plain rectangle without holes. The challenge comes from the fact that the dimensions of the small rectangles are fixed in advance. The optimization goals are usually to maximize the area of the produced rectangles or their value, or minimize the waste or the number of required sheets.",
-  "story": "Imagine explaining a hard concept to a friend using nothing but a napkin and a pen. A small key that opens a much bigger door. Behind the jargon is an idea you could explain to a friend over coffee. A small mental model that makes a big tangle suddenly simple. And that idea, made concrete, is Guillotine partition.",
+  "explainer": {
+    "lead": "A guillotine partition divides a shape with horizontal and vertical edges into rectangles using straight cuts that run all the way across the current piece. It gives designers a simple, repeatable way to break down a region, especially when arranging floorplans in microelectronics.",
+    "tiers": {
+      "eli5": "Imagine cutting a sheet of paper into smaller rectangles, but every cut must go straight from one side to the other, like a paper guillotine. After each cut, you can choose either piece and cut it again. You stop when every piece is a rectangle.",
+      "practitioner": "In microelectronic floorplanning, a guillotine partition is often called a slicing partition or slicing floorplan. The design objective may be to minimize the rectangle count or total cut length, so the choice and order of cuts matter. Do not confuse this with guillotine cutting, where a plain rectangular sheet is divided into pieces whose dimensions are fixed in advance.",
+      "paperLevel": "Given a rectilinear polygon P, possibly with holes, a guillotine partition recursively applies straight bisecting edge-to-edge cuts to the current polygons until all resulting regions are rectangles. Common optimization objectives are minimizing the number of output rectangles or minimizing the sum of cut lengths. These are constrained variants of polygon partitioning; the related guillotine cutting problem instead starts with a hole-free rectangle and fixed output dimensions."
+    },
+    "example": "Start with a 6-by-4 rectangle. A vertical cut 2 units from the left produces a 2-by-4 rectangle and a 4-by-4 square; a horizontal cut across the square, 1 unit from its top, then produces 4-by-1 and 4-by-3 rectangles. The result is a guillotine partition into three rectangles.",
+    "usedIn": [
+      {
+        "name": "Microelectronic floorplanning",
+        "detail": "Represents layouts as slicing partitions, also called slicing floorplans.",
+        "url": ""
+      },
+      {
+        "name": "Binary space partitioning",
+        "detail": "Uses guillotine partitions as an underlying structure.",
+        "url": ""
+      },
+      {
+        "name": "Polygon partition optimization",
+        "detail": "Studies cuts that minimize rectangle count or total cut length.",
+        "url": ""
+      }
+    ],
+    "intuition": "Each cut behaves like a paper guillotine: it crosses the entire current piece rather than stopping partway. Repeating these full-width cuts turns a rectilinear polygon, even one with holes, into rectangles.",
+    "howItWorks": [
+      "Start with a rectilinear polygon, possibly containing holes.",
+      "Choose a straight line that bisects the current polygon from edge to opposite edge.",
+      "Separate the polygon along that guillotine cut.",
+      "Repeat on the resulting pieces as needed.",
+      "Stop when every piece is a rectangle."
+    ],
+    "whyItMatters": "The restricted cutting rule creates an orderly rectangular decomposition that is useful for slicing floorplans and binary space partitions. It also frames optimization problems in which fewer rectangles or shorter total cuts are preferred.",
+    "misconceptions": [
+      "A guillotine cut is not a partial cut: it runs from one edge to the opposite edge.",
+      "Guillotine partition is not the same as guillotine cutting with fixed rectangle dimensions.",
+      "The starting polygon need not be a plain rectangle; it may be rectilinear and contain holes."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "polygon",
+          "label": "Rectilinear polygon",
+          "note": "May contain holes"
+        },
+        {
+          "id": "cut",
+          "label": "Guillotine cut",
+          "note": "Straight edge-to-edge bisection"
+        },
+        {
+          "id": "pieces",
+          "label": "Two pieces",
+          "note": "Separate current polygons"
+        },
+        {
+          "id": "repeat",
+          "label": "Repeat cuts",
+          "note": "Cut selected pieces again"
+        },
+        {
+          "id": "rectangles",
+          "label": "Rectangle partition",
+          "note": "All final pieces rectangular"
+        }
+      ],
+      "edges": [
+        {
+          "from": "polygon",
+          "to": "cut",
+          "label": ""
+        },
+        {
+          "from": "cut",
+          "to": "pieces",
+          "label": "divides"
+        },
+        {
+          "from": "pieces",
+          "to": "repeat",
+          "label": "as needed"
+        },
+        {
+          "from": "repeat",
+          "to": "rectangles",
+          "label": "finish"
+        }
+      ],
+      "caption": "Repeated full-width cuts reduce the starting polygon to rectangles."
+    }
+  },
   "related": [
     "guillotine-cutting",
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",

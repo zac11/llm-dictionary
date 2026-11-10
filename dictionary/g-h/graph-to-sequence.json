@@ -5,6 +5,97 @@
   "type": "concept",
   "definition": "Generating text from structured graph input such as AMR or knowledge graphs, using encoders that operate over nodes and edges.",
   "details": "Generating text from structured graph input such as AMR or knowledge graphs, using encoders that operate over nodes and edges. It is a core architecture for data-to-text generation.",
+  "explainer": {
+    "lead": "Graph-to-sequence generation turns a structured network of entities and relationships into readable text. It matters because graphs can express information clearly, but people often need that information as a sentence, paragraph, or description.",
+    "tiers": {
+      "eli5": "Imagine a set of dots connected by labelled arrows, such as “dog” connected to “ball” by “chases.” Graph-to-sequence generation is like teaching a computer to look at that picture and write, “The dog chases the ball.” It reads both the dots and the connections before choosing the words.",
+      "practitioner": "A graph encoder processes nodes and edges, and a text decoder generates the output sequence. This setup is applied to AMR-to-text and knowledge-graph-to-text tasks within data-to-text generation. A key pitfall is flattening the input in a way that loses edge or relationship information; generating fluent text also does not by itself establish that every relationship was preserved.",
+      "paperLevel": "Given a graph G = (V, E), the task is to generate a token sequence y = (y1, ..., yT), commonly factorised as p(y | G) = product over t of p(yt | y<t, G). The encoder represents graph structure through computations over nodes and edges, while the decoder produces text. The formulation does not prescribe a particular encoder or decoder, and fluent generation alone does not guarantee faithful coverage of the input graph."
+    },
+    "example": "Take a graph with nodes “Maya,” “book,” and “write,” connected so that Maya is the writer and the book is what was written. A graph-to-sequence system can encode those nodes and relationships and generate the sentence “Maya wrote a book.”",
+    "usedIn": [
+      {
+        "name": "AMR-to-text generation",
+        "detail": "Produces natural-language text from an Abstract Meaning Representation graph.",
+        "url": ""
+      },
+      {
+        "name": "Knowledge-graph verbalisation",
+        "detail": "Expresses entities and their relationships as readable sentences or descriptions.",
+        "url": ""
+      },
+      {
+        "name": "Data-to-text generation",
+        "detail": "Uses graph-structured input as the basis for generating textual output.",
+        "url": ""
+      }
+    ],
+    "intuition": "A sentence puts words in a line, while a graph connects pieces of meaning in a network. Graph-to-sequence generation first understands that network, including its relationships, and then linearises the meaning into text.",
+    "howItWorks": [
+      "Provide a structured graph whose nodes and edges represent the input information.",
+      "Encode the graph by computing representations that use both nodes and edges.",
+      "Pass the resulting graph representation to a text decoder.",
+      "Generate output tokens in sequence until the text is complete."
+    ],
+    "whyItMatters": "It provides a way to communicate graph-structured knowledge through natural language. It is a core architecture for data-to-text generation, bridging structured representations and text people can read directly.",
+    "misconceptions": [
+      "It is not simply printing node labels: the edges and their relationships must inform the generated text.",
+      "It is not one fixed neural network design: the concept allows different graph encoders and text decoders.",
+      "A fluent sentence is not necessarily a faithful one; important graph relationships can still be omitted or misrepresented."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "graph",
+          "label": "Structured graph",
+          "note": "AMR or knowledge-graph input"
+        },
+        {
+          "id": "encoder",
+          "label": "Graph encoder",
+          "note": "Computes over nodes and edges"
+        },
+        {
+          "id": "representation",
+          "label": "Graph representation",
+          "note": "Encoded entities and relationships"
+        },
+        {
+          "id": "decoder",
+          "label": "Text decoder",
+          "note": "Generates tokens in sequence"
+        },
+        {
+          "id": "text",
+          "label": "Generated text",
+          "note": "Natural-language output"
+        }
+      ],
+      "edges": [
+        {
+          "from": "graph",
+          "to": "encoder",
+          "label": "nodes, edges"
+        },
+        {
+          "from": "encoder",
+          "to": "representation",
+          "label": "encodes"
+        },
+        {
+          "from": "representation",
+          "to": "decoder",
+          "label": "conditions"
+        },
+        {
+          "from": "decoder",
+          "to": "text",
+          "label": "generates"
+        }
+      ],
+      "caption": "Graph structure is encoded into a representation that guides sequential text generation."
+    }
+  },
   "related": [
     "text-generation",
     "data-to-text-generation"

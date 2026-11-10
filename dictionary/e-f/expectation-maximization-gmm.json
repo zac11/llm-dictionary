@@ -5,6 +5,129 @@
   "type": "algorithm",
   "definition": "Expectation-Maximization (EM) is an iterative method to find maximum likelihood estimates of parameters in statistical models, where the model depends on unobserved latent variables.",
   "details": "Expectation-Maximization (EM) is an iterative method to find maximum likelihood estimates of parameters in statistical models, where the model depends on unobserved latent variables. Gaussian Mixture Models (GMMs) are a probabilistic model for representing normally distributed subpopulations within an overall population.",
+  "explainer": {
+    "lead": "Expectation–Maximization, or EM, estimates a statistical model when some information is hidden. For a Gaussian Mixture Model, it alternates between estimating which Gaussian produced each observation and updating the Gaussians from those estimates.",
+    "tiers": {
+      "eli5": "Imagine a jar containing marbles from two different machines, but the labels saying which machine made each marble are missing. EM starts with guesses about the machines, decides how likely each marble is to belong to each one, and then adjusts its guesses. Repeating this can reveal two groups without ever seeing the missing labels.",
+      "practitioner": "For a GMM, choose the number of components and initialize their weights, means, and covariances, then iterate E and M steps until the parameter estimates or likelihood stabilize. The E step produces soft component assignments, which are useful when clusters overlap. Results depend on initialization, and repeated runs can help expose poor local solutions; the Gaussian component assumption and component count also need checking against the data.",
+      "paperLevel": "Given observed data X, latent variables Z, and parameters theta, EM seeks a maximum-likelihood estimate of theta for p(X | theta) = sum_Z p(X, Z | theta). At iteration t, the E step forms Q(theta | theta_t) = E_{Z | X, theta_t}[log p(X, Z | theta)], and the M step sets theta_{t+1} = argmax_theta Q(theta | theta_t). For a GMM, p(x) = sum_k pi_k N(x | mu_k, Sigma_k), with posterior component probabilities computed in the E step; the procedure is iterative and its result can depend on initialization."
+    },
+    "example": "Fit a two-component GMM to x = [0, 0.2, 9.8, 10]. After initialization, the E step can assign the two small values mostly to one component and the two large values mostly to the other. If those assignments are nearly hard, the following M step estimates component means near 0.1 and 9.9, then recomputes the soft assignments with the updated Gaussians.",
+    "usedIn": [
+      {
+        "name": "Statistics",
+        "detail": "Maximum-likelihood fitting of models whose variables include unobserved latent quantities.",
+        "url": ""
+      },
+      {
+        "name": "Mixture modeling",
+        "detail": "Fitting several Gaussian components to represent normally distributed subpopulations.",
+        "url": ""
+      },
+      {
+        "name": "Cluster analysis",
+        "detail": "Using posterior GMM component probabilities as soft assignments of observations to groups.",
+        "url": ""
+      },
+      {
+        "name": "Density estimation",
+        "detail": "Using a weighted sum of fitted Gaussian distributions to model an overall population.",
+        "url": ""
+      }
+    ],
+    "goal": "Find maximum-likelihood parameter estimates when a model depends on latent variables, such as the unknown Gaussian component associated with each observation.",
+    "inputs": [
+      "Observed data",
+      "A model with latent variables",
+      "Initial parameter estimates",
+      "For a GMM, the number of Gaussian components"
+    ],
+    "outputs": [
+      "Estimated model parameters",
+      "Posterior probabilities for the latent variables",
+      "For a GMM, component weights, means, and covariances"
+    ],
+    "steps": [
+      "Initialize the model parameters.",
+      "E step: using the current parameters, compute the posterior distribution of each latent variable given the observed data.",
+      "M step: choose new parameters that maximize the expected complete-data log-likelihood calculated in the E step.",
+      "Repeat the E and M steps with the updated parameters until a stopping condition is met."
+    ],
+    "tradeoffs": [
+      "It handles missing component labels through probabilities rather than requiring hard assignments.",
+      "Each iteration requires an expectation calculation followed by a parameter update.",
+      "Initialization can affect the fitted solution.",
+      "A GMM represents subpopulations with Gaussian components, so that modeling choice must fit the data.",
+      "The number of components must be supplied rather than discovered by the basic procedure."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "data",
+          "label": "Observed data",
+          "note": "Measurements with hidden component labels"
+        },
+        {
+          "id": "init",
+          "label": "Initial parameters",
+          "note": "Starting GMM weights, means, and covariances"
+        },
+        {
+          "id": "estep",
+          "label": "E step",
+          "note": "Calculate posterior component probabilities"
+        },
+        {
+          "id": "mstep",
+          "label": "M step",
+          "note": "Update parameters using those probabilities"
+        },
+        {
+          "id": "check",
+          "label": "Stopping check",
+          "note": "Decide whether to iterate again"
+        },
+        {
+          "id": "fit",
+          "label": "Fitted mixture",
+          "note": "Estimated parameters and soft assignments"
+        }
+      ],
+      "edges": [
+        {
+          "from": "data",
+          "to": "estep",
+          "label": "observations"
+        },
+        {
+          "from": "init",
+          "to": "estep",
+          "label": "parameters"
+        },
+        {
+          "from": "estep",
+          "to": "mstep",
+          "label": "expectations"
+        },
+        {
+          "from": "mstep",
+          "to": "check",
+          "label": "updates"
+        },
+        {
+          "from": "check",
+          "to": "estep",
+          "label": "repeat"
+        },
+        {
+          "from": "check",
+          "to": "fit",
+          "label": "stop"
+        }
+      ],
+      "caption": "EM alternates between estimating latent component memberships and updating the mixture parameters."
+    }
+  },
   "citation": {
     "title": "Math Glossary for AI (François Fleuret notes)",
     "authors": [],

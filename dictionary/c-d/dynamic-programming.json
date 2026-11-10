@@ -5,7 +5,111 @@
   "type": "algorithm",
   "definition": "Dynamic programming (DP) is both a mathematical optimization method and an algorithmic paradigm.",
   "details": "The method was developed by Richard Bellman in the 1950s and has found applications in numerous fields, such as aerospace engineering and economics. In both contexts, it refers to simplifying a complicated problem by breaking it down into simpler sub-problems in a recursive manner. While some decision problems cannot be taken apart this way, decisions that span several points in time do often break apart recursively. Likewise, in computer science, if a problem can be solved optimally by breaking it into sub-problems and then recursively finding the optimal solutions to the sub-problems, then it is said to have optimal substructure. If sub-problems can be nested recursively inside larger problems, so that dynamic programming methods are applicable, then there is a relation between the value of the larger problem and the values of the sub-problems. In the optimization literature, this relationship is called the Bellman equation.",
-  "story": "Imagine teaching a friend to shoot a basketball. They miss, and you walk them backwards through the shot — elbow, wrist, release — to find what needs fixing. It is the same loop you use to learn anything: try, miss, correct, try again. Underneath all the magic is a patient process of small improvements. It is learning from every miss instead of repeating the same mistake. That steady, miss-by-miss improvement is Dynamic programming.",
+  "explainer": {
+    "lead": "Dynamic programming solves a complicated problem by splitting it into smaller problems whose answers can be combined. It matters because many decisions that unfold over time have this structure, allowing optimal answers to be built without repeatedly solving the same pieces.",
+    "tiers": {
+      "eli5": "Imagine solving a big puzzle made of smaller puzzles. Once you solve a small piece, keep its answer so you do not have to solve it again, then use those answers to finish bigger pieces. Dynamic programming is this way of building a big answer from saved smaller answers.",
+      "practitioner": "Define the sub-problems, their base cases, and the recurrence connecting them to the larger problem. Compute each sub-problem once and reuse its result, either recursively with stored answers or iteratively in a suitable order. The main pitfalls are applying it where the required recursive structure is absent and spending substantial memory to retain intermediate results.",
+      "paperLevel": "Dynamic programming applies when a problem has optimal substructure: an optimal solution can be obtained recursively from optimal solutions to sub-problems. In optimization, the value relation is a Bellman equation, expressible schematically as V(s) = opt_a F(s, a, V(s')), where s' denotes the relevant sub-problem. Richard Bellman developed the method in the 1950s; some decision problems cannot be decomposed in this way."
+    },
+    "example": "For F(n) = F(n-1) + F(n-2), with F(0) = 0 and F(1) = 1, computing F(5) by naive recursion repeats sub-problems. Solving and retaining them in order gives F(2) = 1, F(3) = 2, F(4) = 3, and finally F(5) = 5, without recomputing earlier values.",
+    "usedIn": [
+      {
+        "name": "Aerospace engineering",
+        "detail": "An application area for complicated optimization problems that can be divided recursively.",
+        "url": ""
+      },
+      {
+        "name": "Economics",
+        "detail": "Used for decisions spanning several points in time that break apart recursively.",
+        "url": ""
+      }
+    ],
+    "goal": "Find an optimal solution to a complex problem by recursively using optimal solutions to simpler sub-problems.",
+    "inputs": [
+      "A problem decomposable into sub-problems",
+      "Base cases for the smallest problems",
+      "A relation between problem values"
+    ],
+    "outputs": [
+      "The optimal value of the original problem",
+      "An optimal solution assembled from sub-problem solutions"
+    ],
+    "steps": [
+      "Break the original problem into simpler sub-problems.",
+      "Identify base cases and their solutions.",
+      "Write the relation linking sub-problem values to the larger problem's value.",
+      "Solve and retain sub-problem answers in dependency order.",
+      "Combine those answers to obtain the original solution."
+    ],
+    "tradeoffs": [
+      "Reusing sub-problem answers avoids repeated computation.",
+      "Retaining intermediate answers requires storage.",
+      "Not every decision problem has the necessary recursive structure."
+    ],
+    "diagram": {
+      "nodes": [
+        {
+          "id": "problem",
+          "label": "Original problem",
+          "note": "The complicated optimization problem."
+        },
+        {
+          "id": "subproblems",
+          "label": "Simpler sub-problems",
+          "note": "Recursive pieces of the original."
+        },
+        {
+          "id": "base",
+          "label": "Base cases",
+          "note": "Smallest problems solved directly."
+        },
+        {
+          "id": "solutions",
+          "label": "Sub-problem solutions",
+          "note": "Optimal answers retained for reuse."
+        },
+        {
+          "id": "bellman",
+          "label": "Bellman equation",
+          "note": "Relates smaller values to the larger value."
+        },
+        {
+          "id": "answer",
+          "label": "Optimal solution",
+          "note": "The assembled answer to the original problem."
+        }
+      ],
+      "edges": [
+        {
+          "from": "problem",
+          "to": "subproblems",
+          "label": "decomposes"
+        },
+        {
+          "from": "base",
+          "to": "solutions",
+          "label": "starts"
+        },
+        {
+          "from": "subproblems",
+          "to": "solutions",
+          "label": "solved optimally"
+        },
+        {
+          "from": "solutions",
+          "to": "bellman",
+          "label": "values"
+        },
+        {
+          "from": "bellman",
+          "to": "answer",
+          "label": "builds"
+        }
+      ],
+      "caption": "Dynamic programming builds the original optimal solution from base cases and recursively related sub-problem solutions."
+    }
+  },
   "related": [
     "stochastic-dynamic-programming",
     "bayesian-programming",
