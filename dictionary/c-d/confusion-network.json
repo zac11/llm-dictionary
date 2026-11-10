@@ -8,9 +8,9 @@
   "explainer": {
     "lead": "A confusion network keeps several possible words in play instead of forcing a speech recognizer or translator to choose too early. It packs alternatives into a simple graph, letting a later processing stage select one complete result.",
     "tiers": {
-      "eli5": "Imagine building a sentence from several rows of word cards, where each row offers a few possible words. You can try different combinations before picking the sentence that works best, rather than being stuck with the first guess.",
-      "practitioner": "In speech recognition or machine translation, outputs are aligned into ordered confusion sets, and downstream processing chooses a path through them. Moses uses this approach to defer ambiguous translation decisions; the main pitfall is that useful alternatives must already be present in the network, while early pruning can remove them.",
-      "paperLevel": "Formally, a confusion network is a linear directed acyclic graph in which every path from the start node to the end node passes through all other nodes. The words on edges between consecutive nodes form a confusion set, so each start-to-end path represents one complete hypothesis; its expressive range is limited to the alternatives encoded in those sets."
+      "eli5": "It's like lining up several people's transcripts of the same sentence side by side, so you can pick the best word at each spot later instead of guessing right away.",
+      "practitioner": "Engineers build linear directed acyclic graphs whose paths pass through all nodes, with each edge set between two nodes forming a confusion set. A pitfall is committing to a translation too early rather than deferring it.",
+      "paperLevel": "A simple linear directed acyclic graph in which every path from start to end node passes through all other nodes; the words on edges between two nodes form a confusion set. Its defining property in MT is allowing multiple ambiguous inputs, with limits set by the graph's linear structure."
     },
     "usedIn": [
       {
@@ -100,7 +100,8 @@
         }
       ],
       "caption": "A linear graph stores local word alternatives while each complete path represents one hypothesis."
-    }
+    },
+    "example": "Two speech recognizers produce different transcripts of one utterance; a confusion network aligns them so a later stage can choose among the alternatives at each position."
   },
   "related": [
     "circuit-neural-network",

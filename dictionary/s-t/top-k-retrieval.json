@@ -5,6 +5,27 @@
   "type": "concept",
   "definition": "Fetching the k best-scoring chunks for a query.",
   "details": "Fetching the k best-scoring chunks for a query. k balances recall against context budget and distraction; typical systems retrieve wide (20-100) then rerank down to a few.",
+  "explainer": {
+    "lead": "Top-k retrieval fetches the k best-scoring chunks for a query. It matters because k sets the balance between recall, context budget and distraction from irrelevant text.",
+    "tiers": {
+      "eli5": "You pull the k most relevant pages from a library shelf before answering. Too few and you miss the answer; too many and the clutter buries it.",
+      "practitioner": "Engineers typically retrieve wide, 20-100 chunks, then rerank down to a few. A pitfall is passing the whole wide set to the model, wasting context and distracting it.",
+      "paperLevel": "Select the k highest-scoring chunks under a retrieval score. Limits: recall depends on k, while context budget and distraction grow with it."
+    },
+    "example": "A system fetches the top 50 chunks by similarity, reranks them, and passes only the best 3 to the model.",
+    "usedIn": [
+      {
+        "name": "Retrieval-augmented generation",
+        "detail": "context selection",
+        "url": ""
+      },
+      {
+        "name": "Search pipelines",
+        "detail": "wide retrieve then rerank",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "recall"
   ],

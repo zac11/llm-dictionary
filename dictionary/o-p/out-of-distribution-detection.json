@@ -8,6 +8,32 @@
   ],
   "definition": "The task of identifying inputs that differ significantly from the distribution of data a model was trained on, so the system can flag uncertainty or defer to a human.",
   "details": "OOD detection is important for safe deployment, helping systems recognize when they are being asked to operate outside their reliable competence and should respond with caution or abstain.",
+  "explainer": {
+    "lead": "Out-of-distribution detection identifies inputs that differ substantially from what a model was trained on, so the system can flag uncertainty or hand off to a human. It is a safeguard for deploying models in open-ended settings.",
+    "tiers": {
+      "eli5": "It's like a doctor noticing a symptom that doesn't match anything they learned and saying 'I should get a specialist' instead of guessing.",
+      "practitioner": "Engineers attach OOD scores or thresholds so the system abstains or escalates when inputs look unfamiliar. The pitfall is calibration: a threshold that catches real anomalies often also flags legitimate rare inputs.",
+      "paperLevel": "Given training distribution P and input x, decide whether x was drawn from P; typical approaches score distributional distance and threshold it. No single score is reliable across all shifts."
+    },
+    "example": "A classifier trained on cats and dogs receives a photo of a car; the OOD detector flags it and the system asks for human review rather than forcing a cat/dog label.",
+    "usedIn": [
+      {
+        "name": "Medical AI",
+        "detail": "flagging unusual scans",
+        "url": ""
+      },
+      {
+        "name": "Fraud systems",
+        "detail": "catching novel patterns",
+        "url": ""
+      },
+      {
+        "name": "Autonomous systems",
+        "detail": "deferring to humans",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "toxicity-detection",
     "adversarial-example",

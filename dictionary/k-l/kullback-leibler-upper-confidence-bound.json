@@ -5,6 +5,32 @@
   "type": "algorithm",
   "definition": "In multi-armed bandit problems, KL-UCB (for Kullback–Leibler Upper Confidence Bound) is a UCB-type algorithm that is asymptotically optimal, in the sense that its regret matches the problem-dependent Lai-Robbins lower bound..",
   "details": "In multi-armed bandit problems, KL-UCB (for Kullback–Leibler Upper Confidence Bound) is a UCB-type algorithm that is asymptotically optimal, in the sense that its regret matches the problem-dependent Lai-Robbins lower bound.",
+  "explainer": {
+    "lead": "KL-UCB is a bandit algorithm whose regret provably approaches the best any algorithm can achieve. That asymptotic optimality makes it a benchmark for how efficiently an algorithm can learn which option is best.",
+    "tiers": {
+      "eli5": "When picking between slot machines, you keep a score for each and lean toward ones that might be better than they look; KL-UCB is the version of that strategy that wastes the fewest tries in the long run.",
+      "practitioner": "Engineers use it when regret matters and reward distributions are Bernoulli, since its confidence bounds are built on KL divergence between estimated and candidate means. A pitfall is that its index is harder to compute than plain UCB and needs an inner optimization.",
+      "paperLevel": "For each arm, the index is the largest mean q such that the number of observations times the KL divergence between the empirical mean and q stays below a log-based threshold; its regret matches the Lai-Robbins lower bound asymptotically. The guarantee is asymptotic and problem-dependent, not a finite-sample bound."
+    },
+    "example": "For an arm pulled 100 times with empirical mean 0.4, the index is the highest q whose KL divergence from 0.4, scaled by 100, still fits under the confidence threshold.",
+    "usedIn": [
+      {
+        "name": "Multi-armed bandit research",
+        "detail": "regret benchmarks",
+        "url": ""
+      },
+      {
+        "name": "A/B testing",
+        "detail": "adaptive allocation",
+        "url": ""
+      },
+      {
+        "name": "Recommendation",
+        "detail": "exploration policy",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "branch-and-bound",
     "fernandez-s-bound",

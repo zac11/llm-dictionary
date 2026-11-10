@@ -5,6 +5,32 @@
   "type": "concept",
   "definition": "Attention mechanisms that limit each token's attention computation to a subset of other tokens, rather than the full sequence, to reduce computational cost.",
   "details": "Sparse attention patterns (such as local windows or strided patterns) allow transformers to scale to much longer context lengths than standard full (quadratic-cost) self-attention would allow.",
+  "explainer": {
+    "lead": "Sparse attention restricts each token's attention computation to a subset of other tokens instead of the full sequence. It matters because it lets transformers scale to far longer contexts than full self-attention permits.",
+    "tiers": {
+      "eli5": "Instead of every word in a long document talking to every other word, each word only chats with a nearby handful—so the conversation stays manageable.",
+      "practitioner": "Engineers pick a sparsity pattern such as local windows or strided patterns to cut cost at long context lengths. The pitfall is choosing a pattern that never connects tokens that need to interact.",
+      "paperLevel": "Attention where each token attends to only a subset of tokens rather than the full sequence; the standard full self-attention it replaces has quadratic cost."
+    },
+    "example": "With a local-window pattern, each token attends only to the tokens within a fixed distance, so cost grows linearly rather than quadratically with sequence length.",
+    "usedIn": [
+      {
+        "name": "Long-context transformers",
+        "detail": "scaling to longer inputs",
+        "url": ""
+      },
+      {
+        "name": "Local-window patterns",
+        "detail": "nearby-token attention",
+        "url": ""
+      },
+      {
+        "name": "Strided patterns",
+        "detail": "spaced-token attention",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "attention",
     "attention-score",

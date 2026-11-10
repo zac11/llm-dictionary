@@ -5,6 +5,32 @@
   "type": "concept",
   "definition": "Software infrastructure used to systematically run a model against a suite of benchmarks or test cases and collect standardized performance metrics.",
   "details": "Evaluation harnesses (such as EleutherAI's lm-evaluation-harness) provide reproducible, standardized ways to compare models across many benchmarks, reducing inconsistencies that can arise from ad hoc, custom evaluation scripts.",
+  "explainer": {
+    "lead": "A harness is the software layer that runs a model against many benchmarks and records standardized scores, so comparisons mean something. Without it, results from different labs are hard to compare or reproduce.",
+    "tiers": {
+      "eli5": "It is like a standardized exam sheet and grading machine: every student gets the same questions and the same marking rules, so scores can be compared fairly.",
+      "practitioner": "Engineers plug a model endpoint or weights into the harness and let it run the full benchmark suite with fixed prompts and scoring code. A common pitfall is harness and model version mismatches, where prompt formatting or tokenization differs from what the model saw in training and scores drop for the wrong reason.",
+      "paperLevel": "Formally, a harness is a pipeline mapping (model, task suite, prompt templates, scoring functions) to a metrics table; results are only comparable when all of these are held fixed. Known limits: fixed prompts may not reflect real usage, and public benchmarks can leak into training data."
+    },
+    "example": "Running lm-evaluation-harness over a new checkpoint on a dozen tasks yields one table of accuracy scores per task, comparable to previous checkpoints run under the same configuration.",
+    "usedIn": [
+      {
+        "name": "lm-evaluation-harness",
+        "detail": "open-source benchmark runner",
+        "url": ""
+      },
+      {
+        "name": "Model leaderboards",
+        "detail": "standardized score aggregation",
+        "url": ""
+      },
+      {
+        "name": "Internal model releases",
+        "detail": "pre-deployment regression checks",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "model-evaluation",
     "baseline-model",

@@ -8,9 +8,9 @@
   "explainer": {
     "lead": "A capsule neural network, or CapsNet, groups neural activity into capsules that represent both whether something is present and how it is positioned or oriented. By preserving these part-to-object relationships, it aims to recognize structured objects more reliably under changes in viewpoint and other perturbations.",
     "tiers": {
-      "eli5": "Imagine recognizing a face not just by finding eyes, a nose, and a mouth, but also by checking where each part belongs. A CapsNet works a bit like that: its small groups of detectors report what they found and its pose. This helps it notice a scrambled face where all the parts are present but an eye and the mouth have swapped places.",
-      "practitioner": "A CapsNet is built by adding capsules to a convolutional neural network and combining several capsule outputs to form higher-level representations. Each output vector carries an observation probability and a pose, so an image-recognition implementation must handle both rather than only a class score. A useful failure test is an image with the correct parts in incorrect spatial relationships, although this description does not prescribe a particular training procedure or capsule-combination algorithm.",
-      "paperLevel": "A capsule produces a vector that can be written informally as v = [p(observation), pose(observation)]. Outputs from multiple lower-level capsules are reused to construct higher-level capsule representations intended to remain stable under perturbations. For vision, the motivating transformation is that viewpoint changes are nonlinear in pixel space but linear at the part/object level; no specific training objective or combination rule is fixed by this definition."
+      "eli5": "Instead of passing along just a yes-or-no signal, it passes a little package that also says how something is positioned.",
+      "practitioner": "Engineers add capsules to a convolutional network and reuse outputs from several capsules to form more stable representations for higher capsules. A pitfall is that this differs from standard CNN practice, so tooling and established architectures do not transfer directly.",
+      "paperLevel": "Output is a vector giving the probability of an observation and a pose for it, formed by routing outputs from several capsules into higher capsules. The approach is limited by its departure from conventional CNN design and the stability it targets under various perturbations."
     },
     "usedIn": [
       {
@@ -100,7 +100,8 @@
         }
       ],
       "caption": "Capsules pass probability-and-pose vectors upward to form hierarchical object representations."
-    }
+    },
+    "example": "Lower-level capsules detect parts of an object and their poses are combined into higher capsules representing the whole object."
   },
   "related": [
     "neural-network",

@@ -5,6 +5,32 @@
   "type": "concept",
   "definition": "The two inference phases: prefill processes the entire prompt in parallel (compute-bound, determines time to first token), decode generates tokens one by one (memory-bandwidth-bound, determines tokens per second).",
   "details": "The two inference phases: prefill processes the entire prompt in parallel (compute-bound, determines time to first token), decode generates tokens one by one (memory-bandwidth-bound, determines tokens per second). They stress hardware differently, motivating separate optimization and even separate hardware pools.",
+  "explainer": {
+    "lead": "LLM inference splits into prefill, which processes the whole prompt in parallel, and decode, which emits tokens one at a time. The split matters because each phase stresses hardware differently and sets different user-facing numbers.",
+    "tiers": {
+      "eli5": "Reading the whole question in one go is one job, and answering word by word is a separate job, and each is slow for different reasons.",
+      "practitioner": "Engineers track prefill as compute-bound and gating time to first token, and decode as memory-bandwidth-bound and gating tokens per second. The pitfall is optimizing one phase while ignoring the other, which just moves the bottleneck.",
+      "paperLevel": "Prefill processes the entire prompt in parallel; decode generates tokens one by one. Since they stress hardware differently, they motivate separate optimization and even separate hardware pools."
+    },
+    "example": "A long document prompt is handled in a single parallel prefill pass, then the summary streams out one token at a time during decode.",
+    "usedIn": [
+      {
+        "name": "LLM serving",
+        "detail": "latency and throughput tuning",
+        "url": ""
+      },
+      {
+        "name": "Inference hardware pools",
+        "detail": "separate prefill and decode capacity",
+        "url": ""
+      },
+      {
+        "name": "Chatbots",
+        "detail": "time to first token vs. speed",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "inference",
     "token",

@@ -5,6 +5,32 @@
   "type": "concept",
   "definition": "Recognition that emits text incrementally with bounded latency while audio is still arriving, using causal or chunked encoders.",
   "details": "Recognition that emits text incrementally with bounded latency while audio is still arriving, using causal or chunked encoders. The engineering tension: every millisecond of allowed future context (\"right context\") buys accuracy and costs latency.",
+  "explainer": {
+    "lead": "Streaming ASR recognizes speech and emits text incrementally with bounded latency while audio is still arriving. It matters for live captions and voice interfaces where waiting for the full utterance is unacceptable.",
+    "tiers": {
+      "eli5": "Like a live typist who writes words as you speak instead of waiting until you finish the sentence.",
+      "practitioner": "Engineers use causal or chunked encoders so output can start before the audio ends. Pitfall: every millisecond of allowed future context buys accuracy but costs latency, so the two must be traded off deliberately.",
+      "paperLevel": "Recognition that emits text incrementally with bounded latency while audio is still arriving, using causal or chunked encoders. The design tension is that more right context raises accuracy and latency together."
+    },
+    "example": "A live captioning tool using a chunked encoder shows words roughly half a second after they are spoken, rather than after the speaker pauses.",
+    "usedIn": [
+      {
+        "name": "Live captions",
+        "detail": "low-latency transcription",
+        "url": ""
+      },
+      {
+        "name": "Voice assistants",
+        "detail": "incremental recognition",
+        "url": ""
+      },
+      {
+        "name": "Call transcription",
+        "detail": "real-time text output",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "latency",
     "accuracy"

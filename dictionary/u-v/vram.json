@@ -5,6 +5,48 @@
   "type": "concept",
   "definition": "The on-accelerator high-bandwidth memory holding weights, activations, and KV cache.",
   "details": "The on-accelerator high-bandwidth memory holding weights, activations, and KV cache. The binding constraint of LLM work: a 70B model in 16-bit needs ~140 GB for weights alone, before a single token of cache. Memory math (weights + cache + activations vs. available HBM) is the first calculation of every deployment.",
+  "explainer": {
+    "lead": "VRAM is the on-accelerator high-bandwidth memory that holds an LLM's weights, activations, and KV cache. It is the binding constraint of LLM work: a 70B model in 16-bit needs roughly 140 GB for weights alone, before any cache.",
+    "tiers": {
+      "eli5": "It is the fast, small workbench next to the processor; if your model and its notes do not fit on the bench, you cannot get the job done.",
+      "practitioner": "Engineers start every deployment by computing weights plus cache plus activations against available HBM. A common pitfall is budgeting weights only and then running out of memory once the KV cache grows with context length.",
+      "paperLevel": "Defined operationally as weights + cache + activations must fit within available HBM; a 16-bit 70B model requires about 140 GB for weights alone."
+    },
+    "example": "For a 70B model in 16-bit, the weights consume roughly 140 GB of VRAM, so the KV cache and activations must fit in whatever HBM remains.",
+    "usedIn": [
+      {
+        "name": "LLM deployment",
+        "detail": "HBM memory budgeting",
+        "url": ""
+      },
+      {
+        "name": "KV cache",
+        "detail": "context-length growth",
+        "url": ""
+      },
+      {
+        "name": "GPU accelerators",
+        "detail": "high-bandwidth memory",
+        "url": ""
+      }
+    ],
+    "image": {
+      "src": "https://upload.wikimedia.org/wikipedia/commons/1/1b/GDDR5X_1080ti.jpg",
+      "alt": "Video random-access memory — Type of dedicated computer memory",
+      "width": 640,
+      "height": 382,
+      "credit": "Fritzchens Fritz Crop by Geni",
+      "license": "CC0",
+      "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "page": "https://commons.wikimedia.org/wiki/File:GDDR5X_1080ti.jpg"
+    },
+    "sources": [
+      {
+        "title": "Wikipedia: Video random-access memory",
+        "url": "https://en.wikipedia.org/wiki/Video_random-access_memory"
+      }
+    ]
+  },
   "related": [
     "kv-cache",
     "token",

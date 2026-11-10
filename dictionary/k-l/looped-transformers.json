@@ -9,6 +9,32 @@
   ],
   "definition": "Transformer architectures that reuse the same block of layers for several iterations of computation, so depth is spent at run time rather than being fixed in the parameter count.",
   "details": "A standard transformer applies each of its layers exactly once, which fixes how much serial computation a forward pass can perform. A looped transformer instead runs a shared stack - or part of one - repeatedly, feeding the output back as the next input, optionally with a step embedding or an adaptive stopping rule that decides how many iterations a given input needs. Because the parameters are tied across iterations, capability scales with the number of loops rather than with model size, which makes it an efficient way to buy extra compute per token. The approach descends from recurrent-depth ideas such as the Universal Transformer and is closely related to the looping used inside mixture-of-recursions designs and to latent reasoning, where extra computation happens in hidden states instead of emitted tokens. Empirically, looped transformers with an adaptive number of steps markedly improve length generalization on arithmetic and algorithmic tasks, learning highly length-generalizable solutions where a one-pass model of the same size fails on unseen input lengths.",
+  "explainer": {
+    "lead": "Transformer architectures that reuse the same block of layers across several computation iterations, spending depth at run time instead of fixing it in the parameter count. It matters because capability can scale with loops rather than model size.",
+    "tiers": {
+      "eli5": "Instead of building a taller factory, you send the product through the same assembly line several times.",
+      "practitioner": "Engineers feed a shared stack's output back as input, often with a step embedding or adaptive stopping rule; a pitfall is choosing loop counts poorly, since more iterations cost compute and can destabilise training.",
+      "paperLevel": "A standard transformer applies each layer once, fixing serial computation per forward pass; a looped transformer runs a shared stack repeatedly with tied parameters, optionally with step embeddings or adaptive stopping."
+    },
+    "example": "A model runs its shared block eight times on a hard reasoning prompt and twice on an easy one, with the stopping rule deciding the iteration count per input.",
+    "usedIn": [
+      {
+        "name": "Reasoning models",
+        "detail": "adaptive compute depth",
+        "url": ""
+      },
+      {
+        "name": "Efficient architectures",
+        "detail": "parameter-tied depth",
+        "url": ""
+      },
+      {
+        "name": "Research on scaling",
+        "detail": "loops over size",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "transformer",
     "compute-matched-looping",

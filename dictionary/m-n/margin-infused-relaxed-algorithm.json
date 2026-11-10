@@ -5,6 +5,27 @@
   "type": "algorithm",
   "definition": "Margin-infused relaxed algorithm (MIRA) is a machine learning and online algorithm for multiclass classification problems.",
   "details": "It is designed to learn a set of parameters (vector or matrix) by processing all the given training examples one-by-one and updating the parameters according to each training example, so that the current training example is classified correctly with a margin against incorrect classifications at least as large as their loss. The change of the parameters is kept as small as possible. A two-class version called binary MIRA simplifies the algorithm by not requiring the solution of a quadratic programming problem (see below). When used in a one-vs-all configuration, binary MIRA can be extended to a multiclass learner that approximates full MIRA, but may be faster to train. The flow of the algorithm looks as follows: The update step is then formalized as a quadratic programming problem: Find m i n ‖ w ( i + 1 ) − w ( i ) ‖ {\\displaystyle min\\|w^{(i+1)}-w^{(i)}\\|} , so that s c o r e ( x t , y t ) − s c o r e ( x t , y ′ ) ≥ L ( y t , y ′ ) ∀ y ′ {\\displaystyle score(x_{t},y_{t})-score(x_{t},y')\\geq L(y_{t},y')\\ \\forall y'} , i.e. the score of the current correct training y {\\displaystyle y} must be greater than the score of any other possible y ′ {\\displaystyle y'} by at least the loss (",
+  "explainer": {
+    "lead": "MIRA is an online algorithm for multiclass classification that updates its parameters one training example at a time. It matters because it combines large-margin learning with minimal, loss-aware updates, making it practical for tasks that arrive as a stream.",
+    "tiers": {
+      "eli5": "Imagine adjusting your guesses after each answer sheet you see, but changing them as little as possible—just enough to get that one right with a comfortable buffer.",
+      "practitioner": "Engineers use it for online multiclass tasks where data arrives sequentially and parameters must be updated incrementally. A common pitfall is the cost of solving the underlying quadratic program at each step unless a simplified variant is used.",
+      "paperLevel": "For each training example, parameters are updated so the correct class is classified with a margin at least as large as the loss against incorrect classifications, while the parameter change is kept as small as possible. The two-class version, binary MIRA, avoids solving a quadratic program; the full multiclass form requires one per update."
+    },
+    "example": "A spam-style multiclass tagger processes one labelled message at a time and nudges its weight matrix just enough to separate the correct tag from the wrong ones by at least their loss.",
+    "usedIn": [
+      {
+        "name": "Online multiclass classification",
+        "detail": "streaming label updates",
+        "url": ""
+      },
+      {
+        "name": "Natural language processing",
+        "detail": "incremental tagging tasks",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "c4-5-algorithm",
     "junction-tree-algorithm",

@@ -9,6 +9,32 @@
   ],
   "definition": "An architecture that reuses one shared stack of layers across several recursion steps while lightweight routers assign each token its own recursion depth, so easy tokens exit early and hard tokens think for longer.",
   "details": "MoR combines two efficiency levers at once: parameter sharing, by looping the same block instead of building a deeper stack, and adaptive computation, by letting a router decide how many passes each token receives. Because only tokens still active at a given depth attend to one another, quadratic attention is confined to that subset and only their key-value pairs need caching; a KV-sharing variant reuses the first recursion's pairs to cut memory further. Across 135M–1.7B parameter models MoR lowers validation perplexity and raises throughput at equal training FLOPs, forming a new Pareto frontier against vanilla and earlier recursive baselines.",
+  "explainer": {
+    "lead": "Mixture of Recursions reuses one shared stack of layers across several recursion steps while routers assign each token its own recursion depth. It matters because it combines parameter sharing with adaptive computation, letting easy tokens exit early and hard tokens think longer.",
+    "tiers": {
+      "eli5": "One small machine is reused again and again, and each word decides how many rounds it needs before it's done.",
+      "practitioner": "Engineers loop a single block instead of stacking deeper, and cache only still-active tokens' key-value pairs; a pitfall is managing which tokens remain active at each depth.",
+      "paperLevel": "A shared layer stack is looped with per-token routing of recursion depth; only tokens active at a depth attend to one another, confining quadratic attention to that subset, and a KV-sharing variant reuses the first recursion's pairs."
+    },
+    "example": "Across 135M–1.7B parameter models, MoR assigns shallow recursion to easy tokens and deeper recursion to hard ones, cutting attention cost to the active subset.",
+    "usedIn": [
+      {
+        "name": "Parameter sharing",
+        "detail": "looped layer block",
+        "url": ""
+      },
+      {
+        "name": "Adaptive computation",
+        "detail": "per-token depth",
+        "url": ""
+      },
+      {
+        "name": "KV-sharing variant",
+        "detail": "reduced memory",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "mixture-of-experts",
     "activation-function",

@@ -5,6 +5,32 @@
   "type": "concept",
   "definition": "Representation collapse is a phenomenon in machine learning and representation learning where a model maps different inputs to the same or very similar embeddings, which means it loses important information about how the data is spread out.",
   "details": "It is frequently encountered in self-supervised learning, especially within contrastive and non-contrastive frameworks, when training objectives or model architectures do not maintain variance across representations. Collapse results in degenerate solutions characterized by uninformative learned features, significantly impairing downstream task performance. Various techniques have been proposed to mitigate representation collapse, including the use of negative samples, architectural asymmetry, stop-gradient operations, variance regularization, and redundancy reduction objectives, as seen in methods such as SimCLR, BYOL, and VICReg. Comprehending and averting representation collapse is regarded as a fundamental challenge in the advancement of stable and efficient self-supervised learning systems.",
+  "explainer": {
+    "lead": "It is when a model maps different inputs to nearly the same embedding, throwing away the information that made the data distinguishable. It matters because collapsed features look fine in training loss but fail downstream.",
+    "tiers": {
+      "eli5": "Like a filing system where every document ends up in the same folder, so you can no longer tell them apart.",
+      "practitioner": "Engineers watch for it in self-supervised training, especially contrastive and non-contrastive setups, by monitoring embedding variance and rank. A pitfall is a training objective that is trivially satisfied by constant outputs, so variance must be enforced deliberately.",
+      "paperLevel": "A model f such that f(x1) is approximately f(x2) for distinct inputs, producing low-variance, low-rank embeddings. Mitigations include negative samples, architectural asymmetry, and variance or decorrelation terms; without such constraints the degenerate solution minimises the objective."
+    },
+    "example": "In a contrastive setup with no negatives, an encoder outputs the same vector for every image and the loss goes to zero while the features carry no information.",
+    "usedIn": [
+      {
+        "name": "Contrastive self-supervised learning",
+        "detail": "negative-sample dependence",
+        "url": ""
+      },
+      {
+        "name": "Non-contrastive methods",
+        "detail": "variance and asymmetry fixes",
+        "url": ""
+      },
+      {
+        "name": "Representation learning",
+        "detail": "feature quality diagnosis",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "compact-quasi-newton-representation",
     "mode-collapse",

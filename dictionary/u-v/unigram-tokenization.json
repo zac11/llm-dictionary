@@ -5,6 +5,27 @@
   "type": "concept",
   "definition": "A probabilistic method that starts from a large candidate vocabulary and prunes it, keeping the segmentation that maximizes corpus likelihood.",
   "details": "A probabilistic method that starts from a large candidate vocabulary and prunes it, keeping the segmentation that maximizes corpus likelihood. Often yields more linguistically natural splits than BPE.",
+  "explainer": {
+    "lead": "Unigram tokenization builds a tokenizer by starting with a large pool of candidate pieces and pruning it down while maximizing how likely the training corpus is under the resulting segmentation. It often produces more linguistically natural splits than BPE, which matters when token quality affects downstream model behavior.",
+    "tiers": {
+      "eli5": "Imagine starting with every possible chunk of words, then throwing away chunks until what's left best explains the text you have.",
+      "practitioner": "Engineers use it as a subword tokenizer alternative to BPE when they want probabilistic, likelihood-driven segmentations, and typically implement it via a pruned vocabulary plus a segmentation search at encode time. A pitfall is that the pruning and probability estimation add complexity and tuning overhead compared with simpler merge-based tokenizers.",
+      "paperLevel": "Defined as a probabilistic model over segmentations in which the corpus likelihood is maximized while a large initial candidate vocabulary is iteratively pruned; the definition given states no explicit limits beyond the pruning-based procedure."
+    },
+    "example": "Start with a huge candidate vocabulary, score segmentations of the training corpus by their probability, remove the pieces whose loss hurts likelihood least, and repeat until the target vocabulary size is reached.",
+    "usedIn": [
+      {
+        "name": "Subword tokenization",
+        "detail": "alternative to BPE",
+        "url": ""
+      },
+      {
+        "name": "Text preprocessing",
+        "detail": "corpus likelihood fitting",
+        "url": ""
+      }
+    ]
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

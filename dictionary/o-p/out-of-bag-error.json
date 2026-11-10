@@ -5,6 +5,32 @@
   "type": "concept",
   "definition": "Out-of-bag (OOB) error, also called out-of-bag estimate, is a method of measuring the prediction error of random forests, boosted decision trees, and other machine learning models utilizing bootstrap aggregating (bagging).",
   "details": "Bagging uses subsampling with replacement to create training samples for the model to learn from. OOB error is the mean prediction error on each training sample xi, using only the trees that did not have xi in their bootstrap sample. Bootstrap aggregating allows one to define an out-of-bag estimate of the prediction performance improvement by evaluating predictions on those observations that were not used in the building of the next base learner.",
+  "explainer": {
+    "lead": "Out-of-bag error estimates how well a bagged model will predict, using only the samples each base learner never saw. It gives a validation signal without holding out a separate set.",
+    "tiers": {
+      "eli5": "If each student studies a random pile of flashcards, you can quiz them on the cards they didn't get—that quiz score tells you how well the group really learned.",
+      "practitioner": "Use OOB error as a free estimate while training random forests and bagged ensembles. It can mislead if bootstrap samples are not independent or if the ensemble is correlated, so don't treat it as a substitute for a clean test set in every case.",
+      "paperLevel": "Bagging subsamples with replacement. OOB error is the mean prediction error on each training sample xi, using only the trees whose bootstrap sample excluded xi."
+    },
+    "example": "In a random forest of 500 trees, each tree leaves out roughly a third of rows; averaging predictions for each row across only the trees that excluded it yields the OOB error.",
+    "usedIn": [
+      {
+        "name": "Random forests",
+        "detail": "built-in error estimate",
+        "url": ""
+      },
+      {
+        "name": "Boosted decision trees",
+        "detail": "bagging-based validation",
+        "url": ""
+      },
+      {
+        "name": "Ensemble tuning",
+        "detail": "model selection signal",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "error-driven-learning",
     "generalization-error",

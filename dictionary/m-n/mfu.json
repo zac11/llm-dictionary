@@ -8,6 +8,32 @@
   ],
   "definition": "The fraction of hardware peak FLOPs your training actually achieves (frontier runs target 35-50%+).",
   "details": "The fraction of hardware peak FLOPs your training actually achieves (frontier runs target 35-50%+). The efficiency scoreboard of distributed training: low MFU means the GPUs are waiting on memory, communication, or bad kernels.",
+  "explainer": {
+    "lead": "MFU tells you how much of your hardware's theoretical peak compute your training run actually uses. It is the efficiency scoreboard for large distributed training: a low number means GPUs are idling, not calculating.",
+    "tiers": {
+      "eli5": "Imagine buying a sports car with a top speed of 200 mph, then measuring that you only ever drive it at 70. MFU is that percentage — how much of the car's potential you're actually using.",
+      "practitioner": "Engineers track MFU to decide whether to tune kernels, rework data loading, or change parallelism before scaling up. The common pitfall is chasing MFU so hard you optimise the wrong thing — a run can hit high MFU while wasting wall-clock time elsewhere.",
+      "paperLevel": "MFU = (observed FLOPs per second) ÷ (hardware peak FLOPs per second). Frontier training runs target roughly 35–50% or higher; memory stalls, communication overhead, or poor kernels push it lower."
+    },
+    "example": "A cluster with a theoretical peak of 1000 TFLOPs per second that sustains 400 TFLOPs during training reports an MFU of 40%.",
+    "usedIn": [
+      {
+        "name": "Large language model pretraining",
+        "detail": "efficiency benchmarking",
+        "url": ""
+      },
+      {
+        "name": "Distributed training clusters",
+        "detail": "bottleneck diagnosis",
+        "url": ""
+      },
+      {
+        "name": "Hardware procurement",
+        "detail": "realistic throughput estimates",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "distributed-training"
   ],

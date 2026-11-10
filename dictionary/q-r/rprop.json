@@ -5,6 +5,32 @@
   "type": "algorithm",
   "definition": "Rprop, short for resilient backpropagation, is a learning heuristic for supervised learning in feedforward artificial neural networks.",
   "details": "This is a first-order optimization algorithm. This algorithm was created by Martin Riedmiller and Heinrich Braun in 1992. Similarly to the Manhattan update rule, Rprop takes into account only the sign of the partial derivative over all patterns (not the magnitude), and acts independently on each \"weight\". For each weight, if there was a sign change of the partial derivative of the total error function compared to the last iteration, the update value for that weight is multiplied by a factor η−, where η− < 1. If the last iteration produced the same sign, the update value is multiplied by a factor of η+, where η+ > 1. The update values are calculated for each weight in the above manner, and finally each weight is changed by its own update value, in the opposite direction of that weight's partial derivative, so as to minimise the total error function. η+ is empirically set to 1.2 and η− to 0.5. Rprop can result in very large weight increments or decrements if the gradients are large, which is a problem when using mini-batches as opposed to full batches. RMSprop addresses this problem by keeping the moving average of the squared gradients for each weight and dividing the gradient by th",
+  "explainer": {
+    "lead": "Rprop, or resilient backpropagation, is a first-order learning heuristic for supervised training of feedforward neural networks. It matters as an early method that adapts step sizes per weight without using gradient magnitude.",
+    "tiers": {
+      "eli5": "Instead of nudging each knob by how hard the error pushes it, you just notice which direction it pushes and take a step sized by how consistent that direction has been.",
+      "practitioner": "Engineers use Rprop when training small feedforward networks or as a simple, tuning-light optimizer. A pitfall is that it was designed for full-batch training and behaves poorly with mini-batches, since per-pattern sign changes become noisy.",
+      "paperLevel": "Introduced by Riedmiller and Braun in 1992, it uses only the sign of the partial derivative for each weight; if the sign changes versus the last iteration, the weight's update value is multiplied by a factor eta-minus, otherwise by eta-plus, and step sizes are bounded."
+    },
+    "example": "A weight whose gradient sign flips between iterations gets its step size shrunk by eta-minus, so the optimizer backs off rather than overshooting.",
+    "usedIn": [
+      {
+        "name": "Feedforward networks",
+        "detail": "full-batch training",
+        "url": ""
+      },
+      {
+        "name": "Optimizer libraries",
+        "detail": "classic first-order method",
+        "url": ""
+      },
+      {
+        "name": "Small ML experiments",
+        "detail": "tuning-light baseline",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "ablation-artificial-intelligence",
     "adaline",

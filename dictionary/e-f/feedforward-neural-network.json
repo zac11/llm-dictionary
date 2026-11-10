@@ -11,9 +11,9 @@
   "explainer": {
     "lead": "A feedforward neural network processes information in one direction, from input to output, with no loops back to earlier parts. This straightforward structure also appears inside transformer blocks, where a position-wise network refines each token after attention.",
     "tiers": {
-      "eli5": "Imagine a conveyor belt that carries information through several worktables, always moving forward and never circling back. Each table changes the information a little before passing it on. In a transformer, this happens separately for each word-like token after the token has gone through attention.",
-      "practitioner": "In a transformer block, apply the position-wise feedforward network after attention to transform each token representation. The network has no recurrent connections, so it does not itself route information back through time or earlier activations. Keep its role distinct from attention: attention supplies the preceding contextual processing, while the feedforward stage further transforms each position.",
-      "paperLevel": "A feedforward neural network is a directed acyclic computation mapping an input x to an output y, with no cyclic information flow. In a transformer block, the position-wise form computes h'_i = FFN(h_i) for each token position i after attention. Its defining structural limit is the absence of feedback cycles."
+      "eli5": "Data goes in one door and out the other, like a one-way pipe with no loops back.",
+      "practitioner": "Engineers apply position-wise feedforward networks after the attention layer to further transform each token's representation; the pitfall is that, with no cycles, the network has no inherent memory of order.",
+      "paperLevel": "A neural network in which information flows in one direction from input to output without cycles; in transformer blocks, position-wise feedforward networks are applied after attention to further transform each token's representation. Limits: no recurrence or built-in sequence memory."
     },
     "components": [
       {
@@ -87,7 +87,25 @@
         }
       ],
       "caption": "The general one-way feedforward path, alongside its position after attention in a transformer block."
-    }
+    },
+    "example": "Each token representation from the attention layer is passed independently through the same feedforward layers before the next block.",
+    "usedIn": [
+      {
+        "name": "Transformer blocks",
+        "detail": "post-attention token transform",
+        "url": ""
+      },
+      {
+        "name": "MLP classifiers",
+        "detail": "one-way layered networks",
+        "url": ""
+      },
+      {
+        "name": "Feature transformation",
+        "detail": "per-token processing",
+        "url": ""
+      }
+    ]
   },
   "related": [
     "neural-network",

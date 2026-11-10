@@ -5,6 +5,32 @@
   "type": "concept",
   "definition": "Monitoring and tracing how language models behave in production — prompts, outputs, latency, token use, cost and failures.",
   "details": "Observability tooling records every request and response, scores quality and safety, and traces multi-step agent or RAG pipelines to find where errors creep in. It is application monitoring re-imagined for non-deterministic, generative systems.",
+  "explainer": {
+    "lead": "Observability covers everything a language model does once it is live: prompts, outputs, latency, token counts, cost and failures. Without it, non-deterministic systems fail silently and cannot be debugged or costed.",
+    "tiers": {
+      "eli5": "It is like a flight recorder for your app, keeping a log of every request and answer so you can see what went wrong.",
+      "practitioner": "Teams instrument each call with traces so multi-step agent and RAG pipelines can be replayed step by step; the usual pitfall is logging prompts and outputs without redacting sensitive data.",
+      "paperLevel": "In practice this is per-request record keeping: capturing the input, output, latency, token usage and any quality or safety score, then reconstructing a trace across steps; limits are storage cost and the difficulty of scoring open-ended text reliably."
+    },
+    "example": "A RAG assistant's trace shows retrieval returned nothing for a query, so the model answered from memory; the trace pinpoints the failing step rather than the final answer.",
+    "usedIn": [
+      {
+        "name": "Agent pipelines",
+        "detail": "tracing multi-step calls",
+        "url": ""
+      },
+      {
+        "name": "RAG systems",
+        "detail": "debugging retrieval failures",
+        "url": ""
+      },
+      {
+        "name": "Cost monitoring",
+        "detail": "tracking token spend",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "catastrophic-forgetting",
     "exploding-gradient-problem",

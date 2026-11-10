@@ -5,6 +5,27 @@
   "type": "concept",
   "definition": "A decoding strategy that restricts sampling to the k most probable next tokens at each step, discarding the rest of the distribution.",
   "details": "Top-k sampling balances diversity and quality by preventing the model from sampling extremely unlikely (and often nonsensical) tokens while still allowing some randomness.",
+  "explainer": {
+    "lead": "Top-k sampling restricts generation to the k most probable next tokens, discarding the rest of the distribution. It matters because it blocks nonsensical picks while keeping some randomness.",
+    "tiers": {
+      "eli5": "You let the model choose only from its k favourite next words, so it can still surprise you but not go off the rails.",
+      "practitioner": "Engineers set k to balance diversity and quality per task. A pitfall is a fixed k: it truncates too much on flat distributions and too little on sharp ones.",
+      "paperLevel": "At each step, sample from the k highest-probability tokens only; the rest are discarded. Limits: k is static, so it does not adapt to the shape of the distribution."
+    },
+    "example": "With k=10, a model that would otherwise pick an odd rare word can only choose among its 10 most likely candidates.",
+    "usedIn": [
+      {
+        "name": "Language model decoding",
+        "detail": "quality-diversity tradeoff",
+        "url": ""
+      },
+      {
+        "name": "Creative text tools",
+        "detail": "controlled randomness",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "top-p-sampling",
     "best-of-n-sampling",

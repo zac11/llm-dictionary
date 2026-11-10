@@ -5,6 +5,32 @@
   "type": "concept",
   "definition": "A method for injecting information about token order into transformer models, which otherwise have no inherent sense of sequence position.",
   "details": "Because self-attention processes all tokens simultaneously and has no built-in notion of order, positional encodings (sinusoidal, learned, or rotary) are added to token embeddings to preserve sequence information.",
+  "explainer": {
+    "lead": "Positional encoding injects token-order information into transformers, which otherwise have no inherent sense of sequence position. It matters because without it, self-attention treats a sequence as an unordered set.",
+    "tiers": {
+      "eli5": "Like numbering the words on a page so you know which comes first, since the reader sees them all at once.",
+      "practitioner": "Engineers add sinusoidal, learned, or rotary encodings to token embeddings before attention; a pitfall is choosing an encoding whose behaviour degrades beyond the lengths seen in training.",
+      "paperLevel": "Self-attention processes all tokens simultaneously with no built-in order, so positional encodings are added to token embeddings to preserve sequence information; common forms are sinusoidal, learned, and rotary."
+    },
+    "example": "Before attention, each token embedding has a positional vector added so that the model can distinguish 'dog bites man' from 'man bites dog'.",
+    "usedIn": [
+      {
+        "name": "Transformer LLMs",
+        "detail": "rotary or learned encodings",
+        "url": ""
+      },
+      {
+        "name": "Vision transformers",
+        "detail": "patch position encoding",
+        "url": ""
+      },
+      {
+        "name": "Speech models",
+        "detail": "frame order encoding",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "rotary-position-embedding",
     "activation-function",

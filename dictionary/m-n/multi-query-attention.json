@@ -8,6 +8,27 @@
   ],
   "definition": "All query heads share a single key/value head, shrinking the KV cache dramatically and speeding up decoding at a small quality cost.",
   "details": "All query heads share a single key/value head, shrinking the KV cache dramatically and speeding up decoding at a small quality cost.",
+  "explainer": {
+    "lead": "Multi-query attention has all query heads share a single key/value head, which shrinks the KV cache dramatically and speeds up decoding. It trades a small amount of quality for much cheaper inference.",
+    "tiers": {
+      "eli5": "Many people ask questions, but they all read from the same single shared answer sheet instead of each keeping their own copy.",
+      "practitioner": "It is used to cut KV-cache memory and accelerate decoding. The pitfall is a modest quality cost relative to full multi-head attention.",
+      "paperLevel": "All query heads share one key head and one value head, so the KV cache scales with a single head rather than the number of query heads. The known trade-off is a small quality loss."
+    },
+    "example": "During generation, a model with many query heads stores just one key/value pair per position, so the KV cache is far smaller than with per-head key/value pairs.",
+    "usedIn": [
+      {
+        "name": "LLM inference",
+        "detail": "faster decoding",
+        "url": ""
+      },
+      {
+        "name": "KV-cache optimization",
+        "detail": "reduced memory",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "kv-cache"
   ],

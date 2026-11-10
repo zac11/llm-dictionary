@@ -5,6 +5,32 @@
   "type": "algorithm",
   "definition": "The normal distributions transform (NDT) is a point cloud registration algorithm introduced by Peter Biber and Wolfgang Straßer in 2003, while working at University of Tübingen.",
   "details": "The algorithm registers two point clouds by first associating a piecewise normal distribution to the first point cloud, that gives the probability of sampling a point belonging to the cloud at a given spatial coordinate, and then finding a transform that maps the second point cloud to the first by maximising the likelihood of the second point cloud on such distribution as a function of the transform parameters. Originally introduced for 2D point cloud map matching in simultaneous localization and mapping (SLAM) and relative position tracking, the algorithm was extended to 3D point clouds and has wide applications in computer vision and robotics. NDT is very fast and accurate, making it suitable for application to large scale data, but it is also sensitive to initialisation, requiring a sufficiently accurate initial guess, and for this reason it is typically used in a coarse-to-fine alignment strategy.",
+  "explainer": {
+    "lead": "NDT is a point cloud registration algorithm that aligns two point clouds by modelling one as a field of normal distributions. It matters because it gives a smooth, probabilistic objective for matching scans without requiring exact point-to-point correspondences.",
+    "tiers": {
+      "eli5": "Imagine matching two dot drawings by describing one as a landscape of fuzzy hills and finding the shift that places the other drawing where it fits the hills best.",
+      "practitioner": "Engineers use NDT in scan matching for localization and mapping, optimizing the transform that maximizes the likelihood of the second cloud under the first cloud's distribution. A pitfall is that the piecewise normal distributions depend on how the space is subdivided, so resolution choices affect accuracy.",
+      "paperLevel": "A piecewise normal distribution is associated with the first point cloud, giving the probability of sampling a point at a given spatial coordinate; the transform is found by maximizing the likelihood of the second point cloud on that distribution as a function of the transform parameters. Introduced by Biber and Straßer in 2003; originally for 2D point cloud map matching in simultaneous localization and mapping."
+    },
+    "example": "Registering a new 2D laser scan against an existing map: each map cell holds a normal distribution, and the scan pose is chosen to maximize the total likelihood of the scan points.",
+    "usedIn": [
+      {
+        "name": "SLAM",
+        "detail": "2D map matching",
+        "url": ""
+      },
+      {
+        "name": "Point cloud registration",
+        "detail": "scan alignment",
+        "url": ""
+      },
+      {
+        "name": "Mobile robot localization",
+        "detail": "pose estimation",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "census-transform",
     "distance-transform",

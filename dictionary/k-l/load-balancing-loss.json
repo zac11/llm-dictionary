@@ -5,6 +5,27 @@
   "type": "concept",
   "definition": "An auxiliary loss (or loss-free bias method) that pushes the router to spread tokens across experts, preventing a few experts from absorbing all traffic while others go untrained.",
   "details": "An auxiliary loss (or loss-free bias method) that pushes the router to spread tokens across experts, preventing a few experts from absorbing all traffic while others go untrained.",
+  "explainer": {
+    "lead": "Load balancing loss is an auxiliary objective that pushes a mixture-of-experts router to spread tokens across experts. It matters because without it a few experts absorb all traffic while the rest never train.",
+    "tiers": {
+      "eli5": "If everyone queues at one checkout, the other tills stay idle; this is a nudge that spreads shoppers evenly across the tills.",
+      "practitioner": "Engineers add it as a small penalty term during MoE training, or use a loss-free bias method; a pitfall is setting the weight too high, which forces tokens onto poorly suited experts.",
+      "paperLevel": "An auxiliary loss added to the training objective that penalises uneven token distribution across experts; alternatively, a loss-free bias method adjusts routing biases directly. The trade-off is between routing balance and task loss."
+    },
+    "example": "A router sends 90 percent of tokens to two of sixteen experts, so the balancing term raises the loss and training shifts traffic toward the idle experts.",
+    "usedIn": [
+      {
+        "name": "Mixture-of-experts",
+        "detail": "router balancing",
+        "url": ""
+      },
+      {
+        "name": "Sparse model training",
+        "detail": "expert utilisation",
+        "url": ""
+      }
+    ]
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

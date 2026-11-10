@@ -5,6 +5,32 @@
   "type": "concept",
   "definition": "The Level-set method (LSM) is a conceptual framework for using level sets as a tool for numerical analysis of surfaces and shapes.",
   "details": "LSM can perform numerical computations involving curves and surfaces on a fixed Cartesian grid without having to parameterize these objects. LSM makes it easier to perform computations on shapes with sharp corners and shapes that change topology (such as by splitting in two or developing holes). These characteristics make LSM effective for modeling objects that vary in time, such as an airbag inflating or a drop of oil floating in water.",
+  "explainer": {
+    "lead": "A numerical framework that represents curves and surfaces as the zero level of a higher-dimensional function, so shapes can be tracked on a fixed grid. It matters because shapes can merge, split and grow holes without the grid being rebuilt.",
+    "tiers": {
+      "eli5": "Imagine a flood filling a landscape: you track the waterline rather than the water itself, and the shoreline can split around hills or join across valleys without redrawing your map.",
+      "practitioner": "Engineers evolve the level-set function over time on a Cartesian grid and extract the surface afterwards, which avoids mesh tangling. A common pitfall is reinitialisation: the function drifts from a signed distance and needs periodic correction to stay stable.",
+      "paperLevel": "A surface is given implicitly as the zero set of a scalar function, phi(x,t) = 0, and is advected by a velocity field through phi_t + v · grad phi = 0. Sharp corners and topology changes are handled naturally, but accuracy depends on grid resolution and on reinitialising phi."
+    },
+    "example": "An inflating airbag is simulated by letting the zero level of phi expand and fold; when folds touch, the surface merges without any explicit re-meshing.",
+    "usedIn": [
+      {
+        "name": "Computer graphics",
+        "detail": "fluid and smoke simulation",
+        "url": ""
+      },
+      {
+        "name": "Medical imaging",
+        "detail": "organ and tumour segmentation",
+        "url": ""
+      },
+      {
+        "name": "Computational fluid dynamics",
+        "detail": "interface tracking",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "active-set-method",
     "augmented-lagrangian-method",

@@ -5,6 +5,32 @@
   "type": "concept",
   "definition": "Extracting structured facts (entity pairs with typed relations) and events (triggers with typed arguments and roles) from text.",
   "details": "Extracting structured facts (entity pairs with typed relations) and events (triggers with typed arguments and roles) from text. The pipeline that feeds knowledge graphs, and by extension GraphRAG-style retrieval systems.",
+  "explainer": {
+    "lead": "It turns unstructured text into typed facts — entity pairs with relations and events with triggers, arguments and roles. Those facts are what downstream knowledge graphs and GraphRAG-style retrieval systems are built from.",
+    "tiers": {
+      "eli5": "It reads a sentence and pulls out the who-did-what-to-whom, like turning a news story into a filled-in form with names, actions and roles.",
+      "practitioner": "Engineers run it as a pipeline over documents, then load the triples and event records into a graph. The common pitfall is error propagation: a missed or mistyped entity corrupts every relation attached to it.",
+      "paperLevel": "Given text, output relations as (head entity, relation type, tail entity) and events as (trigger, event type, argument spans with roles). Limits: performance depends on schema coverage, and unseen relation or event types are typically missed."
+    },
+    "example": "From 'Acme, founded by Lee in 1998, acquired Beta', it yields (Acme, founded-by, Lee) and an acquisition event with Acme as acquirer, Beta as acquired, plus a date argument.",
+    "usedIn": [
+      {
+        "name": "Knowledge graph construction",
+        "detail": "population from documents",
+        "url": ""
+      },
+      {
+        "name": "GraphRAG retrieval",
+        "detail": "graph facts for grounding",
+        "url": ""
+      },
+      {
+        "name": "News and intelligence analysis",
+        "detail": "event monitoring",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "graphrag"
   ],

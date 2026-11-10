@@ -5,6 +5,32 @@
   "type": "concept",
   "definition": "A training paradigm where models learn from unlabeled data by solving auxiliary tasks derived automatically from the data itself, such as predicting missing or masked parts.",
   "details": "Self-supervised learning enabled the current era of large pretrained models, since it allows training on vast amounts of unlabeled text, images, or audio without expensive manual annotation.",
+  "explainer": {
+    "lead": "Self-supervised learning trains models on unlabeled data by solving tasks derived automatically from the data, such as predicting masked parts. It enabled the current era of large pretrained models by removing the need for expensive manual annotation.",
+    "tiers": {
+      "eli5": "Like learning a language by filling in blanks in books you already have, instead of needing a teacher to label every sentence.",
+      "practitioner": "Engineers pretrain encoders on masked-prediction objectives over vast text, image, or audio corpora, then fine-tune on small labeled sets. A pitfall is that the auxiliary task can push representations toward what the proxy objective rewards rather than what downstream tasks need.",
+      "paperLevel": "The model learns by minimizing a loss on proxy targets generated from the input itself, e.g. masked-token prediction loss over hidden positions. It requires no labels, but the proxy objective only approximates the downstream goal."
+    },
+    "example": "A text encoder is pretrained by masking 15% of tokens and training the model to predict them, then fine-tuned on a small labeled classification set.",
+    "usedIn": [
+      {
+        "name": "Large language model pretraining",
+        "detail": "masked and next-token prediction",
+        "url": ""
+      },
+      {
+        "name": "Vision encoders",
+        "detail": "masked image patches",
+        "url": ""
+      },
+      {
+        "name": "Audio encoders",
+        "detail": "masked segment prediction",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "supervised-learning",
     "pre-training",

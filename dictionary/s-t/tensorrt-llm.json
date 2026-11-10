@@ -8,6 +8,32 @@
   ],
   "definition": "An open-source Nvidia library for building and running optimised inference engines for large language models on Nvidia GPUs.",
   "details": "TensorRT-LLM wraps the TensorRT deep-learning compiler with large-language-model specific optimisations and a Python API for defining models, compiling engines and serving them. It implements the techniques that dominate modern LLM serving - paged attention and KV caching, continuous batching, chunked prefill, in-flight batching, speculative decoding and quantization down to low-bit formats - and ships the kernels needed to run them efficiently on datacentre GPUs. Engines are built ahead of time for a target GPU and precision, which is what allows aggressive fusion and kernel selection at the cost of a compile step and some portability across hardware generations. It is one of the main alternatives to vLLM and SGLang, and Nvidia positions it as part of the broader TensorRT product family alongside the core SDK and TensorRT-RTX.",
+  "explainer": {
+    "lead": "TensorRT-LLM is an open-source Nvidia library for building and running optimised inference engines for large language models on Nvidia GPUs. It matters because it packages the serving techniques that dominate modern LLM deployment into ready-made kernels.",
+    "tiers": {
+      "eli5": "It is a tuning kit that makes a large language model run faster on Nvidia graphics cards by pre-assembling the engine before you use it.",
+      "practitioner": "Engineers define a model and compile an engine ahead of time, using paged attention and KV caching, continuous batching, chunked prefill, in-flight batching, speculative decoding and low-bit quantization. The pitfall is that ahead-of-time engine building ties the compiled engine to its configuration, so changes require a rebuild.",
+      "paperLevel": "A wrapper around the TensorRT compiler with LLM-specific optimisations and a Python API for defining models, compiling engines and serving them; implements paged attention and KV caching, continuous batching, chunked prefill, in-flight batching, speculative decoding and quantization to low-bit formats."
+    },
+    "example": "To serve an LLM on datacentre GPUs, a team compiles an engine with TensorRT-LLM using continuous batching and low-bit quantization, then serves that engine rather than the raw model.",
+    "usedIn": [
+      {
+        "name": "Nvidia GPUs",
+        "detail": "datacentre serving",
+        "url": ""
+      },
+      {
+        "name": "LLM inference",
+        "detail": "optimised engines",
+        "url": ""
+      },
+      {
+        "name": "TensorRT",
+        "detail": "underlying compiler",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "tensorrt",
     "vllm",

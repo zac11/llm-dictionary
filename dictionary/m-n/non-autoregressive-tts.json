@@ -5,6 +5,32 @@
   "type": "concept",
   "definition": "Generating all acoustic frames in parallel with explicit duration prediction (FastSpeech lineage) instead of frame-by-frame autoregression.",
   "details": "Generating all acoustic frames in parallel with explicit duration prediction (FastSpeech lineage) instead of frame-by-frame autoregression. Fast and robust against the skipping and repetition failure modes of AR decoders; the contrasting design pole to codec-LM TTS.",
+  "explainer": {
+    "lead": "Non-autoregressive TTS generates all acoustic frames in parallel with explicit duration prediction, rather than frame by frame. It is the contrasting design pole to codec-LM TTS, trading some naturalness for speed and robustness.",
+    "tiers": {
+      "eli5": "Instead of writing a speech one note at a time, the model decides up front how long each sound lasts and then paints all the sounds at once.",
+      "practitioner": "Engineers use the FastSpeech-style pipeline: a duration predictor sets per-phone lengths, and a parallel decoder produces all frames, which makes inference fast and avoids skipping and repetition. Pitfall: duration prediction errors show up as rushed or stretched words, since there is no autoregressive loop to correct them.",
+      "paperLevel": "Given a text sequence, a duration model assigns a frame count to each unit and the decoder emits all frames in one pass from the expanded sequence. Known limits: it can sound flatter than autoregressive models, and accuracy hinges on the duration predictor."
+    },
+    "example": "A voice assistant renders a sentence in one parallel pass after the duration predictor assigns each phoneme roughly its expected number of frames.",
+    "usedIn": [
+      {
+        "name": "Voice assistants",
+        "detail": "fast synthesis",
+        "url": ""
+      },
+      {
+        "name": "Audiobook generation",
+        "detail": "long text",
+        "url": ""
+      },
+      {
+        "name": "Accessibility tools",
+        "detail": "screen readers",
+        "url": ""
+      }
+    ]
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

@@ -5,6 +5,32 @@
   "type": "algorithm",
   "definition": "A summed-area table is a data structure and algorithm for quickly and efficiently generating the sum of values in a rectangular subset of a grid.",
   "details": "In the image processing domain, it is also known as an integral image. It was introduced to computer graphics in 1984 by Frank Crow for use with mipmaps. In computer vision it was popularized by Lewis and then given the name \"integral image\" and prominently used within the Viola–Jones object detection framework in 2001. Historically, this principle is very well known in the study of multi-dimensional probability distribution functions, namely in computing 2D (or ND) probabilities (area under the probability distribution) from the respective cumulative distribution functions.",
+  "explainer": {
+    "lead": "A precomputed grid where each cell holds the sum of everything above and to its left, so any rectangular sum becomes four lookups. It matters because it turns per-window summation into constant-time work.",
+    "tiers": {
+      "eli5": "Like a running total on a receipt that lets you get the cost of any stretch of items by subtracting two totals instead of adding them all up again.",
+      "practitioner": "Engineers build the table once per image, then evaluate thousands of rectangular features in constant time, as in sliding-window detection; the pitfall is memory growth and overflow or precision loss when accumulating large or wide-valued grids.",
+      "paperLevel": "With table S(i,j) equal to the sum of values for all cells up to row i and column j, the sum over a rectangle is S(i2,j2)-S(i1-1,j2)-S(i2,j1-1)+S(i1-1,j1-1); building it costs one pass over the grid."
+    },
+    "example": "A 5x5 grid is converted to prefix sums once; the sum over rows 2-4 and columns 1-3 is then computed with four lookups instead of nine additions.",
+    "usedIn": [
+      {
+        "name": "Viola–Jones object detection",
+        "detail": "integral image features",
+        "url": ""
+      },
+      {
+        "name": "Computer graphics",
+        "detail": "mipmap filtering",
+        "url": ""
+      },
+      {
+        "name": "Probability computing",
+        "detail": "2D distribution areas",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "accord-net",
     "active-appearance-model",

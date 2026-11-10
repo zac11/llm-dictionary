@@ -5,6 +5,27 @@
   "type": "concept",
   "definition": "Matrix chain multiplication (or the matrix chain ordering problem) is an optimization problem concerning the most efficient way to multiply a given sequence of matrices.",
   "details": "The problem is not actually to perform the multiplications, but merely to decide the sequence of the matrix multiplications involved. The problem may be solved using dynamic programming. There are many options because matrix multiplication is associative. In other words, no matter how the product is parenthesized, the result obtained will remain the same. For example, for four matrices A, B, C, and D, there are five possible options: ((AB)C)D = (A(BC))D = (AB)(CD) = A((BC)D) = A(B(CD)). Although it does not affect the product, the order in which the terms are parenthesized affects the number of simple arithmetic operations needed to compute the product, that is, the computational complexity. The straightforward multiplication of a matrix that is X × Y by a matrix that is Y × Z requires XYZ ordinary multiplications and X(Y − 1)Z ordinary additions. In this context, it is typical to use the number of ordinary multiplications as a measure of the runtime complexity. If A is a 10 × 30 matrix, B is a 30 × 5 matrix, and C is a 5 × 60 matrix, then computing (AB)C needs (10×30×5) + (10×5×60) = 1500 + 3000 = 4500 operations, while computing A(BC) needs (30×5×60) + (10×30×60) = 9000 + 18000 = 27000 operations. Clearly the first method is more efficient. With this information, the problem statement can be refined as \"how to determine the optimal parenthesization of a product of n matrices?\" The number of possible parenthesizations is given by the (n–1)th Catalan number, which is Θ(4n / n3/2), so checking each possible parenthesization (brute force) would require a run-time that is exponential in the number of matrices, which is very slow and impractical for large n. A quicker solution to this problem can be achieved by breaking up the problem into a set of related subproblems.",
+  "explainer": {
+    "lead": "Matrix chain multiplication is the optimisation problem of choosing the most efficient order in which to multiply a given sequence of matrices. It matters because the order changes the cost while the result stays the same.",
+    "tiers": {
+      "eli5": "If you have to multiply several grids of numbers, the order you group them in doesn't change the answer but can change how much work it takes — this asks for the cheapest grouping.",
+      "practitioner": "Engineers solve it with dynamic programming to pick a parenthesisation before multiplying. The pitfall is forgetting the problem is about ordering, not about performing the multiplications.",
+      "paperLevel": "Find the cheapest parenthesisation of a matrix product. Because multiplication is associative, ((AB)C)D = (A(BC))D = (AB)(CD) = A((BC)D) = A(B(CD)) for four matrices; solved by dynamic programming."
+    },
+    "example": "For matrices A, B, C, D there are five valid parenthesations; the algorithm evaluates them by dynamic programming and returns the one with the fewest scalar operations.",
+    "usedIn": [
+      {
+        "name": "Dynamic programming",
+        "detail": "canonical textbook problem",
+        "url": ""
+      },
+      {
+        "name": "Numerical computing",
+        "detail": "expression ordering",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "document-term-matrix",
     "matrix-regularization",

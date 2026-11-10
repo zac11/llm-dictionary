@@ -5,6 +5,32 @@
   "type": "concept",
   "definition": "The practice of using a capable language model to evaluate or score the outputs of another model, as a scalable substitute for or complement to human evaluation.",
   "details": "LLM-as-a-judge approaches can dramatically reduce the cost and time of evaluation compared to human review, though they introduce their own biases (such as favoring longer or more confidently phrased answers) that practitioners must account for.",
+  "explainer": {
+    "lead": "Using a capable language model to score another model's outputs turns evaluation from a slow human bottleneck into a cheap, repeatable process. It matters because open-ended generation is hard to grade automatically, and this is the most practical substitute available at scale.",
+    "tiers": {
+      "eli5": "Instead of a teacher reading every essay, you ask a very good student to grade them all using the same rubric.",
+      "practitioner": "Engineers typically feed a judge model a rubric plus the prompt and response, then parse structured scores; a common pitfall is trusting the judge blindly, since it tends to favour longer or more confidently phrased answers.",
+      "paperLevel": "Formally, a judge model J takes a tuple (instruction, response) and returns a score or preference, often as a pairwise comparison; known limits include verbosity bias, position bias in pairwise setups, and self-preference for outputs from the same model family."
+    },
+    "example": "A team ranks two candidate answers to each of 500 support questions by asking a strong model which is better, then measures how often the judge agrees with a small human-labelled sample.",
+    "usedIn": [
+      {
+        "name": "Model evaluation pipelines",
+        "detail": "scoring generated answers",
+        "url": ""
+      },
+      {
+        "name": "RLHF preference data",
+        "detail": "synthetic ranking labels",
+        "url": ""
+      },
+      {
+        "name": "Regression testing",
+        "detail": "catching output drift",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "a-b-testing",
     "ablation-study",

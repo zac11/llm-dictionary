@@ -8,6 +8,32 @@
   ],
   "definition": "The natural logarithm of a token's predicted probability, commonly used instead of raw probability for numerical stability and easier aggregation across a sequence.",
   "details": "Log probabilities are summed rather than multiplied across a sequence to compute overall sequence likelihood, avoiding the numerical underflow that would occur when multiplying many small probabilities together.",
+  "explainer": {
+    "lead": "Log probability is the natural logarithm of a token's predicted probability, used in place of raw probability. It matters because it keeps very small likelihoods representable and makes sequence scores easy to combine.",
+    "tiers": {
+      "eli5": "Instead of saying a chance is one in a million, you write down how many zeroes it has, which is easier to add up across a long sentence.",
+      "practitioner": "Engineers sum log probabilities across a sequence to score or compare candidate outputs, such as ranking generated text. A pitfall is forgetting that summed scores favour shorter or longer sequences unless normalised by length.",
+      "paperLevel": "For a token with predicted probability p, the log probability is the natural logarithm of p; sequence likelihood is the sum of token log probabilities rather than their product, avoiding numerical underflow from multiplying many small probabilities."
+    },
+    "example": "A system compares two candidate completions of five and eight tokens; it sums each token's log probability to compare them and divides by length so the longer one is not unfairly penalised.",
+    "usedIn": [
+      {
+        "name": "Language model scoring",
+        "detail": "ranking outputs",
+        "url": ""
+      },
+      {
+        "name": "Speech recognition",
+        "detail": "sequence likelihoods",
+        "url": ""
+      },
+      {
+        "name": "Machine translation",
+        "detail": "candidate comparison",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "token-probability",
     "beam-search",

@@ -5,6 +5,32 @@
   "type": "concept",
   "definition": "Training sequence models on gold-truth prefixes (teacher forcing) while inference conditions on the model's own possibly-wrong outputs, a train-test mismatch called exposure bias.",
   "details": "Training sequence models on gold-truth prefixes (teacher forcing) while inference conditions on the model's own possibly-wrong outputs, a train-test mismatch called exposure bias. One motivation for training on self-generated data via RL and preference optimization, which close this gap.",
+  "explainer": {
+    "lead": "Teacher forcing and exposure bias describe a train-test mismatch in sequence models: training on gold-truth prefixes but inferring from the model’s own possibly-wrong outputs. It matters because this mismatch can degrade generation quality and motivates training on self-generated data.",
+    "tiers": {
+      "eli5": "During practice, a student is always given the correct previous answer, but during the real test they must rely on their own previous answers—which can be wrong and throw them off.",
+      "practitioner": "Engineers mitigate exposure bias with scheduled sampling, reinforcement learning, or preference optimization so the model sees its own outputs during training. A pitfall is that pure teacher forcing can leave the model brittle at inference time.",
+      "paperLevel": "Teacher forcing trains sequence models on gold-truth prefixes, while inference conditions on the model’s own outputs, creating a train-test distribution mismatch called exposure bias. One motivation for training on self-generated data via RL and preference optimization is to close this gap."
+    },
+    "example": "A translation model trained only on correct previous words may falter when its first generated word is wrong at inference, because it never practiced recovering from errors.",
+    "usedIn": [
+      {
+        "name": "Machine translation",
+        "detail": "seq2seq training",
+        "url": ""
+      },
+      {
+        "name": "Text generation",
+        "detail": "autoregressive models",
+        "url": ""
+      },
+      {
+        "name": "Reinforcement learning",
+        "detail": "self-generated data",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "inference",
     "teacher-forcing"

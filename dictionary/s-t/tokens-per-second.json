@@ -8,6 +8,27 @@
   ],
   "definition": "The two user-facing latency metrics: how long until output starts (dominated by prefill and queueing) and how fast it streams (dominated by decode).",
   "details": "The two user-facing latency metrics: how long until output starts (dominated by prefill and queueing) and how fast it streams (dominated by decode). Interactive products live and die by TTFT; batch pipelines care about total throughput.",
+  "explainer": {
+    "lead": "Tokens per second covers the two user-facing latency metrics: time until output starts and how fast it streams. It matters because interactive products live and die by time to first token, while batch pipelines care about total throughput.",
+    "tiers": {
+      "eli5": "One number is how long you wait before the answer begins, the other is how fast it types. Waiting is worse than slow typing for chat; the reverse can be true for bulk jobs.",
+      "practitioner": "Engineers tune prefill, queueing and decode separately to hit targets for each metric. A common pitfall is optimizing streaming speed while ignoring time to first token in an interactive product.",
+      "paperLevel": "Time to first token is dominated by prefill and queueing; streaming rate is dominated by decode. Throughput and latency trade off against each other."
+    },
+    "example": "A chat app failing on time to first token feels broken even if it streams fast; a nightly batch job cares mainly about total throughput.",
+    "usedIn": [
+      {
+        "name": "Interactive chat products",
+        "detail": "time to first token",
+        "url": ""
+      },
+      {
+        "name": "Batch pipelines",
+        "detail": "total throughput",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "latency",
     "throughput"

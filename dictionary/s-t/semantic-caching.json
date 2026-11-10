@@ -5,6 +5,32 @@
   "type": "concept",
   "definition": "Caching responses keyed by embedding similarity of requests, so paraphrases of previously answered questions skip the model entirely.",
   "details": "Caching responses keyed by embedding similarity of requests, so paraphrases of previously answered questions skip the model entirely. Effective for support and FAQ-heavy traffic; requires careful thresholds and invalidation to avoid serving stale or subtly wrong answers.",
+  "explainer": {
+    "lead": "Semantic caching stores responses keyed by embedding similarity of requests, so paraphrases of previously answered questions skip the model entirely. It matters for support and FAQ-heavy traffic, but needs careful thresholds and invalidation to avoid stale or subtly wrong answers.",
+    "tiers": {
+      "eli5": "Like a help desk that recognizes a reworded version of a question it already answered and reuses that answer.",
+      "practitioner": "Engineers embed incoming requests, match them against cached request embeddings by similarity, and return the stored response above a threshold. A pitfall is that loose thresholds serve subtly wrong answers, and cache entries can go stale.",
+      "paperLevel": "Responses are cached and keyed by embedding similarity between requests; a request whose similarity to a cached request exceeds a threshold skips the model. Correctness depends on threshold choice and invalidation policy."
+    },
+    "example": "A customer asks a reworded version of a common FAQ, and the system returns the cached answer because its embedding is close enough to the stored request.",
+    "usedIn": [
+      {
+        "name": "Support systems",
+        "detail": "FAQ-heavy traffic",
+        "url": ""
+      },
+      {
+        "name": "LLM applications",
+        "detail": "skipping model calls",
+        "url": ""
+      },
+      {
+        "name": "Embedding-based retrieval",
+        "detail": "similarity-keyed lookup",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "embedding"
   ],

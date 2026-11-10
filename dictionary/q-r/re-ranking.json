@@ -5,6 +5,32 @@
   "type": "concept",
   "definition": "A second-stage retrieval process that re-scores and reorders an initial set of candidate results using a more accurate (often more computationally expensive) model.",
   "details": "Re-ranking is commonly used in search and RAG pipelines: a fast, approximate retriever fetches a broad candidate set, and a slower, more precise re-ranker (often a cross-encoder) refines the final ordering.",
+  "explainer": {
+    "lead": "Re-ranking lets a system get precise results without paying for precision on every candidate. It matters because it splits retrieval into a cheap wide pass and an expensive narrow one.",
+    "tiers": {
+      "eli5": "Think of a librarian who first grabs a big pile of maybe-relevant books, then a slower expert reads them and puts the best ones on top.",
+      "practitioner": "Engineers pair a fast approximate retriever with a cross-encoder re-ranker over the top-N candidates. Pitfall: setting the candidate count too low silently caps final quality, since the re-ranker can only reorder what it is given.",
+      "paperLevel": "A two-stage ranking: a scorer f(q, d) is computed for each candidate d in an initial set, and results are sorted by that score. Cost scales with the candidate set size, so re-ranking is bounded by the first-stage recall."
+    },
+    "example": "A search system retrieves 100 documents with a vector index, then a cross-encoder scores all 100 and the top 10 are shown.",
+    "usedIn": [
+      {
+        "name": "Web search",
+        "detail": "refining result ordering",
+        "url": ""
+      },
+      {
+        "name": "RAG pipelines",
+        "detail": "improving retrieved context",
+        "url": ""
+      },
+      {
+        "name": "Enterprise search",
+        "detail": "precision on top results",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "api-key",
     "approximate-nearest-neighbor-search",

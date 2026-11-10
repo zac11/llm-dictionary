@@ -8,9 +8,9 @@
   "explainer": {
     "lead": "A feed-forward network turns an input into an output by passing it through fully connected layers, with a nonlinearity between them. It is a basic building block of deep learning and, inside transformers, its FFN blocks hold most of the parameters.",
     "tiers": {
-      "eli5": "Imagine a number going through several rooms: in each room, everyone mixes the incoming numbers, then applies a rule that bends the result instead of only scaling it. For example, a small input might become larger after one room, be clipped to zero if negative in the next, and finally become a prediction. Stacking these rooms lets the network learn patterns that a single straight-line rule cannot.",
-      "practitioner": "Build it as fully connected layers with nonlinearities between them; in a transformer, place the MLP-based FFN block after attention. Because these blocks hold most of a transformer's parameters, their size strongly affects parameter count and compute. Omitting nonlinearities leaves a stack of linear maps, which is still just one linear map.",
-      "paperLevel": "For input h_0 = x, each layer computes h_l = phi(W_l h_(l-1) + b_l), where W_l and b_l are learned and phi is nonlinear. The final h_L is the network output; inside a transformer, the same MLP form is used for the FFN after attention. Its expressiveness comes from composing these affine maps with nonlinearities, while transformer FFNs can dominate the parameter count."
+      "eli5": "Information enters at one end and moves straight through the layers to the exit, never looping back.",
+      "practitioner": "Engineers stack linear layers with activations for classification or regression, and rely on them as the FFN blocks after attention; the pitfall is parameter blowup in wide hidden layers.",
+      "paperLevel": "Fully connected layers stacked with nonlinearities, with no cycles. In a transformer, the position-wise FFN blocks after attention are MLPs and hold most of the parameters. Limits: no built-in handling of sequence order or recurrence."
     },
     "usedIn": [
       {
@@ -96,7 +96,8 @@
         }
       ],
       "caption": "Data flows in one direction through fully connected layers and nonlinearities, with no attention step inside the FFN itself."
-    }
+    },
+    "example": "A two-layer network maps an input vector through a hidden layer with ReLU to class scores; in a transformer, an MLP applies the same feed-forward transform to each token."
   },
   "related": [
     "attention",

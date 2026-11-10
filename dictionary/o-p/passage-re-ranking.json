@@ -5,6 +5,32 @@
   "type": "concept",
   "definition": "Re-ordering candidate passages retrieved for a query using a more expensive, more accurate model than the first-stage retriever.",
   "details": "Re-ordering candidate passages retrieved for a query using a more expensive, more accurate model than the first-stage retriever. Cross-encoders and listwise LLM rerankers are common choices in RAG and search pipelines.",
+  "explainer": {
+    "lead": "Passage re-ranking re-orders the candidate passages returned by a first-stage retriever using a slower, more accurate model. It matters because it sharply improves the passage order that reaches a reader or an LLM, at an affordable cost on a short candidate list.",
+    "tiers": {
+      "eli5": "A fast librarian grabs a rough pile of possibly relevant books; a careful expert then reads them and puts the best ones on top.",
+      "practitioner": "Engineers retrieve a few dozen to a few hundred candidates cheaply, then rerank with a cross-encoder or a listwise LLM reranker. The pitfall is latency and cost: reranking many candidates is expensive, and a good passage dropped by the first stage can never be recovered.",
+      "paperLevel": "Given query q and candidate set C from the first stage, produce an ordering scored by a stronger relevance model; common choices are cross-encoders scoring (q, passage) jointly or listwise LLM rerankers. Quality is bounded by the recall of the initial retrieval."
+    },
+    "example": "A retriever returns 100 passages for a question; a cross-encoder scores each query-passage pair and the top 5 are passed to the answer generator.",
+    "usedIn": [
+      {
+        "name": "Retrieval-augmented generation",
+        "detail": "sharpening context before generation",
+        "url": ""
+      },
+      {
+        "name": "Web search",
+        "detail": "ordering results after first-stage retrieval",
+        "url": ""
+      },
+      {
+        "name": "Enterprise document search",
+        "detail": "cross-encoder reranking",
+        "url": ""
+      }
+    ]
+  },
   "citation": {
     "title": "Passage Re-Ranking",
     "authors": [],

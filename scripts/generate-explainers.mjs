@@ -72,6 +72,14 @@ function loadEntries() {
 }
 
 /** Rebuild the record with the new type and explainer, dropping the generic story. */
+/** Keep an existing explainer's sections; add the compact tiers, and an example / Used in only where missing. */
+export function mergeCompact(existing, compact) {
+  const out = { ...existing, tiers: compact.tiers };
+  if (!existing.example && compact.example) out.example = compact.example;
+  if (!(Array.isArray(existing.usedIn) && existing.usedIn.length) && compact.usedIn) out.usedIn = compact.usedIn;
+  return out;
+}
+
 export function applyExplainer(raw, type, explainer) {
   const out = {};
   for (const [key, value] of Object.entries(raw)) {
@@ -186,7 +194,8 @@ async function main() {
             console.log(`  ✗ ${entry.slug}: ${issues.join('; ')}`);
             continue;
           }
-          writeFileSync(path, `${JSON.stringify(applyExplainer(raw, entry.type, explainer), null, 2)}\n`);
+          const merged = raw.explainer ? mergeCompact(raw.explainer, explainer) : explainer;
+          writeFileSync(path, `${JSON.stringify(applyExplainer(raw, entry.type, merged), null, 2)}\n`);
           written++;
           console.log(`  ✓ ${entry.slug} [tokens so far: ${usedTokens()}]`);
         }

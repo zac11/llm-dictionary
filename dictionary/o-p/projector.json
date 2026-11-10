@@ -8,6 +8,32 @@
   ],
   "definition": "The small module (linear layer, MLP, or resampler like Q-Former) mapping vision-encoder outputs into the LLM's token space, aligning the two pretrained components with modest training (the LLaVA recipe).",
   "details": "The small module (linear layer, MLP, or resampler like Q-Former) mapping vision-encoder outputs into the LLM's token space, aligning the two pretrained components with modest training (the LLaVA recipe).",
+  "explainer": {
+    "lead": "A projector is the small module mapping vision-encoder outputs into the LLM's token space, aligning two pretrained components with modest training. It matters because this alignment step is what lets a vision model and a language model work together.",
+    "tiers": {
+      "eli5": "It's a translator that turns what a computer \"sees\" into the kind of words a language model understands, so the two parts can talk to each other.",
+      "practitioner": "Engineers implement it as a linear layer, an MLP, or a resampler such as Q-Former, following the LLaVA recipe of training only this module to align a frozen vision encoder with an LLM. A pitfall is that the projector's quality bounds how well visual information reaches the language model.",
+      "paperLevel": "The projector is a small module (linear layer, MLP, or resampler like Q-Former) mapping vision-encoder outputs into the LLM's token space, aligning the two pretrained components with modest training in the LLaVA recipe. A known limit is that alignment depends on this lightweight module."
+    },
+    "example": "In the LLaVA recipe, a vision encoder's outputs pass through a small MLP projector that turns them into tokens the language model can consume.",
+    "usedIn": [
+      {
+        "name": "LLaVA",
+        "detail": "projector-based alignment recipe",
+        "url": ""
+      },
+      {
+        "name": "Q-Former",
+        "detail": "resampler variant",
+        "url": ""
+      },
+      {
+        "name": "Vision-language models",
+        "detail": "encoder-LLM bridging",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "token",
     "llava"

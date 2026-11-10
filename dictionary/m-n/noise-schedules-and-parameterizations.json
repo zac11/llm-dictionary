@@ -5,6 +5,32 @@
   "type": "concept",
   "definition": "The design choices of how noise is added across diffusion timesteps (linear, cosine) and what the network predicts (the noise, the clean image, or the velocity in v-prediction).",
   "details": "The design choices of how noise is added across diffusion timesteps (linear, cosine) and what the network predicts (the noise, the clean image, or the velocity in v-prediction). Unglamorous settings with outsized effects on training stability and sample quality.",
+  "explainer": {
+    "lead": "These are the paired choices of how noise grows over diffusion timesteps and what the network is trained to output. They are unglamorous settings that strongly affect training stability and sample quality.",
+    "tiers": {
+      "eli5": "It is like deciding how fast to fade a photo into static, and whether the model should be asked to name the static, the photo, or the direction of the fade.",
+      "practitioner": "Engineers pick a schedule (linear or cosine) and a prediction target (noise, clean image, or velocity in v-prediction) to keep loss balanced across timesteps. Pitfall: a schedule that puts most signal loss at a few timesteps, or a prediction target mismatched to the noise level, shows up as unstable training or poor samples at high and low noise.",
+      "paperLevel": "A schedule fixes how the noise level varies with timestep, and the parameterization fixes the training target: the added noise, the clean image, or the velocity in v-prediction. Known limits: no single choice is universally best; behaviour depends on resolution, data, and the rest of the objective."
+    },
+    "example": "Switching a text-to-image diffusion model from a linear schedule and noise prediction to a cosine schedule with v-prediction can remove colour artifacts in high-noise samples without changing the architecture.",
+    "usedIn": [
+      {
+        "name": "Image diffusion models",
+        "detail": "training stability",
+        "url": ""
+      },
+      {
+        "name": "Video generation",
+        "detail": "long-horizon sampling",
+        "url": ""
+      },
+      {
+        "name": "Audio diffusion",
+        "detail": "waveform synthesis",
+        "url": ""
+      }
+    ]
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

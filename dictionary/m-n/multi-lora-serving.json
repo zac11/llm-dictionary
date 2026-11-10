@@ -5,6 +5,27 @@
   "type": "concept",
   "definition": "Hosting one base model with many hot-swappable LoRA adapters in a single deployment (S-LoRA-style batching across adapters).",
   "details": "Hosting one base model with many hot-swappable LoRA adapters in a single deployment (S-LoRA-style batching across adapters). The economics behind per-tenant and per-task customization without per-customer GPU fleets.",
+  "explainer": {
+    "lead": "Multi-LoRA serving lets one base model host many hot-swappable LoRA adapters in a single deployment. It makes per-tenant and per-task customization economical without provisioning a separate GPU fleet for every customer.",
+    "tiers": {
+      "eli5": "It's like one kitchen cooking many different recipes by swapping small spice kits, instead of building a whole separate kitchen for each dish.",
+      "practitioner": "Engineers batch requests across adapters in a single deployment, S-LoRA-style, so many tenants share one base model. A common pitfall is uneven adapter traffic, which complicates batching and memory planning.",
+      "paperLevel": "One shared base model is combined with many LoRA adapters that can be swapped at serving time, with batching performed across adapters in the same deployment."
+    },
+    "example": "A SaaS platform serves many customers from one base model, loading each customer's LoRA adapter on demand rather than running a dedicated GPU fleet per customer.",
+    "usedIn": [
+      {
+        "name": "Multi-tenant LLM platforms",
+        "detail": "per-customer adapters",
+        "url": ""
+      },
+      {
+        "name": "S-LoRA-style serving",
+        "detail": "cross-adapter batching",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "foundation-model",
     "adapters"

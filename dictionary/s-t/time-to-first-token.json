@@ -8,6 +8,32 @@
   ],
   "definition": "The two user-facing latency metrics: how long until output starts (dominated by prefill and queueing) and how fast it streams (dominated by decode).",
   "details": "The two user-facing latency metrics: how long until output starts (dominated by prefill and queueing) and how fast it streams (dominated by decode). Interactive products live and die by TTFT; batch pipelines care about total throughput.",
+  "explainer": {
+    "lead": "Time to First Token measures how long until output starts, dominated by prefill and queueing, alongside how fast it streams, dominated by decode. These are the two user-facing latency metrics for language models.",
+    "tiers": {
+      "eli5": "It's the wait before a chatbot starts typing its answer, and then how quickly the words keep coming once it starts.",
+      "practitioner": "Engineers tune interactive products around TTFT because users feel the initial wait, while batch pipelines care about total throughput; a pitfall is optimising streaming speed when queueing and prefill are the real bottleneck.",
+      "paperLevel": "Formally, it is the pair of user-facing latency metrics: time until the first token is emitted (governed by prefill and queueing) and the rate of subsequent streaming (governed by decode). No further formal guarantees are specified here."
+    },
+    "example": "In a chat interface, a long pause before the first word appears is a high TTFT, even if the rest of the answer then streams quickly.",
+    "usedIn": [
+      {
+        "name": "Interactive chat products",
+        "detail": "Depend on TTFT",
+        "url": ""
+      },
+      {
+        "name": "Batch pipelines",
+        "detail": "Care about throughput",
+        "url": ""
+      },
+      {
+        "name": "LLM serving",
+        "detail": "Prefill and decode",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "latency",
     "throughput"

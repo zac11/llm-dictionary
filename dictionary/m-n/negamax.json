@@ -5,6 +5,32 @@
   "type": "concept",
   "definition": "Negamax search is a variant form of minimax search that relies on the zero-sum property of a two-player game.",
   "details": "This algorithm relies on the fact that ⁠ min ( a , b ) = − max ( − b , − a ) {\\displaystyle \\min(a,b)=-\\max(-b,-a)} ⁠ to simplify the implementation of the minimax algorithm. More precisely, the value of a position to player A in such a game is the negation of the value to player B. Thus, the player on move looks for a move that maximizes the negation of the value resulting from the move: this successor position must by definition have been valued by the opponent. The reasoning of the previous sentence works regardless of whether A or B is on move. This means that a single procedure can be used to value both positions. This is a coding simplification over minimax, which requires that A selects the move with the maximum-valued successor while B selects the move with the minimum-valued successor. It should not be confused with negascout, an algorithm to compute the minimax or negamax value quickly by clever use of alpha–beta pruning discovered in the 1980s. Note that alpha–beta pruning is itself a way to compute the minimax or negamax value of a position quickly by avoiding the search of certain uninteresting positions. Most adversarial search engines are coded using some form of negamax search.",
+  "explainer": {
+    "lead": "Negamax is a minimax variant for two-player zero-sum games that exploits the fact that one player's gain is the other's loss. It lets game engines implement search more compactly.",
+    "tiers": {
+      "eli5": "If your opponent's best score goes down, yours goes up by the same amount, so you can just flip the sign instead of tracking two scores.",
+      "practitioner": "Engineers use it in game AI so the same evaluation code serves both players by negating returned values; a pitfall is assuming zero-sum, which breaks for non-zero-sum games.",
+      "paperLevel": "Relies on min(a,b) = -max(-b,-a): the value of a position to one player is the negation of its value to the other, so the player to move maximizes the negation of the successor's value."
+    },
+    "example": "In a two-player board game, the engine scores a move by negating the opponent's best reply score rather than computing a separate minimizing pass.",
+    "usedIn": [
+      {
+        "name": "Chess engines",
+        "detail": "two-player search",
+        "url": ""
+      },
+      {
+        "name": "Checkers AI",
+        "detail": "zero-sum game play",
+        "url": ""
+      },
+      {
+        "name": "Game-playing agents",
+        "detail": "minimax simplification",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "a-logical-calculus-of-the-ideas-immanent-in-nervous-activity",
     "accelerated-linear-algebra",

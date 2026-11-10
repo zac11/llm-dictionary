@@ -5,6 +5,32 @@
   "type": "concept",
   "definition": "A technique where a model reviews, critiques, and potentially revises its own previous output before finalizing a response.",
   "details": "Self-reflection loops allow models to catch and correct their own errors, often improving accuracy on complex tasks at the cost of additional inference compute and latency.",
+  "explainer": {
+    "lead": "Self-reflection lets a model critique its own draft before delivering a final answer, which often catches errors on complex tasks. It matters because accuracy gains come at the cost of extra inference compute and latency.",
+    "tiers": {
+      "eli5": "Like rereading your homework and fixing mistakes before handing it in.",
+      "practitioner": "Engineers wrap the first pass in a review loop where the model critiques and revises its output. A common pitfall is that the critique can introduce new errors or loop without converging, inflating latency and cost.",
+      "paperLevel": "The model produces an output, generates a critique of that output, then produces a revised output conditioned on both; plain-language form: final = revise(original, critique(original)). The added compute and latency scale with the number of review rounds, and no bound guarantees improvement."
+    },
+    "example": "A model drafts a multi-step math answer, reviews it, spots a sign error in step three, and emits a corrected final response.",
+    "usedIn": [
+      {
+        "name": "Agentic chat assistants",
+        "detail": "draft-and-review cycles",
+        "url": ""
+      },
+      {
+        "name": "Complex reasoning tasks",
+        "detail": "error correction before output",
+        "url": ""
+      },
+      {
+        "name": "Coding assistants",
+        "detail": "self-critique of generated code",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "agent-registry",
     "agentic-workflow",

@@ -5,6 +5,27 @@
   "type": "concept",
   "definition": "Networks that generate the weights of other networks, enabling fast per-task adaptation and conditioning of a model on metadata.",
   "details": "Networks that generate the weights of other networks, enabling fast per-task adaptation and conditioning of a model on metadata. The idea resurfaces wherever one model must be specialized cheaply many times.",
+  "explainer": {
+    "lead": "Hypernetworks are networks that generate the weights of other networks, enabling fast per-task adaptation and conditioning on metadata. They matter wherever one model must be specialized cheaply many times.",
+    "tiers": {
+      "eli5": "One network writes the settings for another, like a coach adjusting a player's stance for each opponent.",
+      "practitioner": "A small generator produces task-specific weights for a main network, avoiding full retraining per task. Pitfall: generated weights add memory and compute overhead, and the generator can collapse toward near-identical outputs across tasks.",
+      "paperLevel": "A hypernetwork maps a task or metadata input to the parameters of a target network; the idea recurs wherever specialization must be cheap. Limits: not a formal guarantee of accuracy, and overhead grows with target-network size."
+    },
+    "example": "Given a task identifier, a hypernetwork emits the weights of a small classifier, which is then used directly without gradient updates.",
+    "usedIn": [
+      {
+        "name": "Few-shot adaptation",
+        "detail": "per-task weight generation",
+        "url": ""
+      },
+      {
+        "name": "Conditioned models",
+        "detail": "metadata-driven parameters",
+        "url": ""
+      }
+    ]
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

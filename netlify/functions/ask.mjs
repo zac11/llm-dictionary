@@ -27,6 +27,7 @@ export function getLlmConfig(env = process.env) {
 export function completionOptions(model) {
   const normalized = String(model || '').toLowerCase();
   if (normalized.includes('kimi-k3')) return { reasoning_effort: 'low' };
+  if (normalized.includes('deepseek')) return { thinking: { type: 'disabled' } };
   if (normalized.includes('kimi-k2.5') || normalized.includes('kimi-k2.6')) {
     return { thinking: { type: 'disabled' }, temperature: 0.6, top_p: 0.95 };
   }

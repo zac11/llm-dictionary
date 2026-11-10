@@ -5,6 +5,32 @@
   "type": "concept",
   "definition": "An attack in which an adversary queries a deployed model repeatedly to reconstruct a functionally similar copy of it.",
   "details": "Model extraction attacks threaten the intellectual property and security of proprietary models served via APIs, motivating rate limiting and query monitoring as defenses.",
+  "explainer": {
+    "lead": "An attacker queries a deployed model repeatedly to rebuild a functionally similar copy. This threatens the intellectual property and security of proprietary models served through APIs.",
+    "tiers": {
+      "eli5": "It is like asking a chef hundreds of questions about a secret recipe until you can cook nearly the same dish yourself.",
+      "practitioner": "Defenders watch query patterns and apply rate limiting because extraction needs many queries. A pitfall is that tight limits hurt legitimate heavy users, so thresholds must be tuned against real traffic.",
+      "paperLevel": "The attack reconstructs a model by fitting a surrogate to input-output pairs from the target; fidelity depends on query budget and access to outputs or probabilities. Known limits: cost scales with query count, and defenses such as rate limiting and query monitoring raise the bar rather than eliminate the risk."
+    },
+    "example": "An adversary sends thousands of labeled queries to a hosted classifier and trains a local model that matches most of its predictions, capturing much of its behavior without the original weights.",
+    "usedIn": [
+      {
+        "name": "API-served models",
+        "detail": "proprietary model protection",
+        "url": ""
+      },
+      {
+        "name": "Rate limiting",
+        "detail": "extraction defense",
+        "url": ""
+      },
+      {
+        "name": "Query monitoring",
+        "detail": "abuse detection",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "constitutional-reward-model",
     "guardrail-model",

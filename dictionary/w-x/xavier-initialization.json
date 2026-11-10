@@ -8,6 +8,27 @@
   ],
   "definition": "A weight-initialization scheme that keeps the variance of activations and gradients stable across layers.",
   "details": "Poor initialization lets signals vanish or explode as they pass through deep networks, stalling training. Xavier (Glorot) initialization scales weights according to the number of input and output units so that variance is preserved layer to layer; it was a key enabler for training deep feedforward and recurrent networks.",
+  "explainer": {
+    "lead": "Xavier initialization is a way to set a neural network's starting weights so that signal strength stays steady across layers. It matters because bad starting weights make deep networks fail to train at all.",
+    "tiers": {
+      "eli5": "Imagine passing a whisper down a long line of people; if each person shouts or mumbles, the message dies. Xavier sets everyone to speak at the same volume.",
+      "practitioner": "Engineers apply it when building deep feedforward or recurrent networks to avoid vanishing or exploding gradients. The pitfall is using it with activation functions it was not designed for, such as ReLU, where other schemes work better.",
+      "paperLevel": "Variance-preserving scaling: weights are drawn from a distribution whose variance depends on the number of input and output units, typically 2/(fan_in + fan_out). It assumes roughly linear activations, so it is not optimal for all nonlinearities."
+    },
+    "example": "In a layer with 100 inputs and 50 outputs, weights are initialized with variance 2/(100+50), keeping activations from shrinking or growing layer to layer.",
+    "usedIn": [
+      {
+        "name": "Deep feedforward networks",
+        "detail": "stable multi-layer training",
+        "url": ""
+      },
+      {
+        "name": "Recurrent networks",
+        "detail": "gradient stability over time",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "weight-initialization",
     "active-learning",

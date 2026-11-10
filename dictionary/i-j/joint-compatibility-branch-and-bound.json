@@ -5,6 +5,27 @@
   "type": "algorithm",
   "definition": "Joint compatibility branch and bound (JCBB) is an algorithm in computer vision and robotics commonly used for data association in simultaneous localization and mapping.",
   "details": "JCBB measures the joint compatibility of a set of pairings that successfully rejects spurious matchings and is hence known to be robust in complex environments.",
+  "explainer": {
+    "lead": "JCBB is a data association algorithm used in robotics and computer vision to decide which sensor detections correspond to which known landmarks. Reliable association matters because SLAM breaks down when matches are accepted individually and later prove mutually inconsistent.",
+    "tiers": {
+      "eli5": "Instead of asking one by one whether each new sighting matches a known landmark, it checks whether a whole set of proposed matches makes sense together, so a single lucky-looking match cannot fool it.",
+      "practitioner": "Engineers use it to prune spurious pairings during SLAM by testing joint compatibility of candidate sets while searching a branch-and-bound tree. A common pitfall is cost growth: checking large groups of pairings together becomes expensive as the map gets denser.",
+      "paperLevel": "Joint compatibility branch and bound searches over sets of pairings, accepting only sets whose joint compatibility passes a statistical test against the predicted measurement and covariance; known limits are computational cost in large or ambiguous environments."
+    },
+    "example": "When several landmarks sit close together, individual nearest-neighbour matching may assign a detection to the wrong one, but JCBB evaluates the group of assignments jointly and rejects the inconsistent combination.",
+    "usedIn": [
+      {
+        "name": "SLAM",
+        "detail": "data association for landmarks",
+        "url": ""
+      },
+      {
+        "name": "Mobile robotics",
+        "detail": "robust map matching",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "branch-and-bound",
     "accord-net",

@@ -8,6 +8,32 @@
   ],
   "definition": "A shortcut connection that adds a layer's input directly to its output, helping gradients flow through very deep networks.",
   "details": "Residual (or 'skip') connections, popularized by ResNet, are a core building block of transformer layers and make it feasible to train networks with dozens or hundreds of layers.",
+  "explainer": {
+    "lead": "It adds a layer's input directly to its output, letting gradients flow through very deep networks. It matters because it made networks with dozens or hundreds of layers trainable and is a core building block of transformer layers.",
+    "tiers": {
+      "eli5": "Like a staircase with a side ramp, so you can still get to the top even if the stairs are steep.",
+      "practitioner": "Engineers wrap blocks so output equals block(input) plus input, which stabilises training of deep stacks. A pitfall is that dimensions must match, so projections or padding are needed when they differ.",
+      "paperLevel": "A block computes y = F(x) + x, so gradients pass through the identity path; popularised by ResNet and now standard in transformer layers. It enables training of networks with dozens or hundreds of layers, though very deep stacks can still face optimisation issues."
+    },
+    "example": "A transformer sublayer computes its attention output, adds the original input to it, then normalises, so the signal has a direct path around the sublayer.",
+    "usedIn": [
+      {
+        "name": "ResNet",
+        "detail": "original popularisation",
+        "url": ""
+      },
+      {
+        "name": "Transformers",
+        "detail": "sublayer skip paths",
+        "url": ""
+      },
+      {
+        "name": "Deep networks",
+        "detail": "gradient flow",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "activation-function",
     "attention",

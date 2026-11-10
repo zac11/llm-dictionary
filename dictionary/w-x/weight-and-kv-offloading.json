@@ -5,6 +5,32 @@
   "type": "concept",
   "definition": "Spilling weights, KV cache, or optimizer states to CPU RAM or NVMe when accelerator memory runs out, trading bandwidth for capacity (DeepSpeed offload, llama.cpp layer offload).",
   "details": "Spilling weights, KV cache, or optimizer states to CPU RAM or NVMe when accelerator memory runs out, trading bandwidth for capacity (DeepSpeed offload, llama.cpp layer offload). The technique that lets large models run on small hardware, at a steep latency cost.",
+  "explainer": {
+    "lead": "Weight and KV offloading moves weights, KV cache or optimizer states to CPU RAM or NVMe when accelerator memory runs out, trading bandwidth for capacity. It is what lets large models run on small hardware, at a steep latency cost.",
+    "tiers": {
+      "eli5": "When a desk is too small for all your papers, you keep the rest in a drawer and fetch them as needed, which is slower but lets you keep working.",
+      "practitioner": "Engineers enable layer offload or DeepSpeed offload to fit models that exceed GPU memory. The pitfall is budgeting only for capacity: each fetch crosses a slow link, so latency and throughput degrade sharply.",
+      "paperLevel": "The technique spills parameters, KV cache or optimizer states from accelerator memory to CPU RAM or NVMe and streams them back on demand, trading memory bandwidth for capacity; known implementations include DeepSpeed offload and llama.cpp layer offload. The documented limit is a steep latency cost."
+    },
+    "example": "A model too large for one GPU runs with llama.cpp layer offload, keeping a few layers resident while the rest stream from system RAM, so it fits but generates tokens more slowly.",
+    "usedIn": [
+      {
+        "name": "DeepSpeed offload",
+        "detail": "training state spilling",
+        "url": ""
+      },
+      {
+        "name": "llama.cpp",
+        "detail": "layer offload",
+        "url": ""
+      },
+      {
+        "name": "Local inference",
+        "detail": "small-hardware models",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "deepspeed",
     "kv-cache",

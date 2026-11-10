@@ -11,9 +11,9 @@
   "explainer": {
     "lead": "A Gated Recurrent Unit (GRU) is a compact neural network design for modeling sequences, where earlier context can affect later outputs. It simplifies the LSTM by combining two of its gates into one, often delivering comparable results with fewer parameters.",
     "tiers": {
-      "eli5": "Imagine reading a long story while keeping a small notebook of what still matters. A GRU is like a careful note-taker that uses one simple control to decide how to update those notes as each new sentence arrives. This helps it remember useful earlier information without carrying as much machinery as an LSTM.",
-      "practitioner": "Use a GRU as a recurrent sequence-modeling architecture when you want a smaller alternative to an LSTM. Its merged update gate reduces the parameter count, but comparable performance is not guaranteed on every task, so evaluate it against an LSTM on the target workload. Pay particular attention to whether the task actually requires retaining context across long distances in the sequence.",
-      "paperLevel": "A GRU is a simplified LSTM variant in which the input and forget gates are merged into a single update gate. The architecture targets long-range dependencies in sequence modeling while using fewer parameters than an LSTM. Evidence of comparable performance is task-dependent, not a universal equivalence result."
+      "eli5": "It's like a memory notebook that only has one switch deciding what to keep from the past and what to add, instead of several switches.",
+      "practitioner": "Engineers drop GRUs into sequence models when they want LSTM-like performance at lower cost. The pitfall is assuming the saving always holds, since comparable performance depends on the task.",
+      "paperLevel": "A GRU merges the LSTM's forget and input gates into a single update gate; the formal specification is the gate equations controlling reset and update. Fewer parameters is the known trade-off, not a guaranteed accuracy gain."
     },
     "usedIn": [
       {
@@ -110,7 +110,8 @@
         }
       ],
       "caption": "At each sequence step, the GRU combines current input with earlier state and uses its update gate to revise the context passed forward."
-    }
+    },
+    "example": "A team modeling short sensor sequences picks a GRU over an LSTM and trains it faster because it has fewer parameters to update."
   },
   "related": [
     "gelu",

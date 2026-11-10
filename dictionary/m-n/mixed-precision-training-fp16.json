@@ -5,6 +5,32 @@
   "type": "concept",
   "definition": "Computing in 16-bit while keeping master weights and sensitive accumulations in 32-bit, roughly doubling speed and halving memory.",
   "details": "Computing in 16-bit while keeping master weights and sensitive accumulations in 32-bit, roughly doubling speed and halving memory. BF16's wide exponent range removed the loss-scaling headaches of FP16 and is now the default.",
+  "explainer": {
+    "lead": "Mixed-precision FP16 training computes in 16-bit while keeping master weights and sensitive accumulations in 32-bit, roughly doubling speed and halving memory. It matters because it made large-model training practical on limited hardware.",
+    "tiers": {
+      "eli5": "Do the bulk of the maths in a lighter, faster format, but keep the important numbers in full detail so nothing drifts.",
+      "practitioner": "Engineers wrap forward and backward passes in autocast and keep an FP32 master copy of weights; a pitfall with FP16 is gradient underflow, requiring loss scaling.",
+      "paperLevel": "Most operations run in 16-bit with 32-bit master weights and accumulations; FP16's narrow exponent range requires loss scaling, which BF16's wider exponent range removed, making BF16 the current default."
+    },
+    "example": "A model trained on GPUs with FP16 autocast and dynamic loss scaling gets roughly 2x throughput and half the memory versus pure FP32.",
+    "usedIn": [
+      {
+        "name": "FP16 autocast",
+        "detail": "fast 16-bit compute",
+        "url": ""
+      },
+      {
+        "name": "Loss scaling",
+        "detail": "prevents gradient underflow",
+        "url": ""
+      },
+      {
+        "name": "BF16 training",
+        "detail": "default wide-exponent format",
+        "url": ""
+      }
+    ]
+  },
   "citation": {
     "title": "The Advanced AI Glossary",
     "authors": [],

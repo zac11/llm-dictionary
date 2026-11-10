@@ -8,9 +8,9 @@
   "explainer": {
     "lead": "A feedback neural network can revisit its own work instead of treating every answer as a one-way calculation. In reasoning language models, that extra pass can support error checking and multi-step reasoning, at the cost of additional computation during inference.",
     "tiers": {
-      "eli5": "It is like a student who answers a question, reads the answer back, spots a weak step, and tries again. Some systems write down their checking in words, while others feed information back inside their hidden calculations. The extra thinking can help, but it takes more time and computing power.",
-      "practitioner": "Apply it through repeated model passes, post-hoc critique prompts, iterative revision such as Tree-of-Thoughts, or reflection built into training and architecture. DeepSeek-R1 uses GRPO to steer chain-of-thought, while budget forcing simply makes generation continue reasoning; special tokens such as <thinking> can delimit reflection. For example, generate an initial answer, prompt the model to identify errors and improvements, then generate a revised answer. More passes increase inference cost, and process reward models can add computational expense and reward-hacking problems.",
-      "paperLevel": "A feedforward network computes y = f(x); feedback adds a return path based on y or later layers, either after decoding to tokens or by routing the last layer's latent state back to the first. Repeated passes extend chain-of-thought and implement inference-time scaling, while reinforcement learning can steer the reasoning trajectory. Reflection may be post-hoc, iterative during generation, or intrinsic to the architecture. Process reward models score individual reasoning steps rather than only final outcomes, but face computational cost and reward hacking; DeepSeek-R1's developers did not find them beneficial."
+      "eli5": "It is like re-reading your own answer before handing it in, then fixing mistakes you notice.",
+      "practitioner": "Engineers use it via chain-of-thought prompting or latent feedback loops at inference; the pitfall is that extra deliberation costs compute and can still reinforce a wrong answer.",
+      "paperLevel": "Networks providing bottom-up and top-down feedback to inputs or previous layers based on outputs or subsequent layers; feedback can occur after full decoding or continuously in latent space by feeding the last layer back to the first. It is a form of test-time compute aimed at self-assessment, reducing hallucinations and increasing interpretability. Limits: additional inference compute, no guarantee of correctness."
     },
     "usedIn": [
       {
@@ -138,7 +138,8 @@
         "title": "Wikipedia: Feedback neural network",
         "url": "https://en.wikipedia.org/wiki/Feedback_neural_network"
       }
-    ]
+    ],
+    "example": "A reasoning model generates intermediate steps, then revises its draft answer before returning it, spending extra inference compute on self-correction."
   },
   "related": [
     "neural-network",

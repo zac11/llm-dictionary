@@ -8,9 +8,9 @@
   "explainer": {
     "lead": "An early-exit network is a neural network with decision points partway through, so it can classify an input without always running every layer. Inputs that already produce a confident answer finish sooner, while the rest continue deeper, reducing computation and time.",
     "tiers": {
-      "eli5": "Imagine taking a quiz where you can stop after each section if you are already sure of your final answer. An early-exit network works similarly: it checks its answer at several points and stops early when one seems reliable. If not, it keeps thinking by using more layers.",
-      "practitioner": "Add intermediate classifiers and choose exit rules using signals such as softmax scores, classification margins, or entropy. Set the criteria to balance computation saved against accuracy preserved, and pair inference with specialized training and system-level optimizations. A poorly chosen confidence rule can accept uncertain predictions too early or send too many inputs through the full network, weakening either accuracy or efficiency.",
-      "paperLevel": "For input x, let h_l = f_l(x) be the representation at layer l and p_l = g_l(h_l) the intermediate classifier's prediction. The network exits at the first l whose confidence criterion C(p_l) passes threshold tau_l, otherwise it continues to the full network. Accuracy and efficiency depend on the exit criteria, thresholds, training procedure, and system implementation; expert-based variants aggregate several intermediate classifiers' predictions and confidence scores."
+      "eli5": "It is like a student who answers a question as soon as they are sure, rather than always working through every step to the end.",
+      "practitioner": "Engineers add intermediate classifiers and exit criteria to a backbone, often with specialised training and system-level optimisations. A pitfall is that poorly calibrated confidence can trigger exits that are fast but wrong.",
+      "paperLevel": "Early-exit mechanisms add intermediate classifiers to deep networks so inference can stop at earlier layers when confidence measures such as softmax-derived scores, classification margins or entropy indicate low uncertainty. Limits: accuracy depends on exit criteria and threshold calibration, and benefits require matching training and system support."
     },
     "usedIn": [
       {
@@ -126,7 +126,8 @@
         }
       ],
       "caption": "At each exit point, a confident prediction is returned; otherwise, the input continues through more of the network."
-    }
+    },
+    "example": "An image classified with high confidence at an intermediate layer exits there, skipping the remaining layers and saving compute."
   },
   "related": [
     "circuit-neural-network",

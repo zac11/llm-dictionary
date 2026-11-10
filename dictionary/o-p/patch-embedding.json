@@ -8,6 +8,32 @@
   ],
   "definition": "The image equivalent of tokenization: fixed-size patches (e.g.",
   "details": "The image equivalent of tokenization: fixed-size patches (e.g. 14x14 pixels) projected into embedding vectors. Image resolution therefore translates directly into token count and cost in VLMs.",
+  "explainer": {
+    "lead": "Patch embedding is the image counterpart of tokenization: the image is cut into fixed-size patches that are projected into embedding vectors. It matters because image resolution translates directly into token count and therefore cost in vision-language models.",
+    "tiers": {
+      "eli5": "Tear a photo into a grid of equal squares, then turn each square into a short summary card the model can read; a bigger photo means more cards.",
+      "practitioner": "Engineers pick patch size and input resolution to trade detail against compute and context length. The pitfall is that large inputs explode the token count, so high-resolution images can blow up latency and cost.",
+      "paperLevel": "A patch of p x p pixels is flattened and linearly projected into an embedding vector; the number of tokens is (image width / p) times (image height / p). The token count therefore grows with the square of resolution."
+    },
+    "example": "A 224x224 image with 14x14 patches yields 16x16 = 256 patch embeddings, one token per patch fed to the transformer.",
+    "usedIn": [
+      {
+        "name": "Vision transformers",
+        "detail": "patch tokens as model input",
+        "url": ""
+      },
+      {
+        "name": "Vision-language models",
+        "detail": "resolution-driven token cost",
+        "url": ""
+      },
+      {
+        "name": "Image classification",
+        "detail": "linear projection of patches",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "embedding",
     "token",

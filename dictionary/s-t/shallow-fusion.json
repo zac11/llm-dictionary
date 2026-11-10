@@ -8,6 +8,32 @@
   ],
   "definition": "Interpolating an external language model's scores into ASR beam search at decode time, biasing recognition toward in-domain vocabulary without retraining the acoustic model.",
   "details": "Interpolating an external language model's scores into ASR beam search at decode time, biasing recognition toward in-domain vocabulary without retraining the acoustic model. The cheapest form of ASR domain adaptation, with deep and cold fusion as the trained alternatives.",
+  "explainer": {
+    "lead": "Shallow fusion blends an external language model's scores into ASR beam search at decode time, biasing recognition toward in-domain vocabulary without retraining the acoustic model. It is the cheapest form of ASR domain adaptation.",
+    "tiers": {
+      "eli5": "While transcribing speech, the system lets a second model that knows your special vocabulary nudge the choice of words, without retraining the main listener.",
+      "practitioner": "Engineers add a weighted term to the beam search score to favour in-domain words, leaving the acoustic model untouched. A pitfall is that a too-large weight over-biases output and increases errors, so the weight must be tuned.",
+      "paperLevel": "At each beam step the combined score is the acoustic model log-probability plus a weight times the external language model log-probability; deep and cold fusion are the trained alternatives. Limits include needing a good in-domain language model and sensitivity to the weight."
+    },
+    "example": "A medical dictation system adds a language model of clinical terms so drug names are recognised without fine-tuning the acoustic model.",
+    "usedIn": [
+      {
+        "name": "ASR domain adaptation",
+        "detail": "in-domain vocabulary bias",
+        "url": ""
+      },
+      {
+        "name": "Beam search decoding",
+        "detail": "score interpolation",
+        "url": ""
+      },
+      {
+        "name": "Speech recognition",
+        "detail": "specialised terms",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "acoustic-model",
     "beam-search",

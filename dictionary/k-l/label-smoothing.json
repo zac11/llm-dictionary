@@ -5,6 +5,27 @@
   "type": "concept",
   "definition": "Replacing hard one-hot targets with slightly softened ones so the model never trains toward infinite confidence.",
   "details": "Replacing hard one-hot targets with slightly softened ones so the model never trains toward infinite confidence. Improves calibration and generalization in classification and translation, but interacts badly with distillation (it distorts the teacher's probability structure).",
+  "explainer": {
+    "lead": "Label smoothing replaces hard one-hot targets with slightly softened ones so the model never trains toward infinite confidence. It improves calibration and generalization in classification and translation.",
+    "tiers": {
+      "eli5": "Instead of telling the model an answer is 100% right, you tell it it is mostly right, so it stays a little humble.",
+      "practitioner": "Engineers apply it as a cheap regularizer in classifiers and translation models to get better-calibrated, better-generalizing outputs. A pitfall is distillation: smoothing distorts the teacher's probability structure, so it interacts badly when transferring knowledge to a student.",
+      "paperLevel": "Hard one-hot targets are replaced by softened targets that spread a small amount of probability mass across other classes, preventing training toward infinite confidence. It improves calibration and generalization but distorts a teacher's probability structure in distillation."
+    },
+    "example": "A one-hot target of 1 for the correct class is replaced with a slightly lower value, with the remainder spread across other classes.",
+    "usedIn": [
+      {
+        "name": "Classification",
+        "detail": "calibration",
+        "url": ""
+      },
+      {
+        "name": "Machine translation",
+        "detail": "generalization",
+        "url": ""
+      }
+    ]
+  },
   "related": [
     "calibration",
     "knowledge-distillation"

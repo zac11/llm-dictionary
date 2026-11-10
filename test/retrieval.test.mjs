@@ -201,6 +201,7 @@ test('completionOptions use Kimi instant or low-reasoning modes', () => {
     top_p: 0.95,
   });
   assert.deepEqual(completionOptions('kimi-k3'), { reasoning_effort: 'low' });
+  assert.deepEqual(completionOptions('deepseek-flash'), { thinking: { type: 'disabled' } });
   assert.deepEqual(completionOptions('other-model'), {});
 });
 
