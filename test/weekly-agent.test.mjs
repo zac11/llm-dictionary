@@ -44,6 +44,14 @@ test('parseCandidates keeps non-object items when salvaging a broken array', () 
   assert.ok(rejected.some((item) => item.reason === 'malformed-json'));
 });
 
+test('parseCandidates recovers entries after a missing comma or an unclosed nested array', () => {
+  const missingComma = agent.parseCandidates('[{"term":"A","letter":"A"} {"term":"B","letter":"B"}, null,]');
+  assert.deepEqual(missingComma.candidates, [{ term: 'A', letter: 'A' }, { term: 'B', letter: 'B' }, null]);
+  const unclosed = agent.parseCandidates('[{"term":"A","aka":["x"}, {"term":"B","letter":"B"}, {"term":"C","letter":"C"}]');
+  assert.deepEqual(unclosed.candidates.map((item) => item.term), ['B', 'C']);
+  assert.equal(unclosed.malformed.length, 1);
+});
+
 test('parseCandidates and filterCandidates reject prose and non-object items as malformed-json', () => {
   const prose = agent.parseCandidates('Sorry, I cannot help with that.');
   assert.equal(prose.candidates.length, 0);

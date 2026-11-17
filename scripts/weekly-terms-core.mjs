@@ -147,12 +147,21 @@ function arrayItems(text) {
   return items;
 }
 
+// An unparseable item may hold several objects (a missing comma, or an
+// unclosed `[` that swallowed later entries); split it on braces instead.
+const splitBroken = (items) =>
+  items.flatMap((item) => {
+    if (tryJson(item).ok || !item.includes('{')) return [item];
+    const spans = objectSpans(item.slice(item.indexOf('{')));
+    return spans.length ? spans : [item];
+  });
+
 function salvageItems(body) {
   const wrapped = body.match(/"(?:terms|candidates|entries|items)"\s*:\s*\[/);
-  if (wrapped) return arrayItems(body.slice(wrapped.index + wrapped[0].length));
+  if (wrapped) return splitBroken(arrayItems(body.slice(wrapped.index + wrapped[0].length)));
   const bracket = body.indexOf('[');
   const brace = body.indexOf('{');
-  if (bracket >= 0 && (brace < 0 || bracket < brace)) return arrayItems(body.slice(bracket + 1));
+  if (bracket >= 0 && (brace < 0 || bracket < brace)) return splitBroken(arrayItems(body.slice(bracket + 1)));
   return brace >= 0 ? objectSpans(body.slice(brace)) : [];
 }
 
