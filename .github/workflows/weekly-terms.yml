@@ -1,0 +1,85 @@
+name: Weekly terms
+
+# Runs the weekly term-generation agent, scores its output with
+# scripts/eval-weekly-agent.mjs and opens a PR whose body ends with the metrics.
+#
+# Contract with scripts/generate-weekly-terms.mjs (optional env it may honour):
+#   WEEKLY_REPLY_PATH    write the raw LLM reply here so this run can be scored
+#   WEEKLY_PR_BODY_PATH  write a Markdown summary here; the metrics are appended
+# New dictionary/ files must be left uncommitted: the eval treats only tracked
+# entries as "existing".
+
+on:
+  schedule:
+    - cron: '30 3 * * 1' # Mondays 03:30 UTC
+  workflow_dispatch:
+    inputs:
+      live_eval:
+        description: 'Also run one live provider call (eval-weekly-agent.mjs --live)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  weekly-terms:
+    runs-on: ubuntu-latest
+    env:
+      DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      WEEKLY_REPLY_PATH: .weekly/llm-reply.txt
+      WEEKLY_PR_BODY_PATH: .weekly/pr-body.md
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # package-lock.json is gitignored, so npm ci is not available.
+      - run: npm install --no-audit --no-fund
+
+      - name: Generate terms
+        run: |
+          mkdir -p .weekly
+          if [ -f scripts/generate-weekly-terms.mjs ]; then
+            node scripts/generate-weekly-terms.mjs
+          else
+            echo "::warning::scripts/generate-weekly-terms.mjs not found; only offline evals will run"
+          fi
+
+      - name: Eval weekly agent
+        run: |
+          node scripts/eval-weekly-agent.mjs --format markdown --out .weekly/eval-offline.md
+          if [ -s "$WEEKLY_REPLY_PATH" ]; then
+            node scripts/eval-weekly-agent.mjs --input "$WEEKLY_REPLY_PATH" --format markdown --out .weekly/eval-run.md
+          fi
+          if [ "${{ inputs.live_eval }}" = "true" ]; then
+            node scripts/eval-weekly-agent.mjs --live --format markdown --out .weekly/eval-live.md
+          fi
+
+      - name: Assemble PR body
+        run: |
+          {
+            if [ -s "$WEEKLY_PR_BODY_PATH" ]; then cat "$WEEKLY_PR_BODY_PATH"; else echo "New terms proposed by the weekly agent."; fi
+            echo
+            echo "## Eval metrics"
+            echo
+            for file in .weekly/eval-run.md .weekly/eval-live.md .weekly/eval-offline.md; do
+              if [ -s "$file" ]; then cat "$file"; echo; fi
+            done
+          } > .weekly/body.md
+          cat .weekly/body.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Open PR
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: weekly-terms/${{ github.run_id }}
+          base: main
+          add-paths: dictionary/**
+          commit-message: 'Weekly terms: new dictionary entries'
+          title: 'Weekly terms'
+          body-path: .weekly/body.md
+          delete-branch: true
