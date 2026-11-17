@@ -32,6 +32,8 @@ llm-dictionary/
 │   ├── classify-types.mjs # entity types: person, event, concept… (npm run types)
 │   ├── import-people.mjs  # bulk-add people from JSON lists (npm run import:people)
 │   ├── mark-deceased.mjs  # flags deceased people so LinkedIn is hidden (npm run deceased)
+│   ├── eval-weekly-agent.mjs # offline / live evals for the weekly term agent (npm run eval:weekly)
+│   ├── weekly-terms-core.mjs # weekly agent's pure units: exclusion list, parser, dedup filter
 │   ├── generate-og.mjs    # writes public/og.png (1200×630 preview card)
 │   └── prerender-share.mjs# post-build: per-term /term/<slug>/ share pages
 ├── src/
@@ -228,6 +230,28 @@ npm run test:kimi
 The test fails on authentication errors, non-JSON responses, missing completion content,
 an unexpected response, or latency beyond the function's 18-second upstream budget.
 Never commit provider credentials or place them in tracked files.
+
+### Weekly agent evals
+
+`test/weekly-agent.test.mjs` (part of `npm test`) runs the weekly term agent's
+exclusion-list builder, reply parser and dedup / validation filter against fixture
+LLM replies in `test/fixtures/weekly-agent/`, with no API calls. Rejections carry a
+reason code: `malformed-json`, `schema-invalid`, `validation-warning`,
+`duplicate-slug`, `duplicate-term`, `duplicate-aka` or `duplicate-in-batch`.
+
+```sh
+npm run eval:weekly                                   # offline fixtures, JSON report
+node scripts/eval-weekly-agent.mjs --format markdown  # same, as a Markdown table
+node scripts/eval-weekly-agent.mjs --input reply.txt  # score a saved reply against dictionary/
+npm run eval:weekly:live                              # one real call, manual / scheduled only
+```
+
+`--live` needs `DEEPSEEK_API_KEY` or `GEMINI_API_KEY` (DeepSeek wins when both are
+set; `WEEKLY_MODEL` and `WEEKLY_BASE_URL` override the model and endpoint) and never runs under `npm test`. It sends the
+full exclusion list (every term, slug and alias), so expect a large prompt. The
+`Weekly terms` workflow runs the offline eval and, when the agent saved its reply,
+scores that run, then appends the metrics table to the PR body; tick `live_eval`
+on a manual run to add a live check.
 
 ## 📈 Distinct visitor count
 
