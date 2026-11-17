@@ -148,12 +148,27 @@ function arrayItems(text) {
 }
 
 // An unparseable item may hold several objects (a missing comma, or an
-// unclosed `[` that swallowed later entries); split it on braces instead.
+// unclosed `[` that swallowed later entries); split it on braces instead,
+// keeping any text between objects as its own fragment so it still counts.
 const splitBroken = (items) =>
   items.flatMap((item) => {
     if (tryJson(item).ok || !item.includes('{')) return [item];
-    const spans = objectSpans(item.slice(item.indexOf('{')));
-    return spans.length ? spans : [item];
+    const spans = objectSpans(item);
+    if (!spans.length) return [item];
+    const parts = [];
+    const keep = (text) => {
+      const rest = text.replace(/^[\s,\]]+|[\s,\]]+$/g, '');
+      if (rest) parts.push(rest);
+    };
+    let cursor = 0;
+    for (const span of spans) {
+      const at = item.indexOf(span, cursor);
+      keep(item.slice(cursor, at));
+      parts.push(span);
+      cursor = at + span.length;
+    }
+    keep(item.slice(cursor));
+    return parts;
   });
 
 function salvageItems(body) {

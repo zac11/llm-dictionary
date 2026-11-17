@@ -47,6 +47,8 @@ test('parseCandidates keeps non-object items when salvaging a broken array', () 
 test('parseCandidates recovers entries after a missing comma or an unclosed nested array', () => {
   const missingComma = agent.parseCandidates('[{"term":"A","letter":"A"} {"term":"B","letter":"B"}, null,]');
   assert.deepEqual(missingComma.candidates, [{ term: 'A', letter: 'A' }, { term: 'B', letter: 'B' }, null]);
+  const leadingNull = agent.parseCandidates('[null {"term":"A","letter":"A"} 7,]');
+  assert.deepEqual(leadingNull.candidates, [null, { term: 'A', letter: 'A' }, 7]);
   const unclosed = agent.parseCandidates('[{"term":"A","aka":["x"}, {"term":"B","letter":"B"}, {"term":"C","letter":"C"}]');
   assert.deepEqual(unclosed.candidates.map((item) => item.term), ['B', 'C']);
   assert.equal(unclosed.malformed.length, 1);
