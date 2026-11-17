@@ -366,7 +366,9 @@ export function computeMetrics({ accepted, rejected }, { expected = null } = {})
     const labels = [...wanted.values()].flat();
     metrics.expectedAccepted = labels.filter((value) => value === 'accepted').length;
     metrics.expectedAccuracy = pct(metrics.expectedAccepted, labels.length);
-    metrics.decisionAccuracy = pct(matched, Math.max(labels.length, proposed));
+    metrics.decisionMatched = matched;
+    metrics.decisionTotal = Math.max(labels.length, proposed);
+    metrics.decisionAccuracy = pct(matched, metrics.decisionTotal);
     metrics.mismatches = mismatches;
   }
   return metrics;

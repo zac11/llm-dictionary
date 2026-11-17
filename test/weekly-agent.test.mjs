@@ -182,6 +182,20 @@ test('metrics report: offline runner summarises every suite and passes', async (
   );
 });
 
+test('metrics report: decision accuracy never goes negative when labels go unmatched', async () => {
+  const renamed = {
+    ...agent,
+    filterCandidates: (candidates, existingTerms) => {
+      const { accepted, rejected } = agent.filterCandidates(candidates, existingTerms);
+      const rename = (item) => ({ ...item, slug: `renamed-${item.slug}` });
+      return { accepted: accepted.map(rename), rejected: rejected.map(rename) };
+    },
+  };
+  const report = await runOfflineEvals({ agent: renamed });
+  assert.equal(report.passed, false);
+  assert.equal(report.totals.decisionAccuracy, 0);
+});
+
 test('reply eval scores a saved reply against tracked dictionary/ entries', async () => {
   const report = await runReplyEval(fixture('duplicates-reply.txt'), { root: ROOT, agent });
   assert.equal(report.mode, 'input');

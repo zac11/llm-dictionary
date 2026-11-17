@@ -51,8 +51,8 @@ export async function runOfflineEvals({ fixtures = FIXTURES, agent = null } = {}
     merged.rejected.push(...result.rejected);
   }
   const totals = computeMetrics(merged);
-  const decisions = SUITES.reduce((sum, name) => sum + suites[name].proposed, 0);
-  const correct = SUITES.reduce((sum, name) => sum + suites[name].proposed - suites[name].mismatches.length, 0);
+  const decisions = SUITES.reduce((sum, name) => sum + suites[name].decisionTotal, 0);
+  const correct = SUITES.reduce((sum, name) => sum + suites[name].decisionMatched, 0);
   totals.decisionAccuracy = decisions ? Math.round((correct / decisions) * 1000) / 10 : 0;
   return {
     mode: 'offline',
