@@ -52,6 +52,9 @@ test('parseCandidates recovers entries after a missing comma or an unclosed nest
   const unclosed = agent.parseCandidates('[{"term":"A","aka":["x"}, {"term":"B","letter":"B"}, {"term":"C","letter":"C"}]');
   assert.deepEqual(unclosed.candidates.map((item) => item.term), ['B', 'C']);
   assert.equal(unclosed.malformed.length, 1);
+  const wrapped = agent.parseCandidates('{"terms":[{"term":"A","aka":["x"}, {"term":"B","letter":"B"}]}');
+  assert.deepEqual(wrapped.candidates.map((item) => item.term), ['B']);
+  assert.equal(wrapped.malformed.length, 1);
 });
 
 test('parseCandidates and filterCandidates reject prose and non-object items as malformed-json', () => {

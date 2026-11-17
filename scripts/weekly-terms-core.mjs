@@ -157,7 +157,7 @@ const splitBroken = (items) =>
     if (!spans.length) return [item];
     const parts = [];
     const keep = (text) => {
-      const rest = text.replace(/^[\s,\]]+|[\s,\]]+$/g, '');
+      const rest = text.replace(/^[\s,\]}]+|[\s,\]}]+$/g, '');
       if (rest) parts.push(rest);
     };
     let cursor = 0;
