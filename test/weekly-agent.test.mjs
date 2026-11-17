@@ -35,6 +35,15 @@ test('parseCandidates salvages valid objects around a broken one', () => {
   assert.equal(malformed.length, 1);
 });
 
+test('parseCandidates keeps non-object items when salvaging a broken array', () => {
+  const valid = JSON.stringify({ term: 'Prefix Caching', letter: 'P' });
+  const parsed = agent.parseCandidates(`[${valid}, null,]`);
+  assert.equal(parsed.candidates.length, 2);
+  const { accepted, rejected } = agent.filterCandidates(parsed, existing);
+  assert.equal(accepted.length + rejected.length, 2);
+  assert.ok(rejected.some((item) => item.reason === 'malformed-json'));
+});
+
 test('parseCandidates and filterCandidates reject prose and non-object items as malformed-json', () => {
   const prose = agent.parseCandidates('Sorry, I cannot help with that.');
   assert.equal(prose.candidates.length, 0);

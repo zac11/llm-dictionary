@@ -112,13 +112,48 @@ function objectSpans(text) {
   return spans;
 }
 
-function salvageRegion(body) {
+/**
+ * Top-level items of an array body (text after its `[`), string-aware, so
+ * non-object items such as `null` survive salvage and get rejected later.
+ */
+function arrayItems(text) {
+  const items = [];
+  let depth = 0;
+  let start = 0;
+  let inString = false;
+  let escaped = false;
+  const push = (end) => {
+    const item = text.slice(start, end).trim();
+    if (item) items.push(item);
+  };
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (ch === '\\') escaped = true;
+      else if (ch === '"') inString = false;
+      continue;
+    }
+    if (ch === '"') inString = true;
+    else if (ch === '{' || ch === '[') depth++;
+    else if ((ch === '}' || ch === ']') && depth > 0) depth--;
+    else if (depth === 0 && (ch === ',' || ch === ']')) {
+      push(i);
+      start = i + 1;
+      if (ch === ']') return items;
+    }
+  }
+  push(text.length);
+  return items;
+}
+
+function salvageItems(body) {
   const wrapped = body.match(/"(?:terms|candidates|entries|items)"\s*:\s*\[/);
-  if (wrapped) return body.slice(wrapped.index + wrapped[0].length);
+  if (wrapped) return arrayItems(body.slice(wrapped.index + wrapped[0].length));
   const bracket = body.indexOf('[');
   const brace = body.indexOf('{');
-  if (bracket >= 0 && (brace < 0 || bracket < brace)) return body.slice(bracket + 1);
-  return brace >= 0 ? body.slice(brace) : '';
+  if (bracket >= 0 && (brace < 0 || bracket < brace)) return arrayItems(body.slice(bracket + 1));
+  return brace >= 0 ? objectSpans(body.slice(brace)) : [];
 }
 
 /**
@@ -150,7 +185,7 @@ export function parseCandidates(llmReply) {
     if (parsedLines.every((item) => item.ok)) return { candidates: parsedLines.map((item) => item.value), malformed: [] };
   }
 
-  const spans = objectSpans(salvageRegion(body));
+  const spans = salvageItems(body);
   if (!spans.length) return { candidates: [], malformed: [{ index: 0, text: body, error: whole.error }] };
   const candidates = [];
   const malformed = [];
