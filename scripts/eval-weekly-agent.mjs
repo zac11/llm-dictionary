@@ -3,7 +3,7 @@
 //
 //  node scripts/eval-weekly-agent.mjs                 offline fixtures (no API calls)
 //  node scripts/eval-weekly-agent.mjs --input FILE    score a saved LLM reply against dictionary/
-//  node scripts/eval-weekly-agent.mjs --live          one real call (DEEPSEEK_API_KEY or GEMINI_API_KEY)
+//  node scripts/eval-weekly-agent.mjs --live          one real two-pass run (DEEPSEEK_API_KEY or GEMINI_API_KEY)
 //
 //  --format json|markdown (default json)   --out FILE (also write the report there)
 //
@@ -16,14 +16,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
 import { loadWeeklyAgent } from './weekly-agent-boundary.mjs';
-import {
-  buildWeeklyMessages,
-  computeMetrics,
-  loadDictionaryTerms,
-  metricsMarkdown,
-  pickProvider,
-  requestCandidates,
-} from './weekly-terms-core.mjs';
+import { computeMetrics, loadDictionaryTerms, metricsMarkdown, pickProvider, proposeWeeklyTerms } from './weekly-terms-core.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 export const FIXTURES = join(ROOT, 'test', 'fixtures', 'weekly-agent');
@@ -75,8 +68,7 @@ async function runLiveEval({ count }) {
   if (!provider) throw new Error('--live needs DEEPSEEK_API_KEY or GEMINI_API_KEY');
   const agent = await loadWeeklyAgent();
   const existingTerms = loadDictionaryTerms(ROOT);
-  const messages = buildWeeklyMessages(agent.buildExclusionList(existingTerms), { count });
-  const { reply, usage } = await requestCandidates(provider, messages);
+  const { reply, usage } = await proposeWeeklyTerms(provider, existingTerms, { count });
   const { metrics } = evaluate(agent, reply, existingTerms, null);
   return { mode: 'live', provider: provider.name, model: provider.model, usage, implementation: agent.source, totals: metrics };
 }
@@ -86,7 +78,7 @@ export function toMarkdown(report) {
   if (report.mode === 'offline') {
     parts.push(metricsMarkdown(report.totals, { title: 'Weekly agent eval — offline fixtures', note: `Decision accuracy vs. labelled fixtures: **${report.totals.decisionAccuracy}%** (${report.passed ? 'pass' : 'FAIL'}).` }));
   } else if (report.mode === 'live') {
-    parts.push(metricsMarkdown(report.totals, { title: `Weekly agent eval — live (${report.provider} / ${report.model})`, note: `Tokens: ${report.usage.prompt} in + ${report.usage.completion} out.` }));
+    parts.push(metricsMarkdown(report.totals, { title: `Weekly agent eval — live (${report.provider} / ${report.model})`, note: `Tokens: ${report.usage.prompt} in + ${report.usage.completion} out over ${report.usage.calls} calls.` }));
   } else {
     parts.push(metricsMarkdown(report.totals, { title: 'Weekly agent eval — this run' }));
   }
