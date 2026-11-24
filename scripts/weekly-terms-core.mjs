@@ -3,8 +3,8 @@
 //
 //  `scripts/generate-weekly-terms.mjs` (the agent) and the offline evals both
 //  use these, so the evals can check dedup and validation without calling an
-//  LLM. Nothing here touches the network; `requestCandidates` is the only I/O
-//  and is used by `eval-weekly-agent.mjs --live` only.
+//  LLM. The generator and the live eval both use `requestCandidates` for
+//  provider calls.
 // -----------------------------------------------------------------------------
 
 import { execFileSync } from 'node:child_process';
