@@ -87,7 +87,7 @@ test('weekly generation writes explainers for concept-style terms only', async (
   const root = mkdtempSync(join(tmpdir(), 'weekly-generation-'));
   t.after(() => rmSync(root, { recursive: true, force: true }));
   mkdirSync(join(root, 'dictionary'));
-  const person = { ...entry, term: 'Paula Example', type: 'person', definition: 'Paula Example is a researcher.' };
+  const person = { ...entry, term: 'Paula Example', type: 'person', definition: 'Paula Example is a researcher.', details: 'She studies memory-efficient serving.', profile: { knownFor: 'Memory-efficient serving' }, citation: { title: 'Paula Example', url: 'https://example.org/paula' } };
   t.mock.method(globalThis, 'fetch', async (url, { body }) => {
     const names = JSON.parse(body).messages[0].content.includes('{"names"');
     const content = JSON.stringify(names ? { names: ['Paged Attention', 'Paula Example'] } : { terms: [entry, person] });
