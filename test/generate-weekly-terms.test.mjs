@@ -83,6 +83,22 @@ test('weekly generation still writes terms when the explainer run fails', async 
   assert.match(summary, /Explainers: not written \(LLM 401: bad key\)/);
 });
 
+test('weekly generation writes explainers for concept-style terms only', async (t) => {
+  const root = mkdtempSync(join(tmpdir(), 'weekly-generation-'));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  mkdirSync(join(root, 'dictionary'));
+  const person = { ...entry, term: 'Paula Example', type: 'person', definition: 'Paula Example is a researcher.' };
+  t.mock.method(globalThis, 'fetch', async (url, { body }) => {
+    const names = JSON.parse(body).messages[0].content.includes('{"names"');
+    const content = JSON.stringify(names ? { names: ['Paged Attention', 'Paula Example'] } : { terms: [entry, person] });
+    return Response.json({ choices: [{ message: { content } }] });
+  });
+  const explained = [];
+  const summary = await generateWeeklyTerms({ root, env: { DEEPSEEK_API_KEY: 'k' }, explainers: (_root, _provider, slugs) => explained.push(...slugs) && 'written: 1, failed: 0' });
+  assert.match(summary, /added 2 entries/);
+  assert.deepEqual(explained, ['paged-attention']);
+});
+
 test('weekly generation fails when no name reply parses', async (t) => {
   const root = mkdtempSync(join(tmpdir(), 'weekly-generation-'));
   t.after(() => rmSync(root, { recursive: true, force: true }));

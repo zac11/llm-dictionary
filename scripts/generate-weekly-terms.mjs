@@ -2,7 +2,7 @@ import { execFileSync } from 'node:child_process';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { normalizeTerm, rangeFolderForLetter } from '../src/term-schema.js';
+import { entryPresentation, normalizeTerm, rangeFolderForLetter } from '../src/term-schema.js';
 import {
   buildExclusionList,
   filterCandidates,
@@ -65,9 +65,12 @@ export async function generateWeeklyTerms({ root = ROOT, env = process.env, expl
     `Weekly term generation added ${paths.length} entries and rejected ${rejected.length} candidates.`,
     `Tokens: ${usage.prompt} in + ${usage.completion} out over ${usage.calls} calls.`,
   ];
-  if (accepted.length) {
+  // People, organizations and events keep their profile / coverage spread; a
+  // compact explainer would replace it without the highlights.
+  const explain = accepted.filter(({ entry }) => entryPresentation(normalizeTerm(entry).type) === 'story').map(({ slug }) => slug);
+  if (explain.length) {
     try {
-      const log = String(explainers(root, provider, accepted.map(({ slug }) => slug)));
+      const log = String(explainers(root, provider, explain));
       const written = log.match(/written: \d+, failed: \d+/);
       lines.push(`Explainers: ${written ? written[0] : 'see the workflow log'}.`);
       console.log(log);

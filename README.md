@@ -260,7 +260,8 @@ entries before anything is written.
 The `Weekly terms` workflow needs either key configured as a GitHub Actions repository
 secret. It runs the generator, which writes the new entries and then runs
 `generate-explainers.mjs --compact --only <new slugs>` with the same provider, so new
-terms ship with explainers; it then scores the saved reply and offline fixtures, and
+concept-style terms ship with explainers (people, organizations and events keep their
+profile / coverage spread); it then scores the saved reply and offline fixtures, and
 opens a PR when there are new files under `dictionary/`. Enable `live_eval` on a
 manual run to make one more two-pass run for evaluation.
 
