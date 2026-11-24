@@ -516,8 +516,9 @@ export function buildWeeklyMessages(names) {
 /**
  * Two-pass proposal: ask for `count * oversample` names (up to `rounds` times
  * until `count` new ones are found), then request full entries for those only.
- * Returns `{ names, reply, usage }`; `reply` is the pass-2 reply ('' when no
- * new names turned up) and `usage` sums every call.
+ * Returns `{ names, proposed, reply, usage }`; `proposed` counts the distinct
+ * names pass 1 parsed, `reply` is the pass-2 reply ('' when no new names
+ * turned up) and `usage` sums every call.
  */
 export async function proposeWeeklyTerms(provider, existingTerms, { count = 10, oversample = 3, rounds = 3, request = requestCandidates } = {}) {
   const usage = { prompt: 0, completion: 0, calls: 0 };
@@ -536,8 +537,8 @@ export async function proposeWeeklyTerms(provider, existingTerms, { count = 10, 
     names.push(...fresh.slice(0, count - names.length));
     skip.push(...proposed.filter((name) => !skip.includes(name)));
   }
-  if (!names.length) return { names, reply: '', usage };
-  return { names, reply: await call(buildWeeklyMessages(names)), usage };
+  if (!names.length) return { names, proposed: skip.length, reply: '', usage };
+  return { names, proposed: skip.length, reply: await call(buildWeeklyMessages(names)), usage };
 }
 
 /** One chat completion; returns `{ reply, usage }`. */

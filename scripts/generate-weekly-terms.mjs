@@ -37,7 +37,8 @@ export async function generateWeeklyTerms({ root = ROOT, env = process.env, expl
   if (!provider) throw new Error('Weekly term generation needs DEEPSEEK_API_KEY or GEMINI_API_KEY.');
 
   const existing = loadDictionaryTerms(root, { trackedOnly: false });
-  const { names, reply, usage } = await proposeWeeklyTerms(provider, existing);
+  const { names, proposed, reply, usage } = await proposeWeeklyTerms(provider, existing);
+  if (!proposed) throw new Error('The weekly term provider returned no parseable names.');
   if (names.length && (typeof reply !== 'string' || !reply.trim())) {
     throw new Error('The weekly term provider returned an empty reply.');
   }

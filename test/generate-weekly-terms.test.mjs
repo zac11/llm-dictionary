@@ -83,6 +83,14 @@ test('weekly generation still writes terms when the explainer run fails', async 
   assert.match(summary, /Explainers: not written \(LLM 401: bad key\)/);
 });
 
+test('weekly generation fails when no name reply parses', async (t) => {
+  const root = mkdtempSync(join(tmpdir(), 'weekly-generation-'));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  mkdirSync(join(root, 'dictionary'));
+  t.mock.method(globalThis, 'fetch', async () => Response.json({ choices: [{ message: { content: 'sorry, no JSON' } }] }));
+  await assert.rejects(generateWeeklyTerms({ root, env: { DEEPSEEK_API_KEY: 'k' } }), /no parseable names/);
+});
+
 test('weekly generation fails clearly when the provider key is missing', async () => {
   await assert.rejects(generateWeeklyTerms({ env: {} }), /DEEPSEEK_API_KEY or GEMINI_API_KEY/);
 });
@@ -118,5 +126,5 @@ test('two-pass proposal skips the entry call when no new names turn up', async (
   };
   const result = await proposeWeeklyTerms({}, [existing], { request });
   assert.equal(calls, 3);
-  assert.deepEqual(result, { names: [], reply: '', usage: { prompt: 0, completion: 0, calls: 3 } });
+  assert.deepEqual(result, { names: [], proposed: 1, reply: '', usage: { prompt: 0, completion: 0, calls: 3 } });
 });
