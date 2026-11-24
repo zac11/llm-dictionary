@@ -503,6 +503,15 @@ export function newNames(names, existingTerms) {
 }
 
 /** Pass 2: full entries for names already checked against the dictionary. */
+/** Splits accepted entries into those whose term was on the pass-1 shortlist and the rest. */
+export function splitRequested(accepted, names) {
+  const wanted = new Set(names.map(labelKey));
+  const requested = [];
+  const unrequested = [];
+  for (const item of accepted) (wanted.has(labelKey(item.term)) ? requested : unrequested).push(item);
+  return { requested, unrequested };
+}
+
 export function buildWeeklyMessages(names) {
   return [
     {

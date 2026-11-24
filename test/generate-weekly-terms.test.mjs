@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
@@ -97,6 +97,22 @@ test('weekly generation writes explainers for concept-style terms only', async (
   const summary = await generateWeeklyTerms({ root, env: { DEEPSEEK_API_KEY: 'k' }, explainers: (_root, _provider, slugs) => explained.push(...slugs) && 'written: 1, failed: 0' });
   assert.match(summary, /added 2 entries/);
   assert.deepEqual(explained, ['paged-attention']);
+});
+
+test('weekly generation rejects entries for names it did not request', async (t) => {
+  const root = mkdtempSync(join(tmpdir(), 'weekly-generation-'));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  mkdirSync(join(root, 'dictionary'));
+  const extra = { ...entry, term: 'Ring Attention', letter: 'r', citation: { title: 'Ring Attention', url: 'https://arxiv.org/abs/2310.01889' } };
+  t.mock.method(globalThis, 'fetch', async (url, { body }) => {
+    const names = JSON.parse(body).messages[0].content.includes('{"names"');
+    const content = JSON.stringify(names ? { names: ['Paged Attention'] } : { terms: [entry, extra] });
+    return Response.json({ choices: [{ message: { content } }] });
+  });
+  const summary = await generateWeeklyTerms({ root, env: { DEEPSEEK_API_KEY: 'k' }, explainers: () => '' });
+  assert.match(summary, /added 1 entries and rejected 1 candidates/);
+  assert.ok(existsSync(join(root, 'dictionary', 'o-p', 'paged-attention.json')));
+  assert.ok(!existsSync(join(root, 'dictionary', 'q-r', 'ring-attention.json')));
 });
 
 test('weekly generation fails when no name reply parses', async (t) => {

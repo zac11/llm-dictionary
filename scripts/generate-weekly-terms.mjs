@@ -10,6 +10,7 @@ import {
   parseCandidates,
   pickProvider,
   proposeWeeklyTerms,
+  splitRequested,
 } from './weekly-terms-core.mjs';
 
 export { buildExclusionList, filterCandidates, parseCandidates };
@@ -48,7 +49,9 @@ export async function generateWeeklyTerms({ root = ROOT, env = process.env, expl
   if (names.length && !parsed.candidates.length && parsed.malformed.length) {
     throw new Error('The weekly term provider returned no parseable candidates.');
   }
-  const { accepted, rejected } = names.length ? filterCandidates(parsed, existing) : { accepted: [], rejected: [] };
+  const filtered = names.length ? filterCandidates(parsed, existing) : { accepted: [], rejected: [] };
+  const { requested: accepted, unrequested } = splitRequested(filtered.accepted, names);
+  const rejected = [...filtered.rejected, ...unrequested.map((item) => ({ ...item, reason: 'not-requested' }))];
   const addedAt = new Date().toISOString().slice(0, 10);
   const paths = [];
 
