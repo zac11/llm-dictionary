@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
 import { generateWeeklyTerms } from '../scripts/generate-weekly-terms.mjs';
-import { newNames, parseNames, proposeWeeklyTerms } from '../scripts/weekly-terms-core.mjs';
+import { buildWeeklyMessages, newNames, parseNames, proposeWeeklyTerms } from '../scripts/weekly-terms-core.mjs';
 
 const existing = { term: 'Prompt Caching', slug: 'prompt-caching', aka: ['Context Cache'] };
 const entry = {
@@ -159,4 +159,11 @@ test('two-pass proposal skips the entry call when no new names turn up', async (
   const result = await proposeWeeklyTerms({}, [existing], { request });
   assert.equal(calls, 3);
   assert.deepEqual(result, { names: [], proposed: 1, reply: '', usage: { prompt: 0, completion: 0, calls: 3 } });
+});
+
+test('the entry prompt asks for method types, a person known-for and exact authors', () => {
+  const [system] = buildWeeklyMessages(['DoRA']);
+  assert.match(system.content, /use "paper" only when the entry is about the paper itself/);
+  assert.match(system.content, /"profile":\{"knownFor"/);
+  assert.match(system.content, /leave "authors" empty rather than guess/);
 });

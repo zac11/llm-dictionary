@@ -461,7 +461,10 @@ export function pickProvider(env = process.env) {
 
 const ENTRY_SHAPE =
   'Each entry: {"term","letter" (uppercase first letter of term),"category","type" (one of concept, person, organization, event, model, dataset, benchmark, tool, paper, venue, policy, award, architecture, algorithm, metric, library),' +
-  '"aka":[],"definition" (one sentence),"details" (2-4 sentences),"citation":{"title","authors":[],"year","venue","url" (http(s) link to the primary source)}}.';
+  '"aka":[],"definition" (one sentence),"details" (2-4 sentences),"citation":{"title","authors":[],"year","venue","url" (http(s) link to the primary source)}}. ' +
+  '"type" is what the term is, not where it was published: a method or technique introduced in a paper is "concept" or "algorithm"; use "paper" only when the entry is about the paper itself. ' +
+  'For a "person", add "profile":{"knownFor" (one short phrase)}. ' +
+  'List citation authors exactly as on the source, in order; leave "authors" empty rather than guess.';
 
 /**
  * Pass 1: candidate names only. No exclusion list is sent (it is ~47k tokens);
