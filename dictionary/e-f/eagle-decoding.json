@@ -2,12 +2,38 @@
   "term": "EAGLE Decoding",
   "letter": "E",
   "category": "LLM inference technique",
-  "type": "paper",
+  "type": "concept",
   "aka": [
     "EAGLE"
   ],
   "definition": "A speculative decoding method that drafts the next tokens in the feature (hidden-state) space rather than the token space, achieving high acceptance rates with a lightweight autoregressive head.",
   "details": "EAGLE trains a draft model on the target model's hidden features, exploiting the observation that feature-level prediction is more accurate than token-level prediction. It uses a tree-structured decoding strategy to verify multiple candidate continuations. The follow-up EAGLE-2 adaptively adjusts draft tree depth and width, further improving speedups.",
+  "explainer": {
+    "lead": "EAGLE is a speculative decoding method that drafts upcoming tokens from the model's own hidden features rather than from a separate small model. It matters because feature-level drafts are accepted more often, which gives larger lossless speedups.",
+    "tiers": {
+      "eli5": "Instead of asking a different, smaller person to guess what you will say next, EAGLE peeks at your half-formed thoughts and guesses from those. Because the guesses come from your own thinking, they are right more often.",
+      "practitioner": "A lightweight autoregressive head is trained on the target model's second-to-top-layer features to predict the next features and tokens; drafts are arranged as a tree and verified in one pass of the target model. You need a trained EAGLE head per base model, and the speedup is largest at small batch sizes.",
+      "paperLevel": "Li et al. observe that autoregression over features is easier than over tokens, provided the draft head also sees the sampled token to resolve sampling uncertainty. Drafted token trees are verified with standard speculative sampling, so the output distribution of the target model is preserved; EAGLE-2 later adapts the tree shape to draft confidence."
+    },
+    "example": "Serving a chat model with an EAGLE head, each decoding step proposes a small tree of continuations and the base model accepts several tokens from it in one forward pass.",
+    "usedIn": [
+      {
+        "name": "vLLM",
+        "detail": "EAGLE speculative decoding support",
+        "url": ""
+      },
+      {
+        "name": "SGLang",
+        "detail": "EAGLE-based speculative decoding",
+        "url": ""
+      },
+      {
+        "name": "Low-latency LLM serving",
+        "detail": "lossless speedups",
+        "url": ""
+      }
+    ]
+  },
   "citation": {
     "title": "EAGLE: Speculative Sampling Requires Rethinking Feature Uncertainty",
     "authors": [

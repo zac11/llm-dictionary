@@ -2,12 +2,38 @@
   "term": "DoRA",
   "letter": "D",
   "category": "LLM fine-tuning technique",
-  "type": "paper",
+  "type": "concept",
   "aka": [
     "Weight-Decomposed Low-Rank Adaptation"
   ],
   "definition": "A parameter-efficient fine-tuning method that decomposes pretrained weights into magnitude and direction components, then applies LoRA to the direction component for improved learning behavior.",
   "details": "DoRA analyzes the difference between full fine-tuning and LoRA and finds that LoRA lacks the negative directional-magnitude correlation seen in full fine-tuning. By learning magnitude separately and using low-rank updates for direction, DoRA improves accuracy and training stability over LoRA. It has been integrated into libraries such as PEFT and can be merged into the base weights.",
+  "explainer": {
+    "lead": "DoRA is a fine-tuning method that splits each weight into a size and a direction and trains the direction with LoRA. It matters because it gets closer to full fine-tuning quality at about the same cost as LoRA.",
+    "tiers": {
+      "eli5": "Think of every weight as an arrow: it has a length and it points somewhere. DoRA lets you adjust how long each arrow is and nudge where it points, using only a few cheap knobs, instead of rebuilding every arrow.",
+      "practitioner": "DoRA keeps the pretrained weight frozen, learns a per-column magnitude vector, and applies a low-rank LoRA update to the normalised direction. Use it as a drop-in LoRA replacement (PEFT supports it); after training the parts merge back into one weight, so inference costs nothing extra, though training is somewhat slower than plain LoRA.",
+      "paperLevel": "Liu et al. decompose W into magnitude m and direction V/||V||, finding that LoRA updates magnitude and direction in lockstep, unlike full fine-tuning. Learning m directly while adapting V with a low-rank product decouples the two and improves accuracy and stability over LoRA at a similar number of trainable parameters."
+    },
+    "example": "Fine-tuning a 7B model for instruction following with rank-8 DoRA instead of rank-8 LoRA adds only a magnitude vector per layer and is then merged into the base weights for serving.",
+    "usedIn": [
+      {
+        "name": "PEFT library",
+        "detail": "use_dora option for LoRA adapters",
+        "url": ""
+      },
+      {
+        "name": "Instruction tuning",
+        "detail": "parameter-efficient adaptation",
+        "url": ""
+      },
+      {
+        "name": "Vision-language models",
+        "detail": "low-cost fine-tuning",
+        "url": ""
+      }
+    ]
+  },
   "citation": {
     "title": "DoRA: Weight-Decomposed Low-Rank Adaptation",
     "authors": [
