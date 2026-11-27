@@ -1,0 +1,56 @@
+{
+  "term": "LoRA Merge",
+  "letter": "L",
+  "category": "LLM fine-tuning technique",
+  "type": "concept",
+  "aka": [
+    "LoRA merging",
+    "weight merging"
+  ],
+  "definition": "The process of combining LoRA adapter weights with the base model weights (or merging multiple adapters together) to produce a single consolidated model.",
+  "details": "Because LoRA represents fine-tuning updates as low-rank matrices, these can be added to the frozen base weights after scaling, producing a dense model that no longer requires adapter modules at inference. Merging reduces latency and simplifies deployment. Multiple LoRA adapters can also be merged via task arithmetic or weighted combinations, though naive merging can cause interference between adapters.",
+  "explainer": {
+    "lead": "LoRA Merge turns a base model plus a LoRA adapter into one consolidated set of weights. It matters because the merged model drops the adapter modules at inference, cutting latency and simplifying deployment.",
+    "tiers": {
+      "eli5": "Think of a base model as a book and a LoRA adapter as a sheet of sticky notes with corrections. Merging copies those corrections into the book itself so you no longer carry the notes around.",
+      "practitioner": "Engineers scale the low-rank adapter matrices and add them to the frozen base weights, shipping a dense model with no adapter code in the serving path. Merging several adapters naively can cause interference between them, so weighted or task-arithmetic combinations are used instead.",
+      "paperLevel": "LoRA updates weights as a low-rank product scaled by a factor; merging computes W + scale * B * A, adding the scaled update to the base weight matrix W to yield a single dense matrix. The approach assumes the adapter was trained against that exact base model, and combining multiple adapters has no guarantee against interference."
+    },
+    "example": "A team fine-tunes a 7B model with a rank-8 LoRA adapter, then adds the scaled adapter matrices into the base weights so the deployed model is a single 7B checkpoint needing no adapter loading.",
+    "usedIn": [
+      {
+        "name": "LoRA fine-tuning pipelines",
+        "detail": "consolidating adapters for deployment",
+        "url": ""
+      },
+      {
+        "name": "Multi-adapter composition",
+        "detail": "task arithmetic and weighted merges",
+        "url": ""
+      },
+      {
+        "name": "Inference serving",
+        "detail": "lower latency without adapter modules",
+        "url": ""
+      }
+    ]
+  },
+  "citation": {
+    "title": "LoRA: Low-Rank Adaptation of Large Language Models",
+    "authors": [
+      "Edward J. Hu",
+      "Yelong Shen",
+      "Phillip Wallis",
+      "Zeyuan Allen-Zhu",
+      "Yuanzhi Li",
+      "Shean Wang",
+      "Lu Wang",
+      "Weizhu Chen"
+    ],
+    "year": 2022,
+    "venue": "ICLR",
+    "url": "https://arxiv.org/abs/2106.09685"
+  },
+  "slug": "lora-merge",
+  "addedAt": "2026-11-27"
+}
