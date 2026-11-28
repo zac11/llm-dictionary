@@ -32,7 +32,7 @@ llm-dictionary/
 │   ├── classify-types.mjs # entity types: person, event, concept… (npm run types)
 │   ├── import-people.mjs  # bulk-add people from JSON lists (npm run import:people)
 │   ├── mark-deceased.mjs  # flags deceased people so LinkedIn is hidden (npm run deceased)
-│   ├── generate-weekly-terms.mjs # proposes, validates, and writes new weekly entries
+│   ├── generate-weekly-terms.mjs # proposes, validates, writes new weekly entries + explainers
 │   ├── eval-weekly-agent.mjs # offline / live evals for the weekly term agent (npm run eval:weekly)
 │   ├── weekly-terms-core.mjs # weekly agent's pure units: exclusion list, parser, dedup filter
 │   ├── generate-og.mjs    # writes public/og.png (1200×630 preview card)
@@ -244,17 +244,26 @@ reason code: `malformed-json`, `schema-invalid`, `validation-warning`,
 npm run eval:weekly                                   # offline fixtures, JSON report
 node scripts/eval-weekly-agent.mjs --format markdown  # same, as a Markdown table
 node scripts/eval-weekly-agent.mjs --input reply.txt  # score a saved reply against dictionary/
-npm run eval:weekly:live                              # one real call, manual / scheduled only
+npm run eval:weekly:live                              # one real two-pass run, manual / scheduled only
 ```
 
 `--live` needs `DEEPSEEK_API_KEY` or `GEMINI_API_KEY` (DeepSeek wins when both are
-set; `WEEKLY_MODEL` and `WEEKLY_BASE_URL` override the model and endpoint) and never runs under `npm test`. It sends the
-full exclusion list (every term, slug and alias), so expect a large prompt.
+set; `WEEKLY_MODEL` and `WEEKLY_BASE_URL` override the model and endpoint) and never runs under `npm test`.
 
-The `Weekly terms` workflow needs either key configured as a GitHub Actions secret.
-It runs the generator, scores the saved reply and offline fixtures, and opens a PR
-when there are new files under `dictionary/`. Enable `live_eval` on a manual run
-to make one additional provider call for evaluation.
+The agent works in two passes so it never sends the full exclusion list (~47k tokens):
+it asks for 30 candidate names (up to 3 rounds, each listing the names already
+proposed), drops the ones the dictionary already has as a term, alias or slug, and
+then asks for full entries for the first 10 new names only. Both calls together stay
+around a few thousand tokens. The dedup / validation filter still runs on the full
+entries before anything is written.
+
+The `Weekly terms` workflow needs either key configured as a GitHub Actions repository
+secret. It runs the generator, which writes the new entries and then runs
+`generate-explainers.mjs --compact --only <new slugs>` with the same provider, so new
+concept-style terms ship with explainers (people, organizations and events keep their
+profile / coverage spread); it then scores the saved reply and offline fixtures, and
+opens a PR when there are new files under `dictionary/`. Enable `live_eval` on a
+manual run to make one more two-pass run for evaluation.
 
 ## 📈 Distinct visitor count
 

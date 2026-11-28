@@ -3,8 +3,8 @@
 //
 //  `scripts/generate-weekly-terms.mjs` (the agent) and the offline evals both
 //  use these, so the evals can check dedup and validation without calling an
-//  LLM. The generator and the live eval both use `requestCandidates` for
-//  provider calls.
+//  LLM. The generator and the live eval both call the provider through
+//  `proposeWeeklyTerms` (names first, then full entries for new names only).
 // -----------------------------------------------------------------------------
 
 import { execFileSync } from 'node:child_process';
@@ -459,21 +459,98 @@ export function pickProvider(env = process.env) {
   return null;
 }
 
-export function buildWeeklyMessages(exclusionList, { count = 10 } = {}) {
+const ENTRY_SHAPE =
+  'Each entry: {"term","letter" (uppercase first letter of term),"category","type" (one of concept, person, organization, event, model, dataset, benchmark, tool, paper, venue, policy, award, architecture, algorithm, metric, library),' +
+  '"aka":[],"definition" (one sentence),"details" (2-4 sentences),"citation":{"title","authors":[],"year","venue","url" (http(s) link to the primary source)}}. ' +
+  '"type" is what the term is, not where it was published: a method or technique introduced in a paper is "concept" or "algorithm"; use "paper" only when the entry is about the paper itself. ' +
+  'For a "person", add "profile":{"knownFor" (one short phrase)}. ' +
+  'List citation authors exactly as on the source, in order; leave "authors" empty rather than guess.';
+
+/**
+ * Pass 1: candidate names only. No exclusion list is sent (it is ~47k tokens);
+ * `newNames` drops the ones the dictionary already has. `skip` lists names
+ * proposed in earlier rounds so a retry asks for different ones.
+ */
+export function buildNameMessages({ count = 30, size = 0, skip = [] } = {}) {
+  const user = [
+    `List ${count} distinct AI / LLM terms (techniques, architectures, models, benchmarks, datasets, papers, tools, people, organisations) that a specialised AI dictionary${size ? ` of ${size} entries` : ''} may still be missing.`,
+    'Prefer recent (last two years) and specialised terms over well-known basics. Use each term\'s canonical name.',
+    skip.length ? `Already covered, do not repeat:\n${skip.join('\n')}` : '',
+  ].filter(Boolean);
+  return [
+    { role: 'system', content: 'You suggest entries for an A–Z dictionary of AI / LLM terminology. Reply with JSON only: {"names":["…"]}.' },
+    { role: 'user', content: user.join('\n\n') },
+  ];
+}
+
+/** Names from a pass-1 reply: `{"names":[…]}`, a bare array, or entries with a `term`. */
+export function parseNames(reply) {
+  const { candidates } = parseCandidates(reply);
+  const list = candidates.length === 1 && isRecord(candidates[0]) && Array.isArray(candidates[0].names) ? candidates[0].names : candidates;
+  return list.map((item) => (typeof item === 'string' ? item.trim() : termName(item))).filter(Boolean);
+}
+
+/** Names whose term, alias and slug are all absent from `existingTerms`, without repeats. */
+export function newNames(names, existingTerms) {
+  const existing = indexExisting(existingTerms);
+  const seen = new Set();
+  const out = [];
+  for (const name of names || []) {
+    const text = String(name || '').trim();
+    const key = labelKey(text);
+    if (!key || seen.has(key) || existing.names.has(key) || existing.aliases.has(key) || existing.slugs.has(slugifyTerm(text))) continue;
+    seen.add(key);
+    out.push(text);
+  }
+  return out;
+}
+
+/** Pass 2: full entries for names already checked against the dictionary. */
+/** Splits accepted entries into those whose term was on the pass-1 shortlist and the rest. */
+export function splitRequested(accepted, names) {
+  const wanted = new Set(names.map(labelKey));
+  const requested = [];
+  const unrequested = [];
+  for (const item of accepted) (wanted.has(labelKey(item.term)) ? requested : unrequested).push(item);
+  return { requested, unrequested };
+}
+
+export function buildWeeklyMessages(names) {
   return [
     {
       role: 'system',
-      content:
-        'You propose new entries for an A–Z dictionary of AI / LLM terminology. Reply with JSON only: {"terms":[...]}. ' +
-        'Each entry: {"term","letter" (uppercase first letter of term),"category","type" (one of concept, person, organization, event, model, dataset, benchmark, tool, paper, venue, policy, award, architecture, algorithm, metric, library),' +
-        '"aka":[],"definition" (one sentence),"details" (2-4 sentences),"citation":{"title","authors":[],"year","venue","url" (http(s) link to the primary source)}}. ' +
-        'Never propose a term, alias or spelling variant of anything in the exclusion list.',
+      content: `You write entries for an A–Z dictionary of AI / LLM terminology. Reply with JSON only: {"terms":[...]}. ${ENTRY_SHAPE} Write one entry per name and keep the name as given in "term".`,
     },
-    {
-      role: 'user',
-      content: `Propose ${count} widely-used AI terms that are missing from the dictionary.\n\nExclusion list (${exclusionList.length} names, slugs and aliases):\n${exclusionList.join('\n')}`,
-    },
+    { role: 'user', content: `Write dictionary entries for these ${names.length} AI terms:\n${names.join('\n')}` },
   ];
+}
+
+/**
+ * Two-pass proposal: ask for `count * oversample` names (up to `rounds` times
+ * until `count` new ones are found), then request full entries for those only.
+ * Returns `{ names, proposed, reply, usage }`; `proposed` counts the distinct
+ * names pass 1 parsed, `reply` is the pass-2 reply ('' when no new names
+ * turned up) and `usage` sums every call.
+ */
+export async function proposeWeeklyTerms(provider, existingTerms, { count = 10, oversample = 3, rounds = 3, request = requestCandidates } = {}) {
+  const usage = { prompt: 0, completion: 0, calls: 0 };
+  const call = async (messages) => {
+    const result = await request(provider, messages);
+    usage.prompt += result.usage?.prompt || 0;
+    usage.completion += result.usage?.completion || 0;
+    usage.calls++;
+    return result.reply;
+  };
+  const names = [];
+  const skip = [];
+  for (let round = 0; round < rounds && names.length < count; round++) {
+    const proposed = parseNames(await call(buildNameMessages({ count: count * oversample, size: existingTerms.length, skip })));
+    const fresh = newNames(proposed, [...existingTerms, ...names.map((term) => ({ term }))]);
+    names.push(...fresh.slice(0, count - names.length));
+    skip.push(...proposed.filter((name) => !skip.includes(name)));
+  }
+  if (!names.length) return { names, proposed: skip.length, reply: '', usage };
+  return { names, proposed: skip.length, reply: await call(buildWeeklyMessages(names)), usage };
 }
 
 /** One chat completion; returns `{ reply, usage }`. */
