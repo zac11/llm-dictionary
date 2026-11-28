@@ -1,0 +1,53 @@
+{
+  "term": "FlashAttention-3",
+  "letter": "F",
+  "category": "Attention algorithm",
+  "type": "algorithm",
+  "aka": [
+    "FA3"
+  ],
+  "definition": "A GPU attention kernel that exploits Hopper architecture features such as asynchronous TMA and WGMMA to accelerate attention computation with FP8 support.",
+  "details": "FlashAttention-3 improves on prior FlashAttention versions by overlapping softmax and matrix-multiply operations and using warp-specialized producer-consumer pipelines. It achieves significant speedups on H100 GPUs for both FP16 and FP8 attention. The work is from the same team that pioneered FlashAttention and targets the NVIDIA Hopper generation.",
+  "explainer": {
+    "lead": "FlashAttention-3 is a version of the FlashAttention GPU kernel tuned for NVIDIA Hopper GPUs. It matters because it makes attention, the most expensive part of transformers, much faster on H100s, including in FP8.",
+    "tiers": {
+      "eli5": "Picture a kitchen where one cook chops while another fries at the same time, instead of waiting for each other. FlashAttention-3 organises the GPU so its parts work at the same time like that, so attention finishes sooner.",
+      "practitioner": "FA3 uses Hopper features — the Tensor Memory Accelerator for asynchronous loads and WGMMA tensor-core instructions — with warp-specialised producer and consumer warps, and overlaps softmax with matrix multiplies. It only targets Hopper-class GPUs; FP8 mode is faster but needs its quantisation-error mitigations to keep accuracy.",
+      "paperLevel": "Shah et al. exploit asynchrony by splitting warps into data-movement producers and compute consumers, ping-pong scheduling softmax of one block against GEMMs of another, and use block quantisation with incoherent processing to reduce FP8 error. The result is substantially higher attention throughput on H100 than FlashAttention-2 for FP16 and for FP8."
+    },
+    "example": "Training a long-context model on H100s, swapping the attention kernel for FlashAttention-3 raises attention throughput without changing the model's maths.",
+    "usedIn": [
+      {
+        "name": "H100 training",
+        "detail": "faster attention kernels",
+        "url": ""
+      },
+      {
+        "name": "FP8 inference",
+        "detail": "low-precision attention",
+        "url": ""
+      },
+      {
+        "name": "Long-context models",
+        "detail": "cheaper long sequences",
+        "url": ""
+      }
+    ]
+  },
+  "citation": {
+    "title": "FlashAttention-3: Fast and Accurate Attention with Asynchrony and Low-precision",
+    "authors": [
+      "Jay Shah",
+      "Ganesh Bikshandi",
+      "Ying Zhang",
+      "Vijay Thakkar",
+      "Pradeep Ramani",
+      "Tri Dao"
+    ],
+    "year": 2024,
+    "venue": "NeurIPS",
+    "url": "https://arxiv.org/abs/2407.08608"
+  },
+  "slug": "flashattention-3",
+  "addedAt": "2026-11-27"
+}

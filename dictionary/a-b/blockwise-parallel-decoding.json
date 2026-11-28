@@ -1,0 +1,50 @@
+{
+  "term": "Blockwise Parallel Decoding",
+  "letter": "B",
+  "category": "LLM inference technique",
+  "type": "concept",
+  "aka": [
+    "BPD"
+  ],
+  "definition": "An early speculative decoding method that trains a model with extra feed-forward heads to predict several future tokens in parallel, then verifies the guesses with a single forward pass of the base model.",
+  "details": "Stern et al. proposed blockwise parallel decoding as a way to accelerate greedy autoregressive generation without changing the output distribution. A small draft mechanism proposes a block of tokens, and the target model verifies them in one parallel pass, accepting the longest correct prefix. It inspired later self-speculative approaches such as lookahead and Medusa decoding.",
+  "explainer": {
+    "lead": "Blockwise parallel decoding is an early draft-and-verify method that guesses several future tokens at once and keeps the ones the base model agrees with. It matters because it showed greedy generation can be sped up without changing its output.",
+    "tiers": {
+      "eli5": "Imagine a helper who writes the next few words of a sentence ahead of time, and a teacher who checks them all in one glance and keeps the words that are right. You finish faster, but the sentence is the same as if the teacher had written every word.",
+      "practitioner": "Extra prediction heads on the model propose the next k tokens; one forward pass of the base model then checks them and the longest prefix matching its own greedy choice is accepted. The speedup depends on how often the heads guess right, so it is largest on predictable text and gives exact greedy output only.",
+      "paperLevel": "Stern, Shazeer and Uszkoreit train auxiliary heads to predict tokens at offsets 1..k, then score all k positions in parallel with the base model and accept the longest prefix consistent with its argmax. This reduces the number of sequential decoding steps while preserving greedy output, and it anticipates later speculative and multi-head decoders such as Medusa."
+    },
+    "example": "A translation model with three extra heads proposes four tokens per step; if the base model agrees with the first three, three tokens are accepted in one step instead of three.",
+    "usedIn": [
+      {
+        "name": "Speculative decoding",
+        "detail": "an early draft-and-verify scheme",
+        "url": ""
+      },
+      {
+        "name": "Machine translation",
+        "detail": "faster greedy decoding",
+        "url": ""
+      },
+      {
+        "name": "Medusa decoding",
+        "detail": "precursor of multi-head drafting",
+        "url": ""
+      }
+    ]
+  },
+  "citation": {
+    "title": "Blockwise Parallel Decoding for Deep Autoregressive Models",
+    "authors": [
+      "Mitchell Stern",
+      "Noam Shazeer",
+      "Jakob Uszkoreit"
+    ],
+    "year": 2018,
+    "venue": "NeurIPS",
+    "url": "https://arxiv.org/abs/1811.03115"
+  },
+  "slug": "blockwise-parallel-decoding",
+  "addedAt": "2026-11-27"
+}

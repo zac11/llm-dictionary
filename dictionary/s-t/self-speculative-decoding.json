@@ -1,0 +1,55 @@
+{
+  "term": "Self-Speculative Decoding",
+  "letter": "S",
+  "category": "LLM inference technique",
+  "type": "concept",
+  "aka": [
+    "Self-speculative",
+    "Draft & Verify"
+  ],
+  "definition": "A speculative decoding variant in which the same model serves as both draft and target by skipping some of its layers, avoiding the need for a separate draft model.",
+  "details": "Zhang et al. proposed using layer skipping to form a draft model from the target LLM itself. The draft output is verified by the full model, preserving output quality while accelerating inference. Because it requires no auxiliary model, self-speculative decoding is easy to deploy across existing checkpoints.",
+  "explainer": {
+    "lead": "Self-speculative decoding uses a faster version of the same model, made by skipping some layers, to draft tokens that the full model then checks. It matters because it speeds up inference without training or storing a second model.",
+    "tiers": {
+      "eli5": "It is like reading a page quickly by skimming, then rereading carefully to check you got it right. The skim is fast, and the careful check makes sure nothing changes.",
+      "practitioner": "Pick a set of intermediate layers to skip, draft several tokens with the shortened model, then verify them with one pass of the full model; an adaptive threshold decides how far to draft. The skipped layers must be chosen per model, for example by Bayesian optimisation, and the speedup depends on how close the shortened model stays to the full one.",
+      "paperLevel": "Zhang et al. (Draft & Verify) build the draft model by selectively skipping attention and MLP layers of the target LLM, search for the skip set with Bayesian optimisation, and verify drafts with the full model, so outputs are unchanged. Because draft and target share weights and the KV cache, no extra memory or training is needed."
+    },
+    "example": "Serving a 13B chat model, a layer-skipped copy drafts a few tokens per step and the full model verifies them, cutting latency with the same output.",
+    "usedIn": [
+      {
+        "name": "Speculative decoding",
+        "detail": "draft model from the same weights",
+        "url": ""
+      },
+      {
+        "name": "LLM serving",
+        "detail": "lossless acceleration",
+        "url": ""
+      },
+      {
+        "name": "Edge inference",
+        "detail": "no extra draft model",
+        "url": ""
+      }
+    ]
+  },
+  "citation": {
+    "title": "Draft & Verify: Lossless Large Language Model Acceleration via Self-Speculative Decoding",
+    "authors": [
+      "Jun Zhang",
+      "Jue Wang",
+      "Huan Li",
+      "Lidan Shou",
+      "Ke Chen",
+      "Gang Chen",
+      "Sharad Mehrotra"
+    ],
+    "year": 2024,
+    "venue": "ACL",
+    "url": "https://arxiv.org/abs/2309.08168"
+  },
+  "slug": "self-speculative-decoding",
+  "addedAt": "2026-11-27"
+}

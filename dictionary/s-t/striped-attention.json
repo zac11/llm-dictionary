@@ -1,0 +1,52 @@
+{
+  "term": "Striped Attention",
+  "letter": "S",
+  "category": "Attention algorithm",
+  "type": "algorithm",
+  "aka": [],
+  "definition": "A permutation-based attention algorithm that redistributes causal attention work evenly across devices to eliminate the compute imbalance in ring attention for long-context transformers.",
+  "details": "In causal attention, later tokens attend to more context, causing load imbalance across devices in ring-style sequence parallelism. Striped attention reorders tokens into a striped layout before partitioning so each device receives a balanced mix of early and late positions. Brandom et al. showed it improves utilization for long-context training such as vision transformers and large language models.",
+  "explainer": {
+    "lead": "Striped Attention is a permutation-based attention algorithm that spreads causal attention work evenly across devices. It matters because it removes the compute imbalance that ring attention suffers in long-context training.",
+    "tiers": {
+      "eli5": "Imagine splitting a queue of people so each helper gets a fair mix of early and late arrivals instead of one helper getting all the slow, talkative ones. Striped attention shuffles the order so everyone's workload is even.",
+      "practitioner": "Engineers reorder tokens into a striped layout before partitioning the sequence across devices, so each device sees a balanced mix of early and late positions in causal attention. A pitfall is that the reordering and its inverse must be handled correctly, or the attention results will not match the original sequence order.",
+      "paperLevel": "In causal attention later tokens attend to more context, so ring-style sequence parallelism leaves devices unevenly loaded; striped attention permutes tokens into a striped layout before partitioning to balance the work. It is a load-balancing scheme rather than a change to what attention computes, and its benefit depends on the causal structure and partitioning."
+    },
+    "example": "When training a long-context transformer across several devices, tokens are reordered into a striped layout so every device processes a mix of early and late positions, improving utilization over plain ring attention.",
+    "usedIn": [
+      {
+        "name": "Long-context LLM training",
+        "detail": "balanced sequence parallelism",
+        "url": ""
+      },
+      {
+        "name": "Vision transformers",
+        "detail": "efficient long-sequence training",
+        "url": ""
+      },
+      {
+        "name": "Ring attention systems",
+        "detail": "redistributing causal attention work",
+        "url": ""
+      }
+    ]
+  },
+  "citation": {
+    "title": "Striped Attention: Faster Ring Attention for Causal Transformers",
+    "authors": [
+      "William Brandon",
+      "Aniruddha Nrusimha",
+      "Kevin Qian",
+      "Zachary Ankner",
+      "Tian Jin",
+      "Zhiye Song",
+      "Jonathan Ragan-Kelley"
+    ],
+    "year": 2023,
+    "venue": "arXiv",
+    "url": "https://arxiv.org/abs/2311.09431"
+  },
+  "slug": "striped-attention",
+  "addedAt": "2026-11-27"
+}

@@ -1,0 +1,51 @@
+{
+  "term": "Lookahead Decoding",
+  "letter": "L",
+  "category": "LLM inference technique",
+  "type": "concept",
+  "aka": [
+    "Lookahead"
+  ],
+  "definition": "A parallel decoding algorithm that breaks the sequential dependency of autoregressive generation by generating n-grams with lookahead branches and verifying them via a Jacobi iteration scheme.",
+  "details": "Lookahead decoding maintains a pool of n-grams produced by parallel lookahead branches and uses them to propose multiple tokens per step without a draft model or extra training. A Jacobi-style fixed-point iteration verifies and combines these n-grams. The approach is implemented in the LookaheadDecoding library and yields substantial latency reductions.",
+  "explainer": {
+    "lead": "Lookahead decoding speeds up text generation by guessing and checking several tokens at once using only the model itself. It matters because it needs no draft model and no extra training.",
+    "tiers": {
+      "eli5": "Imagine solving a crossword by pencilling in guesses for several squares at once, then keeping the ones that fit. Lookahead decoding keeps pencilling in and checking guesses so it fills more than one square per turn.",
+      "practitioner": "Each step runs a lookahead branch that refines guessed future tokens with Jacobi iterations and caches the n-grams it produces, plus a verification branch that checks cached n-grams starting with the current token; both share one forward pass. It trades extra compute per step for fewer steps, so it helps most when the GPU has spare capacity.",
+      "paperLevel": "Fu et al. recast autoregressive decoding as solving a nonlinear system with Jacobi iteration, collect n-grams from the iteration trajectory, and verify promising ones in parallel with a special attention mask. The output matches greedy or sampled decoding, and the number of steps falls roughly with the extra compute spent."
+    },
+    "example": "Running a code-completion model with lookahead decoding, repeated patterns such as boilerplate are often accepted several tokens at a time.",
+    "usedIn": [
+      {
+        "name": "LookaheadDecoding library",
+        "detail": "reference implementation",
+        "url": ""
+      },
+      {
+        "name": "Code completion",
+        "detail": "fewer decoding steps",
+        "url": ""
+      },
+      {
+        "name": "Draft-free speculative decoding",
+        "detail": "no auxiliary model",
+        "url": ""
+      }
+    ]
+  },
+  "citation": {
+    "title": "Break the Sequential Dependency of LLM Inference Using Lookahead Decoding",
+    "authors": [
+      "Yichao Fu",
+      "Peter Bailis",
+      "Ion Stoica",
+      "Hao Zhang"
+    ],
+    "year": 2024,
+    "venue": "ICML",
+    "url": "https://arxiv.org/abs/2402.02057"
+  },
+  "slug": "lookahead-decoding",
+  "addedAt": "2026-11-27"
+}

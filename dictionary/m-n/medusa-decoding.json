@@ -1,0 +1,54 @@
+{
+  "term": "Medusa Decoding",
+  "letter": "M",
+  "category": "LLM inference technique",
+  "type": "concept",
+  "aka": [
+    "Medusa"
+  ],
+  "definition": "A speculative decoding framework that adds multiple lightweight decoding heads to an LLM to predict several future tokens at once, which are then verified in parallel by the base model.",
+  "details": "Medusa heads predict the token at offsets 1 through k, forming candidate continuations that are pruned with tree attention and verified in a single forward pass. The method requires no separate draft model and can be trained on a frozen backbone. Typical gains are 2–3x speedup over standard autoregressive decoding.",
+  "explainer": {
+    "lead": "Medusa speeds up generation by adding a few extra prediction heads to a model, each guessing a token further ahead, and checking the guesses in one pass. It matters because it gets speculative-decoding speedups without a separate draft model.",
+    "tiers": {
+      "eli5": "Picture a writer with several helpers, each shouting a guess for the second, third and fourth word ahead. The writer checks all the guesses at once and keeps the run that is right.",
+      "practitioner": "Medusa heads sit on the last hidden state and predict tokens at offsets 1..k; their top choices form a candidate tree that tree attention verifies in a single forward pass. Medusa-1 trains only the heads on a frozen model, while Medusa-2 fine-tunes model and heads together for higher acceptance.",
+      "paperLevel": "Cai et al. combine multiple decoding heads with tree-based attention over candidate continuations, and propose typical acceptance as a cheaper alternative to rejection sampling. This yields roughly 2-3x faster decoding, with Medusa-1 keeping the base model's outputs and Medusa-2 trading some fidelity for speed."
+    },
+    "example": "A chat assistant with four Medusa heads often accepts two or three tokens per forward pass instead of one.",
+    "usedIn": [
+      {
+        "name": "TensorRT-LLM",
+        "detail": "Medusa decoding support",
+        "url": ""
+      },
+      {
+        "name": "vLLM",
+        "detail": "Medusa speculative decoding",
+        "url": ""
+      },
+      {
+        "name": "Chat assistants",
+        "detail": "lower response latency",
+        "url": ""
+      }
+    ]
+  },
+  "citation": {
+    "title": "Medusa: Simple LLM Inference Acceleration Framework with Multiple Decoding Heads",
+    "authors": [
+      "Tianle Cai",
+      "Yuhong Li",
+      "Zhengyang Geng",
+      "Hongwu Peng",
+      "Jason D. Lee",
+      "Deming Chen",
+      "Tri Dao"
+    ],
+    "year": 2024,
+    "venue": "ICML",
+    "url": "https://arxiv.org/abs/2401.10774"
+  },
+  "slug": "medusa-decoding",
+  "addedAt": "2026-11-27"
+}
