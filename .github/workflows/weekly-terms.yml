@@ -3,7 +3,7 @@ name: Weekly terms
 # Runs the weekly term-generation agent, scores its output with
 # scripts/eval-weekly-agent.mjs and opens a PR whose body ends with the metrics.
 #
-# Contract with scripts/generate-weekly-terms.mjs (optional env it may honour):
+# Optional outputs from scripts/generate-weekly-terms.mjs:
 #   WEEKLY_REPLY_PATH    write the raw LLM reply here so this run can be scored
 #   WEEKLY_PR_BODY_PATH  write a Markdown summary here; the metrics are appended
 # New dictionary/ files must be left uncommitted: the eval treats only tracked
@@ -42,13 +42,7 @@ jobs:
       - run: npm install --no-audit --no-fund
 
       - name: Generate terms
-        run: |
-          mkdir -p .weekly
-          if [ -f scripts/generate-weekly-terms.mjs ]; then
-            node scripts/generate-weekly-terms.mjs
-          else
-            echo "::warning::scripts/generate-weekly-terms.mjs not found; only offline evals will run"
-          fi
+        run: node scripts/generate-weekly-terms.mjs
 
       - name: Eval weekly agent
         run: |

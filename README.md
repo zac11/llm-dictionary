@@ -32,6 +32,7 @@ llm-dictionary/
 │   ├── classify-types.mjs # entity types: person, event, concept… (npm run types)
 │   ├── import-people.mjs  # bulk-add people from JSON lists (npm run import:people)
 │   ├── mark-deceased.mjs  # flags deceased people so LinkedIn is hidden (npm run deceased)
+│   ├── generate-weekly-terms.mjs # proposes, validates, and writes new weekly entries
 │   ├── eval-weekly-agent.mjs # offline / live evals for the weekly term agent (npm run eval:weekly)
 │   ├── weekly-terms-core.mjs # weekly agent's pure units: exclusion list, parser, dedup filter
 │   ├── generate-og.mjs    # writes public/og.png (1200×630 preview card)
@@ -248,10 +249,12 @@ npm run eval:weekly:live                              # one real call, manual / 
 
 `--live` needs `DEEPSEEK_API_KEY` or `GEMINI_API_KEY` (DeepSeek wins when both are
 set; `WEEKLY_MODEL` and `WEEKLY_BASE_URL` override the model and endpoint) and never runs under `npm test`. It sends the
-full exclusion list (every term, slug and alias), so expect a large prompt. The
-`Weekly terms` workflow runs the offline eval and, when the agent saved its reply,
-scores that run, then appends the metrics table to the PR body; tick `live_eval`
-on a manual run to add a live check.
+full exclusion list (every term, slug and alias), so expect a large prompt.
+
+The `Weekly terms` workflow needs either key configured as a GitHub Actions secret.
+It runs the generator, scores the saved reply and offline fixtures, and opens a PR
+when there are new files under `dictionary/`. Enable `live_eval` on a manual run
+to make one additional provider call for evaluation.
 
 ## 📈 Distinct visitor count
 
